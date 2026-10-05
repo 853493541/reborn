@@ -1,0 +1,1998 @@
+# JX3UIX64.dll xrefs for 'nEngineGraphicsLevel'
+# image base 0x180000000
+
+## xref @ 0x18011ad19 -> 0x18039b8c8 'nEngineGraphicsLevel'  fn start 0x180118970
+  0x180118970: push     rbp
+  0x180118972: push     rbx
+  0x180118973: push     rdi
+  0x180118974: mov      rbp, rsp
+  0x180118977: sub      rsp, 0x50
+  0x18011897b: xor      ebx, ebx
+  0x18011897d: mov      rdi, rcx
+  0x180118980: cmp      dword ptr [rip + 0x39557a], ebx
+  0x180118986: je       0x180118993
+  0x180118988: lea      eax, [rbx + 1]
+  0x18011898b: add      rsp, 0x50
+  0x18011898f: pop      rdi
+  0x180118990: pop      rbx
+  0x180118991: pop      rbp
+  0x180118992: ret      
+  0x180118993: mov      rdx, qword ptr [rip + 0x395a9e]
+  0x18011899a: lea      rax, [rip + 0x28267f]  ; 'nWaterDetail'
+  0x1801189a1: cmp      rdx, qword ptr [rip + 0x395a98]
+  0x1801189a8: mov      qword ptr [rsp + 0x70], rsi
+  0x1801189ad: mov      qword ptr [rsp + 0x80], r14
+  0x1801189b5: mov      byte ptr [rbp - 0x14], 2
+  0x1801189b9: mov      qword ptr [rbp - 0x20], rax
+  0x1801189bd: mov      dword ptr [rbp - 0x18], 0x1b0
+  0x1801189c4: mov      qword ptr [rbp - 0x10], 1
+  0x1801189cc: mov      byte ptr [rbp - 8], 2
+  0x1801189d0: je       0x1801189f5
+  0x1801189d2: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x1801189d6: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x1801189da: movups   xmmword ptr [rdx], xmm0
+  0x1801189dd: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x1801189e1: mov      rdx, qword ptr [rip + 0x395a50]
+  0x1801189e8: add      rdx, 0x20
+  0x1801189ec: mov      qword ptr [rip + 0x395a45], rdx
+  0x1801189f3: jmp      0x180118a0c
+  0x1801189f5: lea      r8, [rbp - 0x20]
+  0x1801189f9: lea      rcx, [rip + 0x395a30]
+  0x180118a00: call     0x180109d40
+  0x180118a05: mov      rdx, qword ptr [rip + 0x395a2c]
+  0x180118a0c: cmp      rdx, qword ptr [rip + 0x395a2d]
+  0x180118a13: lea      rax, [rip + 0x282616]  ; 'bCpuSkin'
+  0x180118a1a: mov      qword ptr [rbp - 0x20], rax
+  0x180118a1e: mov      byte ptr [rbp - 0x14], 1
+  0x180118a22: mov      dword ptr [rbp - 0x18], 0x190
+  0x180118a29: mov      byte ptr [rbp - 8], 1
+  0x180118a2d: je       0x180118a52
+  0x180118a2f: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180118a33: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180118a37: movups   xmmword ptr [rdx], xmm0
+  0x180118a3a: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180118a3e: mov      rdx, qword ptr [rip + 0x3959f3]
+  0x180118a45: add      rdx, 0x20
+  0x180118a49: mov      qword ptr [rip + 0x3959e8], rdx
+  0x180118a50: jmp      0x180118a6d
+  0x180118a52: lea      r8, [rbp - 0x20]
+  0x180118a56: lea      rcx, [rip + 0x3959d3]
+  0x180118a5d: call     0x180109d40
+  0x180118a62: mov      rdx, qword ptr [rip + 0x3959cf]
+  0x180118a69: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180118a6d: cmp      rdx, qword ptr [rip + 0x3959cc]
+  0x180118a74: lea      rax, [rip + 0x2825c5]  ; 'bFlexBodySmooth'
+  0x180118a7b: mov      qword ptr [rbp - 0x20], rax
+  0x180118a7f: mov      dword ptr [rbp - 0x18], 0x198
+  0x180118a86: je       0x180118aa7
+  0x180118a88: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180118a8c: movups   xmmword ptr [rdx], xmm0
+  0x180118a8f: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180118a93: mov      rdx, qword ptr [rip + 0x39599e]
+  0x180118a9a: add      rdx, 0x20
+  0x180118a9e: mov      qword ptr [rip + 0x395993], rdx
+  0x180118aa5: jmp      0x180118ac2
+  0x180118aa7: lea      r8, [rbp - 0x20]
+  0x180118aab: lea      rcx, [rip + 0x39597e]
+  0x180118ab2: call     0x180109d40
+  0x180118ab7: mov      rdx, qword ptr [rip + 0x39597a]
+  0x180118abe: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180118ac2: cmp      rdx, qword ptr [rip + 0x395977]
+  0x180118ac9: lea      rax, [rip + 0x282580]  ; 'bRenderGrass'
+  0x180118ad0: mov      qword ptr [rbp - 0x20], rax
+  0x180118ad4: mov      dword ptr [rbp - 0x18], 0x34
+  0x180118adb: je       0x180118afc
+  0x180118add: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180118ae1: movups   xmmword ptr [rdx], xmm0
+  0x180118ae4: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180118ae8: mov      rdx, qword ptr [rip + 0x395949]
+  0x180118aef: add      rdx, 0x20
+  0x180118af3: mov      qword ptr [rip + 0x39593e], rdx
+  0x180118afa: jmp      0x180118b17
+  0x180118afc: lea      r8, [rbp - 0x20]
+  0x180118b00: lea      rcx, [rip + 0x395929]
+  0x180118b07: call     0x180109d40
+  0x180118b0c: mov      rdx, qword ptr [rip + 0x395925]
+  0x180118b13: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180118b17: cmp      rdx, qword ptr [rip + 0x395922]
+  0x180118b1e: lea      rax, [rip + 0x28253b]  ; 'bGrassAnimation'
+  0x180118b25: mov      qword ptr [rbp - 0x20], rax
+  0x180118b29: mov      dword ptr [rbp - 0x18], 0x38
+  0x180118b30: je       0x180118b51
+  0x180118b32: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180118b36: movups   xmmword ptr [rdx], xmm0
+  0x180118b39: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180118b3d: mov      rdx, qword ptr [rip + 0x3958f4]
+  0x180118b44: add      rdx, 0x20
+  0x180118b48: mov      qword ptr [rip + 0x3958e9], rdx
+  0x180118b4f: jmp      0x180118b68
+  0x180118b51: lea      r8, [rbp - 0x20]
+  0x180118b55: lea      rcx, [rip + 0x3958d4]
+  0x180118b5c: call     0x180109d40
+  0x180118b61: mov      rdx, qword ptr [rip + 0x3958d0]
+  0x180118b68: cmp      rdx, qword ptr [rip + 0x3958d1]
+  0x180118b6f: lea      rax, [rip + 0x2824fa]  ; 'nTextureScale'
+  0x180118b76: mov      qword ptr [rbp - 0x20], rax
+  0x180118b7a: mov      byte ptr [rbp - 0x14], 2
+  0x180118b7e: mov      dword ptr [rbp - 0x18], 0x44
+  0x180118b85: mov      byte ptr [rbp - 8], 2
+  0x180118b89: je       0x180118bae
+  0x180118b8b: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180118b8f: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180118b93: movups   xmmword ptr [rdx], xmm0
+  0x180118b96: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180118b9a: mov      rdx, qword ptr [rip + 0x395897]
+  0x180118ba1: add      rdx, 0x20
+  0x180118ba5: mov      qword ptr [rip + 0x39588c], rdx
+  0x180118bac: jmp      0x180118bc5
+  0x180118bae: lea      r8, [rbp - 0x20]
+  0x180118bb2: lea      rcx, [rip + 0x395877]
+  0x180118bb9: call     0x180109d40
+  0x180118bbe: mov      rdx, qword ptr [rip + 0x395873]
+  0x180118bc5: cmp      rdx, qword ptr [rip + 0x395874]
+  0x180118bcc: lea      rax, [rip + 0x2824ad]  ; 'bAmbientShaderOnly'
+  0x180118bd3: mov      qword ptr [rbp - 0x20], rax
+  0x180118bd7: mov      byte ptr [rbp - 0x14], 1
+  0x180118bdb: mov      dword ptr [rbp - 0x18], 0x5c
+  0x180118be2: mov      byte ptr [rbp - 8], 1
+  0x180118be6: je       0x180118c0b
+  0x180118be8: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180118bec: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180118bf0: movups   xmmword ptr [rdx], xmm0
+  0x180118bf3: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180118bf7: mov      rdx, qword ptr [rip + 0x39583a]
+  0x180118bfe: add      rdx, 0x20
+  0x180118c02: mov      qword ptr [rip + 0x39582f], rdx
+  0x180118c09: jmp      0x180118c26
+  0x180118c0b: lea      r8, [rbp - 0x20]
+  0x180118c0f: lea      rcx, [rip + 0x39581a]
+  0x180118c16: call     0x180109d40
+  0x180118c1b: mov      rdx, qword ptr [rip + 0x395816]
+  0x180118c22: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180118c26: cmp      rdx, qword ptr [rip + 0x395813]
+  0x180118c2d: lea      rax, [rip + 0x26afac]  ; 'bPostEffectEnable'
+  0x180118c34: mov      qword ptr [rbp - 0x20], rax
+  0x180118c38: mov      dword ptr [rbp - 0x18], 0x60
+  0x180118c3f: je       0x180118c60
+  0x180118c41: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180118c45: movups   xmmword ptr [rdx], xmm0
+  0x180118c48: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180118c4c: mov      rdx, qword ptr [rip + 0x3957e5]
+  0x180118c53: add      rdx, 0x20
+  0x180118c57: mov      qword ptr [rip + 0x3957da], rdx
+  0x180118c5e: jmp      0x180118c7b
+  0x180118c60: lea      r8, [rbp - 0x20]
+  0x180118c64: lea      rcx, [rip + 0x3957c5]
+  0x180118c6b: call     0x180109d40
+  0x180118c70: mov      rdx, qword ptr [rip + 0x3957c1]
+  0x180118c77: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180118c7b: cmp      rdx, qword ptr [rip + 0x3957be]
+  0x180118c82: lea      rax, [rip + 0x26af6f]  ; 'bBloomEnable'
+  0x180118c89: mov      qword ptr [rbp - 0x20], rax
+  0x180118c8d: mov      dword ptr [rbp - 0x18], 0x64
+  0x180118c94: je       0x180118cb5
+  0x180118c96: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180118c9a: movups   xmmword ptr [rdx], xmm0
+  0x180118c9d: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180118ca1: mov      rdx, qword ptr [rip + 0x395790]
+  0x180118ca8: add      rdx, 0x20
+  0x180118cac: mov      qword ptr [rip + 0x395785], rdx
+  0x180118cb3: jmp      0x180118cd0
+  0x180118cb5: lea      r8, [rbp - 0x20]
+  0x180118cb9: lea      rcx, [rip + 0x395770]
+  0x180118cc0: call     0x180109d40
+  0x180118cc5: mov      rdx, qword ptr [rip + 0x39576c]
+  0x180118ccc: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180118cd0: cmp      rdx, qword ptr [rip + 0x395769]
+  0x180118cd7: lea      rax, [rip + 0x26af4a]  ; 'bShockWaveEnable'
+  0x180118cde: mov      qword ptr [rbp - 0x20], rax
+  0x180118ce2: mov      dword ptr [rbp - 0x18], 0x68
+  0x180118ce9: je       0x180118d0a
+  0x180118ceb: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180118cef: movups   xmmword ptr [rdx], xmm0
+  0x180118cf2: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180118cf6: mov      rdx, qword ptr [rip + 0x39573b]
+  0x180118cfd: add      rdx, 0x20
+  0x180118d01: mov      qword ptr [rip + 0x395730], rdx
+  0x180118d08: jmp      0x180118d25
+  0x180118d0a: lea      r8, [rbp - 0x20]
+  0x180118d0e: lea      rcx, [rip + 0x39571b]
+  0x180118d15: call     0x180109d40
+  0x180118d1a: mov      rdx, qword ptr [rip + 0x395717]
+  0x180118d21: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180118d25: cmp      rdx, qword ptr [rip + 0x395714]
+  0x180118d2c: lea      rax, [rip + 0x282365]  ; 'bHSIEnable'
+  0x180118d33: mov      qword ptr [rbp - 0x20], rax
+  0x180118d37: mov      dword ptr [rbp - 0x18], 0x6c
+  0x180118d3e: je       0x180118d5f
+  0x180118d40: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180118d44: movups   xmmword ptr [rdx], xmm0
+  0x180118d47: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180118d4b: mov      rdx, qword ptr [rip + 0x3956e6]
+  0x180118d52: add      rdx, 0x20
+  0x180118d56: mov      qword ptr [rip + 0x3956db], rdx
+  0x180118d5d: jmp      0x180118d7a
+  0x180118d5f: lea      r8, [rbp - 0x20]
+  0x180118d63: lea      rcx, [rip + 0x3956c6]
+  0x180118d6a: call     0x180109d40
+  0x180118d6f: mov      rdx, qword ptr [rip + 0x3956c2]
+  0x180118d76: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180118d7a: cmp      rdx, qword ptr [rip + 0x3956bf]
+  0x180118d81: lea      rax, [rip + 0x282320]  ; 'bMotionBlur'
+  0x180118d88: mov      qword ptr [rbp - 0x20], rax
+  0x180118d8c: mov      dword ptr [rbp - 0x18], 0x70
+  0x180118d93: je       0x180118db4
+  0x180118d95: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180118d99: movups   xmmword ptr [rdx], xmm0
+  0x180118d9c: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180118da0: mov      rdx, qword ptr [rip + 0x395691]
+  0x180118da7: add      rdx, 0x20
+  0x180118dab: mov      qword ptr [rip + 0x395686], rdx
+  0x180118db2: jmp      0x180118dcb
+  0x180118db4: lea      r8, [rbp - 0x20]
+  0x180118db8: lea      rcx, [rip + 0x395671]
+  0x180118dbf: call     0x180109d40
+  0x180118dc4: mov      rdx, qword ptr [rip + 0x39566d]
+  0x180118dcb: cmp      rdx, qword ptr [rip + 0x39566e]
+  0x180118dd2: lea      rax, [rip + 0x2822df]  ; 'fCameraDistance'
+  0x180118dd9: mov      qword ptr [rbp - 0x20], rax
+  0x180118ddd: mov      byte ptr [rbp - 0x14], 8
+  0x180118de1: mov      dword ptr [rbp - 0x18], 0x50
+  0x180118de8: mov      byte ptr [rbp - 8], 8
+  0x180118dec: je       0x180118e11
+  0x180118dee: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180118df2: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180118df6: movups   xmmword ptr [rdx], xmm0
+  0x180118df9: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180118dfd: mov      rdx, qword ptr [rip + 0x395634]
+  0x180118e04: add      rdx, 0x20
+  0x180118e08: mov      qword ptr [rip + 0x395629], rdx
+  0x180118e0f: jmp      0x180118e28
+  0x180118e11: lea      r8, [rbp - 0x20]
+  0x180118e15: lea      rcx, [rip + 0x395614]
+  0x180118e1c: call     0x180109d40
+  0x180118e21: mov      rdx, qword ptr [rip + 0x395610]
+  0x180118e28: cmp      rdx, qword ptr [rip + 0x395611]
+  0x180118e2f: lea      rax, [rip + 0x282292]  ; 'nSampMipFilter'
+  0x180118e36: mov      qword ptr [rbp - 0x20], rax
+  0x180118e3a: mov      byte ptr [rbp - 0x14], 2
+  0x180118e3e: mov      dword ptr [rbp - 0x18], ebx
+  0x180118e41: mov      byte ptr [rbp - 8], 2
+  0x180118e45: je       0x180118e6a
+  0x180118e47: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180118e4b: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180118e4f: movups   xmmword ptr [rdx], xmm0
+  0x180118e52: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180118e56: mov      rdx, qword ptr [rip + 0x3955db]
+  0x180118e5d: add      rdx, 0x20
+  0x180118e61: mov      qword ptr [rip + 0x3955d0], rdx
+  0x180118e68: jmp      0x180118e85
+  0x180118e6a: lea      r8, [rbp - 0x20]
+  0x180118e6e: lea      rcx, [rip + 0x3955bb]
+  0x180118e75: call     0x180109d40
+  0x180118e7a: mov      rdx, qword ptr [rip + 0x3955b7]
+  0x180118e81: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180118e85: cmp      rdx, qword ptr [rip + 0x3955b4]
+  0x180118e8c: lea      rax, [rip + 0x282245]  ; 'nSampMinFilter'
+  0x180118e93: mov      qword ptr [rbp - 0x20], rax
+  0x180118e97: mov      dword ptr [rbp - 0x18], 4
+  0x180118e9e: je       0x180118ebf
+  0x180118ea0: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180118ea4: movups   xmmword ptr [rdx], xmm0
+  0x180118ea7: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180118eab: mov      rdx, qword ptr [rip + 0x395586]
+  0x180118eb2: add      rdx, 0x20
+  0x180118eb6: mov      qword ptr [rip + 0x39557b], rdx
+  0x180118ebd: jmp      0x180118eda
+  0x180118ebf: lea      r8, [rbp - 0x20]
+  0x180118ec3: lea      rcx, [rip + 0x395566]
+  0x180118eca: call     0x180109d40
+  0x180118ecf: mov      rdx, qword ptr [rip + 0x395562]
+  0x180118ed6: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180118eda: cmp      rdx, qword ptr [rip + 0x39555f]
+  0x180118ee1: lea      rax, [rip + 0x282200]  ; 'nSampMagFilter'
+  0x180118ee8: mov      qword ptr [rbp - 0x20], rax
+  0x180118eec: mov      dword ptr [rbp - 0x18], 8
+  0x180118ef3: je       0x180118f14
+  0x180118ef5: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180118ef9: movups   xmmword ptr [rdx], xmm0
+  0x180118efc: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180118f00: mov      rdx, qword ptr [rip + 0x395531]
+  0x180118f07: add      rdx, 0x20
+  0x180118f0b: mov      qword ptr [rip + 0x395526], rdx
+  0x180118f12: jmp      0x180118f2b
+  0x180118f14: lea      r8, [rbp - 0x20]
+  0x180118f18: lea      rcx, [rip + 0x395511]
+  0x180118f1f: call     0x180109d40
+  0x180118f24: mov      rdx, qword ptr [rip + 0x39550d]
+  0x180118f2b: cmp      rdx, qword ptr [rip + 0x39550e]
+  0x180118f32: lea      rax, [rip + 0x26ae0f]  ; 'dwMaxAnisotropy'
+  0x180118f39: mov      qword ptr [rbp - 0x20], rax
+  0x180118f3d: mov      byte ptr [rbp - 0x14], 5
+  0x180118f41: mov      dword ptr [rbp - 0x18], 0xc
+  0x180118f48: mov      byte ptr [rbp - 8], 5
+  0x180118f4c: je       0x180118f71
+  0x180118f4e: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180118f52: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180118f56: movups   xmmword ptr [rdx], xmm0
+  0x180118f59: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180118f5d: mov      rdx, qword ptr [rip + 0x3954d4]
+  0x180118f64: add      rdx, 0x20
+  0x180118f68: mov      qword ptr [rip + 0x3954c9], rdx
+  0x180118f6f: jmp      0x180118f88
+  0x180118f71: lea      r8, [rbp - 0x20]
+  0x180118f75: lea      rcx, [rip + 0x3954b4]
+  0x180118f7c: call     0x180109d40
+  0x180118f81: mov      rdx, qword ptr [rip + 0x3954b0]
+  0x180118f88: cmp      rdx, qword ptr [rip + 0x3954b1]
+  0x180118f8f: lea      rax, [rip + 0x282162]  ; 'bGrassAlphaBlend'
+  0x180118f96: mov      qword ptr [rbp - 0x20], rax
+  0x180118f9a: mov      byte ptr [rbp - 0x14], 1
+  0x180118f9e: mov      dword ptr [rbp - 0x18], 0x3c
+  0x180118fa5: mov      byte ptr [rbp - 8], 1
+  0x180118fa9: je       0x180118fce
+  0x180118fab: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180118faf: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180118fb3: movups   xmmword ptr [rdx], xmm0
+  0x180118fb6: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180118fba: mov      rdx, qword ptr [rip + 0x395477]
+  0x180118fc1: add      rdx, 0x20
+  0x180118fc5: mov      qword ptr [rip + 0x39546c], rdx
+  0x180118fcc: jmp      0x180118fe9
+  0x180118fce: lea      r8, [rbp - 0x20]
+  0x180118fd2: lea      rcx, [rip + 0x395457]
+  0x180118fd9: call     0x180109d40
+  0x180118fde: mov      rdx, qword ptr [rip + 0x395453]
+  0x180118fe5: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180118fe9: cmp      rdx, qword ptr [rip + 0x395450]
+  0x180118ff0: lea      rax, [rip + 0x282119]  ; 'bGrassActorAffect'
+  0x180118ff7: mov      qword ptr [rbp - 0x20], rax
+  0x180118ffb: mov      dword ptr [rbp - 0x18], 0x40
+  0x180119002: je       0x180119023
+  0x180119004: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119008: movups   xmmword ptr [rdx], xmm0
+  0x18011900b: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011900f: mov      rdx, qword ptr [rip + 0x395422]
+  0x180119016: add      rdx, 0x20
+  0x18011901a: mov      qword ptr [rip + 0x395417], rdx
+  0x180119021: jmp      0x18011903e
+  0x180119023: lea      r8, [rbp - 0x20]
+  0x180119027: lea      rcx, [rip + 0x395402]
+  0x18011902e: call     0x180109d40
+  0x180119033: mov      rdx, qword ptr [rip + 0x3953fe]
+  0x18011903a: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011903e: cmp      rdx, qword ptr [rip + 0x3953fb]
+  0x180119045: lea      rax, [rip + 0x2820dc]  ; 'bGodRay'
+  0x18011904c: mov      qword ptr [rbp - 0x20], rax
+  0x180119050: mov      dword ptr [rbp - 0x18], 0x78
+  0x180119057: je       0x180119078
+  0x180119059: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011905d: movups   xmmword ptr [rdx], xmm0
+  0x180119060: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119064: mov      rdx, qword ptr [rip + 0x3953cd]
+  0x18011906b: add      rdx, 0x20
+  0x18011906f: mov      qword ptr [rip + 0x3953c2], rdx
+  0x180119076: jmp      0x180119093
+  0x180119078: lea      r8, [rbp - 0x20]
+  0x18011907c: lea      rcx, [rip + 0x3953ad]
+  0x180119083: call     0x180109d40
+  0x180119088: mov      rdx, qword ptr [rip + 0x3953a9]
+  0x18011908f: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119093: cmp      rdx, qword ptr [rip + 0x3953a6]
+  0x18011909a: lea      rax, [rip + 0x28208f]  ; 'bSSAO'
+  0x1801190a1: mov      qword ptr [rbp - 0x20], rax
+  0x1801190a5: mov      dword ptr [rbp - 0x18], 0x7c
+  0x1801190ac: je       0x1801190cd
+  0x1801190ae: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x1801190b2: movups   xmmword ptr [rdx], xmm0
+  0x1801190b5: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x1801190b9: mov      rdx, qword ptr [rip + 0x395378]
+  0x1801190c0: add      rdx, 0x20
+  0x1801190c4: mov      qword ptr [rip + 0x39536d], rdx
+  0x1801190cb: jmp      0x1801190e8
+  0x1801190cd: lea      r8, [rbp - 0x20]
+  0x1801190d1: lea      rcx, [rip + 0x395358]
+  0x1801190d8: call     0x180109d40
+  0x1801190dd: mov      rdx, qword ptr [rip + 0x395354]
+  0x1801190e4: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x1801190e8: cmp      rdx, qword ptr [rip + 0x395351]
+  0x1801190ef: lea      rax, [rip + 0x282042]  ; 'bCurveCMYK'
+  0x1801190f6: mov      qword ptr [rbp - 0x20], rax
+  0x1801190fa: mov      dword ptr [rbp - 0x18], 0x84
+  0x180119101: je       0x180119122
+  0x180119103: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119107: movups   xmmword ptr [rdx], xmm0
+  0x18011910a: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011910e: mov      rdx, qword ptr [rip + 0x395323]
+  0x180119115: add      rdx, 0x20
+  0x180119119: mov      qword ptr [rip + 0x395318], rdx
+  0x180119120: jmp      0x180119139
+  0x180119122: lea      r8, [rbp - 0x20]
+  0x180119126: lea      rcx, [rip + 0x395303]
+  0x18011912d: call     0x180109d40
+  0x180119132: mov      rdx, qword ptr [rip + 0x3952ff]
+  0x180119139: cmp      rdx, qword ptr [rip + 0x395300]
+  0x180119140: lea      rax, [rip + 0x282001]  ; 'nActiveCurveStype'
+  0x180119147: mov      qword ptr [rbp - 0x20], rax
+  0x18011914b: mov      byte ptr [rbp - 0x14], 2
+  0x18011914f: mov      dword ptr [rbp - 0x18], 0x90
+  0x180119156: mov      byte ptr [rbp - 8], 2
+  0x18011915a: je       0x18011917f
+  0x18011915c: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119160: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119164: movups   xmmword ptr [rdx], xmm0
+  0x180119167: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011916b: mov      rdx, qword ptr [rip + 0x3952c6]
+  0x180119172: add      rdx, 0x20
+  0x180119176: mov      qword ptr [rip + 0x3952bb], rdx
+  0x18011917d: jmp      0x18011919a
+  0x18011917f: lea      r8, [rbp - 0x20]
+  0x180119183: lea      rcx, [rip + 0x3952a6]
+  0x18011918a: call     0x180109d40
+  0x18011918f: mov      rdx, qword ptr [rip + 0x3952a2]
+  0x180119196: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011919a: cmp      rdx, qword ptr [rip + 0x39529f]
+  0x1801191a1: lea      rax, [rip + 0x281fb8]  ; 'ModelShadowType'
+  0x1801191a8: mov      qword ptr [rbp - 0x20], rax
+  0x1801191ac: mov      dword ptr [rbp - 0x18], 0xac
+  0x1801191b3: je       0x1801191d4
+  0x1801191b5: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x1801191b9: movups   xmmword ptr [rdx], xmm0
+  0x1801191bc: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x1801191c0: mov      rdx, qword ptr [rip + 0x395271]
+  0x1801191c7: add      rdx, 0x20
+  0x1801191cb: mov      qword ptr [rip + 0x395266], rdx
+  0x1801191d2: jmp      0x1801191ef
+  0x1801191d4: lea      r8, [rbp - 0x20]
+  0x1801191d8: lea      rcx, [rip + 0x395251]
+  0x1801191df: call     0x180109d40
+  0x1801191e4: mov      rdx, qword ptr [rip + 0x39524d]
+  0x1801191eb: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x1801191ef: cmp      rdx, qword ptr [rip + 0x39524a]
+  0x1801191f6: lea      rax, [rip + 0x281f73]  ; 'nVegetationDensity'
+  0x1801191fd: mov      qword ptr [rbp - 0x20], rax
+  0x180119201: mov      dword ptr [rbp - 0x18], 0x1ac
+  0x180119208: je       0x180119229
+  0x18011920a: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011920e: movups   xmmword ptr [rdx], xmm0
+  0x180119211: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119215: mov      rdx, qword ptr [rip + 0x39521c]
+  0x18011921c: add      rdx, 0x20
+  0x180119220: mov      qword ptr [rip + 0x395211], rdx
+  0x180119227: jmp      0x180119244
+  0x180119229: lea      r8, [rbp - 0x20]
+  0x18011922d: lea      rcx, [rip + 0x3951fc]
+  0x180119234: call     0x180109d40
+  0x180119239: mov      rdx, qword ptr [rip + 0x3951f8]
+  0x180119240: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119244: cmp      rdx, qword ptr [rip + 0x3951f5]
+  0x18011924b: lea      rax, [rip + 0x281f36]  ; 'nTerrainDetail'
+  0x180119252: mov      qword ptr [rbp - 0x20], rax
+  0x180119256: mov      dword ptr [rbp - 0x18], 0x1a8
+  0x18011925d: je       0x18011927e
+  0x18011925f: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119263: movups   xmmword ptr [rdx], xmm0
+  0x180119266: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011926a: mov      rdx, qword ptr [rip + 0x3951c7]
+  0x180119271: add      rdx, 0x20
+  0x180119275: mov      qword ptr [rip + 0x3951bc], rdx
+  0x18011927c: jmp      0x180119295
+  0x18011927e: lea      r8, [rbp - 0x20]
+  0x180119282: lea      rcx, [rip + 0x3951a7]
+  0x180119289: call     0x180109d40
+  0x18011928e: mov      rdx, qword ptr [rip + 0x3951a3]
+  0x180119295: cmp      rdx, qword ptr [rip + 0x3951a4]
+  0x18011929c: lea      rax, [rip + 0x281ef5]  ; 'fCameraAngle'
+  0x1801192a3: mov      qword ptr [rbp - 0x20], rax
+  0x1801192a7: mov      byte ptr [rbp - 0x14], 8
+  0x1801192ab: mov      dword ptr [rbp - 0x18], 0x54
+  0x1801192b2: mov      byte ptr [rbp - 8], 8
+  0x1801192b6: je       0x1801192db
+  0x1801192b8: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x1801192bc: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x1801192c0: movups   xmmword ptr [rdx], xmm0
+  0x1801192c3: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x1801192c7: mov      rdx, qword ptr [rip + 0x39516a]
+  0x1801192ce: add      rdx, 0x20
+  0x1801192d2: mov      qword ptr [rip + 0x39515f], rdx
+  0x1801192d9: jmp      0x1801192f2
+  0x1801192db: lea      r8, [rbp - 0x20]
+  0x1801192df: lea      rcx, [rip + 0x39514a]
+  0x1801192e6: call     0x180109d40
+  0x1801192eb: mov      rdx, qword ptr [rip + 0x395146]
+  0x1801192f2: cmp      rdx, qword ptr [rip + 0x395147]
+  0x1801192f9: lea      rax, [rip + 0x281ea8]  ; 'bEnableDynamicConverMap'
+  0x180119300: mov      qword ptr [rbp - 0x20], rax
+  0x180119304: mov      byte ptr [rbp - 0x14], 1
+  0x180119308: mov      dword ptr [rbp - 0x18], 0x18c
+  0x18011930f: mov      byte ptr [rbp - 8], 1
+  0x180119313: je       0x180119338
+  0x180119315: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119319: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011931d: movups   xmmword ptr [rdx], xmm0
+  0x180119320: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119324: mov      rdx, qword ptr [rip + 0x39510d]
+  0x18011932b: add      rdx, 0x20
+  0x18011932f: mov      qword ptr [rip + 0x395102], rdx
+  0x180119336: jmp      0x18011934f
+  0x180119338: lea      r8, [rbp - 0x20]
+  0x18011933c: lea      rcx, [rip + 0x3950ed]
+  0x180119343: call     0x180109d40
+  0x180119348: mov      rdx, qword ptr [rip + 0x3950e9]
+  0x18011934f: cmp      rdx, qword ptr [rip + 0x3950ea]
+  0x180119356: lea      rax, [rip + 0x281e63]  ; 'nForceShaderModel'
+  0x18011935d: mov      qword ptr [rbp - 0x20], rax
+  0x180119361: mov      byte ptr [rbp - 0x14], 2
+  0x180119365: mov      dword ptr [rbp - 0x18], 0xa8
+  0x18011936c: mov      byte ptr [rbp - 8], 2
+  0x180119370: je       0x180119395
+  0x180119372: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119376: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011937a: movups   xmmword ptr [rdx], xmm0
+  0x18011937d: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119381: mov      rdx, qword ptr [rip + 0x3950b0]
+  0x180119388: add      rdx, 0x20
+  0x18011938c: mov      qword ptr [rip + 0x3950a5], rdx
+  0x180119393: jmp      0x1801193ac
+  0x180119395: lea      r8, [rbp - 0x20]
+  0x180119399: lea      rcx, [rip + 0x395090]
+  0x1801193a0: call     0x180109d40
+  0x1801193a5: mov      rdx, qword ptr [rip + 0x39508c]
+  0x1801193ac: cmp      rdx, qword ptr [rip + 0x39508d]
+  0x1801193b3: lea      rax, [rip + 0x281e1a]  ; 'bHDR'
+  0x1801193ba: mov      qword ptr [rbp - 0x20], rax
+  0x1801193be: mov      byte ptr [rbp - 0x14], 1
+  0x1801193c2: mov      dword ptr [rbp - 0x18], 0x94
+  0x1801193c9: mov      byte ptr [rbp - 8], 1
+  0x1801193cd: je       0x1801193f2
+  0x1801193cf: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x1801193d3: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x1801193d7: movups   xmmword ptr [rdx], xmm0
+  0x1801193da: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x1801193de: mov      rdx, qword ptr [rip + 0x395053]
+  0x1801193e5: add      rdx, 0x20
+  0x1801193e9: mov      qword ptr [rip + 0x395048], rdx
+  0x1801193f0: jmp      0x18011940d
+  0x1801193f2: lea      r8, [rbp - 0x20]
+  0x1801193f6: lea      rcx, [rip + 0x395033]
+  0x1801193fd: call     0x180109d40
+  0x180119402: mov      rdx, qword ptr [rip + 0x39502f]
+  0x180119409: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011940d: cmp      rdx, qword ptr [rip + 0x39502c]
+  0x180119414: lea      rax, [rip + 0x281dc1]  ; 'bDOF'
+  0x18011941b: mov      qword ptr [rbp - 0x20], rax
+  0x18011941f: mov      dword ptr [rbp - 0x18], 0x88
+  0x180119426: je       0x180119447
+  0x180119428: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011942c: movups   xmmword ptr [rdx], xmm0
+  0x18011942f: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119433: mov      rdx, qword ptr [rip + 0x394ffe]
+  0x18011943a: add      rdx, 0x20
+  0x18011943e: mov      qword ptr [rip + 0x394ff3], rdx
+  0x180119445: jmp      0x180119462
+  0x180119447: lea      r8, [rbp - 0x20]
+  0x18011944b: lea      rcx, [rip + 0x394fde]
+  0x180119452: call     0x180109d40
+  0x180119457: mov      rdx, qword ptr [rip + 0x394fda]
+  0x18011945e: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119462: cmp      rdx, qword ptr [rip + 0x394fd7]
+  0x180119469: lea      rax, [rip + 0x281d78]  ; 'bEnableScaleOutput'
+  0x180119470: mov      qword ptr [rbp - 0x20], rax
+  0x180119474: mov      dword ptr [rbp - 0x18], 0x20c
+  0x18011947b: je       0x18011949c
+  0x18011947d: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119481: movups   xmmword ptr [rdx], xmm0
+  0x180119484: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119488: mov      rdx, qword ptr [rip + 0x394fa9]
+  0x18011948f: add      rdx, 0x20
+  0x180119493: mov      qword ptr [rip + 0x394f9e], rdx
+  0x18011949a: jmp      0x1801194b3
+  0x18011949c: lea      r8, [rbp - 0x20]
+  0x1801194a0: lea      rcx, [rip + 0x394f89]
+  0x1801194a7: call     0x180109d40
+  0x1801194ac: mov      rdx, qword ptr [rip + 0x394f85]
+  0x1801194b3: cmp      rdx, qword ptr [rip + 0x394f86]
+  0x1801194ba: lea      rax, [rip + 0x281d3f]  ; 'nScaleOutputSize'
+  0x1801194c1: mov      qword ptr [rbp - 0x20], rax
+  0x1801194c5: mov      byte ptr [rbp - 0x14], 2
+  0x1801194c9: mov      dword ptr [rbp - 0x18], 0x210
+  0x1801194d0: mov      byte ptr [rbp - 8], 2
+  0x1801194d4: je       0x1801194f9
+  0x1801194d6: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x1801194da: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x1801194de: movups   xmmword ptr [rdx], xmm0
+  0x1801194e1: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x1801194e5: mov      rdx, qword ptr [rip + 0x394f4c]
+  0x1801194ec: add      rdx, 0x20
+  0x1801194f0: mov      qword ptr [rip + 0x394f41], rdx
+  0x1801194f7: jmp      0x180119510
+  0x1801194f9: lea      r8, [rbp - 0x20]
+  0x1801194fd: lea      rcx, [rip + 0x394f2c]
+  0x180119504: call     0x180109d40
+  0x180119509: mov      rdx, qword ptr [rip + 0x394f28]
+  0x180119510: cmp      rdx, qword ptr [rip + 0x394f29]
+  0x180119517: lea      rax, [rip + 0x281cfa]  ; 'bScaleOutputSmooth'
+  0x18011951e: mov      qword ptr [rbp - 0x20], rax
+  0x180119522: mov      byte ptr [rbp - 0x14], 1
+  0x180119526: mov      dword ptr [rbp - 0x18], 0x214
+  0x18011952d: mov      byte ptr [rbp - 8], 1
+  0x180119531: je       0x180119556
+  0x180119533: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119537: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011953b: movups   xmmword ptr [rdx], xmm0
+  0x18011953e: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119542: mov      rdx, qword ptr [rip + 0x394eef]
+  0x180119549: add      rdx, 0x20
+  0x18011954d: mov      qword ptr [rip + 0x394ee4], rdx
+  0x180119554: jmp      0x18011956d
+  0x180119556: lea      r8, [rbp - 0x20]
+  0x18011955a: lea      rcx, [rip + 0x394ecf]
+  0x180119561: call     0x180109d40
+  0x180119566: mov      rdx, qword ptr [rip + 0x394ecb]
+  0x18011956d: cmp      rdx, qword ptr [rip + 0x394ecc]
+  0x180119574: lea      rax, [rip + 0x281cb5]  ; 'nMDLRenderLimit'
+  0x18011957b: mov      qword ptr [rbp - 0x20], rax
+  0x18011957f: mov      byte ptr [rbp - 0x14], 2
+  0x180119583: mov      dword ptr [rbp - 0x18], 0x218
+  0x18011958a: mov      byte ptr [rbp - 8], 2
+  0x18011958e: je       0x1801195b3
+  0x180119590: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119594: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119598: movups   xmmword ptr [rdx], xmm0
+  0x18011959b: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011959f: mov      rdx, qword ptr [rip + 0x394e92]
+  0x1801195a6: add      rdx, 0x20
+  0x1801195aa: mov      qword ptr [rip + 0x394e87], rdx
+  0x1801195b1: jmp      0x1801195ce
+  0x1801195b3: lea      r8, [rbp - 0x20]
+  0x1801195b7: lea      rcx, [rip + 0x394e72]
+  0x1801195be: call     0x180109d40
+  0x1801195c3: mov      rdx, qword ptr [rip + 0x394e6e]
+  0x1801195ca: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x1801195ce: cmp      rdx, qword ptr [rip + 0x394e6b]
+  0x1801195d5: lea      rax, [rip + 0x281c64]  ; 'nClientSFXLimit'
+  0x1801195dc: mov      qword ptr [rbp - 0x20], rax
+  0x1801195e0: mov      dword ptr [rbp - 0x18], 0x21c
+  0x1801195e7: je       0x180119608
+  0x1801195e9: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x1801195ed: movups   xmmword ptr [rdx], xmm0
+  0x1801195f0: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x1801195f4: mov      rdx, qword ptr [rip + 0x394e3d]
+  0x1801195fb: add      rdx, 0x20
+  0x1801195ff: mov      qword ptr [rip + 0x394e32], rdx
+  0x180119606: jmp      0x18011961f
+  0x180119608: lea      r8, [rbp - 0x20]
+  0x18011960c: lea      rcx, [rip + 0x394e1d]
+  0x180119613: call     0x180109d40
+  0x180119618: mov      rdx, qword ptr [rip + 0x394e19]
+  0x18011961f: cmp      rdx, qword ptr [rip + 0x394e1a]
+  0x180119626: lea      rax, [rip + 0x281c23]  ; 'bFXAA'
+  0x18011962d: mov      qword ptr [rbp - 0x20], rax
+  0x180119631: mov      byte ptr [rbp - 0x14], 1
+  0x180119635: mov      dword ptr [rbp - 0x18], 0x9c
+  0x18011963c: mov      byte ptr [rbp - 8], 1
+  0x180119640: je       0x180119665
+  0x180119642: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119646: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011964a: movups   xmmword ptr [rdx], xmm0
+  0x18011964d: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119651: mov      rdx, qword ptr [rip + 0x394de0]
+  0x180119658: add      rdx, 0x20
+  0x18011965c: mov      qword ptr [rip + 0x394dd5], rdx
+  0x180119663: jmp      0x18011967c
+  0x180119665: lea      r8, [rbp - 0x20]
+  0x180119669: lea      rcx, [rip + 0x394dc0]
+  0x180119670: call     0x180109d40
+  0x180119675: mov      rdx, qword ptr [rip + 0x394dbc]
+  0x18011967c: cmp      rdx, qword ptr [rip + 0x394dbd]
+  0x180119683: lea      rax, [rip + 0x281bce]  ; 'nFXAALevel'
+  0x18011968a: mov      qword ptr [rbp - 0x20], rax
+  0x18011968e: mov      byte ptr [rbp - 0x14], 2
+  0x180119692: mov      dword ptr [rbp - 0x18], 0xa0
+  0x180119699: mov      byte ptr [rbp - 8], 2
+  0x18011969d: je       0x1801196c2
+  0x18011969f: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x1801196a3: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x1801196a7: movups   xmmword ptr [rdx], xmm0
+  0x1801196aa: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x1801196ae: mov      rdx, qword ptr [rip + 0x394d83]
+  0x1801196b5: add      rdx, 0x20
+  0x1801196b9: mov      qword ptr [rip + 0x394d78], rdx
+  0x1801196c0: jmp      0x1801196d9
+  0x1801196c2: lea      r8, [rbp - 0x20]
+  0x1801196c6: lea      rcx, [rip + 0x394d63]
+  0x1801196cd: call     0x180109d40
+  0x1801196d2: mov      rdx, qword ptr [rip + 0x394d5f]
+  0x1801196d9: cmp      rdx, qword ptr [rip + 0x394d60]
+  0x1801196e0: lea      rax, [rip + 0x281b81]  ; 'bEnablePrecomputeMeteor'
+  0x1801196e7: mov      qword ptr [rbp - 0x20], rax
+  0x1801196eb: mov      byte ptr [rbp - 0x14], 1
+  0x1801196ef: mov      dword ptr [rbp - 0x18], 0x228
+  0x1801196f6: mov      byte ptr [rbp - 8], 1
+  0x1801196fa: je       0x18011971f
+  0x1801196fc: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119700: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119704: movups   xmmword ptr [rdx], xmm0
+  0x180119707: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011970b: mov      rdx, qword ptr [rip + 0x394d26]
+  0x180119712: add      rdx, 0x20
+  0x180119716: mov      qword ptr [rip + 0x394d1b], rdx
+  0x18011971d: jmp      0x180119736
+  0x18011971f: lea      r8, [rbp - 0x20]
+  0x180119723: lea      rcx, [rip + 0x394d06]
+  0x18011972a: call     0x180109d40
+  0x18011972f: mov      rdx, qword ptr [rip + 0x394d02]
+  0x180119736: cmp      rdx, qword ptr [rip + 0x394d03]
+  0x18011973d: lea      rax, [rip + 0x281b3c]  ; 'dwEnvironmentSettingType'
+  0x180119744: mov      qword ptr [rbp - 0x20], rax
+  0x180119748: mov      byte ptr [rbp - 0x14], 5
+  0x18011974c: mov      dword ptr [rbp - 0x18], 0x244
+  0x180119753: mov      byte ptr [rbp - 8], 5
+  0x180119757: je       0x18011977c
+  0x180119759: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011975d: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119761: movups   xmmword ptr [rdx], xmm0
+  0x180119764: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119768: mov      rdx, qword ptr [rip + 0x394cc9]
+  0x18011976f: add      rdx, 0x20
+  0x180119773: mov      qword ptr [rip + 0x394cbe], rdx
+  0x18011977a: jmp      0x180119793
+  0x18011977c: lea      r8, [rbp - 0x20]
+  0x180119780: lea      rcx, [rip + 0x394ca9]
+  0x180119787: call     0x180109d40
+  0x18011978c: mov      rdx, qword ptr [rip + 0x394ca5]
+  0x180119793: cmp      rdx, qword ptr [rip + 0x394ca6]
+  0x18011979a: lea      rax, [rip + 0x281aff]  ; 'bEnablePointLight'
+  0x1801197a1: mov      qword ptr [rbp - 0x20], rax
+  0x1801197a5: mov      byte ptr [rbp - 0x14], 1
+  0x1801197a9: mov      dword ptr [rbp - 0x18], 0x1f8
+  0x1801197b0: mov      byte ptr [rbp - 8], 1
+  0x1801197b4: je       0x1801197d9
+  0x1801197b6: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x1801197ba: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x1801197be: movups   xmmword ptr [rdx], xmm0
+  0x1801197c1: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x1801197c5: mov      rdx, qword ptr [rip + 0x394c6c]
+  0x1801197cc: add      rdx, 0x20
+  0x1801197d0: mov      qword ptr [rip + 0x394c61], rdx
+  0x1801197d7: jmp      0x1801197f4
+  0x1801197d9: lea      r8, [rbp - 0x20]
+  0x1801197dd: lea      rcx, [rip + 0x394c4c]
+  0x1801197e4: call     0x180109d40
+  0x1801197e9: mov      rdx, qword ptr [rip + 0x394c48]
+  0x1801197f0: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x1801197f4: cmp      rdx, qword ptr [rip + 0x394c45]
+  0x1801197fb: lea      rax, [rip + 0x281ab6]  ; 'bEnableTextureLOD'
+  0x180119802: mov      qword ptr [rbp - 0x20], rax
+  0x180119806: mov      dword ptr [rbp - 0x18], 0x24c
+  0x18011980d: je       0x18011982e
+  0x18011980f: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119813: movups   xmmword ptr [rdx], xmm0
+  0x180119816: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011981a: mov      rdx, qword ptr [rip + 0x394c17]
+  0x180119821: add      rdx, 0x20
+  0x180119825: mov      qword ptr [rip + 0x394c0c], rdx
+  0x18011982c: jmp      0x180119849
+  0x18011982e: lea      r8, [rbp - 0x20]
+  0x180119832: lea      rcx, [rip + 0x394bf7]
+  0x180119839: call     0x180109d40
+  0x18011983e: mov      rdx, qword ptr [rip + 0x394bf3]
+  0x180119845: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119849: cmp      rdx, qword ptr [rip + 0x394bf0]
+  0x180119850: lea      rax, [rip + 0x281a79]  ; 'bEnableModelCullMax'
+  0x180119857: mov      qword ptr [rbp - 0x20], rax
+  0x18011985b: mov      dword ptr [rbp - 0x18], 0x250
+  0x180119862: je       0x180119883
+  0x180119864: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119868: movups   xmmword ptr [rdx], xmm0
+  0x18011986b: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011986f: mov      rdx, qword ptr [rip + 0x394bc2]
+  0x180119876: add      rdx, 0x20
+  0x18011987a: mov      qword ptr [rip + 0x394bb7], rdx
+  0x180119881: jmp      0x18011989e
+  0x180119883: lea      r8, [rbp - 0x20]
+  0x180119887: lea      rcx, [rip + 0x394ba2]
+  0x18011988e: call     0x180109d40
+  0x180119893: mov      rdx, qword ptr [rip + 0x394b9e]
+  0x18011989a: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011989e: cmp      rdx, qword ptr [rip + 0x394b9b]
+  0x1801198a5: lea      rax, [rip + 0x281a3c]  ; 'bForceReloadEnvironment'
+  0x1801198ac: mov      qword ptr [rbp - 0x20], rax
+  0x1801198b0: mov      dword ptr [rbp - 0x18], 0x248
+  0x1801198b7: je       0x1801198d8
+  0x1801198b9: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x1801198bd: movups   xmmword ptr [rdx], xmm0
+  0x1801198c0: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x1801198c4: mov      rdx, qword ptr [rip + 0x394b6d]
+  0x1801198cb: add      rdx, 0x20
+  0x1801198cf: mov      qword ptr [rip + 0x394b62], rdx
+  0x1801198d6: jmp      0x1801198f3
+  0x1801198d8: lea      r8, [rbp - 0x20]
+  0x1801198dc: lea      rcx, [rip + 0x394b4d]
+  0x1801198e3: call     0x180109d40
+  0x1801198e8: mov      rdx, qword ptr [rip + 0x394b49]
+  0x1801198ef: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x1801198f3: cmp      rdx, qword ptr [rip + 0x394b46]
+  0x1801198fa: lea      rax, [rip + 0x2819ff]  ; 'bEnableTerrainMedium'
+  0x180119901: mov      qword ptr [rbp - 0x20], rax
+  0x180119905: mov      dword ptr [rbp - 0x18], 0x254
+  0x18011990c: je       0x18011992d
+  0x18011990e: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119912: movups   xmmword ptr [rdx], xmm0
+  0x180119915: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119919: mov      rdx, qword ptr [rip + 0x394b18]
+  0x180119920: add      rdx, 0x20
+  0x180119924: mov      qword ptr [rip + 0x394b0d], rdx
+  0x18011992b: jmp      0x180119948
+  0x18011992d: lea      r8, [rbp - 0x20]
+  0x180119931: lea      rcx, [rip + 0x394af8]
+  0x180119938: call     0x180109d40
+  0x18011993d: mov      rdx, qword ptr [rip + 0x394af4]
+  0x180119944: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119948: cmp      rdx, qword ptr [rip + 0x394af1]
+  0x18011994f: lea      rax, [rip + 0x2819c2]  ; 'bCameraShake'
+  0x180119956: mov      qword ptr [rbp - 0x20], rax
+  0x18011995a: mov      dword ptr [rbp - 0x18], 0x10
+  0x180119961: je       0x180119982
+  0x180119963: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119967: movups   xmmword ptr [rdx], xmm0
+  0x18011996a: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011996e: mov      rdx, qword ptr [rip + 0x394ac3]
+  0x180119975: add      rdx, 0x20
+  0x180119979: mov      qword ptr [rip + 0x394ab8], rdx
+  0x180119980: jmp      0x18011999d
+  0x180119982: lea      r8, [rbp - 0x20]
+  0x180119986: lea      rcx, [rip + 0x394aa3]
+  0x18011998d: call     0x180109d40
+  0x180119992: mov      rdx, qword ptr [rip + 0x394a9f]
+  0x180119999: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011999d: cmp      rdx, qword ptr [rip + 0x394a9c]
+  0x1801199a4: lea      rax, [rip + 0x28197d]  ; 'bColorGrade'
+  0x1801199ab: mov      qword ptr [rbp - 0x20], rax
+  0x1801199af: mov      dword ptr [rbp - 0x18], 0x98
+  0x1801199b6: je       0x1801199d7
+  0x1801199b8: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x1801199bc: movups   xmmword ptr [rdx], xmm0
+  0x1801199bf: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x1801199c3: mov      rdx, qword ptr [rip + 0x394a6e]
+  0x1801199ca: add      rdx, 0x20
+  0x1801199ce: mov      qword ptr [rip + 0x394a63], rdx
+  0x1801199d5: jmp      0x1801199f2
+  0x1801199d7: lea      r8, [rbp - 0x20]
+  0x1801199db: lea      rcx, [rip + 0x394a4e]
+  0x1801199e2: call     0x180109d40
+  0x1801199e7: mov      rdx, qword ptr [rip + 0x394a4a]
+  0x1801199ee: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x1801199f2: cmp      rdx, qword ptr [rip + 0x394a47]
+  0x1801199f9: lea      rax, [rip + 0x281938]  ; 'bTransition'
+  0x180119a00: mov      qword ptr [rbp - 0x20], rax
+  0x180119a04: mov      dword ptr [rbp - 0x18], 0xa4
+  0x180119a0b: je       0x180119a2c
+  0x180119a0d: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119a11: movups   xmmword ptr [rdx], xmm0
+  0x180119a14: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119a18: mov      rdx, qword ptr [rip + 0x394a19]
+  0x180119a1f: add      rdx, 0x20
+  0x180119a23: mov      qword ptr [rip + 0x394a0e], rdx
+  0x180119a2a: jmp      0x180119a47
+  0x180119a2c: lea      r8, [rbp - 0x20]
+  0x180119a30: lea      rcx, [rip + 0x3949f9]
+  0x180119a37: call     0x180109d40
+  0x180119a3c: mov      rdx, qword ptr [rip + 0x3949f5]
+  0x180119a43: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119a47: cmp      rdx, qword ptr [rip + 0x3949f2]
+  0x180119a4e: lea      rax, [rip + 0x2818f3]  ; 'bPostCloud'
+  0x180119a55: mov      qword ptr [rbp - 0x20], rax
+  0x180119a59: mov      dword ptr [rbp - 0x18], 0x294
+  0x180119a60: je       0x180119a81
+  0x180119a62: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119a66: movups   xmmword ptr [rdx], xmm0
+  0x180119a69: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119a6d: mov      rdx, qword ptr [rip + 0x3949c4]
+  0x180119a74: add      rdx, 0x20
+  0x180119a78: mov      qword ptr [rip + 0x3949b9], rdx
+  0x180119a7f: jmp      0x180119a9c
+  0x180119a81: lea      r8, [rbp - 0x20]
+  0x180119a85: lea      rcx, [rip + 0x3949a4]
+  0x180119a8c: call     0x180109d40
+  0x180119a91: mov      rdx, qword ptr [rip + 0x3949a0]
+  0x180119a98: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119a9c: cmp      rdx, qword ptr [rip + 0x39499d]
+  0x180119aa3: lea      rax, [rip + 0x2818ae]  ; 'bHighShadow'
+  0x180119aaa: mov      qword ptr [rbp - 0x20], rax
+  0x180119aae: mov      dword ptr [rbp - 0x18], 0x29c
+  0x180119ab5: je       0x180119ad6
+  0x180119ab7: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119abb: movups   xmmword ptr [rdx], xmm0
+  0x180119abe: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119ac2: mov      rdx, qword ptr [rip + 0x39496f]
+  0x180119ac9: add      rdx, 0x20
+  0x180119acd: mov      qword ptr [rip + 0x394964], rdx
+  0x180119ad4: jmp      0x180119aed
+  0x180119ad6: lea      r8, [rbp - 0x20]
+  0x180119ada: lea      rcx, [rip + 0x39494f]
+  0x180119ae1: call     0x180109d40
+  0x180119ae6: mov      rdx, qword ptr [rip + 0x39494b]
+  0x180119aed: cmp      rdx, qword ptr [rip + 0x39494c]
+  0x180119af4: lea      rax, [rip + 0x28186d]  ; 'fScreenSizeLimitedRate'
+  0x180119afb: mov      qword ptr [rbp - 0x20], rax
+  0x180119aff: mov      byte ptr [rbp - 0x14], 8
+  0x180119b03: mov      dword ptr [rbp - 0x18], 0x2a8
+  0x180119b0a: mov      byte ptr [rbp - 8], 8
+  0x180119b0e: je       0x180119b33
+  0x180119b10: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119b14: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119b18: movups   xmmword ptr [rdx], xmm0
+  0x180119b1b: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119b1f: mov      rdx, qword ptr [rip + 0x394912]
+  0x180119b26: add      rdx, 0x20
+  0x180119b2a: mov      qword ptr [rip + 0x394907], rdx
+  0x180119b31: jmp      0x180119b4a
+  0x180119b33: lea      r8, [rbp - 0x20]
+  0x180119b37: lea      rcx, [rip + 0x3948f2]
+  0x180119b3e: call     0x180109d40
+  0x180119b43: mov      rdx, qword ptr [rip + 0x3948ee]
+  0x180119b4a: cmp      rdx, qword ptr [rip + 0x3948ef]
+  0x180119b51: lea      rax, [rip + 0x281828]  ; 'nScaleUpMode'
+  0x180119b58: mov      qword ptr [rbp - 0x20], rax
+  0x180119b5c: mov      byte ptr [rbp - 0x14], 2
+  0x180119b60: mov      dword ptr [rbp - 0x18], 0x3e0
+  0x180119b67: mov      byte ptr [rbp - 8], 2
+  0x180119b6b: je       0x180119b90
+  0x180119b6d: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119b71: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119b75: movups   xmmword ptr [rdx], xmm0
+  0x180119b78: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119b7c: mov      rdx, qword ptr [rip + 0x3948b5]
+  0x180119b83: add      rdx, 0x20
+  0x180119b87: mov      qword ptr [rip + 0x3948aa], rdx
+  0x180119b8e: jmp      0x180119ba7
+  0x180119b90: lea      r8, [rbp - 0x20]
+  0x180119b94: lea      rcx, [rip + 0x394895]
+  0x180119b9b: call     0x180109d40
+  0x180119ba0: mov      rdx, qword ptr [rip + 0x394891]
+  0x180119ba7: cmp      rdx, qword ptr [rip + 0x394892]
+  0x180119bae: lea      rax, [rip + 0x2817db]  ; 'bEnableRC_AmbientOcclusion'
+  0x180119bb5: mov      qword ptr [rbp - 0x20], rax
+  0x180119bb9: mov      byte ptr [rbp - 0x14], 1
+  0x180119bbd: mov      dword ptr [rbp - 0x18], 0x2ac
+  0x180119bc4: mov      byte ptr [rbp - 8], 1
+  0x180119bc8: je       0x180119bed
+  0x180119bca: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119bce: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119bd2: movups   xmmword ptr [rdx], xmm0
+  0x180119bd5: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119bd9: mov      rdx, qword ptr [rip + 0x394858]
+  0x180119be0: add      rdx, 0x20
+  0x180119be4: mov      qword ptr [rip + 0x39484d], rdx
+  0x180119beb: jmp      0x180119c08
+  0x180119bed: lea      r8, [rbp - 0x20]
+  0x180119bf1: lea      rcx, [rip + 0x394838]
+  0x180119bf8: call     0x180109d40
+  0x180119bfd: mov      rdx, qword ptr [rip + 0x394834]
+  0x180119c04: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119c08: cmp      rdx, qword ptr [rip + 0x394831]
+  0x180119c0f: lea      rax, [rip + 0x28179a]  ; 'bEnableRC_AtmosphericFog'
+  0x180119c16: mov      qword ptr [rbp - 0x20], rax
+  0x180119c1a: mov      dword ptr [rbp - 0x18], 0x2b0
+  0x180119c21: je       0x180119c42
+  0x180119c23: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119c27: movups   xmmword ptr [rdx], xmm0
+  0x180119c2a: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119c2e: mov      rdx, qword ptr [rip + 0x394803]
+  0x180119c35: add      rdx, 0x20
+  0x180119c39: mov      qword ptr [rip + 0x3947f8], rdx
+  0x180119c40: jmp      0x180119c5d
+  0x180119c42: lea      r8, [rbp - 0x20]
+  0x180119c46: lea      rcx, [rip + 0x3947e3]
+  0x180119c4d: call     0x180109d40
+  0x180119c52: mov      rdx, qword ptr [rip + 0x3947df]
+  0x180119c59: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119c5d: cmp      rdx, qword ptr [rip + 0x3947dc]
+  0x180119c64: lea      rax, [rip + 0x281765]  ; 'bEnableRC_Bloom'
+  0x180119c6b: mov      qword ptr [rbp - 0x20], rax
+  0x180119c6f: mov      dword ptr [rbp - 0x18], 0x2b4
+  0x180119c76: je       0x180119c97
+  0x180119c78: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119c7c: movups   xmmword ptr [rdx], xmm0
+  0x180119c7f: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119c83: mov      rdx, qword ptr [rip + 0x3947ae]
+  0x180119c8a: add      rdx, 0x20
+  0x180119c8e: mov      qword ptr [rip + 0x3947a3], rdx
+  0x180119c95: jmp      0x180119cb2
+  0x180119c97: lea      r8, [rbp - 0x20]
+  0x180119c9b: lea      rcx, [rip + 0x39478e]
+  0x180119ca2: call     0x180109d40
+  0x180119ca7: mov      rdx, qword ptr [rip + 0x39478a]
+  0x180119cae: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119cb2: cmp      rdx, qword ptr [rip + 0x394787]
+  0x180119cb9: lea      rax, [rip + 0x281720]  ; 'bEnableRC_Depth'
+  0x180119cc0: mov      qword ptr [rbp - 0x20], rax
+  0x180119cc4: mov      dword ptr [rbp - 0x18], 0x2b8
+  0x180119ccb: je       0x180119cec
+  0x180119ccd: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119cd1: movups   xmmword ptr [rdx], xmm0
+  0x180119cd4: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119cd8: mov      rdx, qword ptr [rip + 0x394759]
+  0x180119cdf: add      rdx, 0x20
+  0x180119ce3: mov      qword ptr [rip + 0x39474e], rdx
+  0x180119cea: jmp      0x180119d07
+  0x180119cec: lea      r8, [rbp - 0x20]
+  0x180119cf0: lea      rcx, [rip + 0x394739]
+  0x180119cf7: call     0x180109d40
+  0x180119cfc: mov      rdx, qword ptr [rip + 0x394735]
+  0x180119d03: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119d07: cmp      rdx, qword ptr [rip + 0x394732]
+  0x180119d0e: lea      rax, [rip + 0x2816db]  ; 'bEnableRC_HeightFog'
+  0x180119d15: mov      qword ptr [rbp - 0x20], rax
+  0x180119d19: mov      dword ptr [rbp - 0x18], 0x2bc
+  0x180119d20: je       0x180119d41
+  0x180119d22: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119d26: movups   xmmword ptr [rdx], xmm0
+  0x180119d29: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119d2d: mov      rdx, qword ptr [rip + 0x394704]
+  0x180119d34: add      rdx, 0x20
+  0x180119d38: mov      qword ptr [rip + 0x3946f9], rdx
+  0x180119d3f: jmp      0x180119d5c
+  0x180119d41: lea      r8, [rbp - 0x20]
+  0x180119d45: lea      rcx, [rip + 0x3946e4]
+  0x180119d4c: call     0x180109d40
+  0x180119d51: mov      rdx, qword ptr [rip + 0x3946e0]
+  0x180119d58: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119d5c: cmp      rdx, qword ptr [rip + 0x3946dd]
+  0x180119d63: lea      rax, [rip + 0x28169e]  ; 'bEnableRC_LightShaftBloom'
+  0x180119d6a: mov      qword ptr [rbp - 0x20], rax
+  0x180119d6e: mov      dword ptr [rbp - 0x18], 0x2c0
+  0x180119d75: je       0x180119d96
+  0x180119d77: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119d7b: movups   xmmword ptr [rdx], xmm0
+  0x180119d7e: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119d82: mov      rdx, qword ptr [rip + 0x3946af]
+  0x180119d89: add      rdx, 0x20
+  0x180119d8d: mov      qword ptr [rip + 0x3946a4], rdx
+  0x180119d94: jmp      0x180119db1
+  0x180119d96: lea      r8, [rbp - 0x20]
+  0x180119d9a: lea      rcx, [rip + 0x39468f]
+  0x180119da1: call     0x180109d40
+  0x180119da6: mov      rdx, qword ptr [rip + 0x39468b]
+  0x180119dad: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119db1: cmp      rdx, qword ptr [rip + 0x394688]
+  0x180119db8: lea      rax, [rip + 0x281669]  ; 'bEnableRC_LightShaftOcclusion'
+  0x180119dbf: mov      qword ptr [rbp - 0x20], rax
+  0x180119dc3: mov      dword ptr [rbp - 0x18], 0x2c4
+  0x180119dca: je       0x180119deb
+  0x180119dcc: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119dd0: movups   xmmword ptr [rdx], xmm0
+  0x180119dd3: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119dd7: mov      rdx, qword ptr [rip + 0x39465a]
+  0x180119dde: add      rdx, 0x20
+  0x180119de2: mov      qword ptr [rip + 0x39464f], rdx
+  0x180119de9: jmp      0x180119e06
+  0x180119deb: lea      r8, [rbp - 0x20]
+  0x180119def: lea      rcx, [rip + 0x39463a]
+  0x180119df6: call     0x180109d40
+  0x180119dfb: mov      rdx, qword ptr [rip + 0x394636]
+  0x180119e02: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119e06: cmp      rdx, qword ptr [rip + 0x394633]
+  0x180119e0d: lea      rax, [rip + 0x281634]  ; 'bEnableRC_StingRayVolumetircCloud'
+  0x180119e14: mov      qword ptr [rbp - 0x20], rax
+  0x180119e18: mov      dword ptr [rbp - 0x18], 0x2c8
+  0x180119e1f: je       0x180119e40
+  0x180119e21: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119e25: movups   xmmword ptr [rdx], xmm0
+  0x180119e28: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119e2c: mov      rdx, qword ptr [rip + 0x394605]
+  0x180119e33: add      rdx, 0x20
+  0x180119e37: mov      qword ptr [rip + 0x3945fa], rdx
+  0x180119e3e: jmp      0x180119e5b
+  0x180119e40: lea      r8, [rbp - 0x20]
+  0x180119e44: lea      rcx, [rip + 0x3945e5]
+  0x180119e4b: call     0x180109d40
+  0x180119e50: mov      rdx, qword ptr [rip + 0x3945e1]
+  0x180119e57: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119e5b: cmp      rdx, qword ptr [rip + 0x3945de]
+  0x180119e62: lea      rax, [rip + 0x281607]  ; 'bEnableRC_SunLensflare'
+  0x180119e69: mov      qword ptr [rbp - 0x20], rax
+  0x180119e6d: mov      dword ptr [rbp - 0x18], 0x2cc
+  0x180119e74: je       0x180119e95
+  0x180119e76: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119e7a: movups   xmmword ptr [rdx], xmm0
+  0x180119e7d: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119e81: mov      rdx, qword ptr [rip + 0x3945b0]
+  0x180119e88: add      rdx, 0x20
+  0x180119e8c: mov      qword ptr [rip + 0x3945a5], rdx
+  0x180119e93: jmp      0x180119eb0
+  0x180119e95: lea      r8, [rbp - 0x20]
+  0x180119e99: lea      rcx, [rip + 0x394590]
+  0x180119ea0: call     0x180109d40
+  0x180119ea5: mov      rdx, qword ptr [rip + 0x39458c]
+  0x180119eac: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119eb0: cmp      rdx, qword ptr [rip + 0x394589]
+  0x180119eb7: lea      rax, [rip + 0x2815ca]  ; 'bEnableRC_Vignette'
+  0x180119ebe: mov      qword ptr [rbp - 0x20], rax
+  0x180119ec2: mov      dword ptr [rbp - 0x18], 0x2d0
+  0x180119ec9: je       0x180119eea
+  0x180119ecb: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119ecf: movups   xmmword ptr [rdx], xmm0
+  0x180119ed2: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119ed6: mov      rdx, qword ptr [rip + 0x39455b]
+  0x180119edd: add      rdx, 0x20
+  0x180119ee1: mov      qword ptr [rip + 0x394550], rdx
+  0x180119ee8: jmp      0x180119f05
+  0x180119eea: lea      r8, [rbp - 0x20]
+  0x180119eee: lea      rcx, [rip + 0x39453b]
+  0x180119ef5: call     0x180109d40
+  0x180119efa: mov      rdx, qword ptr [rip + 0x394537]
+  0x180119f01: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119f05: cmp      rdx, qword ptr [rip + 0x394534]
+  0x180119f0c: lea      rax, [rip + 0x28158d]  ; 'bEnableRC_EnvProbe'
+  0x180119f13: mov      qword ptr [rbp - 0x20], rax
+  0x180119f17: mov      dword ptr [rbp - 0x18], 0x2d4
+  0x180119f1e: je       0x180119f3f
+  0x180119f20: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119f24: movups   xmmword ptr [rdx], xmm0
+  0x180119f27: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119f2b: mov      rdx, qword ptr [rip + 0x394506]
+  0x180119f32: add      rdx, 0x20
+  0x180119f36: mov      qword ptr [rip + 0x3944fb], rdx
+  0x180119f3d: jmp      0x180119f5a
+  0x180119f3f: lea      r8, [rbp - 0x20]
+  0x180119f43: lea      rcx, [rip + 0x3944e6]
+  0x180119f4a: call     0x180109d40
+  0x180119f4f: mov      rdx, qword ptr [rip + 0x3944e2]
+  0x180119f56: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119f5a: cmp      rdx, qword ptr [rip + 0x3944df]
+  0x180119f61: lea      rax, [rip + 0x281550]  ; 'bEnableRC_SSS'
+  0x180119f68: mov      qword ptr [rbp - 0x20], rax
+  0x180119f6c: mov      dword ptr [rbp - 0x18], 0x2d8
+  0x180119f73: je       0x180119f94
+  0x180119f75: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119f79: movups   xmmword ptr [rdx], xmm0
+  0x180119f7c: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119f80: mov      rdx, qword ptr [rip + 0x3944b1]
+  0x180119f87: add      rdx, 0x20
+  0x180119f8b: mov      qword ptr [rip + 0x3944a6], rdx
+  0x180119f92: jmp      0x180119faf
+  0x180119f94: lea      r8, [rbp - 0x20]
+  0x180119f98: lea      rcx, [rip + 0x394491]
+  0x180119f9f: call     0x180109d40
+  0x180119fa4: mov      rdx, qword ptr [rip + 0x39448d]
+  0x180119fab: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x180119faf: cmp      rdx, qword ptr [rip + 0x39448a]
+  0x180119fb6: lea      rax, [rip + 0x28150b]  ; 'bEnableRC_SSR'
+  0x180119fbd: mov      qword ptr [rbp - 0x20], rax
+  0x180119fc1: mov      dword ptr [rbp - 0x18], 0x2dc
+  0x180119fc8: je       0x180119fe9
+  0x180119fca: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x180119fce: movups   xmmword ptr [rdx], xmm0
+  0x180119fd1: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x180119fd5: mov      rdx, qword ptr [rip + 0x39445c]
+  0x180119fdc: add      rdx, 0x20
+  0x180119fe0: mov      qword ptr [rip + 0x394451], rdx
+  0x180119fe7: jmp      0x18011a004
+  0x180119fe9: lea      r8, [rbp - 0x20]
+  0x180119fed: lea      rcx, [rip + 0x39443c]
+  0x180119ff4: call     0x180109d40
+  0x180119ff9: mov      rdx, qword ptr [rip + 0x394438]
+  0x18011a000: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a004: cmp      rdx, qword ptr [rip + 0x394435]
+  0x18011a00b: lea      rax, [rip + 0x2814c6]  ; 'bEnableRC_ShockWave'
+  0x18011a012: mov      qword ptr [rbp - 0x20], rax
+  0x18011a016: mov      dword ptr [rbp - 0x18], 0x2e4
+  0x18011a01d: je       0x18011a03e
+  0x18011a01f: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a023: movups   xmmword ptr [rdx], xmm0
+  0x18011a026: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a02a: mov      rdx, qword ptr [rip + 0x394407]
+  0x18011a031: add      rdx, 0x20
+  0x18011a035: mov      qword ptr [rip + 0x3943fc], rdx
+  0x18011a03c: jmp      0x18011a059
+  0x18011a03e: lea      r8, [rbp - 0x20]
+  0x18011a042: lea      rcx, [rip + 0x3943e7]
+  0x18011a049: call     0x180109d40
+  0x18011a04e: mov      rdx, qword ptr [rip + 0x3943e3]
+  0x18011a055: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a059: cmp      rdx, qword ptr [rip + 0x3943e0]
+  0x18011a060: lea      rax, [rip + 0x281489]  ; 'bEnableRC_SpotLight'
+  0x18011a067: mov      qword ptr [rbp - 0x20], rax
+  0x18011a06b: mov      dword ptr [rbp - 0x18], 0x2e8
+  0x18011a072: je       0x18011a093
+  0x18011a074: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a078: movups   xmmword ptr [rdx], xmm0
+  0x18011a07b: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a07f: mov      rdx, qword ptr [rip + 0x3943b2]
+  0x18011a086: add      rdx, 0x20
+  0x18011a08a: mov      qword ptr [rip + 0x3943a7], rdx
+  0x18011a091: jmp      0x18011a0ae
+  0x18011a093: lea      r8, [rbp - 0x20]
+  0x18011a097: lea      rcx, [rip + 0x394392]
+  0x18011a09e: call     0x180109d40
+  0x18011a0a3: mov      rdx, qword ptr [rip + 0x39438e]
+  0x18011a0aa: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a0ae: cmp      rdx, qword ptr [rip + 0x39438b]
+  0x18011a0b5: lea      rax, [rip + 0x28144c]  ; 'bEnableRC_DirectionLight'
+  0x18011a0bc: mov      qword ptr [rbp - 0x20], rax
+  0x18011a0c0: mov      dword ptr [rbp - 0x18], 0x2ec
+  0x18011a0c7: je       0x18011a0e8
+  0x18011a0c9: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a0cd: movups   xmmword ptr [rdx], xmm0
+  0x18011a0d0: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a0d4: mov      rdx, qword ptr [rip + 0x39435d]
+  0x18011a0db: add      rdx, 0x20
+  0x18011a0df: mov      qword ptr [rip + 0x394352], rdx
+  0x18011a0e6: jmp      0x18011a103
+  0x18011a0e8: lea      r8, [rbp - 0x20]
+  0x18011a0ec: lea      rcx, [rip + 0x39433d]
+  0x18011a0f3: call     0x180109d40
+  0x18011a0f8: mov      rdx, qword ptr [rip + 0x394339]
+  0x18011a0ff: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a103: cmp      rdx, qword ptr [rip + 0x394336]
+  0x18011a10a: lea      rax, [rip + 0x281417]  ; 'bEnableRC_PointLight'
+  0x18011a111: mov      qword ptr [rbp - 0x20], rax
+  0x18011a115: mov      dword ptr [rbp - 0x18], 0x2f0
+  0x18011a11c: je       0x18011a13d
+  0x18011a11e: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a122: movups   xmmword ptr [rdx], xmm0
+  0x18011a125: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a129: mov      rdx, qword ptr [rip + 0x394308]
+  0x18011a130: add      rdx, 0x20
+  0x18011a134: mov      qword ptr [rip + 0x3942fd], rdx
+  0x18011a13b: jmp      0x18011a158
+  0x18011a13d: lea      r8, [rbp - 0x20]
+  0x18011a141: lea      rcx, [rip + 0x3942e8]
+  0x18011a148: call     0x180109d40
+  0x18011a14d: mov      rdx, qword ptr [rip + 0x3942e4]
+  0x18011a154: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a158: cmp      rdx, qword ptr [rip + 0x3942e1]
+  0x18011a15f: lea      rax, [rip + 0x2813da]  ; 'bEnableRC_SpotLightShadow'
+  0x18011a166: mov      qword ptr [rbp - 0x20], rax
+  0x18011a16a: mov      dword ptr [rbp - 0x18], 0x2f4
+  0x18011a171: je       0x18011a192
+  0x18011a173: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a177: movups   xmmword ptr [rdx], xmm0
+  0x18011a17a: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a17e: mov      rdx, qword ptr [rip + 0x3942b3]
+  0x18011a185: add      rdx, 0x20
+  0x18011a189: mov      qword ptr [rip + 0x3942a8], rdx
+  0x18011a190: jmp      0x18011a1ad
+  0x18011a192: lea      r8, [rbp - 0x20]
+  0x18011a196: lea      rcx, [rip + 0x394293]
+  0x18011a19d: call     0x180109d40
+  0x18011a1a2: mov      rdx, qword ptr [rip + 0x39428f]
+  0x18011a1a9: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a1ad: cmp      rdx, qword ptr [rip + 0x39428c]
+  0x18011a1b4: lea      rax, [rip + 0x2813a5]  ; 'bEnableRC_DirectionLightShadow'
+  0x18011a1bb: mov      qword ptr [rbp - 0x20], rax
+  0x18011a1bf: mov      dword ptr [rbp - 0x18], 0x2f8
+  0x18011a1c6: je       0x18011a1e7
+  0x18011a1c8: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a1cc: movups   xmmword ptr [rdx], xmm0
+  0x18011a1cf: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a1d3: mov      rdx, qword ptr [rip + 0x39425e]
+  0x18011a1da: add      rdx, 0x20
+  0x18011a1de: mov      qword ptr [rip + 0x394253], rdx
+  0x18011a1e5: jmp      0x18011a202
+  0x18011a1e7: lea      r8, [rbp - 0x20]
+  0x18011a1eb: lea      rcx, [rip + 0x39423e]
+  0x18011a1f2: call     0x180109d40
+  0x18011a1f7: mov      rdx, qword ptr [rip + 0x39423a]
+  0x18011a1fe: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a202: cmp      rdx, qword ptr [rip + 0x394237]
+  0x18011a209: lea      rax, [rip + 0x281370]  ; 'bEnableRC_PointLightShadow'
+  0x18011a210: mov      qword ptr [rbp - 0x20], rax
+  0x18011a214: mov      dword ptr [rbp - 0x18], 0x2fc
+  0x18011a21b: je       0x18011a23c
+  0x18011a21d: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a221: movups   xmmword ptr [rdx], xmm0
+  0x18011a224: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a228: mov      rdx, qword ptr [rip + 0x394209]
+  0x18011a22f: add      rdx, 0x20
+  0x18011a233: mov      qword ptr [rip + 0x3941fe], rdx
+  0x18011a23a: jmp      0x18011a257
+  0x18011a23c: lea      r8, [rbp - 0x20]
+  0x18011a240: lea      rcx, [rip + 0x3941e9]
+  0x18011a247: call     0x180109d40
+  0x18011a24c: mov      rdx, qword ptr [rip + 0x3941e5]
+  0x18011a253: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a257: cmp      rdx, qword ptr [rip + 0x3941e2]
+  0x18011a25e: lea      rax, [rip + 0x28133b]  ; 'bEnableRC_SkyLight'
+  0x18011a265: mov      qword ptr [rbp - 0x20], rax
+  0x18011a269: mov      dword ptr [rbp - 0x18], 0x300
+  0x18011a270: je       0x18011a291
+  0x18011a272: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a276: movups   xmmword ptr [rdx], xmm0
+  0x18011a279: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a27d: mov      rdx, qword ptr [rip + 0x3941b4]
+  0x18011a284: add      rdx, 0x20
+  0x18011a288: mov      qword ptr [rip + 0x3941a9], rdx
+  0x18011a28f: jmp      0x18011a2a8
+  0x18011a291: lea      r8, [rbp - 0x20]
+  0x18011a295: lea      rcx, [rip + 0x394194]
+  0x18011a29c: call     0x180109d40
+  0x18011a2a1: mov      rdx, qword ptr [rip + 0x394190]
+  0x18011a2a8: cmp      rdx, qword ptr [rip + 0x394191]
+  0x18011a2af: lea      rax, [rip + 0x281302]  ; 'nRC_EnvProbeLevel'
+  0x18011a2b6: mov      qword ptr [rbp - 0x20], rax
+  0x18011a2ba: mov      byte ptr [rbp - 0x14], 2
+  0x18011a2be: mov      dword ptr [rbp - 0x18], 0x328
+  0x18011a2c5: mov      byte ptr [rbp - 8], 2
+  0x18011a2c9: je       0x18011a2ee
+  0x18011a2cb: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a2cf: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a2d3: movups   xmmword ptr [rdx], xmm0
+  0x18011a2d6: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a2da: mov      rdx, qword ptr [rip + 0x394157]
+  0x18011a2e1: add      rdx, 0x20
+  0x18011a2e5: mov      qword ptr [rip + 0x39414c], rdx
+  0x18011a2ec: jmp      0x18011a309
+  0x18011a2ee: lea      r8, [rbp - 0x20]
+  0x18011a2f2: lea      rcx, [rip + 0x394137]
+  0x18011a2f9: call     0x180109d40
+  0x18011a2fe: mov      rdx, qword ptr [rip + 0x394133]
+  0x18011a305: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a309: cmp      rdx, qword ptr [rip + 0x394130]
+  0x18011a310: lea      rax, [rip + 0x2812b9]  ; 'nRC_CloudLevel'
+  0x18011a317: mov      qword ptr [rbp - 0x20], rax
+  0x18011a31b: mov      dword ptr [rbp - 0x18], 0x32c
+  0x18011a322: je       0x18011a343
+  0x18011a324: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a328: movups   xmmword ptr [rdx], xmm0
+  0x18011a32b: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a32f: mov      rdx, qword ptr [rip + 0x394102]
+  0x18011a336: add      rdx, 0x20
+  0x18011a33a: mov      qword ptr [rip + 0x3940f7], rdx
+  0x18011a341: jmp      0x18011a35a
+  0x18011a343: lea      r8, [rbp - 0x20]
+  0x18011a347: lea      rcx, [rip + 0x3940e2]
+  0x18011a34e: call     0x180109d40
+  0x18011a353: mov      rdx, qword ptr [rip + 0x3940de]
+  0x18011a35a: cmp      rdx, qword ptr [rip + 0x3940df]
+  0x18011a361: lea      rax, [rip + 0x281278]  ; 'bEnableRC_FoliageBlur'
+  0x18011a368: mov      qword ptr [rbp - 0x20], rax
+  0x18011a36c: mov      byte ptr [rbp - 0x14], 1
+  0x18011a370: mov      dword ptr [rbp - 0x18], 0x304
+  0x18011a377: mov      byte ptr [rbp - 8], 1
+  0x18011a37b: je       0x18011a3a0
+  0x18011a37d: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a381: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a385: movups   xmmword ptr [rdx], xmm0
+  0x18011a388: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a38c: mov      rdx, qword ptr [rip + 0x3940a5]
+  0x18011a393: add      rdx, 0x20
+  0x18011a397: mov      qword ptr [rip + 0x39409a], rdx
+  0x18011a39e: jmp      0x18011a3bb
+  0x18011a3a0: lea      r8, [rbp - 0x20]
+  0x18011a3a4: lea      rcx, [rip + 0x394085]
+  0x18011a3ab: call     0x180109d40
+  0x18011a3b0: mov      rdx, qword ptr [rip + 0x394081]
+  0x18011a3b7: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a3bb: cmp      rdx, qword ptr [rip + 0x39407e]
+  0x18011a3c2: lea      rax, [rip + 0x28122f]  ; 'bEnableRC_CheckBoardBlur'
+  0x18011a3c9: mov      qword ptr [rbp - 0x20], rax
+  0x18011a3cd: mov      dword ptr [rbp - 0x18], 0x308
+  0x18011a3d4: je       0x18011a3f5
+  0x18011a3d6: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a3da: movups   xmmword ptr [rdx], xmm0
+  0x18011a3dd: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a3e1: mov      rdx, qword ptr [rip + 0x394050]
+  0x18011a3e8: add      rdx, 0x20
+  0x18011a3ec: mov      qword ptr [rip + 0x394045], rdx
+  0x18011a3f3: jmp      0x18011a410
+  0x18011a3f5: lea      r8, [rbp - 0x20]
+  0x18011a3f9: lea      rcx, [rip + 0x394030]
+  0x18011a400: call     0x180109d40
+  0x18011a405: mov      rdx, qword ptr [rip + 0x39402c]
+  0x18011a40c: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a410: cmp      rdx, qword ptr [rip + 0x394029]
+  0x18011a417: lea      rax, [rip + 0x2811fa]  ; 'bEnableSubFoliageHCRender'
+  0x18011a41e: mov      qword ptr [rbp - 0x20], rax
+  0x18011a422: mov      dword ptr [rbp - 0x18], 0x338
+  0x18011a429: je       0x18011a44a
+  0x18011a42b: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a42f: movups   xmmword ptr [rdx], xmm0
+  0x18011a432: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a436: mov      rdx, qword ptr [rip + 0x393ffb]
+  0x18011a43d: add      rdx, 0x20
+  0x18011a441: mov      qword ptr [rip + 0x393ff0], rdx
+  0x18011a448: jmp      0x18011a465
+  0x18011a44a: lea      r8, [rbp - 0x20]
+  0x18011a44e: lea      rcx, [rip + 0x393fdb]
+  0x18011a455: call     0x180109d40
+  0x18011a45a: mov      rdx, qword ptr [rip + 0x393fd7]
+  0x18011a461: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a465: cmp      rdx, qword ptr [rip + 0x393fd4]
+  0x18011a46c: lea      rax, [rip + 0x2811c5]  ; 'bEnableSubFoliageSTRender'
+  0x18011a473: mov      qword ptr [rbp - 0x20], rax
+  0x18011a477: mov      dword ptr [rbp - 0x18], 0x33c
+  0x18011a47e: je       0x18011a49f
+  0x18011a480: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a484: movups   xmmword ptr [rdx], xmm0
+  0x18011a487: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a48b: mov      rdx, qword ptr [rip + 0x393fa6]
+  0x18011a492: add      rdx, 0x20
+  0x18011a496: mov      qword ptr [rip + 0x393f9b], rdx
+  0x18011a49d: jmp      0x18011a4ba
+  0x18011a49f: lea      r8, [rbp - 0x20]
+  0x18011a4a3: lea      rcx, [rip + 0x393f86]
+  0x18011a4aa: call     0x180109d40
+  0x18011a4af: mov      rdx, qword ptr [rip + 0x393f82]
+  0x18011a4b6: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a4ba: cmp      rdx, qword ptr [rip + 0x393f7f]
+  0x18011a4c1: lea      rax, [rip + 0x281190]  ; 'bEnableSubFoliageWJRender'
+  0x18011a4c8: mov      qword ptr [rbp - 0x20], rax
+  0x18011a4cc: mov      dword ptr [rbp - 0x18], 0x340
+  0x18011a4d3: je       0x18011a4f4
+  0x18011a4d5: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a4d9: movups   xmmword ptr [rdx], xmm0
+  0x18011a4dc: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a4e0: mov      rdx, qword ptr [rip + 0x393f51]
+  0x18011a4e7: add      rdx, 0x20
+  0x18011a4eb: mov      qword ptr [rip + 0x393f46], rdx
+  0x18011a4f2: jmp      0x18011a50f
+  0x18011a4f4: lea      r8, [rbp - 0x20]
+  0x18011a4f8: lea      rcx, [rip + 0x393f31]
+  0x18011a4ff: call     0x180109d40
+  0x18011a504: mov      rdx, qword ptr [rip + 0x393f2d]
+  0x18011a50b: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a50f: cmp      rdx, qword ptr [rip + 0x393f2a]
+  0x18011a516: lea      rax, [rip + 0x28115b]  ; 'bEnableSubFoliageGMRender'
+  0x18011a51d: mov      qword ptr [rbp - 0x20], rax
+  0x18011a521: mov      dword ptr [rbp - 0x18], 0x344
+  0x18011a528: je       0x18011a549
+  0x18011a52a: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a52e: movups   xmmword ptr [rdx], xmm0
+  0x18011a531: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a535: mov      rdx, qword ptr [rip + 0x393efc]
+  0x18011a53c: add      rdx, 0x20
+  0x18011a540: mov      qword ptr [rip + 0x393ef1], rdx
+  0x18011a547: jmp      0x18011a564
+  0x18011a549: lea      r8, [rbp - 0x20]
+  0x18011a54d: lea      rcx, [rip + 0x393edc]
+  0x18011a554: call     0x180109d40
+  0x18011a559: mov      rdx, qword ptr [rip + 0x393ed8]
+  0x18011a560: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a564: cmp      rdx, qword ptr [rip + 0x393ed5]
+  0x18011a56b: lea      rax, [rip + 0x281126]  ; 'bEnableSubFoliageTWRender'
+  0x18011a572: mov      qword ptr [rbp - 0x20], rax
+  0x18011a576: mov      dword ptr [rbp - 0x18], 0x348
+  0x18011a57d: je       0x18011a59e
+  0x18011a57f: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a583: movups   xmmword ptr [rdx], xmm0
+  0x18011a586: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a58a: mov      rdx, qword ptr [rip + 0x393ea7]
+  0x18011a591: add      rdx, 0x20
+  0x18011a595: mov      qword ptr [rip + 0x393e9c], rdx
+  0x18011a59c: jmp      0x18011a5b5
+  0x18011a59e: lea      r8, [rbp - 0x20]
+  0x18011a5a2: lea      rcx, [rip + 0x393e87]
+  0x18011a5a9: call     0x180109d40
+  0x18011a5ae: mov      rdx, qword ptr [rip + 0x393e83]
+  0x18011a5b5: cmp      rdx, qword ptr [rip + 0x393e84]
+  0x18011a5bc: lea      rax, [rip + 0x2810f5]  ; 'nFoliageDensity'
+  0x18011a5c3: mov      qword ptr [rbp - 0x20], rax
+  0x18011a5c7: mov      byte ptr [rbp - 0x14], 2
+  0x18011a5cb: mov      dword ptr [rbp - 0x18], 0x34c
+  0x18011a5d2: mov      byte ptr [rbp - 8], 2
+  0x18011a5d6: je       0x18011a5fb
+  0x18011a5d8: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a5dc: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a5e0: movups   xmmword ptr [rdx], xmm0
+  0x18011a5e3: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a5e7: mov      rdx, qword ptr [rip + 0x393e4a]
+  0x18011a5ee: add      rdx, 0x20
+  0x18011a5f2: mov      qword ptr [rip + 0x393e3f], rdx
+  0x18011a5f9: jmp      0x18011a616
+  0x18011a5fb: lea      r8, [rbp - 0x20]
+  0x18011a5ff: lea      rcx, [rip + 0x393e2a]
+  0x18011a606: call     0x180109d40
+  0x18011a60b: mov      rdx, qword ptr [rip + 0x393e26]
+  0x18011a612: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a616: cmp      rdx, qword ptr [rip + 0x393e23]
+  0x18011a61d: lea      rax, [rip + 0x2810a4]  ; 'nStartLodLevelInAutoLodMode'
+  0x18011a624: mov      qword ptr [rbp - 0x20], rax
+  0x18011a628: mov      dword ptr [rbp - 0x18], 0x350
+  0x18011a62f: je       0x18011a650
+  0x18011a631: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a635: movups   xmmword ptr [rdx], xmm0
+  0x18011a638: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a63c: mov      rdx, qword ptr [rip + 0x393df5]
+  0x18011a643: add      rdx, 0x20
+  0x18011a647: mov      qword ptr [rip + 0x393dea], rdx
+  0x18011a64e: jmp      0x18011a667
+  0x18011a650: lea      r8, [rbp - 0x20]
+  0x18011a654: lea      rcx, [rip + 0x393dd5]
+  0x18011a65b: call     0x180109d40
+  0x18011a660: mov      rdx, qword ptr [rip + 0x393dd1]
+  0x18011a667: cmp      rdx, qword ptr [rip + 0x393dd2]
+  0x18011a66e: lea      rax, [rip + 0x281073]  ; 'fSpeedTreeCullDist'
+  0x18011a675: mov      qword ptr [rbp - 0x20], rax
+  0x18011a679: mov      byte ptr [rbp - 0x14], 8
+  0x18011a67d: mov      dword ptr [rbp - 0x18], 0x360
+  0x18011a684: mov      byte ptr [rbp - 8], 8
+  0x18011a688: je       0x18011a6ad
+  0x18011a68a: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a68e: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a692: movups   xmmword ptr [rdx], xmm0
+  0x18011a695: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a699: mov      rdx, qword ptr [rip + 0x393d98]
+  0x18011a6a0: add      rdx, 0x20
+  0x18011a6a4: mov      qword ptr [rip + 0x393d8d], rdx
+  0x18011a6ab: jmp      0x18011a6c8
+  0x18011a6ad: lea      r8, [rbp - 0x20]
+  0x18011a6b1: lea      rcx, [rip + 0x393d78]
+  0x18011a6b8: call     0x180109d40
+  0x18011a6bd: mov      rdx, qword ptr [rip + 0x393d74]
+  0x18011a6c4: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a6c8: cmp      rdx, qword ptr [rip + 0x393d71]
+  0x18011a6cf: lea      rax, [rip + 0x28102a]  ; 'fSimpleModelCullDist'
+  0x18011a6d6: mov      qword ptr [rbp - 0x20], rax
+  0x18011a6da: mov      dword ptr [rbp - 0x18], 0x364
+  0x18011a6e1: je       0x18011a702
+  0x18011a6e3: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a6e7: movups   xmmword ptr [rdx], xmm0
+  0x18011a6ea: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a6ee: mov      rdx, qword ptr [rip + 0x393d43]
+  0x18011a6f5: add      rdx, 0x20
+  0x18011a6f9: mov      qword ptr [rip + 0x393d38], rdx
+  0x18011a700: jmp      0x18011a71d
+  0x18011a702: lea      r8, [rbp - 0x20]
+  0x18011a706: lea      rcx, [rip + 0x393d23]
+  0x18011a70d: call     0x180109d40
+  0x18011a712: mov      rdx, qword ptr [rip + 0x393d1f]
+  0x18011a719: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a71d: cmp      rdx, qword ptr [rip + 0x393d1c]
+  0x18011a724: lea      rax, [rip + 0x280fed]  ; 'fParticleSystemCullDist'
+  0x18011a72b: mov      qword ptr [rbp - 0x20], rax
+  0x18011a72f: mov      dword ptr [rbp - 0x18], 0x368
+  0x18011a736: je       0x18011a757
+  0x18011a738: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a73c: movups   xmmword ptr [rdx], xmm0
+  0x18011a73f: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a743: mov      rdx, qword ptr [rip + 0x393cee]
+  0x18011a74a: add      rdx, 0x20
+  0x18011a74e: mov      qword ptr [rip + 0x393ce3], rdx
+  0x18011a755: jmp      0x18011a772
+  0x18011a757: lea      r8, [rbp - 0x20]
+  0x18011a75b: lea      rcx, [rip + 0x393cce]
+  0x18011a762: call     0x180109d40
+  0x18011a767: mov      rdx, qword ptr [rip + 0x393cca]
+  0x18011a76e: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a772: cmp      rdx, qword ptr [rip + 0x393cc7]
+  0x18011a779: lea      rax, [rip + 0x280fb0]  ; 'fPointLightCullDist'
+  0x18011a780: mov      qword ptr [rbp - 0x20], rax
+  0x18011a784: mov      dword ptr [rbp - 0x18], 0x36c
+  0x18011a78b: je       0x18011a7ac
+  0x18011a78d: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a791: movups   xmmword ptr [rdx], xmm0
+  0x18011a794: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a798: mov      rdx, qword ptr [rip + 0x393c99]
+  0x18011a79f: add      rdx, 0x20
+  0x18011a7a3: mov      qword ptr [rip + 0x393c8e], rdx
+  0x18011a7aa: jmp      0x18011a7c3
+  0x18011a7ac: lea      r8, [rbp - 0x20]
+  0x18011a7b0: lea      rcx, [rip + 0x393c79]
+  0x18011a7b7: call     0x180109d40
+  0x18011a7bc: mov      rdx, qword ptr [rip + 0x393c75]
+  0x18011a7c3: cmp      rdx, qword ptr [rip + 0x393c76]
+  0x18011a7ca: lea      rax, [rip + 0x280f77]  ; 'bEnableModelLodRadius'
+  0x18011a7d1: mov      qword ptr [rbp - 0x20], rax
+  0x18011a7d5: mov      byte ptr [rbp - 0x14], 1
+  0x18011a7d9: mov      dword ptr [rbp - 0x18], 0x374
+  0x18011a7e0: mov      byte ptr [rbp - 8], 1
+  0x18011a7e4: je       0x18011a809
+  0x18011a7e6: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a7ea: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a7ee: movups   xmmword ptr [rdx], xmm0
+  0x18011a7f1: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a7f5: mov      rdx, qword ptr [rip + 0x393c3c]
+  0x18011a7fc: add      rdx, 0x20
+  0x18011a800: mov      qword ptr [rip + 0x393c31], rdx
+  0x18011a807: jmp      0x18011a820
+  0x18011a809: lea      r8, [rbp - 0x20]
+  0x18011a80d: lea      rcx, [rip + 0x393c1c]
+  0x18011a814: call     0x180109d40
+  0x18011a819: mov      rdx, qword ptr [rip + 0x393c18]
+  0x18011a820: cmp      rdx, qword ptr [rip + 0x393c19]
+  0x18011a827: lea      rax, [rip + 0x280f32]  ; 'fModelLodRadius'
+  0x18011a82e: mov      qword ptr [rbp - 0x20], rax
+  0x18011a832: mov      byte ptr [rbp - 0x14], 0xd
+  0x18011a836: mov      dword ptr [rbp - 0x18], 0x378
+  0x18011a83d: mov      qword ptr [rbp - 0x10], 0x10
+  0x18011a845: mov      byte ptr [rbp - 8], 8
+  0x18011a849: je       0x18011a86e
+  0x18011a84b: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a84f: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a853: movups   xmmword ptr [rdx], xmm0
+  0x18011a856: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a85a: mov      rdx, qword ptr [rip + 0x393bd7]
+  0x18011a861: add      rdx, 0x20
+  0x18011a865: mov      qword ptr [rip + 0x393bcc], rdx
+  0x18011a86c: jmp      0x18011a885
+  0x18011a86e: lea      r8, [rbp - 0x20]
+  0x18011a872: lea      rcx, [rip + 0x393bb7]
+  0x18011a879: call     0x180109d40
+  0x18011a87e: mov      rdx, qword ptr [rip + 0x393bb3]
+  0x18011a885: cmp      rdx, qword ptr [rip + 0x393bb4]
+  0x18011a88c: lea      rax, [rip + 0x280edd]  ; 'fSpeedTreeShadowCullDist'
+  0x18011a893: mov      qword ptr [rbp - 0x20], rax
+  0x18011a897: mov      byte ptr [rbp - 0x14], 8
+  0x18011a89b: mov      dword ptr [rbp - 0x18], 0x388
+  0x18011a8a2: mov      qword ptr [rbp - 0x10], 1
+  0x18011a8aa: je       0x18011a8cf
+  0x18011a8ac: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a8b0: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a8b4: movups   xmmword ptr [rdx], xmm0
+  0x18011a8b7: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a8bb: mov      rdx, qword ptr [rip + 0x393b76]
+  0x18011a8c2: add      rdx, 0x20
+  0x18011a8c6: mov      qword ptr [rip + 0x393b6b], rdx
+  0x18011a8cd: jmp      0x18011a8ea
+  0x18011a8cf: lea      r8, [rbp - 0x20]
+  0x18011a8d3: lea      rcx, [rip + 0x393b56]
+  0x18011a8da: call     0x180109d40
+  0x18011a8df: mov      rdx, qword ptr [rip + 0x393b52]
+  0x18011a8e6: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a8ea: cmp      rdx, qword ptr [rip + 0x393b4f]
+  0x18011a8f1: lea      rax, [rip + 0x280e98]  ; 'fSimpleModelShadowCullDist'
+  0x18011a8f8: mov      qword ptr [rbp - 0x20], rax
+  0x18011a8fc: mov      dword ptr [rbp - 0x18], 0x38c
+  0x18011a903: je       0x18011a924
+  0x18011a905: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a909: movups   xmmword ptr [rdx], xmm0
+  0x18011a90c: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a910: mov      rdx, qword ptr [rip + 0x393b21]
+  0x18011a917: add      rdx, 0x20
+  0x18011a91b: mov      qword ptr [rip + 0x393b16], rdx
+  0x18011a922: jmp      0x18011a93f
+  0x18011a924: lea      r8, [rbp - 0x20]
+  0x18011a928: lea      rcx, [rip + 0x393b01]
+  0x18011a92f: call     0x180109d40
+  0x18011a934: mov      rdx, qword ptr [rip + 0x393afd]
+  0x18011a93b: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a93f: cmp      rdx, qword ptr [rip + 0x393afa]
+  0x18011a946: lea      rax, [rip + 0x280e63]  ; 'fParticleSystemShadowCullDist'
+  0x18011a94d: mov      qword ptr [rbp - 0x20], rax
+  0x18011a951: mov      dword ptr [rbp - 0x18], 0x390
+  0x18011a958: je       0x18011a979
+  0x18011a95a: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a95e: movups   xmmword ptr [rdx], xmm0
+  0x18011a961: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a965: mov      rdx, qword ptr [rip + 0x393acc]
+  0x18011a96c: add      rdx, 0x20
+  0x18011a970: mov      qword ptr [rip + 0x393ac1], rdx
+  0x18011a977: jmp      0x18011a994
+  0x18011a979: lea      r8, [rbp - 0x20]
+  0x18011a97d: lea      rcx, [rip + 0x393aac]
+  0x18011a984: call     0x180109d40
+  0x18011a989: mov      rdx, qword ptr [rip + 0x393aa8]
+  0x18011a990: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011a994: cmp      rdx, qword ptr [rip + 0x393aa5]
+  0x18011a99b: lea      rax, [rip + 0x280e2e]  ; 'fPointLightShadowCullDist'
+  0x18011a9a2: mov      qword ptr [rbp - 0x20], rax
+  0x18011a9a6: mov      dword ptr [rbp - 0x18], 0x394
+  0x18011a9ad: je       0x18011a9ce
+  0x18011a9af: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011a9b3: movups   xmmword ptr [rdx], xmm0
+  0x18011a9b6: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011a9ba: mov      rdx, qword ptr [rip + 0x393a77]
+  0x18011a9c1: add      rdx, 0x20
+  0x18011a9c5: mov      qword ptr [rip + 0x393a6c], rdx
+  0x18011a9cc: jmp      0x18011a9e5
+  0x18011a9ce: lea      r8, [rbp - 0x20]
+  0x18011a9d2: lea      rcx, [rip + 0x393a57]
+  0x18011a9d9: call     0x180109d40
+  0x18011a9de: mov      rdx, qword ptr [rip + 0x393a53]
+  0x18011a9e5: cmp      rdx, qword ptr [rip + 0x393a54]
+  0x18011a9ec: lea      rax, [rip + 0x280dfd]  ; 'nShadowType'
+  0x18011a9f3: mov      qword ptr [rbp - 0x20], rax
+  0x18011a9f7: mov      byte ptr [rbp - 0x14], 2
+  0x18011a9fb: mov      dword ptr [rbp - 0x18], 0x3a8
+  0x18011aa02: mov      byte ptr [rbp - 8], 2
+  0x18011aa06: je       0x18011aa2b
+  0x18011aa08: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011aa0c: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011aa10: movups   xmmword ptr [rdx], xmm0
+  0x18011aa13: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011aa17: mov      rdx, qword ptr [rip + 0x393a1a]
+  0x18011aa1e: add      rdx, 0x20
+  0x18011aa22: mov      qword ptr [rip + 0x393a0f], rdx
+  0x18011aa29: jmp      0x18011aa42
+  0x18011aa2b: lea      r8, [rbp - 0x20]
+  0x18011aa2f: lea      rcx, [rip + 0x3939fa]
+  0x18011aa36: call     0x180109d40
+  0x18011aa3b: mov      rdx, qword ptr [rip + 0x3939f6]
+  0x18011aa42: cmp      rdx, qword ptr [rip + 0x3939f7]
+  0x18011aa49: lea      rax, [rip + 0x280db0]  ; 'fCameraDistanceHD'
+  0x18011aa50: mov      qword ptr [rbp - 0x20], rax
+  0x18011aa54: mov      byte ptr [rbp - 0x14], 8
+  0x18011aa58: mov      dword ptr [rbp - 0x18], 0x3ac
+  0x18011aa5f: mov      byte ptr [rbp - 8], 8
+  0x18011aa63: je       0x18011aa88
+  0x18011aa65: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011aa69: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011aa6d: movups   xmmword ptr [rdx], xmm0
+  0x18011aa70: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011aa74: mov      rdx, qword ptr [rip + 0x3939bd]
+  0x18011aa7b: add      rdx, 0x20
+  0x18011aa7f: mov      qword ptr [rip + 0x3939b2], rdx
+  0x18011aa86: jmp      0x18011aaa3
+  0x18011aa88: lea      r8, [rbp - 0x20]
+  0x18011aa8c: lea      rcx, [rip + 0x39399d]
+  0x18011aa93: call     0x180109d40
+  0x18011aa98: mov      rdx, qword ptr [rip + 0x393999]
+  0x18011aa9f: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011aaa3: cmp      rdx, qword ptr [rip + 0x393996]
+  0x18011aaaa: lea      rax, [rip + 0x280d67]  ; 'fNodeLodLowLimit'
+  0x18011aab1: mov      qword ptr [rbp - 0x20], rax
+  0x18011aab5: mov      dword ptr [rbp - 0x18], 0x3b0
+  0x18011aabc: je       0x18011aadd
+  0x18011aabe: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011aac2: movups   xmmword ptr [rdx], xmm0
+  0x18011aac5: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011aac9: mov      rdx, qword ptr [rip + 0x393968]
+  0x18011aad0: add      rdx, 0x20
+  0x18011aad4: mov      qword ptr [rip + 0x39395d], rdx
+  0x18011aadb: jmp      0x18011aaf8
+  0x18011aadd: lea      r8, [rbp - 0x20]
+  0x18011aae1: lea      rcx, [rip + 0x393948]
+  0x18011aae8: call     0x180109d40
+  0x18011aaed: mov      rdx, qword ptr [rip + 0x393944]
+  0x18011aaf4: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011aaf8: cmp      rdx, qword ptr [rip + 0x393941]
+  0x18011aaff: lea      rax, [rip + 0x280d2a]  ; 'fNodeLodHighLimit'
+  0x18011ab06: mov      qword ptr [rbp - 0x20], rax
+  0x18011ab0a: mov      dword ptr [rbp - 0x18], 0x3b4
+  0x18011ab11: je       0x18011ab32
+  0x18011ab13: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011ab17: movups   xmmword ptr [rdx], xmm0
+  0x18011ab1a: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011ab1e: mov      rdx, qword ptr [rip + 0x393913]
+  0x18011ab25: add      rdx, 0x20
+  0x18011ab29: mov      qword ptr [rip + 0x393908], rdx
+  0x18011ab30: jmp      0x18011ab49
+  0x18011ab32: lea      r8, [rbp - 0x20]
+  0x18011ab36: lea      rcx, [rip + 0x3938f3]
+  0x18011ab3d: call     0x180109d40
+  0x18011ab42: mov      rdx, qword ptr [rip + 0x3938ef]
+  0x18011ab49: cmp      rdx, qword ptr [rip + 0x3938f0]
+  0x18011ab50: lea      rax, [rip + 0x280cf1]  ; 'nNewWaterQualityLevel'
+  0x18011ab57: mov      qword ptr [rbp - 0x20], rax
+  0x18011ab5b: mov      byte ptr [rbp - 0x14], 2
+  0x18011ab5f: mov      dword ptr [rbp - 0x18], 0x3b8
+  0x18011ab66: mov      byte ptr [rbp - 8], 2
+  0x18011ab6a: je       0x18011ab8f
+  0x18011ab6c: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011ab70: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011ab74: movups   xmmword ptr [rdx], xmm0
+  0x18011ab77: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011ab7b: mov      rdx, qword ptr [rip + 0x3938b6]
+  0x18011ab82: add      rdx, 0x20
+  0x18011ab86: mov      qword ptr [rip + 0x3938ab], rdx
+  0x18011ab8d: jmp      0x18011abaa
+  0x18011ab8f: lea      r8, [rbp - 0x20]
+  0x18011ab93: lea      rcx, [rip + 0x393896]
+  0x18011ab9a: call     0x180109d40
+  0x18011ab9f: mov      rdx, qword ptr [rip + 0x393892]
+  0x18011aba6: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011abaa: cmp      rdx, qword ptr [rip + 0x39388f]
+  0x18011abb1: lea      rax, [rip + 0x280ca8]  ; 'nTexLODLimit'
+  0x18011abb8: mov      qword ptr [rbp - 0x20], rax
+  0x18011abbc: mov      dword ptr [rbp - 0x18], 0x3bc
+  0x18011abc3: je       0x18011abe4
+  0x18011abc5: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011abc9: movups   xmmword ptr [rdx], xmm0
+  0x18011abcc: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011abd0: mov      rdx, qword ptr [rip + 0x393861]
+  0x18011abd7: add      rdx, 0x20
+  0x18011abdb: mov      qword ptr [rip + 0x393856], rdx
+  0x18011abe2: jmp      0x18011abfb
+  0x18011abe4: lea      r8, [rbp - 0x20]
+  0x18011abe8: lea      rcx, [rip + 0x393841]
+  0x18011abef: call     0x180109d40
+  0x18011abf4: mov      rdx, qword ptr [rip + 0x39383d]
+  0x18011abfb: cmp      rdx, qword ptr [rip + 0x39383e]
+  0x18011ac02: lea      rax, [rip + 0x280c67]  ; 'bEnableRealTimeTerrainBake'
+  0x18011ac09: mov      qword ptr [rbp - 0x20], rax
+  0x18011ac0d: mov      byte ptr [rbp - 0x14], 1
+  0x18011ac11: mov      dword ptr [rbp - 0x18], 0x3d8
+  0x18011ac18: mov      byte ptr [rbp - 8], 1
+  0x18011ac1c: je       0x18011ac41
+  0x18011ac1e: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011ac22: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011ac26: movups   xmmword ptr [rdx], xmm0
+  0x18011ac29: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011ac2d: mov      rdx, qword ptr [rip + 0x393804]
+  0x18011ac34: add      rdx, 0x20
+  0x18011ac38: mov      qword ptr [rip + 0x3937f9], rdx
+  0x18011ac3f: jmp      0x18011ac58
+  0x18011ac41: lea      r8, [rbp - 0x20]
+  0x18011ac45: lea      rcx, [rip + 0x3937e4]
+  0x18011ac4c: call     0x180109d40
+  0x18011ac51: mov      rdx, qword ptr [rip + 0x3937e0]
+  0x18011ac58: cmp      rdx, qword ptr [rip + 0x3937e1]
+  0x18011ac5f: lea      rax, [rip + 0x280c2a]  ; 'nTerrainBakeScaleRate'
+  0x18011ac66: mov      qword ptr [rbp - 0x20], rax
+  0x18011ac6a: mov      byte ptr [rbp - 0x14], 2
+  0x18011ac6e: mov      dword ptr [rbp - 0x18], 0x3dc
+  0x18011ac75: mov      byte ptr [rbp - 8], 2
+  0x18011ac79: je       0x18011ac9e
+  0x18011ac7b: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011ac7f: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011ac83: movups   xmmword ptr [rdx], xmm0
+  0x18011ac86: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011ac8a: mov      rdx, qword ptr [rip + 0x3937a7]
+  0x18011ac91: add      rdx, 0x20
+  0x18011ac95: mov      qword ptr [rip + 0x39379c], rdx
+  0x18011ac9c: jmp      0x18011acb5
+  0x18011ac9e: lea      r8, [rbp - 0x20]
+  0x18011aca2: lea      rcx, [rip + 0x393787]
+  0x18011aca9: call     0x180109d40
+  0x18011acae: mov      rdx, qword ptr [rip + 0x393783]
+  0x18011acb5: cmp      rdx, qword ptr [rip + 0x393784]
+  0x18011acbc: lea      rax, [rip + 0x280be5]  ; 'bEnableRC_EyeProtectionMode'
+  0x18011acc3: mov      qword ptr [rbp - 0x20], rax
+  0x18011acc7: mov      byte ptr [rbp - 0x14], 1
+  0x18011accb: mov      dword ptr [rbp - 0x18], 0x30c
+  0x18011acd2: mov      byte ptr [rbp - 8], 1
+  0x18011acd6: je       0x18011acfb
+  0x18011acd8: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011acdc: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011ace0: movups   xmmword ptr [rdx], xmm0
+  0x18011ace3: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011ace7: mov      rdx, qword ptr [rip + 0x39374a]
+  0x18011acee: add      rdx, 0x20
+  0x18011acf2: mov      qword ptr [rip + 0x39373f], rdx
+  0x18011acf9: jmp      0x18011ad12
+  0x18011acfb: lea      r8, [rbp - 0x20]
+  0x18011acff: lea      rcx, [rip + 0x39372a]
+  0x18011ad06: call     0x180109d40
+  0x18011ad0b: mov      rdx, qword ptr [rip + 0x393726]
+  0x18011ad12: cmp      rdx, qword ptr [rip + 0x393727]
+  0x18011ad19: lea      rax, [rip + 0x280ba8]  ; 'nEngineGraphicsLevel'
+  0x18011ad20: mov      qword ptr [rbp - 0x20], rax
+  0x18011ad24: mov      byte ptr [rbp - 0x14], 2
+  0x18011ad28: mov      dword ptr [rbp - 0x18], 0x3e8
+  0x18011ad2f: mov      byte ptr [rbp - 8], 2
+  0x18011ad33: je       0x18011ad58
+  0x18011ad35: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011ad39: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011ad3d: movups   xmmword ptr [rdx], xmm0
+  0x18011ad40: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011ad44: mov      rdx, qword ptr [rip + 0x3936ed]
+  0x18011ad4b: add      rdx, 0x20
+  0x18011ad4f: mov      qword ptr [rip + 0x3936e2], rdx
+  0x18011ad56: jmp      0x18011ad73
+  0x18011ad58: lea      r8, [rbp - 0x20]
+  0x18011ad5c: lea      rcx, [rip + 0x3936cd]
+  0x18011ad63: call     0x180109d40
+  0x18011ad68: mov      rdx, qword ptr [rip + 0x3936c9]
+  0x18011ad6f: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011ad73: cmp      rdx, qword ptr [rip + 0x3936c6]
+  0x18011ad7a: lea      rax, [rip + 0x280b5f]  ; 'nRenderLevel'
+  0x18011ad81: mov      qword ptr [rbp - 0x20], rax
+  0x18011ad85: mov      dword ptr [rbp - 0x18], 0x45c
+  0x18011ad8c: je       0x18011adad
+  0x18011ad8e: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011ad92: movups   xmmword ptr [rdx], xmm0
+  0x18011ad95: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011ad99: mov      rdx, qword ptr [rip + 0x393698]
+  0x18011ada0: add      rdx, 0x20
+  0x18011ada4: mov      qword ptr [rip + 0x39368d], rdx
+  0x18011adab: jmp      0x18011adc4
+  0x18011adad: lea      r8, [rbp - 0x20]
+  0x18011adb1: lea      rcx, [rip + 0x393678]
+  0x18011adb8: call     0x180109d40
+  0x18011adbd: mov      rdx, qword ptr [rip + 0x393674]
+  0x18011adc4: cmp      rdx, qword ptr [rip + 0x393675]
+  0x18011adcb: lea      rax, [rip + 0x280b1e]  ; 'bEnableRC_GraphicsLevelWaterMark'
+  0x18011add2: mov      qword ptr [rbp - 0x20], rax
+  0x18011add6: mov      byte ptr [rbp - 0x14], 1
+  0x18011adda: mov      dword ptr [rbp - 0x18], 0x3e4
+  0x18011ade1: mov      byte ptr [rbp - 8], 1
+  0x18011ade5: je       0x18011ae0a
+  0x18011ade7: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011adeb: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011adef: movups   xmmword ptr [rdx], xmm0
+  0x18011adf2: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011adf6: mov      rdx, qword ptr [rip + 0x39363b]
+  0x18011adfd: add      rdx, 0x20
+  0x18011ae01: mov      qword ptr [rip + 0x393630], rdx
+  0x18011ae08: jmp      0x18011ae21
+  0x18011ae0a: lea      r8, [rbp - 0x20]
+  0x18011ae0e: lea      rcx, [rip + 0x39361b]
+  0x18011ae15: call     0x180109d40
+  0x18011ae1a: mov      rdx, qword ptr [rip + 0x393617]
+  0x18011ae21: cmp      rdx, qword ptr [rip + 0x393618]
+  0x18011ae28: lea      rax, [rip + 0x280ae9]  ; 'fSpeedTreeAngleCull'
+  0x18011ae2f: mov      qword ptr [rbp - 0x20], rax
+  0x18011ae33: mov      byte ptr [rbp - 0x14], 8
+  0x18011ae37: mov      dword ptr [rbp - 0x18], 0x42c
+  0x18011ae3e: mov      byte ptr [rbp - 8], 8
+  0x18011ae42: je       0x18011ae67
+  0x18011ae44: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011ae48: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011ae4c: movups   xmmword ptr [rdx], xmm0
+  0x18011ae4f: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011ae53: mov      rdx, qword ptr [rip + 0x3935de]
+  0x18011ae5a: add      rdx, 0x20
+  0x18011ae5e: mov      qword ptr [rip + 0x3935d3], rdx
+  0x18011ae65: jmp      0x18011ae82
+  0x18011ae67: lea      r8, [rbp - 0x20]
+  0x18011ae6b: lea      rcx, [rip + 0x3935be]
+  0x18011ae72: call     0x180109d40
+  0x18011ae77: mov      rdx, qword ptr [rip + 0x3935ba]
+  0x18011ae7e: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011ae82: cmp      rdx, qword ptr [rip + 0x3935b7]
+  0x18011ae89: lea      rax, [rip + 0x280aa0]  ; 'fSpeedTreeGlobalLodScaleTimes'
+  0x18011ae90: mov      qword ptr [rbp - 0x20], rax
+  0x18011ae94: mov      dword ptr [rbp - 0x18], 0x430
+  0x18011ae9b: je       0x18011aebc
+  0x18011ae9d: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011aea1: movups   xmmword ptr [rdx], xmm0
+  0x18011aea4: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011aea8: mov      rdx, qword ptr [rip + 0x393589]
+  0x18011aeaf: add      rdx, 0x20
+  0x18011aeb3: mov      qword ptr [rip + 0x39357e], rdx
+  0x18011aeba: jmp      0x18011aed7
+  0x18011aebc: lea      r8, [rbp - 0x20]
+  0x18011aec0: lea      rcx, [rip + 0x393569]
+  0x18011aec7: call     0x180109d40
+  0x18011aecc: mov      rdx, qword ptr [rip + 0x393565]
+  0x18011aed3: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011aed7: cmp      rdx, qword ptr [rip + 0x393562]
+  0x18011aede: lea      rax, [rip + 0x280a6b]  ; 'fAngleCullValue'
+  0x18011aee5: mov      qword ptr [rbp - 0x20], rax
+  0x18011aee9: mov      dword ptr [rbp - 0x18], 0x278
+  0x18011aef0: je       0x18011af11
+  0x18011aef2: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011aef6: movups   xmmword ptr [rdx], xmm0
+  0x18011aef9: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011aefd: mov      rdx, qword ptr [rip + 0x393534]
+  0x18011af04: add      rdx, 0x20
+  0x18011af08: mov      qword ptr [rip + 0x393529], rdx
+  0x18011af0f: jmp      0x18011af28
+  0x18011af11: lea      r8, [rbp - 0x20]
+  0x18011af15: lea      rcx, [rip + 0x393514]
+  0x18011af1c: call     0x180109d40
+  0x18011af21: mov      rdx, qword ptr [rip + 0x393510]
+  0x18011af28: cmp      rdx, qword ptr [rip + 0x393511]
+  0x18011af2f: lea      rax, [rip + 0x280a2a]  ; 'bEnableRC_SMAA'
+  0x18011af36: mov      qword ptr [rbp - 0x20], rax
+  0x18011af3a: mov      byte ptr [rbp - 0x14], 1
+  0x18011af3e: mov      dword ptr [rbp - 0x18], 0x310
+  0x18011af45: mov      byte ptr [rbp - 8], 1
+  0x18011af49: je       0x18011af6e
+  0x18011af4b: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011af4f: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011af53: movups   xmmword ptr [rdx], xmm0
+  0x18011af56: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011af5a: mov      rdx, qword ptr [rip + 0x3934d7]
+  0x18011af61: add      rdx, 0x20
+  0x18011af65: mov      qword ptr [rip + 0x3934cc], rdx
+  0x18011af6c: jmp      0x18011af85
+  0x18011af6e: lea      r8, [rbp - 0x20]
+  0x18011af72: lea      rcx, [rip + 0x3934b7]
+  0x18011af79: call     0x180109d40
+  0x18011af7e: mov      rdx, qword ptr [rip + 0x3934b3]
+  0x18011af85: cmp      rdx, qword ptr [rip + 0x3934b4]
+  0x18011af8c: lea      rax, [rip + 0x2809dd]  ; 'fRC_EyeProtectBrightness'
+  0x18011af93: mov      qword ptr [rbp - 0x20], rax
+  0x18011af97: mov      byte ptr [rbp - 0x14], 8
+  0x18011af9b: mov      dword ptr [rbp - 0x18], 0x330
+  0x18011afa2: mov      byte ptr [rbp - 8], 8
+  0x18011afa6: je       0x18011afcb
+  0x18011afa8: movups   xmm0, xmmword ptr [rbp - 0x20]
+  0x18011afac: movups   xmm1, xmmword ptr [rbp - 0x10]
+  0x18011afb0: movups   xmmword ptr [rdx], xmm0
+  0x18011afb3: movups   xmmword ptr [rdx + 0x10], xmm1
+  0x18011afb7: mov      rdx, qword ptr [rip + 0x39347a]
+  0x18011afbe: add      rdx, 0x20
+  0x18011afc2: mov      qword ptr [rip + 0x39346f], rdx
+  0x18011afc9: jmp      0x18011afe2
+  0x18011afcb: lea      r8, [rbp - 0x20]
+  0x18011afcf: .byte    0x48
+  0x18011afd0: .byte    0x8d
+  0x18011afd1: .byte    0x0d
+  0x18011afd2: pop      rdx
+  0x18011afd3: xor      al, 0x39
+

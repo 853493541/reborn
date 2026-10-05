@@ -3878,6 +3878,142 @@ work into main without M2 entanglement.
   and sandbox `reborn_client_control_modes.exe` (title sandbox-control_modes).
 - Local only: nothing pushed to origin.
 
+### 2026-10-04 - Movement/terrain - region streaming: bounded LRU cache (1.3)
+
+- Did: measured terrain region loads at a map-region border on 龙门寻宝 with a new
+  test-only cross-back harness (`RC_CROSS_BACK`, reverses at t=10.5 s) and per-load
+  telemetry. The single region slot ping-ponged between adjacent regions - 16 loads
+  in a 17 s crossing run (cap=1 control: 85) - because the player ground query, the
+  camera ray march and the camera ground clamp sample opposite sides of the border
+  every frame. Replaced the slot with a bounded LRU (`RC_TERR_CACHE`, default 4;
+  each entry = height grid + hole mask). The cap=1 control exposed a self-eviction
+  bug (fresh entry added with LastUse=0 evicted itself -> AV 0xC0000005); fixed by
+  marking it MRU before the eviction pass.
+- Evidence: `docs/movement/TERRAIN_REGION_STREAMING.md`; logs
+  `reborn_20261004_223128.log` (16 loads), `223600.log` (cap=1, 85 loads),
+  `223711.log` (cap=4, 3 loads, 0 during crossings); commits `ce9d1b6`, `c32f095`.
+- Outcome: solved - 0.2-5.0 ms per load (no frame-scale hitch); the defect was
+  frequency. Hole (0,0) A/B re-PASS 234/234 on the cache build; collision selftest
+  36/36; gravity `verify_model` PASS. Region (1,1) `.hlb` has 0 hole cells; broader
+  hole A/B needs more `.hlb` extraction.
+
+### 2026-10-04 - Crash triage - 海岛绝境 void-spawn AV (pre-existing, new site)
+
+**Problem:** collecting a second hole A/B region on 海岛绝境, spawn over the hole
+region at altitude (`RC_SPAWN=-25600,1000,-25600 RC_SPAWN_Y=1`) crashed ~3 s in.
+**Tried:** `tools/camera/minidump_exc.py` on the dump: AV 0xC0000005 at
+`KG3DEngineDX11EX64.dll+0x12282B3` (engine render stack), shim `d6=seed` loaded - a
+new site, not the documented D6 `+0x11D03B6`. The same scenario on clean main
+(`reborn_client.exe`, `aad94d8`) crashes at the identical address; solid-ground
+spawn on the same map exits clean (`DONE`, `reborn_20261004_225645.log`).
+**Outcome:** pre-existing on main; not caused by the terrain region cache (no host
+frame from the sampler in the crash stack).
+**Why:** scenario-specific - spawn above a hole region at altitude / bottomless fall.
+Dumps: `%LOCALAPPDATA%\CrashDumps\reborn_client_terrainstream.exe.52348.dmp` and
+`reborn_client.exe.37100.dmp`; crash log `reborn_20261004_224645.log`.
+**Re-open criteria:** a void-fall session - repro at y=1000 over a hole; compare the
+spawn-at-altitude path with the historical walk-in hole-fall run
+(`proof/collision/client_holes/hole_fall_*`, 2026-09-29); dump the engine side only
+if the cache/host frames appear.
+**Links:** `docs/movement/TERRAIN_REGION_STREAMING.md` §5; crash site
+`KG3DEngineDX11EX64+0x12282B3`.
+
+### 2026-10-04 - Movement/terrain - hole A/B extended to all hole-bearing maps
+
+- Did: extracted the shipped hole-mask tree (54 `.hlb`, 4256 hole cells across
+  海岛绝境/白龙绝境/天原绝境; 龙门寻宝 and 夜晚 ship none) and A/B'd one region per
+  map on the cache build (engine `RC_HOLE_DUMP` vs the extracted `.hlb`, spawn on a
+  hole-free region-center cell). Added `check_hole_mask.py --scan` for the inventory.
+- Evidence: PASS 海岛绝境 (0,0) 234/234; 白龙绝境 (3,4) 96/96; 天原绝境 (4,3)
+  1400/1400 — all masks identical (32768 bytes); dumps in
+  `%TEMP%\opencode\{bailong,tianyuan}_ab\`; logs `reborn_20261004_23*`.
+- Outcome: solved - the decode rule (four-corner + Z flip) holds on both origins
+  (0,0 4x4 and -102400,-102400 8x8). Corrects the earlier note that only two
+  `.hlb` exist (that was just the extracted set).
+
+### 2026-10-04 - Engine host - map quality tiers probed for all 5 BR maps
+
+- Did: read each map's `.jsonmap` `filePaths` tiers and probed 100 declared paths
+  with a new `tools/probe_map_quality.py`. `bd` + `low` ship on all five maps
+  (environment.json, playerEnvironment.json, `.rcidx` with
+  `RCEffectName=jx3bd/defaultlow`, bd skybox); `bddnc`/`mb` are declared but ship
+  zero files; the tiers carry no heightmap/foliage - HD root is the only scene data.
+- Evidence: `docs/engine_host/MAP_QUALITY_TIERS.md`; tool run "hits 40 of 100".
+- Outcome: solved - no lower-quality geometry exists to downshift to; preset work
+  (1.8-1.10) must drive render/effect options, next probe = `RCEffectName` consumer
+  + `zhcn_hd\config\config_*.ini` linkage.
+
+### 2026-10-04 - Tools - small correctness batch (hole mapping, PvP verifier, doc drift)
+
+- Did: fixed `check_hole_mask.py --spawn-cells` world-Z mapping (converted/engine
+  row -> world z = n-1-r), validated by the 2026-09-29 fall witness: world
+  (22850,30450) is a hole only under the flipped mapping. Made
+  `verify_pvp_evidence.py` source-portable (env overrides `REBORN_MAPLIST`/
+  `REBORN_SKILLS` + repo-relative candidates, hard exit 2 when missing) and fixed
+  the loot selftest count 8 -> 9 in the README + both AGENTS files.
+- Evidence: `verify_pvp_evidence.py` exit 0 with 0 mismatches on all 6 tables;
+  `--spawn-cells 400` prints `hole cell (228,207) -> world (22850,30450)`.
+- Outcome: solved.
+
+### 2026-10-04 - Movement/terrain - R32 <-> BCH relation resolved
+
+- Did: decoded the `.bch` container (36-byte header + samples^2 float32, per-region
+  normalized [0,1]) and compared it with the renderer `.r32` (513^2 float32, no
+  header, ~0.5 band). They are the same field: BCH is row-flipped in Z and exactly
+  affine to R32 (`r32 = r32_min + bch_flip*(range)`, residual 2e-8, corr 1.0).
+  Added `tools/movement/r32_bch_relation.py` for the comparison.
+- Evidence: `docs/movement/TERRAIN_R32_BCH_RELATION.md`; tool output
+  `affine r32 = 0.010569 * bch_flip + 0.500397 max residual 0.000000019`.
+- Outcome: partial - relation solved; the BCH header floats' exact semantics
+  (candidate max/min in cm) remain open (prediction 651.5 vs logged sample 761);
+  next probe = disasm `_LoadHegihtRegionBCH` or A/B `LoadRegion` at known cells.
+
+### 2026-10-04 - Movement/terrain - spawn ground settle fixed (stable-value, not non-zero)
+
+- Problem: `RC_SPAWN` in a not-yet-streamed region stalled the settle for 10 s and
+  ended with py=0; one pre-cache run got a partial value (2019) at the same point.
+- Tried: camera-column warmup (no effect), actor-based warmup (no effect),
+  invalidate+reload every 250 ms (39 loads, still 0) - then measured the loader's
+  answer: a stable **0** for 30+ s with fresh loads at (-1000,24224), i.e. the low
+  ground west of the mesa. The engine loader is the gameplay truth; the old settle
+  waited for a NON-zero value that never comes (the 2019 run was a pre-cache
+  partial-load artifact).
+- Fix: settle waits for the sample to stop changing (bounded 2 s) and accepts it;
+  region loads that come back all-zero are never cached (retry; `zeroRetries`
+  telemetry). Verified: settle 250 ms at (-1000,24224) (was 10,047 ms), 281 ms /
+  py=761 at the M1 spawn (23334,24224) matching the M1 proof; crossing run
+  unchanged (2 loads, 0 per crossing); collision 36/36; gravity PASS.
+- Evidence: logs `reborn_20261005_000105` (old stall), `000403`/`000447` (fixed).
+- Outcome: solved. Related open: the coarse 16-bit BCH variant disagrees with the
+  loader at that point (~6090 vs 0) - `TERRAIN_R32_BCH_RELATION.md` §Open.
+
+### 2026-10-05 - Movement/collision - contact offset 0.1 registered N/A (ctor default)
+
+- Did: evidence check on the last "CCT default not modelled" row. `contactOffset`
+  0.1 m is the base `PxControllerDesc` **ctor default** (`+0x38`, dump
+  `pxcontrollerdesc_ctor.txt`); the online body is the SIMWorld/KCharacter solver
+  (`bAddPlayerPhysicsActor=0`) with no recovered consumer/value (G-1) - the same
+  class as `stepOffset` 0.5 m, which the host already rejected in favor of the
+  64 u game-side tolerance (`1a20b96`, comparison §8.1 4f). Applying 0.1 m (10 u)
+  would be a guess-fix, so it is registered N/A with re-open criteria.
+- Evidence: `COLLISION_SYSTEM_STATUS.md` §4 row updated; comparison §8.1 #16;
+  `JX3_STEP_FORGIVENESS_RESEARCH.md` §8 correction note.
+- Outcome: solved (N/A with evidence). Re-open if the online character is proven
+  to use the PxController or a SIMWorld skin value is recovered.
+### 2026-10-05 - Audio - host audio step 1 (Wwise init + provisional skill WAV)
+
+- Did: the product client now calls `KG3DSoundCLR.Init(startupPath, hwnd)` after
+  `editor.Init` and `sound.FrameMove()` each frame; on skill cast it plays the
+  decoded FLWS WAV (`bin64\flws_sound.wav`) via winmm. The engine's tani SoundTag
+  still does not fire in the host (SOUND_PATH.md Frida: Wwise inits, no
+  LoadBank/PostEvent), so the WAV play is a REGISTERED PROVISIONAL - re-open when
+  the SoundTag fires with the banks loaded.
+- Evidence: `docs/audio/HOST_AUDIO_STEP1.md`; run `reborn_20261005_135524.log`
+  (`sound: KG3DSoundCLR.Init ok`, `sound: skill wav play rc=True`, `skill cast`;
+  no engine Wwise lines). Feature build `reborn_client_audio.exe` (title
+  `sandbox-audio`), clean exit, shim `d6=seed`.
+- Outcome: solved (step 1); native tag path still open (LOW hypothesis: the
+  client loads a bank the host does not).
 ### 2026-10-04 - engine_host - Startup stall was a shader-DB TCP timeout, not predraw (RC_STARTUP=nodb, D7)
 
 - Did: chased the ~24 s engine init. Planned fix was a pre-draw thread override;
@@ -3927,3 +4063,118 @@ work into main without M2 entanglement.
   build=ok`, `Init3DEngine=3109 ms`; shim rebuild exports `RC_Startup_*`.
 - Evidence: `native/startup_shim.cpp`; `docs/engine_host/FAST_STARTUP.md`;
   D7 register text.
+
+### 2026-10-04 — Render options — improvement plan for areas 1.8–1.10 (#iso)
+
+- Did: created the isolated worktree/branch for the rendering/LOD/weather track
+  (parallel to the 1.3 terrain agent and the predraw agent); wrote
+  `docs/engine_host/RENDERING_OPTIONS_PLAN.md` (corpus census + phases P0–P5 +
+  boundaries with the other agents) and registered it in `docs/engine_host/README.md`.
+- Census (read-only, PowerShell): 15 preset files in `zhcn_hd\config`; 9 main tiers
+  234–375 key entries, `_bd_` family 472 each; 408 unique keys, 72 vary across tiers;
+  `[ENGINEOPTION] nEngineGraphicsLevel=1..9` is the tier selector;
+  `MovieEditor\config.ini` (376 entries, all `bEnableRC_*`, no level key) is the
+  config our host actually loads (cwd = MovieEditor, install read-only).
+- Evidence: census commands in the plan's Reproduce section; this commit.
+- Outcome: partial (plan-only, as requested) — research/implementation phases
+  P0–P5 defined with verification and gates.
+- Re-open: n/a.
+
+### 2026-10-04 — Render options — P0 execution (census tool + consumer xrefs)
+
+- Did: implemented `tools/render/preset_census.py` (stdlib) → `proof/render/option_matrix.tsv`
+  (490 keys), `varying.tsv` (72), `gpu_switch_summary.tsv` (20x32); wrote
+  `docs/engine_host/RENDERING_OPTIONS.md` (P0.3/P0.4 partial).
+- Findings (HIGH): engine reads `config.ini` from cwd via
+  `KG3DEngineAdapterX64.dll!KG3D_LoadJX3Config_From_DX9` @RVA 0x5F9F0 (~150 keys with
+  code defaults/clamps; `nEngineGraphicsLevel` cfg+0x260 default 0/3 by nRenderLevel==100);
+  adapter save fn @0x67B10; `JX3UIX64.dll` @0x118970 = video-panel key/type/offset schema;
+  `JX3ClientX64.exe!InitMachineConfig` @0x9A8A0 reads `config/machine_config.ini`.
+  Open: preset-file selection owner (no `config_N`/`GpuSwitchOption` literals in bin64),
+  per-option caps, apply path (install `config.ini` read-only).
+- Evidence: `proof/render/*`, xref disasm under `proof/render/disasm/`; reproduce in
+  `RENDERING_OPTIONS.md` §Reproduce.
+- Outcome: partial — P0.1 done, P0.3/P0.4 partial (apply path not decided).
+- Re-open: P0.4 selection owner; P1 apply path; P2 caps probe.
+
+### 2026-10-04 — Render options — P0.4: active config is a generated merge
+
+- Did: full-install scan (17,843 files, `Game\JX3` + `MovieEditor`, read-only) for the
+  preset names and `GpuSwitchOptionTab`; compared the game's active `zhcn_hd\config.ini`
+  against the `_bd_` presets.
+- Findings: preset file names are referenced by **no** install binary; active config.ini
+  (471 keys, `nEngineGraphicsLevel=1`) is a merge closest to `config_bd_1_zuijian`
+  (412/467 shared values identical) — so the applied set is generated (base + bd tier +
+  machine/user overrides), not a file copy. MovieEditor `config.ini` (host runtime) is a
+  tier-7-ish editor config, install read-only. Per-user display settings also persist in
+  `userpreferences.jx3dat` (player state).
+- Evidence: `RENDERING_OPTIONS.md` §2.1; census values in `proof/render/`.
+- Outcome: partial (research) — selection writer still open; apply path unchanged.
+- Re-open: P1 apply-path probes; caps probe P2.
+
+### 2026-10-04 — Render options — apply path implemented and proven (P1–P3), weather API (P4)
+
+- Did: managed-API reflection found `MovieEngineCLR.KGEngineCLR.SetEngineOptionFromConfigFile(string)`
+  (+ `EnableDynamicWeather`/`SetDynamicWeatherParameters`); implemented `client/VideoOptions.cs`
+  (`RC_QUALITY=1..9/bd/ default`, `RC_OPT_FILE`, `RC_OPT_<KEY>` merge to a generated ini in
+  `bin64\reborn_out`, `RC_WEATHER[_PARAMS]`) wired right after `Init3DEngine`; built feature
+  client `reborn_client_renderopts.exe` (title `sandbox-renderopts`, own namespace); 5 runs.
+- Results: tier1 vs tier9 differ on every 4x4 region (mean `#BAB197` vs `#C1BBA6`); tier-1
+  repeat delta is 11 PNG bytes (noise) → tier effect causal; 3 `RC_OPT_*` overrides pull
+  tier9 back to tier1-like (`#BAB198`); tier9 ≈ -27 % fps vs tier1 (391 vs 536, measured
+  before another agent's client started); `EnableDynamicWeather(1)=0` success but run D is
+  pixel-identical to tier1 (weather semantics/params open).
+- Evidence: logs `reborn_20261004_231520/231631/231738/231852/231943/232104.log`,
+  `proof/render/runs/{quality1,quality1b,quality9,quality9_override,weather1}.png`,
+  `docs/engine_host/RENDERING_OPTIONS.md` §4/§4b/§4c.
+- Outcome: solved for P1–P3 first cut; P4 partial (API found, effect not observable with
+  defaults); P5 initial numbers.
+- Re-open: weather param/scene semantics; `GpuSwitchOptionTab` matching; full option caps
+  read-back (proxy has no public fields; native `GetOption` export or config round-trip).
+
+### 2026-10-04 — Render options — gates + no-op regression
+
+- Gates after the client change: `jx3_model` exit 0, `gravity/verify_model` exit 0,
+  `loot/capture.py selftest` PASS, `collision_selftest_reborn_client_renderopts` 36/36,
+  canonical `camera_smoke.exe` ALL PASS.
+- No-op regression: `reborn_client_renderopts.exe` with no `RC_QUALITY`/`RC_OPT_*`/`RC_WEATHER`
+  → exit 0, `LoadMap result=0`, zero `VideoOptions:` log lines (`reborn_20261004_232425.log`).
+
+### 2026-10-04 — Render options — P2 caps matrix, P4 env decode, P5 second pose
+
+- Did: 12 more engine runs. P2 isolated caps (tier 9 base, one key per run): bloom=0 is the
+  dominant visible change (`#C1BBA6`→`#BAB198`, all cells); AO=0/SSR=0/nShadowType=0/
+  nFoliageDensity=5 are no-ops at the house pose; `nFoliageDensity=999` is pixel-identical to
+  tier 9 (100) → clamp confirmed behaviorally. P5 second pose (real spawn dune): tier 9 vs
+  tier 1 = −34 % fps (369 vs 562) + large local image deltas. P4: decoded all map
+  environment quality variants (HD root `enableDayNightCycle=1`, `bd`/`low` differ; player
+  light rigs in `playerEnvironment.json`); day-night option gives only a 1–2-unit,
+  non-evolving shift; dynamic-weather toggle still a no-op with defaults.
+- Mistake + correction (recorded): the first caps batch leaked `RC_OPT_*` env vars between
+  runs in one PowerShell process (AO chained into bloom/SSR); the 4 contaminated artifacts
+  were deleted and re-run isolated; the doc table cites only the clean set.
+- Evidence: `proof/render/runs/p2_*.png`, `proof/render/logs/p2_*.log`,
+  `proof/render/environment_summary.txt`, doc §4b/§4c.
+- Outcome: P2 caps first complete matrix; P4 data decoded / effect open; P5 two poses.
+- Re-open: foliage caps at a foliage pose; per-LOD isolation; weather params/time source;
+  GpuSwitch consumer (external tooling — absent from install).
+
+### 2026-10-05 - Merge - render-options <- terrain-stream-holes (branch combine)
+
+- Did: merged `agent/terrain-stream-holes` (7 commits: LRU terrain cache `c32f095`,
+  hole A/B all maps, streaming audit, R32<->BCH relation, quality-tier probe) into
+  `agent/render-options` at `8e3ef69`; the combined branch is the one the 1.3 agent
+  fast-forwards to. Conflicts: 2 (`docs/EXPERIENCES.md` append - theirs first then ours
+  by commit time; `docs/engine_host/README.md` rows - both kept). `client/RebornClient.cs`
+  auto-merged (their telemetry vs our `VideoOptions.Apply` call site).
+- Validation on the combined tree: feature build exit=0; gates `jx3_model` 10 PASS,
+  gravity `verify_model` PASS, loot selftest PASS, collision selftest 36/36, `camera_smoke`
+  ALL PASS; boot run `reborn_20261005_000130.log` `git=8e3ef69 dirty=0`, map load ok,
+  `cache=4` telemetry + `terrain load (2,2) ms=4.1`, no `VideoOptions:` lines (no-op path).
+- Observation for the terrain owner (not a merge blocker, MED): `r32_bch_relation.py` on
+  the sandbox-renamed pair 000_000 (`C:\jx3tmp\reborn_sandbox\map\龙门寻宝_h`) prints
+  `max residual = 0.006060575`, not 0 as the doc claims for 002_002 - would be worth
+  re-checking whether the sandbox crop rename pairs the same regions.
+- Handoff: in `reborn-iso-terrain-stream-holes`, commit/stash WIP then
+  `git merge --ff-only agent/render-options` (or plain merge if new commits landed) and
+  rebuild the feature client - the compile list now includes `client/VideoOptions.cs`.

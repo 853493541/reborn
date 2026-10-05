@@ -16,6 +16,7 @@
 //   RC_YAW_OFFSET=0               model facing calibration (radians)
 //   RC_SCALE=1                    player model scale
 //   RC_PHYS_DLL=<path>            terrain sampler physics DLL (default: client copy)
+//   RC_TERR_CACHE=4               terrain region cache slots (LRU; >= 1)
 // RC_MAP accepts an absolute OS path (mini sandbox maps: tools/sandbox).
 using System;
 using System.Diagnostics;
@@ -351,8 +352,28 @@ internal static class RebornClient
         if (startupOverride)
             Log("Startup: " + StartupShim.Status());
         if (ok == 0) { Log("FATAL: engine init failed"); return; }
+        try { VideoOptions.Apply(engine, Env("RC_GAME_CONFIG_DIR", @"C:\SeasunGame\Game\JX3\bin\zhcn_hd\config"), startupPath, Log); }
+        catch (Exception e) { Log("VideoOptions ex: " + e.Message); }
         try { Log("editor.Init result=" + editor.Init(editorRoot, err, form.Handle.ToInt64())); }
         catch (Exception e) { Log("editor.Init ex: " + e.Message); }
+
+        // ---- audio (step 1) ------------------------------------------------
+        // Wwise via the engine's own KG3DSoundCLR (the spike's call, now in the
+        // product client). The engine's tani SoundTag does not fire in the host
+        // (SOUND_PATH.md, Frida: Wwise inits, no LoadBank/PostEvent), so the
+        // skill sound is played from the decoded WAV as a REGISTERED PROVISIONAL
+        // until the native tag path is recovered (re-open: the SoundTag fires
+        // with the banks loaded in the host).
+        bool soundReady = false;
+        if (Env("RC_SOUND", "1") != "0")
+        {
+            try { sound.Init(startupPath, form.Handle.ToInt64()); soundReady = true; Log("sound: KG3DSoundCLR.Init ok"); }
+            catch (Exception e) { Log("sound: KG3DSoundCLR.Init ex: " + e.Message); }
+        }
+        else Log("sound: disabled (RC_SOUND=0)");
+        string skillWav = Path.Combine(Application.StartupPath, "flws_sound.wav");
+        if (!File.Exists(skillWav)) { Log("sound: skill wav missing at " + skillWav); skillWav = null; }
+        else Log("sound: skill wav " + skillWav);
 
         var scene = new KGSceneCLR();
         // Recon: dump the managed wrapper API surface for the player / near-plane
@@ -447,7 +468,12 @@ internal static class RebornClient
         TerrainSampler sampler = null;
         try
         {
-            sampler = new TerrainSampler(physDll, mapPath, Log);
+            // bounded region cache (the engine's streaming keeps several regions;
+            // a single slot reloads on every border ping-pong - measured 16 loads
+            // in a 17 s crossing run)
+            int terrCache = 4;
+            int.TryParse(Env("RC_TERR_CACHE", "4"), out terrCache);
+            sampler = new TerrainSampler(physDll, mapPath, Log, terrCache);
         }
         catch (Exception e) { Log("TerrainSampler ex: " + e.Message); }
 
@@ -874,24 +900,17 @@ internal static class RebornClient
             }
             // The physics terrain loader tracks the engine's streamed terrain:
             // right after the camera jumps it can return all-zero heights for
-            // the spawn region (observed on 龙门寻宝). Pump frames and retry
-            // through the neighbouring region until real heights arrive.
+            // the spawn region. The engine streams around the PLAYER MODEL, which
+            // is placed after this block - sample once here and, when the data is
+            // not ready yet, settle after placePlayer below (camera-only warmup
+            // was tried and does not trigger the stream).
             // RC_SPAWN_Y=1 keeps the provided absolute Y (indoor test spawns:
             // floors above terrain are scene meshes, not terrain).
             if (Env("RC_SPAWN_Y", "0") != "1")
             {
                 py = sampler != null ? sampler.Sample(px, pz) : 0f;
                 if (sampler != null && py == 0f)
-                {
-                    long warm = Environment.TickCount;
-                    while (py == 0f && Environment.TickCount - warm < 10000)
-                    {
-                        Pump(engine, 250);
-                        sampler.Sample(px - 51200f, pz);
-                        py = sampler.Sample(px, pz);
-                    }
-                    Log("spawn ground settle took " + (Environment.TickCount - warm) + "ms");
-                }
+                    Log("spawn terrain not streamed yet - settling after actor placement");
             }
             Log(string.Format("spawn=({0:F0},{1:F0},{2:F0}) view=({3:F2},{4:F2})", px, py, pz, viewX, viewZ));
         }
@@ -920,6 +939,41 @@ internal static class RebornClient
         attachedHandle = handle;
         setClip(clipIdle);
         Pump(engine, 500);
+
+        // Spawn ground settle (deferred): the engine streams terrain around the
+        // player model; until the spawn region arrives the loader returns zeros
+        // (observed with RC_SPAWN in a region the map-default camera had not
+        // streamed). Pump frames, then re-place the actor once real heights
+        // arrive (same-name AddDummyModel keeps the handle).
+        if (Env("RC_SPAWN_Y", "0") != "1" && sampler != null)
+        {
+            bool settleDbg = Env("RC_SETTLE_DBG", "0") == "1";
+            long warm = Environment.TickCount;
+            // The loader can be mid-stream right after the actor appears: wait
+            // until the sampled value stops changing (bounded 2 s), then accept
+            // it. Waiting for a NON-zero value is wrong - a genuine 0-height
+            // spot (e.g. the low ground west of the 龙门 mesa) stalled 10 s and
+            // never recovered (2026-10-04 run).
+            float g = sampler.Sample(px, pz);
+            float prev = g;
+            Pump(engine, 250);
+            g = sampler.Sample(px, pz);
+            while (g != prev && Environment.TickCount - warm < 2000)
+            {
+                if (settleDbg)
+                    Log(string.Format("spawn settle sample={0:F1} t={1}ms", g, Environment.TickCount - warm));
+                prev = g;
+                Pump(engine, 250);
+                g = sampler.Sample(px, pz);
+            }
+            if (Math.Abs(g - py) > 0.5f)
+            {
+                py = g;
+                placePlayer(px, py, pz, curYaw);
+            }
+            Log(string.Format("spawn ground settle took {0}ms py={1:F0}",
+                Environment.TickCount - warm, py));
+        }
 
         // ---------------- target selection state (Targeting.cs) ----------------
         // Target HUD art/layout comes from the game client's own UI files
@@ -1098,6 +1152,8 @@ internal static class RebornClient
         bool modeSwitched = false;
         bool demo = Env("RC_DEMO", "0") == "1", demoJumped = false, demoJumped2 = false, demoTurned = false, demoSkilled = false;
         bool demoCollide = Env("RC_DEMO_COLLIDE", "0") == "1", demoTeleported = false;
+        bool demoCrossBack = Env("RC_CROSS_BACK", "0") == "1", demoCrossBackDone = false;
+        bool demoCrossLogged = false;
         bool supDbg = Env("RC_SUPDBG", "0") == "1";
         int supDbgN = 0;
         bool camDemo = Env("RC_CAM_DEMO", "0") == "1";
@@ -2108,7 +2164,28 @@ internal static class RebornClient
             if (demoCollide)
             {
                 if (demoTeleport && now >= 2000 && !demoTeleported) { demoTeleported = true; teleportToStructure = true; }
-                pW = now >= 3000 && now < 9000;
+                if (demoCrossBack)
+                {
+                    // terrain streaming A/B harness: run RC_DEMO_DIR one way
+                    // across a region border for 7.5 s, reverse, run 5.5 s back
+                    // (RC_SPAWN near the border). Region-load telemetry is
+                    // logged per load + summarized at exit.
+                    if (now >= 3000 && !demoCrossLogged)
+                    {
+                        demoCrossLogged = true;
+                        Log(string.Format("cross run start dir=({0:F1},{1:F1}) pos=({2:F0},{3:F0})",
+                            demoDirX, demoDirZ, px, pz));
+                    }
+                    if (now >= 10500 && !demoCrossBackDone)
+                    {
+                        demoCrossBackDone = true;
+                        demoDirX = -demoDirX; demoDirZ = -demoDirZ;
+                        Log(string.Format("cross run reverse dir=({0:F1},{1:F1}) pos=({2:F0},{3:F0})",
+                            demoDirX, demoDirZ, px, pz));
+                    }
+                    pW = now >= 3000 && now < 16000;
+                }
+                else pW = now >= 3000 && now < 9000;
             }
             // scripted jump-only probe (RC_DEMO_JUMP=1): one full jump at t=5.5 s
             // (lands on a heartbeat sample mid-air), no walking - vertical
@@ -2362,6 +2439,12 @@ internal static class RebornClient
                 // camera shake on the cast (host default; per-skill shake rows
                 // are data-gated)
                 camShake.Start(2.0, 0.5, 0.8, 3);
+                if (skillWav != null)
+                {
+                    bool played = PlaySound(skillWav, IntPtr.Zero,
+                        SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
+                    Log("sound: skill wav play rc=" + played);
+                }
                 Log("skill cast");
             }
 
@@ -3521,6 +3604,7 @@ internal static class RebornClient
             catch (Exception e) { Log("camera system ex: " + e.Message); }
 
             engine.FrameMove();
+            if (soundReady) { try { sound.FrameMove(); } catch { } }
             // Step C test: write the model's exact placement into a post-process
             // camera record BETWEEN FrameMove and Render (bypasses the clamp)
             if (camPreIdx >= 0 && preSet && CameraShim.Available &&
@@ -4089,6 +4173,7 @@ internal static class RebornClient
             }
             if (autoRunMs > 0 && now >= autoRunMs) break;
         }
+        if (sampler != null) Log("terrain stats " + sampler.StatsLine());
         Log("DONE");
     }
 
@@ -4220,6 +4305,12 @@ internal static class RebornClient
         }
         return list.ToArray();
     }
+
+    // Provisional skill sound: the decoded FLWS WAV (SOUND_PATH.md) played via
+    // winmm, because the engine's tani SoundTag does not fire in the host.
+    [DllImport("winmm.dll", CharSet = CharSet.Auto)]
+    static extern bool PlaySound(string pszSound, IntPtr hmod, uint fdwSound);
+    const uint SND_ASYNC = 0x0001, SND_NODEFAULT = 0x0002, SND_FILENAME = 0x00020000;
 
     static void Pump(KGEngineCLR engine, int ms)
     {

@@ -6,20 +6,45 @@ Usage: python tools/pvp/verify_pvp_evidence.py
 """
 from __future__ import annotations
 
+import os
 import sys
 from collections import Counter
 from pathlib import Path
 
-MAPLIST = Path(
-    r"C:\Users\Zhibin Ren\Desktop\reborn-netcode\proof\netcode\mode_juejing"
-    r"\pak_out2\MapList.tab"
-)
-SKILLS = Path(
-    r"C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4"
-    r"\jx3-web-map-viewer\cache-extraction\pakv4-probe"
-    r"\logic-skill-prefixed-out\settings\skill\skills.tab"
-)
-MODES = Path("proof/pvp/modes")
+REPO = Path(__file__).resolve().parents[2]
+
+
+def _source(env_name: str, candidates: list[Path], what: str) -> Path:
+    """Resolve an extracted source table: env override, then repo-relative
+    candidates; hard error (exit 2) when none exists - never verify against a
+    missing file."""
+    v = os.environ.get(env_name)
+    if v:
+        p = Path(v)
+        if p.is_file():
+            return p
+        print(f"source missing for {what}: {env_name}={p}", file=sys.stderr)
+        raise SystemExit(2)
+    for p in candidates:
+        if p.is_file():
+            return p
+    print(f"source missing for {what}; set {env_name}. Tried:", file=sys.stderr)
+    for p in candidates:
+        print(f"  {p}", file=sys.stderr)
+    raise SystemExit(2)
+
+
+MAPLIST = _source("REBORN_MAPLIST", [
+    REPO / "proof/minimap/client_settings/MapList.tab",
+    REPO / "proof/netcode/mode_juejing/pak_out2/MapList.tab",
+], "MapList.tab")
+SKILLS = _source("REBORN_SKILLS", [
+    Path(r"C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4"
+         r"\jx3-web-map-viewer\cache-extraction\pakv4-probe"
+         r"\logic-skill-prefixed-out\settings\skill\skills.tab"),
+    REPO / "proof/netcode/skill_data/skills.tab",
+], "skills.tab")
+MODES = REPO / "proof/pvp/modes"
 
 
 def load(p: Path):

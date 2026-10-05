@@ -22,9 +22,9 @@ deviates from the engine · **[SERVER]** server-owned, out of client scope.
 | Holes (`LoadHoleRegion`, vt[4]) | **[OK]** | this branch; Z-flip A/B verified region 0,0; fall-through confirmed |
 | Hole A/B on other regions/maps | **[PART]** | only 海岛绝境 region (0,0) compared |
 | Terrain slope model (`ProcessDropSpeed`: cell slope projection, `Vz=0` air-stop) | **[MISSING]** | host snaps onto any rise (see 4., over-permissive) |
-| R32 detail heights | **[MISSING] (not needed)** | BCH is authoritative; R32 relation unresolved (§7.6) |
+| R32 detail heights | **[RESOLVED 2026-10-04]** | same field as BCH: BCH = per-region normalized [0,1], row-flipped; `r32 = r32_min + bch_flip*(r32_max-r32_min)` (residual 2e-8); header floats semantics open — `docs/movement/TERRAIN_R32_BCH_RELATION.md` |
 | Terrain normals/materials | **[MISSING]** | not exposed by the sampler |
-| Streaming | **[PART]** | engine streams; sampler caches 1 region; spawn warmup handles region lag |
+| Streaming | **[PART - cache 2026-10-04]** | engine streams; sampler keeps a bounded LRU of regions (`RC_TERR_CACHE`, default 4) — kills border ping-pong reloads (16-85 loads/17 s -> 3, 0 per crossing), `docs/movement/TERRAIN_REGION_STREAMING.md`; spawn warmup handles region lag |
 
 ## 2. Static world (structures, bake)
 
@@ -56,7 +56,7 @@ deviates from the engine · **[SERVER]** server-owned, out of client scope.
 | Capsule convention (feet = capsule bottom) | **[OK — new]** | axis `py+radius … py+height−radius`; removed the below-feet artifact |
 | PhysX CCT defaults (stepOffset 0.5 m, slope 45°, contactOffset 0.1) | **[PART]** | recovered from the shipped DLL; **step applied, slope not**; gameplay applicability unproven (`G-1/G-13`) |
 | Step-up (climb obstacles whose top ≤ step budget) | **[OK — new]** | contact-local top + `lowTop`; budget = 64 u = 1 尺 ground tolerance (field case: 51 u house floors); **CCT up-sweep: the raise must clear the blocker** (wall-ledge ladders block, no embedding, `CapsuleBlocked`); `RC_STEP_HEIGHT` |
-| Contact offset / skin | **[MISSING]** | not modelled |
+| Contact offset / skin | **[N/A — 2026-10-05]** | `contactOffset` 0.1 m is a `PxControllerDesc` **ctor default** (`pxcontrollerdesc_ctor.txt` +0x38); the online body is the SIMWorld/KCharacter solver (`bAddPlayerPhysicsActor=0`) with no recovered consumer/value (G-1). Same disposition as `stepOffset` 0.5 m — the ctor default is not the gameplay value (kept 64 u, commit `1a20b96`). Re-open only if the online character is proven to use the PxController (then apply 0.1 m) or a SIMWorld skin value is recovered |
 
 ## 5. Movement & ground
 

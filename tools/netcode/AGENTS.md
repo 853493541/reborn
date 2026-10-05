@@ -14,7 +14,7 @@ Static, read-only research against the JX3 client install. Nothing here may writ
 - Python stdlib-first, run with `.venv\Scripts\python.exe`; no new dependencies.
 - `reference/jx3_model.py` is the runnable spec model — **10x PASS must stay green**.
   The contract lives in `docs/netcode/REBORN_SERVER_SPEC.md`.
-- `loot/capture.py selftest` = 8 checks; keep green.
+- `loot/capture.py selftest` = 9 checks; keep green.
 - Prefer official Seasun extractors (`bin64\PakV4SfxExtract.exe`, `extract_hpkg_member.py`).
 - Evidence only from code: binaries/IL/tables (root `AGENTS.md` §5). `interface\`
   userdata is player perspective — never mechanism evidence.
