@@ -1940,3 +1940,16 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   (game-stack entangled) or a pak-level keep-check entry; the MovieEditor-engine path is
   the proven character renderer.
 - Evidence: me_getunit.txt, mddump output, host_f1npc1.out, host_f1npc1.png stats.
+
+## 2026-10-04 — Direction clarified (real client engine only); RL-name cfg attempts still fault (needs a real master)
+
+- Direction: the product path is the REAL GAME CLIENT engine (`zhcn_hd\bin64`: JX3RepresentX64,
+  Engine_Lua5X64, KG3DEngineDX11EX64) - `client_host` already runs it. MovieEditor is a
+  reference/visual resource only; the earlier "pivot" suggestion was withdrawn.
+- Probe: `CreateHangPet` with RL-style cfg names (szRoot/szMdl = "F1" / "F1.mdl" /
+  "Represent/player/F1...") - all three attempts fault (SEH, returned -1); the HangPet core
+  requires a real master (character) and its RL actor creation throws - the represent/player
+  system wall remains (same as the 15-object Init).
+- Next client-engine probe: log C++ exceptions (VEH 0xE06D7363 + exception object type name)
+  to identify exactly what `HangPetCore::Init` needs, then supply it.
+- Evidence: host_char_rl20.out.

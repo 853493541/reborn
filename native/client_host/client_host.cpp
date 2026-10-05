@@ -728,6 +728,7 @@ static volatile LONG g_repProbePending = 0;
 static volatile LONG g_rlProbePending = 0;
 static void* g_repSingleton = NULL;
 static void* g_rlCtx = NULL;
+static void* g_lastPet = NULL;
 static HMODULE g_repModule = NULL;
 static void* g_lastEntity = NULL;
 
@@ -1955,20 +1956,43 @@ int main(void)
                             memset(fakeMaster, 0, sizeof(fakeMaster));
                             memset(fakeFrame, 0, sizeof(fakeFrame));
                             *(void**)(fakeMaster + 0x39F0) = fakeFrame;
-                            unsigned char cfg[0x60];
-                            memset(cfg, 0, sizeof(cfg));
-                            *(const char**)(cfg + 0x00) = "Data\\source\\player\\F1";
-                            *(const char**)(cfg + 0x08) =
-                                "Data\\source\\player\\F1\\\xE9\x83\xA8\xE4\xBB\xB6\\Mdl\\F1.mdl";
-                            *(const char**)(cfg + 0x10) = "";
-                            *(float*)(cfg + 0x18) = 1.0f;
+                            // cfg layout (Lua binding): +0x00 szRoot, +0x08 szMdl,
+                            // +0x10 szBone, +0x18 fScale. The RL system resolves RL
+                            // resource names (GetUnit('F1') works), not source file
+                            // paths - try RL-style names (each attempt SEH-guarded).
+                            static const char* combos[][2] = {
+                                { "F1", "F1" },
+                                { "F1", "F1.mdl" },
+                                { "Represent/player/F1", "Represent/player/F1/F1.mdl" },
+                            };
                             typedef void* (__fastcall *CreateHangPetFn)(
                                 void*, unsigned, unsigned, int, void*, int, void*);
-                            void* pet = ((CreateHangPetFn)
-                                         ((BYTE*)g_repModule + 0x42D1F0))(
-                                g_rlCtx, sceneId, 6, 0, fakeMaster, 1, cfg);
-                            logf("[host] RL CreateHangPet(ctx=%p, scene=%u, id=6, 0, fakeMaster, type=1, cfg[F1]) -> %p",
-                                 g_rlCtx, sceneId, pet);
+                            for (int ci = 0; ci < 3; ci++)
+                            {
+                                unsigned char cfg[0x60];
+                                memset(cfg, 0, sizeof(cfg));
+                                *(const char**)(cfg + 0x00) = combos[ci][0];
+                                *(const char**)(cfg + 0x08) = combos[ci][1];
+                                *(const char**)(cfg + 0x10) = "";
+                                *(float*)(cfg + 0x18) = 1.0f;
+                                void* pet = NULL;
+                                __try
+                                {
+                                    pet = ((CreateHangPetFn)
+                                           ((BYTE*)g_repModule + 0x42D1F0))(
+                                        g_rlCtx, sceneId, 6, 0, fakeMaster, 1, cfg);
+                                }
+                                __except (EXCEPTION_EXECUTE_HANDLER)
+                                { pet = (void*)-1; }
+                                logf("[host] RL CreateHangPet cfg[%d] szRoot='%s' szMdl='%s' -> %p",
+                                     ci, combos[ci][0], combos[ci][1], pet);
+                                if (pet != NULL && pet != (void*)-1)
+                                {
+                                    g_lastPet = pet;
+                                    break;
+                                }
+                            }
+                            void* pet = g_lastPet;
                             if (pet != NULL)
                             {
                                 int partsA[13];
