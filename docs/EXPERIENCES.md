@@ -4178,3 +4178,24 @@ if the cache/host frames appear.
 - Handoff: in `reborn-iso-terrain-stream-holes`, commit/stash WIP then
   `git merge --ff-only agent/render-options` (or plain merge if new commits landed) and
   rebuild the feature client - the compile list now includes `client/VideoOptions.cs`.
+
+### 2026-10-05 - Merge - agent/terrain-stream-holes into main (all tracks)
+
+- Merged `agent/terrain-stream-holes` (`1928387`) into main with `--no-ff` (`19232f9`).
+  The branch already contained `main` (`4d985a4`) and had absorbed `agent/audio-host`
+  (`3a01ecf`) and `agent/render-options` (`1928387`), so the merge was conflict-free
+  (`git merge-tree --write-tree` exit 0) and the merged tree equals the branch tree.
+- Contents: terrain 1.3 (region LRU cache + telemetry, hole A/B on all hole-bearing
+  maps, R32<->BCH relation, spawn settle), small fixes (tooling hygiene, map-quality
+  probe, contact-offset N/A, audio step 1 provisional), predraw fast startup
+  (`RC_STARTUP=nodb`, D7) and render-options 1.8-1.10 (`VideoOptions` apply path,
+  preset census, weather decode, LOD/cull reference).
+- Gates on the merged tree: unique feature build exit 0; `camera_smoke_terrainstream`
+  ALL PASS; combined smoke `reborn_20261005_144117.log` (Init3DEngine 3,157 ms,
+  `RC_QUALITY=1` applied, settle 250 ms, `terrLoads=2` 0 per crossing, clean DONE);
+  collision 36/36; gravity PASS; `jx3_model` 10x PASS; loot selftest PASS.
+- Canonical `reborn_client.exe` + sandbox `reborn_client_mini.exe` rebuilds are
+  blocked by running clients (`reborn_client` PID 26676 started 13:55:38,
+  `reborn_client_mini` PID 12904 started 14:05:32) - rebuild + relaunch once those
+  windows are closed.
+- Local only: not pushed to origin.
