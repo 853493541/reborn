@@ -19,6 +19,9 @@ namespace UiProcessApp
         private Canvas _layoutCanvas;
         private WindowInfo _currentWindow;
         private Dictionary<string, string> _rejected;
+        /// <summary>Per-window render status from Data/render_status.tsv (P1 badge:
+        /// placeholders/unresolved/outOfBounds + shell/runtime-host flags).</summary>
+        private Dictionary<string, string> _status;
 
         // Render speed: the resolver/texture cache is shared across renders (atlas TGAs
         // decode once per session) and built layouts are cached per window/page/hide so
@@ -58,10 +61,12 @@ namespace UiProcessApp
             _inventory = LoadInventory();
             _rejected = RejectionStore.Load(Paths.AppRoot);
             RejectionStore.Apply(_inventory, _rejected);
+            _status = LoadStatus();
             BuildTree(null);
             StatusText.Text =
                 $"assets={Paths.AppRoot}   ui={(Paths.ProofUiRoot != null ? Paths.ProofUiRoot : Path.Combine(Paths.AppRoot, "assets", "ui"))}   " +
-                $"strings={Strings.Table.Count}   |   X: 标记不需要 / 再按 X 恢复";
+                $"strings={Strings.Table.Count}   status={(_status != null ? _status.Count.ToString(CultureInfo.InvariantCulture) : "none")}   " +
+                "|   X: 标记不需要 / 再按 X 恢复";
             if (StageTree.Items.Count > 0 && StageTree.Items[0] is TreeViewItem firstStage && firstStage.Items.Count > 0)
             {
                 // Open on the catalog item currently being worked on
@@ -101,6 +106,35 @@ namespace UiProcessApp
             throw new FileNotFoundException("ui_inventory.json not found next to the app or in Data/.");
         }
 
+        private Dictionary<string, string> LoadStatus()
+        {
+            var candidates = new[]
+            {
+                Path.Combine(AppContext.BaseDirectory, "Data", "render_status.tsv"),
+                Path.Combine(Paths.AppRoot, "Data", "render_status.tsv"),
+            };
+            foreach (var path in candidates)
+            {
+                if (!File.Exists(path)) continue;
+                var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                foreach (var line in File.ReadAllLines(path))
+                {
+                    if (string.IsNullOrWhiteSpace(line) || line[0] == '#') continue;
+                    var parts = line.Split('\t');
+                    if (parts.Length < 15 || parts[0] == "id") continue;
+                    map[parts[0]] = $"ph={parts[7]} str={parts[8]} oob={parts[9]}  {parts[14]}";
+                }
+                if (map.Count > 0) return map;
+            }
+            return null;
+        }
+
+        private string StatusNote(WindowInfo window)
+        {
+            if (window == null || _status == null || !_status.TryGetValue(window.Id, out var s)) return "";
+            return "  |  status: " + s;
+        }
+
         private void BuildTree(string filter)
         {
             StageTree.Items.Clear();
@@ -137,7 +171,7 @@ namespace UiProcessApp
                     {
                         Header = Number(window) + "  " + name,
                         Foreground = new SolidColorBrush(Color.FromRgb(0xDD, 0xDD, 0xDD)),
-                        ToolTip = window.Title,
+                        ToolTip = window.Title + StatusNote(window),
                         Tag = window,
                     });
                 }
@@ -574,7 +608,7 @@ namespace UiProcessApp
             if (Math.Abs(ZoomSlider.Value - _zoom) > 0.001) ZoomSlider.Value = _zoom;
             _settingZoom = false;
             LayoutScroll.ScrollToHome();
-            AssetNote.Text = note;
+            AssetNote.Text = note + StatusNote(_currentWindow);
         }
 
         private static string LayoutCacheKey(WindowInfo window, string page, string hideText)
@@ -606,6 +640,7 @@ namespace UiProcessApp
             note = "";
             message = null;
             var plan = LayoutPlanBuilder.Build(sourceIni, page);
+            LayoutPlanBuilder.ApplyAppendIni(plan.Filtered, window.AppendIni, App.LoadIniTolerant);
             LayoutPlanBuilder.ApplyHide(plan.Filtered, hideText);
             LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
             LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
@@ -969,6 +1004,9 @@ namespace UiProcessApp
         public List<ImageOverride> Images { get; set; }
         public List<AppendSpec> Appends { get; set; }
         public List<ListTemplate> Lists { get; set; }
+        /// <summary>Second INIs appended under a handle at runtime (TargetCommon into
+        /// the target frame's Handle_Energy; see LayoutPlan.AppendIniSpec).</summary>
+        public List<AppendIniSpec> AppendIni { get; set; }
         /// <summary>Window placement on the client (AnchorDst=client): the client
         /// draws this window at this offset (e.g. the MiddleMap sits 33 px below the
         /// WorldMap band that stays at the client top). Renders shift the window

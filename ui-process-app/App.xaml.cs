@@ -47,6 +47,18 @@ namespace UiProcessApp
                 Shutdown(exit);
                 return;
             }
+            if (e.Args.Contains("--status"))
+            {
+                var exit = RunStatus(e.Args);
+                Shutdown(exit);
+                return;
+            }
+            if (e.Args.Contains("--contact-sheet"))
+            {
+                var exit = RunContactSheet(e.Args);
+                Shutdown(exit);
+                return;
+            }
             if (e.Args.Contains("--reject"))
             {
                 var exit = RunReject(e.Args);
@@ -226,6 +238,7 @@ namespace UiProcessApp
                     effectivePage = null; // viewer pages are state, not INI Page_* tabs
                 }
                 var plan = LayoutPlanBuilder.Build(ini, effectivePage);
+                LayoutPlanBuilder.ApplyAppendIni(plan.Filtered, window.AppendIni, LoadIniTolerant);
                 LayoutPlanBuilder.ApplyHide(plan.Filtered, hide ?? window.Hide);
                 LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
                 LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
@@ -502,6 +515,7 @@ namespace UiProcessApp
 
                         var ini = IniFile.Load(iniPath);
                         var plan = LayoutPlanBuilder.Build(ini, window.Page);
+                        LayoutPlanBuilder.ApplyAppendIni(plan.Filtered, window.AppendIni, LoadIniTolerant);
                         LayoutPlanBuilder.ApplyHide(plan.Filtered, window.Hide);
                         LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
                         LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
@@ -576,6 +590,309 @@ namespace UiProcessApp
         }
 
         /// <summary>
+        /// Compact per-window render status for the review badges (P1 of
+        /// docs/ui/UI_RENDER_FIDELITY_PLAN.md):
+        ///   UiProcessApp.exe --status [--out file.tsv]
+        /// Writes id/stage/size/sections/elements/leaves/placeholders/unresolved/
+        /// outOfBounds/pages/page/lsh/hosts/flags and prints stage totals.
+        /// </summary>
+        private static int RunStatus(string[] args)
+        {
+            try
+            {
+                string outPath = null;
+                for (int i = 0; i < args.Length - 1; i++)
+                    if (args[i] == "--out") outPath = args[i + 1];
+
+                Paths.Locate();
+                var inventoryPath = Path.Combine(AppContext.BaseDirectory, "Data", "ui_inventory.json");
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var inventory = JsonSerializer.Deserialize<Inventory>(File.ReadAllText(inventoryPath), options);
+
+                var assets = new AssetResolver(Paths.ResolveRoots());
+                var textures = new UiTexCache(assets);
+                var report = new StringBuilder();
+                report.AppendLine("id\tstage\tw\th\tsections\telements\tleaves\tplaceholders\tunresolved\toutOfBounds\tpages\tpage\tlsh\thosts\tflags");
+
+                var stageStats = new List<string>();
+                int totalShell = 0, totalRuntime = 0, totalPlaced = 0;
+
+                foreach (var stage in inventory.Stages)
+                {
+                    int n = 0, shell = 0, runtime = 0, placed = 0;
+                    foreach (var window in stage.Windows ?? new List<WindowInfo>())
+                    {
+                        if (string.IsNullOrWhiteSpace(window.Path)) continue;
+                        var filtered = BuildWindowPlan(window, out var ini);
+                        if (filtered == null) continue;
+                        var build = UiLayout.Build(filtered, assets, textures);
+
+                        double width = filtered.Sections[0].GetInt("Width");
+                        double height = filtered.Sections[0].GetInt("Height");
+                        if (width <= 0) width = 1280;
+                        if (height <= 0) height = 720;
+
+                        var host = new Border { Width = width, Height = height, Child = build.Root };
+                        host.Measure(new Size(width, height));
+                        host.Arrange(new Rect(0, 0, width, height));
+                        host.UpdateLayout();
+
+                        int leaves = 0, outOfBounds = 0;
+                        foreach (var pair in build.Elements)
+                        {
+                            var element = pair.Value;
+                            if (element.Visibility != Visibility.Visible) continue;
+                            if (element.ActualWidth <= 0 && element.ActualHeight <= 0) continue;
+                            if (build.Sections.TryGetValue(pair.Key, out var section))
+                            {
+                                var type = section.Get("._WndType") ?? "";
+                                if (type.Equals("Image", StringComparison.OrdinalIgnoreCase) ||
+                                    type.Equals("Text", StringComparison.OrdinalIgnoreCase) ||
+                                    type.Equals("WndButton", StringComparison.OrdinalIgnoreCase) ||
+                                    type.Equals("WndCheckBox", StringComparison.OrdinalIgnoreCase))
+                                    leaves++;
+                            }
+                            try
+                            {
+                                var p = element.TransformToAncestor(build.Root).Transform(new Point(0, 0));
+                                if (p.X < -1 || p.Y < -1 ||
+                                    p.X + element.ActualWidth > width + 1 ||
+                                    p.Y + element.ActualHeight > height + 1)
+                                    outOfBounds++;
+                            }
+                            catch { }
+                        }
+
+                        var parentNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                        foreach (var section in filtered.Sections)
+                        {
+                            var parent = section.Get("._Parent");
+                            if (!string.IsNullOrWhiteSpace(parent)) parentNames.Add(parent);
+                        }
+                        int hosts = 0;
+                        foreach (var section in filtered.Sections)
+                        {
+                            var type = section.Get("._WndType") ?? "";
+                            if (!(type.Equals("Handle", StringComparison.OrdinalIgnoreCase) ||
+                                  type.Equals("Box", StringComparison.OrdinalIgnoreCase) ||
+                                  type.Equals("WndList", StringComparison.OrdinalIgnoreCase) ||
+                                  type.Equals("WndScroll", StringComparison.OrdinalIgnoreCase) ||
+                                  type.Equals("WndContainer", StringComparison.OrdinalIgnoreCase) ||
+                                  type.Equals("WndFlexContainer", StringComparison.OrdinalIgnoreCase)))
+                                continue;
+                            if (!parentNames.Contains(section.Name)) hosts++;
+                        }
+
+                        int lsh = ini.Sections.Count(s => s.GetInt("LockShowAndHide") == 1);
+                        var pages = ini.Sections.Count(s => s.Name.StartsWith("Page_", StringComparison.OrdinalIgnoreCase));
+                        var flags = new List<string>();
+                        if (width <= 0 || height <= 0) flags.Add("host");
+                        if (leaves <= 2) flags.Add("shell");
+                        if (hosts >= 1) flags.Add("runtime-hosts=" + hosts);
+                        if (pages > 0 && string.IsNullOrWhiteSpace(window.Page))
+                            flags.Add("pages=" + pages + " no-default");
+                        if (outOfBounds > 0) flags.Add("oob=" + outOfBounds);
+                        if (build.Placeholders.Count > 0) flags.Add("ph=" + build.Placeholders.Count);
+                        if (build.UnresolvedStrings.Count > 0) flags.Add("str=" + build.UnresolvedStrings.Count);
+                        if (flags.Count == 0) flags.Add("ok");
+
+                        n++;
+                        if (leaves <= 2) shell++;
+                        if (hosts >= 1) runtime++;
+                        if (width > 0 && height > 0) placed++;
+                        report.AppendLine(string.Join("\t", new[]
+                        {
+                            window.Id, stage.Id,
+                            width.ToString("0", System.Globalization.CultureInfo.InvariantCulture),
+                            height.ToString("0", System.Globalization.CultureInfo.InvariantCulture),
+                            filtered.Sections.Count.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            build.Elements.Count.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            leaves.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            build.Placeholders.Count.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            build.UnresolvedStrings.Count.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            outOfBounds.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            pages.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            window.Page ?? "",
+                            lsh.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            hosts.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            string.Join(",", flags),
+                        }));
+                    }
+                    stageStats.Add($"# stage {stage.Id}: windows={n} placed={placed} shell={shell} runtime-hosts={runtime}");
+                    totalShell += shell;
+                    totalRuntime += runtime;
+                    totalPlaced += placed;
+                }
+                foreach (var line in stageStats) report.AppendLine(line);
+                report.AppendLine($"# total: shell={totalShell} runtime-hosts={totalRuntime} placed={totalPlaced}");
+
+                outPath ??= Path.Combine(Paths.AppRoot, "Data", "render_status.tsv");
+                File.WriteAllText(outPath, report.ToString());
+                Console.WriteLine($"status -> {outPath}");
+                foreach (var line in stageStats) Console.WriteLine(line);
+                Console.WriteLine($"# total: shell={totalShell} runtime-hosts={totalRuntime} placed={totalPlaced}");
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("status failed: " + ex.Message);
+                return 1;
+            }
+        }
+
+        /// <summary>
+        /// Renders every window of one stage into a labeled thumbnail grid (P2 of
+        /// docs/ui/UI_RENDER_FIDELITY_PLAN.md):
+        ///   UiProcessApp.exe --contact-sheet &lt;stageId|title|number&gt; [--out sheet.png] [--cols N] [--max N]
+        /// </summary>
+        private static int RunContactSheet(string[] args)
+        {
+            try
+            {
+                string stageArg = null, outPath = null;
+                int cols = 4, max = 80;
+                for (int i = 0; i < args.Length - 1; i++)
+                {
+                    if (args[i] == "--contact-sheet") stageArg = args[i + 1];
+                    else if (args[i] == "--out") outPath = args[i + 1];
+                    else if (args[i] == "--cols") int.TryParse(args[i + 1], out cols);
+                    else if (args[i] == "--max") int.TryParse(args[i + 1], out max);
+                }
+                if (string.IsNullOrWhiteSpace(stageArg))
+                    throw new ArgumentException("--contact-sheet needs a stage id, title or 1-based number");
+                if (cols < 1) cols = 4;
+
+                Paths.Locate();
+                var inventoryPath = Path.Combine(AppContext.BaseDirectory, "Data", "ui_inventory.json");
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var inventory = JsonSerializer.Deserialize<Inventory>(File.ReadAllText(inventoryPath), options);
+
+                StageInfo stage = null;
+                int stageIndex = -1;
+                for (int i = 0; i < inventory.Stages.Count; i++)
+                {
+                    var s = inventory.Stages[i];
+                    if (string.Equals(s.Id, stageArg, StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(s.Title, stageArg, StringComparison.OrdinalIgnoreCase) ||
+                        (int.TryParse(stageArg, out var n) && n == i + 1))
+                    {
+                        stage = s;
+                        stageIndex = i;
+                        break;
+                    }
+                }
+                if (stage == null) throw new ArgumentException($"stage '{stageArg}' not found");
+
+                var assets = new AssetResolver(Paths.ResolveRoots());
+                var textures = new UiTexCache(assets);
+                var rejected = RejectionStore.Load(Paths.AppRoot) ?? new Dictionary<string, string>();
+                int rejectedInStage = (stage.Windows ?? new List<WindowInfo>()).Count(w => rejected.ContainsKey(w.Id));
+                var windows = (stage.Windows ?? new List<WindowInfo>())
+                    .Where(w => !string.IsNullOrWhiteSpace(w.Path) && !rejected.ContainsKey(w.Id))
+                    .Take(max).ToList();
+                if (windows.Count == 0) throw new ArgumentException("stage has no renderable windows");
+
+                const double cellW = 320, cellH = 240, pad = 8, labelH = 24;
+                int rows = (windows.Count + cols - 1) / cols;
+                int sheetW = (int)(cols * cellW);
+                int sheetH = (int)(labelH + rows * (cellH + labelH + pad) + pad);
+                var titleFace = new Typeface("Microsoft YaHei");
+                var labelFace = new Typeface("Microsoft YaHei");
+                var white = new SolidColorBrush(Color.FromRgb(0xEC, 0xEC, 0xEC));
+                var gray = new SolidColorBrush(Color.FromRgb(0x9A, 0x9A, 0x9A));
+                var borderPen = new Pen(new SolidColorBrush(Color.FromRgb(0x3A, 0x3E, 0x44)), 1);
+
+                var visual = new DrawingVisual();
+                using (var dc = visual.RenderOpen())
+                {
+                    dc.DrawRectangle(new SolidColorBrush(Color.FromRgb(0x18, 0x1A, 0x1E)), null,
+                        new Rect(0, 0, sheetW, sheetH));
+                    dc.DrawText(new FormattedText(
+                            $"{stageIndex + 1}. {stage.Title}  ({windows.Count} windows" +
+                            (rejectedInStage > 0 ? $", {rejectedInStage} rejected hidden" : "") + ")",
+                            System.Globalization.CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                            titleFace, 16, white, 1.0),
+                        new Point(8, 3));
+
+                    for (int i = 0; i < windows.Count; i++)
+                    {
+                        var window = windows[i];
+                        int col = i % cols, row = i / cols;
+                        double x = col * cellW;
+                        double y = labelH + row * (cellH + labelH + pad);
+                        var name = string.IsNullOrWhiteSpace(window.Cn) ? window.Title : window.Cn;
+                        var label = $"{stageIndex + 1}.{i + 1}  {name}";
+                        try
+                        {
+                            var filtered = BuildWindowPlan(window, out _);
+                            if (filtered == null)
+                            {
+                                dc.DrawText(new FormattedText(label + "  (no INI)", System.Globalization.CultureInfo.CurrentCulture,
+                                    FlowDirection.LeftToRight, labelFace, 13, gray, 1.0), new Point(x + 6, y + 4));
+                                continue;
+                            }
+                            var build = UiLayout.Build(filtered, assets, textures);
+                            double width = filtered.Sections[0].GetInt("Width");
+                            double height = filtered.Sections[0].GetInt("Height");
+                            if (width <= 0) width = 1280;
+                            if (height <= 0) height = 720;
+                            var host = new Border
+                            {
+                                Width = width,
+                                Height = height,
+                                Background = BackdropBrush(window),
+                                Child = build.Root,
+                            };
+                            host.Measure(new Size(width, height));
+                            host.Arrange(new Rect(0, 0, width, height));
+                            host.UpdateLayout();
+                            var bmp = new RenderTargetBitmap(Math.Max(1, (int)width), Math.Max(1, (int)height),
+                                96, 96, PixelFormats.Pbgra32);
+                            bmp.Render(host);
+
+                            double scale = Math.Min((cellW - pad * 2) / width, (cellH - pad * 2) / height);
+                            if (scale > 1) scale = 1;
+                            double dw = width * scale, dh = height * scale;
+                            double dx = x + (cellW - dw) / 2, dy = y + (cellH - dh) / 2;
+                            dc.DrawImage(bmp, new Rect(dx, dy, dw, dh));
+                            dc.DrawRectangle(null, borderPen, new Rect(dx, dy, dw, dh));
+
+                            dc.DrawText(new FormattedText(label, System.Globalization.CultureInfo.CurrentCulture,
+                                FlowDirection.LeftToRight, labelFace, 13, white, 1.0), new Point(x + 6, y + cellH + 3));
+                            var flags = $"{width:0}x{height:0}  {filtered.Sections.Count}s  " +
+                                        $"{build.Placeholders.Count}ph  {build.UnresolvedStrings.Count}str";
+                            dc.DrawText(new FormattedText(flags, System.Globalization.CultureInfo.CurrentCulture,
+                                FlowDirection.LeftToRight, labelFace, 11, gray, 1.0), new Point(x + 6, y + cellH + 19));
+                        }
+                        catch (Exception ex)
+                        {
+                            dc.DrawText(new FormattedText(label + "  (failed: " + ex.Message + ")",
+                                System.Globalization.CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                                labelFace, 12, gray, 1.0), new Point(x + 6, y + 4));
+                        }
+                    }
+                }
+
+                var sheet = new RenderTargetBitmap(sheetW, sheetH, 96, 96, PixelFormats.Pbgra32);
+                sheet.Render(visual);
+                outPath ??= Path.Combine(AppContext.BaseDirectory, "contact_sheet_" + stage.Id + ".png");
+                using (var stream = File.Create(outPath))
+                {
+                    var encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(sheet));
+                    encoder.Save(stream);
+                }
+                Console.WriteLine($"contact-sheet -> {outPath} windows={windows.Count} size={sheetW}x{sheetH}");
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("contact-sheet failed: " + ex.Message);
+                return 1;
+            }
+        }
+
+        /// <summary>
         /// Sections the window script shows even though they carry
         /// LockShowAndHide=1: the mode tabs (ShowModeTabs) plus the inventory's
         /// script-shown list (e.g. the activity badges of the tab row).
@@ -585,6 +902,9 @@ namespace UiProcessApp
             var shown = new List<string>();
             if (window?.Show != null) shown.AddRange(window.Show);
             if (window?.Tabs?.Show != null) shown.AddRange(window.Tabs.Show);
+            if (window?.AppendIni != null)
+                foreach (var spec in window.AppendIni)
+                    if (spec?.Show != null) shown.AddRange(spec.Show);
             return shown;
         }
 
@@ -649,6 +969,56 @@ namespace UiProcessApp
             foreach (var candidate in candidates)
                 if (File.Exists(candidate)) return IniFile.Load(candidate);
             throw new FileNotFoundException($"list template ini '{relative}' not found");
+        }
+
+        /// <summary>Tolerant variant for optional second INIs (appendIni): missing
+        /// sources leave the window renderable instead of failing the build.</summary>
+        internal static IniFile LoadIniTolerant(string relative)
+        {
+            try { return LoadTemplateIni(relative); }
+            catch { return null; }
+        }
+
+        /// <summary>
+        /// The full inventory-driven plan pipeline (INI load + page + appendIni +
+        /// hide/skin/anchors/tabs/lists/LSH/appends/texts/images/adjust + viewer page
+        /// state). Shared by the headless status scan and the contact sheet; the
+        /// interactive renderer keeps its own copy because it takes CLI page/hide
+        /// overrides.
+        /// </summary>
+        internal static IniFile BuildWindowPlan(WindowInfo window, out IniFile rawIni)
+        {
+            rawIni = null;
+            if (window == null || string.IsNullOrWhiteSpace(window.Path)) return null;
+            var rel = window.Path.Replace('/', Path.DirectorySeparatorChar);
+            var iniPath = window.Root == "pak"
+                ? Path.Combine(Paths.PakRoot, rel)
+                : Path.Combine(Paths.AppRoot, "assets", "ui", rel);
+            if (!File.Exists(iniPath)) return null;
+            rawIni = IniFile.Load(iniPath);
+            var plan = LayoutPlanBuilder.Build(rawIni, window.Page);
+            LayoutPlanBuilder.ApplyAppendIni(plan.Filtered, window.AppendIni, LoadIniTolerant);
+            LayoutPlanBuilder.ApplyHide(plan.Filtered, window.Hide);
+            LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
+            LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
+            LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs, window.Page);
+            LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, LoadTemplateIni);
+            LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
+            LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
+            LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
+            LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
+            LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+            if (window.Pages != null && window.Pages.Count > 0)
+            {
+                var page = window.Pages.FirstOrDefault(pg =>
+                        string.Equals(pg.Id, window.Page, StringComparison.OrdinalIgnoreCase)) ?? window.Pages[0];
+                LayoutPlanBuilder.ApplyTexts(plan.Filtered, page.Texts);
+                LayoutPlanBuilder.ApplyImages(plan.Filtered, page.Images);
+                LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, page.Adjust);
+                if (page.Hide != null && page.Hide.Count > 0)
+                    LayoutPlanBuilder.ApplyHide(plan.Filtered, string.Join(",", page.Hide));
+            }
+            return plan.Filtered;
         }
 
         /// <summary>

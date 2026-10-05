@@ -1690,6 +1690,29 @@ solved it, and what is still open. **Newest at the bottom.**
   move (last item = matrix, 奇穴).
 - Verified: --selftest 1240/0/0; GUI relaunched.
 
+### 2026-10-04 ? UI ? fidelity plan P1-P3: status scan + badges, contact sheet, TargetCommon append
+- User: "i want you to go for all 3, and then check for completion" (P1/P2/P3 of
+  docs/ui/UI_RENDER_FIDELITY_PLAN.md).
+- P1 `--status` -> `ui-process-app/Data/render_status.tsv` (per window: size/sections/elements/
+  leaves/placeholders/unresolved/outOfBounds/pages/page/lsh/runtime-hosts/flags) + stage totals.
+  The viewer loads it: status bar shows `status=<rows>`, the AssetNote line appends
+  `status: ph=.. str=.. oob=.. flags`, and tree tooltips carry the flags.
+- P2 `--contact-sheet <stageId|title|number> [--out sheet.png] [--cols N] [--max N]`: labeled
+  thumbnail grid for batch review; rejection-aware numbering (reads Data/rejected.tsv so X.Y matches
+  the viewer and the title shows the hidden count). recommended sheet = 14 windows after the
+  reviewer's 34 rejects.
+- P3: `appendIni` engine support (`LayoutPlan.ApplyAppendIni` + `WindowInfo.AppendIni` +
+  ScriptShown merge) and `target-frame` now renders TargetPlayer10 + TargetCommon's Handle_TM under
+  Handle_Energy (36 -> 46 sections; sample kungfu 唐门). Runtime-shell markers delivered through the
+  P1 flags (`shell`, `runtime-hosts=N`, `pages=N no-default`). Remaining: per-list sample rows (the
+  scan quantifies 615 runtime-host windows) and generalized scroll clipping.
+- Completion check: placed=1240 shell=134 runtime-hosts=615; selftest 1240/0/0; rejections respected.
+  Fixed stale `originalStageId` in rejected.tsv for 16 windows the catalog had moved to liked, so an
+  X-restore returns them to liked (not recommended).
+- New shared helper `App.BuildWindowPlan` (status/contact-sheet pipeline) + `App.LoadIniTolerant`.
+- Verified: --selftest 1240/0/0; --status; --contact-sheet recommended (14 windows); target-frame
+  46 sections; GUI relaunched.
+
 ### 2026-10-04 ? UI ? 推荐 1.1-1.15 confirmed -> liked (2.x, 53 total); +20 third batch; fidelity plan
 - User: "good to go for the 15, move them to likes, recommend me 20 more ... we need to improve the
   display ... but first we need a plan".

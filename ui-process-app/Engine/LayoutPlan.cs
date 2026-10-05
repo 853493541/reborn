@@ -196,6 +196,28 @@ namespace UiProcessApp.Engine
     }
 
     /// <summary>
+    /// Runtime multi-INI append: the script pulls a subtree out of another INI and
+    /// attaches it under a handle of the open window — `Target.lua` does
+    /// `Handle_Energy:AppendItemFromIni(TargetCommonPath, &lt;kungfu handle&gt;, nil, true)`
+    /// (Target.decompiled.lua:967-989), so the target frame is TargetPlayer10.ini +
+    /// the selected class handle from TargetCommon.ini. The item keeps its authored
+    /// relative position; its `._Parent` is rewired to `container`.
+    /// </summary>
+    public sealed class AppendIniSpec
+    {
+        public string Container { get; set; }
+        /// <summary>Second INI path relative to the same root as the window's own path.</summary>
+        public string Path { get; set; }
+        /// <summary>Section whose subtree is appended (e.g. TargetCommon's Handle_TM).</summary>
+        public string Item { get; set; }
+        /// <summary>LockShowAndHide=1 sections the script shows for this state (merged
+        /// into the window's script-shown set).</summary>
+        public List<string> Show { get; set; }
+        /// <summary>Sections dropped from the appended subtree.</summary>
+        public List<string> Hide { get; set; }
+    }
+
+    /// <summary>
     /// A viewer-defined page for windows the game switches by data instead of by
     /// `Page_*` sections (the loading screen shows a different map per transfer).
     /// Selecting the page replays its overrides on top of the window's own.
@@ -576,6 +598,63 @@ namespace UiProcessApp.Engine
                 if (flow) section.Values["PosType"] = "9";
                 filtered.Sections.Add(section);
                 filtered.ByName[name] = section;
+            }
+        }
+
+        /// <summary>
+        /// Appends a subtree of a second INI under a container of the filtered plan
+        /// (the Lua's AppendItemFromIni). The item's `._Parent` is rewired to the
+        /// container; descendants keep their chains; names already present are skipped
+        /// (the engine clones, the viewer reuses the authored section names).
+        /// </summary>
+        public static void ApplyAppendIni(IniFile filtered, IEnumerable<AppendIniSpec> specs, Func<string, IniFile> load)
+        {
+            if (specs == null || load == null) return;
+            foreach (var spec in specs)
+            {
+                if (spec == null || string.IsNullOrWhiteSpace(spec.Container) ||
+                    string.IsNullOrWhiteSpace(spec.Path) || string.IsNullOrWhiteSpace(spec.Item)) continue;
+                if (!TryFind(filtered, spec.Container, out _)) continue;
+                var source = load(spec.Path);
+                if (source == null || !TryFind(source, spec.Item, out var item)) continue;
+
+                var hidden = new HashSet<string>(
+                    spec.Hide ?? new List<string>(), StringComparer.OrdinalIgnoreCase);
+                bool Dropped(string name)
+                {
+                    var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    var cursor = name;
+                    while (!string.IsNullOrWhiteSpace(cursor) && seen.Add(cursor))
+                    {
+                        if (hidden.Contains(cursor)) return true;
+                        cursor = source.ByName.TryGetValue(cursor, out var s) ? s.Get("._Parent") : null;
+                    }
+                    return false;
+                }
+
+                foreach (var section in source.Sections)
+                {
+                    var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    var cursor = section.Name;
+                    bool inSubtree = false;
+                    while (!string.IsNullOrWhiteSpace(cursor) && seen.Add(cursor))
+                    {
+                        if (string.Equals(cursor, item.Name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            inSubtree = true;
+                            break;
+                        }
+                        cursor = source.ByName.TryGetValue(cursor, out var s) ? s.Get("._Parent") : null;
+                    }
+                    if (!inSubtree || Dropped(section.Name)) continue;
+                    if (filtered.ByName.ContainsKey(section.Name)) continue;
+                    var clone = new IniSection { Name = section.Name };
+                    foreach (var pair in section.Values) clone.Values[pair.Key] = pair.Value;
+                    if (ReferenceEquals(section, item))
+                        clone.Values["._Parent"] = spec.Container;
+                    filtered.Sections.Add(clone);
+                    filtered.ByName[clone.Name] = clone;
+                }
             }
         }
 

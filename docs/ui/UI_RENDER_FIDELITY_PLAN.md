@@ -49,30 +49,53 @@ thumbnail grid with `X.Y` number + name. Triage 20-40 windows per sheet, open on
 ones in the viewer. Native WPF (no web), reuses the existing render path.
 
 **P3 — runtime replay for T-A (attacks "some are unreasonable").**
-- One sample row per T-A runtime list (extends `lists`; sample data marked placeholder).
-- Multi-INI append (TargetCommon) so the target frame is complete.
-- Generalize scroll clipping (`clip`) to registered scroll content.
+- One sample row per T-A runtime list (extends `lists`; sample data marked placeholder). **TODO** —
+  per-panel template research; the status scan now quantifies the gap (615 windows carry runtime hosts).
+- Multi-INI append (TargetCommon) so the target frame is complete. **DONE** — inventory `appendIni`
+  + `LayoutPlanBuilder.ApplyAppendIni`; `target-frame` renders TargetPlayer10 + TargetCommon's
+  `Handle_TM` subtree under `Handle_Energy` (sample kungfu 唐门; other class handles selectable the
+  same way).
+- Generalize scroll clipping (`clip`) to registered scroll content. **TODO** — per-window `clip` is in
+  place (bag); auto-detection needs the Lua scroll registrations.
 - Runtime-shell windows (raid/chat/social lists) get the "runtime-filled" marker instead of a fake row.
+  **DONE** — `--status` flags (`shell`, `runtime-hosts=N`, `pages=n no-default`) shown in the viewer.
 
-**P4 — render sanity checks.**
+**P4 — render sanity checks.** *(not started)*
 - Off-window parked-element detector (authored position far outside the frame and not script-placed).
 - Top-level sibling overlap detector (rendered bbox intersections).
 - Empty-render detector (content ratio below threshold) → auto-suggest "runtime-filled" marker.
 These feed P1's status and give the reviewer an objective "this render is suspicious" signal.
 
-**P5 — depth dashboard.**
+**P5 — depth dashboard.** *(partially delivered by P1's stage totals)*
 Stage-level counters (T-A recognized / T-A blocked / T-B marked / T-C) from the status file, printed
 by `--status`, so "how deep do we need to go" has a number.
+
+## Completion check (2026-10-04, P1+P2+P3 attempted)
+
+- `--status` → `ui-process-app/Data/render_status.tsv`, 1,240 windows: **placed=1240, shell=134,
+  runtime-hosts=615**. Per stage: recommended 48 (shell 5 / hosts 31), liked 53 (7/35), ui 11 (1/6),
+  hud-ui 45 (5/13), panels-ui 64 (5/25), menus-ui 24 (1/11), other-ui 780 (86/392), modes-ui 211
+  (24/100), spare 4 (0/2). Viewer shows `ph=/str=/oob=` + flags in the AssetNote line and the tree
+  tooltip; the status bar reports `status=<rows>`.
+- `--contact-sheet recommended` → 14 windows (34 reviewer-rejected hidden), numbering matches the
+  viewer (`1.1`-`1.14`), each cell labelled `size / sections / ph / str`.
+- `target-frame` render: 36 → 46 sections (TargetCommon `Handle_TM` appended), energy bar visible.
+- `--selftest` 1240/0/0. Reviewer rejections are respected (side file; `originalStageId` refreshed
+  for windows the catalog later moved to `liked`).
+- Remaining for a follow-up: P3 sample-row replay per T-A list (615 runtime-host windows),
+  generalized scroll clipping, P4 detectors, P5 tier dashboard.
 
 ## Reproduce
 
 ```powershell
 ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --selftest      # must stay 1240/0/0
 ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --audit         # placeholder/unresolved/outOfBounds
+ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --status        # Data/render_status.tsv + stage totals
+ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --contact-sheet recommended --out sheet.png
 ```
 
 **Confidence:** retrospective HIGH (commit history + `docs/EXPERIENCES.md` entries cited);
-tier scopes MED (to be confirmed by the reviewer); P1-P5 are proposals.
+tier scopes MED (to be confirmed by the reviewer); P1/P2 DONE, P3 PARTIAL (see above).
 
-Last verified: 2026-10-04 (`--selftest` 1240/0/0; `--audit` placeholders=899 unresolved=3262
-outOfBounds=6533).
+Last verified: 2026-10-04 (`--selftest` 1240/0/0; `--status` placed=1240 shell=134 runtime-hosts=615;
+`--contact-sheet recommended` 14 windows; target-frame 46 sections).

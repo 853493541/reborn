@@ -722,8 +722,11 @@
           "status": "PARTIAL",
           "root": "ui",
           "path": "Config/Default/TargetPlayer10.ini",
+          "appendIni": [
+            { "container": "Handle_Energy", "path": "Config/Default/TargetCommon.ini", "item": "Handle_TM", "show": ["Handle_TM"] }
+          ],
           "backdrop": "#33393E",
-          "summary": "Target frame, player base (TargetPlayer10.ini, 77 sections; script Target.lua). Target.lua opens ui/config/default/<base>.ini (TargetPlayer10/11 for players, Target<Intensity><Relation> for NPCs, +S in standard mode) and APPENDS TargetCommon.ini sections (Handle_TM/MJ/CJ/CangYun by kungfu) into the window's Handle_Energy (AppendItemFromIni, Target.decompiled.lua:967-989). Authored art: Handle_TarBg (Image_TarBgL/C/CR), Handle_FBg, avatar/school, health/mana/sub-health bars, NPC mark, name (Text_Target), cure shield. The TargetCommon overlay append is not replayed yet (viewer gap). INI/authored state only - no GT capture yet.",
+          "summary": "Target frame, player base (TargetPlayer10.ini, 77 sections; script Target.lua). Target.lua opens ui/config/default/<base>.ini (TargetPlayer10/11 for players, Target<Intensity><Relation> for NPCs, +S in standard mode) and APPENDS TargetCommon.ini sections (Handle_TM/MJ/CJ/CangYun by kungfu) into the window's Handle_Energy (AppendItemFromIni, Target.decompiled.lua:967-989). Authored art: Handle_TarBg (Image_TarBgL/C/CR), Handle_FBg, avatar/school, health/mana/sub-health bars, NPC mark, name (Text_Target), cure shield. TargetCommon overlay append replayed (sample kungfu 唐门 Handle_TM, inventory appendIni; other kungfu handles selectable the same way). INI/authored state only - no GT capture yet.",
           "evidence": [
             "ui/Config/Default/TargetPlayer10.ini",
             "ui/Config/Default/TargetCommon.ini",

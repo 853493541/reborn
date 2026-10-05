@@ -17,6 +17,16 @@ in `docs/ui/BASIC_UI_HUD.md`.
   rejected window to restore it to its original stage. State is a side file `Data/rejected.tsv`
   (windowId TAB originalStageId) — the catalog JSON stays clean; headless equivalent:
   `UiProcessApp.exe --reject <windowId>` (toggles, no selection).
+- **Render status (P1)**: `UiProcessApp.exe --status` writes `Data/render_status.tsv` (per window:
+  size/sections/elements/leaves/placeholders/unresolved/outOfBounds/pages/page/lsh/runtime-hosts/
+  flags) + stage totals; the viewer shows `status: ph=.. str=.. oob=.. flags` in the AssetNote line
+  and the tree tooltip. Plan/retrospective: `docs/ui/UI_RENDER_FIDELITY_PLAN.md`.
+- **Contact sheet (P2)**: `UiProcessApp.exe --contact-sheet <stageId|title|number> [--out sheet.png]
+  [--cols N] [--max N]` renders a labeled thumbnail grid for batch review; numbering is
+  rejection-aware (matches the viewer, rejected count in the title).
+- **appendIni (P3)**: inventory `appendIni` appends a second INI's subtree under a handle at runtime
+  (`TargetCommon` -> target-frame `Handle_Energy`, sample kungfu 唐门 `Handle_TM`); `show` merges into
+  the script-shown set.
 - **Working on a catalog item → set it as the default**: when a session works on
   one of the windows in the list (the user's "5.x"), update the root
   `defaultWindow` in `Data/ui_inventory.json` to that window id (the viewer opens

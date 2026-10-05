@@ -77,8 +77,9 @@ The Target10..42/…S family (29 INIs extracted this session) are the NPC/player
 frame; `TargetS.ini` never exists.
 
 **Viewer entry `target-frame` (2.3):** `TargetPlayer10.ini` authored state (name sample `考`, HP sample
-`200/3000`, level 100, bars). **Gap:** the `TargetCommon` overlay append is not replayed (viewer has
-no multi-INI append); documented here for a later engine feature.
+`200/3000`, level 100, bars). **TargetCommon append replayed** (2026-10-04): the inventory `appendIni` attaches TargetCommon's
+`Handle_TM` subtree under `Handle_Energy` (sample kungfu 唐门; the render shows the class energy bar;
+`LayoutPlanBuilder.ApplyAppendIni`).
 
 ## 4. Remaining HUD windows — status register
 
@@ -116,8 +117,9 @@ no multi-INI append); documented here for a later engine feature.
   0) instead of parking the element at the window's right edge — the main bar's slot strip authors no
   `Left` on its first image and relies on item flow; the BR window-right validation still holds for
   elements without a `Left` key.
-- Gap register: slot icons (runtime skill data), Player runtime values/buffs, TargetCommon overlay
-  append (`AppendItemFromIni` multi-INI), ChatPanel rows, progress-bar behavior.
+- Gap register: slot icons (runtime skill data), Player runtime values/buffs, ChatPanel rows,
+  progress-bar behavior. (TargetCommon `AppendItemFromIni` multi-INI replayed 2026-10-04 via
+  inventory `appendIni`.)
 
 ## Reproduce
 
