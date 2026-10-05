@@ -3945,3 +3945,11 @@ work into main without M2 entanglement.
   defaults); P5 initial numbers.
 - Re-open: weather param/scene semantics; `GpuSwitchOptionTab` matching; full option caps
   read-back (proxy has no public fields; native `GetOption` export or config round-trip).
+
+### 2026-10-04 — Render options — gates + no-op regression
+
+- Gates after the client change: `jx3_model` exit 0, `gravity/verify_model` exit 0,
+  `loot/capture.py selftest` PASS, `collision_selftest_reborn_client_renderopts` 36/36,
+  canonical `camera_smoke.exe` ALL PASS.
+- No-op regression: `reborn_client_renderopts.exe` with no `RC_QUALITY`/`RC_OPT_*`/`RC_WEATHER`
+  → exit 0, `LoadMap result=0`, zero `VideoOptions:` log lines (`reborn_20261004_232425.log`).
