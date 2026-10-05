@@ -658,6 +658,154 @@ namespace UiProcessApp.Engine
             }
         }
 
+        /// <summary>
+        /// Applies the runtime state recorded by tools/ui/replay_all.py
+        /// (Data/runtime_state/&lt;stem&gt;.tsv): the client's own script mutations replayed
+        /// offline (docs/ui/UI_RUNTIME_REPLAY.md). Called before the inventory overrides
+        /// so curated entries still win.
+        /// </summary>
+        public static int ApplyRuntimeState(IniFile filtered, string iniPath)
+        {
+            if (filtered == null || string.IsNullOrWhiteSpace(iniPath)) return 0;
+            var stem = Path.GetFileNameWithoutExtension(iniPath);
+            if (string.IsNullOrWhiteSpace(stem)) return 0;
+            var statePath = FindRuntimeStateFile(stem);
+            if (statePath == null) return 0;
+
+            var hidden = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var rootName = filtered.Sections.Count > 0 ? filtered.Sections[0].Name : null;
+            int applied = 0;
+            foreach (var line in File.ReadAllLines(statePath))
+            {
+                if (string.IsNullOrWhiteSpace(line)) continue;
+                var parts = line.Split('\t');
+                if (parts.Length < 2 || parts[0] == "section") continue;
+                if (!TryFind(filtered, parts[0], out var section)) continue;
+                switch (parts[1])
+                {
+                    case "SetSize":
+                        SetValue(section, "Width", parts, 2);
+                        SetValue(section, "Height", parts, 3);
+                        applied++;
+                        break;
+                    case "SetW":
+                        SetValue(section, "Width", parts, 2);
+                        applied++;
+                        break;
+                    case "SetH":
+                        SetValue(section, "Height", parts, 2);
+                        applied++;
+                        break;
+                    case "SetRelPos":
+                    case "SetAbsPos":
+                        SetValue(section, "Left", parts, 2);
+                        SetValue(section, "Top", parts, 3);
+                        applied++;
+                        break;
+                    case "SetRelX":
+                        SetValue(section, "Left", parts, 2);
+                        applied++;
+                        break;
+                    case "SetRelY":
+                        SetValue(section, "Top", parts, 2);
+                        applied++;
+                        break;
+                    case "SetFrame":
+                        SetValue(section, "Frame", parts, 2);
+                        applied++;
+                        break;
+                    case "SetText":
+                        if (parts.Length > 2)
+                        {
+                            section.Values["$Text"] = string.Join("\t", parts.Skip(2));
+                            applied++;
+                        }
+                        break;
+                    case "SetFontScheme":
+                        SetValue(section, "FontScheme", parts, 2);
+                        applied++;
+                        break;
+                    case "SetAlpha":
+                        SetValue(section, "Alpha", parts, 2);
+                        applied++;
+                        break;
+                    case "Show":
+                        hidden.Remove(section.Name);
+                        applied++;
+                        break;
+                    case "Hide":
+                        if (!string.Equals(section.Name, rootName, StringComparison.OrdinalIgnoreCase))
+                            hidden.Add(section.Name);
+                        applied++;
+                        break;
+                    case "SetVisible":
+                        if (parts.Length > 2 && parts[2].Equals("false", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (!string.Equals(section.Name, rootName, StringComparison.OrdinalIgnoreCase))
+                                hidden.Add(section.Name);
+                        }
+                        else
+                            hidden.Remove(section.Name);
+                        applied++;
+                        break;
+                }
+            }
+
+            if (hidden.Count > 0)
+            {
+                bool Dropped(string name)
+                {
+                    var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    var cursor = name;
+                    while (!string.IsNullOrWhiteSpace(cursor) && seen.Add(cursor))
+                    {
+                        if (hidden.Contains(cursor)) return true;
+                        cursor = filtered.ByName.TryGetValue(cursor, out var s) ? s.Get("._Parent") : null;
+                    }
+                    return false;
+                }
+                var keep = filtered.Sections.Where(s => !Dropped(s.Name)).ToList();
+                if (keep.Count != filtered.Sections.Count)
+                {
+                    filtered.Sections.Clear();
+                    filtered.ByName.Clear();
+                    foreach (var section in keep)
+                    {
+                        filtered.Sections.Add(section);
+                        filtered.ByName[section.Name] = section;
+                    }
+                }
+            }
+            return applied;
+        }
+
+        private static void SetValue(IniSection section, string key, string[] parts, int index)
+        {
+            if (parts.Length <= index || string.IsNullOrWhiteSpace(parts[index])) return;
+            if (double.TryParse(parts[index], System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture, out var value))
+                section.Values[key] = value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        private static string FindRuntimeStateFile(string stem)
+        {
+            var roots = new[]
+            {
+                Path.Combine(Paths.AppRoot ?? "", "Data", "runtime_state"),
+                Path.Combine(AppContext.BaseDirectory ?? "", "Data", "runtime_state"),
+            };
+            foreach (var root in roots)
+            {
+                if (string.IsNullOrWhiteSpace(root) || !Directory.Exists(root)) continue;
+                var exact = Path.Combine(root, stem + ".tsv");
+                if (File.Exists(exact)) return exact;
+                foreach (var file in Directory.GetFiles(root, "*.tsv"))
+                    if (string.Equals(Path.GetFileNameWithoutExtension(file), stem, StringComparison.OrdinalIgnoreCase))
+                        return file;
+            }
+            return null;
+        }
+
         /// <summary>Applies the Lua's runtime SetSize/SetRelPos calls (inventory `adjust`).</summary>
         public static void ApplyAdjustments(IniFile filtered, IEnumerable<AdjustSpec> adjustments)
         {

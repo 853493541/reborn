@@ -1785,6 +1785,22 @@ solved it, and what is still open. **Newest at the bottom.**
   instead of hand overrides. Layer A (KGUI conformance) not started beyond the ImageType/anchor fixes.
 - Verified: replay_all 79 OK / 43 partial; --selftest 1240/0/0; git clean at 975947f + this change.
 
+### 2026-10-04 ? UI ? viewer consumes runtime state: panels visibly change (bag 594x624 runtime=284)
+- User: "for panels i clicked, NOTHING got better" - true: the replay had no viewer side. Added
+  `LayoutPlanBuilder.ApplyRuntimeState(IniFile, iniPath)`: loads `Data/runtime_state/<stem>.tsv` and
+  applies SetSize/SetW/SetH/SetRelPos/SetAbsPos/SetRelX/SetRelY/SetFrame/SetText/SetFontScheme/
+  SetAlpha/Show/Hide/SetVisible (last wins) BEFORE the inventory overrides so curated entries still
+  win; a root `Hide` is ignored (the engine shows the window after init). Wired into the GUI, the
+  headless render, audit, status/contact-sheet plan builder and the selftest pipeline.
+- Cleanup of a superseded band-aid: the bag's hand `adjust` (440-wide root/backgrounds, selector X)
+  was authored from the mis-decompiled script; the replay gives the truth (root 594x624,
+  Image_Glassmorphism 594x624, Image_HBg 594x591, selector SetRelX 416), so those entries were
+  removed (kept: hide/show, Handle_Total posType, Handle_Bag_Normal clip, filter-checkbox tops).
+- Renders: bigbagpanel sections=145 runtime=284 (all six bag rows laid out, 594x624),
+  player-frame runtime=47, main-bar runtime=17, socialpanel runtime=15, characterpanel runtime=6;
+  AssetNote shows `runtime=N`. --selftest 1240/0/0 with runtime state in the gate.
+- Verified: --render bigbagpanel runtime=284, dump root 594x624; --selftest 1240/0/0; app relaunched.
+
 ### 2026-10-04 ? UI ? 推荐 1.1-1.15 confirmed -> liked (2.x, 53 total); +20 third batch; fidelity plan
 - User: "good to go for the 15, move them to likes, recommend me 20 more ... we need to improve the
   display ... but first we need a plan".

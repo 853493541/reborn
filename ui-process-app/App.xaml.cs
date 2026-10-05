@@ -239,6 +239,7 @@ namespace UiProcessApp
                 }
                 var plan = LayoutPlanBuilder.Build(ini, effectivePage);
                 LayoutPlanBuilder.ApplyAppendIni(plan.Filtered, window.AppendIni, LoadIniTolerant);
+                var runtimeApplied = LayoutPlanBuilder.ApplyRuntimeState(plan.Filtered, window.Path);
                 LayoutPlanBuilder.ApplyHide(plan.Filtered, hide ?? window.Hide);
                 LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
                 LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
@@ -372,7 +373,7 @@ namespace UiProcessApp
                 outPath ??= Path.Combine(AppContext.BaseDirectory, $"render_{windowId}.png");
                 using (var stream = File.Create(outPath)) encoder.Save(stream);
                 Console.WriteLine($"rendered {windowId} page={pageState?.Id ?? effectivePage ?? "(all)"} sections={plan.Filtered.Sections.Count} " +
-                                  $"art={(Paths.ProofUiRoot != null ? "on" : "missing")} -> {outPath}");
+                                  $"runtime={runtimeApplied} art={(Paths.ProofUiRoot != null ? "on" : "missing")} -> {outPath}");
                 return 0;
             }
             catch (Exception ex)
@@ -516,6 +517,7 @@ namespace UiProcessApp
                         var ini = IniFile.Load(iniPath);
                         var plan = LayoutPlanBuilder.Build(ini, window.Page);
                         LayoutPlanBuilder.ApplyAppendIni(plan.Filtered, window.AppendIni, LoadIniTolerant);
+                        LayoutPlanBuilder.ApplyRuntimeState(plan.Filtered, window.Path);
                         LayoutPlanBuilder.ApplyHide(plan.Filtered, window.Hide);
                         LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
                         LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
@@ -998,6 +1000,7 @@ namespace UiProcessApp
             rawIni = IniFile.Load(iniPath);
             var plan = LayoutPlanBuilder.Build(rawIni, window.Page);
             LayoutPlanBuilder.ApplyAppendIni(plan.Filtered, window.AppendIni, LoadIniTolerant);
+            LayoutPlanBuilder.ApplyRuntimeState(plan.Filtered, window.Path);
             LayoutPlanBuilder.ApplyHide(plan.Filtered, window.Hide);
             LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
             LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
@@ -1066,6 +1069,8 @@ namespace UiProcessApp
                         {
                             var ini = IniFile.Load(iniPath);
                             var plan = LayoutPlanBuilder.Build(ini, window.Page);
+                            LayoutPlanBuilder.ApplyAppendIni(plan.Filtered, window.AppendIni, LoadIniTolerant);
+                            LayoutPlanBuilder.ApplyRuntimeState(plan.Filtered, window.Path);
                             LayoutPlanBuilder.ApplyHide(plan.Filtered, window.Hide);
                             LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
                             LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);

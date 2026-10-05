@@ -807,13 +807,6 @@
           "hide": "Handle_Bag_Compact,Wnd_Dismantling",
           "show": ["Text_Bag2", "Text_Bag3", "Text_Bag4"],
           "adjust": [
-            {"section": "BigBagPanel", "width": 440},
-            {"section": "Image_Glassmorphism", "width": 440, "height": 410},
-            {"section": "Image_Bg_Title", "width": 440, "height": 33},
-            {"section": "Image_HBg", "width": 440, "height": 377},
-            {"section": "Text_Title", "width": 440},
-            {"section": "Image_TextureR", "left": 268},
-            {"section": "Wnd_Selector", "left": 262},
             {"section": "CheckBox_FilterMain", "top": 0},
             {"section": "CheckBox_FilterSub", "top": 0},
             {"section": "Handle_Total", "posType": 0},

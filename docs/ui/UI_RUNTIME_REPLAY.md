@@ -64,13 +64,13 @@ the runtime mutations as data the viewer consumes:
 | layer | state | evidence |
 |---|---|---|
 | A — KGUI conformance | **not started beyond the two engine fixes** | census: 14 unhandled variants (PosType 3/4/5=70, HandleType 1/2/4/5=137, FirstItemPosType 1-9=98) + approximate page-set/list/tree/scene types |
-| B — script replay | **input side ~65%** (79/122 full, 43 partial; 3,265 mutations); **viewer consumption 0%** | `replay_summary.tsv`; viewer still renders hand overrides |
+| B — script replay | **input 79/122 full + 43 partial (3,265 mutations); viewer consumption DONE** | `replay_summary.tsv`; `LayoutPlanBuilder.ApplyRuntimeState` loads `Data/runtime_state/<stem>.tsv` and applies SetSize/SetRelPos/SetAbsPos/SetRelX/Y/SetW/H/SetFrame/SetText/SetFontScheme/SetAlpha/Show/Hide/SetVisible before the inventory overrides (root Hide ignored — the engine shows the window after init). BigBagPanel render: root 594x624, `runtime=284`, all six bag rows laid out; `--selftest` 1240/0/0 |
 | C — gates | **working** | `--selftest` 1240/0/0; `--status`; `--contact-sheet`; `ini_construct_census.py` |
 
-**Verdict:** the replay *system* (VM + shim + batch) is proven, but the display has not changed yet —
-the missing piece is the viewer consuming `Data/runtime_state/<stem>.tsv` (SetSize/SetRelPos/Show/
-Hide/SetFrame/Check/SetText per section) in place of the hand-written overrides. That is the next
-work item; stub-tuning the 43 partial scripts continues alongside.
+**Verdict:** the replay now drives the viewer for every window with a recorded TSV; windows without
+one (or with partial state) fall back to the authored INI. The bag's now-superseded hand `adjust`
+values (440-wide root and backgrounds) were removed — the script's 594x624 is the truth there.
+Remaining: stub-tuning the 43 partial scripts and the Layer A conformance pass.
 
 **Layer C — conformance gate + status dashboard.** The existing `--status` scan plus a construct
 census; a window render is "conformant" when it uses no unimplemented construct and its runtime
@@ -82,9 +82,9 @@ state is either replayed (script) or flagged (`runtime-hosts=N`).
 2. ~~AnchorDst=client basis~~ (done; client ≡ window rect for standalone renders).
 3. ~~Script execution path~~ (done: PUC Lua 5.1.5 32-bit built from source runs the original
    bytecode; `tools/ui/replay_harness.lua` replays `OnFrameCreate` and records mutations).
-4. ~~Batch replay~~ (done: `tools/ui/replay_all.py`, 79/122 OK + 43 partial). Next: make the viewer
-   consume `Data/runtime_state/<stem>.tsv` instead of hand overrides, and keep stub-tuning the
-   remaining partial scripts.
+4. ~~Batch replay~~ (done: `tools/ui/replay_all.py`, 79/122 OK + 43 partial) and ~~viewer
+   consumption~~ (done: `LayoutPlanBuilder.ApplyRuntimeState`). Next: keep stub-tuning the remaining
+   partial scripts and start the Layer A conformance pass.
 5. KGUI conformance pass in census order: page sets, list/tree controls, PosType 3/4/5,
    FirstItemPosType variants, scene/web surfaces.
 6. Census + `--status` as the gate; contact sheets for review.

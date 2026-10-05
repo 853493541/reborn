@@ -641,6 +641,7 @@ namespace UiProcessApp
             message = null;
             var plan = LayoutPlanBuilder.Build(sourceIni, page);
             LayoutPlanBuilder.ApplyAppendIni(plan.Filtered, window.AppendIni, App.LoadIniTolerant);
+            var runtimeApplied = LayoutPlanBuilder.ApplyRuntimeState(plan.Filtered, window.Path);
             LayoutPlanBuilder.ApplyHide(plan.Filtered, hideText);
             LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
             LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
@@ -722,6 +723,7 @@ namespace UiProcessApp
             }
             note = $"page={page ?? "(all)"}  size={width:0}x{height:0}  " +
                    $"sections={ini.Sections.Count}  rendered={CountVisible(build.Root)}  " +
+                   (runtimeApplied > 0 ? $"runtime={runtimeApplied}  " : "") +
                    $"art={(Paths.ProofUiRoot != null ? "on" : "missing")}";
             return canvas;
         }
