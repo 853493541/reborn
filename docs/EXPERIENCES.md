@@ -1884,6 +1884,18 @@ solved it, and what is still open. **Newest at the bottom.**
 - Verified: --audit placeholders=712 (no=278 real=434) unresolved=49 outOfBounds=6901;
   --selftest 1240/0/0.
 
+### 2026-10-04 ? UI ? issue register item 4: partial replays 43 -> 41 (number metatable + proxy fields)
+- Lua 5.1 resolves comparison/arithmetic metamethods on the LEFT operand only, so `number < proxy`
+  and `number + proxy` aborted replays. Fix: `debug.setmetatable(0, {...})` gives the number type
+  neutral metamethods (no __concat - native string/number concat stays untouched). Also unknown
+  camelCase fields now return permissive proxies instead of 0 (container fields the scripts index
+  keep working); known numeric prefixes (n/d/i/f/x/y/u) stay 0.
+- Batch: 79 -> **81 OK / 41 partial**, 3,298 mutations; tiers T-A 35/23/1, T-B 19/6/2, T-C 27/9/0.
+  The viewer's completed-replay rule means the newly OK windows now get their runtime state.
+- Remaining error classes (41): index-a-number on module-helper fields, compare table/number,
+  for-limit from a method-as-value, one `sub` string case, etc. - per-case stub tuning.
+- Verified: replay_all 81 OK/41 partial; --selftest 1240/0/0.
+
 ### 2026-10-04 ? UI ? 推荐 1.1-1.15 confirmed -> liked (2.x, 53 total); +20 third batch; fidelity plan
 - User: "good to go for the 15, move them to likes, recommend me 20 more ... we need to improve the
   display ... but first we need a plan".

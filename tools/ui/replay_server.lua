@@ -183,7 +183,15 @@ local function proxy(name)
           rawset(t, k, v)
           return v
         end
-        return 0
+        if k:match("^n") or k:match("^d") or k:match("^i") or k:match("^f")
+           or k == "x" or k == "y" or k == "u" then
+          return 0
+        end
+        -- unknown field: a permissive proxy (indexable/callable) rather than 0, so
+        -- container-ish fields the scripts index (player.attribute.*) keep working.
+        local v = proxy(name .. "." .. k)
+        rawset(t, k, v)
+        return v
       end
       return 0
     end,
@@ -221,6 +229,22 @@ local permissiveMt = {
 }
 setmetatable(INVENTORY_INDEX, permissiveMt)
 setmetatable(EQUIPMENT_INVENTORY, permissiveMt)
+
+-- Lua 5.1 resolves comparison/arith metamethods on the LEFT operand only; give the
+-- number type a metatable so a stubbed proxy on the right never aborts a replay
+-- (mixed number/table comparisons and arithmetic return neutral values).
+pcall(function()
+  debug.setmetatable(0, {
+    __lt = function() return false end,
+    __le = function() return false end,
+    __add = function() return 0 end,
+    __sub = function() return 0 end,
+    __mul = function() return 0 end,
+    __div = function() return 0 end,
+    __mod = function() return 0 end,
+    __pow = function() return 0 end,
+  })
+end)
 
 --------------------------------------------------------------------- run
 -- Interactive state server: same shim as replay_harness.lua, but keeps the module

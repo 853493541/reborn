@@ -52,12 +52,16 @@ the runtime mutations as data the viewer consumes:
 - **Batch:** `tools/ui/replay_all.py` replays every same-stem `.lua`/`.ini` pair and writes
   `ui-process-app/Data/runtime_state/<stem>.tsv` + `replay_summary.tsv`. Entry chain:
   `OnFrameCreate` → `OnLoad` → `OnCreate` → `Init` → `OnOpen`.
-  Verified 2026-10-04 (rechecked): **79/122 scripts replay OK**, 43 partial (most with recorded
-  mutations; 3,265 mutations total). By tier — T-A (liked+recommended, 59 scripted): 35 OK /
-  23 partial / 1 no-entry; T-B (27): 18 / 7 / 2; T-C (36): 26 / 10 / 0. Top recordings:
+  Verified 2026-10-04 (rechecked): **81/122 scripts replay OK**, 41 partial (most with recorded
+  mutations; 3,298 mutations total). By tier — T-A (liked+recommended, 59 scripted): 35 OK /
+  23 partial / 1 no-entry; T-B (27): 19 / 6 / 2; T-C (36): 27 / 9 / 0. Top recordings:
   BigBagPanel 793, Player 179, TopMenu 106, MailPanel 101, SoundSettingPanel 93, MiniMap 92,
   SocialPanel 91, MainBarPanel 89. Remaining errors are stub-tuning (data-object shapes); the
   no-entry windows (Balloon/TradingSure/UISetting) have no standard init hook.
+- **Stub rules (2026-10-04 refinement):** unknown camelCase fields return permissive proxies (not 0)
+  so container fields the scripts index keep working, and the **number type gets a metatable**
+  (`debug.setmetatable(0, …)`) because Lua 5.1 resolves comparison/arith metamethods on the left
+  operand only — mixed number/proxy operations no longer abort replays. 79 → 81 OK.
 
 ## Completion recheck (2026-10-04)
 
