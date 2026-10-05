@@ -69,6 +69,17 @@ def main():
         print("no KGWin32App window")
         return 1
     hwnd = wins[0]
+    # robust foreground: attach to the current foreground thread, then set focus
+    fg = u32.GetForegroundWindow()
+    if fg != hwnd:
+        tid_fg = u32.GetWindowThreadProcessId(fg, None)
+        tid_us = ctypes.windll.kernel32.GetCurrentThreadId()
+        u32.AttachThreadInput(tid_us, tid_fg, True)
+        u32.SetForegroundWindow(hwnd)
+        u32.BringWindowToTop(hwnd)
+        u32.AttachThreadInput(tid_us, tid_fg, False)
+        time.sleep(0.4)
+    print("focus: target=%s now=%s" % (hwnd, u32.GetForegroundWindow()))
     r = w.RECT()
     u32.GetWindowRect(hwnd, ctypes.byref(r))
     print("window hwnd=%s rect=(%d,%d,%d,%d)" % (hwnd, r.left, r.top, r.right, r.bottom))

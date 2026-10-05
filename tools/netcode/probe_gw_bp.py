@@ -45,11 +45,7 @@ PUMP_DRIVER = os.environ.get("PUMP_DRIVER", "") != ""
 TARGETS = {
     0x189BF0: "RG",
     0x189CE9: "RGSTATE",
-    0x79D03D: "TALLOC",
-    0x79D04F: "TCLEAN",
-    0x7A0B64: "FCHK1",
-    0x7A0B9F: "FCHK2",
-    0x7A0BCC: "FCHK3",
+    0x79F020: "DESTROY",
     0x189440: "CONNECT",
     0x189E50: "SEND",
     0x187540: "HELPER",
@@ -121,6 +117,7 @@ def main():
     table_dumped = [False]
     events_dumped = [False]
     fire_dumped = [False]
+    verify_called = [False]
     poll_last = {}
     last_pump = [0.0]
     stepping = [None]
@@ -150,6 +147,24 @@ def main():
                                                    b"\xCC", 1, ctypes.byref(ctypes.c_size_t()))
                             armed[rva] = ob
                             print("[%.2f] armed %s (exe+0x%X)" % (el, TARGETS[rva], rva), flush=True)
+                if (gw_client[0] and not verify_called[0]
+                        and os.path.exists(r"C:\jx3tmp\call_verify")):
+                    verify_called[0] = True
+                    try:
+                        os.remove(r"C:\jx3tmp\call_verify")
+                    except OSError:
+                        pass
+                    k32.CreateRemoteThread.restype = w.HANDLE
+                    k32.CreateRemoteThread.argtypes = [w.HANDLE, ctypes.c_void_p, ctypes.c_size_t,
+                                                       ctypes.c_void_p, ctypes.c_void_p, w.DWORD,
+                                                       ctypes.POINTER(w.DWORD)]
+                    tid = w.DWORD()
+                    th = k32.CreateRemoteThread(hproc, None, 0,
+                                                ctypes.c_void_p(exe_base + 0x20C930),
+                                                ctypes.c_void_p(0), 0,
+                                                ctypes.byref(tid))
+                    print("[%.2f] CALL Login_AccountVerify (binding 0x20C930) thread=%s"
+                          % (el, th), flush=True)
                 if (gw_client[0] and not fire_dumped[0]
                         and os.path.exists(r"C:\jx3tmp\dump_fire")):
                     fire_dumped[0] = True
@@ -345,6 +360,10 @@ def main():
                     if rva == 0x189CE9:
                         eax = struct.unpack_from("<I", ctx, 0x78)[0]
                         info = " new_state=%d" % eax
+                    if rva == 0x79F020:
+                        rsp = struct.unpack_from("<Q", ctx, 0x98)[0]
+                        ret = read_u64(hproc.value, rsp) if rsp else None
+                        info = " ret=exe+0x%X" % (ret - exe_base) if ret and ret > exe_base else " ret=?"
                     if rva == 0x79D03D:
                         rdi = struct.unpack_from("<Q", ctx, 0xB0)[0]
                         r12 = struct.unpack_from("<Q", ctx, 0xD8)[0]

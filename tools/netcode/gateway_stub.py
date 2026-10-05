@@ -110,14 +110,9 @@ def handle(conn, addr):
                   % (time.strftime("%H:%M:%S"), proto, len(payload), hx,
                      "..." if len(payload) > 48 else ""))
                 if proto == 4:
-                    conn.sendall(handshake_respond())
-                    w("   -> proto2 handshake respond (HANDSHAKE_SUCCESS)")
-                    time.sleep(0.05)
-                    conn.sendall(handshake_respond_v4())
-                    w("   -> proto4 verify respond (pushed)")
-                    time.sleep(0.05)
-                    conn.sendall(role_list())
-                    w("   -> proto9 role list (pushed)")
+                    burst = handshake_respond() + handshake_respond_v4() + role_list()
+                    conn.sendall(burst)
+                    w("   -> BURST: proto2 respond + proto4 verify + proto9 role list (%d bytes)" % len(burst))
                 elif proto == 39:
                     conn.sendall(frame(payload))
                     w("   -> proto39 ping echo")

@@ -232,6 +232,7 @@ def main():
     exe_base = None
     eng_base = None
     patched = False
+    root_restored = False
     viewer_seen = set()
     dumped_rootfn = False
     ring_done = False
@@ -503,6 +504,14 @@ def main():
                     print("[%.2f] child client pid=%d EXITED code=0x%X" % (el, cp, code.value))
                     k32.CloseHandle(h2)
                     del child_handles[cp]
+        if patched and not root_restored and el > 2.5 and viewer_seen:
+            root_restored = True
+            for va, ln, s in hits:
+                new = ROOT_WIDE + b"\x00" * (ln - len(ROOT_WIDE)) if ln >= len(ROOT_WIDE) else ROOT_WIDE
+                write_mem(h, va, new)
+            if eng_base:
+                write_mem(h, eng_base + 0x170060, ROOT_STR.encode() + b"\x00")
+            print("[%.2f] engine root RESTORED (viewer spawned; assets keep working)" % el)
         if patched:
             for ppid, par, nm in process_names():
                 low = nm.lower()
