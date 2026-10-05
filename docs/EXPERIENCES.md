@@ -1847,3 +1847,23 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Outcome: dispatch + registration understood; next = identify the id-1 sub-case that
   disconnected (controlled sweep) and the handshake respond id (still open; content may
   need the roleID/key echo).
+
+### 2026-10-05 — V2 P3: game-transport reliability pitfall (ack flag) + safe injections
+- Did: every inject test closed the client's game session right after our packet. Traced it
+  to the game dispatch (EXE 0x140168730): flags bit1 = "carries ack"; the ack is processed
+  via the confirm helper (DLL 0x180169AB0); on failure the net thread takes its error path
+  and the client RSTs. Our packets set flags=2 with ack=0/1 while the client's serials are
+  randomized per connection (observed handshake serial 0xBB5A, ack 0x6019) - the confirm
+  failed -> disconnect.
+- Verified live: with flags=0 (no ack) the client KEEPS the connection (24 s+ alive and it
+  starts sending its game pings, C->S op 6). All injection sweeps are now safe.
+- Also: the id-1 handler is a game->UI event bridge (60 sub-cases -> UI vtable calls:
+  sub=1 -> +0x580(byte), sub=3 -> +0x660(dword,byte), sub=6 -> +0x630, ...). Zero-content
+  sweeps of subs 1..60 + the unmapped core ids (2,3,9,14,17,18,21,23,25,27,31,33,35,42,48,
+  51,54) produce no visible reaction - the UI events fire with meaningless args.
+- Also: the client's login scene map is the SANDBOX map (C:\jx3tmp\reborn_sandbox\map\
+  龙门寻宝_s) in current runs (from a previous sandbox setup) - check RC_MAP when the world
+  map differs from expectation.
+- Outcome: injections safe (flags=0); the handshake respond still unidentified - the id-1
+  sub-cases are the game->UI event fires, so the respond likely needs the correct sub+args
+  (roleID at +0xB etc.). Next: match the UI vtable methods to the event names (JX3UIX64).
