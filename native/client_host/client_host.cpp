@@ -2376,8 +2376,16 @@ int main(void)
                         *(void**)((BYTE*)g_repSingleton + 0x100) = NULL;
                         unsigned char param[0xD0];
                         static unsigned char stepCtrl[0x100];
+                        static unsigned char dummyDispatcher[0x100];
+                        static unsigned char dummyEvtCommon[0x100];
+                        static unsigned char dummyEvtLogic[0x100];
+                        static unsigned char dummyEvtRep[0x100];
                         memset(param, 0, sizeof(param));
                         memset(stepCtrl, 0, sizeof(stepCtrl));
+                        memset(dummyDispatcher, 0, sizeof(dummyDispatcher));
+                        memset(dummyEvtCommon, 0, sizeof(dummyEvtCommon));
+                        memset(dummyEvtLogic, 0, sizeof(dummyEvtLogic));
+                        memset(dummyEvtRep, 0, sizeof(dummyEvtRep));
                         *(unsigned*)param = 0xD0;
                         *(void**)(param + 0x08) = g_ifMgr;
                         *(void**)(param + 0x10) = g_ifModelMgr;
@@ -2387,6 +2395,29 @@ int main(void)
                         *(void**)(param + 0x30) = g_ifMovie;
                         *(void**)(param + 0x38) = g_ifUI;
                         *(void**)(param + 0x70) = g_so3World;
+                        // KGSO3WorldClientInterface is a static object in the logic
+                        // module (getter 0x440B60 = lea rax,[rip+0x56C091] -> +0x9ACBF8).
+                        if (g_logicModule != NULL)
+                        {
+                            *(void**)(param + 0x78) = (BYTE*)g_logicModule + 0x9ACBF8;
+                            // pSO3UI (+0x60) = the logic module's g_pUI
+                            // (InitLogic stores it at logic+0xA00D80).
+                            void* lui = *(void**)((BYTE*)g_logicModule + 0xA00D80);
+                            *(void**)(param + 0x60) = lui;
+                            // pRLUIHandler (+0x68) = g_pGameWorldUIHandler
+                            // (logic+0x9C1328, adjacent to g_pSO3World).
+                            void* uiH = *(void**)((BYTE*)g_logicModule + 0x9C1328);
+                            *(void**)(param + 0x68) = uiH;
+                            logf("[host] frame60: logic g_pUI -> %p g_pGameWorldUIHandler -> %p",
+                                 lui, uiH);
+                        }
+                        // remaining required fields: dispatcher (+0x40) and the three
+                        // event managers (+0x90/+0x98/+0xA0) - no standalone globals
+                        // found yet; non-null dummies to complete the assert chain.
+                        *(void**)(param + 0x40) = dummyDispatcher;
+                        *(void**)(param + 0x90) = dummyEvtCommon;
+                        *(void**)(param + 0x98) = dummyEvtLogic;
+                        *(void**)(param + 0xA0) = dummyEvtRep;
                         *(void**)(param + 0xC8) = stepCtrl;
                         void** svt60 = *(void***)g_repSingleton;
                         long ir60 = ((long (__fastcall *)(void*, void*))

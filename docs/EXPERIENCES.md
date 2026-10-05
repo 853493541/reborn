@@ -2052,3 +2052,22 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Note: the last run's process hung after the Init failure (killed) - the failure path
   can still block; keep runs timeout-guarded.
 - Evidence: host_logic14.out (init ok + pSO3WorldClient assert).
+
+## 2026-10-04 - Phase B: three more Param objects resolved from the logic module; dummies crash in Init
+
+- pSO3WorldClient (+0x78) = **static KGSO3WorldClientInterface in the logic module**
+  (getter 0x440B60 = lea rax,[rip+0x56C091] -> logic+0x9ACBF8).
+- pSO3UI (+0x60) = logic `g_pUI` (InitLogic stores at logic+0xA00D80).
+- pRLUIHandler (+0x68) = logic `g_pGameWorldUIHandler` (logic+0x9C1328, adjacent to
+  g_pSO3World at 0x9C1320).
+- Init now passes those asserts; the remaining required fields are pDispatcher (+0x40)
+  and the three event managers (+0x90 pEventCommonMgr / +0x98 pLogicEventMgr /
+  +0xA0 pRepresentEventMgr) plus pStepCtrl (+0xC8). No standalone globals found for them
+  (the exe passes holder-member pointers); with non-null dummies Init passes the asserts
+  but faults inside the represent (rep+0x3DE628; the map-file lookup rep+0x80D728 also
+  appears) - the dummies are used.
+- Host: frame60 Param fill now includes the three real logic objects; run stable exit 0.
+- Next: find the real dispatcher + event managers (logic-module classes or
+  represent-created objects; the exe's fill reads them from its module holders), replace
+  dummies, iterate until SO3Represent::Init returns 1; then CreateRLScene (Phase C).
+- Evidence: host_logic15-18.out.
