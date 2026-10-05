@@ -754,6 +754,13 @@ static void* g_lastPet = NULL;
 static void* g_entityCtrl = NULL;
 static void* g_so3World = NULL;
 static void* g_rlLoader = NULL;
+static void* g_ifMgr = NULL;
+static void* g_ifModelMgr = NULL;
+static void* g_ifXLogic = NULL;
+static void* g_ifSceneResp = NULL;
+static void* g_ifConv = NULL;
+static void* g_ifMovie = NULL;
+static void* g_ifUI = NULL;
 
 // logic-module init watchdog: if CreateJX3LogicOperation wedges, suspend the main
 // thread after 20 s, dump its stack (module+offset) and exit.
@@ -806,6 +813,10 @@ static DWORD WINAPI logicInitThread(LPVOID param)
     logf("[host] logic init thread: CreateJX3LogicOperation('%s')", rootCopy);
     __try
     {
+        // The full entry (needed: its pre-init sets the log/recorder state that
+        // InitLogic's 0x160F90 getter requires). It creates the world/loader/UI,
+        // then may fault in the game-context step (which expects the represent to
+        // be Init'd already - our frame60 Phase B handles that).
         void* op = cl(rootCopy, dummyFactory, "reborn_client_host");
         logf("[host] logic init thread: CreateJX3LogicOperation -> %p", op);
     }
@@ -1555,6 +1566,22 @@ int main(void)
                             g_logicModule = logic;
                             if (logic != NULL)
                             {
+                                // Skip KGJX3LogicOperation::Init's game-context step
+                                // (0x8B7DB) - it runs before the represent Init and
+                                // faults (heap corruption). Jump to the success
+                                // epilogue (0x8B8EF). In-memory host adaptation.
+                                {
+                                    BYTE* p = (BYTE*)logic + 0x8B7DB;
+                                    DWORD oldp = 0;
+                                    if (VirtualProtect(p, 5, PAGE_EXECUTE_READWRITE, &oldp))
+                                    {
+                                        p[0] = 0xE9;
+                                        *(int*)(p + 1) =
+                                            (int)(((BYTE*)logic + 0x8B8EF) - (p + 5));
+                                        VirtualProtect(p, 5, oldp, &oldp);
+                                        logf("[host] patched logic+0x8B7DB -> +0x8B8EF (skip game-context)");
+                                    }
+                                }
                                 HMODULE u32 = GetModuleHandleA("user32.dll");
                                 if (u32 != NULL)
                                 {
@@ -1643,6 +1670,13 @@ int main(void)
                                 }
                                 logf("[host] Init probe: mgr=%p modelMgr=%p xlogic=%p sceneResp=%p conv=%p movie=%p ui=%p",
                                      mgr, modelMgr, xlogic, sceneResp, conv, movie, ui);
+                                g_ifMgr = mgr;
+                                g_ifModelMgr = modelMgr;
+                                g_ifXLogic = xlogic;
+                                g_ifSceneResp = sceneResp;
+                                g_ifConv = conv;
+                                g_ifMovie = movie;
+                                g_ifUI = ui;
                                 if (mgr != NULL)
                                 {
                                     logf("[host] Init probe: [mgr+0x260]=%p [mgr+0x10]=%p",
@@ -2331,6 +2365,40 @@ int main(void)
                         *(void**)((BYTE*)g_repSingleton + 0x100) = g_so3World;
                     logf("[host] frame60: singleton+0x100 (SO3World) -> %p",
                          *(void**)((BYTE*)g_repSingleton + 0x100));
+                    // Phase B: full SO3Represent::Init(Param) now that the logic world
+                    // exists. MessageBoxes are suppressed, so a failed Init returns
+                    // (its KGLOG names the next missing object) instead of hanging.
+                    // Init requires m_p3DEngineManager/m_pSO3World to be NULL (it sets
+                    // them from the Param) - clear the earlier bypass writes.
+                    __try
+                    {
+                        *(void**)((BYTE*)g_repSingleton + 0xB0) = NULL;
+                        *(void**)((BYTE*)g_repSingleton + 0x100) = NULL;
+                        unsigned char param[0xD0];
+                        static unsigned char stepCtrl[0x100];
+                        memset(param, 0, sizeof(param));
+                        memset(stepCtrl, 0, sizeof(stepCtrl));
+                        *(unsigned*)param = 0xD0;
+                        *(void**)(param + 0x08) = g_ifMgr;
+                        *(void**)(param + 0x10) = g_ifModelMgr;
+                        *(void**)(param + 0x18) = g_ifXLogic;
+                        *(void**)(param + 0x20) = g_ifSceneResp;
+                        *(void**)(param + 0x28) = g_ifConv;
+                        *(void**)(param + 0x30) = g_ifMovie;
+                        *(void**)(param + 0x38) = g_ifUI;
+                        *(void**)(param + 0x70) = g_so3World;
+                        *(void**)(param + 0xC8) = stepCtrl;
+                        void** svt60 = *(void***)g_repSingleton;
+                        long ir60 = ((long (__fastcall *)(void*, void*))
+                                     svt60[0])(g_repSingleton, param);
+                        logf("[host] frame60: SO3Represent::Init(Param) -> 0x%08X",
+                             (unsigned)ir60);
+                        logf("[host] frame60: after Init singleton+0xB0=%p +0x100=%p",
+                             *(void**)((BYTE*)g_repSingleton + 0xB0),
+                             *(void**)((BYTE*)g_repSingleton + 0x100));
+                    }
+                    __except (EXCEPTION_EXECUTE_HANDLER)
+                    { logf("[host] frame60 Init fault"); }
                     void* mgr60 = *(void**)((BYTE*)g_repSingleton + 0xB0);
                     if (mgr60 != NULL)
                     {

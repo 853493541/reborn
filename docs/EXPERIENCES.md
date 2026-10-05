@@ -2032,3 +2032,23 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   (isCodeAddr) + per-frame thread dump; VEH logs faulting module+offset.
 - Next: identify the failing sub-init that triggers the destructor cleanup (or guard the
   destructor) so the logic init returns 1; then Phase B (full Param).
+
+## 2026-10-04 - PHASE A DONE: logic module init completes; Phase B iterating (pSO3WorldClient next)
+
+- Patched KGJX3LogicOperation::Init (logic+0x8B7DB) to jump to its success epilogue
+  (0x8B8EF), skipping the game-context step that runs before the represent Init and
+  faults (heap corruption). In-memory host adaptation (registered; re-open once the
+  represent Init runs before it, i.e. the real game order).
+- Result: `CreateJX3LogicOperation -> non-null` (op object created), `g_pSO3World`
+  created, init thread completes cleanly, no heap corruption. Phase A done.
+- Phase B (frame60 SO3Represent::Init with the world): Init now runs and its assert
+  chain reports the next missing Param field:
+  `KGLOG_PROCESS_ERROR(Param.pSO3WorldClient) at line 697 in SO3Represent::Init`.
+  (MessageBox suppression makes failed Init return/name the object instead of hanging.)
+- Remaining Param fields to supply: pSO3WorldClient (+0x78, class
+  KGSO3WorldClientInterface in the logic module), pDispatcher (+0x40), pRLUIHandler
+  (+0x68), pSO3UI (+0x90? +0xE0?), pEventCommonMgr (+0x90), pLogicEventMgr (+0x98),
+  pRepresentEventMgr (+0xA0), pStepCtrl (+0xC8).
+- Note: the last run's process hung after the Init failure (killed) - the failure path
+  can still block; keep runs timeout-guarded.
+- Evidence: host_logic14.out (init ok + pSO3WorldClient assert).
