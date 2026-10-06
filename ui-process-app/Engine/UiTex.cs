@@ -30,6 +30,7 @@ namespace MapUiApp.Engine
         public readonly string TextureName;
         public readonly int TextureWidth;
         public readonly int TextureHeight;
+        public readonly int Version;
         public readonly UiTexFrame[] Frames;
         public readonly UiTexGroup[] Groups;
 
@@ -44,6 +45,7 @@ namespace MapUiApp.Engine
             var b = File.ReadAllBytes(path);
             if (b.Length < 92 || b[0] != (byte)'U' || b[1] != (byte)'I')
                 throw new InvalidDataException("Not a UITex file: " + path);
+            Version = BitConverter.ToUInt16(b, 2);
             TextureWidth = BitConverter.ToInt32(b, 4);
             TextureHeight = BitConverter.ToInt32(b, 8);
             int count = Math.Max(0, BitConverter.ToInt32(b, 12));
@@ -52,7 +54,22 @@ namespace MapUiApp.Engine
             for (int i = 0; i < count; i++)
             {
                 int o = 92 + i * 20;
-                if (o + 20 > b.Length) break;
+                if (o + 20 > b.Length)
+                {
+                    // Version 1 files share the last record's flag word with the first
+                    // animate-table word (the engine reads v1 frames from offset 88 as
+                    // flag,x,y,w,h), so the final frame carries only its 16-byte rect.
+                    if (Version >= 2 || o + 16 > b.Length) break;
+                    frames.Add(new UiTexFrame
+                    {
+                        X = BitConverter.ToInt32(b, o),
+                        Y = BitConverter.ToInt32(b, o + 4),
+                        W = BitConverter.ToInt32(b, o + 8),
+                        H = BitConverter.ToInt32(b, o + 12),
+                        Flag = 0,
+                    });
+                    break;
+                }
                 frames.Add(new UiTexFrame
                 {
                     X = BitConverter.ToInt32(b, o),
@@ -75,7 +92,16 @@ namespace MapUiApp.Engine
             // ids are local to the atlas (e.g. Button.UITex group 96 = frame 92).
             var groups = new List<UiTexGroup>();
             int groupCount = Math.Max(0, BitConverter.ToInt32(b, 16));
-            int p = 92 + count * 20;
+            // The engine's loader (KGUIX64.dll UI::KImageInfoMgr::LoadUITexFile,
+            // RVA 0xE9240) reads the 88-byte UITEXFILEHEADER, then n 20-byte
+            // UITEXFRAMEDATASTRUCTURE records, then the animate/group table. The
+            // header's version (dword 0 >> 16) selects the layout: version 1 (and 0)
+            // files start the frames at offset 88 (record = flag,x,y,w,h), so their
+            // animate table sits at 88 + n*20; version 2 files start at 92 (record =
+            // x,y,w,h,flag) and their animate table at 92 + n*20. Reading a v1 file at
+            // the v2 offset desynced the whole table, so buttons fell back to their
+            // authored Frame (e.g. QuestPanelButton group 3 -> frame 35).
+            int p = Version >= 2 ? 92 + count * 20 : 88 + count * 20;
             for (int i = 0; i < groupCount; i++)
             {
                 if (p + 4 > b.Length) break;

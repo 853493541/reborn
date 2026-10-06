@@ -72,12 +72,22 @@ sections `runtime=284` (complete replay still applied).
 1. ~~Text: 3,254 unresolved string instances~~ **fixed**: 136 extracted module tables added to
    `Data/text/ui/Scheme/Case` (145 total) → **3,254 → 49** unresolved (the tail is dev/unreached
    tables: `STR_COLLECTION*`, `STR_TESTTEXT_TIME`, `STR_MICROT`, ... — each ×1-4).
-2. Art: real missing placeholders **602 → 401** instances (pair extraction of `.UITex` + `.Tga`
-   siblings, then the zero-size-frame fix: 33 authored empty frames now draw nothing as the engine
-   does). Breakdown of the 401: **161 stale-atlas frames** (the INI references frames/groups the local
-   atlas version doesn't contain — e.g. `QuestPanelButton.UITex` is 32 frames while its group table
-   starts at frame 300) and **231 files absent from the scanned paks** (e.g. `mpbj.tga`,
-   `Cloud.tga`). 278 `TextureName=no` are intentional.
+2. Art: real missing placeholders **602 → 256** instances. Pair extraction of `.UITex` + `.Tga`
+   siblings, the zero-size-frame rule (33 authored empty frames draw nothing as the engine does), and
+   the engine-derived **v1 atlas layout fix** (below). Breakdown of the 256: **231 files absent from
+   the scanned paks** (e.g. `mpbj.tga`, `Cloud.tga`), **16 authored Frames beyond the atlas** (e.g.
+   `UI_LuckyPerson.UITex` has 5 frames, `Image_Num_5` asks frame 6), 9 misc. 278 `TextureName=no` are
+   intentional.
+
+   **UITex v1/v2 layout (engine truth, KGUIX64.dll `UI::KImageInfoMgr::LoadUITexFile` RVA 0xE9240):**
+   the loader reads an 88-byte `UITEXFILEHEADER` (frame count @0x0C, animate count @0x10, version =
+   header dword 0 >> 16), then n 20-byte `UITEXFRAMEDATASTRUCTURE` records, then the animate/group
+   table (`u32 count; count × (frame, interval)`). **Version 1** files start the frames at offset 88
+   (record = `flag,x,y,w,h`) so the group table sits at `88 + n*20` and the last frame shares its flag
+   word with the table's first word; **version 2** files start at 92 (record = `x,y,w,h,flag`) with the
+   table at `92 + n*20`. The viewer read every v1 atlas at the v2 offset, desyncing 111/131 v1 group
+   tables (QuestPanelButton's `NormalGroup=3` fell back to the bogus authored `Frame=35`). Fixed
+   2026-10-05; the 240/261 previously desynced v1 atlases now resolve their groups.
 3. Constructs: PosType 3/4/5 = 70 · HandleType 1/2/4/5 = 137 · FirstItemPosType 1-9 = 98 ·
    approximate WndTypes = 868 sections (page-set/list/tree/scene/web/flex).
    **New lead (2026-10-04):** the client `KGUIX64.dll` exports the **Yoga layout API**

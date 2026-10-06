@@ -1988,3 +1988,20 @@ solved it, and what is still open. **Newest at the bottom.**
 - Audit: placeholders 712 -> 679 (278 `no` + 401 real), outOfBounds 6886; --selftest 1240/0/0.
 - Remaining art work needs a full pak index or the correct atlas versions (blocked on extractor
   coverage, not on the viewer).
+
+### 2026-10-05 ? UI ? UITex v1 atlas layout decoded from the engine (placeholders 679 -> 534; art ~99.4%)
+- The remaining 161 "stale-atlas frames" were not stale files: 261 of 1,121 atlases are version 1
+  and the viewer parsed them with the version-2 layout. Reverse-engineered the loader in
+  `KGUIX64.dll` (`UI::KImageInfoMgr::LoadUITexFile` RVA 0xE9240; strings `UITEXFILEHEADER`,
+  `UITEXFRAMEDATASTRUCTURE`, `nAnimateCount`; capstone 5.0.7 on a read-only copy): 88-byte header
+  (frame count @0x0C, animate count @0x10, version = dword 0 >> 16), then n 20-byte frames, then
+  the animate/group table `u32 count; count × (frame, interval)`. v1 frames start at 88 as
+  `flag,x,y,w,h` (groups at `88+n*20`); v2 frames at 92 as `x,y,w,h,flag` (groups at `92+n*20`).
+  The v1 last frame shares its flag word with the group table's first word (the engine reads v1
+  frames from 88), so the final record carries only its 16-byte rect.
+- Fixed `UiTex.cs` (version-aware offsets + v1 last-frame rule). Empirical check first: with the
+  v1 offset, 261/261 v1 atlases parse to EOF with valid group frames (vs 0/261 at the v2 offset).
+- Audit: placeholders 679 -> 534 (278 `no` + 256 real: 231 files absent, 16 authored Frames beyond
+  the atlas, 9 misc); real missing 401 -> 256; art ~99.0% -> ~99.4%; --selftest 1240/0/0.
+- QuestPanelButton `NormalGroup=3` now resolves to its authored frame instead of the bogus
+  `Frame=35` fallback; `Arena_JJC11` etc. no longer placeholder.
