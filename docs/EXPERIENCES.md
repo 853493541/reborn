@@ -2045,3 +2045,11 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   (b) check whether 0x140174E50(0,0) can return a default scene and force the first id-10
   through; (c) decode the role-list entry map/pos fields (qword +0x4C, dwords +0x73/+0x77).
 - Client note: after login+enter the client gets stuck; force-close before each test.
+
+### 2026-10-05 — V2 P3 BREAKTHROUGH: id 4 carries map/region/position (deadlock resolved)
+- id 4 handler copy block (0x14015C2F6-0x14015C30D): pkt+0x2C -> [client+0x14] (map id),
+  pkt+0x30 -> [client+0x18] (region id); and 0x14015C5C3+ copies pkt+0x34/0x38/0x3C ->
+  player+0x10/0x14/0x18 (X/Y/Z). Zeros in our template made the scene lookup (map 0) fail ->
+  id-10 guard could never validate -> deadlock.
+- Stub id-4 builder now packs map/region/pos (GAME_MAP_ID/GAME_MAP_REGION/GAME_POS_X/Y/Z,
+  default 1/1/100/100/0). id 7 remains for later map switches.

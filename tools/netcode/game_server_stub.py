@@ -51,6 +51,12 @@ def id_frame(frame_id, size, role_id):
     p = bytearray(size)
     struct.pack_into("<H", p, 0, frame_id)
     struct.pack_into("<I", p, 7, role_id)
+    if frame_id == 4:
+        struct.pack_into("<I", p, 0x2C, int(os.environ.get("GAME_MAP_ID", "1")))
+        struct.pack_into("<I", p, 0x30, int(os.environ.get("GAME_MAP_REGION", "1")))
+        struct.pack_into("<I", p, 0x34, int(os.environ.get("GAME_POS_X", "100")))
+        struct.pack_into("<I", p, 0x38, int(os.environ.get("GAME_POS_Y", "100")))
+        struct.pack_into("<I", p, 0x3C, int(os.environ.get("GAME_POS_Z", "0")))
     if frame_id == 10:
         pack = int(os.environ.get("GAME_ID10_PACK", "0"), 16)
         flags = int(os.environ.get("GAME_ID10_FLAGS", "0"), 16)
