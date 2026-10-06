@@ -14,8 +14,8 @@ docs/camera/MANI_FORMAT.md and proof/camera_tracks/disasm/*):
           + meta {u32 1, f32 durationFrames, u32 0, u32 1}
       class 10 payload: 8 zero bytes
           + meta {u32 1, f32 durationFrames, u32 1, u32 0}
-          + track A header {u32 nA, u32 0, f32 z0, f32 y0}
-              (implicit frame-0 key at x=0, z=z0, y=y0)
+          + track A header {u32 nA, f32 x0, f32 z0, f32 y0}
+              (implicit frame-0 key at x0, z0, y0; x0=0 in all shipped samples)
           + (nA-1) x A-key {f32 x, u32 frame, f32 z, f32 y}
           + track B header {f32 x0, u32 0, u32 nB, u32 0}
           + nB x B-key {f32 x, f32 a, f32 b, u32 frame}
@@ -79,9 +79,10 @@ class Track(object):
     which sits at frame 1 after the last key (verified on all 10 samples).
     """
 
-    def __init__(self, name, keys, z0, y0, wrap_index=None):
+    def __init__(self, name, keys, x0, z0, y0, wrap_index=None):
         self.name = name
         self.keys = keys
+        self.x0 = x0
         self.z0 = z0
         self.y0 = y0
         self.wrap_index = wrap_index
@@ -98,7 +99,7 @@ class Track(object):
         key (if any) is not used for interpolation.
         """
         keys = self.keys[:self.wrap_index] if self.wrap_index is not None else self.keys
-        pts = [(0, 0.0, self.z0, self.y0)] + [(k.frame, k.x, k.z, k.y) for k in keys]
+        pts = [(0, self.x0, self.z0, self.y0)] + [(k.frame, k.x, k.z, k.y) for k in keys]
         if frame <= pts[0][0]:
             return (pts[0][1], pts[0][3], pts[0][2])  # x, y, z
         for i in range(1, len(pts)):
@@ -187,6 +188,7 @@ def parse_bytes(data, path=None):
 
     e1 = take(16)
     n_a = _u32(data, e1)
+    x0 = _f32(data, e1 + 4)
     z0 = _f32(data, e1 + 8)
     y0 = _f32(data, e1 + 12)
     if n_a < 1:
@@ -200,7 +202,7 @@ def parse_bytes(data, path=None):
             raise ManiError("A frames not increasing at %d" % frame)
         prev = frame
         keys_a.append(Key(frame, x, y, z))
-    m.track = Track("A", keys_a, z0, y0)
+    m.track = Track("A", keys_a, x0, z0, y0)
 
     et = take(16)
     n_b = _u32(data, et + 8)
@@ -242,7 +244,7 @@ def _pf(v):
     return struct.pack("<f", v)
 
 
-def build_cameradata(duration, z0, y0, keys_a, keys_b):
+def build_cameradata(duration, x0, z0, y0, keys_a, keys_b):
     """Inverse writer for the cameradata variant (used by --selftest)."""
     out = bytearray()
     out += _p32(ACON) + _p32(CLASS_CAMERA_ANI_SET) + b"\0" * 32
@@ -250,7 +252,7 @@ def build_cameradata(duration, z0, y0, keys_a, keys_b):
     out += _p32(ACON) + _p32(CLASS_CAMERA_TRACK) + b"\0" * 32
     out += b"\0" * 8
     out += _p32(1) + _pf(duration) + _p32(1) + _p32(0)
-    out += _p32(len(keys_a) + 1) + _p32(0) + _pf(z0) + _pf(y0)
+    out += _p32(len(keys_a) + 1) + _pf(x0) + _pf(z0) + _pf(y0)
     for (x, frame, z, y) in keys_a:
         out += _pf(x) + _p32(frame) + _pf(z) + _pf(y)
     out += _pf(0.0) + _p32(0) + _p32(len(keys_b)) + _p32(0)
@@ -263,7 +265,7 @@ def selftest():
     checks = 0
     keys_a = [(10.0, 1, 20.0, 30.0), (11.0, 5, 21.0, 31.0), (12.0, 9, 22.0, 32.0)]
     keys_b = [(1.0, 2.0, 3.0, 1), (4.0, 5.0, 6.0, 9)]
-    data = build_cameradata(10.0, 20.0, 30.0, keys_a, keys_b)
+    data = build_cameradata(10.0, 0.0, 20.0, 30.0, keys_a, keys_b)
     m = parse_bytes(data, "<synth>")
     assert m.variant == "cameradata"; checks += 1
     assert m.duration == 10.0; checks += 1
