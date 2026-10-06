@@ -1559,6 +1559,42 @@ internal static class RebornClient
                 alignAim();
                 Log("camera view preset: " + (e.KeyCode == Keys.End ? "front" : "behind"));
             }
+            else if (e.KeyCode == Keys.F5)
+            {
+                // host test key (P3): cycle the camera rows. No gameplay trigger
+                // (WW removed 2026-09-30); rows are test-reachable only.
+                string[] rows = new string[] {
+                    CameraSystem.MODE_CHARACTER, CameraSystem.MODE_SPRINT,
+                    CameraSystem.MODE_CARRIER, CameraSystem.MODE_AIR_COMBAT,
+                    CameraSystem.MODE_NPC_DIALOG, CameraSystem.MODE_GOD };
+                int ridx = 0;
+                for (int i = 0; i < rows.Length; i++) if (rows[i] == camSys.Mode) ridx = i;
+                string nextRow = rows[(ridx + 1) % rows.Length];
+                camSys.SwitchMode(nextRow, false);
+                Log("camera row -> " + nextRow + " (F5 cycle)");
+            }
+            else if (e.KeyCode == Keys.F6 || e.KeyCode == Keys.F8)
+            {
+                // host test key (P3): base FOV +/- 5 deg (factor = angle / 0.837757)
+                double d5 = 5.0 * Math.PI / 180.0;
+                double ang = baseViewAngle * VideoSettings.DefaultAngle +
+                             (e.KeyCode == Keys.F8 ? d5 : -d5);
+                if (ang < 10.0 * Math.PI / 180.0) ang = 10.0 * Math.PI / 180.0;
+                if (ang > 170.0 * Math.PI / 180.0) ang = 170.0 * Math.PI / 180.0;
+                baseViewAngle = (float)(ang / VideoSettings.DefaultAngle);
+                try { scene.SetViewAngleFactor(baseViewAngle); } catch (Exception) { }
+                Log(string.Format("camera fov base -> {0:F1} deg (factor {1:F3})",
+                    ang * 180.0 / Math.PI, baseViewAngle));
+            }
+            else if (e.KeyCode == Keys.PageUp || e.KeyCode == Keys.PageDown)
+            {
+                // host test key (P3): follow distance +/- 100 u
+                double d = camSys.Distance + (e.KeyCode == Keys.PageUp ? 100.0 : -100.0);
+                if (d < 100.0) d = 100.0;
+                if (d > 5000.0) d = 5000.0;
+                camSys.Distance = d;
+                Log(string.Format("camera distance -> {0:F0} u (PgUp/PgDn)", d));
+            }
         };
         form.KeyUp += delegate(object s, KeyEventArgs e)
         {
@@ -1745,6 +1781,7 @@ internal static class RebornClient
         double aimPitchOverride = double.NaN;   // set when the ground clamp moves the camera
         int adjYawPx = 0, adjPitchPx = 0;       // CameraMovePitch*/FollowYaw feed (RC_MOVE_PITCH)
         bool camDebug = Env("RC_CAM_DEBUG", "0") == "1";
+        bool hudLog = Env("RC_HUD_LOG", "0") == "1";   // P3: log the HUD text (test)
         // M0 knob: disable the park-below character hide so the engine's own
         // near-plane clipping can be bracketed with the clearance ladder
         bool hideNear = Env("RC_PLAYER_HIDE", "1") == "1";
@@ -1857,6 +1894,7 @@ internal static class RebornClient
             }
         }
         long lastSkillMoveLog = 0;
+        int skillMoveStage = -1;   // HUD: current skill-FOV stage (0 in / 1 hold / 2 out)
         bool camPokeOnce = Env("RC_CAM_POKE_ONCE", "0") == "1";
         // legacy look-at approximation: experiment only, default OFF. The
         // engine-faithful path (m_pScene -> cam vt+0x50 pos / vt+0x58 look-at,
@@ -3703,6 +3741,7 @@ internal static class RebornClient
                         double smPhase; int smStage;
                         double smAngle = skillMoveFx.AngleAt(now, baseViewAngle * VideoSettings.DefaultAngle,
                             out smPhase, out smStage);
+                        skillMoveStage = smStage;
                         if (smAngle > 0.0)
                         {
                             float smFactor = (float)(smAngle / VideoSettings.DefaultAngle);
@@ -4105,17 +4144,32 @@ internal static class RebornClient
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
                                 : pRun;
+                double hudFovFactor = 1.0;
+                try { hudFovFactor = scene.GetViewAngleFactor(); } catch (Exception) { }
+                string camExtra = string.Format(" fov {0:F0}deg obst {1} len {2:F0}",
+                    hudFovFactor * VideoSettings.DefaultAngle * 180.0 / Math.PI,
+                    camObst.Obstructed ? "ON" : "off", dbgLen);
+                if (camTrackActive)
+                    camExtra += string.Format(" ani f{0:F0}/{1:F0}", camTrack.Frame, camTrack.Duration);
+                if (skillMoveRow != null)
+                    camExtra += string.Format(" skillmove s{0}", skillMoveStage);
                 hud.SetText(string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport | Esc info\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}{11}\nclip {12}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport | Esc info\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view\nF5 row | F6/F8 fov | PgUp/PgDn dist",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
-                    camSys.Mode, camSys.Yaw, camSys.Distance,
+                    camSys.Mode, camSys.Yaw, camSys.Distance, camExtra,
                     curClip == null ? "-" : Path.GetFileName(curClip)));
+                if (hudLog)
+                    Log("hudtext " + string.Format(
+                        "fps={0} cam={1} yaw={2:F2} dist={3:F0} fov={4:F0}deg obst={5} len={6:F0}{7}",
+                        fps, camSys.Mode, camSys.Yaw, camSys.Distance,
+                        hudFovFactor * VideoSettings.DefaultAngle * 180.0 / Math.PI,
+                        camObst.Obstructed ? "ON" : "off", dbgLen, camExtra));
                 // top-left control-mode name (always visible)
                 hud.SetModeText("CONTROL: "
                     + (cameraSettings.OperationMode == CameraOperationMode.Joystick
                         ? "JOYSTICK" : "CLASSICAL")
-                    + "   [/] switch");
+                    + "   [/] switch   cam " + camSys.Mode + " (F5)");
                 hud.PlaceOver(form);
                 hud.UpdateLayered();
             }

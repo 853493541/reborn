@@ -4324,3 +4324,18 @@ if the cache/host frames appear.
 - Evidence: `proof/camera_tracks/p2_run_20261006.txt`;
   `docs/camera/CAMERA_TRACKS_PLAN.md` P2; `docs/camera/HOST_DEVIATIONS.md` B16.
 - Outcome: P2 done. P3 (minimal camera UI) next. Local only.
+
+### 2026-10-06 - Camera (B) - P3 done: minimal camera UI (HUD line + test keys)
+
+- Did: HUD camera line extended (mode/yaw/dist/fov/obst+len + `ani f../..` + `skillmove sN`
+  when active; top line names the camera row); host test keys F5 (row cycle), F6/F8 (base
+  FOV +/-5 deg), PgUp/PgDn (distance +/-100 u); `RC_HUD_LOG=1` logs the composed HUD text so
+  the panel content is verifiable without reading images. Settings stay read-only (no
+  custom.dat write); persistence deferred to the settings-UI (registered).
+- Verified: baseline run `fov 60deg obst=ON len=1830` vs track+skillmove run
+  `fov 100deg obst=off len=1862 ani f174/175 skillmove s1` (exactly the P1 held frame and
+  the P2 held 60+0.7 rad target); layered-buffer dumps 633x237 vs 678x237 with distinct
+  hashes; no crash.
+- Evidence: `proof/camera_tracks/p3_run_20261006.txt`;
+  `docs/camera/CAMERA_TRACKS_PLAN.md` P3.
+- Outcome: P3 done. P4 (closures: CLIENT_AUDIT statuses, README, boundaries) next.

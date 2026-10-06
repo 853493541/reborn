@@ -78,11 +78,15 @@ Companion: `CLIENT_AUDIT.md` (missing list), `CONFIG_FILES.md`, `MODE_ANIM_STATU
    60.0 → 64.8 → 69.6 → 75.0 → base exactly matches the linear expectation, effect ends at
    enter+exit, 3 distinct screenshot fingerprints, no crash; gates green.
 
-### P3 — minimal camera UI (~0.5 day)
-Extend `HudOverlay` with a camera line (mode, FOV, distance, obstruction state) and keys to
-switch rows (carrier/air/npc_dialog/god) + adjust FOV/distance at runtime; **read-only** real
-settings (no `custom.dat` write — forbidden); persistence deferred to the settings-UI
-(system 4), registered. **Verify:** `RC_HUD_DUMP` fingerprint + smoke.
+### P3 — minimal camera UI (~0.5 day) — **DONE 2026-10-06**
+`HudOverlay` camera line now shows mode / yaw / distance / FOV deg / obstruction state+len
+plus `ani f<frame>/<dur>` and `skillmove s<stage>` while those effects are active; the top
+mode line also names the camera row. Host test keys: **F5** row cycle, **F6/F8** base FOV
+±5°, **PgUp/PgDn** distance ±100 u; `RC_HUD_LOG=1` logs the HUD text (test). **Read-only**
+real settings (no `custom.dat` write); persistence deferred to the settings-UI (system 4),
+registered. **Verify:** `proof/camera_tracks/p3_run_20261006.txt` - baseline vs
+track+skillmove HUD text (`fov 60deg obst ON` -> `fov 100deg obst off ... ani f174/175
+skillmove s1`), layered-buffer dumps 633x237 vs 678x237 distinct hashes.
 
 ### P4 — closures (~0.25 day)
 Update `CLIENT_AUDIT.md` missing-items 4/7/8 statuses; boundary register + EXPERIENCES
