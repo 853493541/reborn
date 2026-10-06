@@ -181,11 +181,14 @@ volumetricCloud asset absent (non-fatal).
    `nEngineGraphicsLevel +0x260`, `fSpeedTreeCullDist +0xa40`, all exact). Per-key
    read-back still needs the native `GetOption` export or a config-file round-trip
    (unchanged).
-3. ~~`configHttpFile.ini` role~~ **Closed as unused/ignored (2026-10-05):** the literal
-   `configHttpFile` appears in **zero** install binaries (adapter/DX11 engine/MovieEditorHD/
-   MovieEngineCLR/KG_EngineEditor/JX3ClientX64, both installs). The `Init3DEngine` argument
-   is a leftover the engine does not reference in this build; re-open if another build
-   reads it.
+3. ~~`configHttpFile.ini` role~~ **Closed (2026-10-05):** the literal `configHttpFile`
+   appears in **zero** install binaries (adapter/DX11 engine/MovieEditorHD/MovieEngineCLR/
+   KG_EngineEditor/JX3ClientX64, both installs). The owner is the MovieEditor shell's HTTP
+   config feature — `MovieEditor.EditorConfig::get_EnableHttpFile` / `get_HttpConfig`
+   (metadata dump: fields `m_bEnableHttpFile` / `m_strHttpConfig`) — and the path is passed
+   to `Init3DEngine` by the caller. Our host passes `./configHttpFile.ini` (spike recipe);
+   the engine itself never reads the literal, so the argument is inert in this build.
+   Re-open if another build/consumer reads it.
 4. Caps probe done for 6 options at the house pose (§4b); remaining: foliage options at a
    foliage-rich pose, per-LOD-option isolation (P5), weather param semantics + game-time
    source (P4).
