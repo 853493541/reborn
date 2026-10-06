@@ -2041,3 +2041,19 @@ solved it, and what is still open. **Newest at the bottom.**
 - Remaining: table-typed fields compared numerically (FightingStatistic, MiniMap, MiddleMap,
   SafePanel, SystemMenu_*, VideoSettingPanel), nil module fields (RaidPanel `frame`, PLOActionBar
   `tAnchor`), pairs/sort/gmatch/sub on non-tables, 2 no-entry.
+
+### 2026-10-05 ? UI ? replay harness: numeric-getter scope tuned (95 -> 98 OK; regressions caught by batch)
+- Widened the scalar-getter rule to a shared `numericGetter(k)` (`Get` + Count/Num/ID/Id/Index/Level/
+  Score/Screen/Rate/Percent) used by both the permissive proxy and the `_G` auto-stub (global calls
+  like `GetAddTrainSkillCount()` bypassed the proxy-field rule). SystemMenu_Left/Right +
+  VideoSettingPanel recovered.
+- The batch caught two regressions immediately: including `Time$`/`Frame$` made `GetTodayTime`
+  return 0 (it is a month/day table) and `GetMgFrame`/`GetGameFrame` return 0 (frame objects) -
+  EditBox and LuckyMeeting broke. Excluding Time/Frame fixed them and the batch landed at
+  **98 OK / 24 partial, 3,545 mutations** (BigBagPanel still 793).
+- Lesson: every stub-type heuristic must be batch-verified both ways (gain + no regression); the
+  suite is the guard. Ported the final rules to `replay_server.lua`.
+- Remaining: compare with table/nil (FightingStatistic, MiniMap, MiddleMap, MiniGameDescription,
+  TeamBuilding), pairs/sort/gmatch/sub/ipairs on non-tables, nil module fields (RaidPanel `frame`,
+  PLOActionBar `tAnchor`), length nil (ReputationPanel), `is_bind` call on a number (SafePanel),
+  2 no-entry.

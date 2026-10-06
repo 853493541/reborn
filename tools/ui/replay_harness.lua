@@ -185,6 +185,21 @@ local function clone(t)
 end
 _G.clone = clone
 
+-- Scalar engine getters: names that carry a "Get" and end in a numeric suffix
+-- (counts/ids/indices/levels/scores/screens/rates). The scripts use them as
+-- numeric loop bounds and in comparisons; returning a proxy/table errors in Lua
+-- 5.1 ("'for' limit must be a number", "compare number with table"). Excluded on
+-- purpose: Size (bag scripts continue through GetBoxSize arithmetic — returning 0
+-- costs BigBagPanel ~200 mutations) and Time/Frame (GetTodayTime returns a
+-- month/day table, GetMgFrame/GetGameFrame return frame objects; returning 0 broke
+-- EditBox and LuckyMeeting).
+local function numericGetter(k)
+  if type(k) ~= "string" or not k:find("Get") then return false end
+  return k:match("Count$") or k:match("Num$") or k:match("ID$") or k:match("Id$")
+      or k:match("Index$") or k:match("Level$") or k:match("Score$") or k:match("Screen$")
+      or k:match("Rate$") or k:match("Percent$")
+end
+
 proxy = function(name)
   local p = {}
   setmetatable(p, {
@@ -205,15 +220,14 @@ proxy = function(name)
           if k == "GetW" or k == "GetH" then return function() return 0 end end
           if k == "GetAbsPos" or k == "GetRelPos" then return function() return 0, 0 end end
           if k == "IsVisible" or k == "IsOpened" then return function() return false end end
-          -- Scalar getters (counts/ids/indices/levels/times) are used as numeric
-          -- loop bounds and comparisons; returning a proxy aborted the replay
-          -- ("'for' limit must be a number"). Size getters stay proxies: their
-          -- results feed arithmetic the bag scripts continue through (BigBagPanel
-          -- loses ~200 mutations if GetBoxSize returns 0). Other Get*/PascalCase
-          -- names keep the callable proxy (they may return tables the scripts index).
-          if k:match("^Get") and (k:match("Count$") or k:match("Num$")
-             or k:match("ID$") or k:match("Id$") or k:match("Index$") or k:match("Level$")
-             or k:match("Time$") or k:match("Frame$")) then
+          -- Scalar getters (counts/ids/indices/levels/scores/screens/times) are used
+          -- as numeric loop bounds and comparisons; returning a proxy aborted the
+          -- replay ("'for' limit must be a number" / "compare number with table").
+          -- Size getters stay proxies: their results feed arithmetic the bag scripts
+          -- continue through (BigBagPanel loses ~200 mutations if GetBoxSize returns
+          -- 0). Other Get*/PascalCase names keep the callable proxy (they may return
+          -- tables the scripts index).
+          if numericGetter(k) then
             return function() return 0 end
           end
           -- Unknown PascalCase global: some are module tables the scripts index
@@ -277,6 +291,13 @@ setmetatable(_G, { __index = function(t, k)
     -- engine window helpers (OpenBankPanel, CloseXxx...): record the intent
     local closing = k:match("^Close") ~= nil
     local f = function(...) recordWindow(k, closing) end
+    rawset(t, k, f)
+    return f
+  end
+  if numericGetter(k) then
+    -- engine global scalar getters (GetAddTrainSkillCount, GVoiceBase_GetRequiredPlayerLevel):
+    -- numeric results, used as loop bounds/comparisons.
+    local f = function() return 0 end
     rawset(t, k, f)
     return f
   end

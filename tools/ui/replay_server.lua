@@ -184,6 +184,17 @@ local function clone(t)
 end
 _G.clone = clone
 
+-- Scalar engine getters: names that carry a "Get" and end in a numeric suffix
+-- (counts/ids/indices/levels/scores/screens/rates). Excluded on purpose: Size
+-- (bag arithmetic continues through GetBoxSize) and Time/Frame (GetTodayTime is a
+-- month/day table, GetMgFrame/GetGameFrame are frame objects).
+local function numericGetter(k)
+  if type(k) ~= "string" or not k:find("Get") then return false end
+  return k:match("Count$") or k:match("Num$") or k:match("ID$") or k:match("Id$")
+      or k:match("Index$") or k:match("Level$") or k:match("Score$") or k:match("Screen$")
+      or k:match("Rate$") or k:match("Percent$")
+end
+
 proxy = function(name)
   local p = {}
   setmetatable(p, {
@@ -204,12 +215,9 @@ proxy = function(name)
           if k == "GetW" or k == "GetH" then return function() return 0 end end
           if k == "GetAbsPos" or k == "GetRelPos" then return function() return 0, 0 end end
           if k == "IsVisible" or k == "IsOpened" then return function() return false end end
-          -- Scalar getters used as numeric loop bounds/compares return 0; Size
-          -- getters stay proxies (bag arithmetic depends on them). Other
-          -- Get*/PascalCase names keep the callable proxy.
-          if k:match("^Get") and (k:match("Count$") or k:match("Num$")
-             or k:match("ID$") or k:match("Id$") or k:match("Index$") or k:match("Level$")
-             or k:match("Time$") or k:match("Frame$")) then
+          -- Scalar getters used as numeric loop bounds/compares return 0 (see
+          -- numericGetter); other Get*/PascalCase names keep the callable proxy.
+          if numericGetter(k) then
             return function() return 0 end
           end
           -- Unknown PascalCase global: some are module tables the scripts index
@@ -272,6 +280,13 @@ setmetatable(_G, { __index = function(t, k)
     -- engine window helpers (OpenBankPanel, CloseXxx...): record the intent
     local closing = k:match("^Close") ~= nil
     local f = function(...) recordWindow(k, closing) end
+    rawset(t, k, f)
+    return f
+  end
+  if numericGetter(k) then
+    -- engine global scalar getters (GetAddTrainSkillCount, ...GetRequiredPlayerLevel):
+    -- numeric results, used as loop bounds/comparisons.
+    local f = function() return 0 end
     rawset(t, k, f)
     return f
   end
