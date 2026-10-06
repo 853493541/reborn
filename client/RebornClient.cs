@@ -776,6 +776,7 @@ internal static class RebornClient
                 camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter, camSys.UnitsPerMeter,
                 CameraOperationMode.Name(cameraSettings.OperationMode)));
         }
+        float baseViewAngle = 1f;
         try
         {
             // FOV: the editor's view-angle factor. A wider value makes the
@@ -790,6 +791,7 @@ internal static class RebornClient
                 Log("view angle factor test override=" + va);
             }
             scene.SetViewAngleFactor(va);
+            baseViewAngle = va;
             Log("view angle factor applied=" + va);
         }
         catch (Exception e) { Log("view angle: " + e.Message); }
@@ -1809,6 +1811,52 @@ internal static class RebornClient
                 }
             }
         }
+        // Workstream B P2: skill-move camera FOV (skill_move_camera.txt, GB18030
+        // columns decoded 2026-10-06: value <30 = FOV increase in radians,
+        // >=30 = fixed FOV in degrees). The FOV ramp is LINEAR (provisional -
+        // the client's curve is still open, HOST_DEVIATIONS); post-FX fields
+        // are logged only (no post pipeline in the host).
+        SkillMoveCamera.LoadEmbedded(Log);
+        string smcTable = Env("RC_SKILL_MOVE_TABLE", "");
+        if (smcTable.Length > 0) SkillMoveCamera.LoadFile(smcTable, Log);
+        SkillMoveCamera.Effect skillMoveFx = null;
+        SkillMoveCamera.Row skillMoveRow = null;
+        double skillMoveFireMs = -1.0;
+        {
+            string smc = Env("RC_SKILL_MOVE_CAM", "");
+            if (smc.Length > 0)
+            {
+                string[] parts = smc.Split(',');
+                int sid;
+                if (int.TryParse(parts[0].Trim(), out sid))
+                {
+                    skillMoveRow = SkillMoveCamera.Get(sid);
+                    if (skillMoveRow == null)
+                    {
+                        Log("skillmove: no table row for skill " + sid + " (effect skipped)");
+                    }
+                    else
+                    {
+                        skillMoveFireMs = 1000.0;
+                        if (parts.Length > 1)
+                        {
+                            double fm;
+                            if (double.TryParse(parts[1].Trim(), out fm)) skillMoveFireMs = fm;
+                        }
+                        skillMoveFx = new SkillMoveCamera.Effect();
+                        Log(string.Format("skillmove armed skill={0} fire={1:F0}ms enter={2:F0} exit={3:F0} dur={4:F0} fov={5} fx={6} edge={7} sat={8}",
+                            sid, skillMoveFireMs, skillMoveRow.EnterMs, skillMoveRow.ExitMs,
+                            skillMoveRow.DurationMs,
+                            skillMoveRow.FixedFov
+                                ? skillMoveRow.FovValue.ToString("F0") + "deg"
+                                : skillMoveRow.FovValue.ToString("F2") + "rad+",
+                            skillMoveRow.ScreenFx ? 1 : 0, skillMoveRow.Edge, skillMoveRow.Sat));
+                    }
+                }
+                else Log("skillmove: bad RC_SKILL_MOVE_CAM=" + smc);
+            }
+        }
+        long lastSkillMoveLog = 0;
         bool camPokeOnce = Env("RC_CAM_POKE_ONCE", "0") == "1";
         // legacy look-at approximation: experiment only, default OFF. The
         // engine-faithful path (m_pScene -> cam vt+0x50 pos / vt+0x58 look-at,
@@ -3634,6 +3682,45 @@ internal static class RebornClient
                     try { scene.GetCameraPos(ref tx2, ref ty2, ref tz2); } catch { }
                     Log(string.Format("camani frame={0:F1}/{1:F0} cam=({2:F0},{3:F0},{4:F0}) aim=({5:F0},{6:F0},{7:F0}) applied=({8:F0},{9:F0},{10:F0})",
                         camTrack.Frame, camTrack.Duration, camX, camY, camZ, ax2, ay2, az2, tx2, ty2, tz2));
+                }
+                // P2 skill-move camera FOV (scripted trigger; gameplay hook waits
+                // for the skill runtime - FLWS has no table row).
+                if (skillMoveRow != null)
+                {
+                    if (!skillMoveFx.Active && skillMoveFireMs >= 0.0 && now >= skillMoveFireMs)
+                    {
+                        skillMoveFx.Start(skillMoveRow, now);
+                        Log(string.Format("skillmove start skill={0} t={1}ms enter={2:F0} exit={3:F0} dur={4:F0} fov={5} (screenFX={6} edge={7} sat={8} logged only)",
+                            skillMoveRow.SkillId, now, skillMoveRow.EnterMs, skillMoveRow.ExitMs,
+                            skillMoveRow.DurationMs,
+                            skillMoveRow.FixedFov
+                                ? skillMoveRow.FovValue.ToString("F0") + "deg"
+                                : skillMoveRow.FovValue.ToString("F2") + "rad+",
+                            skillMoveRow.ScreenFx ? 1 : 0, skillMoveRow.Edge, skillMoveRow.Sat));
+                    }
+                    if (skillMoveFx.Active)
+                    {
+                        double smPhase; int smStage;
+                        double smAngle = skillMoveFx.AngleAt(now, baseViewAngle * VideoSettings.DefaultAngle,
+                            out smPhase, out smStage);
+                        if (smAngle > 0.0)
+                        {
+                            float smFactor = (float)(smAngle / VideoSettings.DefaultAngle);
+                            try { scene.SetViewAngleFactor(smFactor); } catch (Exception) { }
+                            if (now - lastSkillMoveLog >= 500)
+                            {
+                                lastSkillMoveLog = now;
+                                Log(string.Format("skillmove stage={0} phase={1:F2} angle={2:F1}deg factor={3:F3} (linear ramp, provisional)",
+                                    smStage, smPhase, smAngle * 180.0 / Math.PI, smFactor));
+                            }
+                        }
+                        else
+                        {
+                            try { scene.SetViewAngleFactor(baseViewAngle); } catch (Exception) { }
+                            Log(string.Format("skillmove end t={0}ms -> base factor {1:F3}", now, baseViewAngle));
+                            skillMoveRow = null;   // one-shot scripted effect
+                        }
+                    }
                 }
 
                 // Character visibility near the camera: the native client fades

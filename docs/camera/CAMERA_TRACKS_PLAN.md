@@ -27,7 +27,7 @@ Companion: `CLIENT_AUDIT.md` (missing list), `CONFIG_FILES.md`, `MODE_ANIM_STATU
 |---|---|---|
 | `.mani` sample | `zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\action\turningeye.mani` (+ `f1/f2/m1/m2_turningeye.mani`) | 768–1008 B; **magic `ACON`**; u32@+4 = **classId** (42 for these editor files), not a count — see `MANI_FORMAT.md` |
 | Rush-camera table | viewer tmp `nieyun-rush-out\represent\player\player_rush_camera.txt` (present) | `CameraID / File / Speed`, 4 rows → `\data\movie\camera\16.mani`, `17.mani`, speed 1 |
-| Skill-move camera table | `proof/netcode/camera_files/skill_move_camera.txt` (in the original checkout; untracked — copy in P0) | UTF-8, 8 rows; columns: `SkillID, bAniTag, 进入时间(ms), 退出时间(ms), 最大旋转角速度(0~2PI)/固定角度(>=30°), 保持时间, 屏幕特效开关, 边缘色(0~10), 色域饱和度(0~1)` |
+| Skill-move camera table | `proof/netcode/camera_files/skill_move_camera.txt` (in the original checkout; copied to `proof/camera_tracks/` in P0) | GB18030, 9 lines; columns: `SkillID, bAniTag, 过渡时间(切入)ms, 过渡时间(切出)ms, 广角增幅(弧度 0~2PI)/固定广角(角度 >=30°), 持续时间ms, 屏幕特效开关, 边缘色差(0~10), 色差饱和度(0~1)` |
 | Scene/dialog tables | `Represent/camera/SceneCameraAni.tab`, `npc_dialog_scene_camera_ani.txt`, `animation_camera_model.txt` | referenced by `CONFIG_FILES.md`; extract in P0 |
 | Managed API | metadata dump | only `KGMovieEditorCLR.ExportCameraTrack/SetCameraTrackPlaySpeedPerMS/SetCameraTrackPlayMethod` (editor playback; **no load-by-name**) — host playback must be our reader |
 | Engine key | `NpcDialogCamera` row | `PlaySceneCameraAni` (table key; scene camera animations) |
@@ -64,14 +64,19 @@ Companion: `CLIENT_AUDIT.md` (missing list), `CONFIG_FILES.md`, `MODE_ANIM_STATU
    applied on every logged frame, C# sampler ≡ Python reference (≤5 u at 0.1-frame rows),
    4 distinct screenshot fingerprints, no crash; `camera_smoke` ALL PASS; collision 36/36.
 
-### P2 — skill-move camera FOV (~0.5 day)
-1. `client/SkillMoveCamera.cs`: parse the 8-row table; expose `TryGet(skillId)`.
-2. `RC_SKILL_MOVE_CAM=<skillId>,<ms>` scripted trigger: FOV factor interpolation over
-   enter/exit using the existing `SetViewAngleFactor` path; yaw-rate/fixed-angle fields
-   applied to the orbit where the current model supports it; screen-FX/edge/saturation fields
-   **logged only** (post pipeline absent → boundary).
+### P2 — skill-move camera FOV (~0.5 day) — **DONE 2026-10-06**
+1. `client/SkillMoveCamera.cs`: parses the table (embedded resource copy + `RC_SKILL_MOVE_TABLE`
+   override; GB18030 header re-decoded 2026-10-06: value <30 = **FOV increase in rad**,
+   ≥30 = fixed FOV in deg), exposes `Get(skillId)` + the effect state machine.
+2. `RC_SKILL_MOVE_CAM=<skillId>,<ms>` scripted trigger: FOV angle interpolated over the row's
+   过渡时间(切入/切出) with the row's 持续时间 hold, applied through `SetViewAngleFactor`
+   (factor = angle / 0.837757). Screen-FX/edge/saturation fields **logged only** (post
+   pipeline absent → boundary). The ramp is LINEAR and provisional (client curve open;
+   deviation registered in `HOST_DEVIATIONS.md` B16).
 3. FLWS has no row — gameplay wiring waits for the skill runtime (dependency registered).
-**Verify:** FOV fingerprint series for one distinctive row + `camera_smoke`.
+   **Verify:** skill 124841 run (`proof/camera_tracks/p2_run_20261006.txt`): ramp
+   60.0 → 64.8 → 69.6 → 75.0 → base exactly matches the linear expectation, effect ends at
+   enter+exit, 3 distinct screenshot fingerprints, no crash; gates green.
 
 ### P3 — minimal camera UI (~0.5 day)
 Extend `HudOverlay` with a camera line (mode, FOV, distance, obstruction state) and keys to

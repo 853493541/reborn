@@ -4304,3 +4304,23 @@ if the cache/host frames appear.
 - Evidence: `proof/camera_tracks/p1_run_20261006.txt`; `docs/camera/MANI_FORMAT.md` §3;
   `docs/camera/CAMERA_TRACKS_PLAN.md` P1.
 - Outcome: P1 done. P2 (skill-move FOV) next. Local only.
+
+### 2026-10-06 - Camera (B) - P2 done: skill-move camera FOV effect
+
+- Did: `client/SkillMoveCamera.cs` parses `skill_move_camera.txt` (embedded resource +
+  `RC_SKILL_MOVE_TABLE` override) and implements the temporary-FOV state machine;
+  `RC_SKILL_MOVE_CAM=<skill>,<ms>` scripted trigger applies the angle through
+  `SetViewAngleFactor` (factor = angle / 0.837757). **Column decode corrected**: the header
+  (GB18030) says 广角增幅(弧度)/固定广角(角度≥30) = FOV, not a rotation rate - value <30 is a
+  radian FOV increase over the base, >=30 is a fixed FOV in degrees (the earlier plan row had
+  it wrong; fixed). Post-FX fields (screen FX / edge aberration / saturation) logged only.
+- Provisional: the client's FOV interpolation curve is still open research, so the ramp is
+  LINEAR - registered as `HOST_DEVIATIONS.md` B16 with re-open criteria
+  (`ApplySkillMoveCameraTag` `0x1802F8D20` / KRLCameraAni FOV writes).
+- Verified: skill 124841 run - ramp 60.0 -> 64.8 -> 69.6 -> 75.0 deg exactly matches
+  `base + 0.30 rad * phase`, effect ends at enter+exit (t=4001 ms) back to base factor
+  1.250, 3 distinct screenshot fingerprints, no crash. Gates: camera_smoke ALL PASS
+  (rebuilt after the change), collision 36/36.
+- Evidence: `proof/camera_tracks/p2_run_20261006.txt`;
+  `docs/camera/CAMERA_TRACKS_PLAN.md` P2; `docs/camera/HOST_DEVIATIONS.md` B16.
+- Outcome: P2 done. P3 (minimal camera UI) next. Local only.
