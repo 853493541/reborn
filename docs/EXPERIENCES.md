@@ -1914,3 +1914,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Server action: send GR message type 0x36 size 71 with the decoded layout
   (u16 size@+7, u16 type@+9, dwords@+0xB/+0xF/+0x13, ServerName 32B@+0x17,
   ReconnectTimeout@+0x37 -> manager+0xE404, flags@+0x3B/+0x3F/+0x43).
+
+### 2026-10-05 — V2 P3: GR table registration traced to the manager reset (both modules)
+- .pdata: the GR-type registration (0x140121AD7..0x1401222AA region) is part of the SAME reset
+  function as the 53 S2C handlers: fn 0x14011D570..0x1401222AA. So the manager object carries
+  two tables: S2C ids at +0x16460/+0x17F28, GR types at +0x17AA0/+0x18A48 (type 0 = base, size 41).
+- The DLL (JX3LogicEditOperationX64.dll) registers the identical GR table (fn 0x180167AA7,
+  same offsets) and has its own copy of the GR dispatcher: 0x1802A21C0 (byte-identical logic
+  to EXE 0x1402FDBF0: type range 0x33..0x43, sizes [rcx+rdx*4+0x9a8], handlers [rcx+rdx*8]).
+- Open: no static reader of +0x17AA0 found in EXE/DLL/UI modules (only the registration writes)
+  -> the GR dispatch base is loaded at runtime; and ProcessMessage's rcx ([0x140A755B8]+0x1a288)
+  differs from the registered base by a fixed delta (size-table gap 0xFA8 vs 0x9A8).
+- Next: milestone run - inject the type-0x36 (size 71) respond on the game connection and read
+  the client log to confirm the delivery id/handler (OnHandShakeRespond fires -> layout right).
