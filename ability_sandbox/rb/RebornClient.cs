@@ -654,8 +654,10 @@ internal static class RebornClient
         TerrainSampler sampler = null;
         try
         {
+            int terrCache = 4;
+            int.TryParse(Env("RC_TERR_CACHE", "4"), out terrCache);
             sampler = new TerrainSampler(
-                @"C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\PhysicsEngineX64.dll", mapPath, Log);
+                @"C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\PhysicsEngineX64.dll", mapPath, Log, terrCache);
         }
         catch (Exception e) { Log("TerrainSampler ex: " + e.Message); }
 
