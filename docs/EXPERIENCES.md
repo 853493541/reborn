@@ -2103,3 +2103,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   fallback happened because our port-80 list host was down; now even a down host cannot reach the
   real list. Verified: fetch of infoc.xoyo.com returns our patched list (127.0.0.1:3724 entry).
 - Stub: id 7 now opt-in (GAME_ID7=1); default sequence id4 -> id10 -> keepalive id10.
+
+### 2026-10-05 — V2 P3: map 296 = UGC map; data placed at client data\UGC (user-approved)
+- 龙门寻宝 (id 296) is a UGC map: all 1276 prefetch entries have bInPak=0 (not in game paks).
+  The engine loads UGC maps from <client>\data\UGC\... (KG3DEngineDX11EX64.dll strings).
+- The full UGC map data (4117 files, 975 MB) existed only in the SeasunDownloader probe copy;
+  with user approval it was copied to zhcn_hd\data\UGC\binkp1\龙门寻宝\ (a write under
+  C:\SeasunGame outside the documented build outputs - explicitly approved by the user).
+- Live state before the copy: client+0x14=296, player inserted, state=4, pos=100,100,0, scene=null
+  (the map could not load without the data).
+- Next: fresh run - expect the scene to load -> id 10 guard passes -> player+0xFDC=7.
