@@ -4339,3 +4339,21 @@ if the cache/host frames appear.
 - Evidence: `proof/camera_tracks/p3_run_20261006.txt`;
   `docs/camera/CAMERA_TRACKS_PLAN.md` P3.
 - Outcome: P3 done. P4 (closures: CLIENT_AUDIT statuses, README, boundaries) next.
+
+### 2026-10-06 - Camera (B) - P4 done: workstream B closed (P0-P4)
+
+- Did: closed the workstream - `CLIENT_AUDIT.md` missing items 4 (track camera -> DONE via
+  P1) and 7 (skill-move FOV -> DONE, screen FX logged only) annotated with a dated status
+  note, item 8 annotated (P3 read-only HUD, custom.dat write path still deferred); plan
+  boundaries updated (rush `.mani` grammar + gameplay hooks remain open); README index and
+  tools table already carried `MANI_FORMAT.md` + `mani_probe.py` from P0.
+- Result: `.mani` camera tracks play in the host (sampled == applied, cross-checked against
+  the Python decoder), skill-move FOV effect works from the real table, HUD shows the camera
+  state, all four phases verified in-engine with numeric fingerprints.
+- Gates: camera_smoke ALL PASS (feature build `camera_smoke_cameratracks.exe`),
+  collision_selftest 36/36, jx3_model 10x, gravity PASS, loot selftest PASS,
+  `mani_probe.py --selftest` 14/14, `--verify` cameradata 10/10.
+- Commits: `c521185` (plan), `38acd0a` (P0), `0d68302`+`cb5a4f2` (P1), `bb15cfc` (P2),
+  `b21da84` (P3), this P4 docs commit. Branch `agent/camera-tracks`, local only.
+- Open (registered): rush `.mani` grammar; gameplay triggers for rush/dialog; FOV ramp curve
+  (HOST_DEVIATIONS B16); edge/saturation post FX; settings write path.

@@ -88,9 +88,11 @@ registered. **Verify:** `proof/camera_tracks/p3_run_20261006.txt` - baseline vs
 track+skillmove HUD text (`fov 60deg obst ON` -> `fov 100deg obst off ... ani f174/175
 skillmove s1`), layered-buffer dumps 633x237 vs 678x237 distinct hashes.
 
-### P4 — closures (~0.25 day)
-Update `CLIENT_AUDIT.md` missing-items 4/7/8 statuses; boundary register + EXPERIENCES
-entries; README index rows.
+### P4 — closures (~0.25 day) — **DONE 2026-10-06**
+`CLIENT_AUDIT.md` missing-items 4 (track camera → done) and 7 (skill-move FOV → done,
+FX logged only) updated with a workstream status note; item 8 annotated (P3 read-only HUD,
+write path still deferred). Boundary register updated (§6.4); EXPERIENCES entries for
+P0/P1/P2/P3; README index rows (`MANI_FORMAT.md`, `mani_probe.py`) landed in P0.
 
 ## 4. Deliverables
 
@@ -112,8 +114,10 @@ python gates. Numeric fingerprints for every visual claim. No shared-state write
 2. **Glider / dynamic-follow modes** — rows absent; need the state systems.
 3. **Edge color / saturation screen FX** — needs the post-render pipeline (quality-gated in
    the game); table fields documented, not faked.
-4. **Rush/dialog gameplay triggers** — need the SkillMove/Represent state; scripted trigger
-   path provided meanwhile.
+4. **Rush/dialog gameplay triggers** — need the SkillMove/Represent state. What landed:
+   cameradata `.mani` playback (P1) and the skill-FOV effect (P2) both work through scripted
+   triggers (`RC_CAM_ANI` / `RC_SKILL_MOVE_CAM`); the rush `.mani` grammar and the real
+   gameplay hooks stay open.
 5. **Camera `[Camera]` ini / engine caps** — file absent from the install (compiled defaults).
 
 ## 7. Effort
