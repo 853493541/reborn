@@ -22,13 +22,13 @@ Tables used (all extracted read-only from the client paks, see
 | 风来吴山 | matched tani | `skill_tag` 1645 → anim 719 → `player_animation_f1` → `F1s07cj重剑技能15_风来吴山HD.tani` | **PROVEN** |
 | 风来吴山 | anim step (base `f1s07cj重剑技能15.ani`) | same clip as the tani, tags stripped (tani = base + `.Sfx` tags) | **PROVEN variant** — the staged base `.ani` is the registered deviation for the ME `.Sfx` AV |
 | 风来吴山 | sound 161340541 | tani SoundTag → Wwise event `...fenglaiwushanHD` → wem (`docs/audio/SOUND_PATH.md` Frida chain) | **PROVEN** (host WAV playback = registered deviation) |
-| 风来吴山 | PSS `c_藏剑刀光01b.pss` | `character_sfx.txt` has 藏剑刀光 rows id 9933/10615/11002/12357/12358 (`c_藏剑刀光15/11/光01.pss`) — no `01b` row in the extracted table | **UNPROVEN** (staged; source not yet located) |
+| 风来吴山 | PSS `c_藏剑刀光01b.pss` | the file is a **real extracted game resource** (v2-era PakV4 extraction, `%TEMP%\opencode\skillv2\stage_all\ex_pss\...\pss\发招\`); `character_sfx.txt` lists other 藏剑刀光 variants (15/11/光01) | **file real, skill→variant binding unproven** |
 | 临时飞爪 | anim chain 释放/03b/缓冲 | `skill_dash` 28033 → 91076 → `F1s16lxg链技能03b_hd.tani` (dash); cast 28032/落地 via the script's `CastSkill`/`CastSkillXYZ` (28031 script read) | **PROVEN** |
 | 临时飞爪 | chain PSS `s_锁链01.pss` | `skill_chain` 28032: `S_rh → S_fxmid`, 1000 ms, `data\source\other\hd特效\技能\pss\状态\s_锁链01.pss` | **PROVEN** |
 | 临时飞爪 | sounds 62588785 / 697798714 | review-confirmed wems with source wav names (`skill-tani-sound-review.json`) | **PROVEN** (wem review layer) |
 | 如意法 | script chain | `道具_如意法.lua`: `BindBuff(1, 4421)`, `AddBuff 4422/4432/4433/4434`; `Buff.tab` → those buffs `RepresentID = 10208` | **PARTIAL** — buff chain proven; represent 10208 data not yet extracted |
 | 如意法 | anim step (base `f1smj10双刀buff04.ani`) | base clip of the dig-matched tani `F1smj10双刀buff04_清净心01.tani` | **UNPROVEN** until represent 10208 is read |
-| 如意法 | PSS `m_明教清净心01.pss` | `character_sfx.txt` has `m_明教清净心爆发01.pss` (id 12564) — a different variant; no exact row | **UNPROVEN** (staged) |
+| 如意法 | PSS `m_明教清净心01.pss` | the file is a **real extracted game resource** (v2-era extraction, `%TEMP%\opencode\skillv2\out_ruyi2\...\pss\发招\`); `character_sfx.txt` has the sibling variant `m_明教清净心爆发01.pss` (id 12564) | **file real, skill→variant binding unproven**; see also `SFX_RE_TEST.md` (the ruyifa `.Sfx` set) |
 
 ## Resolver caveat found (dash layer)
 

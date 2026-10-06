@@ -4353,3 +4353,29 @@ if the cache/host frames appear.
 - Note: a `reborn_client_stability` client (PID 3416, ~21:37) was running in its own
   memory namespace during the sync - no conflict with the ME sandbox run
   (`MovieEditor.memory`); the sync run completed.
+
+### 2026-10-06 — v5 — Phase 3: .Sfx per-file re-test on the synced sandbox (no AVs; 5/8 create+play)
+
+- Method: scripted `Skill.exe` casts 如意法 with `RC_SFX_ENGINE=1` +
+  `RC_SFX_TEST_PATH=<abs .sfx>`; the cast calls the owner-chain
+  `sfx_shim.dll!RC_Shim_SfxPlay` (mirrors the engine tag-spawn owner, calls
+  `KG3D_CreateSFXFromFile`, resolves the play interface and plays), PSS dummy as
+  fallback.
+- Results (ME 09-14 build, synced sandbox, logs `Skill_20261006_15*.log`):
+  - create+play rc=0 (dummy SKIPPED): `m明教元素18`, `m明教元素19`,
+    `释放_气场聚集03`, `释放_范围选择01`, `d001014伞开灰` (play=0xE5420 rc=0).
+  - graceful NULL (rc=7, PSS fallback): `g光晕02`, `c纯阳坐忘`, `鼠标移动`.
+  - **Zero AVs** - the 2026-09-29 AV isolation (元素19/光晕02/气场聚集03) used the
+    pre-owner-chain call path; with the owner-chain shim the same files create
+    (19/03), produce a NULL (02) or play (18).
+- Consequence: "MovieEditor cannot play .Sfx" is false as a general statement;
+  the real gaps are per-file (3/8 here) and the tag/socket binding semantics.
+- Also corrected in `SKILL_MAPPING_VERIFICATION.md`: the staged PSS names
+  (`c_藏剑刀光01b.pss`, `m_明教清净心01.pss`) are real extracted game resources
+  (v2-era PakV4 extractions); only the skill->variant binding remains unproven.
+- Docs: `docs/engine_host/SFX_RE_TEST.md` (registered in the area README).
+- Lesson: PowerShell 5.1 parses `.ps1` files without BOM as ANSI - non-ASCII
+  scripts must be avoided/BOM'd; the multi-run batch moved to Python.
+- Next: wire the engine-SFX step into the dataset processes (app hook exists);
+  socket/bone binding; identify the create-NULL subset cause (client 09-27
+  engine creates `c纯阳坐忘` cleanly -> suspected ME-build format gap).
