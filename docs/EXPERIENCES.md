@@ -4225,3 +4225,14 @@ if the cache/host frames appear.
   attribution still works via the `build=` fingerprints, but the name should
   gain a PID/ms suffix.
 - Local only: not pushed to origin.
+
+### 2026-10-05 - repo - Cleanup: agent/predraw worktree + branch closed after merge
+
+- Removed worktree `Desktop\reborn-iso-predraw` and branch `agent/predraw`
+  (merged into main via `4757ada`, absorbed by `19232f9`; no uncommitted work).
+- Removed the stale feature artifacts from shared bin64:
+  `reborn_client_predraw.exe`, `collision_selftest_reborn_client_predraw.exe`,
+  `build_info_reborn_client_predraw.exe.txt` (built from the pre-merge branch).
+- Main stays at `2d45e16` == `origin/main`; the running canonical/sandbox
+  clients are the `2cbf004` rebuild (docs-only delta since).
+- Local only: not pushed to origin.
