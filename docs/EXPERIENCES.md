@@ -4325,3 +4325,18 @@ if the cache/host frames appear.
   `proof/render/{foliage,lod8}/` key PNGs; logs `reborn_20261005_18*`.
 - Outcome: B complete (first pass). Remaining open: foliage density map-reload A/B and
   a close-up pose for the model-LOD keys.
+
+### 2026-10-05 - Camera - E: modes/skill-FOV/tracks status (blocked, no invented triggers)
+
+- Did: investigated the 1.5 remainder instead of implementing invented triggers.
+  (1) Auto mode switching: the WW sprint trigger was **removed by user decision**
+  (EXPERIENCES 2026-09-30) and the real state sources (engine sprint/mount/dialog/
+  spectate) do not exist in the host -> blocked; re-open when those states are modeled.
+  (2) Skill-move camera: decoded `proof/netcode/camera_files/skill_move_camera.txt`
+  (8 rows; duration/hold/yaw-rate/screen-FX/edge/saturation); the test skill has no row;
+  the consumer is the SkillMove runtime -> blocked on the skill runtime.
+  (3) Camera tracks: the managed surface (`KGMovieEditorCLR.ExportCameraTrack` /
+  `SetCameraTrackPlaySpeedPerMS` / `SetCameraTrackPlayMethod` / `SetTrackForEditor`) is
+  editor playback only; next probe = the `.mani`/KRLCameraAni consumer in the game client.
+- Evidence: `docs/camera/MODE_ANIM_STATUS.md`; no code change (nothing invented).
+- Outcome: E documented as blocked + next probes; nothing implemented by design.
