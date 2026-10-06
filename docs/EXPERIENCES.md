@@ -2168,3 +2168,26 @@ solved it, and what is still open. **Newest at the bottom.**
   materializes the 9 filter checkboxes + subtrees (selftest sections 123 -> status 145).
 - Remaining 26: `AppendItemFromData` (function-arg rows, SocialPanel), drag registrations (no
   visual), frame-animation/icon-source calls.
+
+### 2026-10-05 ? UI ? runtime item placement fixed (bag filter row in place; the A/B method)
+- User: "still don't see good changes". Built the A/B loop: `--status` with the runtime state vs
+  with `Data/runtime_state` renamed away (static), diffing per-window sections/elements/oob.
+  It exposed three real bugs in my consumption:
+  1. `Clear` (remove all descendants) blanked lists the under-recorded append loops could not
+     rebuild (ActivityList 236 -> 13 sections). Fix: `Clear` clears only items added by earlier
+     appends and defers to the next append (no append -> keep the authored content).
+  2. The flow pass arranged ALL children of a runtime container, including authored backgrounds:
+     BigBagPanel's filter container has `Handle_BG` (~595 high) as a child, so the 18 runtime
+     checkboxes were flowed to y=624 (the window bottom, invisible). Fix: runtime-arranged
+     containers flow only `$RuntimeItem` clones (fall back to all children when none), wrapping
+     at the authored width. Bag filter row now at (472,0), first clone (0,0) relative.
+  3. `SetSizeByAllItemSize` grew containers to the single-row item extent, stretching the bag to
+     2158 wide; capped by the authored box.
+- Also: per-item `SetText` after an append now lands on the newest clone's Text child (the harness
+  records the clone's Lookup+SetText on the container - the filter labels 全部/装备/... now apply).
+- A/B after: runtime renders are now FULLER than static for the item windows (BigBagPanel 145->182
+  sections incl. the 10 filter checkboxes, ActivityList 236->251, SecurityCard 132->201 with oob
+  97->12, HatredPanel 20->55). Selftest 1240/0/0; audit ph=535 oob=7359.
+- Remaining visible gaps: the stub-data Hide branches over-hide some windows (LuckyMeeting
+  145->3 - the replay hides both page variants because the mode data is a stub); the materialized
+  clones' text children sit at their authored offsets (counted oob, the engine clips).
