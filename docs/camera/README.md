@@ -22,6 +22,7 @@ Camera model and host work. Canonical gameplay spec in `docs/netcode/REBORN_CAME
 | `RECONCILIATION_STATUS.md` | Camera reconciliation status (2026-09-24) |
 | `STATUS.md` | Camera status — JX3 follow model (port of the camara-imp branch) |
 | `WALL_OBSTRUCTION.md` | Native JX3 camera wall obstruction |
+| `MODE_ANIM_STATUS.md` | Camera modes / skill-FOV / tracks — status + blockers (2026-10-05) |
 
 ## Tools
 
