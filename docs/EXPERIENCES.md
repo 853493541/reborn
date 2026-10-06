@@ -1927,3 +1927,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   differs from the registered base by a fixed delta (size-table gap 0xFA8 vs 0x9A8).
 - Next: milestone run - inject the type-0x36 (size 71) respond on the game connection and read
   the client log to confirm the delivery id/handler (OnHandShakeRespond fires -> layout right).
+
+### 2026-10-05 — V2 P3 CORRECTION: respond is S2C id 0x2FF (not "type 0x36"); stub implemented
+- The "+0x17AA0 table" was the S2C id table's high-id range: handler slot 0x17AA0 = id 713's
+  slot (0x16460+(id-1)*8), size slot 0x18A48 = id 713's size slot (0x17F28+(id-1)*4). The
+  registered entries map to ids: 0x2FC (59B), 0x2FF = OnHandShakeRespond (71B), 0x309 (75B),
+  0x30B (var), 0x30C = OnGlobalRoomMsgNotify (var), 0x312 (var).
+- Handler 0x140143A30 reads the FRAME directly: [rdx+7]/[rdx+0xB]/[rdx+0xF]/[rdx+0x13] dwords
+  -> global+0x1B5B8.., 32B name at +0x17 -> global+0xA8, [+0x37] -> manager+0xE404, and three
+  dwords at +0x3B/+0x3F/+0x43 (all nonzero -> main path; any zero -> alternative paths).
+- Implemented in tools/netcode/game_server_stub.py: handshake_respond() builds the 71-byte
+  id-0x2FF frame; auto-sent after the client's proto-1 handshake (GAME_AUTORESP=1).
+- Lesson: slot-offset math must be anchored to the right base (id vs type table); the
+  0x600 gap between handler arrays was the id table's size array, not a second table.

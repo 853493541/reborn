@@ -38,6 +38,24 @@ def hello():
     return pframe(bytes([0x20, 0x00]) + b"\x00" * 40)
 
 
+RESPOND_ID = 0x2FF
+
+
+def handshake_respond(server_name=b"127.0.0.1", timeout=30, recover=1, flag2=1, success=1):
+    """S2C id 0x2FF, min size 71 (0x47). Handler 0x140143A30 (OnHandShakeRespond):
+    reads dwords at +7/+0xB/+0xF/+0x13, copies 32B ServerName from +0x17 to
+    global+0xA8, [ +0x37 ] -> manager+0xE404 (ReconnectTimeout), and checks three
+    dwords at +0x3B/+0x3F/+0x43 (all nonzero -> main path)."""
+    p = bytearray(0x47)
+    struct.pack_into("<H", p, 0, RESPOND_ID)
+    struct.pack_into("<I", p, 0x37, timeout)
+    struct.pack_into("<I", p, 0x3B, recover)
+    struct.pack_into("<I", p, 0x3F, flag2)
+    struct.pack_into("<I", p, 0x43, success)
+    p[0x17:0x17 + len(server_name)] = server_name[:31]
+    return bytes(p)
+
+
 class GameSession(object):
     """Game transport cipher: same table, state starts at 0xC9FFFFFF for both
     directions and advances per packet (state = state*0x1F + 0x8088405)."""
@@ -98,6 +116,12 @@ def handle(conn, addr):
                 w("[%s] RECV proto=%d len=%d raw=%s pt=%s%s"
                   % (time.strftime("%H:%M:%S"), proto, len(payload), raw4,
                      payload[:64].hex(), "..." if len(payload) > 64 else ""))
+                if proto == 1 and os.environ.get("GAME_AUTORESP", "1") == "1":
+                    time.sleep(0.2)
+                    resp = handshake_respond()
+                    conn.sendall(sess.encrypt(resp))
+                    w("[%s] SENT handshake respond id=0x%X len=%d"
+                      % (time.strftime("%H:%M:%S"), RESPOND_ID, len(resp)))
     except Exception as e:
         w("[%s] error after %.1fs: %s" % (time.strftime("%H:%M:%S"), time.time() - t0, e))
     finally:
