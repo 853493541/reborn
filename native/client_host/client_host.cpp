@@ -35,6 +35,91 @@ static void gbk(const wchar_t* src, char* out, int cap)
     WideCharToMultiByte(936, 0, src, -1, out, cap, NULL, NULL);
 }
 
+// Host adaptation: the map's whole-scene shadow mask is missing from the sandbox;
+// the engine falls back to data/public/defaultWhite.dds (64x64 DXT1) but the
+// rep-side shadow descriptors stay w=0/h=0 (the runtime's is reset mid-call by its
+// init), so the mask bitmap build computes the alignment mask ~(h-1) = 0 and
+// memsets a NULL dst (rep+0x33C4F6 -> 0x33C539). This hook fixes any zero
+// descriptor at use time (rep+0x33BE40 = the descriptor user) with the fallback
+// 64x64 dims - completing the engine's own fallback state. Documented deviation:
+// docs/EXPERIENCES.md; re-open when the map's shadow mask data is available.
+static void __fastcall shadowDescFix(void* desc)
+{
+    HMODULE rep = GetModuleHandleA("JX3RepresentX64.dll");
+    if (rep == NULL || desc == NULL)
+        return;
+    __try
+    {
+        // only the shadow descriptors (KRLShadowMgr [rep+0xED3F18]+0x610 and the
+        // shadow runtime [rep+0xED3FA8]+0x68); other users of the same builder
+        // must not be touched.
+        // NOTE: only the runtime descriptor here. The KRLShadowMgr descriptor
+        // ([rep+0xED3F18]+0x610) is legitimately empty during the startup engine
+        // scene load - fixing it there corrupts that load; it is fixed in frame60
+        // (before the real CreateRLScene) instead.
+        static volatile long hookHits = 0;
+        long h = InterlockedIncrement(&hookHits);
+        // The shadow masks are missing from the sandbox; a zero descriptor makes
+        // the builder memset a NULL dst (mask ~(h-1) with h=0 -> 0). Fix the
+        // descriptor at USE time (the runtime's init resets it mid-call) with the
+        // engine's own fallback mask dims (data/public/defaultWhite.dds, 64x64).
+        void* rt = *(void**)((BYTE*)rep + 0xED3FA8);
+        if (rt == NULL || desc != (void*)((BYTE*)rt + 0x68))
+            return;
+        if (*(unsigned*)((BYTE*)desc + 0x18) == 0)
+        {
+            *(unsigned*)((BYTE*)desc + 0x18) = 64;
+            *(unsigned*)((BYTE*)desc + 0x1c) = 64;
+            *(unsigned*)((BYTE*)desc + 0x20) = 1024;
+            *(unsigned*)((BYTE*)desc + 0x24) = 0;
+            if (h <= 6)
+                logf("[host] shadowDescFix dims applied (hit %ld)", h);
+        }
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { }
+}
+
+static int installShadowDescHook(HMODULE rep)
+{
+    BYTE* site = (BYTE*)rep + 0x33BE40;
+    const int origLen = 17;
+    static const BYTE orig[17] = { 0x48,0x89,0x5C,0x24,0x10,0x57,0x48,0x83,
+                                   0xEC,0x20,0x83,0x79,0x24,0x00,0x48,0x8B,0xF9 };
+    BYTE* stub = (BYTE*)VirtualAlloc(NULL, 0x100, MEM_COMMIT | MEM_RESERVE,
+                                     PAGE_EXECUTE_READWRITE);
+    if (stub == NULL)
+        return 0;
+    int i = 0;
+    stub[i++] = 0x51;                       // push rcx
+    stub[i++] = 0x52;                       // push rdx
+    stub[i++] = 0x41; stub[i++] = 0x50;     // push r8
+    stub[i++] = 0x41; stub[i++] = 0x51;     // push r9
+    stub[i++] = 0x48; stub[i++] = 0x83; stub[i++] = 0xEC; stub[i++] = 0x28;
+    stub[i++] = 0x49; stub[i++] = 0xB8;     // mov r8, fixfn
+    *(void**)(stub + i) = (void*)shadowDescFix; i += 8;
+    stub[i++] = 0x41; stub[i++] = 0xFF; stub[i++] = 0xD0;   // call r8
+    stub[i++] = 0x48; stub[i++] = 0x83; stub[i++] = 0xC4; stub[i++] = 0x28;
+    stub[i++] = 0x41; stub[i++] = 0x59;     // pop r9
+    stub[i++] = 0x41; stub[i++] = 0x58;     // pop r8
+    stub[i++] = 0x5A;                       // pop rdx
+    stub[i++] = 0x59;                       // pop rcx
+    memcpy(stub + i, orig, origLen); i += origLen;
+    stub[i++] = 0x48; stub[i++] = 0xB8;     // mov rax, back
+    *(void**)(stub + i) = (void*)(site + origLen); i += 8;
+    stub[i++] = 0xFF; stub[i++] = 0xE0;     // jmp rax
+    DWORD old;
+    if (!VirtualProtect(site, origLen, PAGE_EXECUTE_READWRITE, &old))
+        return 0;
+    site[0] = 0x48; site[1] = 0xB8;         // mov rax, stub
+    *(void**)(site + 2) = (void*)stub;
+    site[10] = 0xFF; site[11] = 0xE0;       // jmp rax
+    for (int k = 12; k < origLen; k++)
+        site[k] = 0x90;
+    VirtualProtect(site, origLen, old, &old);
+    FlushInstructionCache(GetCurrentProcess(), site, origLen);
+    return 1;
+}
+
 // "module.dll+0xRVA" for a function pointer (log-friendly)
 static const char* fnLoc(void* fn)
 {
@@ -1673,6 +1758,10 @@ int main(void)
         HMODULE rep = LoadLibraryExW(rp, NULL,
             LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
         logf("[host] JX3RepresentX64.dll -> %p (err=%u)", rep, rep ? 0 : GetLastError());
+        // host adaptation: fix zero shadow-mask descriptors at use time
+        // (see shadowDescFix above)
+        if (rep != NULL)
+            logf("[host] shadow desc hook -> %d", installShadowDescHook(rep));
         if (rep != NULL)
         {
             typedef void* (__cdecl *CreateRepFn)(void);
@@ -3013,24 +3102,31 @@ int main(void)
                             logf("[host] frame60: [singleton+0x1A0+0x260] := %p, readback=%p",
                                  cand, *(void**)((BYTE*)holder60 + 0x260));
                         }
-                        // KRLShadowMgr probe: [rep+0xED3F18] + 0x610 descriptor
-                        // (the map-load shadow step builds a bitmap from it; garbage
-                        // dims -> memset AV at 0x33C539).
+                        // the shadow runtime descriptor is fixed at use time by the
+                        // installed hook; the KRLShadowMgr descriptor must be fixed
+                        // here (before the real call) - it is legitimately empty
+                        // during the startup engine scene load.
                         __try
                         {
                             void* shm = *(void**)((BYTE*)g_repModule + 0xED3F18);
-                            logf("[host] frame60: KRLShadowMgr=%p +0x578=%llu", shm,
-                                 (shm != NULL) ? *(unsigned long long*)((BYTE*)shm + 0x578) : 0);
                             if (shm != NULL)
                             {
                                 unsigned char* d = (unsigned char*)shm + 0x610;
                                 logf("[host] frame60: shadow desc w=%u h=%u rb=%u acc=%u",
                                      *(unsigned*)(d + 0x18), *(unsigned*)(d + 0x1c),
                                      *(unsigned*)(d + 0x20), *(unsigned*)(d + 0x24));
+                                if (*(unsigned*)(d + 0x18) == 0)
+                                {
+                                    *(unsigned*)(d + 0x18) = 64;
+                                    *(unsigned*)(d + 0x1c) = 64;
+                                    *(unsigned*)(d + 0x20) = 1024;
+                                    *(unsigned*)(d + 0x24) = 0;
+                                    logf("[host] frame60: shadow desc set -> w=64 h=64 rb=1024 acc=0");
+                                }
                             }
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
-                        { logf("[host] frame60: shadow mgr probe fault"); }
+                        { logf("[host] frame60: shadow desc probe fault"); }
                         // the map load (0x58D800) binary-searches the holder's table
                         // at +0x1E3C0 (CommonForceRelationTable data, empty in this
                         // host). The game's loader for it = rep+0x82C3C0(holder) -
@@ -3053,124 +3149,32 @@ int main(void)
                                                     MAX_PATH) == 0)
                             mapPath60[0] = 0;
                         logf("[host] frame60: map path (ansi) = '%s'", mapPath60);
-                        // probe the two steps CreateRLScene performs, separately:
-                        // 1) the by-name lookup (0x16A09), 2) NewScene (0x16DB5).
-                        __try
-                        {
-                            unsigned typ60 = *(unsigned*)((BYTE*)g_repSingleton + 0x25BB4);
-                            void* nameRes = ((void* (__fastcall *)(void*, const char*, unsigned))
-                                             ((BYTE*)g_repModule + 0x16A09))(
-                                (BYTE*)g_repSingleton + 0x1A0, mapPath60, typ60);
-                            char nbuf[130];
-                            int ni = 0;
-                            __try
-                            {
-                                for (; ni < 128; ni++)
-                                {
-                                    char c = *((char*)nameRes + ni);
-                                    if (c == 0) break;
-                                    nbuf[ni] = (c >= 32 && c < 127) ? c : '?';
-                                }
-                            }
-                            __except (EXCEPTION_EXECUTE_HANDLER) { }
-                            nbuf[ni] = 0;
-                            logf("[host] frame60: lookup type=0x%X -> %p str='%s'",
-                                 typ60, nameRes, nbuf);
-                            if (nameRes != NULL)
-                            {
-                                void* out60 = NULL;
-                                long ns = ((long (__fastcall *)(void*, int, void**))
-                                           ((BYTE*)g_repModule + 0x16DB5))(
-                                    *(void**)((BYTE*)g_repSingleton + 0xB0), 1, &out60);
-                                logf("[host] frame60: NewScene probe -> %ld out=%p",
-                                     ns, out60);
-                                // replicate KGameWorldHandler::NewScene's creation
-                                // path (0xB0BA0D..0xB0BAE9) step by step.
-                                if (out60 != NULL)
-                                {
-                                    void** rsvt = *(void***)out60;
-                                    // the real call's pre-step: 3D scene vt[0x70]
-                                    // (mapFile, 0, type, &pos, 0) - if negative, the
-                                    // real call bails without registering.
-                                    float posbuf[4];
-                                    memset(posbuf, 0, sizeof(posbuf));
-                                    long vr = ((long (__fastcall *)(void*, const char*,
-                                                        unsigned, unsigned, void*, void*))
-                                               rsvt[0x70 / 8])(out60, mapPath60, 0,
-                                                               typ60, posbuf, NULL);
-                                    logf("[host] frame60: 3D scene vt[0x70] -> %ld (vt=%p slot70=%p slot360=%p)",
-                                         vr, rsvt, rsvt[0x70 / 8], rsvt[0x360 / 8]);
-                                    logf("[host] frame60: module bases rep=%p eng=%p adapter=%p kge=%p",
-                                         g_repModule, GetModuleHandleA("X3DEngine.dll"),
-                                         GetModuleHandleA("KG3DEngineAdapterX64.dll"),
-                                         GetModuleHandleA("KGEngineX64.dll"));
-                                    ((void (__fastcall *)(void*, unsigned))
-                                     rsvt[0x360 / 8])(out60, 2);
-                                    void* rlScene = ((void* (__fastcall *)(unsigned,
-                                                         const char*))
-                                                     ((BYTE*)g_repModule + 0x4494))(
-                                        0x8105850, "NewExScene");
-                                    if (rlScene != NULL)
-                                        rlScene = ((void* (__fastcall *)(void*))
-                                                   ((BYTE*)g_repModule + 0x1ADCF))(rlScene);
-                                    logf("[host] frame60: RL scene alloc -> %p", rlScene);
-                                    if (rlScene != NULL)
-                                    {
-                                        *(void**)((BYTE*)rlScene + 0xF1978) = out60;
-                                        *(unsigned*)((BYTE*)rlScene + 0xF1974) = 0;
-                                        *(unsigned*)((BYTE*)rlScene + 0xF1970) = 2;
-                                        logf("[host] frame60: fields set");
-                                        ((void (__fastcall *)(void*, unsigned))
-                                         rsvt[0x298 / 8])(out60,
-                                            *(unsigned*)((BYTE*)g_repSingleton + 0x10));
-                                        logf("[host] frame60: vt298 done");
-                                        ((void (__fastcall *)(void*))
-                                         rsvt[0x388 / 8])(out60);
-                                        logf("[host] frame60: vt388 done");
-                                        long ml = ((long (__fastcall *)(void*,
-                                                            const char*, void*))
-                                                   ((BYTE*)g_repModule + 0x164F))(
-                                            rlScene, mapPath60, NULL);
-                                        logf("[host] frame60: map load -> %ld", ml);
-                                        if (ml != 0)
-                                        {
-                                            ((void (__fastcall *)(void*, void*, unsigned))
-                                             ((BYTE*)g_repModule + 0x1E4E8))(
-                                                (BYTE*)g_repSingleton + 0x24F40,
-                                                rlScene, 2);
-                                            *(unsigned*)((BYTE*)g_repSingleton + 0x24F48) = 0;
-                                            ((long (__fastcall *)(unsigned, void*))
-                                             ((BYTE*)g_repModule + 0x141CD))(2, out60);
-                                            void* chk = ((void* (__fastcall *)(unsigned))
-                                                         ((BYTE*)g_repModule + 0x924B))(2);
-                                            logf("[host] frame60: registered -> GetRLScene(2)=%p",
-                                                 chk);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        __except (EXCEPTION_EXECUTE_HANDLER)
-                        { logf("[host] frame60: lookup/NewScene probe fault"); }
-                        __try
+                        // NOTE: the earlier step-by-step replication of NewScene's
+                        // creation path was removed: its forced map load ran the
+                        // shadow bitmap build with the unloaded descriptor and its
+                        // faulted memset corrupted the heap before the real call.
+                        // The real CreateRLScene performs the whole path itself.
                         {
                             typedef long (__fastcall *CreateRLSceneFn)(
                                 unsigned id, unsigned type, unsigned a3, unsigned a4,
                                 unsigned long long a5, const char* mapFile,
                                 unsigned long long a7, const char* sceneName,
                                 unsigned long long a9);
-                            long cs = ((CreateRLSceneFn)
-                                       ((BYTE*)g_repModule + 0xB0B5C0))(
-                                2, 0x10, 0, 0, 0, mapPath60,
-                                0, "\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s", 0);
-                            logf("[host] frame60: real CreateRLScene -> 0x%08X", (unsigned)cs);
+                            __try
+                            {
+                                long cs = ((CreateRLSceneFn)
+                                           ((BYTE*)g_repModule + 0xB0B5C0))(
+                                    2, 0x10, 0, 0, 0, mapPath60,
+                                    0, "\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s", 0);
+                                logf("[host] frame60: real CreateRLScene -> 0x%08X", (unsigned)cs);
+                            }
+                            __except (EXCEPTION_EXECUTE_HANDLER)
+                            { logf("[host] frame60: real CreateRLScene fault"); }
                             void* sc = ((void* (__fastcall *)(unsigned))
                                         ((BYTE*)g_repModule + 0x924B))(2);
                             logf("[host] frame60: GetRLScene(2) -> %p (3DScene=%p)",
                                  sc, (sc != NULL) ? *(void**)((BYTE*)sc + 0xF1978) : NULL);
                         }
-                        __except (EXCEPTION_EXECUTE_HANDLER)
-                        { logf("[host] frame60: real CreateRLScene fault"); }
                         // Phase C: manual RL scene creation (CreateRLScene's own
                         // registration steps; its resource-manager lookup
                         // [mgr+0x260] is not available yet - registered deviation):

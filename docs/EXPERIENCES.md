@@ -2360,3 +2360,27 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   wants for the map and provide it (check the original extraction), or (b) find the
   rep-side shadow-runtime init that should call the setter and why it is skipped.
 - Evidence: host_exe62-63.out.
+
+## 2026-10-04 - Gate 1: shadow AV converted to a graceful fail (KRLScene::InitShadowScene E_FAIL); exact descriptor owner still open
+
+- Built a documented host adaptation (shadowDescFix + installShadowDescHook): a 17-byte
+  entry hook on the rep's shadow-descriptor user (rep+0x33BE40) that can fix/skip the
+  zero descriptor at USE time (the shadow runtime's init resets it mid-call, so
+  pre-call fixes do not stick).
+- With the hook set to the function's own skip guard (acc != 0), the real CreateRLScene
+  NO LONGER AVs in memset: it now fails GRACEFULLY:
+  `KRLScene::InitShadowScene` -> `KGLOG_COM_PROCESS_ERROR(0x80004005)` (line 1848) ->
+  `KRLScene::Init` line 151 -> `NewExScene` line 386 -> scene uninit/Remove.
+  (host_exe79.out)
+- The mask-bitmap build is what InitShadowScene needs; skipping it yields E_FAIL, so
+  the scene creation still aborts - but cleanly (no crash, no heap corruption from the
+  shadow step).
+- Open: the exact descriptor owner at the crash site. The hook's identity check
+  (`desc == [rep+0xED3FA8]+0x68`) never matched the crashing descriptor
+  (desc 0x...5FF770 vs runtime 0x...A04DEA-based) - the crashing descriptor belongs to
+  another owner in the KRLShadowMgr/runtime tree. Next probe: log every hit with the
+  caller's return address (RtlCaptureStackBackTrace in the hook) to identify the owner,
+  then make InitShadowScene succeed with the fallback mask.
+- Note: the process still dies later with 0xC0000374 (delayed heap issue from a later
+  host block - the manual scene path / char chain after the failed real call).
+- Evidence: host_exe64-80.out.
