@@ -2485,3 +2485,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   bind's call sequence (read/step the intermediates) or trace the id-4 reset block's reachability
   with a debugger-free probe (the block's field writes at client+0x1B110.. can be read back).
 - Frozen clients killed on sight; session stable (keepalives).
+
+### 2026-10-06 — V2: id4 reset block runs (writes are zeros by design); bind exits before the setter
+- The gap 0x14015C5D8..0x14015C6F3 is a straight-line copy block (no branches): the handler
+  reaches the flag write and (flag = pkt+0xFA = 0) falls through to the reset writes.
+- The reset writes [client+0x1B110..] = rdi = 0 by design (rdi is zero in the id-4 handler) -
+  the live zeros are EXPECTED, so the reset block + the destroy loop + the scene init + the
+  bind (0x140174970) all RUN on every id-4.
+- player+0x60 stays 0 => the bind exits before the setter (0x14017BDD0, whose FIRST instruction
+  stores player+0x60). The exits before it: the scene lookup (0x14017818D, err 0xDEA), the
+  registry/player lookups, or the calls 0x140212A90/0x140382200. Even with map=2 (present in
+  the client+0x1280 manager) it fails -> next probe: read the bind's intermediates at runtime
+  (the scene lookup return, the 0x140382200 return, the position packing) - the first zero is
+  the fix target. Frozen clients killed on sight.
