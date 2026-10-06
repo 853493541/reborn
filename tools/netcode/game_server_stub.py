@@ -52,8 +52,8 @@ def id_frame(frame_id, size, role_id):
     struct.pack_into("<H", p, 0, frame_id)
     struct.pack_into("<I", p, 7, role_id)
     if frame_id == 4:
-        struct.pack_into("<I", p, 0x2C, int(os.environ.get("GAME_MAP_ID", "1")))
-        struct.pack_into("<I", p, 0x30, int(os.environ.get("GAME_MAP_REGION", "1")))
+        struct.pack_into("<I", p, 0x2C, int(os.environ.get("GAME_ID4_MAP", "0")))
+        struct.pack_into("<I", p, 0x30, int(os.environ.get("GAME_ID4_REGION", "0")))
         struct.pack_into("<I", p, 0x34, int(os.environ.get("GAME_POS_X", "100")))
         struct.pack_into("<I", p, 0x38, int(os.environ.get("GAME_POS_Y", "100")))
         struct.pack_into("<I", p, 0x3C, int(os.environ.get("GAME_POS_Z", "0")))
@@ -127,19 +127,24 @@ def handle(conn, addr):
                     sync_step = 2
                     next_t = now + 0.5
                 elif sync_step == 2:
-                    conn.sendall(sess.encrypt(id_frame(7, 37, ROLE_ID)))
-                    w("[%s] SYNC step2 id=7 (map=%s region=%s pos=%s,%s,%s)"
-                      % (time.strftime("%H:%M:%S"), os.environ.get("GAME_MAP_ID", "1"),
-                         os.environ.get("GAME_MAP_REGION", "1"), os.environ.get("GAME_POS_X", "100"),
-                         os.environ.get("GAME_POS_Y", "100"), os.environ.get("GAME_POS_Z", "0")))
+                    conn.sendall(sess.encrypt(id_frame(10, 161, ROLE_ID)))
+                    w("[%s] SYNC step2 id=10 bootstrap (role=%d)" % (time.strftime("%H:%M:%S"), ROLE_ID))
                     sync_step = 3
                     next_t = now + 0.5
                 elif sync_step == 3:
-                    conn.sendall(sess.encrypt(id_frame(10, 161, ROLE_ID)))
-                    w("[%s] SYNC step3 id=10 (role=%d)" % (time.strftime("%H:%M:%S"), ROLE_ID))
+                    conn.sendall(sess.encrypt(id_frame(7, 37, ROLE_ID)))
+                    w("[%s] SYNC step3 id=7 (map=%s region=%s pos=%s,%s,%s)"
+                      % (time.strftime("%H:%M:%S"), os.environ.get("GAME_MAP_ID", "1"),
+                         os.environ.get("GAME_MAP_REGION", "1"), os.environ.get("GAME_POS_X", "100"),
+                         os.environ.get("GAME_POS_Y", "100"), os.environ.get("GAME_POS_Z", "0")))
                     sync_step = 4
-                    next_t = now + 8.0
+                    next_t = now + 0.5
                 elif sync_step == 4:
+                    conn.sendall(sess.encrypt(id_frame(10, 161, ROLE_ID)))
+                    w("[%s] SYNC step4 id=10 final (role=%d)" % (time.strftime("%H:%M:%S"), ROLE_ID))
+                    sync_step = 5
+                    next_t = now + 8.0
+                elif sync_step == 5:
                     conn.sendall(sess.encrypt(id_frame(7, 37, ROLE_ID)))
                     conn.sendall(sess.encrypt(id_frame(10, 161, ROLE_ID)))
                     w("[%s] SYNC keepalive id=7+id=10" % time.strftime("%H:%M:%S"))

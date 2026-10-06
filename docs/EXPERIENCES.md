@@ -2079,3 +2079,9 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   (b) find a VALID map/region pair (the switch may require map data the client can load, and a
   following reconnect the stub must serve); (c) check whether the real flow expects the client
   to reconnect after the map announcement (the stub should then re-arm the sync).
+
+### 2026-10-05 — V2 P3: sequence reordered (id4 map=0 insert -> id10 bootstrap -> id7 map -> id10 final)
+- Rationale: id4 with a non-zero map aborts before the player insert (switch path). Correct order:
+  id4 (map=0, insert + state 4) -> id10 (guard stores player+0x60 scene bootstrap) -> id7
+  (map=1/region/pos, now scene non-null) -> id10 (guard validates against a real scene -> state 7).
+  Keepalive repeats id7+id10. Envs: GAME_ID4_MAP/REGION (default 0), GAME_MAP_ID/REGION/POS for id7.
