@@ -48,6 +48,19 @@ clip" until the per-ability represent chain (script → buff → represent) is r
 The dataset keeps the source label (`dash:<id>/<anim>`), and the staged process
 is unaffected.
 
+## Negative findings (recorded so they are not redone)
+
+- `Represent\player\player_buff_animation_adjust.txt` (RL represent table, extracted
+  from the paks via the documented `PakV4SfxExtract.exe`): 8092 rows,
+  `Part | BuffID | AnimationID | AdjustAnimationID` - **no rows** for the 如意法
+  buffs 4421/4422/4432/4433/4434. The buff representation is not in the RL
+  buff-anim adjust layer.
+- `Represent\RLDataLayer.json` is render settings (distances/LODs/counts), not a
+  represent-id table.
+- The logic-side `RepresentID 10208` table path is not among the strings of
+  `JX3LogicEditOperationX64.dll` or any current extraction; it still needs to be
+  located/extracted.
+
 ## Remaining extraction (to close the UNPROVEN rows)
 
 1. `settings/represent/*` tables — resolve `RepresentID 10208` (如意法 buff
