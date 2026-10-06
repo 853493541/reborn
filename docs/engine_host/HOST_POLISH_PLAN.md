@@ -71,11 +71,17 @@ server-owned state, packaging.
   Density applies pre-map-load (VideoOptions) — the earlier "no-op" was pose sensitivity.
 - Evidence: `proof/host/foliage8/{base,den0,den100,den999}.png`; logs `reborn_20261005_2151*`.
 
-### D6 — Close-up LOD pose (1.10)
-- Spawn next to a large structure/tree, zoom in (scripted `RC_CAM_ZOOMSEQ`), and probe
-  `fModelLodRadius=100,100,100,100` / `nMinimumModelLod=3` with 8×8 fingerprints.
-- Close as verified or as "model-LOD keys inert in ME host" (adds the close-up pose to
-  the existing vista evidence in `LOD_CULL_MATRIX.md`).
+### D6 — Close-up LOD pose (1.10) — DONE (model-LOD keys are effective at close range)
+- Pose: `RC_DEMO_COLLIDE=1 RC_COL_TELEPORT=1` (teleports 320 u in front of the nearest
+  structure) at tier 9; 8×8 fingerprints vs the same-pose base:
+  `fNodeLodLowLimit=20` **27/64**, `fModelLodRadius=100,..` 9/64,
+  `bEnableModelLodViewAngle=0` 9/64, `fNodeLodHighLimit=100` 7/64,
+  `nMinimumModelLod=3` 6/64.
+- Correction for `LOD_CULL_MATRIX.md` (parallel item1 branch): the model-LOD keys are
+  **not** inert — they need a close-up pose; the vista-only 0/64 was distance/grid
+  resolution, not a host limitation.
+- Evidence: `proof/host/lod_close/{base,fNodeLodLowLimit_20,fModelLodRadius_100}.png`;
+  logs `reborn_20261005_22*`.
 
 ### D7 — HUD perf readout (optional, small)
 - Show `hitch` max (predraw metric) alongside fps in the info panel.

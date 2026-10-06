@@ -4285,3 +4285,16 @@ if the cache/host frames appear.
   cells (8x8 fingerprint), 100 == base, 999 == 100 -> **clamp at 100 confirmed in-host**.
   Evidence: `proof/host/foliage8/*.png`.
 - Outcome: D2-D5 executed; D2 leaves a registered boundary (values-not-authoritative).
+
+### 2026-10-05 - Host polish - D6 close-up LOD pose: model-LOD keys are effective
+
+- Did: probed the model-LOD keys at a close-up pose (teleport-in-front-of-structure demo,
+  tier 9, 8x8 fingerprints): `fNodeLodLowLimit=20` changes **27/64** cells,
+  `fModelLodRadius=100,..` 9/64, `bEnableModelLodViewAngle=0` 9/64,
+  `fNodeLodHighLimit=100` 7/64, `nMinimumModelLod=3` 6/64.
+- Correction: the earlier vista-only "0/64, inert" classification was distance/grid
+  resolution - the keys work at close range (`LOD_CULL_MATRIX.md` on the item1 branch
+  should note this at merge).
+- Evidence: `proof/host/lod_close/{base,fNodeLodLowLimit_20,fModelLodRadius_100}.png`;
+  logs `reborn_20261005_22*`.
+- Outcome: D6 done - model-LOD controls verified as effective; no boundary needed.
