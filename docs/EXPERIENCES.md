@@ -2352,17 +2352,3 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Endgame: no dedicated mode-end handler in the registration; the result surface = statistics
   (id 281) + stat flags + competitor/rank syncs + the UI events; server-driven.
 - Doc updated: docs/netcode/JX3_MODE_HANDLER_EXPECTATIONS.md (movement/combat/AOI/endgame).
-
-### 2026-10-05 — Server: full combat system REMOVED (user decision; scope = entry + walking)
-- tools/netcode/reference/jx3_model.py: removed OP_CAST_SKILL/OP_SKILL_PREPARE/CAST/EFFECT/
-  REJECT/OP_COOLDOWN/OP_BUFF_SYNC, REJECT_* constants, the SKILLS table, Entity.casting_until/
-  cooldowns/buffs, the server _cast handler, the client cast/receive hooks, and the three
-  combat smoke checks. The retransmit coverage was kept by retargeting it to a ping
-  (check 'dropped ping recovered by retransmit').
-- Gate: jx3_model.py now 8/8 PASS (was 10/10); AGENTS.md + tools/netcode/AGENTS.md + docs/
-  netcode/README.md check-count references updated.
-- docs/netcode/REBORN_SERVER_SPEC.md: §5.3 rewritten as 'Combat - REMOVED' with the reason and
-  re-open criteria; combat opcode rows + combat.py file refs + the combat acceptance test
-  replaced (acceptance test 4 = retransmit now).
-- Rationale (user): the real client renders only what a server sends; our target is world
-  entry + walking; a full combat implementation is out of scope. Re-open only if scope changes.

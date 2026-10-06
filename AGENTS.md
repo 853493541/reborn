@@ -241,7 +241,7 @@ Keep for reference; do not edit, fix, import, or cite as current without checkin
 
 ```powershell
 # must-stay-green gates
-.venv\Scripts\python.exe tools\netcode\reference\jx3_model.py     # 8 checks PASS (combat removed)
+.venv\Scripts\python.exe tools\netcode\reference\jx3_model.py     # 10x PASS
 .venv\Scripts\python.exe tools\gravity\verify_model.py            # jump/fall model
 .venv\Scripts\python.exe tools\netcode\loot\capture.py selftest   # 8 checks
 native\build_shim.cmd                                             # bin64\camera_shim.dll, RC_Shim exports

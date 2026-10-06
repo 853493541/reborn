@@ -120,15 +120,25 @@ Other actors:
 - extrapolation capped at 250 ms;
 - teleports (gap > 30 m) snap.
 
-### 5.3 Combat — REMOVED (user decision 2026-10-05)
+### 5.3 Combat (server-authoritative)
 
-The reborn server does **not** implement a combat system. The real client renders only what a
-server sends; our target scope is world entry + walking (personal use). The reference model
-(`tools/netcode/reference/jx3_model.py`) had a server-authoritative skill cast
-(prepare/cast/effect, cooldowns, move-state rejection, buff sync) — it was removed together
-with its opcodes (`OP_CAST_SKILL`..`OP_COOLDOWN`, `OP_BUFF_SYNC`) and the three combat smoke
-checks; the reliability coverage (retransmit) was kept by retargeting that check to a ping.
-Re-open only if the scope changes.
+```
+C→S OP_CAST_SKILL { skill_id, target_id, aim_pos, client_tick }
+S→C OP_SKILL_PREPARE  { caster, skill_id, cast_time_ms, channel_id }
+S→C OP_SKILL_CAST     { caster, skill_id, channel_id }        // animation start
+S→C OP_SKILL_EFFECT   { caster, skill_id, targets[...], damage[...], result }
+S→C OP_SKILL_REJECT   { reason }   // move_state, cooldown, range, silence, resource
+S→C OP_COOLDOWN       { skill_id, ready_at, paused|reset|accelerated }
+```
+
+Rules:
+- Server owns cooldowns/charges/resources; client only predicts animation/UI.
+- Server validates: alive, control-lock flags, distance/range, facing arc,
+  cooldown, resource, line-of-sight if required.
+- `MOVE_STATE` semantics: while `control_locked` or `casting` with move-forbidden,
+  a cast reject uses reason `move_state` (JX3 exposes `YOU_MOVE_STATE_WRONG`,
+  `MOVE_STATE_INVALID`, `TARGET_MOVE_STATE_WRONG`).
+- Buffs: `OP_BUFF_SYNC` full list on join/resume; incremental add/remove after.
 
 ## 6. Interest management
 
@@ -154,6 +164,13 @@ Re-open only if the scope changes.
 | 0x0030 | `OP_ENTITY_ADD` | S→C | entity record |
 | 0x0031 | `OP_ENTITY_REMOVE` | S→C | entity_id |
 | 0x0032 | `OP_ENTITY_SNAPSHOT` | S→C | count + records |
+| 0x0040 | `OP_CAST_SKILL` | C→S | u32 skill_id, u64 target_id, pos3 aim |
+| 0x0041 | `OP_SKILL_PREPARE` | S→C | caster, skill_id, u32 cast_ms |
+| 0x0042 | `OP_SKILL_CAST` | S→C | caster, skill_id |
+| 0x0043 | `OP_SKILL_EFFECT` | S→C | caster, skill_id, targets + damage |
+| 0x0044 | `OP_SKILL_REJECT` | S→C | u8 reason |
+| 0x0045 | `OP_COOLDOWN` | S→C | skill_id, ready_at, u8 kind |
+| 0x0046 | `OP_BUFF_SYNC` | S→C | full/incremental |
 | 0x006E | `OP_ROUTINE_SYNC` | C→S | u32 param + size-prefixed payload (JX3-shape analog) |
 
 IDs ≥ 0x0100 reserved for content (inventory, quests, social, arena echoes).
@@ -167,6 +184,7 @@ server/
   net/loop.py         net thread (selectors), publish to logic queue
   world/tick.py       30 Hz logic tick, 10 Hz snapshot fan-out
   world/move.py       movement rules shared with client (single source)
+  world/combat.py     cast validation, cooldowns, buffs
   world/aoi.py        tile grid + subscriptions
   world/entities.py   entity records, spawn/despawn
   gateway/auth.py     login, session_key, ticket
@@ -174,6 +192,7 @@ client/
   net/session.py      same frame/reliability + prediction history
   predict/move.py     shared movement rules
   interp/remote.py    interpolation buffer
+  combat/client.py    cast intent, animation predict, cooldown UI
 ```
 
 Shared deterministic movement code is compiled/imported by both sides so
@@ -195,7 +214,7 @@ reconciliation drift stays small.
    effects (dedupe by `seq`).
 3. **reconnect:** kill socket; client resumes with `resume_seq` inside 60 s and
    receives only missed state (no duplicate spawns).
-4. **retransmit:** drop one ping frame; the retransmit delivers it and the pong
-   arrives with no duplicate effects (dedupe by `seq`).
+4. **combat:** cast while moving with a move-forbidden skill → `SKILL_REJECT`
+   `move_state`, no client-side damage; cooldown echoed by server.
 5. **aoi:** 2 clients 300 m apart → no entity traffic; walk into range → add +
    snapshots begin.

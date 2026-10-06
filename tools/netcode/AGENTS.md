@@ -12,7 +12,7 @@ Static, read-only research against the JX3 client install. Nothing here may writ
   an acceptable answer — keep digging and cite the client-side counterpart.
 
 - Python stdlib-first, run with `.venv\Scripts\python.exe`; no new dependencies.
-- `reference/jx3_model.py` is the runnable spec model — **8 checks PASS must stay green (combat removed 2026-10-05)**.
+- `reference/jx3_model.py` is the runnable spec model — **10x PASS must stay green**.
   The contract lives in `docs/netcode/REBORN_SERVER_SPEC.md`.
 - `loot/capture.py selftest` = 8 checks; keep green.
 - Prefer official Seasun extractors (`bin64\PakV4SfxExtract.exe`, `extract_hpkg_member.py`).
