@@ -70,26 +70,44 @@ the runtime mutations as data the viewer consumes:
   proxy (the engine's anchor has `s/r/x/y`); the generic `Get*`→0 fallback stored a number and
   `UpdateAnchor` died indexing it (ComboPanel, PetPanel, PetActionBar, PuppetActionBar, EnterAreaTip,
   ProgressBar).
+- **More stub rules (2026-10-05, second pass):**
+  - `is_*` fields on API tables are boolean functions (`sns_sina.is_bind`), not Hungarian ints.
+  - `CAN_*` globals are numeric thresholds (`CAN_HOT_POINT_SHOW`); `_MENU`/`_LIST`/`_TAGS`/`t*` keys
+    of `g_tStrings` are authored data tables (everything else is a string).
+  - Engine list getters return several lists (multi-value `__call` returns 4 proxies) so
+    `table.sort` on the 2nd/3rd list works.
+  - Numeric/other-key indexing into a proxy returns an element proxy (scripts `pairs(t[n])`).
+  - Section `GetActivePage` resolves the INI's authored `page=`; `GetFirstChild` returns a proxy and
+    `GetNext` nil (child walks terminate; a first-child method call works).
+  - String helpers: `StringReplaceW` returns its input, `StringFindW` nil (ends the search loop);
+    `DateToTime` returns a string, `GetCurrentTime` a number; `string.sub/find/gmatch/gsub/len/byte`
+    coerce non-string first args.
+- **Permissive-compare build patch (2026-10-05):** the temp PUC Lua build (`lua32.exe`) is patched in
+  `lvm.c` so **mixed-type `<`/`<=` return false** instead of erroring and **tables coerce to 0 in
+  `luaV_tonumber`** (loop bounds). Lua 5.1's mixed-type comparisons cannot use metamethods; the stub
+  environment wants the permissive branch. This is a test-rig patch only (documented here), not
+  product behavior.
 - **Batch:** `tools/ui/replay_all.py` replays every same-stem `.lua`/`.ini` pair and writes
   `ui-process-app/Data/runtime_state/<stem>.tsv` + `replay_summary.tsv`. Entry chain:
   `OnFrameCreate` → `OnLoad` → `OnCreate` → `Init` → `OnOpen`.
-  Verified 2026-10-05 (rechecked): **98/122 scripts replay OK**, 24 partial (most with recorded
-  mutations; 3,545 mutations total). Top recordings:
+  Verified 2026-10-05 (rechecked): **113/122 scripts replay OK**, 9 partial (most with recorded
+  mutations; 3,931 mutations total). Top recordings:
   BigBagPanel 793, Player 178, TopMenu 105, EmotionPanel 105, MiniMap 101, MailPanel 101,
-  SoundSettingPanel 93, SocialPanel 91. Remaining errors are stub-tuning (table-typed fields
-  compared numerically, nil module fields, pairs/sort/gmatch/sub on non-tables); the no-entry
-  windows (Balloon/TradingSure) have no standard init hook.
+  SoundSettingPanel 93, SocialPanel 91. The remaining partials hinge on module-local tables the
+  engine populates at runtime (AccelerateBall, CraftPanel, FBlist, PLActionBar, RaidPanel,
+  ReputationPanel) or have no standard init hook (Balloon, TradingSure); stubbing those would mean
+  inventing data.
 - **Stub rules (2026-10-05 refinement):** unknown camelCase fields return permissive proxies (not 0)
   so container fields the scripts index keep working. Note: the `debug.setmetatable(0, …)` number
-  metatable cannot rescue mixed number/table **comparisons** in Lua 5.1 (mixed types error before
-  metamethods); those need the field to return a real number.
+  metatable cannot rescue mixed number/table **comparisons** in stock Lua 5.1 (mixed types error
+  before metamethods) — hence the build patch above.
 
 ## Completion recheck (2026-10-04)
 
 | layer | state | evidence |
 |---|---|---|
 | A — KGUI conformance | **not started beyond the two engine fixes** | census: 14 unhandled variants (PosType 3/4/5=70, HandleType 1/2/4/5=137, FirstItemPosType 1-9=98) + approximate page-set/list/tree/scene types |
-| B — script replay | **input 98/122 full + 24 partial (3,545 mutations); viewer consumption DONE** | `replay_summary.tsv`; `LayoutPlanBuilder.ApplyRuntimeState` loads `Data/runtime_state/<stem>.tsv` and applies SetSize/SetRelPos/SetAbsPos/SetRelX/Y/SetW/H/SetFrame/SetText/SetFontScheme/SetAlpha/Show/Hide/SetVisible before the inventory overrides (root Hide ignored — the engine shows the window after init). BigBagPanel render: root 594x624, `runtime=284`, all six bag rows laid out; `--selftest` 1240/0/0 |
+| B — script replay | **input 113/122 full + 9 partial (3,931 mutations); viewer consumption DONE** | `replay_summary.tsv`; `LayoutPlanBuilder.ApplyRuntimeState` loads `Data/runtime_state/<stem>.tsv` and applies SetSize/SetRelPos/SetAbsPos/SetRelX/Y/SetW/H/SetFrame/SetText/SetFontScheme/SetAlpha/Show/Hide/SetVisible before the inventory overrides (root Hide ignored — the engine shows the window after init). BigBagPanel render: root 594x624, `runtime=284`, all six bag rows laid out; `--selftest` 1240/0/0 |
 | C — gates | **working** | `--selftest` 1240/0/0; `--status`; `--contact-sheet`; `ini_construct_census.py` |
 
 **Verdict:** the replay now drives the viewer for every window with a recorded TSV; windows without

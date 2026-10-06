@@ -99,10 +99,20 @@ proxyOf = function(sec)
   end
   methods.GetFrame = function() return num(sec.values.Frame) end
   -- Anchor getters return an anchor table (s/r/x/y) in the engine; the generic
-  -- Get* fallback returned 0, so `X.tAnchor = self:GetDefaultAnchor()` stored a
-  -- number and UpdateAnchor died indexing it.
+  -- Get* fallback returned 0, so `ComboPanel.tAnchor = self:GetDefaultAnchor()`
+  -- stored a number and UpdateAnchor died indexing it (six windows).
   methods.GetDefaultAnchor = function() return proxy(sec.name .. ".GetDefaultAnchor") end
   methods.GetFrameAnchor = function() return proxy(sec.name .. ".GetFrameAnchor") end
+  -- Page/child navigation: the engine returns controls, not numbers. GetActivePage
+  -- resolves the INI's authored page= (the scripts compare page:GetName() to a
+  -- known page id); GetFirstChild/GetNext terminate the child walk with nil.
+  methods.GetActivePage = function()
+    local page = sec.values.page or sec.values.Page
+    if page and page ~= "" then return proxyOf(resolvePath(sec, page)) end
+    return proxyOf(sec)
+  end
+  methods.GetFirstChild = function() return proxy(sec.name .. ".GetFirstChild") end
+  methods.GetNext = function() return nil end
   methods.IsCheckBoxChecked = function() return sec.checked == true end
   methods.IsOpened = function() return true end
   methods.GetText = function() return sec.values["$Text"] or "" end
@@ -129,8 +139,9 @@ proxyOf = function(sec)
         if sec.values[k] ~= nil then return num(sec.values[k]) end
         -- Engine control properties: hXxx is the child control handle (the scripts
         -- index it: self.hBtnProperty:...), tXxx/pXxx are tables/pointers. Returning
-        -- 0 aborted the replay. Resolve the child section by its authored name
-        -- (hBtnProperty -> BtnProperty); fall back to a permissive proxy.
+        -- 0 aborted the replay ("attempt to index a number value"). Resolve the child
+        -- section by its authored name (hBtnProperty -> BtnProperty); fall back to a
+        -- permissive proxy when the INI has no such child.
         if k:match("^h") or k:match("^t") or k:match("^p") then
           local bare = k:sub(2)
           local child = nil
@@ -185,14 +196,18 @@ end
 _G.clone = clone
 
 -- Scalar engine getters: names that carry a "Get" and end in a numeric suffix
--- (counts/ids/indices/levels/scores/screens/rates). Excluded on purpose: Size
--- (bag arithmetic continues through GetBoxSize) and Time/Frame (GetTodayTime is a
--- month/day table, GetMgFrame/GetGameFrame are frame objects).
+-- (counts/ids/indices/levels/scores/screens/rates). The scripts use them as
+-- numeric loop bounds and in comparisons; returning a proxy/table errors in Lua
+-- 5.1 ("'for' limit must be a number", "compare number with table"). Excluded on
+-- purpose: Size (bag scripts continue through GetBoxSize arithmetic — returning 0
+-- costs BigBagPanel ~200 mutations) and Time/Frame (GetTodayTime returns a
+-- month/day table, GetMgFrame/GetGameFrame return frame objects; returning 0 broke
+-- EditBox and LuckyMeeting).
 local function numericGetter(k)
   if type(k) ~= "string" or not k:find("Get") then return false end
   return k:match("Count$") or k:match("Num$") or k:match("ID$") or k:match("Id$")
       or k:match("Index$") or k:match("Level$") or k:match("Score$") or k:match("Screen$")
-      or k:match("Rate$") or k:match("Percent$")
+      or k:match("Rate$") or k:match("Percent$") or k:match("Msg$")
 end
 
 proxy = function(name)
@@ -215,19 +230,30 @@ proxy = function(name)
           if k == "GetW" or k == "GetH" then return function() return 0 end end
           if k == "GetAbsPos" or k == "GetRelPos" then return function() return 0, 0 end end
           if k == "IsVisible" or k == "IsOpened" then return function() return false end end
-          -- Scalar getters used as numeric loop bounds/compares return 0 (see
-          -- numericGetter); other Get*/PascalCase names keep the callable proxy.
+          if k == "GetNext" or k == "GetNextSibling" then return function() return nil end end
+          -- Scalar getters (counts/ids/indices/levels/scores/screens/times) are used
+          -- as numeric loop bounds and comparisons; returning a proxy aborted the
+          -- replay ("'for' limit must be a number" / "compare number with table").
+          -- Size getters stay proxies: their results feed arithmetic the bag scripts
+          -- continue through (BigBagPanel loses ~200 mutations if GetBoxSize returns
+          -- 0). Other Get*/PascalCase names keep the callable proxy (they may return
+          -- tables the scripts index).
           if numericGetter(k) then
             return function() return 0 end
           end
           -- Unknown PascalCase global: some are module tables the scripts index
-          -- (Craft.Foo) and some are functions (Craft.Foo()); a callable proxy
-          -- serves both (a plain function aborted the first form).
+          -- (Craft.Foo, BattleField.Bar) and some are functions (Craft.Foo()).
+          -- A callable proxy serves both; a plain function aborted the scripts
+          -- that indexed it ("attempt to index field 'Craft' (a function value)").
           local v = proxy(name .. "." .. k)
           rawset(t, k, v)
           return v
         end
         -- camelCase data field: the engine's Hungarian prefixes tell the type.
+        if k:match("^is_") then
+          -- API-table predicates (sns_sina.is_bind): boolean functions, not ints.
+          return function() return false end
+        end
         if k:match("^b") then return false end
         if k:match("^s") then return "" end
         if k:match("^t") or k:match("^h") or k:match("^p") then
@@ -245,9 +271,18 @@ proxy = function(name)
         rawset(t, k, v)
         return v
       end
-      return 0
+      -- Numeric/other key: array indexing into a stubbed object (t[n] then pairs/
+      -- index). Returning 0 aborted `pairs(t[n])`; a permissive element proxy keeps
+      -- the walk alive.
+      local v = proxy(name .. "[" .. tostring(k) .. "]")
+      rawset(t, k, v)
+      return v
     end,
-    __call = function(t, ...) return proxy(name .. "()") end,
+    -- Multi-value returns: the engine's list getters return several lists
+    -- (GetDungeonList -> 4) and scripts sort each; one proxy left the rest nil.
+    __call = function(t, ...)
+      return proxy(name .. "()"), proxy(name .. "()[2]"), proxy(name .. "()[3]"), proxy(name .. "()[4]")
+    end,
     __add = function() return 0 end, __sub = function() return 0 end, __mul = function() return 0 end,
     __div = function() return 0 end, __mod = function() return 0 end, __pow = function() return 0 end,
     __unm = function() return 0 end, __lt = function() return false end, __le = function() return false end,
@@ -284,11 +319,16 @@ setmetatable(_G, { __index = function(t, k)
     return f
   end
   if numericGetter(k) then
-    -- engine global scalar getters (GetAddTrainSkillCount, ...GetRequiredPlayerLevel):
+    -- engine global scalar getters (GetAddTrainSkillCount, GVoiceBase_GetRequiredPlayerLevel):
     -- numeric results, used as loop bounds/comparisons.
     local f = function() return 0 end
     rawset(t, k, f)
     return f
+  end
+  if type(k) == "string" and k:match("^CAN_") then
+    -- numeric threshold constants (CAN_HOT_POINT_SHOW): compared against levels.
+    rawset(t, k, 0)
+    return 0
   end
   local v = proxy("_G." .. tostring(k))
   rawset(t, k, v)
@@ -297,7 +337,16 @@ end })
 
 INVENTORY_INDEX = { PACKAGE = 1, EQUIP = 2 }
 EQUIPMENT_INVENTORY = { PACKAGE1 = 1, PACKAGE_MIBAO = 6 }
-g_tStrings = setmetatable({}, { __index = function() return "" end })
+g_tStrings = setmetatable({}, { __index = function(t, k)
+  -- The string table also carries authored data tables (Hungarian t* names,
+  -- *_MENU/*_LIST entries): return a table proxy for those, "" for the rest.
+  if type(k) == "string" and (k:match("^t") or k:match("_MENU$") or k:match("_LIST$") or k:match("_TAGS$")) then
+    local v = proxy("g_tStrings." .. k)
+    rawset(t, k, v)
+    return v
+  end
+  return ""
+end })
 local permissiveMt = {
   __index = function(t, k) local v = proxy("tbl." .. tostring(k)); rawset(t, k, v); return v end,
   __lt = function() return false end,
@@ -318,6 +367,29 @@ _G.Station.OpenWindow = function(a, b) windowCall(a, b, false) end
 _G.Station.CloseWindow = function(a, b) windowCall(a, b, true) end
 _G.OpenWindow = function(path, ...) recordWindow(path, false) end
 _G.CloseWindow = function(path, ...) recordWindow(path, true) end
+-- String helpers: the engine's wide-string utilities return the transformed string
+-- (StringReplaceW) / a separator position or nil (StringFindW); proxies aborted
+-- string.sub and spun the search loop.
+_G.StringReplaceW = function(s, ...) return tostring(s or "") end
+_G.StringFindW = function() return nil end
+-- Date helpers: DateToTime returns the formatted time string the scripts gmatch
+-- (a proxy aborted gmatch); GetCurrentTime is a number.
+_G.DateToTime = function(...) return "0" end
+_G.GetCurrentTime = function() return 0 end
+-- String stdlib coercion: engine APIs return strings, our stubs are proxies; coerce
+-- non-string first args so string.sub/find/gmatch/gsub keep working in replays.
+do
+  local wrap = function(name)
+    local orig = string[name]
+    if type(orig) == "function" then
+      string[name] = function(s, ...)
+        if type(s) ~= "string" and type(s) ~= "number" then s = tostring(s) end
+        return orig(s, ...)
+      end
+    end
+  end
+  wrap("sub"); wrap("find"); wrap("gmatch"); wrap("gsub"); wrap("len"); wrap("byte")
+end
 
 -- Lua 5.1 resolves comparison/arith metamethods on the LEFT operand only; give the
 -- number type a metatable so a stubbed proxy on the right never aborts a replay

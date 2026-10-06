@@ -2057,3 +2057,23 @@ solved it, and what is still open. **Newest at the bottom.**
   TeamBuilding), pairs/sort/gmatch/sub/ipairs on non-tables, nil module fields (RaidPanel `frame`,
   PLOActionBar `tAnchor`), length nil (ReputationPanel), `is_bind` call on a number (SafePanel),
   2 no-entry.
+
+### 2026-10-05 ? UI ? replay harness second pass: 98 -> 113 OK (3,931 mutations), 9 partial left
+- Method: batch-driven stub tuning with the suite as the regression guard, each fix verified against
+  the failing function's own bytecode (`luac32` listings + `string.dump`/`debug.getupvalue` probes):
+  - `is_*` API predicates; `CAN_*` numeric constants (MiniMap); `g_tStrings` authored data tables
+    (`t*`, `_MENU`/`_LIST`/`_TAGS`) vs strings (TeamBuilding, SoundSettingPanel); multi-value proxy
+    `__call` (FBlist lists); numeric-key element proxies (DynamicRouge); `GetActivePage` from the
+    INI `page=`; `GetFirstChild`/`GetNext` child walk; string helpers (`StringReplaceW`/`StringFindW`,
+    `DateToTime`/`GetCurrentTime`, `string.*` coercion) for MailPanel/NewBattleFieldQueue.
+  - **Build patch**: the temp `lua32.exe` now returns false for mixed-type `<`/`<=` and coerces
+    tables to 0 in `luaV_tonumber` (permissive stub environment; documented in the replay doc).
+    Fixes the compare cluster and Bullet's `for` limit; a test-rig patch, not product behavior.
+  - Regressions caught and reverted along the way: ALL_CAPS -> 0 broke 28 windows; `Get*Time`/`Frame`
+    -> 0 broke EditBox/LuckyMeeting; both narrowed.
+- Batch: **113/122 OK / 9 partial, 3,931 mutations** (from 81/41, 3,298 this session). Remaining
+  partials hinge on module-local tables the engine populates at runtime (AccelerateBall, CraftPanel,
+  FBlist, PLActionBar, RaidPanel, ReputationPanel) or lack an init hook (Balloon, TradingSure) —
+  stubbing them would mean inventing data, so they stay partial.
+- `replay_server.lua` shim re-spliced from the harness (UI proxies + engine stubs sections) so the
+  live interaction path shares every rule; server smoke: TeamBuilding READY handlers=19.
