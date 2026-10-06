@@ -50,8 +50,32 @@ stands/walks on terrain whose sampled height is **negative** (below sea level):
 | `(22850,1000,30450)` over a hole | **ungrounded** free fall to y=-44045 | **clean (DONE)** |
 | `(100,1000,100)` corner | hovering at y=1000 (region not streamed) | clean (DONE) |
 
-So: deep negative Y alone is not the trigger (free fall through the hole is clean);
-**standing on terrain below sea level** is.
+### Scope refined (2026-10-06): negative terrain alone is NOT the trigger
+
+Offline BCH min-scan (every region of every test map; conversion verified in §2.5) found
+**real sub-sea-level terrain on the party maps too** — 龙门寻宝 14/64 regions (min down to
+-6727), 白龙绝境 2/64 (-2726), 天原绝境 44/64 (void sentinel -819200), 海岛绝境 16/16
+(min -17361) — yet grounded actors on 龙门/白龙 negatives do **not** AV:
+
+| Map / real sub-zero cell | Sampled y | Result |
+|---|---|---|
+| 龙门 004_002 `(121500,0,43500)` | **-1216** (BCH exact) | **clean (DONE)**, `RayIntersection` assert spam |
+| 龙门 005_003 `(204800,0,56200)` | edge cell → 0 | clean (DONE) |
+| 白龙 006_004 `(217600,0,109300)` | edge cell → 0 | clean (DONE) |
+| 白龙 007_004 `(257600,0,109300)` | edge cell → 0 | clean (DONE) |
+| 海岛 000_000 `(100,0,30450)` | -7120 | **AV** |
+
+So the AV is **海岛-specific** (a 4×4 map whose region 000_000 also ships hole files), not
+"any terrain below 0". Correlated signal: at grounded sub-zero positions on 龙门/白龙 the
+engine spams `KGLOG_ASSERT_EXIT(pRetMinDistanceRet) at line 1701 in
+KG3D_Scene::RayIntersection` (console only — not in the log file); 海岛 escalates the same
+class of failing ray/underwater path into the AV. Leading suspects (MED): 海岛's sea water
+configuration (global water plane at y=0 + hole regions) interacts with the host's absent
+water wiring (§2.3).
+
+*Test-cell caveat:* cells whose BCH value v=0 sit at region borders (sample row/col 512);
+the host samples them as y=0 (neighbour region not streamed), so scope tests must use
+interior cells (`0.002 < v < 1`).
 
 ### 2.1 What it is not (probed 2026-10-05)
 
@@ -92,22 +116,34 @@ render path, whose water registry entry the host never populates → the rbtree 
 misses → NULL deref. This is a **host wiring gap** (water layer not loaded/instantiated),
 not a data hole: the same scene data runs in the game client.
 
-**Product impact:** 海岛绝境's below-sea-level terrain can AV the client when the actor
-walks there. All samples so far are scripted/test coordinates; no default-spawn walk has
-crossed the zone yet. 8×8 party maps sampled so far are grounded at positive heights
-(龙门 `(0,0)/(±90000)`: y=4034..5034, clean); the r32 payload is normalized (0.5 band),
-so an offline map-wide min-height scan needs the engine's de-normalization first.
+**Product impact (refined):** only 海岛绝境 AVs so far — 龙门/白龙 grounded on real
+sub-zero terrain is clean (assert spam only, §2.0). No default-spawn walk has crossed
+海岛's ocean floor; the zone is reachable only by scripted coordinates. The native fix
+(load the map water) is **M2 water-system scope** (row 14 `[MISSING]`) and was explicitly
+deferred as out of scope for this workstream; the boundary stays registered meanwhile.
 
 ### 2.4 Next probes (in order)
 
-1. **Load the water layer** in the host scene wiring (compressed scene blocks +
-   `_Water.mesh` instances) — the native fix candidate; start by finding which map files
-   the game scene loader opens for water (`KG3DSceneBlockData` refs) and whether our
-   `scene_init_param` path skips them.
-2. Walk the 龙门/白龙 water surfaces (rivers/lakes) with a scripted path and check
-   grounded-negative samples there (needs coordinates from a BCH de-normalization table).
-3. Symbol-annotated minidump walk of the `0x181226A70` caller chain to name the exact
-   render subsystem (RTX underwater post-FX vs water volume renderer).
+1. Name the exact render subsystem via the caller chain of `0x181226A70` (indirect-only:
+   no direct callers in the DLL; needs vtable-owner analysis, e.g. xref the vtable that
+   stores it, `[rbx+0x1F0]` targets).
+2. Compare 海岛 region 000_003 (no hole file) vs 000_000 (ships `.hlb`) AV behavior to
+   separate "hole-region interaction" from "sea water configuration".
+3. If the water layer ever enters scope: load compressed scene blocks +
+   `_Water.mesh` instances (the M2 fix candidate).
+
+### 2.5 Height data used by the scope scan (verified)
+
+- **BCH conversion (live-verified 2026-10-06):** `worldY = f32@32 + v · (f32@28 − f32@32)`
+  with grid **row = Z, column = X, no flip** (513² floats after the 36-byte header).
+  Live samples: 龙门 `(0,5962)` → decoded 5652.2 (engine 5652); 海岛 `(100,30450)` →
+  decoded −7119.7 (engine −7120). This supersedes the flip caveat in
+  `TERRAIN_R32_BCH_RELATION.md` (that flip described the r32↔BCH relation, not direct
+  BCH reads).
+- **Map scan (headers + payloads):** regions with real sub-zero terrain: 龙门寻宝 14/64
+  (min −6727), 龙门寻宝_夜晚 14/64, 白龙绝境 2/64 (−2726), 天原绝境 44/64 (all sentinel
+  −819200 = void), 海岛绝境 16/16 (min −17361). Scan scripts in
+  `%TEMP%\opencode\bch_scope.py` / `bch_realmin.py` (session tools, not committed).
 
 ## Reproduce
 
@@ -121,6 +157,9 @@ $env:RC_SPAWN='-25600,1000,-25600'; $env:RC_SPAWN_Y='1'
 & bin64\reborn_client_stability.exe      # now clamps -> DONE (was 0xC0000005)
 $env:RC_SPAWN='100,0,30450'; Remove-Item Env:RC_SPAWN_Y
 & bin64\reborn_client_stability.exe      # boundary: AV on underwater ground
+# scope control (clean, expect DONE + RayIntersection assert spam on console):
+$env:RC_MAP='data\source\maps\龙门寻宝\龙门寻宝.jsonmap'; $env:RC_SPAWN='121500,0,43500'
+& bin64\reborn_client_stability.exe      # 龙门 real sub-zero cell (-1216): DONE
 ```
 
 ## Confidence
@@ -130,6 +169,9 @@ $env:RC_SPAWN='100,0,30450'; Remove-Item Env:RC_SPAWN_Y
 | out-of-extent spawn AVs on 海岛; fixed by the clamp | HIGH | run matrix, logs `reborn_20261005_21*`, dump `reborn_client.exe.42808.dmp` |
 | 8×8 maps tolerate out-of-extent test spawns | HIGH | 龙门/白龙/天原 runs clean |
 | grounded-below-sea-level AV on 海岛 (same offset) | HIGH | 4 crash runs vs 2 clean ungrounded runs |
+| the AV is 海岛-specific, NOT "negative terrain" | HIGH | 龙门 `(121500,43500)` y=-1216 grounded → DONE; 白龙 negatives clean; BCH scan §2.5 |
 | crash = NULL rbtree-lookup deref in the render DLL | HIGH | static disasm, `proof/movement/disasm/crash_*` (function `0x181226A70..0x181228419`) |
 | not the water-quality option / tier preset | HIGH | W1 `nWaterEffectLevel=0`, W2 `RC_QUALITY=1` both AV |
+| BCH worldY conversion (row=Z, no flip) | HIGH | live samples 5652.2/5652 and -7119.7/-7120 (§2.5) |
 | host lacks any water system (scene-block water not loaded) | MED-HIGH | `COLLISION_SYSTEM_COMPARISON.md` row 14; `JX3_COLLISION_SYSTEM.md` G-24; zero water refs in `client/` |
+| RayIntersection assert spam and the AV share a failing path | MED | console-only asserts at all sub-zero grounded tests; 海岛 escalates |

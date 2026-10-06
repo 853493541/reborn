@@ -4282,3 +4282,19 @@ if the cache/host frames appear.
 - Evidence: `docs/movement/VOID_SPAWN_CRASH_TRIAGE.md` §2.1-2.4,
   `docs/movement/COLLISION_RESIDUALS_STATUS.md` §1, `proof/movement/disasm/crash_*`.
 - Outcome: boundary fully characterized with next probes; no invented fix.
+
+### 2026-10-06 - Movement/collision - underwater AV scope corrected + BCH min scan
+
+- Did: (1) falsified "grounded below sea level = AV" — 龙门 real sub-zero cell
+  `(121500,43500)` y=-1216 grounded -> DONE (only console assert spam); 白龙 edge-cell
+  runs clean; the AV reproduces only on 海岛. (2) Offline BCH header+payload scan of all
+  5 maps: sub-zero regions 龙门 14/64 (min -6727), 龙门_夜晚 14/64, 白龙 2/64 (-2726),
+  天原 44/64 (sentinel -819200), 海岛 16/16 (-17361). (3) BCH conversion live-verified
+  (`worldY = f32@32 + v*(f32@28-f32@32)`, row=Z no flip; 5652.2 vs 5652 and -7119.7 vs
+  -7120) — closes `TERRAIN_R32_BCH_RELATION.md`'s open header-semantics item. (4)
+  `RayIntersection` assert spam (line 1701) appears at every grounded sub-zero test
+  (console-only, not in log) and shares the failing path (MED). (5) the crash function
+  has no direct callers (indirect-only; deeper RE in next probes).
+- Evidence: `docs/movement/VOID_SPAWN_CRASH_TRIAGE.md` §2.0-2.5; logs
+  `reborn_20261006_1545..1600`; `proof/movement/disasm/crash_*`.
+- Outcome: scope corrected and documented; no code change (nothing invented).
