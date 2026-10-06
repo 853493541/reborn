@@ -18,6 +18,43 @@ scene bind (`entity+0x60 != 0`).
 | 803 | `OnCreateBattlefieldRoomRespond` | **EXACT 27** | size must equal 0x1B (else err 0x8029); UI object non-null; `[+7]` qword, `[+0xF]` qword, `[+0x17]` dword -> UI vtable `[+0x1550]` |
 | 804 | `OnForceStartBattleFieldChaosFightRespond` | **EXACT 19** | size must equal 0x13 (else err 0x8038); UI object non-null; `[+7]` qword, `[+0xF]` dword -> UI vtable `[+0x1558]` |
 
+## Movement & combat handlers (same extraction method)
+
+| Id | Handler | Size | What the client requires |
+|---|---|---|---|
+| 25 (0x19) | `OnSyncMoveState` | 52 | `[+7]` entity id (bit30 -> global-id lookup `0x18012B5B0`, else `0x18012B610`) **must resolve** (null -> exit `0x18019D358`); then `[entity+8]` etc. |
+| 22 (0x16) | `OnSyncMoveCtrl` | 47 | entity id `[+7]` lookup (same pattern) |
+| 23 (0x17) | `OnSyncMoveParam` | 49 | entity id `[+7]` lookup (same pattern) |
+| 24 (0x18) | `OnAdjustPlayerMove` | 71 | entity id lookup + position adjust |
+| 39 (0x27) | `OnSkillPrepare` | 33 | entity id `[+7]` lookup (same pattern) + a 0x1801DBA30 scope init |
+| 41 (0x29) | `OnSkillCast` | 39 | entity id `[+7]` lookup + 0x1802F48C0 / 0x1801DBA30 |
+| 47 (0x2F) | `OnSkillEffectResult` | var | big handler (0x1B0 stack) - effect application |
+| 595 (0x253) | `OnSkillChannel` | 37 | channel sync (same family) |
+| 30 (0x1E) | `OnCharacterDeath` | 31 | death notify (entity id lookup family) |
+| 185 (0xB9) | `OnCharacterDeath` | 15 | short variant |
+| 210 (0xD2) | `OnSyncSlayKillCount` | 9 | kill counter |
+
+**Universal rule (movement + combat):** every message is keyed by the entity id dword at `+7`
+(bit 30 selects the global-id lookup); an unknown id makes the handler silently drop the
+message. The same scene-bind prerequisite applies to entity state handlers.
+
+## AOI / "how far do we receive information"
+
+There is **no client-side range limit** in the entity handlers: id 10/11/12 validate only that
+the position is inside the scene (dims + grid cell), not a radius. **The sync range (AOI) is the
+server's choice** - the client accepts and renders whatever entities it is sent. Practical
+defaults from the shipped data: `MaxLootRange=5` (MapList) for loot interaction; entity AOI is
+a server-side constant to define (typical MMO values 30-100 m; our server picks it).
+
+## Endgame (mode end)
+
+No dedicated "mode end" S2C handler exists in the registration table under the obvious names
+(`BattleFieldEnd`/`Result`/`Settle` not present). The end-of-match surface is built from:
+`OnSyncBattlefieldStatistics` (id 281, 264 B), the stat flags (0x330), the competitor/rank
+syncs, and the UI events (`LOADING_END` family + the mode UI). The endgame sequence is
+therefore server-driven: stop the phase clock, send the final statistics/rank records, and the
+client UI shows the result.
+
 ## Takeaways
 
 1. **Exact sizes** for the UI responds (27/19) — the client rejects any other size outright.

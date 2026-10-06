@@ -2342,3 +2342,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   * 607 competitor base info: dwords @+9/+0xD -> lookup 0x18012B750.
   * 609 CD state: player id @+7 must resolve AND entity+0x60 (scene) non-null (err 0x7FA4).
 - Doc: docs/netcode/JX3_MODE_HANDLER_EXPECTATIONS.md (registered in the README index).
+
+### 2026-10-05 — V2 P3 STATIC: movement/combat handler expectations + AOI + endgame notes
+- Movement (ids 22/23/24/25) and combat (ids 39/41/47/53/595) handlers all key on the entity id
+  dword at [pkt+7] (bit30 -> global-id lookup 0x18012B5B0, else 0x18012B610); an unknown id is
+  dropped silently (e.g. OnSyncMoveState exit 0x18019D358). Death: ids 30/185; kill count: 210.
+- AOI: no client-side range limit in the entity handlers (position validated only against the
+  scene dims/cells) - the sync range is the SERVER's choice. MaxLootRange=5 (MapList) for loot.
+- Endgame: no dedicated mode-end handler in the registration; the result surface = statistics
+  (id 281) + stat flags + competitor/rank syncs + the UI events; server-driven.
+- Doc updated: docs/netcode/JX3_MODE_HANDLER_EXPECTATIONS.md (movement/combat/AOI/endgame).
