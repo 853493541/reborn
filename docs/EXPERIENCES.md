@@ -2114,3 +2114,15 @@ solved it, and what is still open. **Newest at the bottom.**
 - Remaining 7: AccelerateBall (stale caps key, evidence in video_base.lua), EmotionPanel/FBlist/
   ReputationPanelNew (module vs real-table shape), PLActionBar/RaidPanel/ReputationPanel (nil
   engine-set locals).
+
+### 2026-10-05 ? UI ? replay diagnostics: debug.getupvalue is blind on the game's stripped bytecode
+- Chasing the last nil-upvalue windows (PLActionBar `tAnchor`, RaidPanel `frame`, ReputationPanel)
+  exposed a diagnostic trap: `debug.getupvalue(f, 1)` returns **no values** for the game's
+  bytecode even when the prototype has upvalues (`string.dump` + luac show 7). Cause: Lua 5.1's
+  `aux_upvalue` bounds-checks `p->sizeupvalues` (the debug-name array size), and the client's
+  compiler ships `sizeupvalues=0` (names stripped) while `nups>0`; the VM still uses the upvalues.
+  Never trust getupvalue absence on client bytecode - use `string.dump`+`luac` instead.
+- With the dump-based view: RaidPanel.Init's nested closure indexes `upval.frame` where the
+  upvalue chain resolves to a nil register value at creation; PLActionBar/ReputationPanel similar.
+  These three need engine-set module state at open time, not shipped data - left partial with this
+  evidence rather than fabricated. Final: **138/143 OK, 5,044 mutations**.
