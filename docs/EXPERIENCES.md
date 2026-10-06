@@ -2474,3 +2474,14 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   map's loaded cells -> the bind should complete -> player+0x60 -> ConfirmClientReady -> state 7.
   Also worth checking what distinguishes the manager's maps (flags/appointment).
 - Frozen clients killed on sight (37528 this block); session keepalive stable throughout.
+
+### 2026-10-06 — V2: id4 map=2 (万花, present in the bind manager) still no bind
+- Live: id4 map=2/pos(16,16) -> the client loaded (op3 at +4s) -> stable session. State read:
+  client+0x14=2, pos=(16,16), player state=4, scene=0x0. The bind still did not store player+0x60
+  even though map 2 EXISTS in the client+0x1280 manager.
+- Conclusion: the scene-lookup gate is necessary but not sufficient - the failure is deeper in
+  the bind flow (0x1401780D0 after the lookup: calls 0x140212A90 / 0x140382200 / the vtable
+  +0x2B0, the position packing, or the setter's later checks 0x1403D5220+). Next: instrument the
+  bind's call sequence (read/step the intermediates) or trace the id-4 reset block's reachability
+  with a debugger-free probe (the block's field writes at client+0x1B110.. can be read back).
+- Frozen clients killed on sight; session stable (keepalives).
