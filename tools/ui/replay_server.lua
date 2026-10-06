@@ -453,12 +453,91 @@ end
 local f = assert(loadfile(scriptPath))
 -- Engine base scripts (module_info.xml load="true" data/lib modules, listed in
 -- ui/engine_base.txt): load them before the window script so its globals are the
--- real ones (g_tTable/Table_*, g_tStrings, VideoBase). During this load module()
--- keeps the chunk in _G so the data globals stay global.
+-- real ones - g_tTable/Table_* (table_defs.lua + table.lua), g_tStrings
+-- (string.lua), VideoBase (video_base.lua). During this load module() keeps the
+-- chunk in _G so the data globals stay global (the engine's ExportExternalLib net
+-- effect). Missing manifest/files = stub-only mode (older checkouts).
 do
   local src = debug.getinfo(1, "S").source
   local dir = src:match("^@(.+)[/\\][^/\\]+$") or "."
   local assets = dir .. "/../../ui-process-app/assets"
+  -- KG_Table stub: the engine's C++ table loader. Serve the real UI table files
+  -- (ui/Scheme/Case/*.txt|.tab, TSV with a GBK header + a Title descriptor from
+  -- g_tTableFile) from the assets, so table.lua's loader path
+  -- (g_tTable[key] = KG_Table.Load(path, title, mode)) yields real rows.
+  local function splitTabs(line)
+    local out = {}
+    for field in (line .. "\t"):gmatch("([^\t]*)\t") do out[#out + 1] = field end
+    return out
+  end
+  local function loadTableFile(logicalPath, title)
+    local rel = logicalPath:gsub("\\", "/"):gsub("^/", "")
+    local file = io.open(assets .. "/" .. rel, "rb")
+    if not file then return nil end
+    local rows, header, lineNo = {}, nil, 0
+    for line in file:lines() do
+      lineNo = lineNo + 1
+      line = line:gsub("\r$", "")
+      if lineNo == 1 then
+        header = splitTabs(line)
+      elseif line ~= "" then
+        local cols = splitTabs(line)
+        local row = {}
+        local n = (type(title) == "table" and #title) or #header
+        for i = 1, n do
+          local desc = type(title) == "table" and title[i] or nil
+          local name = (type(desc) == "table" and desc.t) or header[i]
+          local ftype = type(desc) == "table" and desc.f or nil
+          local raw = cols[i] or ""
+          local val
+          if ftype == "s" then val = raw
+          elseif ftype == "b" then val = (raw ~= "" and raw ~= "0")
+          else val = tonumber(raw) or 0 end  -- engine typed columns default to 0
+          if name then row[name] = val end
+        end
+        rows[#rows + 1] = row
+      end
+    end
+    file:close()
+    return rows
+  end
+  local function makeTable(desc)
+    local real = nil
+    local keyField = (type(desc.Title) == "table" and type(desc.Title[1]) == "table" and desc.Title[1].t) or nil
+    local function ensure()
+      if real == nil then real = { __rows = loadTableFile(desc.Path, desc.Title) or {} } end
+      return real
+    end
+    local obj = {}
+    obj.GetRowCount = function() return #ensure().__rows end
+    obj.GetRow = function(_, i) return ensure().__rows[i] end
+    obj.GetRowByIndex = function(_, i) return ensure().__rows[i] end
+    -- The engine table's key lookup (Table_Get* wrappers call g_tTable.X:Search(key)).
+    obj.Search = function(_, key)
+      local rows = ensure().__rows
+      if keyField then
+        for i = 1, #rows do
+          if rows[i][keyField] == key then return rows[i] end
+        end
+      end
+      return nil
+    end
+    obj.GetRowByKey = obj.Search
+    return setmetatable(obj, { __index = function(t, k)
+      local v = ensure()[k]
+      if v == nil and type(k) == "string" and k:match("^%u") then
+        v = function() return nil end  -- unknown engine table method: neutral
+      end
+      rawset(t, k, v)
+      return v
+    end })
+  end
+  if type(rawget(_G, "KG_Table")) ~= "table" then
+    _G.FILE_OPEN_MODE = _G.FILE_OPEN_MODE or { NORMAL = 0, CACHE = 1 }
+    _G.KG_Table = {
+      Load = function(path, title, mode) return makeTable({ Path = path, Title = title }) end,
+    }
+  end
   local mf = io.open(assets .. "/ui/engine_base.txt", "r")
   if mf then
     local savedModule = module
@@ -466,15 +545,43 @@ do
       _setfenv(2, _GLOBAL)
       return _GLOBAL
     end
+    local loaded, failed = 0, 0
+    local failedNames = {}
     for line in mf:lines() do
       line = line:gsub("^%s+", ""):gsub("%s+$", "")
       if line ~= "" then
         local f2 = loadfile(assets .. "/" .. line:gsub("\\", "/"))
-        if f2 then pcall(f2) end
+        if f2 then
+          if pcall(f2) then loaded = loaded + 1 else failed = failed + 1; failedNames[#failedNames + 1] = line end
+        else
+          failed = failed + 1
+          failedNames[#failedNames + 1] = line
+        end
       end
     end
     mf:close()
     module = savedModule
+    -- Replace file-backed descriptor entries with lazy table objects (the engine
+    -- loads all of g_tTableFile at startup; here each table parses on first use).
+    local gtf, gt = rawget(_G, "g_tTableFile"), rawget(_G, "g_tTable")
+    local wrapped = 0
+    if type(gtf) == "table" and type(gt) == "table" then
+      for k, desc in pairs(gtf) do
+        if type(desc) == "table" and type(desc.Path) == "string" and desc.Path ~= "" then
+          rawset(gt, k, makeTable(desc))
+          wrapped = wrapped + 1
+        end
+      end
+    end
+    if os.getenv("RC_ENGINE_BASE_DEBUG") == "1" then
+      io.stderr:write(string.format("engine_base loaded=%d failed=%d tables=%d\n", loaded, failed, wrapped))
+      for i = 1, math.min(#failedNames, 12) do
+        io.stderr:write("engine_base FAIL " .. failedNames[i] .. "\n")
+      end
+      io.stderr:write("engine_base raw g_tTable=" .. type(rawget(_G, "g_tTable"))
+        .. " g_tStrings=" .. type(rawget(_G, "g_tStrings"))
+        .. " VideoBase=" .. type(rawget(_G, "VideoBase")) .. "\n")
+    end
   end
 end
 

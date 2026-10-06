@@ -2099,3 +2099,18 @@ solved it, and what is still open. **Newest at the bottom.**
   lifted it to **137/143 OK, 4,816 mutations**; the remaining 8 are the stale AccelerateBall plus
   engine-list/module-local shape mismatches (CraftPanel/FBlist sort nil, EmotionPanel pairs nil,
   PLActionBar/RaidPanel/ReputationPanel nil locals, ReputationPanelNew concat table).
+
+### 2026-10-05 ? UI ? UI table data files wired (KG_Table stub + 848 TSV tables) -> 138/143 OK
+- The `Table_Get*` consumers read `g_tTable.X:Search/GetRow/GetRowCount`, but the entries were
+  only descriptors (`Path`/`Title`) - the engine's C++ `KG_Table.Load` fills them from the shipped
+  UI tables. Dumped the descriptor Path list (848 entries) and extracted every table file
+  (`ui/Scheme/Case/**/*.txt|.tab`, TSV, GBK) into the git-ignored assets.
+- Harness `KG_Table.Load` stub parses the real file: header + rows, Title descriptors map columns
+  to typed fields (`f` type letter, `t` name; numeric columns default 0), lazy per-table (parse on
+  first use), `Search(key)` matches the first key column, unknown PascalCase methods return nil.
+  Note: writing `gt[k] = obj` tripped a base-lib `__newindex` assert - use rawset.
+- Result: CraftPanel + DynamicRougeActionBarSetting recovered; mutations 4,816 -> **5,044**;
+  **138/143 OK / 7 partial**. Ported the loader to replay_server.lua (splice; smoke READY).
+- Remaining 7: AccelerateBall (stale caps key, evidence in video_base.lua), EmotionPanel/FBlist/
+  ReputationPanelNew (module vs real-table shape), PLActionBar/RaidPanel/ReputationPanel (nil
+  engine-set locals).

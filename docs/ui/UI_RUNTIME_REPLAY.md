@@ -96,22 +96,29 @@ the runtime mutations as data the viewer consumes:
   `ui/engine_base.txt`. The harness loads them before the window script, with `module()`
   overridden to keep each chunk in `_G` (the engine's `ExportExternalLib` net effect) so the data
   globals stay global. This replaced the stubbed data layer with the client's real one:
-  **113 → 137 OK** (and the same extraction supplied 21 previously-missing window scripts,
+  **113 → 138 OK** (and the same extraction supplied 21 previously-missing window scripts,
   122 → **143 scripted windows**). `RC_ENGINE_BASE_DEBUG=1` prints the load tally and pre-entry
   globals.
+- **Table data (2026-10-05):** `g_tTable`'s entries are descriptors (`Path`/`Title`) that the
+  engine's C++ `KG_Table.Load` fills from the shipped UI tables. The harness stubs `KG_Table.Load`
+  to parse the real **848 table files** (`ui/Scheme/Case/**/*.txt|.tab`, TSV, GBK) from the
+  extracted assets; each descriptor is wrapped in a lazy table object (`GetRowCount`/`GetRow`/
+  `Search` by the Title's first key column; numeric columns default to 0 as the engine's typed
+  columns do; unknown PascalCase methods return nil). CraftPanel, DynamicRougeActionBarSetting,
+  FBlist and the other `Table_Get*` consumers now see real rows.
 - **`_`-prefix section fields (2026-10-05):** the real base libs assign/read engine data fields
   like `_AutoPosInfo`; the section proxy's fallback returned a function and `InitFrameAutoPosInfo`
   died indexing it. `_*` keys now return a permissive proxy.
 - **Batch:** `tools/ui/replay_all.py` replays every same-stem `.lua`/`.ini` pair and writes
   `ui-process-app/Data/runtime_state/<stem>.tsv` + `replay_summary.tsv`. Entry chain:
   `OnFrameCreate` → `OnLoad` → `OnCreate` → `Init` → `OnOpen`.
-  Verified 2026-10-05 (rechecked): **137/143 scripts replay OK**, 8 partial (most with recorded
-  mutations; 4,816 mutations total). Remaining partials: AccelerateBall (the current client's
+  Verified 2026-10-05 (rechecked): **138/143 scripts replay OK**, 7 partial (most with recorded
+  mutations; 5,044 mutations total). Remaining partials: AccelerateBall (the current client's
   `VideoBase.Get3DEngineOptionCaps` caps table genuinely has no `aScreenSizeLimitedRate` key —
   the module is stale against the shipped libs; evidence: the caps literal in `video_base.lua`),
-  CraftPanel/FBlist (engine list data paths), EmotionPanel, PLActionBar/RaidPanel/ReputationPanel
-  (engine-set module locals), ReputationPanelNew (concat on a real data table). Stubbing those
-  would mean inventing data.
+  EmotionPanel/FBlist/ReputationPanelNew (module expectations vs the real table shapes), and
+  PLActionBar/RaidPanel/ReputationPanel (nil engine-set module locals). Stubbing those would mean
+  inventing data.
 - **Stub rules (2026-10-05 refinement):** unknown camelCase fields return permissive proxies (not 0)
   so container fields the scripts index keep working. Note: the `debug.setmetatable(0, …)` number
   metatable cannot rescue mixed number/table **comparisons** in stock Lua 5.1 (mixed types error
@@ -122,7 +129,7 @@ the runtime mutations as data the viewer consumes:
 | layer | state | evidence |
 |---|---|---|
 | A — KGUI conformance | **not started beyond the two engine fixes** | census: 14 unhandled variants (PosType 3/4/5=70, HandleType 1/2/4/5=137, FirstItemPosType 1-9=98) + approximate page-set/list/tree/scene types |
-| B — script replay | **input 137/143 full + 8 partial (4,816 mutations); viewer consumption DONE** | `replay_summary.tsv`; `LayoutPlanBuilder.ApplyRuntimeState` loads `Data/runtime_state/<stem>.tsv` and applies SetSize/SetRelPos/SetAbsPos/SetRelX/Y/SetW/H/SetFrame/SetText/SetFontScheme/SetAlpha/Show/Hide/SetVisible before the inventory overrides (root Hide ignored — the engine shows the window after init). BigBagPanel render: root 594x624, `runtime=284`, all six bag rows laid out; `--selftest` 1240/0/0 |
+| B — script replay | **input 138/143 full + 7 partial (5,044 mutations); viewer consumption DONE** | `replay_summary.tsv`; `LayoutPlanBuilder.ApplyRuntimeState` loads `Data/runtime_state/<stem>.tsv` and applies SetSize/SetRelPos/SetAbsPos/SetRelX/Y/SetW/H/SetFrame/SetText/SetFontScheme/SetAlpha/Show/Hide/SetVisible before the inventory overrides (root Hide ignored — the engine shows the window after init). BigBagPanel render: root 594x624, `runtime=284`, all six bag rows laid out; `--selftest` 1240/0/0 |
 | C — gates | **working** | `--selftest` 1240/0/0; `--status`; `--contact-sheet`; `ini_construct_census.py` |
 
 **Verdict:** the replay now drives the viewer for every window with a recorded TSV; windows without
