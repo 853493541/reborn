@@ -21,12 +21,19 @@ import pss_assets  # noqa: E402
 
 
 def main(argv: list[str] | None = None) -> int:
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(errors="replace")  # manifest paths may carry U+FFFD
+        except (AttributeError, ValueError):
+            pass
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--list", type=Path, required=True)
     ap.add_argument("--out-dir", type=Path, required=True)
     ap.add_argument("--work", type=Path, default=None)
     ap.add_argument("--batch", type=int, default=1,
                     help="paths per PakV4 invocation (default 1; use e.g. 120 for bulk sweeps)")
+    ap.add_argument("--keep-paths", action="store_true",
+                    help="write under out-dir at the manifest path instead of flattening to basenames")
     args = ap.parse_args(argv)
 
     candidates = [
@@ -51,7 +58,9 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"MISS {cand}")
             continue
         for key, data in found.items():
-            dest = out_dir / Path(key).name
+            rel = key.replace("\\", "/").lstrip("/")
+            dest = out_dir / (Path(rel) if args.keep_paths else Path(key).name)
+            dest.parent.mkdir(parents=True, exist_ok=True)
             dest.write_bytes(data)
             print(f"HIT  {key} -> {dest} ({len(data)} bytes)")
             hits += 1

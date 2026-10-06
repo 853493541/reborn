@@ -53,10 +53,14 @@ def main():
         ini = os.path.join(args.ini_dir, stem + ".ini")
         lua = os.path.join(args.ini_dir, stem + ".lua")
         out = os.path.join(args.out_dir, stem + ".tsv")
-        r = subprocess.run([args.lua32, HARNESS, lua, "auto", ini, out],
-                           capture_output=True, text=True, timeout=120)
+        try:
+            r = subprocess.run([args.lua32, HARNESS, lua, "auto", ini, out],
+                               capture_output=True, text=True, timeout=120)
+            stdout = r.stdout or ""
+        except subprocess.TimeoutExpired:
+            stdout = ""
         result = None
-        for line in (r.stdout or "").splitlines():
+        for line in stdout.splitlines():
             if line.startswith("RESULT "):
                 result = line[len("RESULT "):]
         if result is None:
