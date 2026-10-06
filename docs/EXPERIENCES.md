@@ -2489,3 +2489,21 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   in rep/logic/exe - the real name source remains unidentified (likely the engine
   writes it during the map scene load in the full game).
 - Evidence: host_exe99-102.out.
+
+## 2026-10-04 - Gate 1: destination-scene load chain traced to the engine's name canonicalization
+
+- Engine side traced precisely: KRLScene::InitShadowScene -> adapter ctx vt[7] ->
+  window vt[0x198] (eng+0x8AFC40) -> KG3D_Engine::CreateSceneFromDestination
+  (eng+0x9ACBF0) -> scene alloc + eng+0x9B3710 (InitFromDestination):
+  `strcpy_s(scene+0xB00, 0x104, name)` then `call eng+0x9AD3A0(name)` - the name
+  canonicalization (KG3D_ConvertToStandardHashString + _splitpath_s + sprintf("%s%s"))
+  - if it returns 0 -> line 1981 error -> `load scene "a.map" fail.`
+- Probes: the KGCommon file-system global ([KGCommon+0xF0E840]) IS set at runtime
+  (non-null) - so the hash step has its global; no inner error logs appear, i.e. the
+  failure is the final canonicalization/load step or the file/format.
+- Copying the map's .SRScene (SRS format) to `<root>\a.map` does not satisfy the load
+  (host_exe102.out).
+- Remaining: the real shadow-scene name + data (not in the extracted sandbox; the pak
+  file index is not loose on disk either) - extraction from the client paks or the
+  engine's full map-load flow is needed for the game-truthful completion.
+- Evidence: host_exe101-103.out.

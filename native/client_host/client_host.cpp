@@ -3315,6 +3315,16 @@ int main(void)
                         // [rlScene+0xF2890] name at call time)
                         logf("[host] frame60: movie name hook -> %d", installMovieNameHook());
                         logf("[host] frame60: ctx shadow hook -> %d", installCtxShadowHook());
+                        // probe the KGCommon file-system global (the engine's
+                        // destination-scene name resolution needs it)
+                        __try
+                        {
+                            HMODULE kc = GetModuleHandleA("KGCommonX64.dll");
+                            logf("[host] frame60: KGCommon=%p fs global [0xF0E840]=%p",
+                                 kc, (kc != NULL) ? *(void**)((BYTE*)kc + 0xF0E840) : NULL);
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: KGCommon fs probe fault"); }
                         // The adapter's movie context (created by the adapter movie
                         // init, stored at adapter+0x2F5050) is what the movie
                         // engine's methods expect at [movie+0x38]; the skipped game
