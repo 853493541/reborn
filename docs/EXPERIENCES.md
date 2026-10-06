@@ -2125,3 +2125,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Open: what triggers the map load into the scene (engine load call chain: dims setter
   0x1400B2310 <- fn 0x14009DB60; who calls it in the live flow?), or whether the client's
   loading UI needs a server message (scene-begin) / a UI action.
+
+### 2026-10-05 — V2 P3: client reaches LOADING SCREEN; engine loads sandbox scene; game-scene bind pending
+- The client (live) is on the loading screen. KG3D_Engine log: 'load map ...\C:\jx3tmp\reborn_sandbox\
+  map\龙门寻宝_s\龙门寻宝_s.jsonmap success' + 'load scene ... success' (0.125s) - the ENGINE has a
+  scene (the reborn sandbox redirect loads 龙门寻宝_s automatically).
+- But the GAME-level scene registry (client+0x5673D8 scene map, keyed (map,region)) has no entry:
+  player+0x60 stays null, state stays 4. The dims setter 0x1400B2310 (only caller 0x14009DB60,
+  whose only caller is fn 0x1400E11F0) is the bind point to trace next.
+- Everything else is green: gateway login, game handshake (0x2FE), id4 map=296/region=0/pos
+  100,100,0 landed (client+0x14=296), player inserted, state 4, stable session with keepalives.
+- Next: trace 0x1400E11F0's caller chain / the message that binds the engine scene into the game
+  scene registry (candidates to test live: id 8 OnSwitchMap, id 5, scene-begin). The loading
+  screen is waiting on that bind.
