@@ -1,0 +1,25 @@
+# JX3 player attribute name table (JX3ClientX64.exe VA 0x1407F7838)
+# consecutive null-terminated ASCII strings; index = table order
+0	Experience
+1	Strength
+2	Agility
+3	Vitality
+4	Spirit
+5	MaxLife
+6	MaxMana
+7	MaxStamina
+8	MaxThew
+9	RunSpeed
+10	LifeReplenish
+11	LifeReplenishPercent
+12	ManaReplenish
+13	ManaReplenishPercent
+14	ParryBaseRate
+15	PhysicsCriticalStrike
+16	SolarCriticalStrike
+17	NeutralCriticalStrike
+18	LunarCriticalStrike
+19	PoisonCriticalStrike
+20	NoneWeaponAttackSpeedBase
+21	MaxPhysicsDefence
+22	MaxContribution
