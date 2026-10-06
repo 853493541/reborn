@@ -4253,3 +4253,15 @@ if the cache/host frames appear.
   and boundary policy). Base note: forked off main per team convention; the unmerged
   `agent/item1-completion` work is re-derived where needed instead of depended on.
 - Outcome: plan committed; execution next (D1 shutdown first).
+
+### 2026-10-05 - Host polish - D1 clean shutdown: safe subset + engine-teardown boundary
+
+- Did: wired guarded shutdown at the end of the run loop (`sound.UnInit()` +
+  `baselib.UninitLog()` + `baselib.UnInitMemory()`, `RC_SHUTDOWN` selects steps) and
+  A/B'd each step with exit codes: `0`/`sound`/`log`/`mem` all exit 0;
+  `engine.UnInit3DEngine()` AVs the process after `DONE` (0xC0000005). Default is the
+  safe subset; engine uninit stays opt-in (`RC_SHUTDOWN=engine`) for reproduction.
+- Evidence: `proof/host/d1_shutdown_ab.txt`; logs
+  `reborn_20261005_213411..213628.log` (fingerprint `reborn_client_hostpolish.exe`).
+- Outcome: D1 done - clean shutdown for Wwise/log/memory; engine-teardown boundary
+  registered (re-open: recover the editor's close sequence or an engine fix).

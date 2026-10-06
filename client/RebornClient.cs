@@ -4174,6 +4174,24 @@ internal static class RebornClient
             if (autoRunMs > 0 && now >= autoRunMs) break;
         }
         if (sampler != null) Log("terrain stats " + sampler.StatsLine());
+        // Clean shutdown (workstream D1). Isolation A/B (proof/host/d1_shutdown_ab.txt):
+        // sound/log/mem uninit exit cleanly; engine.UnInit3DEngine() AVs the process at
+        // exit (0xC0000005 after DONE) - so it is opt-in only for reproduction
+        // (RC_SHUTDOWN=engine) and the default releases the safe subsystems.
+        // RC_SHUTDOWN: "safe" (default) = sound+log+mem; "all" = same + engine (AV);
+        // "engine" = repro only; "0" = disabled.
+        string shut = Env("RC_SHUTDOWN", "safe");
+        if (shut != "0")
+        {
+            if (shut == "all" || shut == "safe" || shut == "sound")
+            { try { sound.UnInit(); Log("shutdown sound ok"); } catch (Exception e) { Log("shutdown sound ex: " + e.Message); } }
+            if (shut == "all" || shut == "engine")
+            { try { engine.UnInit3DEngine(); Log("shutdown engine ok"); } catch (Exception e) { Log("shutdown engine ex: " + e.Message); } }
+            if (shut == "all" || shut == "safe" || shut == "log")
+            { try { baselib.UninitLog(); Log("shutdown log ok"); } catch (Exception e) { Log("shutdown log ex: " + e.Message); } }
+            if (shut == "all" || shut == "safe" || shut == "mem")
+            { try { baselib.UnInitMemory(); Log("shutdown memory ok"); } catch (Exception e) { Log("shutdown memory ex: " + e.Message); } }
+        }
         Log("DONE");
     }
 

@@ -16,11 +16,16 @@ server-owned state, packaging.
 
 ## Tasks (ordered)
 
-### D1 — Clean shutdown (1.1) — small
-- Wire on `FormClosing`: `engine.UnInit3DEngine()`, `sound.UnInit()`, `baselib.UninitLog()`
-  (`UnInitMemory`) in order, each guarded + logged; skip on crash paths.
-- Verify: close window → process exits with no hang; log shows the shutdown lines; no
-  dump; re-launch works.
+### D1 — Clean shutdown (1.1) — DONE (with a registered boundary)
+- Implemented at the end of the run loop (covers window-close and `RC_AUTORUN` exits):
+  `sound.UnInit()` + `baselib.UninitLog()` + `baselib.UnInitMemory()`, each guarded and
+  logged; default `RC_SHUTDOWN=safe` (`0` disables, `all` adds engine, `engine` is the
+  reproduction mode).
+- A/B (`proof/host/d1_shutdown_ab.txt`, one run per mode): `0`/`sound`/`log`/`mem` exit
+  **0**; `engine.UnInit3DEngine()` exits **-1073741819 (0xC0000005)** after `DONE` — engine
+  teardown is not safe at this lifecycle point, so it is **not** called by default.
+- Boundary: re-open when the editor's own close sequence (`MovieEditorHD` teardown / IL)
+  or an engine fix provides safe engine uninit; then re-run the matrix.
 
 ### D2 — Native per-key option read-back (1.8) — probe, then tool
 - Reflection probe of `KGEngineOptionProxyCLR` (public members) and the pair
