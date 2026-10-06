@@ -420,6 +420,7 @@ internal static class RebornClient
         // game's own banks and post the skill event through the engine's Wwise.
         // RC_SOUND_NATIVE=1 + RC_BANK=<skillremake.bnk>; WAV stays the fallback.
         bool soundNative = false;
+        bool soundMediaSet = false;
         uint nativeEvent = 3378728138;   // FLWS event id (SOUND_PATH.md)
         try
         {
@@ -454,6 +455,7 @@ internal static class RebornClient
                             int br = SoundProbe.LoadBankW(bank);
                             if (br >= 0) { soundNative = true; Log("sound-native: bank ok id/rc=" + br); }
                             else Log("sound-native: bank failed rc=" + br);
+
                         }
                     }
                 }
@@ -2525,12 +2527,26 @@ internal static class RebornClient
                 // camera shake on the cast (host default; per-skill shake rows
                 // are data-gated)
                 camShake.Start(2.0, 0.5, 0.8, 3);
+                bool playedNative = false;
                 if (soundNative)
                 {
+                    if (!soundMediaSet)
+                    {
+                        soundMediaSet = true;
+                        string media = Env("RC_SOUND_MEDIA", "");
+                        if (media.Length > 0)
+                            Log("sound-native: mediaDir rc=" + SoundProbe.SetMediaDir(media));
+                    }
                     uint pid = SoundProbe.PostEvent(nativeEvent, 1);
                     Log("sound: native post id=" + nativeEvent + " playing=" + pid);
+                    if (pid != 0 && SoundProbe.Diag(pid) == 1) playedNative = true;
+                    else
+                    {
+                        soundNative = false;
+                        Log("sound-native: no rendering (streamed media unresolved) - WAV fallback");
+                    }
                 }
-                else if (skillWav != null)
+                if (!playedNative && skillWav != null)
                 {
                     bool played = PlaySound(skillWav, IntPtr.Zero,
                         SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
@@ -3696,6 +3712,7 @@ internal static class RebornClient
 
             engine.FrameMove();
             if (soundReady) { try { sound.FrameMove(); } catch { } }
+            if (soundNative) { try { SoundProbe.Render(); } catch { } }
             // Step C test: write the model's exact placement into a post-process
             // camera record BETWEEN FrameMove and Render (bypasses the clamp)
             if (camPreIdx >= 0 && preSet && CameraShim.Available &&
@@ -4412,7 +4429,13 @@ internal static class RebornClient
         delegate int LoadBankWFn([MarshalAs(UnmanagedType.LPWStr)] string path);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate uint PostEventFn(uint eventId, ulong go);
-        static IntPtr _init = IntPtr.Zero, _status = IntPtr.Zero, _loadBank = IntPtr.Zero, _postEvent = IntPtr.Zero;
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate int DiagFn(uint playingId);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate int RenderFn();
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate int SetMediaDirFn([MarshalAs(UnmanagedType.LPWStr)] string dir);
+        static IntPtr _init = IntPtr.Zero, _status = IntPtr.Zero, _loadBank = IntPtr.Zero, _postEvent = IntPtr.Zero, _diag = IntPtr.Zero, _render = IntPtr.Zero, _mediaDir = IntPtr.Zero;
         public static IntPtr Load(string path)
         {
             IntPtr h = LoadLibraryA(path);
@@ -4422,8 +4445,29 @@ internal static class RebornClient
                 _status = GetProcAddress(h, "RC_SoundProbe_Status");
                 _loadBank = GetProcAddress(h, "RC_SoundProbe_LoadBankW");
                 _postEvent = GetProcAddress(h, "RC_SoundProbe_PostEvent");
+                _diag = GetProcAddress(h, "RC_SoundProbe_Diag");
+                _render = GetProcAddress(h, "RC_SoundProbe_Render");
+                _mediaDir = GetProcAddress(h, "RC_SoundProbe_SetMediaDir");
             }
             return h;
+        }
+        public static int SetMediaDir(string dir)
+        {
+            if (_mediaDir == IntPtr.Zero) return -1;
+            SetMediaDirFn f = (SetMediaDirFn)Marshal.GetDelegateForFunctionPointer(_mediaDir, typeof(SetMediaDirFn));
+            return f(dir);
+        }
+        public static int Render()
+        {
+            if (_render == IntPtr.Zero) return -1;
+            RenderFn f = (RenderFn)Marshal.GetDelegateForFunctionPointer(_render, typeof(RenderFn));
+            return f();
+        }
+        public static int Diag(uint playingId)
+        {
+            if (_diag == IntPtr.Zero) return -1;
+            DiagFn f = (DiagFn)Marshal.GetDelegateForFunctionPointer(_diag, typeof(DiagFn));
+            return f(playingId);
         }
         public static int LoadBankW(string path)
         {

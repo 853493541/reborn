@@ -51,19 +51,27 @@ in-process with the same conclusion.
 Note: PSS **particle** SFX tags do fire in the host (M1.6 blade/ring), so the
 animation-tag system itself works; the stop is specific to the sound path.
 
-## 4. Outcome — native playback implemented (2026-10-05)
+## 4. Outcome — native chain runs, media does not render (partial, 2026-10-05)
 
-The product path is finished in `HOST_AUDIO_STEP1.md` Step 2: the client loads the
-game banks (`Init.bnk`, `skillremake.bnk`) into this same Wwise engine via
-`LoadBankMemoryView`, registers a game object + default listener, and posts the FLWS
-event `3378728138` on skill cast → **`playingId=1`** (evidence `reborn_20261005_184354.log`,
-`sound_probe_native_20261005.log`). The winmm WAV is now only the fallback when no
-bank is provided.
+The Wwise API chain executes: banks load (`rc=1`), game object + listener register,
+event `3378728138` posts (`playingId=1`) — but the **source never renders**
+(`GetSourcePlayPosition` → `AK_Fail`, position 0) because the bank's audio is
+**streamed** (`161340541.wem`; 0 embedded RIFF blocks in the bank) and the editor
+host's Wwise IO cannot resolve it. Tried without effect: staging the `.wem` tree
+(name/id variants, `Base`/`English(US)`/`SFX`/root), switching the process cwd,
+`SetCurrentLanguage(Base)`, `RenderAudio` ticks. The client therefore verifies the
+source position after posting and **falls back to the WAV** for that cast
+(`HOST_AUDIO_STEP1.md` Step 2).
 
-Recorded engine gap (not blocking the product path): the engine's own tani SoundTag
-dispatch never calls PostEvent in the host (§3). If that path should ever be restored,
-the identified suspects are `KG3D_EngineEventManager::_OnProcessApplySoundTag` and the
-model gate `KG3DModel::EnableSfxSoundTag` (`0x1800BA760`).
+Root cause: the game client supplies Wwise with its own VFS-aware
+`IAkFileLocationResolver`; the MovieEditor engine has none. Closing it =
+`AK::StreamMgr::SetFileLocationResolver` (export present in `KG3D_WwiseX64.dll`)
+with a resolver that serves the pak media, or the game's resolver instance.
+
+Recorded engine gap (unchanged): the engine's own tani SoundTag dispatch never calls
+PostEvent in the host (§3); the identified suspects are
+`KG3D_EngineEventManager::_OnProcessApplySoundTag` and the model gate
+`KG3DModel::EnableSfxSoundTag` (`0x1800BA760`).
 
 ## Reproduce
 

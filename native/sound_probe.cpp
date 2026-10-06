@@ -109,11 +109,21 @@ static int InstallHook(BYTE* target, const BYTE* expect, int steal,
 typedef int (__cdecl *RegisterGameObjFn)(unsigned long long, const char*);
 typedef int (__cdecl *AddDefaultListenerFn)(unsigned long long);
 typedef int (__cdecl *LoadBankMemViewFn)(const void*, unsigned int, unsigned int*);
+typedef bool (__cdecl *IsInitializedFn)();
+typedef int (__cdecl *GetAudioSettingsFn)(void*);
+typedef int (__cdecl *GetSourcePlayPosFn)(unsigned int, int*, bool);
+typedef int (__cdecl *SetOutputVolumeFn)(unsigned long long, float);
 
 static RegisterGameObjFn g_registerGameObj = NULL;
 static AddDefaultListenerFn g_addDefaultListener = NULL;
 static LoadBankMemViewFn g_loadBankMemoryView = NULL;
 static PostEventIdFn g_postEventId = NULL;
+static IsInitializedFn g_isInitialized = NULL;
+static GetAudioSettingsFn g_getAudioSettings = NULL;
+static GetSourcePlayPosFn g_getSourcePlayPos = NULL;
+static SetOutputVolumeFn g_setOutputVolume = NULL;
+typedef int (__cdecl *RenderAudioFn)(bool);
+static RenderAudioFn g_renderAudio = NULL;
 
 static int ResolveAudio()
 {
@@ -128,9 +138,68 @@ static int ResolveAudio()
         "?LoadBankMemoryView@SoundEngine@AK@@YA?AW4AKRESULT@@PEBXIAEAI@Z");
     g_postEventId = (PostEventIdFn)GetProcAddress(m,
         "?PostEvent@SoundEngine@AK@@YAII_KIP6AXW4AkCallbackType@@PEAUAkCallbackInfo@@@ZPEAXIPEAUAkExternalSourceInfo@@I@Z");
-    Log("sound_probe: audio register=%p listener=%p loadBankMem=%p postEvent=%p",
-        g_registerGameObj, g_addDefaultListener, g_loadBankMemoryView, g_postEventId);
+    g_isInitialized = (IsInitializedFn)GetProcAddress(m,
+        "?IsInitialized@SoundEngine@AK@@YA_NXZ");
+    g_getAudioSettings = (GetAudioSettingsFn)GetProcAddress(m,
+        "?GetAudioSettings@SoundEngine@AK@@YA?AW4AKRESULT@@AEAUAkAudioSettings@@@Z");
+    g_getSourcePlayPos = (GetSourcePlayPosFn)GetProcAddress(m,
+        "?GetSourcePlayPosition@SoundEngine@AK@@YA?AW4AKRESULT@@IPEAH_N@Z");
+    g_setOutputVolume = (SetOutputVolumeFn)GetProcAddress(m,
+        "?SetOutputVolume@SoundEngine@AK@@YA?AW4AKRESULT@@_KM@Z");
+    g_renderAudio = (RenderAudioFn)GetProcAddress(m,
+        "?RenderAudio@SoundEngine@AK@@YA?AW4AKRESULT@@_N@Z");
+    Log("sound_probe: audio register=%p listener=%p loadBankMem=%p postEvent=%p init=%p setVol=%p",
+        g_registerGameObj, g_addDefaultListener, g_loadBankMemoryView, g_postEventId,
+        g_isInitialized, g_setOutputVolume);
     return (g_registerGameObj && g_addDefaultListener && g_loadBankMemoryView && g_postEventId) ? 0 : -2;
+}
+
+// Wwise state diagnostics: initialized? audio settings? is the posted source
+// actually advancing? (the shell render thread calls RenderAudio via FrameMove)
+extern "C" __declspec(dllexport) int __cdecl RC_SoundProbe_Diag(unsigned int playingId)
+{
+    if (ResolveAudio() != 0) return -1;
+    Log("sound_probe: IsInitialized=%d", g_isInitialized ? (g_isInitialized() ? 1 : 0) : -1);
+    if (g_getAudioSettings)
+    {
+        unsigned char st[64];
+        memset(st, 0, sizeof(st));
+        int rc = g_getAudioSettings(st);
+        unsigned int a = *(unsigned int*)(st + 0);
+        unsigned int b = *(unsigned int*)(st + 4);
+        unsigned int c = *(unsigned int*)(st + 8);
+        Log("sound_probe: GetAudioSettings rc=%d samplesPerFrame=%u samplesPerSec=%u outType/extra=%u",
+            rc, a, b, c);
+    }
+    if (playingId != 0 && g_getSourcePlayPos)
+    {
+        int pos1 = -1, pos2 = -1;
+        int r1 = g_getSourcePlayPos(playingId, &pos1, false);
+        Sleep(300);
+        int r2 = g_getSourcePlayPos(playingId, &pos2, false);
+        Log("sound_probe: playPos rc=%d/%d pos=%d/%d", r1, r2, pos1, pos2);
+        if (r2 == 1 && pos2 > pos1) return 1;   // AK_Success and progressing = rendering
+        return 0;
+    }
+    return 0;
+}
+
+// Audio render tick: the shell does not run Wwise's render loop in this host,
+// so the client calls this each frame (1024 samples @48k = 21.3 ms per tick).
+extern "C" __declspec(dllexport) int __cdecl RC_SoundProbe_Render()
+{
+    if (g_renderAudio == NULL) return -1;
+    return g_renderAudio(false);
+}
+
+// Set the main output volume (diagnostic; ids 0 and -1 are tried).
+extern "C" __declspec(dllexport) int __cdecl RC_SoundProbe_SetVolume(float v)
+{
+    if (ResolveAudio() != 0) return -1;
+    int r0 = g_setOutputVolume ? g_setOutputVolume(0, v) : -1;
+    int r1 = g_setOutputVolume ? g_setOutputVolume((unsigned long long)-1, v) : -1;
+    Log("sound_probe: SetOutputVolume v=%.2f id0=%d idFF=%d", v, r0, r1);
+    return r0;
 }
 
 // Load a .bnk from disk into Wwise memory; the buffer is kept for the session
@@ -154,6 +223,35 @@ extern "C" __declspec(dllexport) int __cdecl RC_SoundProbe_LoadBankW(const wchar
     return rc == 0 ? (int)bankId : rc;
 }
 
+// Streamed-media root: the editor's default Wwise IO resolves streamed .wem
+// files relative to the process cwd; the install is read-only, so playback
+// temporarily switches cwd to a staged tree (restored once the stream opened).
+static wchar_t g_mediaDir[512] = { 0 };
+
+extern "C" __declspec(dllexport) const wchar_t* __cdecl RC_SoundProbe_Language()
+{
+    HMODULE m = GetModuleHandleA("KG3D_WwiseX64.dll");
+    typedef const wchar_t* (__cdecl *GetLangFn)();
+    GetLangFn f = m ? (GetLangFn)GetProcAddress(m, "?GetCurrentLanguage@StreamMgr@AK@@YAPEB_WXZ") : NULL;
+    return f ? f() : L"(no StreamMgr)";
+}
+
+extern "C" __declspec(dllexport) int __cdecl RC_SoundProbe_SetMediaDir(const wchar_t* dir)
+{
+    if (dir == NULL) { g_mediaDir[0] = 0; return 0; }
+    wcsncpy_s(g_mediaDir, dir, _TRUNCATE);
+    wchar_t oldCwd[1024] = { 0 };
+    GetCurrentDirectoryW(1024, oldCwd);
+    BOOL ok = SetCurrentDirectoryW(g_mediaDir);
+    HMODULE m = GetModuleHandleA("KG3D_WwiseX64.dll");
+    typedef int (__cdecl *SetLangFn)(const wchar_t*);
+    SetLangFn setLang = m ? (SetLangFn)GetProcAddress(m, "?SetCurrentLanguage@StreamMgr@AK@@YA?AW4AKRESULT@@PEB_W@Z") : NULL;
+    int lr = setLang ? setLang(L"Base") : -1;
+    Log("sound_probe: mediaDir='%ls' cwdSwitch=%d setLang(Base)=%d (was '%ls') lang='%ls'",
+        g_mediaDir, ok ? 1 : 0, lr, oldCwd, RC_SoundProbe_Language());
+    return ok ? 0 : -1;
+}
+
 // Register a local Wwise game object + listener and post an event on it.
 extern "C" __declspec(dllexport) unsigned int __cdecl RC_SoundProbe_PostEvent(unsigned int eventId, unsigned long long go)
 {
@@ -162,7 +260,8 @@ extern "C" __declspec(dllexport) unsigned int __cdecl RC_SoundProbe_PostEvent(un
     int lr = g_addDefaultListener(go);
     Log("sound_probe: RegisterGameObj(%llu)=%d AddDefaultListener=%d", go, rr, lr);
     unsigned int pid = g_postEventId(eventId, go, 0, NULL, NULL, 0, NULL, 0);
-    Log("sound_probe: PostEvent id=%u go=%llu -> playingId=%u", eventId, go, pid);
+    Log("sound_probe: PostEvent id=%u go=%llu -> playingId=%u (mediaDir=%ls)", eventId, go, pid,
+        g_mediaDir[0] ? g_mediaDir : L"(none)");
     return pid;
 }
 

@@ -4277,3 +4277,24 @@ if the cache/host frames appear.
   game's bank/id is the product path. Recorded suspects if the engine path is ever
   restored: `_OnProcessApplySoundTag`, `KG3DModel::EnableSfxSoundTag` (`0x1800BA760`).
 - Outcome: solved - 1.6 runtime audio plays through the engine's own Wwise.
+
+### 2026-10-05 - Audio (1.6) - correction: Wwise API success is not audibility; WAV fallback active
+
+- Finding: the previous entry concluded native playback (banks + `playingId=1`) but the
+  user heard nothing. Diagnostics: `IsInitialized=1` (48 kHz, 1024/frame);
+  `GetSourcePlayPosition(playingId)` -> `AK_Fail`, pos 0/0 in **every** tried
+  configuration - staged `.wem` tree (file-id + source-name variants under
+  `Base`/`English(US)`/`SFX`/root), process-cwd switch, `SetCurrentLanguage(Base)`,
+  `RenderAudio` ticks. The bank has **0 embedded RIFF blocks**: the audio is streamed
+  (`161340541.wem`), and the editor host's Wwise IO cannot resolve it (the game client
+  supplies its own VFS-aware `IAkFileLocationResolver`; MovieEditor has none).
+- Fix (product behavior): after `PostEvent`, the client requires the source position to
+  advance (`SoundProbe.Diag`); if not, native is disabled and the winmm WAV plays the
+  cast. Verified: `sound-native: no rendering (streamed media unresolved) - WAV
+  fallback` followed by `sound: skill wav play rc=True`.
+- Open (for a future pick-up): `AK::StreamMgr::SetFileLocationResolver` (export
+  present in `KG3D_WwiseX64.dll`) with a resolver that serves the pak media, or reuse
+  the game's resolver; then the fallback can be dropped.
+- Evidence: `proof/audio/sound_probe_streamed_media_diag_20261005.log`,
+  `proof/audio/client_audionative_fallback_20261005.log`; corrected docs
+  `HOST_AUDIO_STEP1.md` Step 2 and `NATIVE_AUDIO_PROBE.md` §4.
