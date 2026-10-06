@@ -88,24 +88,25 @@ the runtime mutations as data the viewer consumes:
   environment wants the permissive branch. This is a test-rig patch only (documented here), not
   product behavior.
 - **Engine base data layer (2026-10-05):** the window scripts consume engine globals
-  (`g_tTable`/`Table_*`, `g_tStrings`, `VideoBase`) that the engine builds from its own UI
-  library. `ui/module_info.xml` (extracted from PakV4) lists 1,016 modules; the `load="true"`
-  libs/data modules (base, json, loginscript incl. `table_defs.lua`+`table.lua`, string,
-  layer-1 libs — **122 files**) are extracted to the git-ignored `ui-process-app/assets/ui/`
-  (`Script/`, `String/`) and listed in `ui/engine_base.txt`. The harness loads them before the
-  window script, with `module()` overridden to keep each chunk in `_G` (the engine's
-  `ExportExternalLib` net effect) so the data globals stay global. This replaced the stubbed
-  data layer with the client's real one: **113 → 135 OK** (and the same extraction supplied 21
-  previously-missing window scripts, 122 → **143 scripted windows**). `RC_ENGINE_BASE_DEBUG=1`
-  prints the load tally and pre-entry globals.
+  (`g_tTable`/`Table_*`, `g_tStrings`, `VideoBase`, `g_tExpression`, ...) that the engine builds
+  from its own UI library. `ui/module_info.xml` (extracted from PakV4) lists 1,016 modules; the
+  `load="true"` libs/data modules plus all `type="lib"` modules (**181 files**: base, json,
+  loginscript incl. `table_defs.lua`+`table.lua`, string libs, every lib module) are extracted to
+  the git-ignored `ui-process-app/assets/ui/` (`Script/`, `String/`) and listed in
+  `ui/engine_base.txt`. The harness loads them before the window script, with `module()`
+  overridden to keep each chunk in `_G` (the engine's `ExportExternalLib` net effect) so the data
+  globals stay global. This replaced the stubbed data layer with the client's real one:
+  **113 → 137 OK** (and the same extraction supplied 21 previously-missing window scripts,
+  122 → **143 scripted windows**). `RC_ENGINE_BASE_DEBUG=1` prints the load tally and pre-entry
+  globals.
 - **`_`-prefix section fields (2026-10-05):** the real base libs assign/read engine data fields
   like `_AutoPosInfo`; the section proxy's fallback returned a function and `InitFrameAutoPosInfo`
   died indexing it. `_*` keys now return a permissive proxy.
 - **Batch:** `tools/ui/replay_all.py` replays every same-stem `.lua`/`.ini` pair and writes
   `ui-process-app/Data/runtime_state/<stem>.tsv` + `replay_summary.tsv`. Entry chain:
   `OnFrameCreate` → `OnLoad` → `OnCreate` → `Init` → `OnOpen`.
-  Verified 2026-10-05 (rechecked): **135/143 scripts replay OK**, 8 partial (most with recorded
-  mutations; 4,690 mutations total). Remaining partials: AccelerateBall (the current client's
+  Verified 2026-10-05 (rechecked): **137/143 scripts replay OK**, 8 partial (most with recorded
+  mutations; 4,816 mutations total). Remaining partials: AccelerateBall (the current client's
   `VideoBase.Get3DEngineOptionCaps` caps table genuinely has no `aScreenSizeLimitedRate` key —
   the module is stale against the shipped libs; evidence: the caps literal in `video_base.lua`),
   CraftPanel/FBlist (engine list data paths), EmotionPanel, PLActionBar/RaidPanel/ReputationPanel
@@ -121,7 +122,7 @@ the runtime mutations as data the viewer consumes:
 | layer | state | evidence |
 |---|---|---|
 | A — KGUI conformance | **not started beyond the two engine fixes** | census: 14 unhandled variants (PosType 3/4/5=70, HandleType 1/2/4/5=137, FirstItemPosType 1-9=98) + approximate page-set/list/tree/scene types |
-| B — script replay | **input 135/143 full + 8 partial (4,690 mutations); viewer consumption DONE** | `replay_summary.tsv`; `LayoutPlanBuilder.ApplyRuntimeState` loads `Data/runtime_state/<stem>.tsv` and applies SetSize/SetRelPos/SetAbsPos/SetRelX/Y/SetW/H/SetFrame/SetText/SetFontScheme/SetAlpha/Show/Hide/SetVisible before the inventory overrides (root Hide ignored — the engine shows the window after init). BigBagPanel render: root 594x624, `runtime=284`, all six bag rows laid out; `--selftest` 1240/0/0 |
+| B — script replay | **input 137/143 full + 8 partial (4,816 mutations); viewer consumption DONE** | `replay_summary.tsv`; `LayoutPlanBuilder.ApplyRuntimeState` loads `Data/runtime_state/<stem>.tsv` and applies SetSize/SetRelPos/SetAbsPos/SetRelX/Y/SetW/H/SetFrame/SetText/SetFontScheme/SetAlpha/Show/Hide/SetVisible before the inventory overrides (root Hide ignored — the engine shows the window after init). BigBagPanel render: root 594x624, `runtime=284`, all six bag rows laid out; `--selftest` 1240/0/0 |
 | C — gates | **working** | `--selftest` 1240/0/0; `--status`; `--contact-sheet`; `ini_construct_census.py` |
 
 **Verdict:** the replay now drives the viewer for every window with a recorded TSV; windows without

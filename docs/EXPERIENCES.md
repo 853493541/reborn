@@ -2095,3 +2095,7 @@ solved it, and what is still open. **Newest at the bottom.**
   `video_base.lua` caps literal has 9 keys and no `aScreenSizeLimitedRate` (the module expects it) -
   documented as a client-side inconsistency, not stubbed.
 - Ported the loader + `_` rule to `replay_server.lua` (shim re-spliced; smoke READY handlers=19).
+- Follow-up: adding every `type="lib"` module to the base list (181 files total, +58 extracted)
+  lifted it to **137/143 OK, 4,816 mutations**; the remaining 8 are the stale AccelerateBall plus
+  engine-list/module-local shape mismatches (CraftPanel/FBlist sort nil, EmotionPanel pairs nil,
+  PLActionBar/RaidPanel/ReputationPanel nil locals, ReputationPanelNew concat table).
