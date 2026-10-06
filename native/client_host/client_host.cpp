@@ -2856,7 +2856,17 @@ int main(void)
             23334.0f, 761.0f + 1.2f, 24224.0f,
             0.0f, 1.0f, 0.0f
         };
-        for (int f = 0; f < 240; f++)
+        // frame budget: default 240 (scripted runs); RC_HOST_FRAMES overrides;
+        // RC_HOST_KEEP=1 keeps the window open (until it is closed manually).
+        int maxFrames = 240;
+        char fbuf[32];
+        if (GetEnvironmentVariableA("RC_HOST_FRAMES", fbuf, sizeof(fbuf)) != 0)
+            maxFrames = atoi(fbuf);
+        if (GetEnvironmentVariableA("RC_HOST_KEEP", fbuf, sizeof(fbuf)) != 0)
+            maxFrames = 2000000;
+        logf("[host] frame budget=%d keep=%s", maxFrames,
+             (maxFrames > 100000) ? "yes" : "no");
+        for (int f = 0; f < maxFrames; f++)
         {
             MSG msg;
             while (PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE))
