@@ -65,7 +65,7 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `mine_protocol_layouts.py` | per-handler packet field offsets from S2C handler disassembly -> `proof/netcode/protocol_layouts_s2c.tsv` |
 | `extract_field_maps.py` | packet-read -> object-field pairs per S2C handler (dataflow pairing of mov/movzx) -> `proof/netcode/game_field_maps.tsv` |
 | `enum_named_objects.py` | list session named objects (mutexes/events/sections) — launcher-handoff gate hunting |
-| `reference/jx3_model.py` | runnable reference server+client (10/10 smoke) |
+| `reference/jx3_model.py` | runnable reference server+client (8/8 smoke; combat removed) |
 
 ## Evidence (`proof/netcode/`)
 

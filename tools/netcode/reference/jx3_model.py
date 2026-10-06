@@ -6,8 +6,12 @@ Single-file, stdlib-only, asyncio. Implements:
   - serial/ack reliability with retransmit and duplicate suppression
   - handshake with session key + serial resume, ping/dead timeout
   - 30 Hz world tick, 10 Hz move state/snapshots, client prediction + reconciliation
-  - server-authoritative skill cast with movement-state rejection and cooldowns
   - distance-based interest management
+
+Scope note: the full combat system (skill cast/prepare/effect, cooldowns, buffs) was REMOVED
+from this reference model (user decision 2026-10-05): the reborn server does not implement
+combat; the real client renders only what a server sends, and our target is world entry +
+walking.
 
 Run:  python tools/netcode/reference/jx3_model.py
 """
@@ -34,13 +38,6 @@ OP_MOVE_CTRL = 0x0023
 OP_ENTITY_ADD = 0x0030
 OP_ENTITY_REMOVE = 0x0031
 OP_ENTITY_SNAPSHOT = 0x0032
-OP_CAST_SKILL = 0x0040
-OP_SKILL_PREPARE = 0x0041
-OP_SKILL_CAST = 0x0042
-OP_SKILL_EFFECT = 0x0043
-OP_SKILL_REJECT = 0x0044
-OP_COOLDOWN = 0x0045
-OP_BUFF_SYNC = 0x0046
 OP_ROUTINE_SYNC = 0x006E
 
 FLAG_RETRANSMIT = 0x01
@@ -59,16 +56,6 @@ WINDOW = 2048
 AOI_RANGE = 100.0
 MOVE_SPEED = 5.0
 K_FWD, K_BACK, K_LEFT, K_RIGHT = 1, 2, 4, 8
-
-REJECT_MOVE_STATE = 1
-REJECT_COOLDOWN = 2
-REJECT_RANGE = 3
-
-SKILLS = {
-    1: {"cast_ms": 400, "cd_ms": 2000, "move_forbidden": True, "range": 6.0},
-    2: {"cast_ms": 200, "cd_ms": 800, "move_forbidden": False, "range": 6.0},
-}
-
 
 def now() -> float:
     return time.monotonic()
@@ -154,9 +141,6 @@ class Entity:
     facing: int = 0
     last_input_seq: int = 0
     ctrl_lock_until: float = 0.0
-    casting_until: float = 0.0
-    cooldowns: dict[int, float] = field(default_factory=dict)
-    buffs: list[int] = field(default_factory=list)
     hp: int = 100
 
     def moving(self) -> bool:
@@ -227,7 +211,7 @@ class GameServer:
             self.server_tick += 1
             n += 1
             for ent in self.entities.values():
-                if ent.locked() or now() < ent.casting_until:
+                if ent.locked():
                     ent.vel = (0.0, 0.0, 0.0)
                     continue
                 old = ent.pos
@@ -320,54 +304,8 @@ class Peer:
             self.entity.keys = int(data.get("keys", 0))
             self.entity.facing = int(data.get("facing", 0))
             self.entity.last_input_seq = int(param)
-        elif op == OP_CAST_SKILL:
-            await self._cast(json.loads(payload) if payload else {})
         elif op == OP_ACK:
             pass
-
-    async def _cast(self, msg: dict) -> None:
-        ent = self.entity
-        if not ent:
-            return
-        skill_id = int(msg.get("skill_id", 0))
-        spec = SKILLS.get(skill_id)
-        if not spec:
-            await self.send(OP_SKILL_REJECT, REJECT_RANGE, {"reason": "unknown"})
-            return
-        if spec["move_forbidden"] and ent.moving():
-            await self.send(OP_SKILL_REJECT, REJECT_MOVE_STATE, {"reason": "move_state"})
-            return
-        ready = ent.cooldowns.get(skill_id, 0.0)
-        if now() < ready:
-            await self.send(OP_SKILL_REJECT, REJECT_COOLDOWN, {"reason": "cooldown"})
-            return
-        target = int(msg.get("target", 0))
-        tgt = self.server.entities.get(target)
-        if tgt is not None and dist(ent.pos, tgt.pos) > spec["range"]:
-            await self.send(OP_SKILL_REJECT, REJECT_RANGE, {"reason": "range"})
-            return
-        cast_s = spec["cast_ms"] / 1000.0
-        ent.casting_until = now() + cast_s
-        if spec["move_forbidden"]:
-            ent.ctrl_lock_until = ent.casting_until
-            await self.send(OP_MOVE_CTRL, 1, {"locked": True, "duration_ms": spec["cast_ms"]})
-        cast_id = self.server.server_tick
-        await self.send(OP_SKILL_PREPARE, cast_id, {"skill_id": skill_id, "cast_ms": spec["cast_ms"]})
-
-        async def finish() -> None:
-            await asyncio.sleep(cast_s)
-            ent.casting_until = 0.0
-            ent.ctrl_lock_until = 0.0
-            ent.cooldowns[skill_id] = now() + spec["cd_ms"] / 1000.0
-            await self.send(OP_MOVE_CTRL, 0, {"locked": False, "duration_ms": 0})
-            await self.send(OP_SKILL_CAST, cast_id, {"skill_id": skill_id})
-            await self.send(OP_SKILL_EFFECT, cast_id, {
-                "skill_id": skill_id,
-                "targets": [] if tgt is None else [{"eid": tgt.eid, "damage": 10}],
-            })
-            await self.send(OP_COOLDOWN, skill_id, {"skill_id": skill_id, "ready_at": ent.cooldowns[skill_id]})
-
-        asyncio.create_task(finish())
 
     async def push_state(self) -> None:
         ent = self.entity
@@ -487,8 +425,6 @@ class GameClient:
         elif op == OP_ENTITY_SNAPSHOT:
             for rec in msg.get("entities", []):
                 self.remote[rec["eid"]] = rec
-        elif op in (OP_SKILL_PREPARE, OP_SKILL_CAST, OP_SKILL_EFFECT, OP_SKILL_REJECT, OP_COOLDOWN):
-            await self.events.put(("skill", (op, msg)))
         elif op == OP_PONG:
             await self.events.put(("pong", msg))
 
@@ -499,12 +435,6 @@ class GameClient:
         self.pos = apply_input(self.pos, keys, dt)
         data = json.dumps({"keys": keys, "facing": 0}, separators=(",", ":")).encode()
         self.writer.write(self.channel.build(OP_MOVE_INPUT, self.input_seq, data))
-
-    def cast(self, skill_id: int, target: int = 0) -> None:
-        data = json.dumps({"skill_id": skill_id, "target": target}, separators=(",", ":")).encode()
-        frame = self.channel.build(OP_CAST_SKILL, 0, data)
-        if frame:
-            self.writer.write(frame)
 
     def ping(self) -> None:
         frame = self.channel.build(OP_PING, int(now() * 1000) & 0xFFFFFFFF)
@@ -562,41 +492,18 @@ async def smoke() -> int:
     add2 = await c2.wait("entity_add", timeout=1.0)
     check("aoi entity add both ways", add1["eid"] == c2.eid and add2["eid"] == c1.eid)
 
-    c1.cast(2)
-    prepare = await c1.wait("skill")
-    cast_ev = await c1.wait("skill")
-    effect = await c1.wait("skill")
-    cd = await c1.wait("skill")
-    check("skill lifecycle prepare/cast/effect", (prepare[0], cast_ev[0], effect[0], cd[0]) ==
-          (OP_SKILL_PREPARE, OP_SKILL_CAST, OP_SKILL_EFFECT, OP_COOLDOWN))
-
-    c1.move(K_FWD)
-    await _flush(0.05)
-    c1.cast(1)
-    reject = None
+    c1.channel.drop_once.add(OP_PING)
+    c1.ping()
+    pong = False
     t0 = now()
-    while now() - t0 < 1.0:
-        k, msg = await c1.wait("skill", timeout=1.0)
-        if k == OP_SKILL_REJECT:
-            reject = msg
-            break
-    check("moving cast rejected with move_state", reject is not None and reject.get("reason") == "move_state")
-
-    c1.channel.drop_once.add(OP_CAST_SKILL)
-    c1.move(0)
-    await _flush(1.0)
-    c1.cast(2)
-    retried = False
-    t0 = now()
-    while now() - t0 < 2.0 and not retried:
+    while now() - t0 < 2.0 and not pong:
         try:
-            k, msg = await c1.wait("skill", timeout=0.5)
+            await c1.wait("pong", timeout=0.5)
+            pong = True
         except asyncio.TimeoutError:
             continue
-        if k == OP_SKILL_EFFECT:
-            retried = True
-    check("dropped cast recovered by retransmit", retried and c1.channel.retransmits > 0,
-          f"retried={retried} retransmits={c1.channel.retransmits} unacked={len(c1.channel.unacked)}")
+    check("dropped ping recovered by retransmit", pong and c1.channel.retransmits > 0,
+          f"pong={pong} retransmits={c1.channel.retransmits} unacked={len(c1.channel.unacked)}")
 
     pos_before = c1.server_pos
     resume_seq = c1.channel.recv_ack
