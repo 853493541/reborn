@@ -1903,3 +1903,14 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Outcome: the LAST unknown of the game login is statically identified. Next: read the GR
   registration template table fully (types -> handlers/sizes) -> the exact S2C id/type for the
   respond -> implement it in the game stub -> milestone run.
+
+### 2026-10-05 — V2 P3: handshake respond FULLY RESOLVED statically
+- GR registration fn 0x140121EFB (found via lea xrefs to 0x140143970/0x140143A30):
+  registers the manager's GR/OME message table: handlers at manager+0x17AA0 (type*8),
+  sizes at manager+0x18A48 (type*4). Verified entries: type 0x33 -> 0x1401609E0 (59),
+  type 0x36 -> 0x140143A30 OnHandShakeRespond (71 bytes = 0x47), type 0x40 -> 0x140148830 (75),
+  type 0x42 -> 0x14014C320 (var), type 0x43 -> 0x140143970 OnGlobalRoomMsgNotify (dispatcher).
+- KGlobalRoomClient::ProcessMessage (0x1402FDBF0) dispatches types 0x33..0x43.
+- Server action: send GR message type 0x36 size 71 with the decoded layout
+  (u16 size@+7, u16 type@+9, dwords@+0xB/+0xF/+0x13, ServerName 32B@+0x17,
+  ReconnectTimeout@+0x37 -> manager+0xE404, flags@+0x3B/+0x3F/+0x43).
