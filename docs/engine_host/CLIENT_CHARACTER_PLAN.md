@@ -68,6 +68,36 @@ then ported to the sandbox app. MovieEditor is a reference/visual resource only.
 1. Move the proven host sequence into `ability_sandbox`/`asset_sandbox` (client-engine
    build) with the feature title `sandbox-<slug>` and its own memory namespace.
 
+## Current gates (2026-10-04, after Phase A/B done) — drive to the first visible character
+
+Phase A (logic boot) and Phase B (`SO3Represent::Init -> 1`) are DONE; the resource
+manager (`[singleton+0x1A0+0x260]` = MapConverter via `CreateRLFile` + rep file-IO),
+the 3D-scene `vt[0x70]` bind (GBK map path), and the holder table loader
+(`rep+0x82C3C0`, 18 entries) are solved. Remaining gates, in order:
+
+- **Gate 1 — real `CreateRLScene` completes.** It now runs deep into the map load
+  (`rep+0x58D800`) and ends in a C++ throw (VEH at `VCRUNTIME140+0x17B0`). Probe:
+  log the exception record + the throw site (VEH `ExceptionRecord` / stack), identify
+  the missing input, load it the game's way. **Checkpoint: `real CreateRLScene` clean +
+  `GetRLScene(2)` non-null through the game's own path (3DScene attached).**
+- **Gate 2 — char chain on the real scene.** `0x58CE20` (scene -> `0x924B(sceneId)` ->
+  `[world+0xF29E8]` -> `0x1B9D7` -> `[x+0x20]+0x70`). Currently faults on the manual
+  scene. **Checkpoint: the chain returns a non-null world/char on the real scene.**
+- **Gate 3 — local player exists.** `[world+0xF29E8]` is 0 (the game's logic world
+  creates the player). Find the logic-side creation (CreatePlayer/AddUnit in the logic
+  module; `LuaCreateHangPet` 0x5BE120 needs a `pCharacter`). **Checkpoint:
+  `[world+0xF29E8] != 0` and the player unit is in the scene.**
+- **Gate 4 — character visible + proof.** Attach the model (RL loader/actor path),
+  ensure the RL scene renders in the view, capture screenshot + `image_stats.py`
+  region fingerprint into `proof/`. **Checkpoint: the f1 character is on screen
+  (numeric proof + image).**
+- **Gate 5 — port to the sandbox app** (`Skill.exe`, `sandbox-<slug>` title, own
+  memory namespace).
+
+Working agreement: drive to the next checkpoint autonomously and report only at
+checkpoints (or a hard block with the exact missing evidence); no per-blocker reports.
+Each gate may expose 1-2 sub-blockers; the count above is the honest known minimum.
+
 ## Evidence
 - `docs/EXPERIENCES.md` 2026-10-04 entries; `host_char_rl*.out`, `host_f1keep*.out`,
   `host_so3world*.out`, `rl_sowinit.txt` (Init_ForEditor), `rl_initbody.txt` (Param).
