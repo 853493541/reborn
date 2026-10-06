@@ -2077,3 +2077,21 @@ solved it, and what is still open. **Newest at the bottom.**
   stubbing them would mean inventing data, so they stay partial.
 - `replay_server.lua` shim re-spliced from the harness (UI proxies + engine stubs sections) so the
   live interaction path shares every rule; server smoke: TeamBuilding READY handlers=19.
+
+### 2026-10-05 ? UI ? engine base data layer from module_info.xml (113 -> 135 OK, 143 scripted windows)
+- The 9 data-blocked windows needed the engine's own UI data, not stubs. Found the manifest:
+  `ui/module_info.xml` (PakV4) lists 1,016 UI modules; `loginscript` (load=true) carries
+  `ui/Script/common/table_defs.lua` (g_tTableFile, 847 tables), `ui/Script/table.lua`
+  (g_tTable + Table_* accessors), `ui/Script/video_base.lua` (VideoBase); the `string` module
+  carries the real `ui/String/string.lua` (g_tStrings). Extracted the 122 load=true lib/data files
+  to the git-ignored `ui-process-app/assets/ui/` + `ui/engine_base.txt` manifest.
+- Harness loads them before the window script with `module()` overridden to `setfenv(2, _G)` (so
+  data globals stay global; the engine's ExportExternalLib net effect). `RC_ENGINE_BASE_DEBUG=1`
+  prints loaded/failed + pre-entry globals. Side benefit: the extraction supplied 21 previously
+  missing window scripts -> **143 scripted windows** (was 122).
+- Also fixed: `_`-prefixed section fields (`_AutoPosInfo`) now return data proxies (the real
+  `InitFrameAutoPosInfo` from base.lua indexed the function fallback; 10 windows).
+- Batch: **135/143 OK / 8 partial, 4,690 mutations**. AccelerateBall is genuinely stale: the current
+  `video_base.lua` caps literal has 9 keys and no `aScreenSizeLimitedRate` (the module expects it) -
+  documented as a client-side inconsistency, not stubbed.
+- Ported the loader + `_` rule to `replay_server.lua` (shim re-spliced; smoke READY handlers=19).

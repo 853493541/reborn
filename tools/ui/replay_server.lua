@@ -165,6 +165,14 @@ proxyOf = function(sec)
       end
       local fn = methods[k]
       if fn then return fn end
+      if type(k) == "string" and k:match("^_") then
+        -- engine-assigned data fields (_AutoPosInfo, ...): tables, not methods;
+        -- the generic fallback returned a function and the real base libs
+        -- (InitFrameAutoPosInfo) indexed it.
+        local v = proxy(sec.name .. "." .. k)
+        rawset(t, k, v)
+        return v
+      end
       return function(self, ...)
         local args = { ... }
         record(sec, k, args)
@@ -443,6 +451,33 @@ if type(realModule) == "function" then
 end
 
 local f = assert(loadfile(scriptPath))
+-- Engine base scripts (module_info.xml load="true" data/lib modules, listed in
+-- ui/engine_base.txt): load them before the window script so its globals are the
+-- real ones (g_tTable/Table_*, g_tStrings, VideoBase). During this load module()
+-- keeps the chunk in _G so the data globals stay global.
+do
+  local src = debug.getinfo(1, "S").source
+  local dir = src:match("^@(.+)[/\\][^/\\]+$") or "."
+  local assets = dir .. "/../../ui-process-app/assets"
+  local mf = io.open(assets .. "/ui/engine_base.txt", "r")
+  if mf then
+    local savedModule = module
+    module = function(name, ...)
+      _setfenv(2, _GLOBAL)
+      return _GLOBAL
+    end
+    for line in mf:lines() do
+      line = line:gsub("^%s+", ""):gsub("%s+$", "")
+      if line ~= "" then
+        local f2 = loadfile(assets .. "/" .. line:gsub("\\", "/"))
+        if f2 then pcall(f2) end
+      end
+    end
+    mf:close()
+    module = savedModule
+  end
+end
+
 local ok, err = pcall(f)
 if not ok then
   print("READY error=" .. tostring(err))
