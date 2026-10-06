@@ -175,3 +175,19 @@ $env:RC_MAP='data\source\maps\龙门寻宝\龙门寻宝.jsonmap'; $env:RC_SPAWN=
 | BCH worldY conversion (row=Z, no flip) | HIGH | live samples 5652.2/5652 and -7119.7/-7120 (§2.5) |
 | host lacks any water system (scene-block water not loaded) | MED-HIGH | `COLLISION_SYSTEM_COMPARISON.md` row 14; `JX3_COLLISION_SYSTEM.md` G-24; zero water refs in `client/` |
 | RayIntersection assert spam and the AV share a failing path | MED | console-only asserts at all sub-zero grounded tests; 海岛 escalates |
+
+## 3. Correction + guard v2 (2026-10-06, merged tree)
+
+After the camera workstream was merged into the item1 branch, the §1 original repro
+(clamp to corner (100,100)) AV'd **deterministically (3/3)**, while this branch's own
+build alone was clean. Bisect: an item1 build with the camera merge reverted is clean;
+the corner itself is inherently fragile (it AVs with and without camera at y=1000 - the
+§2 table's `corner clean'' row does not reproduce here).
+
+**Guard v2:** the extent clamp now validates the clamped XZ (SampleGround true and
+ground > 0); an invalid target relocates to the nearest solid above-sea-level in-extent
+point via a bounded 64x8 spiral over real loader data, with a loud log. Verified: the
+original repro exits clean x2 (clamped (100,100) -> relocated (9316,9316) ground=69,
+DONE), the default 龙门 spawn is unchanged, camera_smoke ALL PASS, collision 36/36.
+Direct in-extent sub-sea-level spawns remain the §2 boundary (server-owned in play).
+

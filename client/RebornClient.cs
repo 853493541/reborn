@@ -1168,6 +1168,42 @@ internal static class RebornClient
                         px, pz, cx, cz, sampler.ExtentMinX, sampler.ExtentMaxX,
                         sampler.ExtentMinZ, sampler.ExtentMaxZ));
                     px = cx; pz = cz;
+                    // A clamped point can still land on sub-sea-level ground or a
+                    // hole, where the engine render stack AVs (2026-10-06, with the
+                    // camera workstream active; see VOID_SPAWN_CRASH_TRIAGE.md §2).
+                    // Relocate to the nearest in-extent point with solid ground
+                    // above sea level (bounded spiral over real loader data).
+                    float g;
+                    if (!sampler.SampleGround(px, pz, out g) || g <= 0f)
+                    {
+                        float[] sdx = new float[] { 1f, 0f, -1f, 0f, 1f, -1f, 1f, -1f };
+                        float[] sdz = new float[] { 0f, 1f, 0f, -1f, 1f, 1f, -1f, -1f };
+                        bool found = false;
+                        float bx = px, bz = pz, bg = 0f;
+                        for (int ring = 1; ring <= 64 && !found; ring++)
+                        {
+                            float r = ring * 1024f;
+                            for (int k = 0; k < 8 && !found; k++)
+                            {
+                                float tx = px + sdx[k] * r, tz = pz + sdz[k] * r;
+                                if (tx < loX || tx > hiX || tz < loZ || tz > hiZ) continue;
+                                float tg;
+                                if (sampler.SampleGround(tx, tz, out tg) && tg > 0f)
+                                {
+                                    bx = tx; bz = tz; bg = tg; found = true;
+                                }
+                            }
+                        }
+                        if (found)
+                        {
+                            Log(string.Format(
+                                "spawn relocated to solid ground: ({0:F0},{1:F0}) -> ({2:F0},{3:F0}) ground={4:F0}",
+                                px, pz, bx, bz, bg));
+                            px = bx; pz = bz;
+                        }
+                        else
+                            Log("spawn guard: no solid above-sea-level point found in extent; keeping clamped spawn");
+                    }
                 }
             }
             // The physics terrain loader tracks the engine's streamed terrain:
