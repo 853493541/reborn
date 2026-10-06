@@ -1,0 +1,44 @@
+001c20b0  4889542410             mov     qword ptr [rsp + 0x10], rdx
+001c20b5  48894c2408             mov     qword ptr [rsp + 8], rcx
+001c20ba  56                     push    rsi
+001c20bb  57                     push    rdi
+001c20bc  48837c242000           cmp     qword ptr [rsp + 0x20], 0
+001c20c2  7415                   je      0x1801c20d9
+001c20c4  488b442418             mov     rax, qword ptr [rsp + 0x18]
+001c20c9  488b7c2420             mov     rdi, qword ptr [rsp + 0x20]
+001c20ce  488d7024               lea     rsi, [rax + 0x24]
+001c20d2  b90c000000             mov     ecx, 0xc
+001c20d7  f3a4                   rep movsb byte ptr [rdi], byte ptr [rsi]
+001c20d9  5f                     pop     rdi
+001c20da  5e                     pop     rsi
+001c20db  c3                     ret     
+001c20dc  cc                     int3    
+001c20dd  cc                     int3    
+001c20de  cc                     int3    
+001c20df  cc                     int3    
+001c20e0  cc                     int3    
+001c20e1  cc                     int3    
+001c20e2  cc                     int3    
+001c20e3  cc                     int3    
+001c20e4  cc                     int3    
+001c20e5  cc                     int3    
+001c20e6  cc                     int3    
+001c20e7  cc                     int3    
+001c20e8  cc                     int3    
+001c20e9  cc                     int3    
+001c20ea  cc                     int3    
+001c20eb  cc                     int3    
+001c20ec  cc                     int3    
+001c20ed  cc                     int3    
+001c20ee  cc                     int3    
+001c20ef  cc                     int3    
+001c20f0  4889542410             mov     qword ptr [rsp + 0x10], rdx
+001c20f5  48894c2408             mov     qword ptr [rsp + 8], rcx
+001c20fa  56                     push    rsi
+001c20fb  57                     push    rdi
+001c20fc  48837c242000           cmp     qword ptr [rsp + 0x20], 0
+001c2102  7415                   je      0x1801c2119
+001c2104  488b442418             mov     rax, qword ptr [rsp + 0x18]
+001c2109  488b7c2420             mov     rdi, qword ptr [rsp + 0x20]
+001c210e  48                     .byte   0x48
+001c210f  8d                     .byte   0x8d

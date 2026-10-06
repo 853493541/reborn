@@ -1024,6 +1024,7 @@ internal static class RebornClient
                 camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter, camSys.UnitsPerMeter,
                 CameraOperationMode.Name(cameraSettings.OperationMode)));
         }
+        float baseViewAngle = 1f;
         try
         {
             // FOV: the editor's view-angle factor. A wider value makes the
@@ -1038,6 +1039,7 @@ internal static class RebornClient
                 Log("view angle factor test override=" + va);
             }
             scene.SetViewAngleFactor(va);
+            baseViewAngle = va;
             Log("view angle factor applied=" + va);
         }
         catch (Exception e) { Log("view angle: " + e.Message); }
@@ -1805,6 +1807,42 @@ internal static class RebornClient
                 alignAim();
                 Log("camera view preset: " + (e.KeyCode == Keys.End ? "front" : "behind"));
             }
+            else if (e.KeyCode == Keys.F5)
+            {
+                // host test key (P3): cycle the camera rows. No gameplay trigger
+                // (WW removed 2026-09-30); rows are test-reachable only.
+                string[] rows = new string[] {
+                    CameraSystem.MODE_CHARACTER, CameraSystem.MODE_SPRINT,
+                    CameraSystem.MODE_CARRIER, CameraSystem.MODE_AIR_COMBAT,
+                    CameraSystem.MODE_NPC_DIALOG, CameraSystem.MODE_GOD };
+                int ridx = 0;
+                for (int i = 0; i < rows.Length; i++) if (rows[i] == camSys.Mode) ridx = i;
+                string nextRow = rows[(ridx + 1) % rows.Length];
+                camSys.SwitchMode(nextRow, false);
+                Log("camera row -> " + nextRow + " (F5 cycle)");
+            }
+            else if (e.KeyCode == Keys.F6 || e.KeyCode == Keys.F8)
+            {
+                // host test key (P3): base FOV +/- 5 deg (factor = angle / 0.837757)
+                double d5 = 5.0 * Math.PI / 180.0;
+                double ang = baseViewAngle * VideoSettings.DefaultAngle +
+                             (e.KeyCode == Keys.F8 ? d5 : -d5);
+                if (ang < 10.0 * Math.PI / 180.0) ang = 10.0 * Math.PI / 180.0;
+                if (ang > 170.0 * Math.PI / 180.0) ang = 170.0 * Math.PI / 180.0;
+                baseViewAngle = (float)(ang / VideoSettings.DefaultAngle);
+                try { scene.SetViewAngleFactor(baseViewAngle); } catch (Exception) { }
+                Log(string.Format("camera fov base -> {0:F1} deg (factor {1:F3})",
+                    ang * 180.0 / Math.PI, baseViewAngle));
+            }
+            else if (e.KeyCode == Keys.PageUp || e.KeyCode == Keys.PageDown)
+            {
+                // host test key (P3): follow distance +/- 100 u
+                double d = camSys.Distance + (e.KeyCode == Keys.PageUp ? 100.0 : -100.0);
+                if (d < 100.0) d = 100.0;
+                if (d > 5000.0) d = 5000.0;
+                camSys.Distance = d;
+                Log(string.Format("camera distance -> {0:F0} u (PgUp/PgDn)", d));
+            }
         };
         form.KeyUp += delegate(object s, KeyEventArgs e)
         {
@@ -2012,6 +2050,7 @@ internal static class RebornClient
         double aimPitchOverride = double.NaN;   // set when the ground clamp moves the camera
         int adjYawPx = 0, adjPitchPx = 0;       // CameraMovePitch*/FollowYaw feed (RC_MOVE_PITCH)
         bool camDebug = Env("RC_CAM_DEBUG", "0") == "1";
+        bool hudLog = Env("RC_HUD_LOG", "0") == "1";   // P3: log the HUD text (test)
         // M0 knob: disable the park-below character hide so the engine's own
         // near-plane clipping can be bracketed with the clearance ladder
         bool hideNear = Env("RC_PLAYER_HIDE", "1") == "1";
@@ -2045,6 +2084,86 @@ internal static class RebornClient
         }
         bool camSetTarget = Env("RC_CAM_SET_TARGET", "0") == "1";
         bool camSnapGuard = Env("RC_CAM_SNAPGUARD", "0") == "1";
+        // Workstream B P1: .mani camera-track playback (RC_CAM_ANI=<path>[,loop]).
+        // The sampler drives camera + look-at through the normal engine set path;
+        // obstruction/shake/snapguard are bypassed for authored tracks.
+        CameraTrack camTrack = null;
+        bool camTrackActive = false;
+        long lastTrackLog = 0;
+        {
+            string camAniEnv = Env("RC_CAM_ANI", "");
+            if (camAniEnv.Length > 0)
+            {
+                bool trackLoop = false;
+                int comma = camAniEnv.LastIndexOf(',');
+                if (comma > 1)
+                {
+                    string tail = camAniEnv.Substring(comma + 1).Trim().ToLowerInvariant();
+                    if (tail == "loop") { trackLoop = true; camAniEnv = camAniEnv.Substring(0, comma); }
+                }
+                try
+                {
+                    camTrack = CameraTrack.Load(camAniEnv);
+                    float fpsOv;
+                    if (float.TryParse(Env("RC_CAM_ANI_FPS", ""), out fpsOv) && fpsOv > 0f)
+                        camTrack.Fps = (int)fpsOv;
+                    camTrack.Play(trackLoop);
+                    Log("camera track loaded: " + camTrack.Describe() + " loop=" + trackLoop);
+                }
+                catch (Exception e)
+                {
+                    Log("camera track load failed: " + e.Message);
+                    camTrack = null;
+                }
+            }
+        }
+        // Workstream B P2: skill-move camera FOV (skill_move_camera.txt, GB18030
+        // columns decoded 2026-10-06: value <30 = FOV increase in radians,
+        // >=30 = fixed FOV in degrees). The FOV ramp is LINEAR (provisional -
+        // the client's curve is still open, HOST_DEVIATIONS); post-FX fields
+        // are logged only (no post pipeline in the host).
+        SkillMoveCamera.LoadEmbedded(Log);
+        string smcTable = Env("RC_SKILL_MOVE_TABLE", "");
+        if (smcTable.Length > 0) SkillMoveCamera.LoadFile(smcTable, Log);
+        SkillMoveCamera.Effect skillMoveFx = null;
+        SkillMoveCamera.Row skillMoveRow = null;
+        double skillMoveFireMs = -1.0;
+        {
+            string smc = Env("RC_SKILL_MOVE_CAM", "");
+            if (smc.Length > 0)
+            {
+                string[] parts = smc.Split(',');
+                int sid;
+                if (int.TryParse(parts[0].Trim(), out sid))
+                {
+                    skillMoveRow = SkillMoveCamera.Get(sid);
+                    if (skillMoveRow == null)
+                    {
+                        Log("skillmove: no table row for skill " + sid + " (effect skipped)");
+                    }
+                    else
+                    {
+                        skillMoveFireMs = 1000.0;
+                        if (parts.Length > 1)
+                        {
+                            double fm;
+                            if (double.TryParse(parts[1].Trim(), out fm)) skillMoveFireMs = fm;
+                        }
+                        skillMoveFx = new SkillMoveCamera.Effect();
+                        Log(string.Format("skillmove armed skill={0} fire={1:F0}ms enter={2:F0} exit={3:F0} dur={4:F0} fov={5} fx={6} edge={7} sat={8}",
+                            sid, skillMoveFireMs, skillMoveRow.EnterMs, skillMoveRow.ExitMs,
+                            skillMoveRow.DurationMs,
+                            skillMoveRow.FixedFov
+                                ? skillMoveRow.FovValue.ToString("F0") + "deg"
+                                : skillMoveRow.FovValue.ToString("F2") + "rad+",
+                            skillMoveRow.ScreenFx ? 1 : 0, skillMoveRow.Edge, skillMoveRow.Sat));
+                    }
+                }
+                else Log("skillmove: bad RC_SKILL_MOVE_CAM=" + smc);
+            }
+        }
+        long lastSkillMoveLog = 0;
+        int skillMoveStage = -1;   // HUD: current skill-FOV stage (0 in / 1 hold / 2 out)
         bool camPokeOnce = Env("RC_CAM_POKE_ONCE", "0") == "1";
         // legacy look-at approximation: experiment only, default OFF. The
         // engine-faithful path (m_pScene -> cam vt+0x50 pos / vt+0x58 look-at,
@@ -3297,6 +3416,9 @@ internal static class RebornClient
                 // no automatic camera-mode switching: the sprint trigger
                 // (double-tap W, WW) was removed 2026-09-30; the sprint row is
                 // reachable only through the RC_CAM_MODE test harness.
+                // P1 track playback clock (frames at 30 fps; RC_CAM_ANI_FPS overrides)
+                camTrackActive = camTrack != null && camTrack.Active;
+                if (camTrackActive) camTrack.Update(dt * 1000.0);
                 double dist = camSys.UpdateDistance(dt) * cameraSettings.EyeScale;
                 // any distance change (zoom, sprint pull-back, EyeScale)
                 // changes the aim pitch; flag a re-pin (S1)
@@ -3394,7 +3516,7 @@ internal static class RebornClient
                 string hitSrc = "";
                 bool obstDbg = Env("RC_CAM_OBSTDBG", "0") == "1";
                 if (colProf) camSw.Restart();
-                bool doCamQuery = true;
+                bool doCamQuery = !camTrackActive;
                 if (camQueryHz > 0.0)
                 {
                     camQueryAcc += dt;
@@ -3648,9 +3770,23 @@ internal static class RebornClient
                         hitDist, hitSrc, offLen, camLen));
                 }
 
-                double camX = ax2 + rSm[0];
-                double camY = ay2 + rSm[1];
-                double camZ = az2 + rSm[2];
+                double camX, camY, camZ;
+                if (camTrackActive)
+                {
+                    // authored .mani track: camera position from track A, look-at
+                    // from track B; no orbit/obstruction/shake/terrain-clamp.
+                    double tkx, tky, tkz, tax, tay, taz;
+                    camTrack.Sample(camTrack.Frame,
+                        out tkx, out tky, out tkz, out tax, out tay, out taz);
+                    ax2 = tax; ay2 = tay; az2 = taz;
+                    camX = tkx; camY = tky; camZ = tkz;
+                    aimPitchOverride = double.NaN;
+                }
+                else
+                {
+                camX = ax2 + rSm[0];
+                camY = ay2 + rSm[1];
+                camZ = az2 + rSm[2];
                 aimPitchOverride = double.NaN;
                 if (sampler != null)
                 {
@@ -3672,10 +3808,11 @@ internal static class RebornClient
                 camX += camShake.Offset[0];
                 camY += camShake.Offset[1];
                 camZ += camShake.Offset[2];
+                }
                 // final-camera wall gate (T1.5): the camera->anchor segment must
                 // be clear; if any wall sits between, retract along that line so
                 // the camera can never sit on the far side of geometry
-                if (wallGate && engineRay.Available)
+                if (!camTrackActive && wallGate && engineRay.Available)
                 {
                     // same camera gate as the probes
                     float g1 = col != null ? col.Raycast((float)camX, (float)camY, (float)camZ,
@@ -3801,7 +3938,12 @@ internal static class RebornClient
                         Log("camset native failed rc=" + brc + ", falling back");
                     }
                 }
-                if (!usedNativeCam)
+                if (!usedNativeCam && camTrackActive)
+                {
+                    // authored track: one exact managed set, no snap guard
+                    scene.SetCameraPos((float)camX, (float)camY, (float)camZ, false);
+                }
+                else if (!usedNativeCam)
                 {
                     // B7 (experimental, opt-in RC_CAM_SNAPGUARD=1): SetCameraPos
                     // lifts the camera to the render surface at its xz when the
@@ -3855,6 +3997,54 @@ internal static class RebornClient
                     if (sd > 1.0)
                         Log(string.Format("setdbg moved={0:F1} intended=({1:F0},{2:F0},{3:F0}) actual=({4:F0},{5:F0},{6:F0})",
                             sd, camX, camY, camZ, sx, sy, sz));
+                }
+                if (camTrackActive && now - lastTrackLog >= 1000)
+                {
+                    lastTrackLog = now;
+                    float tx2 = 0f, ty2 = 0f, tz2 = 0f;
+                    try { scene.GetCameraPos(ref tx2, ref ty2, ref tz2); } catch { }
+                    Log(string.Format("camani frame={0:F1}/{1:F0} cam=({2:F0},{3:F0},{4:F0}) aim=({5:F0},{6:F0},{7:F0}) applied=({8:F0},{9:F0},{10:F0})",
+                        camTrack.Frame, camTrack.Duration, camX, camY, camZ, ax2, ay2, az2, tx2, ty2, tz2));
+                }
+                // P2 skill-move camera FOV (scripted trigger; gameplay hook waits
+                // for the skill runtime - FLWS has no table row).
+                if (skillMoveRow != null)
+                {
+                    if (!skillMoveFx.Active && skillMoveFireMs >= 0.0 && now >= skillMoveFireMs)
+                    {
+                        skillMoveFx.Start(skillMoveRow, now);
+                        Log(string.Format("skillmove start skill={0} t={1}ms enter={2:F0} exit={3:F0} dur={4:F0} fov={5} (screenFX={6} edge={7} sat={8} logged only)",
+                            skillMoveRow.SkillId, now, skillMoveRow.EnterMs, skillMoveRow.ExitMs,
+                            skillMoveRow.DurationMs,
+                            skillMoveRow.FixedFov
+                                ? skillMoveRow.FovValue.ToString("F0") + "deg"
+                                : skillMoveRow.FovValue.ToString("F2") + "rad+",
+                            skillMoveRow.ScreenFx ? 1 : 0, skillMoveRow.Edge, skillMoveRow.Sat));
+                    }
+                    if (skillMoveFx.Active)
+                    {
+                        double smPhase; int smStage;
+                        double smAngle = skillMoveFx.AngleAt(now, baseViewAngle * VideoSettings.DefaultAngle,
+                            out smPhase, out smStage);
+                        skillMoveStage = smStage;
+                        if (smAngle > 0.0)
+                        {
+                            float smFactor = (float)(smAngle / VideoSettings.DefaultAngle);
+                            try { scene.SetViewAngleFactor(smFactor); } catch (Exception) { }
+                            if (now - lastSkillMoveLog >= 500)
+                            {
+                                lastSkillMoveLog = now;
+                                Log(string.Format("skillmove stage={0} phase={1:F2} angle={2:F1}deg factor={3:F3} (linear ramp, provisional)",
+                                    smStage, smPhase, smAngle * 180.0 / Math.PI, smFactor));
+                            }
+                        }
+                        else
+                        {
+                            try { scene.SetViewAngleFactor(baseViewAngle); } catch (Exception) { }
+                            Log(string.Format("skillmove end t={0}ms -> base factor {1:F3}", now, baseViewAngle));
+                            skillMoveRow = null;   // one-shot scripted effect
+                        }
+                    }
                 }
 
                 // Character visibility near the camera: the native client fades
@@ -4240,17 +4430,32 @@ internal static class RebornClient
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
                                 : pRun;
+                double hudFovFactor = 1.0;
+                try { hudFovFactor = scene.GetViewAngleFactor(); } catch (Exception) { }
+                string camExtra = string.Format(" fov {0:F0}deg obst {1} len {2:F0}",
+                    hudFovFactor * VideoSettings.DefaultAngle * 180.0 / Math.PI,
+                    camObst.Obstructed ? "ON" : "off", dbgLen);
+                if (camTrackActive)
+                    camExtra += string.Format(" ani f{0:F0}/{1:F0}", camTrack.Frame, camTrack.Duration);
+                if (skillMoveRow != null)
+                    camExtra += string.Format(" skillmove s{0}", skillMoveStage);
                 hud.SetText(string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport | Esc info\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}{11}\nclip {12}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport | Esc info\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view\nF5 row | F6/F8 fov | PgUp/PgDn dist",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
-                    camSys.Mode, camSys.Yaw, camSys.Distance,
+                    camSys.Mode, camSys.Yaw, camSys.Distance, camExtra,
                     curClip == null ? "-" : Path.GetFileName(curClip)));
+                if (hudLog)
+                    Log("hudtext " + string.Format(
+                        "fps={0} cam={1} yaw={2:F2} dist={3:F0} fov={4:F0}deg obst={5} len={6:F0}{7}",
+                        fps, camSys.Mode, camSys.Yaw, camSys.Distance,
+                        hudFovFactor * VideoSettings.DefaultAngle * 180.0 / Math.PI,
+                        camObst.Obstructed ? "ON" : "off", dbgLen, camExtra));
                 // top-left control-mode name (always visible)
                 hud.SetModeText("CONTROL: "
                     + (cameraSettings.OperationMode == CameraOperationMode.Joystick
                         ? "JOYSTICK" : "CLASSICAL")
-                    + "   [/] switch");
+                    + "   [/] switch   cam " + camSys.Mode + " (F5)");
                 hud.PlaceOver(form);
                 hud.UpdateLayered();
             }

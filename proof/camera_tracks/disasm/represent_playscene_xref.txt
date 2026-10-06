@@ -1,0 +1,45 @@
+# JX3RepresentX64.dll xrefs for 'PlaySceneCameraAni'
+# image base 0x180000000
+
+## xref @ 0x18031ed2b -> 0x180c84298 'OnPlaySceneCameraAni'  fn start 0x18031ed00
+  0x18031ed00: mov      qword ptr [rsp + 0x18], rsi
+  0x18031ed05: push     rdi
+  0x18031ed06: sub      rsp, 0x50
+  0x18031ed0a: mov      rax, qword ptr [rip + 0xb7b3c7]
+  0x18031ed11: xor      rax, rsp
+  0x18031ed14: mov      qword ptr [rsp + 0x48], rax
+  0x18031ed19: xor      esi, esi
+  0x18031ed1b: mov      rdi, rcx
+  0x18031ed1e: mov      dword ptr [rsp + 0x44], esi
+  0x18031ed22: mov      dword ptr [rsp + 0x40], esi
+  0x18031ed26: test     rcx, rcx
+  0x18031ed29: jne      0x18031ed59
+  0x18031ed2b: lea      rax, [rip + 0x965566]  ; 'OnPlaySceneCameraAni'
+  0x18031ed32: mov      r9d, 0x83e
+  0x18031ed38: lea      r8, [rip + 0x964d49]  ; 'str'
+  0x18031ed3f: mov      qword ptr [rsp + 0x20], rax
+  0x18031ed44: lea      rdx, [rip + 0x961e05]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x18031ed4b: lea      ecx, [rdi + 3]
+  0x18031ed4e: call     qword ptr [rip + 0xd7b2ac]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x18031ed54: jmp      0x18031edf6
+  0x18031ed59: mov      qword ptr [rsp + 0x68], rbx
+  0x18031ed5e: call     0x180021d2d
+  0x18031ed63: mov      rbx, rax
+  0x18031ed66: test     rax, rax
+  0x18031ed69: jne      0x18031ed7a
+  0x18031ed6b: mov      r9d, 0x841
+  0x18031ed71: lea      r8, [rip + 0x9631c0]  ; 'pRLScene'
+  0x18031ed78: jmp      0x18031edd3
+  0x18031ed7a: lea      r9, [rsp + 0x40]
+  0x18031ed7f: mov      rcx, rdi
+  0x18031ed82: lea      r8, [rsp + 0x44]
+  0x18031ed87: lea      rdx, [rip + 0x96505a]  ; '%d%d'
+  0x18031ed8e: call     0x180010113
+  0x18031ed93: cmp      eax, 2
+  0x18031ed96: je       0x18031eda0
+  0x18031ed98: mov      r9d, 0x844
+  0x18031ed9e: jmp      0x18031edcc
+  0x18031eda0: .byte    0x44
+  0x18031eda1: .byte    0x8b
+  0x18031eda2: .byte    0x44
+

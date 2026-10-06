@@ -1,0 +1,44 @@
+0019b8d0  89542410               mov     dword ptr [rsp + 0x10], edx
+0019b8d4  48894c2408             mov     qword ptr [rsp + 8], rcx
+0019b8d9  4883ec28               sub     rsp, 0x28
+0019b8dd  488b4c2430             mov     rcx, qword ptr [rsp + 0x30]
+0019b8e2  e879d5ffff             call    0x180198e60
+0019b8e7  488b442430             mov     rax, qword ptr [rsp + 0x30]
+0019b8ec  488d0da5940700         lea     rcx, [rip + 0x794a5]
+0019b8f3  488908                 mov     qword ptr [rax], rcx
+0019b8f6  488b442430             mov     rax, qword ptr [rsp + 0x30]
+0019b8fb  488d0d56940700         lea     rcx, [rip + 0x79456]
+0019b902  48894878               mov     qword ptr [rax + 0x78], rcx
+0019b906  488b442430             mov     rax, qword ptr [rsp + 0x30]
+0019b90b  488d0d06940700         lea     rcx, [rip + 0x79406]
+0019b912  488988b0000000         mov     qword ptr [rax + 0xb0], rcx
+0019b919  488b442430             mov     rax, qword ptr [rsp + 0x30]
+0019b91e  8b4c2438               mov     ecx, dword ptr [rsp + 0x38]
+0019b922  8988bc000000           mov     dword ptr [rax + 0xbc], ecx
+0019b928  488b442430             mov     rax, qword ptr [rsp + 0x30]
+0019b92d  c780b80000000a000000   mov     dword ptr [rax + 0xb8], 0xa
+0019b937  488b442430             mov     rax, qword ptr [rsp + 0x30]
+0019b93c  4883c428               add     rsp, 0x28
+0019b940  c3                     ret     
+0019b941  cc                     int3    
+0019b942  cc                     int3    
+0019b943  cc                     int3    
+0019b944  cc                     int3    
+0019b945  cc                     int3    
+0019b946  cc                     int3    
+0019b947  cc                     int3    
+0019b948  cc                     int3    
+0019b949  cc                     int3    
+0019b94a  cc                     int3    
+0019b94b  cc                     int3    
+0019b94c  cc                     int3    
+0019b94d  cc                     int3    
+0019b94e  cc                     int3    
+0019b94f  cc                     int3    
+0019b950  48894c2408             mov     qword ptr [rsp + 8], rcx
+0019b955  4883ec48               sub     rsp, 0x48
+0019b959  c7                     .byte   0xc7
+0019b95a  442420                 and     al, 0x20
+0019b95d  05                     .byte   0x05
+0019b95e  40                     .byte   0x40
+0019b95f  00                     .byte   0x00

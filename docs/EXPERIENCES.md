@@ -4460,3 +4460,125 @@ if the cache/host frames appear.
 - Evidence: `UNIT_SCALE_AND_CHARACTER_SIZE.md` §4 (implementation paragraph);
   `client/RebornClient.cs`.
 
+
+### 2026-10-05 - Camera (B) - workstream B plan: .mani tracks + skill-FOV + minimal UI
+
+- Did: entered `#iso` as agent B (`agent/camera-tracks`, off main `8e0352a`); grounded the
+  plan on local evidence: `.mani` samples in the editor tree (`turningeye.mani`, 1008 B,
+  magic **`ACON`** + u32 `42` at +4), `player_rush_camera.txt` (4 rows -> `data/movie/
+  camera/16.mani`, `17.mani`), the 8-row UTF-8 `skill_move_camera.txt` (columns decoded),
+  and the managed API dump (only editor playback: `ExportCameraTrack` / `SetCameraTrack
+  PlaySpeedPerMS` / `SetCameraTrackPlayMethod` — no load-by-name, so host playback needs
+  our own ACON reader). Wrote `docs/camera/CAMERA_TRACKS_PLAN.md` (P0 corpus/format ->
+  P1 playback -> P2 skill FOV -> P3 minimal UI -> P4 closures) and registered it.
+- Boundaries carried (not faked): auto mode switching (WW removed by user decision +
+  absent engine states), glider/dynamic-follow, edge/saturation post FX, rush/dialog
+  gameplay triggers (scripted path only), engine `[Camera]` ini absent.
+- Evidence: `docs/camera/CAMERA_TRACKS_PLAN.md`; `docs/camera/README.md`; managed API dump
+  `%TEMP%\opencode\api_cameratracks.txt`.
+- Outcome: plan ready; P0 next. No code changed yet.
+
+### 2026-10-06 - Camera (B) - P0 done: `.mani` ACON format decoded + verified
+
+- Did: decoded the `.mani` container from the game-client binaries and verified it on the
+  shipped corpus. **ACON** = sequence of 40-byte section headers `{u32 magic, u32 classId,
+  32 zeros}` + class payload. Cameradata files = class 25 (meta) + class 10 (camera track):
+  `8x0 + {1, dur, 1, 0} + A-hdr {nA, 0, z0, y0} + (nA-1) x {x, frame, z, y} + B-hdr
+  {x0, 0, nB, 0} + nB x {x, a, b, frame}` (B's final key is a loop closure at frame 1;
+  duration = last frame + 1; keys sparse). Rush variant (`16/17.mani`) has a different key
+  grammar - deferred, not guessed.
+- How: xref/disasm of `KG3DMovieX64.dll` (validator `0x1238d0` reads 40 bytes and checks
+  magic + classId; factory `0x1ba7a0` id 10 -> ctor `0x19b8d0`, `+0xb8=10`; header writer
+  `0x123d20`; object loader `0x1bb170`), plus statistical/differential analysis of the
+  extracted samples (quat-norm scan for the rush transform stride; frame-classification
+  runs for the cameradata A/B sections). Earlier hypotheses (u32@+4 = count, 32-byte
+  records, 16-byte flat elements) were all **disproved** by exact-consumption parsing.
+- Evidence: `docs/camera/MANI_FORMAT.md`; `tools/camera/mani_probe.py` (`--selftest`
+  14/14 PASS, `--verify` 10/10 exact); `proof/camera_tracks/mani_keys.tsv`;
+  `proof/camera_tracks/disasm/*.txt` (validator, factory, case/ctor, loader, writer).
+- Outcome: P0 done; P1 (host playback of cameradata tracks) unblocked. Local only.
+
+### 2026-10-06 - Camera (B) - decode lessons (dead ends worth remembering)
+
+- `u32@+4` is the **classId**, not a record count: it is constant per class across file
+  sizes (25 for the set section, 10 for the track section, 42 for the editor turningeye
+  files). Any "count" interpretation breaks on the next sample.
+- Records are **not** a flat uniform array: cameradata class-10 payload is meta + A keys
+  (frame at +4) + B keys (frame at +12, loop key at the end). Fixed-stride assumptions
+  (32 B "records", 16 B "elements") survived several files by coincidence and then broke
+  on 21_2/23_0/30_1 - the fix was to require **exact payload consumption** and to classify
+  elements by which slot carries a monotonically increasing frame.
+- Rush `.mani` are a different grammar despite the same class id 10 - do not assume one
+  Load per id; the marker words differ (`{1, dur, 0, 1}` vs `{1, dur, 1, 0}`).
+
+### 2026-10-06 - Camera (B) - P1 done: host plays cameradata `.mani` tracks
+
+- Did: `client/CameraTrack.cs` (ACON decoder + sampler, C# 5) and `RC_CAM_ANI=<path>[,loop]`
+  (+`RC_CAM_ANI_FPS`, default 30 from `SceneCameraAni.tab` duration/enter-ms) wired into the
+  main camera block: track A -> camera position, track B -> look-at, applied through the
+  existing engine set path; obstruction/shake/terrain-clamp/snapguard bypassed for authored
+  tracks; per-second `camani` log (sampled vs applied). Rush variant rejected with a clear
+  message (deferred). Build script lists the new source; feature exe
+  `reborn_client_cameratracks.exe` (title `sandbox-cameratracks`).
+- Verified: engine run of `13_0.mani` - sampled == applied on every logged frame (e.g.
+  frame 90.1 cam=(103270,997,89308) applied=(103270,997,89308)), camera advances
+  30 -> 174 frames and holds the last pose, no crash; C# sampler matches the Python
+  reference (<=5 u at 0.1-frame rows); 4 screenshots distinct (sha256 + 4x4 RGB);
+  `camera_smoke_cameratracks` ALL PASS; collision 36/36; jx3_model 10x; gravity/loot PASS.
+- Evidence: `proof/camera_tracks/p1_run_20261006.txt`; `docs/camera/MANI_FORMAT.md` §3;
+  `docs/camera/CAMERA_TRACKS_PLAN.md` P1.
+- Outcome: P1 done. P2 (skill-move FOV) next. Local only.
+
+### 2026-10-06 - Camera (B) - P2 done: skill-move camera FOV effect
+
+- Did: `client/SkillMoveCamera.cs` parses `skill_move_camera.txt` (embedded resource +
+  `RC_SKILL_MOVE_TABLE` override) and implements the temporary-FOV state machine;
+  `RC_SKILL_MOVE_CAM=<skill>,<ms>` scripted trigger applies the angle through
+  `SetViewAngleFactor` (factor = angle / 0.837757). **Column decode corrected**: the header
+  (GB18030) says 广角增幅(弧度)/固定广角(角度≥30) = FOV, not a rotation rate - value <30 is a
+  radian FOV increase over the base, >=30 is a fixed FOV in degrees (the earlier plan row had
+  it wrong; fixed). Post-FX fields (screen FX / edge aberration / saturation) logged only.
+- Provisional: the client's FOV interpolation curve is still open research, so the ramp is
+  LINEAR - registered as `HOST_DEVIATIONS.md` B16 with re-open criteria
+  (`ApplySkillMoveCameraTag` `0x1802F8D20` / KRLCameraAni FOV writes).
+- Verified: skill 124841 run - ramp 60.0 -> 64.8 -> 69.6 -> 75.0 deg exactly matches
+  `base + 0.30 rad * phase`, effect ends at enter+exit (t=4001 ms) back to base factor
+  1.250, 3 distinct screenshot fingerprints, no crash. Gates: camera_smoke ALL PASS
+  (rebuilt after the change), collision 36/36.
+- Evidence: `proof/camera_tracks/p2_run_20261006.txt`;
+  `docs/camera/CAMERA_TRACKS_PLAN.md` P2; `docs/camera/HOST_DEVIATIONS.md` B16.
+- Outcome: P2 done. P3 (minimal camera UI) next. Local only.
+
+### 2026-10-06 - Camera (B) - P3 done: minimal camera UI (HUD line + test keys)
+
+- Did: HUD camera line extended (mode/yaw/dist/fov/obst+len + `ani f../..` + `skillmove sN`
+  when active; top line names the camera row); host test keys F5 (row cycle), F6/F8 (base
+  FOV +/-5 deg), PgUp/PgDn (distance +/-100 u); `RC_HUD_LOG=1` logs the composed HUD text so
+  the panel content is verifiable without reading images. Settings stay read-only (no
+  custom.dat write); persistence deferred to the settings-UI (registered).
+- Verified: baseline run `fov 60deg obst=ON len=1830` vs track+skillmove run
+  `fov 100deg obst=off len=1862 ani f174/175 skillmove s1` (exactly the P1 held frame and
+  the P2 held 60+0.7 rad target); layered-buffer dumps 633x237 vs 678x237 with distinct
+  hashes; no crash.
+- Evidence: `proof/camera_tracks/p3_run_20261006.txt`;
+  `docs/camera/CAMERA_TRACKS_PLAN.md` P3.
+- Outcome: P3 done. P4 (closures: CLIENT_AUDIT statuses, README, boundaries) next.
+
+### 2026-10-06 - Camera (B) - P4 done: workstream B closed (P0-P4)
+
+- Did: closed the workstream - `CLIENT_AUDIT.md` missing items 4 (track camera -> DONE via
+  P1) and 7 (skill-move FOV -> DONE, screen FX logged only) annotated with a dated status
+  note, item 8 annotated (P3 read-only HUD, custom.dat write path still deferred); plan
+  boundaries updated (rush `.mani` grammar + gameplay hooks remain open); README index and
+  tools table already carried `MANI_FORMAT.md` + `mani_probe.py` from P0.
+- Result: `.mani` camera tracks play in the host (sampled == applied, cross-checked against
+  the Python decoder), skill-move FOV effect works from the real table, HUD shows the camera
+  state, all four phases verified in-engine with numeric fingerprints.
+- Gates: camera_smoke ALL PASS (feature build `camera_smoke_cameratracks.exe`),
+  collision_selftest 36/36, jx3_model 10x, gravity PASS, loot selftest PASS,
+  `mani_probe.py --selftest` 14/14, `--verify` cameradata 10/10.
+- Commits: `c521185` (plan), `38acd0a` (P0), `0d68302`+`cb5a4f2` (P1), `bb15cfc` (P2),
+  `b21da84` (P3), this P4 docs commit. Branch `agent/camera-tracks`, local only.
+- Open (registered): rush `.mani` grammar; gameplay triggers for rush/dialog; FOV ramp curve
+  (HOST_DEVIATIONS B16); edge/saturation post FX; settings write path.
+

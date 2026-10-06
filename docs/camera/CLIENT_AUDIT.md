@@ -46,6 +46,10 @@ cinematic tracks, or the engine FOV path.
 
 ## Missing (no implementation in the client)
 
+> **Workstream B status update (2026-10-06, branch `agent/camera-tracks`):** items 4 and 7
+> (skill-move FOV part) landed - see `CAMERA_TRACKS_PLAN.md` (P0-P4), `MANI_FORMAT.md`.
+> Items 1/2/3/5/6/9 and the carrier/glider/dialog/dynamic-follow behaviours remain as below.
+
 1. **Native obstruction**: scene raycast via `FilterCamera`, the per-mesh
    `bObscatleCamera` gate, 5/9 footprint probes, nearest-hit clamping, the
    18-u clearance, the 50/100-u hysteresis and the flex return
@@ -57,8 +61,12 @@ cinematic tracks, or the engine FOV path.
    never calls it.
 3. **Camera shake** (`CameraShake`) and **follow-action look-at**
    (`SetFollowAction`) — implemented in the model, never triggered.
-4. **Cinematic/track camera** (`TrackCamera`, `KRLCameraAni` equivalent) —
-   class exists, not wired.
+4. ~~**Cinematic/track camera** (`TrackCamera`, `KRLCameraAni` equivalent) —
+   class exists, not wired.~~ **DONE 2026-10-06 (workstream B P1):**
+   `client/CameraTrack.cs` decodes cameradata `.mani` (ACON, `MANI_FORMAT.md`) and plays
+   camera position + look-at via `RC_CAM_ANI` (sampled == applied in-engine,
+   `proof/camera_tracks/p1_run_20261006.txt`). The rush `.mani` variant is deferred
+   (different key grammar); `TrackCamera` (the spring) is unrelated and stays unused.
 5. **Engine `[Camera]` settings** (`bObstructdAvert`, `fChaseRate`,
    distances/angles, `fFovy`) and the **engine caps**
    (`fMinCameraDistance`, angle limits) — not read or probed.
@@ -67,9 +75,15 @@ cinematic tracks, or the engine FOV path.
    `Camera_SetResetSpeed(3.5, 3.75)`.
 7. **Mode-specific behaviour**: carrier pitch/yaw/delta-height/`ForbidStrafe`,
    air-combat entry parameters, NPC dialog camera (post-render/eye scale),
-   glider, dynamic follow, skill-move camera (FOV/edge FX).
+   glider, dynamic follow — still absent; **skill-move camera FOV DONE 2026-10-06
+   (workstream B P2):** `client/SkillMoveCamera.cs` + `RC_SKILL_MOVE_CAM` (table-driven,
+   provisional linear ramp, `HOST_DEVIATIONS.md` B16); the edge/saturation screen FX are
+   logged only (no post pipeline in the host) and the gameplay hook waits for the skill
+   runtime (FLWS has no row).
 8. **UI settings panel** (video/camera sliders, `custom.dat` write path),
-   `bCameraSmoothing`/`bCurveCamera`/`bEyeFollow` toggles.
+   `bCameraSmoothing`/`bCurveCamera`/`bEyeFollow` toggles. *(P3 2026-10-06 added the
+   read-only HUD camera line + test keys; the write path stays deferred to the settings-UI
+   system 4 - registered.)*
 9. **God/spectate cameras** (`CameraCommon` watch modes), view presets beyond
    Home/End, unbounded pitch keys.
 

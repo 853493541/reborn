@@ -1,0 +1,456 @@
+00123900  2438                   and     al, 0x38
+00123902  e819040000             call    0x180123d20
+00123907  4883bc248800000000     cmp     qword ptr [rsp + 0x88], 0
+00123910  750a                   jne     0x18012391c
+00123912  e91d010000             jmp     0x180123a34
+00123917  e918010000             jmp     0x180123a34
+0012391c  33c0                   xor     eax, eax
+0012391e  85c0                   test    eax, eax
+00123920  75e5                   jne     0x180123907
+00123922  488b842488000000       mov     rax, qword ptr [rsp + 0x88]
+0012392a  488b00                 mov     rax, qword ptr [rax]
+0012392d  41b828000000           mov     r8d, 0x28
+00123933  488d542438             lea     rdx, [rsp + 0x38]
+00123938  488b8c2488000000       mov     rcx, qword ptr [rsp + 0x88]
+00123940  ff10                   call    qword ptr [rax]
+00123942  89442434               mov     dword ptr [rsp + 0x34], eax
+00123946  4863442434             movsxd  rax, dword ptr [rsp + 0x34]
+0012394b  4883f828               cmp     rax, 0x28
+0012394f  743e                   je      0x18012398f
+00123951  488d0558df0c00         lea     rax, [rip + 0xcdf58]
+00123958  4889442428             mov     qword ptr [rsp + 0x28], rax
+0012395d  c744242060000000       mov     dword ptr [rsp + 0x20], 0x60
+00123965  4c8d0d64df0c00         lea     r9, [rip + 0xcdf64]
+0012396c  4c8d057ddf0c00         lea     r8, [rip + 0xcdf7d]
+00123973  ba07000000             mov     edx, 7
+00123978  488d0d81c6edff         lea     rcx, [rip - 0x12397f]
+0012397f  ff15f3a60c00           call    qword ptr [rip + 0xca6f3]  ; imp:Engine_Lua5X64.dll!?KGLogPrintf_KGSL@@YAHPEAUHINSTANCE__@@W4KGLOG_PRIORITY@@PEBDZZ
+00123985  e9aa000000             jmp     0x180123a34
+0012398a  e9a5000000             jmp     0x180123a34
+0012398f  33c0                   xor     eax, eax
+00123991  85c0                   test    eax, eax
+00123993  75b1                   jne     0x180123946
+00123995  817c243841434f4e       cmp     dword ptr [rsp + 0x38], 0x4e4f4341
+0012399d  7438                   je      0x1801239d7
+0012399f  488d0582df0c00         lea     rax, [rip + 0xcdf82]
+001239a6  4889442428             mov     qword ptr [rsp + 0x28], rax
+001239ab  c744242062000000       mov     dword ptr [rsp + 0x20], 0x62
+001239b3  4c8d0d8edf0c00         lea     r9, [rip + 0xcdf8e]
+001239ba  4c8d05bfdf0c00         lea     r8, [rip + 0xcdfbf]
+001239c1  ba07000000             mov     edx, 7
+001239c6  488d0d33c6edff         lea     rcx, [rip - 0x1239cd]
+001239cd  ff15a5a60c00           call    qword ptr [rip + 0xca6a5]  ; imp:Engine_Lua5X64.dll!?KGLogPrintf_KGSL@@YAHPEAUHINSTANCE__@@W4KGLOG_PRIORITY@@PEBDZZ
+001239d3  eb5f                   jmp     0x180123a34
+001239d5  eb5d                   jmp     0x180123a34
+001239d7  33c0                   xor     eax, eax
+001239d9  85c0                   test    eax, eax
+001239db  75b8                   jne     0x180123995
+001239dd  488b842480000000       mov     rax, qword ptr [rsp + 0x80]
+001239e5  8b4050                 mov     eax, dword ptr [rax + 0x50]
+001239e8  3944243c               cmp     dword ptr [rsp + 0x3c], eax
+001239ec  7438                   je      0x180123a26
+001239ee  488d05c3df0c00         lea     rax, [rip + 0xcdfc3]
+001239f5  4889442428             mov     qword ptr [rsp + 0x28], rax
+001239fa  c744242063000000       mov     dword ptr [rsp + 0x20], 0x63
+00123a02  4c8d0dcfdf0c00         lea     r9, [rip + 0xcdfcf]
+00123a09  4c8d05e8df0c00         lea     r8, [rip + 0xcdfe8]
+00123a10  ba07000000             mov     edx, 7
+00123a15  488d0de4c5edff         lea     rcx, [rip - 0x123a1c]
+00123a1c  ff1556a60c00           call    qword ptr [rip + 0xca656]  ; imp:Engine_Lua5X64.dll!?KGLogPrintf_KGSL@@YAHPEAUHINSTANCE__@@W4KGLOG_PRIORITY@@PEBDZZ
+00123a22  eb10                   jmp     0x180123a34
+00123a24  eb0e                   jmp     0x180123a34
+00123a26  33c0                   xor     eax, eax
+00123a28  85c0                   test    eax, eax
+00123a2a  75b1                   jne     0x1801239dd
+00123a2c  c744243000000000       mov     dword ptr [rsp + 0x30], 0
+00123a34  8b442430               mov     eax, dword ptr [rsp + 0x30]
+00123a38  488b4c2460             mov     rcx, qword ptr [rsp + 0x60]
+00123a3d  4833cc                 xor     rcx, rsp
+00123a40  e80b7bfeff             call    0x18010b550
+00123a45  4883c478               add     rsp, 0x78
+00123a49  c3                     ret     
+00123a4a  cc                     int3    
+00123a4b  cc                     int3    
+00123a4c  cc                     int3    
+00123a4d  cc                     int3    
+00123a4e  cc                     int3    
+00123a4f  cc                     int3    
+00123a50  4889542410             mov     qword ptr [rsp + 0x10], rdx
+00123a55  48894c2408             mov     qword ptr [rsp + 8], rcx
+00123a5a  4883ec68               sub     rsp, 0x68
+00123a5e  488b05c3351300         mov     rax, qword ptr [rip + 0x1335c3]
+00123a65  4833c4                 xor     rax, rsp
+00123a68  4889442450             mov     qword ptr [rsp + 0x50], rax
+00123a6d  c744242005400080       mov     dword ptr [rsp + 0x20], 0x80004005
+00123a75  488d4c2428             lea     rcx, [rsp + 0x28]
+00123a7a  e8a1020000             call    0x180123d20
+00123a7f  48837c247800           cmp     qword ptr [rsp + 0x78], 0
+00123a85  7504                   jne     0x180123a8b
+00123a87  eb37                   jmp     0x180123ac0
+00123a89  eb35                   jmp     0x180123ac0
+00123a8b  33c0                   xor     eax, eax
+00123a8d  85c0                   test    eax, eax
+00123a8f  75ee                   jne     0x180123a7f
+00123a91  488b442470             mov     rax, qword ptr [rsp + 0x70]
+00123a96  8b4050                 mov     eax, dword ptr [rax + 0x50]
+00123a99  8944242c               mov     dword ptr [rsp + 0x2c], eax
+00123a9d  4c8b4c2478             mov     r9, qword ptr [rsp + 0x78]
+00123aa2  41b801000000           mov     r8d, 1
+00123aa8  ba28000000             mov     edx, 0x28
+00123aad  488d4c2428             lea     rcx, [rsp + 0x28]
+00123ab2  ff15c8a70c00           call    qword ptr [rip + 0xca7c8]  ; imp:MSVCR110.dll!fwrite
+00123ab8  c744242000000000       mov     dword ptr [rsp + 0x20], 0
+00123ac0  8b442420               mov     eax, dword ptr [rsp + 0x20]
+00123ac4  488b4c2450             mov     rcx, qword ptr [rsp + 0x50]
+00123ac9  4833cc                 xor     rcx, rsp
+00123acc  e87f7afeff             call    0x18010b550
+00123ad1  4883c468               add     rsp, 0x68
+00123ad5  c3                     ret     
+00123ad6  cc                     int3    
+00123ad7  cc                     int3    
+00123ad8  cc                     int3    
+00123ad9  cc                     int3    
+00123ada  cc                     int3    
+00123adb  cc                     int3    
+00123adc  cc                     int3    
+00123add  cc                     int3    
+00123ade  cc                     int3    
+00123adf  cc                     int3    
+00123ae0  4c89442418             mov     qword ptr [rsp + 0x18], r8
+00123ae5  4889542410             mov     qword ptr [rsp + 0x10], rdx
+00123aea  48894c2408             mov     qword ptr [rsp + 8], rcx
+00123aef  4883ec28               sub     rsp, 0x28
+00123af3  4c8b442440             mov     r8, qword ptr [rsp + 0x40]
+00123af8  488b542438             mov     rdx, qword ptr [rsp + 0x38]
+00123afd  488b4c2430             mov     rcx, qword ptr [rsp + 0x30]
+00123b02  e879ec0900             call    0x1801c2780
+00123b07  4883c428               add     rsp, 0x28
+00123b0b  c3                     ret     
+00123b0c  cc                     int3    
+00123b0d  cc                     int3    
+00123b0e  cc                     int3    
+00123b0f  cc                     int3    
+00123b10  cc                     int3    
+00123b11  cc                     int3    
+00123b12  cc                     int3    
+00123b13  cc                     int3    
+00123b14  cc                     int3    
+00123b15  cc                     int3    
+00123b16  cc                     int3    
+00123b17  cc                     int3    
+00123b18  cc                     int3    
+00123b19  cc                     int3    
+00123b1a  cc                     int3    
+00123b1b  cc                     int3    
+00123b1c  cc                     int3    
+00123b1d  cc                     int3    
+00123b1e  cc                     int3    
+00123b1f  cc                     int3    
+00123b20  48894c2408             mov     qword ptr [rsp + 8], rcx
+00123b25  4883ec28               sub     rsp, 0x28
+00123b29  488b4c2430             mov     rcx, qword ptr [rsp + 0x30]
+00123b2e  e89dec0900             call    0x1801c27d0
+00123b33  4883c428               add     rsp, 0x28
+00123b37  c3                     ret     
+00123b38  cc                     int3    
+00123b39  cc                     int3    
+00123b3a  cc                     int3    
+00123b3b  cc                     int3    
+00123b3c  cc                     int3    
+00123b3d  cc                     int3    
+00123b3e  cc                     int3    
+00123b3f  cc                     int3    
+00123b40  48894c2408             mov     qword ptr [rsp + 8], rcx
+00123b45  4883ec28               sub     rsp, 0x28
+00123b49  488b4c2430             mov     rcx, qword ptr [rsp + 0x30]
+00123b4e  e84dec0900             call    0x1801c27a0
+00123b53  4883c428               add     rsp, 0x28
+00123b57  c3                     ret     
+00123b58  cc                     int3    
+00123b59  cc                     int3    
+00123b5a  cc                     int3    
+00123b5b  cc                     int3    
+00123b5c  cc                     int3    
+00123b5d  cc                     int3    
+00123b5e  cc                     int3    
+00123b5f  cc                     int3    
+00123b60  48894c2408             mov     qword ptr [rsp + 8], rcx
+00123b65  4883ec28               sub     rsp, 0x28
+00123b69  488b442430             mov     rax, qword ptr [rsp + 0x30]
+00123b6e  c78080000000ffffffff   mov     dword ptr [rax + 0x80], 0xffffffff
+00123b78  488b4c2430             mov     rcx, qword ptr [rsp + 0x30]
+00123b7d  e87ef9ffff             call    0x180123500
+00123b82  4883c428               add     rsp, 0x28
+00123b86  c3                     ret     
+00123b87  cc                     int3    
+00123b88  cc                     int3    
+00123b89  cc                     int3    
+00123b8a  cc                     int3    
+00123b8b  cc                     int3    
+00123b8c  cc                     int3    
+00123b8d  cc                     int3    
+00123b8e  cc                     int3    
+00123b8f  cc                     int3    
+00123b90  48894c2408             mov     qword ptr [rsp + 8], rcx
+00123b95  4883ec18               sub     rsp, 0x18
+00123b99  c7042400000000         mov     dword ptr [rsp], 0
+00123ba0  c7042401000000         mov     dword ptr [rsp], 1
+00123ba7  8b0424                 mov     eax, dword ptr [rsp]
+00123baa  4883c418               add     rsp, 0x18
+00123bae  c3                     ret     
+00123baf  cc                     int3    
+00123bb0  cc                     int3    
+00123bb1  cc                     int3    
+00123bb2  cc                     int3    
+00123bb3  cc                     int3    
+00123bb4  cc                     int3    
+00123bb5  cc                     int3    
+00123bb6  cc                     int3    
+00123bb7  cc                     int3    
+00123bb8  cc                     int3    
+00123bb9  cc                     int3    
+00123bba  cc                     int3    
+00123bbb  cc                     int3    
+00123bbc  cc                     int3    
+00123bbd  cc                     int3    
+00123bbe  cc                     int3    
+00123bbf  cc                     int3    
+00123bc0  48894c2408             mov     qword ptr [rsp + 8], rcx
+00123bc5  4883ec38               sub     rsp, 0x38
+00123bc9  48c7442420feffffff     mov     qword ptr [rsp + 0x20], 0xfffffffffffffffe
+00123bd2  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123bd7  488d0d8ab40e00         lea     rcx, [rip + 0xeb48a]
+00123bde  488908                 mov     qword ptr [rax], rcx
+00123be1  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123be6  488d0d53b40e00         lea     rcx, [rip + 0xeb453]
+00123bed  48894838               mov     qword ptr [rax + 0x38], rcx
+00123bf1  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123bf6  4883c068               add     rax, 0x68
+00123bfa  488bc8                 mov     rcx, rax
+00123bfd  e89e72f1ff             call    0x18003aea0
+00123c02  90                     nop     
+00123c03  488b4c2440             mov     rcx, qword ptr [rsp + 0x40]
+00123c08  e8c3ea0900             call    0x1801c26d0
+00123c0d  4883c438               add     rsp, 0x38
+00123c11  c3                     ret     
+00123c12  cc                     int3    
+00123c13  cc                     int3    
+00123c14  cc                     int3    
+00123c15  cc                     int3    
+00123c16  cc                     int3    
+00123c17  cc                     int3    
+00123c18  cc                     int3    
+00123c19  cc                     int3    
+00123c1a  cc                     int3    
+00123c1b  cc                     int3    
+00123c1c  cc                     int3    
+00123c1d  cc                     int3    
+00123c1e  cc                     int3    
+00123c1f  cc                     int3    
+00123c20  48894c2408             mov     qword ptr [rsp + 8], rcx
+00123c25  4883ec38               sub     rsp, 0x38
+00123c29  48c7442420feffffff     mov     qword ptr [rsp + 0x20], 0xfffffffffffffffe
+00123c32  488b4c2440             mov     rcx, qword ptr [rsp + 0x40]
+00123c37  e824ea0900             call    0x1801c2660
+00123c3c  90                     nop     
+00123c3d  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123c42  4883c038               add     rax, 0x38
+00123c46  488bc8                 mov     rcx, rax
+00123c49  e8d271f1ff             call    0x18003ae20
+00123c4e  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123c53  488d0d0eb40e00         lea     rcx, [rip + 0xeb40e]
+00123c5a  488908                 mov     qword ptr [rax], rcx
+00123c5d  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123c62  488d0dd7b30e00         lea     rcx, [rip + 0xeb3d7]
+00123c69  48894838               mov     qword ptr [rax + 0x38], rcx
+00123c6d  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123c72  48c7404000000000       mov     qword ptr [rax + 0x40], 0
+00123c7a  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123c7f  c74048ffffffff         mov     dword ptr [rax + 0x48], 0xffffffff
+00123c86  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123c8b  c7404cffffffff         mov     dword ptr [rax + 0x4c], 0xffffffff
+00123c92  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123c97  c74050ffffffff         mov     dword ptr [rax + 0x50], 0xffffffff
+00123c9e  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123ca3  c7405400000000         mov     dword ptr [rax + 0x54], 0
+00123caa  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123caf  f30f1005693d0f00       movss   xmm0, dword ptr [rip + 0xf3d69]  ; =10
+00123cb7  f30f114058             movss   dword ptr [rax + 0x58], xmm0
+00123cbc  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123cc1  c7405c01000000         mov     dword ptr [rax + 0x5c], 1
+00123cc8  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123ccd  c7406001000000         mov     dword ptr [rax + 0x60], 1
+00123cd4  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123cd9  c7406401000000         mov     dword ptr [rax + 0x64], 1
+00123ce0  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123ce5  4883c068               add     rax, 0x68
+00123ce9  488bc8                 mov     rcx, rax
+00123cec  e84f71f1ff             call    0x18003ae40
+00123cf1  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123cf6  c78080000000ffffffff   mov     dword ptr [rax + 0x80], 0xffffffff
+00123d00  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123d05  48c7808800000000000000 mov     qword ptr [rax + 0x88], 0
+00123d10  488b442440             mov     rax, qword ptr [rsp + 0x40]
+00123d15  4883c438               add     rsp, 0x38
+00123d19  c3                     ret     
+00123d1a  cc                     int3    
+00123d1b  cc                     int3    
+00123d1c  cc                     int3    
+00123d1d  cc                     int3    
+00123d1e  cc                     int3    
+00123d1f  cc                     int3    
+00123d20  48894c2408             mov     qword ptr [rsp + 8], rcx
+00123d25  4883ec28               sub     rsp, 0x28
+00123d29  488b442430             mov     rax, qword ptr [rsp + 0x30]
+00123d2e  c70041434f4e           mov     dword ptr [rax], 0x4e4f4341
+00123d34  488b442430             mov     rax, qword ptr [rsp + 0x30]
+00123d39  c74004ffffffff         mov     dword ptr [rax + 4], 0xffffffff
+00123d40  488b442430             mov     rax, qword ptr [rsp + 0x30]
+00123d45  4883c008               add     rax, 8
+00123d49  41b820000000           mov     r8d, 0x20
+00123d4f  33d2                   xor     edx, edx
+00123d51  488bc8                 mov     rcx, rax
+00123d54  ff15bea40c00           call    qword ptr [rip + 0xca4be]  ; imp:MSVCR110.dll!memset
+00123d5a  488b442430             mov     rax, qword ptr [rsp + 0x30]
+00123d5f  4883c428               add     rsp, 0x28
+00123d63  c3                     ret     
+00123d64  cc                     int3    
+00123d65  cc                     int3    
+00123d66  cc                     int3    
+00123d67  cc                     int3    
+00123d68  cc                     int3    
+00123d69  cc                     int3    
+00123d6a  cc                     int3    
+00123d6b  cc                     int3    
+00123d6c  cc                     int3    
+00123d6d  cc                     int3    
+00123d6e  cc                     int3    
+00123d6f  cc                     int3    
+00123d70  4489442418             mov     dword ptr [rsp + 0x18], r8d
+00123d75  4889542410             mov     qword ptr [rsp + 0x10], rdx
+00123d7a  48894c2408             mov     qword ptr [rsp + 8], rcx
+00123d7f  4881eca8010000         sub     rsp, 0x1a8
+00123d86  488b059b321300         mov     rax, qword ptr [rip + 0x13329b]
+00123d8d  4833c4                 xor     rax, rsp
+00123d90  4889842490010000       mov     qword ptr [rsp + 0x190], rax
+00123d98  c744243405400080       mov     dword ptr [rsp + 0x34], 0x80004005
+00123da0  c744245805400080       mov     dword ptr [rsp + 0x58], 0x80004005
+00123da8  c744243000000000       mov     dword ptr [rsp + 0x30], 0
+00123db0  488b8424b0010000       mov     rax, qword ptr [rsp + 0x1b0]
+00123db8  480590000000           add     rax, 0x90
+00123dbe  488b8c24b8010000       mov     rcx, qword ptr [rsp + 0x1b8]
+00123dc6  488b09                 mov     rcx, qword ptr [rcx]
+00123dc9  48894c2448             mov     qword ptr [rsp + 0x48], rcx
+00123dce  41b804000000           mov     r8d, 4
+00123dd4  488bd0                 mov     rdx, rax
+00123dd7  488b8c24b8010000       mov     rcx, qword ptr [rsp + 0x1b8]
+00123ddf  488b442448             mov     rax, qword ptr [rsp + 0x48]
+00123de4  ff10                   call    qword ptr [rax]
+00123de6  89442430               mov     dword ptr [rsp + 0x30], eax
+00123dea  4863442430             movsxd  rax, dword ptr [rsp + 0x30]
+00123def  4883f804               cmp     rax, 4
+00123df3  743e                   je      0x180123e33
+00123df5  488d05cce20c00         lea     rax, [rip + 0xce2cc]
+00123dfc  4889442428             mov     qword ptr [rsp + 0x28], rax
+00123e01  c7442420f7010000       mov     dword ptr [rsp + 0x20], 0x1f7
+00123e09  4c8d0de0e20c00         lea     r9, [rip + 0xce2e0]
+00123e10  4c8d05f9e20c00         lea     r8, [rip + 0xce2f9]
+00123e17  ba07000000             mov     edx, 7
+00123e1c  488d0dddc1edff         lea     rcx, [rip - 0x123e23]
+00123e23  ff154fa20c00           call    qword ptr [rip + 0xca24f]  ; imp:Engine_Lua5X64.dll!?KGLogPrintf_KGSL@@YAHPEAUHINSTANCE__@@W4KGLOG_PRIORITY@@PEBDZZ
+00123e29  e962040000             jmp     0x180124290
+00123e2e  e95d040000             jmp     0x180124290
+00123e33  33c0                   xor     eax, eax
+00123e35  85c0                   test    eax, eax
+00123e37  75b1                   jne     0x180123dea
+00123e39  488b8424b0010000       mov     rax, qword ptr [rsp + 0x1b0]
+00123e41  4805bc000000           add     rax, 0xbc
+00123e47  488b8c24b8010000       mov     rcx, qword ptr [rsp + 0x1b8]
+00123e4f  488b09                 mov     rcx, qword ptr [rcx]
+00123e52  48894c2468             mov     qword ptr [rsp + 0x68], rcx
+00123e57  41b804000000           mov     r8d, 4
+00123e5d  488bd0                 mov     rdx, rax
+00123e60  488b8c24b8010000       mov     rcx, qword ptr [rsp + 0x1b8]
+00123e68  488b442468             mov     rax, qword ptr [rsp + 0x68]
+00123e6d  ff10                   call    qword ptr [rax]
+00123e6f  89442430               mov     dword ptr [rsp + 0x30], eax
+00123e73  4863442430             movsxd  rax, dword ptr [rsp + 0x30]
+00123e78  4883f804               cmp     rax, 4
+00123e7c  743e                   je      0x180123ebc
+00123e7e  488d05bbe20c00         lea     rax, [rip + 0xce2bb]
+00123e85  4889442428             mov     qword ptr [rsp + 0x28], rax
+00123e8a  c7442420fa010000       mov     dword ptr [rsp + 0x20], 0x1fa
+00123e92  4c8d0dcfe20c00         lea     r9, [rip + 0xce2cf]
+00123e99  4c8d05e8e20c00         lea     r8, [rip + 0xce2e8]
+00123ea0  ba07000000             mov     edx, 7
+00123ea5  488d0d54c1edff         lea     rcx, [rip - 0x123eac]
+00123eac  ff15c6a10c00           call    qword ptr [rip + 0xca1c6]  ; imp:Engine_Lua5X64.dll!?KGLogPrintf_KGSL@@YAHPEAUHINSTANCE__@@W4KGLOG_PRIORITY@@PEBDZZ
+00123eb2  e9d9030000             jmp     0x180124290
+00123eb7  e9d4030000             jmp     0x180124290
+00123ebc  33c0                   xor     eax, eax
+00123ebe  85c0                   test    eax, eax
+00123ec0  75b1                   jne     0x180123e73
+00123ec2  488b8424b0010000       mov     rax, qword ptr [rsp + 0x1b0]
+00123eca  4805c0000000           add     rax, 0xc0
+00123ed0  488b8c24b8010000       mov     rcx, qword ptr [rsp + 0x1b8]
+00123ed8  488b09                 mov     rcx, qword ptr [rcx]
+00123edb  48894c2438             mov     qword ptr [rsp + 0x38], rcx
+00123ee0  41b804000000           mov     r8d, 4
+00123ee6  488bd0                 mov     rdx, rax
+00123ee9  488b8c24b8010000       mov     rcx, qword ptr [rsp + 0x1b8]
+00123ef1  488b442438             mov     rax, qword ptr [rsp + 0x38]
+00123ef6  ff10                   call    qword ptr [rax]
+00123ef8  89442430               mov     dword ptr [rsp + 0x30], eax
+00123efc  4863442430             movsxd  rax, dword ptr [rsp + 0x30]
+00123f01  4883f804               cmp     rax, 4
+00123f05  743e                   je      0x180123f45
+00123f07  488d05aae20c00         lea     rax, [rip + 0xce2aa]
+00123f0e  4889442428             mov     qword ptr [rsp + 0x28], rax
+00123f13  c7442420fd010000       mov     dword ptr [rsp + 0x20], 0x1fd
+00123f1b  4c8d0dbee20c00         lea     r9, [rip + 0xce2be]
+00123f22  4c8d05d7e20c00         lea     r8, [rip + 0xce2d7]
+00123f29  ba07000000             mov     edx, 7
+00123f2e  488d0dcbc0edff         lea     rcx, [rip - 0x123f35]
+00123f35  ff153da10c00           call    qword ptr [rip + 0xca13d]  ; imp:Engine_Lua5X64.dll!?KGLogPrintf_KGSL@@YAHPEAUHINSTANCE__@@W4KGLOG_PRIORITY@@PEBDZZ
+00123f3b  e950030000             jmp     0x180124290
+00123f40  e94b030000             jmp     0x180124290
+00123f45  33c0                   xor     eax, eax
+00123f47  85c0                   test    eax, eax
+00123f49  75b1                   jne     0x180123efc
+00123f4b  488b8424b0010000       mov     rax, qword ptr [rsp + 0x1b0]
+00123f53  4805b8000000           add     rax, 0xb8
+00123f59  488b8c24b8010000       mov     rcx, qword ptr [rsp + 0x1b8]
+00123f61  488b09                 mov     rcx, qword ptr [rcx]
+00123f64  48894c2478             mov     qword ptr [rsp + 0x78], rcx
+00123f69  41b804000000           mov     r8d, 4
+00123f6f  488bd0                 mov     rdx, rax
+00123f72  488b8c24b8010000       mov     rcx, qword ptr [rsp + 0x1b8]
+00123f7a  488b442478             mov     rax, qword ptr [rsp + 0x78]
+00123f7f  ff10                   call    qword ptr [rax]
+00123f81  89442430               mov     dword ptr [rsp + 0x30], eax
+00123f85  4863442430             movsxd  rax, dword ptr [rsp + 0x30]
+00123f8a  4883f804               cmp     rax, 4
+00123f8e  743e                   je      0x180123fce
+00123f90  488d0599e20c00         lea     rax, [rip + 0xce299]
+00123f97  4889442428             mov     qword ptr [rsp + 0x28], rax
+00123f9c  c744242000020000       mov     dword ptr [rsp + 0x20], 0x200
+00123fa4  4c8d0dade20c00         lea     r9, [rip + 0xce2ad]
+00123fab  4c8d05c6e20c00         lea     r8, [rip + 0xce2c6]
+00123fb2  ba07000000             mov     edx, 7
+00123fb7  488d0d42c0edff         lea     rcx, [rip - 0x123fbe]
+00123fbe  ff15b4a00c00           call    qword ptr [rip + 0xca0b4]  ; imp:Engine_Lua5X64.dll!?KGLogPrintf_KGSL@@YAHPEAUHINSTANCE__@@W4KGLOG_PRIORITY@@PEBDZZ
+00123fc4  e9c7020000             jmp     0x180124290
+00123fc9  e9c2020000             jmp     0x180124290
+00123fce  33c0                   xor     eax, eax
+00123fd0  85c0                   test    eax, eax
+00123fd2  75b1                   jne     0x180123f85
+00123fd4  488b8424b0010000       mov     rax, qword ptr [rsp + 0x1b0]
+00123fdc  4805c4000000           add     rax, 0xc4
+00123fe2  488b8c24b8010000       mov     rcx, qword ptr [rsp + 0x1b8]
+00123fea  488b09                 mov     rcx, qword ptr [rcx]
+00123fed  48894c2440             mov     qword ptr [rsp + 0x40], rcx
+00123ff2  41b804000000           mov     r8d, 4
+00123ff8  488bd0                 mov     rdx, rax
+00123ffb  48                     .byte   0x48
+00123ffc  8b                     .byte   0x8b
+00123ffd  8c24b8                 mov     word ptr [rax + rdi*4], fs
