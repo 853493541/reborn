@@ -132,11 +132,12 @@ def handle(conn, addr):
                     sync_step = 3
                     next_t = now + 0.5
                 elif sync_step == 3:
-                    conn.sendall(sess.encrypt(id_frame(7, 37, ROLE_ID)))
-                    w("[%s] SYNC step3 id=7 (map=%s region=%s pos=%s,%s,%s)"
-                      % (time.strftime("%H:%M:%S"), os.environ.get("GAME_MAP_ID", "1"),
-                         os.environ.get("GAME_MAP_REGION", "1"), os.environ.get("GAME_POS_X", "100"),
-                         os.environ.get("GAME_POS_Y", "100"), os.environ.get("GAME_POS_Z", "0")))
+                    if os.environ.get("GAME_ID7", "0") == "1":
+                        conn.sendall(sess.encrypt(id_frame(7, 37, ROLE_ID)))
+                        w("[%s] SYNC step3 id=7 (map=%s region=%s pos=%s,%s,%s)"
+                          % (time.strftime("%H:%M:%S"), os.environ.get("GAME_MAP_ID", "296"),
+                             os.environ.get("GAME_MAP_REGION", "0"), os.environ.get("GAME_POS_X", "100"),
+                             os.environ.get("GAME_POS_Y", "100"), os.environ.get("GAME_POS_Z", "0")))
                     sync_step = 4
                     next_t = now + 0.5
                 elif sync_step == 4:
@@ -145,9 +146,11 @@ def handle(conn, addr):
                     sync_step = 5
                     next_t = now + 8.0
                 elif sync_step == 5:
-                    conn.sendall(sess.encrypt(id_frame(7, 37, ROLE_ID)))
+                    if os.environ.get("GAME_ID7", "0") == "1":
+                        conn.sendall(sess.encrypt(id_frame(7, 37, ROLE_ID)))
                     conn.sendall(sess.encrypt(id_frame(10, 161, ROLE_ID)))
-                    w("[%s] SYNC keepalive id=7+id=10" % time.strftime("%H:%M:%S"))
+                    w("[%s] SYNC keepalive id=%s" % (time.strftime("%H:%M:%S"),
+                       "7+10" if os.environ.get("GAME_ID7", "0") == "1" else "10"))
                     next_t = now + 8.0
             if os.path.exists(CMD_FILE):
                 try:

@@ -2094,3 +2094,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   sceneinfo: RegionSize 512, UnitSize 100, WorldOrigin -102400,-102400, RegionTableSize 8x8;
   risettings.ini RegionCountXZ=128,128.
 - Wrapper C:\jx3tmp\run_gamestub_296.cmd sets GAME_ID4_MAP=296/GAME_MAP_ID=296 (region 0).
+
+### 2026-10-05 — V2 P3: id 7 (OnSwitchGS) is NOT part of initial entry (switch = teardown/reconnect)
+- Live with map=296: sequence id4(map=296) -> id10 -> id7 RST the connection 1 s after id 7; the
+  client then sits in the stuck state (client global reset, no reconnect). id 7 = server-switch
+  message -> the client tears down expecting a GS reconnect (not the initial entry path).
+- Also: hosts fix (admin) - infoc.xoyo.com/dumpinfo.xoyo.com -> 127.0.0.1: the earlier real-server
+  fallback happened because our port-80 list host was down; now even a down host cannot reach the
+  real list. Verified: fetch of infoc.xoyo.com returns our patched list (127.0.0.1:3724 entry).
+- Stub: id 7 now opt-in (GAME_ID7=1); default sequence id4 -> id10 -> keepalive id10.
