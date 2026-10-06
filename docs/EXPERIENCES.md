@@ -2258,3 +2258,21 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Common prerequisite across the world handlers: the entity's scene bind (player+0x60 and the
   +0x58 companion) - exactly what the id-10 guard path (0x14017BDD0) sets. So the scene-bind
   remains the gate for the whole world set, not just state 7.
+
+### 2026-10-05 — V2 P3 STATIC: local-player scene-bind chain (the +0x60 gate) traced
+- Callers of the scene setter 0x14017BDD0: the id-10 guard (0x140173D90) AND fn 0x1401780D0.
+- fn 0x1401780D0 = the LOCAL player's scene bind: looks up the local id in the registry
+  (client+0x5673D8 player map), packs the position (x/32 -> player+0x2C/0x30), stores the
+  version [client+0x6C] -> player+0x1FFE0, calls scene init 0x140381F90, then 0x14017BDD0
+  (validate position vs scene dims -> store player+0x60 = the scene).
+- Callers of 0x1401780D0: fn 0x140174970 (the registry lookup wrapper) <- called from
+  * the id-4 handler's map-change block (0x14015C851, inside 0x14015C1D0..0x14015CAD9),
+  * the id-8 OnSwitchMap handler (0x14014D0BF),
+  * fn 0x1402B19EB.
+- fn 0x1401BA8F0 also calls the bind (via 0x1401135F0's result; no direct callers - pointer).
+- The DLL state machine requires player+0x60 NON-NULL before the confirm/state 7 (null ->
+  error line 0x4637). So the bind MUST succeed first.
+- Hypothesis for the live failure: the bind ran at id-4 time BEFORE the sandbox scene existed
+  (the loading screen loads it later) and the map-change branch does not re-run for identical
+  id-4 packets. Next live test: force a map/region CHANGE after the loading screen is up (or
+  re-send id 4 with a different region) and read player+0x60 + state.
