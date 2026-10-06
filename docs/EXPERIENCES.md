@@ -1886,3 +1886,20 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   still open; remaining candidates: the core ids with correct content (roleID/key echo) or a
   non-table path. Next: disassemble the core handlers (EXE ids 2..53) for the respond
   signature (a state set + the scene load trigger).
+
+### 2026-10-05 — V2 P3 BREAKTHROUGH: handshake respond handler FOUND (global-room message)
+- Did (batch static, no live runs): traced the handshake respond to its handler by name string:
+  the '[KPlayerClient] OnHandShakeRespond ...' log is referenced by fn 0x140143A30. Its
+  dispatcher = fn 0x140143970 = KPlayerClient::OnGlobalRoomMsgNotify (log string verified):
+  checks u16 [pkt+7] == the packet size, u16 [pkt+9] - 0x33 <= 0x10 (types 0x33..0x43), then
+  the sub-dispatcher 0x1402FDBF0(this+0x1a288, type, data, len) -> handler = [this + type*8],
+  size = [this + type*4 + 0x9a8].
+- Respond packet layout (from handler 0x140143A30): +0x07 u16 size; +0x09 u16 type (0x33..0x43);
+  +0x0B/+0x0F/+0x13 dwords; +0x17 32-byte SERVER NAME (memcpy'd to global+0xa8); +0x37 dword
+  RECONNECT TIMEOUT -> [manager+0xe404]; +0x3B/+0x3F/+0x43 dwords (bRecover/Success flags).
+- Also: the respond handler + its siblings appear in a static .rdata table at 0x14098AF34/44
+  (4-byte RVAs) - the global-room handler registration template. The KGlobalRoomClient method
+  surface extracted (DoC2S* / OnS2C* - enter scene confirm, room ops, etc.).
+- Outcome: the LAST unknown of the game login is statically identified. Next: read the GR
+  registration template table fully (types -> handlers/sizes) -> the exact S2C id/type for the
+  respond -> implement it in the game stub -> milestone run.
