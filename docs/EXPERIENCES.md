@@ -2309,3 +2309,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   * id8 switch: +0x7->client+0x14, +0xB->client+0x18, +0xF/+0x13/+0x17->player+0x10/0x14/0x18,
     +0x1B->+0xAB0.
 - Tool registered in docs/netcode/README.md.
+
+### 2026-10-05 — V2 P3 STATIC: movement senders decoded (enter-game + walking expectations)
+- DoMoveExteriorRequest (fn 0x1801756F0): message id word = 0x1E8, [msg+0xB] = a word (seq),
+  [msg+0xD] = a byte (mode), payload from +0xE (filled by 0x1807417F0), send 0x1801ACDA0.
+- DoCharacterJump (fn 0x1801708A0): message = [byte][dword][byte][player+0x2FC][dword]
+  [player+0x340][player+0x10][player+0x14][player+0x18] (X/Y/Z) - the client sends its own
+  position in the move/jump messages.
+- Walking prerequisites (synthesis): scene bound (player+0x60/+0x58), state 7, the time sync
+  (S2C id 3) for movement alignment, and the server tolerating/echoing the C2S move ops
+  (0x1E8 exterior, jump ops) with S2C id 13 OnMoveCharacter for broadcasts.
