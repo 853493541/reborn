@@ -1964,3 +1964,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   preconditions) from the static disasm, then build a valid 343B payload.
 - Live env left running: serverlist :80, gateway :3724, game stub :3725 (fixed), client
   PID 9716 alive at game-entry (pings accepted).
+
+### 2026-10-05 — V2 P3: id-4 handler decoded (player lookup by [packet+7]) + runtime pointers
+- Handler 0x14015C1D0..0x14015CAD9: r15 = LookupPlayer(client_global, [rbp+7]) (call 0x140177EE0);
+  if null -> early return (no state write). The copy block at 0x14015C590+ writes packet fields
+  into r15: [0xD1]->+0xEE4, [0xCC]->+0x201E8, [0xD5]->+0xEE8, **state 4 -> [r15+0xFDC]**,
+  [0x34]->+0x10, [0x38]->+0x14, [0x3C]->+0x18, and more (bulk, straight-line).
+- Client global: [exe+0xA755B8] = client object (runtime 0x22C30932040); player container at
+  client+0x5673D8 (+0x20 = list head). Runtime read of the 2-node circular list showed IDs at
+  +0x10 not matching 1001 -> the player object is not the raw list node (need the lookup's
+  compare loop to find the ID offset / node->player indirection).
+- Injected id-4 with field=1001 (role id) - session stayed alive; state readback pending the
+  correct player object resolution.
+- Live env still up (client PID 9716, stub fixed 0x2FE auto-respond).
