@@ -9,6 +9,12 @@ Status: **Spike B PASSED (2026-09-21)** — engine host loads and renders the re
 Evidence: `proof/map_spike/map_tour_00.png` + `map_tour_07.png`, recipe in
 `engine_host_spike/SPIKE_B_MAP_NOTES.md`
 
+Status: **2026-09-30 — engine-install decision under revision.** Per user direction
+("look for answers from the game client, not MovieEditor"), the target host stack is the
+client's own 09-27 engine (`zhcn_hd\bin64`). The mixed-host experiment (client engine
+DLLs inside the MovieEditor editor shell) did **not** fix the `.Sfx` tag failure — see
+`CLIENT_STACK_PIVOT.md` for the evidence and the native client-stack probe plan.
+
 ## Goal
 
 Play real JX3 player animations and skill SFX the way MovieEditor does, by hosting
