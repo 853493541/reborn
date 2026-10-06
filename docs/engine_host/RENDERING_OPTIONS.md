@@ -199,6 +199,20 @@ Knobs kept: `RC_DAYTIME=<0..1>` (real-system + TrueSky setters, logged) and
 `RC_ENV_DIR=<dir>` (host-side environment override). Re-open when TrueSky ships in the
 editor install, a map authors nonzero dayNightCycle intensities, or a GDB timeline exists.
 
+**A2 dynamic weather (2026-10-05):** `RC_WEATHER=1` applies (`EnableDynamicWeather(1)=0`)
+and `RC_WEATHER_PARAMS` accepts 12 floats, but sweeps (all-1, all-100) are pixel-identical
+to the dry baseline (`proof/render/daynight/weather_w1.png`, `weather_w100.png`) — the
+12-float semantics remain undecoded and the effect is inert at the tested pose. Next
+probe: disasm the native consumer (`KG3DEngineDX11EX64` dynamic-weather path) + a
+rain-authored map state; assets referenced by `oldSkyWeather` (`stainForDyWeather.dds`,
+rain/snow particle set) are the likely render dependency.
+
+**A3 sky/cloud boundaries (2026-10-05, verified):** `KG3D_TrueSkyX64.dll` ships only in
+the game client (`zhcn_hd\bin64`), not in MovieEditor (install read-only) — `bShowTrueSky`
+and TrueSky-driven sky/stars stay non-functional; `volumetricCloud.json` ships in no map
+tier (0/16 probe; only `focus_face_env_params.json` in `bd/`), so the StingRay volumetric
+cloud option stays non-functional.
+
 ## 5. Open items
 
 1. Which component performs the merge into the active `config.ini` (external

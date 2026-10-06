@@ -4246,3 +4246,15 @@ if the cache/host frames appear.
   timeline (0/56 probe paths). Knobs kept: `RC_DAYTIME`, `RC_ENV_DIR`. Re-open when
   TrueSky ships in the editor install or map data authors the cycle.
 - Evidence: `docs/engine_host/RENDERING_OPTIONS.md` §4d; logs `reborn_20261005_17*`.
+
+### 2026-10-05 - Engine host - A2/A3: dynamic weather inert, sky/cloud boundaries verified
+
+- Did: swept `RC_WEATHER=1` + `RC_WEATHER_PARAMS` (all-1, all-100) - `EnableDynamicWeather(1)=0`
+  applies but both frames are pixel-identical to the dry baseline; the 12-float semantics
+  stay undecoded. Probed `KG3D_TrueSkyX64.dll` (game client only; absent from MovieEditor)
+  and `volumetricCloud.json` (0/16 map-tier hits; only `focus_face_env_params.json` ships).
+- Outcome: boundaries registered - dynamic weather needs the native consumer decode + the
+  `oldSkyWeather` particle assets at a weather-authored state; TrueSky and volumetric cloud
+  are install/asset-bound. Post-FX caps matrix at 3 poses still open (A3 remainder).
+- Evidence: `proof/render/daynight/weather_w1.png` / `weather_w100.png`;
+  `RENDERING_OPTIONS.md` §4d.
