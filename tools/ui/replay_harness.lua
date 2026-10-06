@@ -98,6 +98,11 @@ proxyOf = function(sec)
     return sec.visible
   end
   methods.GetFrame = function() return num(sec.values.Frame) end
+  -- Anchor getters return an anchor table (s/r/x/y) in the engine; the generic
+  -- Get* fallback returned 0, so `ComboPanel.tAnchor = self:GetDefaultAnchor()`
+  -- stored a number and UpdateAnchor died indexing it (six windows).
+  methods.GetDefaultAnchor = function() return proxy(sec.name .. ".GetDefaultAnchor") end
+  methods.GetFrameAnchor = function() return proxy(sec.name .. ".GetFrameAnchor") end
   methods.IsCheckBoxChecked = function() return sec.checked == true end
   methods.IsOpened = function() return true end
   methods.GetText = function() return sec.values["$Text"] or "" end
@@ -200,6 +205,17 @@ proxy = function(name)
           if k == "GetW" or k == "GetH" then return function() return 0 end end
           if k == "GetAbsPos" or k == "GetRelPos" then return function() return 0, 0 end end
           if k == "IsVisible" or k == "IsOpened" then return function() return false end end
+          -- Scalar getters (counts/ids/indices/levels/times) are used as numeric
+          -- loop bounds and comparisons; returning a proxy aborted the replay
+          -- ("'for' limit must be a number"). Size getters stay proxies: their
+          -- results feed arithmetic the bag scripts continue through (BigBagPanel
+          -- loses ~200 mutations if GetBoxSize returns 0). Other Get*/PascalCase
+          -- names keep the callable proxy (they may return tables the scripts index).
+          if k:match("^Get") and (k:match("Count$") or k:match("Num$")
+             or k:match("ID$") or k:match("Id$") or k:match("Index$") or k:match("Level$")
+             or k:match("Time$") or k:match("Frame$")) then
+            return function() return 0 end
+          end
           -- Unknown PascalCase global: some are module tables the scripts index
           -- (Craft.Foo, BattleField.Bar) and some are functions (Craft.Foo()).
           -- A callable proxy serves both; a plain function aborted the scripts

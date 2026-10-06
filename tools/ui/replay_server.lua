@@ -98,6 +98,11 @@ proxyOf = function(sec)
     return sec.visible
   end
   methods.GetFrame = function() return num(sec.values.Frame) end
+  -- Anchor getters return an anchor table (s/r/x/y) in the engine; the generic
+  -- Get* fallback returned 0, so `X.tAnchor = self:GetDefaultAnchor()` stored a
+  -- number and UpdateAnchor died indexing it.
+  methods.GetDefaultAnchor = function() return proxy(sec.name .. ".GetDefaultAnchor") end
+  methods.GetFrameAnchor = function() return proxy(sec.name .. ".GetFrameAnchor") end
   methods.IsCheckBoxChecked = function() return sec.checked == true end
   methods.IsOpened = function() return true end
   methods.GetText = function() return sec.values["$Text"] or "" end
@@ -199,6 +204,14 @@ proxy = function(name)
           if k == "GetW" or k == "GetH" then return function() return 0 end end
           if k == "GetAbsPos" or k == "GetRelPos" then return function() return 0, 0 end end
           if k == "IsVisible" or k == "IsOpened" then return function() return false end end
+          -- Scalar getters used as numeric loop bounds/compares return 0; Size
+          -- getters stay proxies (bag arithmetic depends on them). Other
+          -- Get*/PascalCase names keep the callable proxy.
+          if k:match("^Get") and (k:match("Count$") or k:match("Num$")
+             or k:match("ID$") or k:match("Id$") or k:match("Index$") or k:match("Level$")
+             or k:match("Time$") or k:match("Frame$")) then
+            return function() return 0 end
+          end
           -- Unknown PascalCase global: some are module tables the scripts index
           -- (Craft.Foo) and some are functions (Craft.Foo()); a callable proxy
           -- serves both (a plain function aborted the first form).

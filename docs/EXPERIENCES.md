@@ -2025,3 +2025,19 @@ solved it, and what is still open. **Newest at the bottom.**
 - Remaining classes (stub-tuning): numeric loop bounds (`'for' limit must be a number`), fields
   compared numerically (mixed-type comparisons cannot use metatables in Lua 5.1), module fields
   nil (`frame`), pairs/sort on non-tables; 2 no-entry windows (Balloon/TradingSure).
+
+### 2026-10-05 ? UI ? replay harness: scalar/anchor getters (85 -> 95 OK, 3,446 mutations; bag kept at 793)
+- Disassembled the failing functions with the `luac32` listing (dumped via `string.dump` from the
+  running harness): the `'for' limit` class came from scalar getters returning proxies
+  (`GetArenaPlayerCount`, `GetBoxSize`) and the `attempt to index a number` class from
+  `GetDefaultAnchor` returning 0 (the generic section `Get*` fallback) while the scripts store it
+  as an anchor table (`X.tAnchor = self:GetDefaultAnchor()`).
+- Fixes: permissive-proxy scalar getters (`Get*Count/Num/ID/Index/Level/Time/Frame`) return 0;
+  section `GetDefaultAnchor`/`GetFrameAnchor` return an anchor proxy. **`Get*Size` stays a proxy on
+  purpose**: a trial with Size -> 0 dropped BigBagPanel 793 -> 595 mutations (the bag's arithmetic
+  path), so the rule excludes Size and the bag stays at 793.
+- Batch: 85 -> **95 OK / 27 partial, 3,446 mutations** (BigBagPanel 793, no regressions). Ported the
+  same three rules to `replay_server.lua` (server smoke: ComboPanel READY handlers=5).
+- Remaining: table-typed fields compared numerically (FightingStatistic, MiniMap, MiddleMap,
+  SafePanel, SystemMenu_*, VideoSettingPanel), nil module fields (RaidPanel `frame`, PLOActionBar
+  `tAnchor`), pairs/sort/gmatch/sub on non-tables, 2 no-entry.

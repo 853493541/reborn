@@ -59,14 +59,22 @@ the runtime mutations as data the viewer consumes:
   proxy return a callable+indexable proxy instead of a plain function, because some are module tables
   the scripts index (`Craft.Foo`) and some are functions (`Craft.Foo()`); a plain function broke the
   first form.
+- **Scalar getters (2026-10-05):** permissive-proxy `Get*Count`/`*Num`/`*ID`/`*Index`/`*Level`/`*Time`/
+  `*Frame` return `0` — they feed numeric loop bounds (`for i = 1, GetArenaPlayerCount() do`), and a
+  proxy limit errors. `Get*Size` deliberately stays a proxy: `GetBoxSize` results flow through bag
+  arithmetic, and returning 0 costs BigBagPanel ~200 mutations (verified 793 vs 595).
+- **Anchor getters (2026-10-05):** section `GetDefaultAnchor`/`GetFrameAnchor` return an anchor-table
+  proxy (the engine's anchor has `s/r/x/y`); the generic `Get*`→0 fallback stored a number and
+  `UpdateAnchor` died indexing it (ComboPanel, PetPanel, PetActionBar, PuppetActionBar, EnterAreaTip,
+  ProgressBar).
 - **Batch:** `tools/ui/replay_all.py` replays every same-stem `.lua`/`.ini` pair and writes
   `ui-process-app/Data/runtime_state/<stem>.tsv` + `replay_summary.tsv`. Entry chain:
   `OnFrameCreate` → `OnLoad` → `OnCreate` → `Init` → `OnOpen`.
-  Verified 2026-10-05 (rechecked): **85/122 scripts replay OK**, 37 partial (most with recorded
-  mutations; 3,410 mutations total). Top recordings:
-  BigBagPanel 793, Player 179, TopMenu 106, MailPanel 101, SoundSettingPanel 93, MiniMap 92,
-  SocialPanel 91, MainBarPanel 89. Remaining errors are stub-tuning (data-object shapes: numeric
-  loop bounds, table fields compared numerically); the no-entry windows (Balloon/TradingSure) have
+  Verified 2026-10-05 (rechecked): **95/122 scripts replay OK**, 27 partial (most with recorded
+  mutations; 3,446 mutations total). Top recordings:
+  BigBagPanel 793, Player 178, TopMenu 105, EmotionPanel 105, MiniMap 101, MailPanel 101,
+  SoundSettingPanel 93, SocialPanel 91. Remaining errors are stub-tuning (data-object shapes: table
+  fields compared numerically, module fields nil); the no-entry windows (Balloon/TradingSure) have
   no standard init hook.
 - **Stub rules (2026-10-05 refinement):** unknown camelCase fields return permissive proxies (not 0)
   so container fields the scripts index keep working. Note: the `debug.setmetatable(0, …)` number
@@ -78,7 +86,7 @@ the runtime mutations as data the viewer consumes:
 | layer | state | evidence |
 |---|---|---|
 | A — KGUI conformance | **not started beyond the two engine fixes** | census: 14 unhandled variants (PosType 3/4/5=70, HandleType 1/2/4/5=137, FirstItemPosType 1-9=98) + approximate page-set/list/tree/scene types |
-| B — script replay | **input 85/122 full + 37 partial (3,410 mutations); viewer consumption DONE** | `replay_summary.tsv`; `LayoutPlanBuilder.ApplyRuntimeState` loads `Data/runtime_state/<stem>.tsv` and applies SetSize/SetRelPos/SetAbsPos/SetRelX/Y/SetW/H/SetFrame/SetText/SetFontScheme/SetAlpha/Show/Hide/SetVisible before the inventory overrides (root Hide ignored — the engine shows the window after init). BigBagPanel render: root 594x624, `runtime=284`, all six bag rows laid out; `--selftest` 1240/0/0 |
+| B — script replay | **input 95/122 full + 27 partial (3,446 mutations); viewer consumption DONE** | `replay_summary.tsv`; `LayoutPlanBuilder.ApplyRuntimeState` loads `Data/runtime_state/<stem>.tsv` and applies SetSize/SetRelPos/SetAbsPos/SetRelX/Y/SetW/H/SetFrame/SetText/SetFontScheme/SetAlpha/Show/Hide/SetVisible before the inventory overrides (root Hide ignored — the engine shows the window after init). BigBagPanel render: root 594x624, `runtime=284`, all six bag rows laid out; `--selftest` 1240/0/0 |
 | C — gates | **working** | `--selftest` 1240/0/0; `--status`; `--contact-sheet`; `ini_construct_census.py` |
 
 **Verdict:** the replay now drives the viewer for every window with a recorded TSV; windows without
