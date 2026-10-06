@@ -2461,3 +2461,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   needs the id-4 early-path investigation (the copy block may be skipped for unknown reasons) or
   a proper map id + data.
 - Frozen client policy: kill immediately (done repeatedly this session).
+
+### 2026-10-06 — V2: sandbox redirect was a MISREAD; our client loads the REAL 龙门寻宝; manager gate precise
+- The KG3D log dir is SHARED by all clients: the 'reborn_sandbox' loads in it belong to the OTHER
+  concurrent agent (reborn_client_cameratracks.exe built 15:54). OUR raw client loaded the REAL
+  map: 'data\source\maps\龙门寻宝\龙门寻宝.jsonmap' success (15:45/15:46/15:52 runs) - no redirect
+  exists; all MapList.tab copies have the normal 296 path; no RC_MAP/config/env holds the sandbox.
+- The bind's map manager (client+0x1280) = the LOADED map descriptors: live ids 万花(2),
+  1024_蓝天白云(3), 羊村(589), 八荒衡鉴_仙踪林(995). 龙门寻宝 (296) is NOT in it (and neither is
+  稻香村(1)) even after the map load -> the bind lookup fails -> loading-end freeze.
+- Next: use an id PRESENT in the manager for the id-4 (e.g., 2=万花) + a position inside that
+  map's loaded cells -> the bind should complete -> player+0x60 -> ConfirmClientReady -> state 7.
+  Also worth checking what distinguishes the manager's maps (flags/appointment).
+- Frozen clients killed on sight (37528 this block); session keepalive stable throughout.
