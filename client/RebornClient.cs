@@ -1878,8 +1878,29 @@ internal static class RebornClient
         // meshes. Capsule radius scaled from the old adult preset (25 at 170)
         // by the same ratio.
         float playerRadius = 17f, playerHeight = 116f;
-        float.TryParse(Env("RC_RADIUS", "17"), out playerRadius);
-        float.TryParse(Env("RC_HEIGHT", "116"), out playerHeight);
+        // Body-type capsule (registered proxy): authored heights from
+        // Represent/player/player.txt ModelHeight (cm; UNIT_SCALE doc §4)
+        // scaled by the host proportion r=0.136*H, h=0.928*H (125 -> 17/116,
+        // the M1 花萝 values). RC_BODY=f1|m1|f2|m2; explicit RC_RADIUS /
+        // RC_HEIGHT still win.
+        {
+            string body = Env("RC_BODY", "");
+            float bodyH = body == "f1" ? 125f
+                        : body == "m1" ? 125f
+                        : body == "f2" ? 173f
+                        : body == "m2" ? 185f : 0f;
+            if (bodyH > 0f)
+            {
+                playerRadius = (float)Math.Round(bodyH * 0.136f, 1);
+                playerHeight = (float)Math.Round(bodyH * 0.928f, 1);
+                Log(string.Format("capsule body={0} ModelHeight={1:F0} -> r={2:F1} h={3:F1} (player.txt proxy)",
+                    body, bodyH, playerRadius, playerHeight));
+            }
+        }
+        string radEnv = Env("RC_RADIUS", "");
+        if (radEnv.Length > 0) float.TryParse(radEnv, out playerRadius);
+        string hgtEnv = Env("RC_HEIGHT", "");
+        if (hgtEnv.Length > 0) float.TryParse(hgtEnv, out playerHeight);
         // Character step budget (host proxy for the server-authoritative step;
         // the client's own prediction has no capsule-vs-mesh blocking at all,
         // CLIENT_COLLISION_IMPROVEMENT_PLAN 8.3). 64 u = the game-side ground/landing
