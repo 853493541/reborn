@@ -4323,3 +4323,33 @@ if the cache/host frames appear.
   `skills.tab` col 57 `ScriptFile` is the authoritative pointer).
 - Next: extract `settings/represent/*` to resolve RepresentID 10208 (如意法) and
   the FLWS cast effect; then the `.Sfx` per-file re-test (Phase 3).
+
+### 2026-10-05 — v5 — sandbox client brought up to date (shared sources synced from main's client)
+
+- User concern checked in depth: `main` had **zero** commits in `ability_sandbox`/
+  `ability_picker` since `agent/skillv2-sandbox` last merged main (2026-09-30), so
+  the branch's sandbox app+data (`Skill.exe` runner, P panel, 149 processes) is the
+  newest available. The real staleness was in the sandbox's **shared code copies**
+  (`ability_sandbox/rb/*.cs`): they were old snapshots of `client/` while main's
+  client gained terrain 1.3 (region LRU cache + hole masks + telemetry),
+  capsule/structure collision (~1k lines), real per-role camera settings, video
+  settings, etc. Both directions existed (the sandbox had a capsule API the client
+  later superseded).
+- Did: replaced all 7 shared `rb` sources with main's client versions
+  (`TerrainSampler`, `FoliageCollision`, `CameraSystem`, `CameraSettings`,
+  `EngineRay`, `CameraShim`, `VideoSettings`), adapted the sandbox's own
+  `RebornClient.cs` (TerrainSampler ctor now takes `RC_TERR_CACHE`), rebuilt
+  `Skill.exe` (OK), and ran it scripted (`RC_MAP` mini sandbox map,
+  `RC_AUTORUN=15000`, default 临时飞爪): boot -> synced camera (`loaded real
+  per-role camera settings` from custom.dat, fov factor 1.2500) -> EngineRay ready
+  -> 270-300 fps frame loop with collision calls -> `DONE`.
+- Also pulled: `tools/sandbox/build_sandbox.py` (main lacked skillv2's bd/env_probe
+  + shadowparam data-gap fix); kept main's newer `run_sandbox.cmd` (chcp 65001);
+  `client/` untouched (main's newest).
+- Lesson: PowerShell `>` redirection writes **UTF-16**; use `cmd /c "git show
+  <rev>:<path> > <path>"` for raw bytes (the first sync commits stored UTF-16 blobs,
+  fixed by 4d13b06). Git treats such files as binary ("0 insertions").
+- Commits: `e1ed41b` (sandbox app inherit), `0e0a5b3`, `9a59a34`, `4d13b06`.
+- Note: a `reborn_client_stability` client (PID 3416, ~21:37) was running in its own
+  memory namespace during the sync - no conflict with the ME sandbox run
+  (`MovieEditor.memory`); the sync run completed.
