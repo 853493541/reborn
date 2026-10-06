@@ -4236,3 +4236,16 @@ if the cache/host frames appear.
 - Main stays at `2d45e16` == `origin/main`; the running canonical/sandbox
   clients are the `2cbf004` rebuild (docs-only delta since).
 - Local only: not pushed to origin.
+
+### 2026-10-05 - Engine host - B (1.10): LOD/cull per-option matrix at house + vista
+
+- Did: 26 isolated runs (13 keys x 2 poses, tier 9 base, one `RC_OPT_<KEY>` per run)
+  with 4x4 fingerprint diffs vs the tier-9 baseline. Visible levers at the vista:
+  `nShadowType=0` (8/16 cells), `fSpeedTreeCullDist=5000` (6/16),
+  `fSimpleModelCullDist=1000` (1/16, marginal). Model-LOD / node-LOD / view-angle /
+  foliage / particle keys show no visible delta at these poses (coarse grid, load-time
+  or no such geometry in view).
+- Evidence: `docs/engine_host/LOD_CULL_MATRIX.md`;
+  `proof/render/lod_vista/{base_t9,nShadowType,fSpeedTreeCullDist,fSimpleModelCullDist}.png`.
+- Outcome: partial - first matrix committed; foliage-rich pose, 8x8 grid for the LOD
+  keys and the causal tier fps ladder remain open.
