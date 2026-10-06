@@ -2436,3 +2436,14 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   is not in the manager the bind requires (explains the persistent scene=0).
 - Client watchdog: a frozen client (Responding=False) is now killed immediately (PID 26400 was
   killed this block).
+
+### 2026-10-06 — V2 HAZARD FIX 2: cached serverlist overwritten all-local (fallback leak closed)
+- Second real-server leak: the services were down when the client launched; the client could not
+  fetch the new .crc -> fell back to the OLD CACHED list (zhcn.hd.2909632076.tab = the earlier
+  single-patched list with REAL IPs for every server except 乾坤一掷) -> the last-played real
+  server connected.
+- Fix: the cache file is now overwritten with the patched-ALL list (267 entries, 0 non-local) via
+  serverlist_host.build_body - so even a host outage falls back to all-local.
+- Process rule reinforced: ALWAYS verify ports 80/3724/3725 are listening BEFORE launching the
+  client; a down serverlist host is the real-server leak vector.
+- Client killed immediately on the user's report.
