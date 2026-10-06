@@ -1952,3 +1952,15 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Cipher alignment proof: client receive-state 0x4B107CDF = exactly STATE0 advanced by two
   decrypted packets (cmd 40B + respond 71B); client kept pinging (proto 6) throughout.
 - Stub fixed: RESPOND_ID = 0x2FE (tools/netcode/game_server_stub.py).
+
+### 2026-10-05 — V2 P3: post-handshake live session stable; id-4 payload needs real fields
+- Live: role_enter triggered a fresh game connection; the fixed stub auto-answered id=0x2FE
+  twice (fresh + resume handshakes); mgr+0xE404=30 both times; client pinged steadily
+  (our packets reset its 12 s dead-timeout; session stays alive while we inject).
+- id 4 (OnSyncPlayerBaseInfo, 343B frame) with an all-zero payload did NOT set
+  mgr+0xFDC (enter-state stayed 0). Handler 0x14015C1D0 reads packet+0xD6 and has an
+  early-exit path at 0x14015CA96 -> it validates fields; zeros are rejected.
+- Next: decode the full id-4 handler (required fields + the [player+0xFDC]=4 write
+  preconditions) from the static disasm, then build a valid 343B payload.
+- Live env left running: serverlist :80, gateway :3724, game stub :3725 (fixed), client
+  PID 9716 alive at game-entry (pings accepted).
