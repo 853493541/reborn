@@ -2138,3 +2138,14 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Next: trace 0x1400E11F0's caller chain / the message that binds the engine scene into the game
   scene registry (candidates to test live: id 8 OnSwitchMap, id 5, scene-begin). The loading
   screen is waiting on that bind.
+
+### 2026-10-05 — V2 P3: scene registry decoded - sandbox registers as (1,0); all checks pass but guard silent
+- The game scene registry (client+0x5673D8, map at +8, nodes key@+0x20, value@+0x28) has ONE
+  entry: key (1,0) - the sandbox map 龙门寻宝_s registers as MAP ID 1 (dims 32..64 per run), with
+  4 loaded grid cells (0,0),(1,0),(0,1),(1,1) at scene+0x7A8. So id4 must carry map=1/region=0.
+- Live with map=1: client+0x14=1, player inserted, state=4, pos=100,100,0; the id-10 handler's
+  version check passes ([client+0x6C]=3 < [cell+0x3C]=16); scene dims and the (0,0) cell are
+  valid - yet player+0x60 stays null and state stays 4. The guard (0x140173D90) or an
+  intermediate step still fails; its call-site args (0x14015A807: rcx=client, rdx=player,
+  r8=[rbp-0x61] scene, r9=A, stack B/C from the +0x4B parse) are the next instrumentation target.
+- Tried id10 pack qword = 0x6400064 (A=100,B=100) live - no change.
