@@ -97,10 +97,12 @@ static void __fastcall movieNameFix(void* movie, void* nameBuf)
         {
             // The field is the shadow-scene MAP FILENAME (the adapter context does
             // strrchr(name,'.') then strcpy_s(ext, ".map")); it is at most 8 bytes
-            // (the next member lives at +8). Short name with an extension so the
-            // context proceeds with its shadow creation + object write-back.
-            strcpy((char*)nameBuf, "a.map");
-            logf("[host] movieNameFix: shadow scene name set ('a.map')");
+            // (the next member lives at +8). The engine's canonicalization
+            // (eng+0x9AD3A0) FAILS for a name with no directory part (the
+            // sprintf("%s%s", drive, dir) returns 0 for ""), so use a short path
+            // with a directory: "a\a.map" (7 chars + NUL = 8).
+            strcpy((char*)nameBuf, "a\\a.map");
+            logf("[host] movieNameFix: shadow scene name set ('a\\a.map')");
         }
     }
     __except (EXCEPTION_EXECUTE_HANDLER) { }
@@ -3325,6 +3327,34 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] frame60: KGCommon fs probe fault"); }
+                        // test the engine's name canonicalization on candidate names
+                        __try
+                        {
+                            HMODULE kc2 = GetModuleHandleA("KGCommonX64.dll");
+                            if (kc2 != NULL)
+                            {
+                                void* (__cdecl *hashStr)(const char*) =
+                                    (void* (__cdecl *)(const char*))GetProcAddress(kc2,
+                                        "KG3D_ConvertToStandardHashString");
+                                if (hashStr != NULL)
+                                {
+                                    const char* names[3];
+                                    names[0] = "a.map";
+                                    names[1] = "shadow.map";
+                                    names[2] = "data\\source\\maps\\\xC1\xFA\xC3\xC5\xD1\xB0\xB1\xA6_s\\\xC1\xFA\xC3\xC5\xD1\xB0\xB1\xA6_s.jsonmap";
+                                    int ni2;
+                                    for (ni2 = 0; ni2 < 3; ni2++)
+                                    {
+                                        void* hr = hashStr(names[ni2]);
+                                        logf("[host] frame60: hash('%s') -> %p", names[ni2], hr);
+                                        if (hr != NULL)
+                                            logf("[host] frame60:   str='%s'", (char*)hr);
+                                    }
+                                }
+                            }
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: hash probe fault"); }
                         // The adapter's movie context (created by the adapter movie
                         // init, stored at adapter+0x2F5050) is what the movie
                         // engine's methods expect at [movie+0x38]; the skipped game

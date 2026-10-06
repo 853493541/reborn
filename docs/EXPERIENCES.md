@@ -2507,3 +2507,27 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   file index is not loose on disk either) - extraction from the client paks or the
   engine's full map-load flow is needed for the game-truthful completion.
 - Evidence: host_exe101-103.out.
+
+## 2026-10-04 - Gate 1: the destination scene needs a COMPILED map (magic 0x10203040); chain fully decoded
+
+- The name requirements are now decoded and satisfied step by step:
+  1. the name needs an EXTENSION (adapter ctx does strrchr('.') + strcpy_s(ext, ".map"));
+  2. the engine's canonicalization (eng+0x9AD3A0) FAILS when the name has no directory
+     part (sprintf("%s%s", drive, dir) returns 0 for empty) - so the name must carry a
+     dir (used "a\a.map", 7 chars + NUL = 8 bytes, fits the field);
+  3. with those, the engine's destination load reaches KG3D_CreateMapFromFile ->
+     _GetMapFileDataFromBuffer and requires a COMPILED map: 0x230-byte header with
+     `dwMask == 0x10203040` (line 903). The .jsonmap/SRScene are rejected.
+- The compiled-map writer exists in KG3DEngineX64.dll (the map saver at 0x35BE00;
+  magic stores at 0x35BF7B and 0x36DFFB) - the editor's SaveMap. No compiled .map
+  exists anywhere (probed 12 pak paths via PakV4SfxExtract, the game dir, MovieEditor,
+  caches) - the client must produce it at runtime.
+- Engine entry points: CreateSceneFromSource (eng+0x9ACE80, the jsonmap/editor path -
+  the host's main scene) vs CreateSceneFromDestination (eng+0x9ACBF0, the compiled-map
+  path used by the shadow/middleware scene).
+- Sandbox test state: <root>\a\ = junctions to the map's data dirs + a.jsonmap; a.map
+  currently absent (the loader then reports "Map file a\a.map not exist").
+- Next: call the engine's map saver (KG3DEngineX64+0x35BE00) with the main map object
+  (from the map manager [engine+0x2B18]) and the name "a\a.map" to produce the compiled
+  map the destination load needs - then the shadow scene loads and InitShadowScene
+  proceeds. Evidence: host_exe104-108.out.
