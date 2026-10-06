@@ -4645,3 +4645,74 @@ if the cache/host frames appear.
   `reborn_20261006_1545..1600`; `proof/movement/disasm/crash_*`.
 - Outcome: scope corrected and documented; no code change (nothing invented).
 
+
+### 2026-10-05 - Host polish - workstream D forked (#iso) + plan of record
+
+- Forked `agent/host-polish` (worktree `Desktop\reborn-iso-host-polish`) off main
+  (`8e0352a`) to close the host-polish remainder of system 1: clean shutdown, device/
+  window settings, loading screen, native option read-back, and the two 1.10 LOD pose
+  probes. Audio (1.6), weather semantics (1.9) and packaging stay parked.
+- Recon grounding the plan: `KGEngineCLR.UnInit3DEngine()` + `KGBaseCLR.UnInit/UninitLog/
+  UnInitMemory` exist (clean shutdown); `GetEngineOption(ref proxy)` +
+  `GetEngineOptionFromConfigFile(path, out proxy)` exist (read-back; proxy fields not
+  public - probe first); `HudOverlay` is created before `Init3DEngine` (overlay can show
+  during init); the `Init3DEngine` 5th argument (`./configHttpFile.ini`) is a candidate
+  for init-time resolution keys.
+- Plan of record: `docs/engine_host/HOST_POLISH_PLAN.md` (D1-D7 with repro/verification
+  and boundary policy). Base note: forked off main per team convention; the unmerged
+  `agent/item1-completion` work is re-derived where needed instead of depended on.
+- Outcome: plan committed; execution next (D1 shutdown first).
+
+### 2026-10-05 - Host polish - D1 clean shutdown: safe subset + engine-teardown boundary
+
+- Did: wired guarded shutdown at the end of the run loop (`sound.UnInit()` +
+  `baselib.UninitLog()` + `baselib.UnInitMemory()`, `RC_SHUTDOWN` selects steps) and
+  A/B'd each step with exit codes: `0`/`sound`/`log`/`mem` all exit 0;
+  `engine.UnInit3DEngine()` AVs the process after `DONE` (0xC0000005). Default is the
+  safe subset; engine uninit stays opt-in (`RC_SHUTDOWN=engine`) for reproduction.
+- Evidence: `proof/host/d1_shutdown_ab.txt`; logs
+  `reborn_20261005_213411..213628.log` (fingerprint `reborn_client_hostpolish.exe`).
+- Outcome: D1 done - clean shutdown for Wwise/log/memory; engine-teardown boundary
+  registered (re-open: recover the editor's close sequence or an engine fix).
+
+### 2026-10-05 - Host polish - D2-D5: option schema, window sizing, loading overlay, foliage clamp
+
+- D2 (option read-back, PARTIAL): `RC_OPT_PROBE`/`RC_OPT_DUMP` recover 49 public fields
+  of `KGEngineOptionProxyCLR` (schema), but the values are the **defaults**, not the
+  applied preset (tier9 `nShadowType=3` vs dump `0`) - the proxy is the panel option
+  object. Active-value read-back needs the native `GetOption`/adapter-save route
+  (boundary + next probe). Evidence: `proof/host/active_t{1,9}.ini`.
+- D3 (device/window settings, DONE): `RC_WIDTH/RC_HEIGHT` drive the render target
+  (engine screenshot 1280x720 -> 1600x900); `RC_FULLSCREEN=1` = borderless 1920x1080;
+  a **nonexistent** `RC_INIT_CFG` path still inits (`Init3DEngine=1 ms=3141`) -> the
+  `configHttpFile.ini` argument is inert in this build. Evidence:
+  `proof/host/size_{base,1600}.png`.
+- D4 (loading screen, DONE): `client/LoadingOverlay.cs` (420x84 NOACTIVATE/TOOLWINDOW)
+  with phase text; window enumeration on the shipped 24 s path: overlay present at
+  t=8 s, **gone** at t=33 s (after spawn). `RC_NOLOADING=1` disables.
+- D5 (foliage density, DONE): at the densest `.foliage` cell, density 0 removes 2/64
+  cells (8x8 fingerprint), 100 == base, 999 == 100 -> **clamp at 100 confirmed in-host**.
+  Evidence: `proof/host/foliage8/*.png`.
+- Outcome: D2-D5 executed; D2 leaves a registered boundary (values-not-authoritative).
+
+### 2026-10-05 - Host polish - D6 close-up LOD pose: model-LOD keys are effective
+
+- Did: probed the model-LOD keys at a close-up pose (teleport-in-front-of-structure demo,
+  tier 9, 8x8 fingerprints): `fNodeLodLowLimit=20` changes **27/64** cells,
+  `fModelLodRadius=100,..` 9/64, `bEnableModelLodViewAngle=0` 9/64,
+  `fNodeLodHighLimit=100` 7/64, `nMinimumModelLod=3` 6/64.
+- Correction: the earlier vista-only "0/64, inert" classification was distance/grid
+  resolution - the keys work at close range (`LOD_CULL_MATRIX.md` on the item1 branch
+  should note this at merge).
+- Evidence: `proof/host/lod_close/{base,fNodeLodLowLimit_20,fModelLodRadius_100}.png`;
+  logs `reborn_20261005_22*`.
+- Outcome: D6 done - model-LOD controls verified as effective; no boundary needed.
+
+### 2026-10-05 - Host polish - D7: HUD hitch readout
+
+- Did: added a `hitch <n>ms` line to the info panel - max unclamped frame delta since the
+  last HUD update (250 ms window), reset per update; `RC_HUD_OPEN=1` opens the panel.
+- Verify: build exit 0; camera_smoke ALL PASS; collision selftest 36/36 (both exercise
+  the 250 ms hud.SetText path); HUD-open run screenshot `proof/host/hud_hitch.png`.
+- Outcome: D7 done - workstream D (D1-D7) complete on `agent/host-polish`.
+

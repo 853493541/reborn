@@ -15,6 +15,7 @@ MovieEditor engine-hosting research and the M1 milestone docs.
 | `RENDERING_OPTIONS.md` | Rendering/LOD/weather option reference — P0 census + read chain (adapter/UI RVAs, config.ini), open items (2026-10-04) |
 | `MAP_QUALITY_TIERS.md` | Map quality tiers — what the 5 BR maps actually ship (bd+low only; 2026-10-04) |
 | `LOD_CULL_MATRIX.md` | LOD / culling per-option caps matrix (1.10) — one key per run, house+vista fingerprints (2026-10-05) |
+| `HOST_POLISH_PLAN.md` | Host UX/perf plan (workstream D) — shutdown, device/window settings, loading screen, option read-back, LOD pose probes (2026-10-05) |
 
 ## Tools
 
