@@ -50,18 +50,19 @@ Companion: `CLIENT_AUDIT.md` (missing list), `CONFIG_FILES.md`, `MODE_ANIM_STATU
    keys, duration = last frame + 1). Rush variant deferred (different key grammar, §6.4).
    Format: `MANI_FORMAT.md` (HIGH).
 
-### P1 — host `.mani` playback (~1 day)
-1. `client/CameraTrack.cs`: ACON decoder + keyframe sampler (`Sample(frame) -> pos/look`),
+### P1 — host `.mani` playback (~1 day) — **DONE 2026-10-06**
+1. `client/CameraTrack.cs`: ACON decoder + keyframe sampler (`Sample(frame) -> cam/aim`),
    cameradata grammar per `MANI_FORMAT.md` (world space, cm, Y up — resolved in P0;
    track A = position, track B = look-at target, semantics MED). Rush variant rejected with
    a clear log (deferred).
-2. Wire `RC_CAM_ANI=<vfs path>[,loop]` through the existing engine camera set path; log
-   sampled vs applied values.
-3. Triggers: rush camera (`player_rush_camera.txt`) is the data-backed gameplay trigger but
-   needs the rush/skill-move state (absent) — keep the hook point `CameraTrack.Play(id)` and
-   register the dependency; scripted trigger proves the pipeline now.
-**Verify:** play a cameradata track (e.g. `13_0`, `30_1`) with per-keyframe position logs +
-`image_stats` fingerprints; `camera_smoke` ALL PASS.
+2. `RC_CAM_ANI=<path>[,loop]` (+ `RC_CAM_ANI_FPS`, default 30) drives camera + look-at
+   through the existing engine set path; obstruction/shake/terrain-clamp/snapguard are
+   bypassed for authored tracks; per-second `camani` log records sampled vs applied.
+3. Hook point for the gameplay trigger: `CameraTrack.Play(loop)` / `Update(dt)` — the rush
+   trigger still needs the rush/skill-move state (dependency registered, §6.4).
+   **Verify:** run `13_0.mani` (log `proof/camera_tracks/p1_run_20261006.txt`): sampled ==
+   applied on every logged frame, C# sampler ≡ Python reference (≤5 u at 0.1-frame rows),
+   4 distinct screenshot fingerprints, no crash; `camera_smoke` ALL PASS; collision 36/36.
 
 ### P2 — skill-move camera FOV (~0.5 day)
 1. `client/SkillMoveCamera.cs`: parse the 8-row table; expose `TryGet(skillId)`.

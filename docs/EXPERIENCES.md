@@ -4286,3 +4286,21 @@ if the cache/host frames appear.
   elements by which slot carries a monotonically increasing frame.
 - Rush `.mani` are a different grammar despite the same class id 10 - do not assume one
   Load per id; the marker words differ (`{1, dur, 0, 1}` vs `{1, dur, 1, 0}`).
+
+### 2026-10-06 - Camera (B) - P1 done: host plays cameradata `.mani` tracks
+
+- Did: `client/CameraTrack.cs` (ACON decoder + sampler, C# 5) and `RC_CAM_ANI=<path>[,loop]`
+  (+`RC_CAM_ANI_FPS`, default 30 from `SceneCameraAni.tab` duration/enter-ms) wired into the
+  main camera block: track A -> camera position, track B -> look-at, applied through the
+  existing engine set path; obstruction/shake/terrain-clamp/snapguard bypassed for authored
+  tracks; per-second `camani` log (sampled vs applied). Rush variant rejected with a clear
+  message (deferred). Build script lists the new source; feature exe
+  `reborn_client_cameratracks.exe` (title `sandbox-cameratracks`).
+- Verified: engine run of `13_0.mani` - sampled == applied on every logged frame (e.g.
+  frame 90.1 cam=(103270,997,89308) applied=(103270,997,89308)), camera advances
+  30 -> 174 frames and holds the last pose, no crash; C# sampler matches the Python
+  reference (<=5 u at 0.1-frame rows); 4 screenshots distinct (sha256 + 4x4 RGB);
+  `camera_smoke_cameratracks` ALL PASS; collision 36/36; jx3_model 10x; gravity/loot PASS.
+- Evidence: `proof/camera_tracks/p1_run_20261006.txt`; `docs/camera/MANI_FORMAT.md` §3;
+  `docs/camera/CAMERA_TRACKS_PLAN.md` P1.
+- Outcome: P1 done. P2 (skill-move FOV) next. Local only.

@@ -32,7 +32,7 @@ Only classes **25** (camera-ani set) and **10** (camera track) appear in the shi
 class-25 payload: 8 zero bytes + { u32 1, f32 duration, u32 0, u32 1 }
 class-10 payload: 8 zero bytes
   + meta  { u32 1, f32 duration, u32 1, u32 0 }
-  + A hdr { u32 nA, u32 0, f32 z0, f32 y0 }          # implicit frame-0 key (x=0,z0,y0)
+  + A hdr { u32 nA, f32 x0, f32 z0, f32 y0 }        # implicit frame-0 key (x0,z0,y0; x0=0 in all samples)
   + (nA-1) x A-key { f32 x, u32 frame, f32 z, f32 y }
   + B hdr { f32 x0, u32 0, u32 nB, u32 0 }
   + nB x B-key { f32 x, f32 a, f32 b, u32 frame }    # last key is a loop closure at frame 1
@@ -51,7 +51,15 @@ Verification: `python tools\camera\mani_probe.py --verify <cameradata dir>` ->
 `10/10 parsed` with exact payload consumption (no trailing bytes). Key dump:
 `proof/camera_tracks/mani_keys.tsv` (13_0, 21_2, 30_1; from the temp extraction).
 
-## 3. Rush variant - NOT decoded (deferred)
+## 3. Host playback (P1, 2026-10-06)
+
+`client/CameraTrack.cs` implements this grammar (C# 5) and drives the host camera via
+`RC_CAM_ANI=<path>[,loop]` (`RC_CAM_ANI_FPS` default 30 - `SceneCameraAni.tab`
+duration/enter-ms = 30.0 fps on 4 samples). Verified run: sampled == applied on every
+logged frame, C# sampler ≡ `mani_probe.py` reference, 4 distinct screenshot fingerprints,
+no crash - `proof/camera_tracks/p1_run_20261006.txt`.
+
+## 4. Rush variant - NOT decoded (deferred)
 
 `data/movie/camera/16.mani` / `17.mani` (from `player_rush_camera.txt`) are class-10
 only; the payload meta marker is `{1, dur, 0, 1}` (swapped vs cameradata) and the key
@@ -60,7 +68,7 @@ norms == 1 at stride 40, plus `{f32 value, u32 frame}` scalar pairs - see the pr
 notes in the plan). **Not used by P1** (rush/dialog triggers need runtime state that is
 absent; registered boundary in `CAMERA_TRACKS_PLAN.md` §6).
 
-## 4. Reproduce
+## 5. Reproduce
 
 ```powershell
 # offline selftest (round-trip + negative cases)

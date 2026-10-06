@@ -1776,6 +1776,39 @@ internal static class RebornClient
         }
         bool camSetTarget = Env("RC_CAM_SET_TARGET", "0") == "1";
         bool camSnapGuard = Env("RC_CAM_SNAPGUARD", "0") == "1";
+        // Workstream B P1: .mani camera-track playback (RC_CAM_ANI=<path>[,loop]).
+        // The sampler drives camera + look-at through the normal engine set path;
+        // obstruction/shake/snapguard are bypassed for authored tracks.
+        CameraTrack camTrack = null;
+        bool camTrackActive = false;
+        long lastTrackLog = 0;
+        {
+            string camAniEnv = Env("RC_CAM_ANI", "");
+            if (camAniEnv.Length > 0)
+            {
+                bool trackLoop = false;
+                int comma = camAniEnv.LastIndexOf(',');
+                if (comma > 1)
+                {
+                    string tail = camAniEnv.Substring(comma + 1).Trim().ToLowerInvariant();
+                    if (tail == "loop") { trackLoop = true; camAniEnv = camAniEnv.Substring(0, comma); }
+                }
+                try
+                {
+                    camTrack = CameraTrack.Load(camAniEnv);
+                    float fpsOv;
+                    if (float.TryParse(Env("RC_CAM_ANI_FPS", ""), out fpsOv) && fpsOv > 0f)
+                        camTrack.Fps = (int)fpsOv;
+                    camTrack.Play(trackLoop);
+                    Log("camera track loaded: " + camTrack.Describe() + " loop=" + trackLoop);
+                }
+                catch (Exception e)
+                {
+                    Log("camera track load failed: " + e.Message);
+                    camTrack = null;
+                }
+            }
+        }
         bool camPokeOnce = Env("RC_CAM_POKE_ONCE", "0") == "1";
         // legacy look-at approximation: experiment only, default OFF. The
         // engine-faithful path (m_pScene -> cam vt+0x50 pos / vt+0x58 look-at,
@@ -3012,6 +3045,9 @@ internal static class RebornClient
                 // no automatic camera-mode switching: the sprint trigger
                 // (double-tap W, WW) was removed 2026-09-30; the sprint row is
                 // reachable only through the RC_CAM_MODE test harness.
+                // P1 track playback clock (frames at 30 fps; RC_CAM_ANI_FPS overrides)
+                camTrackActive = camTrack != null && camTrack.Active;
+                if (camTrackActive) camTrack.Update(dt * 1000.0);
                 double dist = camSys.UpdateDistance(dt) * cameraSettings.EyeScale;
                 // any distance change (zoom, sprint pull-back, EyeScale)
                 // changes the aim pitch; flag a re-pin (S1)
@@ -3109,7 +3145,7 @@ internal static class RebornClient
                 string hitSrc = "";
                 bool obstDbg = Env("RC_CAM_OBSTDBG", "0") == "1";
                 if (colProf) camSw.Restart();
-                bool doCamQuery = true;
+                bool doCamQuery = !camTrackActive;
                 if (camQueryHz > 0.0)
                 {
                     camQueryAcc += dt;
@@ -3363,9 +3399,23 @@ internal static class RebornClient
                         hitDist, hitSrc, offLen, camLen));
                 }
 
-                double camX = ax2 + rSm[0];
-                double camY = ay2 + rSm[1];
-                double camZ = az2 + rSm[2];
+                double camX, camY, camZ;
+                if (camTrackActive)
+                {
+                    // authored .mani track: camera position from track A, look-at
+                    // from track B; no orbit/obstruction/shake/terrain-clamp.
+                    double tkx, tky, tkz, tax, tay, taz;
+                    camTrack.Sample(camTrack.Frame,
+                        out tkx, out tky, out tkz, out tax, out tay, out taz);
+                    ax2 = tax; ay2 = tay; az2 = taz;
+                    camX = tkx; camY = tky; camZ = tkz;
+                    aimPitchOverride = double.NaN;
+                }
+                else
+                {
+                camX = ax2 + rSm[0];
+                camY = ay2 + rSm[1];
+                camZ = az2 + rSm[2];
                 aimPitchOverride = double.NaN;
                 if (sampler != null)
                 {
@@ -3387,10 +3437,11 @@ internal static class RebornClient
                 camX += camShake.Offset[0];
                 camY += camShake.Offset[1];
                 camZ += camShake.Offset[2];
+                }
                 // final-camera wall gate (T1.5): the camera->anchor segment must
                 // be clear; if any wall sits between, retract along that line so
                 // the camera can never sit on the far side of geometry
-                if (wallGate && engineRay.Available)
+                if (!camTrackActive && wallGate && engineRay.Available)
                 {
                     // same camera gate as the probes
                     float g1 = col != null ? col.Raycast((float)camX, (float)camY, (float)camZ,
@@ -3516,7 +3567,12 @@ internal static class RebornClient
                         Log("camset native failed rc=" + brc + ", falling back");
                     }
                 }
-                if (!usedNativeCam)
+                if (!usedNativeCam && camTrackActive)
+                {
+                    // authored track: one exact managed set, no snap guard
+                    scene.SetCameraPos((float)camX, (float)camY, (float)camZ, false);
+                }
+                else if (!usedNativeCam)
                 {
                     // B7 (experimental, opt-in RC_CAM_SNAPGUARD=1): SetCameraPos
                     // lifts the camera to the render surface at its xz when the
@@ -3570,6 +3626,14 @@ internal static class RebornClient
                     if (sd > 1.0)
                         Log(string.Format("setdbg moved={0:F1} intended=({1:F0},{2:F0},{3:F0}) actual=({4:F0},{5:F0},{6:F0})",
                             sd, camX, camY, camZ, sx, sy, sz));
+                }
+                if (camTrackActive && now - lastTrackLog >= 1000)
+                {
+                    lastTrackLog = now;
+                    float tx2 = 0f, ty2 = 0f, tz2 = 0f;
+                    try { scene.GetCameraPos(ref tx2, ref ty2, ref tz2); } catch { }
+                    Log(string.Format("camani frame={0:F1}/{1:F0} cam=({2:F0},{3:F0},{4:F0}) aim=({5:F0},{6:F0},{7:F0}) applied=({8:F0},{9:F0},{10:F0})",
+                        camTrack.Frame, camTrack.Duration, camX, camY, camZ, ax2, ay2, az2, tx2, ty2, tz2));
                 }
 
                 // Character visibility near the camera: the native client fades
