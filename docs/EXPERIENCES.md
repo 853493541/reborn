@@ -2319,3 +2319,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Walking prerequisites (synthesis): scene bound (player+0x60/+0x58), state 7, the time sync
   (S2C id 3) for movement alignment, and the server tolerating/echoing the C2S move ops
   (0x1E8 exterior, jump ops) with S2C id 13 OnMoveCharacter for broadcasts.
+
+### 2026-10-05 — V2 P3 STATIC: id-4 scene-bind gate clarified (self-cleared, runs every id-4)
+- The only access to [client+0x1B108] is in the id-4 sub-block: 0x14015C6F3 writes it (rcx),
+  then 0x14015C73A checks it (==0 -> the reset+bind runs; !=0 -> skip). So the id-4 handler
+  re-arms the flag before the check -> the reset+bind executes on EVERY id-4 (not once).
+- Consequence: our keepalive id-4s DID re-run the bind; since player+0x60 stayed 0 live, the
+  failure is INSIDE the bind chain (0x140174970 -> 0x1401780D0 -> 0x14017BDD0): candidates are
+  the scene lookup for (map,region), the position packing, or the setter's cell/scene checks.
+- Next live probe: read the bind inputs at id-4 time - the registry scene lookup result for
+  (client+0x14, client+0x18), the packed position, and the setter's return - one of them is 0.
