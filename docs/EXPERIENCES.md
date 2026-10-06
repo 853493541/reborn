@@ -4236,3 +4236,20 @@ if the cache/host frames appear.
 - Main stays at `2d45e16` == `origin/main`; the running canonical/sandbox
   clients are the `2cbf004` rebuild (docs-only delta since).
 - Local only: not pushed to origin.
+
+### 2026-10-05 - Host polish - workstream D forked (#iso) + plan of record
+
+- Forked `agent/host-polish` (worktree `Desktop\reborn-iso-host-polish`) off main
+  (`8e0352a`) to close the host-polish remainder of system 1: clean shutdown, device/
+  window settings, loading screen, native option read-back, and the two 1.10 LOD pose
+  probes. Audio (1.6), weather semantics (1.9) and packaging stay parked.
+- Recon grounding the plan: `KGEngineCLR.UnInit3DEngine()` + `KGBaseCLR.UnInit/UninitLog/
+  UnInitMemory` exist (clean shutdown); `GetEngineOption(ref proxy)` +
+  `GetEngineOptionFromConfigFile(path, out proxy)` exist (read-back; proxy fields not
+  public - probe first); `HudOverlay` is created before `Init3DEngine` (overlay can show
+  during init); the `Init3DEngine` 5th argument (`./configHttpFile.ini`) is a candidate
+  for init-time resolution keys.
+- Plan of record: `docs/engine_host/HOST_POLISH_PLAN.md` (D1-D7 with repro/verification
+  and boundary policy). Base note: forked off main per team convention; the unmerged
+  `agent/item1-completion` work is re-derived where needed instead of depended on.
+- Outcome: plan committed; execution next (D1 shutdown first).
