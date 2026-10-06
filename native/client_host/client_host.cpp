@@ -487,12 +487,27 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
             logf("[VEH] exc=0x%08X at=%p (module?)", ep->ExceptionRecord->ExceptionCode,
                  ep->ExceptionRecord->ExceptionAddress);
         }
-        // stack trace for the first few AVs inside the represent module
+        // stack trace for the first few AVs inside the represent module or the
+        // CRT (a memset AV shows as VCRUNTIME140+0x17B0 - need its caller).
         static int vehTraces = 0;
         DWORD64 fa = (DWORD64)ep->ExceptionRecord->ExceptionAddress;
         int inRep = (g_repModule != NULL && fa >= (DWORD64)g_repModule &&
                      fa < (DWORD64)g_repModule + 0x2000000);
-        if (inRep && vehTraces < 5)
+        int inCrt = 0;
+        {
+            HMODULE m = NULL;
+            if (GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                                   GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                                   (LPCSTR)fa, &m) && m != NULL)
+            {
+                char mb[MAX_PATH] = {0};
+                GetModuleFileNameA(m, mb, MAX_PATH);
+                if (strstr(mb, "VCRUNTIME") != NULL ||
+                    strstr(mb, "ucrtbase") != NULL)
+                    inCrt = 1;
+            }
+        }
+        if ((inRep || inCrt) && vehTraces < 12)
         {
             vehTraces++;
             void* frames[20];
@@ -2998,6 +3013,24 @@ int main(void)
                             logf("[host] frame60: [singleton+0x1A0+0x260] := %p, readback=%p",
                                  cand, *(void**)((BYTE*)holder60 + 0x260));
                         }
+                        // KRLShadowMgr probe: [rep+0xED3F18] + 0x610 descriptor
+                        // (the map-load shadow step builds a bitmap from it; garbage
+                        // dims -> memset AV at 0x33C539).
+                        __try
+                        {
+                            void* shm = *(void**)((BYTE*)g_repModule + 0xED3F18);
+                            logf("[host] frame60: KRLShadowMgr=%p +0x578=%llu", shm,
+                                 (shm != NULL) ? *(unsigned long long*)((BYTE*)shm + 0x578) : 0);
+                            if (shm != NULL)
+                            {
+                                unsigned char* d = (unsigned char*)shm + 0x610;
+                                logf("[host] frame60: shadow desc w=%u h=%u rb=%u acc=%u",
+                                     *(unsigned*)(d + 0x18), *(unsigned*)(d + 0x1c),
+                                     *(unsigned*)(d + 0x20), *(unsigned*)(d + 0x24));
+                            }
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: shadow mgr probe fault"); }
                         // the map load (0x58D800) binary-searches the holder's table
                         // at +0x1E3C0 (CommonForceRelationTable data, empty in this
                         // host). The game's loader for it = rep+0x82C3C0(holder) -

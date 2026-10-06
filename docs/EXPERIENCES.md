@@ -2336,3 +2336,27 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Note: rep+0x22E08 is KRLSceneMgr::Remove (asserts `it != m_apScene.end()` when the
   scene is absent) - the manual scene path logs that assert but continues.
 - Evidence: host_exe58-61.out.
+
+## 2026-10-04 - Gate 1: map load now SUCCEEDS; exact crash = RL shadow bitmap with w=0/h=0
+
+- With the holder tables loaded, the real CreateRLScene's map load (rep+0x58D800)
+  **completes**: KGLOG `load scene "..." success. cost time = 0.141s` + all 725
+  SceneObject::Init logs. No AV in the map load itself.
+- The crash right after: the rep-side shadow manager KRLShadowMgr
+  ([rep+0xED3F18], ctor at 0x36B4xx; +0x578/+0x5D8 vector/+0x610 descriptor)
+  builds the RL scene's shadow-mask bitmap. Its descriptor (mgr+0x610) has
+  **w=0 h=0 rb=1024 acc=0** -> the builder (0x33C490) computes the alignment mask
+  `~(h-1)` = 0 -> `memset(dst = NULL, 0xFF, ...)` -> AV inside VCRUNTIME memset
+  (0x17B0). Full stack: CreateRLScene -> map load -> 0x567BE5 fn -> 0x568010 fn ->
+  0x36D3D0 (KRLShadowMgr get/create) -> 0x399F -> 0x33BE40 -> 0x1FCB2 -> 0x33C490.
+- The dims setter = **rep+0x5AAC40** (`SetShadowMask(mgr, ptr1, ptr2, height, width)`;
+  stores [mgr+8]=ptr1, [mgr+0x10]=ptr2, [mgr+0x628]=width(5th arg), [mgr+0x62C]=height)
+  - no direct callers (called indirectly); never ran in this host.
+- Cause: the map's whole-scene shadow mask data is missing from the extracted sandbox;
+  the engine falls back to `data/public/defaultWhite.dds` (exists) but the rep-side
+  descriptor stays 0. The map's `bd\shadowparam.json` exists; the mask texture files
+  do not.
+- Next probes: (a) find the exact mask file the engine's ReloadWholeSceneShadowMask
+  wants for the map and provide it (check the original extraction), or (b) find the
+  rep-side shadow-runtime init that should call the setter and why it is skipped.
+- Evidence: host_exe62-63.out.
