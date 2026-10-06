@@ -122,6 +122,29 @@ proxyOf = function(sec)
         -- property read (camelCase/sz/dw/n): numeric authored value or 0 (Lua 5.1
         -- mixed-type comparisons cannot use metatables; 0 keeps them numeric).
         if sec.values[k] ~= nil then return num(sec.values[k]) end
+        -- Engine control properties: hXxx is the child control handle (the scripts
+        -- index it: self.hBtnProperty:...), tXxx/pXxx are tables/pointers. Returning
+        -- 0 aborted the replay. Resolve the child section by its authored name
+        -- (hBtnProperty -> BtnProperty); fall back to a permissive proxy.
+        if k:match("^h") or k:match("^t") or k:match("^p") then
+          local bare = k:sub(2)
+          local child = nil
+          for _, s in ipairs(order) do
+            if s.parent == sec.name and s.name == bare then child = s break end
+          end
+          if child == nil and sections[bare] then child = sections[bare] end
+          if child == nil and bare ~= "" then
+            local cap = bare:sub(1, 1):upper() .. bare:sub(2)
+            for _, s in ipairs(order) do
+              if s.parent == sec.name and s.name == cap then child = s break end
+            end
+            if child == nil and sections[cap] then child = sections[cap] end
+          end
+          if child ~= nil then return proxyOf(child) end
+          local v = proxy(sec.name .. "." .. k)
+          rawset(t, k, v)
+          return v
+        end
         return 0
       end
       local fn = methods[k]
@@ -176,7 +199,12 @@ proxy = function(name)
           if k == "GetW" or k == "GetH" then return function() return 0 end end
           if k == "GetAbsPos" or k == "GetRelPos" then return function() return 0, 0 end end
           if k == "IsVisible" or k == "IsOpened" then return function() return false end end
-          return function(...) return proxy(name .. "." .. k .. "()") end
+          -- Unknown PascalCase global: some are module tables the scripts index
+          -- (Craft.Foo) and some are functions (Craft.Foo()); a callable proxy
+          -- serves both (a plain function aborted the first form).
+          local v = proxy(name .. "." .. k)
+          rawset(t, k, v)
+          return v
         end
         -- camelCase data field: the engine's Hungarian prefixes tell the type.
         if k:match("^b") then return false end
@@ -292,16 +320,23 @@ end)
 -- Output: "READY handlers=..." then per command "RESULT <ok> <err>", MUT lines, "END".
 
 local realModule = module
-local _getfenv, _setmetatable, _getmetatable, _GLOBAL = getfenv, setmetatable, getmetatable, _G
+local _getfenv, _setfenv, _setmetatable, _getmetatable, _GLOBAL = getfenv, setfenv, setmetatable, getmetatable, _G
+local _type = type
 if type(realModule) == "function" then
   module = function(name, ...)
     realModule(name, ...)
-    local env = _getfenv(2)
-    local mt = _getmetatable(env)
-    if mt == nil then
-      _setmetatable(env, { __index = _GLOBAL })
-    elseif mt.__index == nil then
-      mt.__index = _GLOBAL
+    -- Lua 5.1's module() setfenv's ITS caller (this wrapper) to the module table;
+    -- the script chunk keeps its old env, so target the caller (the script chunk)
+    -- with the wrapper's env (the module table) and chain it to _G.
+    local env = _getfenv(1)
+    if _type(env) == "table" then
+      local mt = _getmetatable(env)
+      if mt == nil then
+        _setmetatable(env, { __index = _GLOBAL })
+      elseif mt.__index == nil then
+        mt.__index = _GLOBAL
+      end
+      _setfenv(2, env)
     end
     return env
   end
