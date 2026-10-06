@@ -2512,3 +2512,20 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   probe or a poll right after the id-4) - the first zero is the fix target.
 - Workflow per the user: run long autonomous blocks (launch -> flow -> read -> kill frozen ->
   fix -> retest), not 1-minute reports.
+
+### 2026-10-06 — V2 CRITICAL: the id-4 world-bind (edx=1) early-returns; the setter path is HOMELAND
+- 0x1401780D0 with edx=1 (r13d=1, the id-4 caller's mode) -> jne 0x1401783EC -> r14d=r15d ->
+  jmp 0x14017841C -> call 0x140139560 / 0x1403857F0 -> RETURN. The setter block
+  (0x14017829C..0x1401782E5 -> 0x14017BDD0) is SKIPPED in the world mode.
+- The edx=0 bind callers = the HOMELAND flow: the fn containing the other call (0x1402B19AC,
+  no direct callers) is KHomelandMgr::ChangeSkin (log string verified). So 0x14017BDD0
+  (stores player+0x60 first) is the HOMELAND scene setter - NOT the world-entry bind.
+- The entity +0x60 stores in the 0x14017Bxxx family = scene-object fields (0x14017B7B0 =
+  KScene::AddDoodad; id-11 NPC spawn 0x140159D68) - per-entity at their scene add.
+- CONSEQUENCE: the local player's +0x60 (the state machine's confirm prerequisite) is NOT set
+  by the id-4 bind. The remaining candidate = the id-10 guard path (0x140173D90 -> 0x14017BDD0)
+  - i.e. the LOCAL player must come through id 10 after all (re-examine the equal-check exit
+  0x14015A1A3: the log path may be informational and the flow may continue elsewhere), or a
+  different world-entry binder. NEXT: trace the id-10 equal-path (0x14015A178..0x14015A1A8)
+  control flow precisely (does it really exit or continue to the guard?).
+- Workflow: long autonomous blocks per the user.
