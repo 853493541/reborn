@@ -27,44 +27,49 @@ server-owned state, packaging.
 - Boundary: re-open when the editor's own close sequence (`MovieEditorHD` teardown / IL)
   or an engine fix provides safe engine uninit; then re-run the matrix.
 
-### D2 — Native per-key option read-back (1.8) — probe, then tool
-- Reflection probe of `KGEngineOptionProxyCLR` (public members) and the pair
-  `GetEngineOptionFromConfigFile(string, out proxy)` / `GetEngineOption(ref proxy)`
-  (signatures already recovered in the metadata dump).
-- If a readable surface exists: `RC_OPT_DUMP=<file>` writes active key=value pairs to
-  `bin64\reborn_out\active_options.ini` (documented output dir).
-- Else: fall back to the adapter's config save fn (RVA `0x67B10`, render-options §2) or
-  register the boundary.
-- Verify: dump after `RC_QUALITY=1` vs `RC_QUALITY=9` differs in the tier keys
-  (`nEngineGraphicsLevel`, shadow/fog/LOD keys) and matches `config_*_*.ini` values.
+### D2 — Native per-key option read-back (1.8) — PARTIAL (schema recovered; values = defaults)
+- `RC_OPT_PROBE=1` (reflection): `KGEngineOptionProxyCLR` exposes **49 public fields**
+  (`nScaleUpMode`, `fScreenSizeLimitedRate`, `nClientMdlLimit/SFXLimit`,
+  `fArrModelLodRadius`, `nShadowType`, water/tex-LOD limits, foliage+SpeedTree density,
+  `bEnableSubFoliage*Render`, all cull distances, ...). `RC_OPT_DUMP=<file>` writes them
+  as key=value.
+- A/B: `RC_QUALITY=1` vs `9` dumps are **identical and equal the defaults**, not the
+  applied preset (`nShadowType=0` vs config_9 `3`; `fSpeedTreeCullDist=80000` vs
+  `560000`) — the proxy is the panel/UI option object, not an authoritative engine-state
+  read.
+- Boundary/next probe: native DX11 `GetOption` export or the adapter save round-trip
+  (render-options §2) for active values; the 49-field schema is kept (panel option
+  catalog). Evidence: `proof/host/active_t1.ini`, `active_t9.ini`.
 
-### D3 — Device/window settings (1.1) — probe, then boundary/knob
-- Probe A: `RC_OPT_CanvasWidth/CanvasHeight/FullScreen` through
-  `SetEngineOptionFromConfigFile` — does the engine apply `[Main]` keys at runtime?
-  (Check via `image_stats` screenshot size.)
-- Probe B: write `bin64\reborn_out\host_init.ini` (copied `config.default`/config_9 +
-  `[Main]` overrides) and pass its path as the `Init3DEngine` config argument via a new
-  `RC_INIT_CFG` env — does the window/render target change?
-- Outcome: `RC_RES=WxH` / `RC_FULLSCREEN` knob if the engine honors either path; else a
-  documented boundary (device size fixed from the install config at engine init) plus a
-  README note. Verify with screenshots at two sizes.
+### D3 — Device/window settings (1.1) — DONE (host-side sizing; engine config arg inert)
+- `RC_WIDTH/RC_HEIGHT` set the form client size, which drives the engine render target:
+  the engine's own screenshot goes **1280x720 → 1600x900** (`image_stats size=`), and the
+  startup line records `window: client=WxH`.
+- `RC_FULLSCREEN=1` = borderless maximized: external `GetWindowRect` = **1920x1080**
+  (screen), clean exit.
+- `RC_INIT_CFG=<path>`: passing a **nonexistent** path still yields
+  `Init3DEngine=1 ms=3141` — the old `configHttpFile.ini` argument is not read by the
+  engine in this build (confirms the render-options C2 closure); resolution is
+  host-window-driven, not config-driven.
+- Evidence: `proof/host/size_{base,1600}.png`; logs `reborn_20261005_2147*`.
 
-### D4 — Loading screen (1.2) — implement
-- New `client/LoadingOverlay.cs` (same layered top-level pattern as `HudOverlay`, shown
-  before `Init3DEngine`): phase texts `Initializing engine…` → `Loading map…` →
-  `Preparing scene…`, refreshed with `Application.DoEvents` between the blocking calls
-  (no threads/engine calls off the UI thread). `RC_NOLOADING=1` disables it.
-- Full-load path: when `RC_FULLLOAD=1`, poll `scene.GetLoadingProgress()` and show a
-  percentage.
-- Verify: external window captures (`tools/proof/capture_window.ps1`) during init/load
-  show the overlay; phase text in the log; overlay gone after spawn (fingerprint
-  compare); default runs unchanged apart from the overlay.
+### D4 — Loading screen (1.2) — DONE
+- `client/LoadingOverlay.cs`: borderless top-most **420x84** window
+  (`WS_EX_NOACTIVATE|WS_EX_TOOLWINDOW`, `ShowWithoutActivation`) with phase text; shown
+  before engine init, phases `Initializing engine...` → `Loading map...` →
+  `Preparing scene...` (plus a percent line under `RC_FULLLOAD`), closed before the first
+  frame; `RC_NOLOADING=1` disables it.
+- Verified on the **shipped 24 s init path** by window enumeration: t=8 s →
+  overlay `rect=420x84 ex=0x08010088` + main window `sandbox-hostpolish`; t=33 s (after
+  spawn) → overlay **gone**, main only. (The external `capture_window.ps1` attempt hung
+  and produced no artifacts; the enumeration is the numeric proof.)
 
-### D5 — Foliage-density re-check (1.10)
-- Re-probe `nFoliageDensity` 0 / 100 / 999 vs baseline at the densest `.foliage` cell
-  `(173747,98442)` and one more dense cell, 8×8 fingerprints; confirm the clamp
-  (100 vs 999 identical) and whether density applies before map load in this host.
-- Close as verified or as "engine ignores in ME host" with the two-pose evidence.
+### D5 — Foliage-density re-check (1.10) — DONE
+- At the densest `.foliage` cell `(173747,98442)`, 8×8 fingerprints (tier 9 base):
+  `nFoliageDensity=0` changes **2/64** cells (foliage removed); `=100` is identical to
+  the base; `=999` is identical to `=100` → the **clamp at 100** is confirmed in-host.
+  Density applies pre-map-load (VideoOptions) — the earlier "no-op" was pose sensitivity.
+- Evidence: `proof/host/foliage8/{base,den0,den100,den999}.png`; logs `reborn_20261005_2151*`.
 
 ### D6 — Close-up LOD pose (1.10)
 - Spawn next to a large structure/tree, zoom in (scripted `RC_CAM_ZOOMSEQ`), and probe

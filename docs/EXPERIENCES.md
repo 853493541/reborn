@@ -4265,3 +4265,23 @@ if the cache/host frames appear.
   `reborn_20261005_213411..213628.log` (fingerprint `reborn_client_hostpolish.exe`).
 - Outcome: D1 done - clean shutdown for Wwise/log/memory; engine-teardown boundary
   registered (re-open: recover the editor's close sequence or an engine fix).
+
+### 2026-10-05 - Host polish - D2-D5: option schema, window sizing, loading overlay, foliage clamp
+
+- D2 (option read-back, PARTIAL): `RC_OPT_PROBE`/`RC_OPT_DUMP` recover 49 public fields
+  of `KGEngineOptionProxyCLR` (schema), but the values are the **defaults**, not the
+  applied preset (tier9 `nShadowType=3` vs dump `0`) - the proxy is the panel option
+  object. Active-value read-back needs the native `GetOption`/adapter-save route
+  (boundary + next probe). Evidence: `proof/host/active_t{1,9}.ini`.
+- D3 (device/window settings, DONE): `RC_WIDTH/RC_HEIGHT` drive the render target
+  (engine screenshot 1280x720 -> 1600x900); `RC_FULLSCREEN=1` = borderless 1920x1080;
+  a **nonexistent** `RC_INIT_CFG` path still inits (`Init3DEngine=1 ms=3141`) -> the
+  `configHttpFile.ini` argument is inert in this build. Evidence:
+  `proof/host/size_{base,1600}.png`.
+- D4 (loading screen, DONE): `client/LoadingOverlay.cs` (420x84 NOACTIVATE/TOOLWINDOW)
+  with phase text; window enumeration on the shipped 24 s path: overlay present at
+  t=8 s, **gone** at t=33 s (after spawn). `RC_NOLOADING=1` disables.
+- D5 (foliage density, DONE): at the densest `.foliage` cell, density 0 removes 2/64
+  cells (8x8 fingerprint), 100 == base, 999 == 100 -> **clamp at 100 confirmed in-host**.
+  Evidence: `proof/host/foliage8/*.png`.
+- Outcome: D2-D5 executed; D2 leaves a registered boundary (values-not-authoritative).

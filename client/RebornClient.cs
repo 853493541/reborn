@@ -289,6 +289,22 @@ internal static class RebornClient
         }
         form.StartPosition = FormStartPosition.CenterScreen;
         form.ClientSize = new System.Drawing.Size(1280, 720);
+        // Window / render-target sizing (D3): the engine renders into a child window of
+        // the panel, so the client size drives the render target. RC_WIDTH/RC_HEIGHT
+        // override it; RC_FULLSCREEN=1 goes borderless maximized.
+        {
+            int rw = 0, rh = 0;
+            if (int.TryParse(Env("RC_WIDTH", ""), out rw) && int.TryParse(Env("RC_HEIGHT", ""), out rh)
+                && rw >= 320 && rh >= 240)
+                form.ClientSize = new System.Drawing.Size(rw, rh);
+            if (Env("RC_FULLSCREEN", "0") == "1")
+            {
+                form.FormBorderStyle = FormBorderStyle.None;
+                form.WindowState = FormWindowState.Maximized;
+            }
+            Log(string.Format("window: client={0}x{1} fullscreen={2}",
+                form.ClientSize.Width, form.ClientSize.Height, Env("RC_FULLSCREEN", "0")));
+        }
         var panel = new Panel();
         panel.Dock = DockStyle.Fill;
         form.Controls.Add(panel);
@@ -301,6 +317,14 @@ internal static class RebornClient
         if (Env("RC_HUD_OPEN", "0") == "1") hud.ShowInfo = true;   // test: start open
         form.Show();
         hud.PlaceOver(form);
+        // Loading overlay (D4): WinForms controls sit behind the engine's child window,
+        // so the loading text is a separate top-level window; RC_NOLOADING=1 disables.
+        LoadingOverlay loading = null;
+        if (Env("RC_NOLOADING", "0") != "1")
+        {
+            try { loading = new LoadingOverlay(); loading.Phase("Initializing engine..."); }
+            catch { loading = null; }
+        }
         // COPY LOG row (clickable inside the open panel); copies the recent
         // run log to the clipboard.
         hud.OnCopyLog = delegate
@@ -346,7 +370,10 @@ internal static class RebornClient
         int err = 1;
         int ok = 0;
         long t3d = Environment.TickCount;
-        try { ok = engine.Init3DEngine(startupPath, startupPath, workingDir, 0, "./configHttpFile.ini", ref err); }
+        string initCfg = Env("RC_INIT_CFG", "./configHttpFile.ini");
+        Log("initcfg=" + initCfg);
+        if (loading != null) loading.Phase("Initializing engine...");
+        try { ok = engine.Init3DEngine(startupPath, startupPath, workingDir, 0, initCfg, ref err); }
         catch (Exception e) { Log("Init3DEngine ex: " + e); return; }
         Log(string.Format("Init3DEngine={0} err={1} ms={2}", ok, err, Environment.TickCount - t3d));
         if (startupOverride)
@@ -354,6 +381,75 @@ internal static class RebornClient
         if (ok == 0) { Log("FATAL: engine init failed"); return; }
         try { VideoOptions.Apply(engine, Env("RC_GAME_CONFIG_DIR", @"C:\SeasunGame\Game\JX3\bin\zhcn_hd\config"), startupPath, Log); }
         catch (Exception e) { Log("VideoOptions ex: " + e.Message); }
+
+        // D2: engine option read-back. `KGEngineOptionProxyCLR` has public fields
+        // (recovered by RC_OPT_PROBE=1); `GetEngineOption(ref proxy)` fills them with
+        // the engine's active values. RC_OPT_DUMP=<file> writes them as key=value.
+        string optDump = Env("RC_OPT_DUMP", "");
+        if (Env("RC_OPT_PROBE", "0") == "1" || optDump.Length > 0)
+        {
+            try
+            {
+                Type pt = typeof(KGEngineCLR).Assembly.GetType("MovieEngineCLR.KGEngineOptionProxyCLR");
+                Log("optprobe type=" + (pt == null ? "(not found)" : pt.FullName));
+                if (pt != null)
+                {
+                    if (Env("RC_OPT_PROBE", "0") == "1")
+                    {
+                        foreach (System.Reflection.MemberInfo mi in pt.GetMembers(
+                            System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Static))
+                            Log("optprobe member " + mi.MemberType + " " + mi.Name);
+                    }
+                    object proxy = null;
+                    try { proxy = Activator.CreateInstance(pt); } catch (Exception e) { Log("optprobe new ex: " + e.Message); }
+                    if (proxy != null)
+                    {
+                        System.Reflection.MethodInfo gm = typeof(KGEngineCLR).GetMethod("GetEngineOption");
+                        if (gm != null)
+                        {
+                            try
+                            {
+                                object[] gmArgs = new object[] { proxy };
+                                object rc = gm.Invoke(engine, gmArgs);
+                                Log("optprobe GetEngineOption rc=" + rc);
+                                proxy = gmArgs[0];
+                            }
+                            catch (Exception e) { Log("optprobe GetEngineOption ex: " + e.Message); }
+                        }
+                        else Log("optprobe GetEngineOption method not found");
+
+                        System.Collections.Generic.List<string> lines = new System.Collections.Generic.List<string>();
+                        foreach (System.Reflection.FieldInfo fi in pt.GetFields(
+                            System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance))
+                        {
+                            string v = "(err)";
+                            try
+                            {
+                                object o = fi.GetValue(proxy);
+                                Array arr = o as Array;
+                                if (arr != null)
+                                {
+                                    string[] parts = new string[arr.Length];
+                                    for (int ai = 0; ai < parts.Length; ai++)
+                                        parts[ai] = arr.GetValue(ai).ToString();
+                                    v = string.Join(",", parts);
+                                }
+                                else v = o == null ? "(null)" : o.ToString();
+                            }
+                            catch { }
+                            lines.Add(fi.Name + "=" + v);
+                            if (Env("RC_OPT_PROBE", "0") == "1") Log("optprobe value " + fi.Name + "=" + v);
+                        }
+                        if (optDump.Length > 0)
+                        {
+                            try { File.WriteAllLines(optDump, lines.ToArray()); Log("optdump -> " + optDump + " keys=" + lines.Count); }
+                            catch (Exception e) { Log("optdump ex: " + e.Message); }
+                        }
+                    }
+                }
+            }
+            catch (Exception e) { Log("optprobe ex: " + e.Message); }
+        }
         try { Log("editor.Init result=" + editor.Init(editorRoot, err, form.Handle.ToInt64())); }
         catch (Exception e) { Log("editor.Init ex: " + e.Message); }
 
@@ -406,6 +502,7 @@ internal static class RebornClient
         // lazy material/shader loader (missing build-machine DataStores -> AV)
         // is not raced while running through the map. Env-gated for A/B first.
         bool fullLoad = Env("RC_FULLLOAD", "0") == "1";
+        if (loading != null) loading.Phase("Loading map...");
         long tMap = Environment.TickCount;
         int loadResult = scene.LoadMap(mapPath, false);
         long mMap = Environment.TickCount - tMap;
@@ -415,10 +512,12 @@ internal static class RebornClient
             {
                 int fr = scene.SetSceneFullLoading(true);
                 Log("fullload rc=" + fr + " progress=" + scene.GetLoadingProgress().ToString("F3"));
+                if (loading != null) loading.Phase("Loading scene... " + (scene.GetLoadingProgress() * 100.0).ToString("F0") + "%");
             }
             catch (Exception e) { Log("fullload ex: " + e.Message); }
         }
         Log("LoadMap result=" + loadResult + " ms=" + mMap);
+        if (loading != null) loading.Phase("Preparing scene...");
         if (loadResult < 0) { Log("FATAL: LoadMap failed"); return; }
         scene.SetActiveEnvironment();
         long winId = scene.AddOutputWindow("", panel.Handle.ToInt64(), 0);
@@ -1877,6 +1976,7 @@ internal static class RebornClient
 
         var sw = System.Diagnostics.Stopwatch.StartNew();
 
+        if (loading != null) { loading.Done(); loading = null; }
         while (!form.IsDisposed)
         {
             long now = sw.ElapsedMilliseconds;
