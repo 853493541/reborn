@@ -56,16 +56,19 @@ def handshake_respond():
     return frame(bytes([2, 0]) + b"\x00" * 12)
 
 
-def handshake_respond_v4():
+def handshake_respond_v4(account=None):
     # proto 4 (client handshake is 229 B) -> server respond >= 252 B
     # result code dword at +1 (switch 1..0x5B); fields per handler 0x1879D0;
-    # account strings at +0x5B (0x81) and +0xDC (0x20)
+    # account strings at +0x5B (0x81) and +0xDC (0x20). We ECHO the client's own
+    # account so any account/password is accepted (the stub validates nothing).
     p = bytearray(252)
     p[0] = 4
     struct.pack_into("<I", p, 1, 1)
     p[5] = 2
     p[8:8 + 9] = b"127.0.0.1"
-    acc = "admin".encode("gb18030") + b"\x00"
+    acc = (account or "admin").encode("gb18030") + b"\x00"
+    if len(acc) > 0x20:
+        acc = acc[:0x20]
     p[0x5B:0x5B + len(acc)] = acc
     p[0xDC:0xDC + len(acc)] = acc
     return frame(bytes(p))
@@ -155,8 +158,14 @@ def handle(conn, addr):
                     conn.sendall(frame(payload))
                     w("   -> proto1 ping echo")
                 elif proto == 3:
-                    conn.sendall(handshake_respond_v4())
-                    w("   -> proto4 verify respond (252 bytes)")
+                    acct = payload[1:33].split(b"\x00")[0]
+                    try:
+                        acct_s = acct.decode("gb18030", "replace")
+                    except Exception:
+                        acct_s = "admin"
+                    w("   verify account=%r (accepting)" % acct_s)
+                    conn.sendall(handshake_respond_v4(acct_s))
+                    w("   -> proto4 verify respond (252 bytes, account echoed)")
                     time.sleep(0.05)
                     conn.sendall(role_list())
                     w("   -> proto9 role list (%d bytes)" % ROLE_LIST_SIZE)
