@@ -460,6 +460,18 @@ internal static class RebornClient
                 }
                 try
                 {
+                    string mods = "";
+                    foreach (System.Diagnostics.ProcessModule m in System.Diagnostics.Process.GetCurrentProcess().Modules)
+                    {
+                        if (m.ModuleName.IndexOf("TrueSky", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                            m.ModuleName.IndexOf("Wwise", StringComparison.OrdinalIgnoreCase) >= 0)
+                            mods += m.ModuleName + " ";
+                    }
+                    Log("envprobe modules: " + (mods.Length == 0 ? "(none)" : mods));
+                }
+                catch (Exception e) { Log("envprobe modules ex: " + e.Message); }
+                try
+                {
                     object p = st.InvokeMember("GetCurrentGDBTimelineCurvePath",
                         System.Reflection.BindingFlags.InvokeMethod, null, scene, new object[0]);
                     Log("envprobe gdbTimeline=" + (p == null ? "(null)" : p.ToString()));
