@@ -2352,3 +2352,17 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Endgame: no dedicated mode-end handler in the registration; the result surface = statistics
   (id 281) + stat flags + competitor/rank syncs + the UI events; server-driven.
 - Doc updated: docs/netcode/JX3_MODE_HANDLER_EXPECTATIONS.md (movement/combat/AOI/endgame).
+
+### 2026-10-05 — V2 P3 research: movement sync field map (id 25 OnSyncMoveState) + combat handler sweep
+- id25 OnSyncMoveState (52 B, handler 0x18019CF90, DLL): entity id dword @+7 (bit30 -> global
+  lookup) must resolve; then: byte @+0xB -> entity+0x44 (move state, compare+update), byte @+0xC
+  -> +0x48, byte @+0xD -> +0xC08, byte @+0x33 -> +0x2B4; packed qword @+0x12 (type bits 58-63 =
+  0xF/0x1E/0x1A+3 -> different branches) parsed by 0x1801AE180; block @+0x1B parsed by
+  0x1801ADFF0. The entity fields match the id-10 map (+0x44/+0x48/+0xC08/+0x2B4) - the move sync
+  reuses the entity descriptor fields.
+- Combat sweep: OnSkillEffectResult (id47, var) yielded 49 packet->field pairs via the dataflow
+  extractor -> proof/netcode/move_combat_field_maps.tsv. The smaller combat/move handlers
+  (prepare/cast/channel/beattback/movectrl/moveparam/adjust) read the packet via movzx into
+  locals and call sub-parsers - their layouts need the call-target parse (next pass).
+- Note: the combat system REMOVAL commit was reverted (ee70f53) - the reference model/spec stay
+  intact (user clarified the instruction was 'research more').
