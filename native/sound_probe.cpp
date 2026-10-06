@@ -160,6 +160,19 @@ extern "C" __declspec(dllexport) int __cdecl RC_SoundProbe_Diag(unsigned int pla
 {
     if (ResolveAudio() != 0) return -1;
     Log("sound_probe: IsInitialized=%d", g_isInitialized ? (g_isInitialized() ? 1 : 0) : -1);
+    {
+        HMODULE m = GetModuleHandleA("KG3D_WwiseX64.dll");
+        void* mgr = NULL, *resolver = NULL;
+        if (m != NULL)
+        {
+            mgr = *(void**)((BYTE*)m + 0x27CE98);   // AK::IAkStreamMgr::m_pStreamMgr
+            typedef void* (__cdecl *GetFrn)();
+            GetFrn f = (GetFrn)GetProcAddress(m,
+                "?GetFileLocationResolver@StreamMgr@AK@@YAPEAVIAkFileLocationResolver@12@XZ");
+            if (f != NULL) resolver = f();
+        }
+        Log("sound_probe: streamMgr=%p resolver=%p", mgr, resolver);
+    }
     if (g_getAudioSettings)
     {
         unsigned char st[64];
@@ -265,6 +278,21 @@ extern "C" __declspec(dllexport) unsigned int __cdecl RC_SoundProbe_PostEvent(un
     return pid;
 }
 
+// CreateFileW hook (KernelBase): logs Wwise media open attempts (.wem etc.)
+// so a failed streamed-media resolution names the exact path it tried.
+typedef HANDLE (WINAPI *CreateFileWFn)(LPCWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES, DWORD, DWORD, HANDLE);
+static CreateFileWFn g_tCreateFileW = NULL;
+
+static HANDLE WINAPI HookCreateFileW(LPCWSTR name, DWORD access, DWORD share,
+    LPSECURITY_ATTRIBUTES sa, DWORD disp, DWORD flags, HANDLE tmpl)
+{
+    if (name != NULL &&
+        (wcsstr(name, L".wem") != NULL || wcsstr(name, L"161340541") != NULL ||
+         wcsstr(name, L"Wwiseaudio") != NULL || wcsstr(name, L"wwiseaudio") != NULL))
+        Log("sound_probe: CreateFileW '%ls'", name);
+    return g_tCreateFileW(name, access, share, sa, disp, flags, tmpl);
+}
+
 extern "C" __declspec(dllexport) int __cdecl RC_SoundProbe_Init(const char* logPath)
 {
     if (logPath != NULL && g_log == NULL)
@@ -293,9 +321,18 @@ extern "C" __declspec(dllexport) int __cdecl RC_SoundProbe_Init(const char* logP
     int r2 = InstallHook(base + 0x32E10, expPostStr, 15, (void*)&HookPostEventStr, (void**)&g_tPostEventStr);
     int r3 = InstallHook(base + 0x32F30, expPostWStr, 15, (void*)&HookPostEventWStr, (void**)&g_tPostEventWStr);
     int r4 = InstallHook(base + 0x32090, expLoadBankW, 16, (void*)&HookLoadBankWStr, (void**)&g_tLoadBankWStr);
-    sprintf_s(g_status, "postId=%d postStr=%d postWStr=%d loadBankW=%d", r1, r2, r3, r4);
+    static const BYTE expCreateFileW[15] = { 0x48,0x8B,0xC4,0x48,0x89,0x58,0x08,0x48,0x89,0x68,0x10,0x48,0x89,0x70,0x18 };
+    int r5 = -1;
+    HMODULE kb = GetModuleHandleA("KernelBase.dll");
+    if (kb != NULL)
+    {
+        void* pCreateFileW = (void*)GetProcAddress(kb, "CreateFileW");
+        if (pCreateFileW != NULL)
+            r5 = InstallHook((BYTE*)pCreateFileW, expCreateFileW, 15, (void*)&HookCreateFileW, (void**)&g_tCreateFileW);
+    }
+    sprintf_s(g_status, "postId=%d postStr=%d postWStr=%d loadBankW=%d createFileW=%d", r1, r2, r3, r4, r5);
     Log("sound_probe: hooks %s", g_status);
-    return r1 + r2 + r3 + r4;
+    return r1 + r2 + r3 + r4 + r5;
 }
 
 extern "C" __declspec(dllexport) const char* __cdecl RC_SoundProbe_Status()

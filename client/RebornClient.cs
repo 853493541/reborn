@@ -364,6 +364,22 @@ internal static class RebornClient
         // skill sound is played from the decoded WAV as a REGISTERED PROVISIONAL
         // until the native tag path is recovered (re-open: the SoundTag fires
         // with the banks loaded in the host).
+        // Wwise streamed media: the shell resolves its relative BasePath
+        // (config.ini [WwiseSetting] BasePath=data/wwiseaudio/...) at sound init,
+        // and the install is read-only. With RC_SOUND_MEDIA we switch the process
+        // cwd to a staged media tree BEFORE sound.Init so that base path resolves
+        // against it (data/wwiseaudio/GeneratedSoundBanks/Windows/<lang>/<id>.wem).
+        string mediaRoot = Env("RC_SOUND_MEDIA", "");
+        if (mediaRoot.Length > 0 && Directory.Exists(mediaRoot))
+        {
+            try
+            {
+                if (SetCurrentDirectoryW(mediaRoot))
+                    Log("sound-native: cwd for Wwise IO -> " + mediaRoot);
+                else Log("sound-native: cwd switch failed");
+            }
+            catch (Exception e) { Log("sound-native cwd ex: " + e.Message); }
+        }
         bool soundReady = false;
         if (Env("RC_SOUND", "1") != "0")
         {
@@ -420,7 +436,6 @@ internal static class RebornClient
         // game's own banks and post the skill event through the engine's Wwise.
         // RC_SOUND_NATIVE=1 + RC_BANK=<skillremake.bnk>; WAV stays the fallback.
         bool soundNative = false;
-        bool soundMediaSet = false;
         uint nativeEvent = 3378728138;   // FLWS event id (SOUND_PATH.md)
         try
         {
@@ -2675,13 +2690,10 @@ internal static class RebornClient
                 bool playedNative = false;
                 if (soundNative)
                 {
-                    if (!soundMediaSet)
-                    {
-                        soundMediaSet = true;
-                        string media = Env("RC_SOUND_MEDIA", "");
-                        if (media.Length > 0)
-                            Log("sound-native: mediaDir rc=" + SoundProbe.SetMediaDir(media));
-                    }
+                    // ensure the media cwd + Wwise language at cast time too
+                    // (the engine resets the process cwd during map load)
+                    string media = Env("RC_SOUND_MEDIA", "");
+                    if (media.Length > 0) SoundProbe.SetMediaDir(media);
                     uint pid = SoundProbe.PostEvent(nativeEvent, 1);
                     Log("sound: native post id=" + nativeEvent + " playing=" + pid);
                     if (pid != 0 && SoundProbe.Diag(pid) == 1) playedNative = true;
@@ -4663,6 +4675,10 @@ internal static class RebornClient
             return p == IntPtr.Zero ? "(null)" : Marshal.PtrToStringAnsi(p);
         }
     }
+
+    // cwd switch for the Wwise streamed-media base path (RC_SOUND_MEDIA).
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    static extern bool SetCurrentDirectoryW(string path);
 
     // Provisional skill sound: the decoded FLWS WAV (SOUND_PATH.md) played via
     // winmm, because the engine's tani SoundTag does not fire in the host.

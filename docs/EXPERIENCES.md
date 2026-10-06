@@ -4406,3 +4406,24 @@ if the cache/host frames appear.
   `HOST_AUDIO_STEP1.md` Step 2 and `NATIVE_AUDIO_PROBE.md` §4.
 
 
+
+### 2026-10-05 - Audio (1.6) - native root cause completed: no media chunks, no IO opens
+
+- Did: parsed the bank's HIRC offline: event `0xC9634CCA` = one EventAction
+  (scope 3, type 4 = Play) -> Sound `0x9253BB` -> media `161340541` (size 22,067).
+  The shipped `skillremake.bnk` contains only `BKHD` + `HIRC` chunks (**no
+  `DIDX`/`DATA` media**; fresh extraction from the pak is byte-identical), so the
+  media must be streamed. Added a `KernelBase!CreateFileW` hook (15-byte prologue,
+  tail-called) and an IO diagnostic (`streamMgr`/resolver pointers): the stream
+  manager and resolver are non-null, but **zero media opens reach the OS**.
+- Why: the host's Wwise stream device has no usable low-level IO hook for these
+  media (the game client supplies its IO/media-delivery layer; the editor install
+  does not). Not a path/cwd/language problem - all were set and the hook stayed
+  silent.
+- Outcome: native streamed playback is a **documented boundary**; the client keeps
+  the verified fallback (post, check position, else winmm WAV) so the skill sound
+  is audible. Re-open: recover the game's `IAkLowLevelIOHook`/media delivery with
+  evidence (no ABI guessing).
+- Evidence: probe log additions (`streamMgr=... resolver=...`, `playPos rc=2`,
+  no `CreateFileW` lines), HIRC parse outputs; docs corrected.
+

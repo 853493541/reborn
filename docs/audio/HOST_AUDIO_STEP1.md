@@ -69,11 +69,17 @@ to the WAV** — the user hears the skill sound via the registered provisional.
 - Client behavior: after `PostEvent`, `SoundProbe.Diag(pid)` requires the source
   position to advance; if not, native is disabled and the WAV plays for that cast
   (`sound-native: no rendering (streamed media unresolved) - WAV fallback`).
-- Root cause: the game client resolves streamed Wwise media through its own
-  VFS/`IAkFileLocationResolver`; the MovieEditor engine (and our host) has no
-  resolver for the install's `data/Wwiseaudio` paks. Closing it needs a custom
-  file-location resolver (`AK::StreamMgr::SetFileLocationResolver`,
-  `KG3D_WwiseX64.dll` export available) or the game's resolver instance.
+- Root cause (completed 2026-10-05, HIRC + IO evidence): the event is a plain
+  Play of Sound `0x9253BB`, whose media reference is `161340541` (size 22,067).
+  The shipped bank contains only `BKHD` + `HIRC` — **no `DIDX`/`DATA` media
+  chunks** — so the media must be streamed. In-host, the Wwise stream manager
+  and file-location resolver are non-null, the cwd/language/media tree are all
+  set, yet a KernelBase `CreateFileW` hook records **zero media open attempts**:
+  the host's stream device has no usable low-level IO hook for these media (the
+  game client supplies that layer; the editor install does not).
+  Closing it therefore requires the game's `IAkLowLevelIOHook`/media-delivery
+  path (recover its interface evidence-first; do not guess the ABI), or finding
+  the shell's own bank/media loader.
 
 - Env: `RC_BANK=<path to skillremake.bnk>` enables the native attempt;
   `RC_SOUND_MEDIA=<staged tree>` sets the media root; `RC_SOUND_NATIVE=0`
