@@ -2031,3 +2031,17 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Caveat: restarting the stub resets the cipher; a RESUME handshake (last byte 01) keeps the
   client's old cipher state -> mismatch -> RST. Need a FRESH session (fresh handshake 00) after
   a stub restart: full re-login, not just reconnect.
+
+### 2026-10-05 — V2 P3: id-7/id-10 scene bootstrap deadlock identified
+- Live reordered test (id4 -> id7 -> id10, keepalive id7+id10): id 7 ran but took its reset path
+  (client+0x14/0x18 stayed 0, player pos 0) and id 10 still left state 4.
+- Analysis: id-7 handler requires [player+0x60] (the scene pointer) non-null (early-exit line
+  0x34C1). [player+0x60] is written ONLY by 0x14017BDD0 (the id-10 guard path, store happens
+  FIRST at its entry). But id 10's handler looks up the scene via 0x140174E50(client,
+  [client+0x14]=map, [client+0x18]=region) BEFORE the guard and likely bails when null with
+  (0,0) -> neither message can bootstrap the other. Deadlock.
+- Candidate fixes (next session): (a) find what creates the initial scene/loading (maybe the
+  role data carries the last map/position -> fill the gateway role-list entry fields);
+  (b) check whether 0x140174E50(0,0) can return a default scene and force the first id-10
+  through; (c) decode the role-list entry map/pos fields (qword +0x4C, dwords +0x73/+0x77).
+- Client note: after login+enter the client gets stuck; force-close before each test.
