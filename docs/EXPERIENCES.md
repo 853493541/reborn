@@ -1996,3 +1996,14 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   Env: GAME_SYNC (default 1), GAME_ROLE_ID (default 1001). Manual gsend.hex still works.
 - Next (Phase 3): restart stub, re-trigger client, verify player+0xFDC 4 -> 7 live; if the
   id-10 zeros template is rejected (guard line 0x3624/0x362C), iterate the packet fields.
+
+### 2026-10-05 — V2 P3 Phase 3a: scripted sync LIVE - keepalive works; id-10 template needs +0x4B block
+- Fresh run (client PID 38520): the Phase 2 sequence ran exactly as designed - respond id=0x2FE,
+  SYNC step1 id=4, step2 id=10, keepalive id=10 every 8 s; client pinged steadily and did NOT
+  hit the 12 s reconnect loop anymore. Services restarted first (serverlist/gateway had died).
+- Runtime read: player+0xFDC = 4 -> the id-10 zeros template was rejected at its guard:
+  0x14015A245 parses the packet string block at +0x4B (call 0x14016AD70 -> [rbp-0x39..-0x2D]),
+  then lookup 0x1401391A0(player, [rbp-0x31], [rbp-0x2D]) must return non-null and
+  [client+0x6C] >= [rax+0x3C]; the state-7 write at 0x14015A854 sits behind this chain.
+- Next: decode 0x14016AD70 (what it reads from +0x4B) + the lookup key fields; fill the id-10
+  template accordingly; re-run (keepalive already proven).
