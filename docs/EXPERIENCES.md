@@ -2169,3 +2169,17 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   * appearance/attributes: id-10 +0x54 (packed -> player+0x268/0x26C/0x270/0x2F8/0x2FC/0x320),
     +0x64 (-> player+0xFAC/0xFB0/0xFB4 + list at +0xFB8), +0x6C (-> player+0x1F8/0x208).
 - ACTIVE RULE added to AGENTS.md: NO CLIENT STARTS - static research only (user is playing JX3).
+
+### 2026-10-05 — V2 P3 STATIC: character NAME field found (id-4 +0xB -> player+0x88, 32B)
+- id-4 handler memcpy at 0x14015C440: 32 bytes from packet+0xB -> player+0x88. This is the
+  character name string the client displays (our stub sends zeros -> empty name).
+- Complete identity map for the entry packets:
+  * name: id-4 +0xB (32B) -> player+0x88
+  * map/region: id-4 +0x2C/+0x30 -> client+0x14/+0x18
+  * position: id-4 +0x34/+0x38/+0x3C -> player+0x10/0x14/0x18 (also settable via the id-10
+    +0x4B packed qword through the guard SetPlayerPosition)
+  * appearance/attributes: id-10 +0x54/+0x64/+0x6C packed blocks -> player+0x268.., +0xFAC..,
+    +0x1F8..
+  * id-4 +0xCC/+0xD1/+0xD5 -> player+0x201E8/+0xEE4/+0xEE8 (from the earlier copy block)
+- Loading completion: state 4 -> DoClientConfirmReady (C2S 11-byte confirm) -> state 7 ->
+  server per-player data (S2C id 5) -> scene/loading finish.
