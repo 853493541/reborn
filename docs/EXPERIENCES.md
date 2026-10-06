@@ -4249,3 +4249,16 @@ if the cache/host frames appear.
   `proof/render/lod_vista/{base_t9,nShadowType,fSpeedTreeCullDist,fSimpleModelCullDist}.png`.
 - Outcome: partial - first matrix committed; foliage-rich pose, 8x8 grid for the LOD
   keys and the causal tier fps ladder remain open.
+
+### 2026-10-05 - Engine host - B remainder: foliage pose, 8x8 LOD re-check, tier fps ladder
+
+- Did: parsed the baked foliage bin (FCOL v1) to pick the densest `.foliage` cluster
+  (`(173747,98442)`, 42 instances) and ran the foliage keys there - `nFoliageDensity`
+  0/999 no-op (**load-time**), cull/render toggles marginal (1-2/16 cells). Re-ran the
+  no-op model-LOD keys at the vista with aggressive values on an **8x8** grid: 0/64
+  cells each (inert in the editor host). Measured the causal tier ladder (t=16 s, 20 s
+  runs): house 592/550/352 fps and vista 453/563/333 fps for tiers 1/5/9; hitch <=14 ms.
+- Evidence: `docs/engine_host/LOD_CULL_MATRIX.md`;
+  `proof/render/{foliage,lod8}/` key PNGs; logs `reborn_20261005_18*`.
+- Outcome: B complete (first pass). Remaining open: foliage density map-reload A/B and
+  a close-up pose for the model-LOD keys.

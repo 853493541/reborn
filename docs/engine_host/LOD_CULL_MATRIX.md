@@ -51,12 +51,44 @@ fingerprint).
    instances); `nFoliageDensity` and `nSpeedTreeDensity` likely need a map reload to apply
    (load-time), matching the render-options clamp finding (`nFoliageDensity` clamps at 100).
 
+## Foliage-rich pose (2026-10-05)
+
+Pose `(173747,98442)` = densest `.foliage` cluster (42 instances; parsed from the baked
+`龙门寻宝_foliage_collision.bin`, FCOL v1 instance records). Tier 9, one key per run,
+4×4 diffs vs the same-pose baseline:
+
+| Key | Value | Cells | Verdict |
+|---|---:|---:|---|
+| `bEnableFoliageCull` | 0 | 2/16 | visible (small, local) |
+| `bEnableFoliageRender` | 0 | 1/16 | marginal |
+| `fFoliageCullDist` | 5000 | 1/16 | marginal |
+| `nFoliageDensity` | 0 / 999 | 0/16 | no-op → **load-time** (needs a map reload) |
+
+Evidence: `proof/render/foliage/{base,bEnableFoliageCull_0,bEnableFoliageRender_0}.png`.
+
+## 8×8 re-check of the LOD keys (vista, aggressive values)
+
+`fModelLodRadius=100,100,100,100`, `nMinimumModelLod=3`, `bEnableModelLodViewAngle=0`,
+`fNodeLodLowLimit=10`, `fNodeLodHighLimit=50` → **0/64 cells each**. The model-LOD /
+node-LOD / view-angle keys are inert in the editor host at these poses, through the same
+`RC_OPT_` pipeline that demonstrably works for the shadow/SpeedTree/fog/bloom keys.
+Evidence: `proof/render/lod8/{base,fModelLodRadius_100}.png`.
+
+## Tier fps ladder (t=16 s, 20 s runs, `RC_STARTUP=nodb`)
+
+| Pose | tier 1 | tier 5 | tier 9 | hitch max |
+|---|---:|---:|---:|---:|
+| house | 592 | 550 | 352 | 14 ms |
+| vista | 453 | 563* | 333 | 10 ms |
+
+*noisy ordering at tier 5/vista. Tier 9 costs ~40 % (house) / ~26 % (vista) vs tier 1;
+hitch ≤14 ms across the ladder.
+
 ## Open (next passes)
 
-- Foliage-rich pose: pick a coordinate from the foliage bake bins, re-run the foliage keys
-  + `bEnableFoliage*` toggles; confirm the density clamp and load-time behaviour.
-- Finer fingerprint grid (8×8) + a close-up pose for the LOD keys.
-- Causal fps ladder: tier 1/5/9 × 3 poses at t≥18 s (extend `RENDERING_OPTIONS.md` §4b).
+- Foliage density load-time semantics: confirm with a sandbox map-reload A/B (same
+  pose, density set before `LoadMap`).
+- A zoomed close-up pose for the model-LOD keys (inert at the vista even at 8×8).
 
 ## Reproduce
 
