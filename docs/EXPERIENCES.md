@@ -4275,3 +4275,27 @@ if the cache/host frames appear.
   TrueSky/volumetric-cloud assets, GDB timeline - all registered with re-open criteria).
 - Evidence: `docs/engine_host/RENDERING_OPTIONS.md` §4d; `proof/render/postfx/` key pairs;
   logs `reborn_20261005_1745*`.
+
+### 2026-10-05 - repo - Cleanup: agent/predraw worktree + branch closed after merge
+
+- Removed worktree `Desktop\reborn-iso-predraw` and branch `agent/predraw`
+  (merged into main via `4757ada`, absorbed by `19232f9`; no uncommitted work).
+- Removed the stale feature artifacts from shared bin64:
+  `reborn_client_predraw.exe`, `collision_selftest_reborn_client_predraw.exe`,
+  `build_info_reborn_client_predraw.exe.txt` (built from the pre-merge branch).
+- Main stays at `2d45e16` == `origin/main`; the running canonical/sandbox
+  clients are the `2cbf004` rebuild (docs-only delta since).
+- Local only: not pushed to origin.
+
+### 2026-10-05 - Engine host - C (1.8 leftovers): key-offset generator + boundary closures
+
+- Did: added `tools/render/key_offsets.py` - parses the adapter/UI disasm captures into a
+  key -> struct-offset table (r9-destination + eax-store patterns): **290 keys**, exact on
+  the self-check pairs (`nShadowType 0x5c`, `nEngineGraphicsLevel 0x260`,
+  `fSpeedTreeCullDist 0xa40`) -> `proof/render/key_offsets.tsv`. Probed `configHttpFile`
+  in 10 install binaries (both installs): **0 hits** -> the `Init3DEngine` argument is
+  unused/ignored in this build. Closed the active-config merge owner and the
+  `GpuSwitchOptionTab` consumer as external (no install binary references them).
+- Evidence: `docs/engine_host/RENDERING_OPTIONS.md` §5 items 1-3 resolved;
+  `proof/render/key_offsets.tsv`; `tools/render/key_offsets.py`.
+- Outcome: C complete.

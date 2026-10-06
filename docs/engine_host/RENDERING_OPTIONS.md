@@ -253,15 +253,26 @@ criteria in this section.
 
 ## 5. Open items
 
-1. Which component performs the merge into the active `config.ini` (external
-   launcher/patch tooling vs panel-triggered adapter save); `GpuSwitchOptionTab.tab`
-   consumer not found anywhere in the install (see §2.1).
-2. Full key extraction from the adapter load fn + UI schema fn (a generator can turn the
-   disasm captures into the complete key ↔ offset table); `KGEngineOptionProxyCLR` has no
-   public fields (reflection), so per-key read-back needs the native `GetOption` export or
-   a config-file round-trip.
-3. `configHttpFile.ini` (224 keys): its name is **not** present in the MovieEditor adapter
-   binary (xref negative) — role still unknown; `Init3DEngine` passes it as an argument.
+1. ~~Which component performs the merge into the active `config.ini`~~ **Closed as
+   external (2026-10-05):** the preset file names appear in no install binary (full-install
+   scan, §2.1) and `GpuSwitchOptionTab.tab`'s column names likewise (§5 item 5) — the
+   merge/selection owner is external launcher/patch tooling. Re-open if a launcher binary
+   becomes available locally.
+2. ~~Full key extraction~~ **Done (2026-10-05):** `tools/render/key_offsets.py` parses both
+   annotated disasm captures (adapter load fn + UI schema fn) into
+   `proof/render/key_offsets.tsv` — **290 keys with struct offsets** (r9-destination and
+   eax-store patterns), self-checked against the three known pairs (`nShadowType +0x5c`,
+   `nEngineGraphicsLevel +0x260`, `fSpeedTreeCullDist +0xa40`, all exact). Per-key
+   read-back still needs the native `GetOption` export or a config-file round-trip
+   (unchanged).
+3. ~~`configHttpFile.ini` role~~ **Closed (2026-10-05):** the literal `configHttpFile`
+   appears in **zero** install binaries (adapter/DX11 engine/MovieEditorHD/MovieEngineCLR/
+   KG_EngineEditor/JX3ClientX64, both installs). The owner is the MovieEditor shell's HTTP
+   config feature — `MovieEditor.EditorConfig::get_EnableHttpFile` / `get_HttpConfig`
+   (metadata dump: fields `m_bEnableHttpFile` / `m_strHttpConfig`) — and the path is passed
+   to `Init3DEngine` by the caller. Our host passes `./configHttpFile.ini` (spike recipe);
+   the engine itself never reads the literal, so the argument is inert in this build.
+   Re-open if another build/consumer reads it.
 4. ~~Caps probe done for 6 options at the house pose (§4b); remaining: foliage options at a
    foliage-rich pose, per-LOD-option isolation (P5), weather param semantics + game-time
    source (P4).~~ **Closed for 1.9 (2026-10-05):** post-FX caps matrix at house/vista/field

@@ -26,3 +26,4 @@ MovieEditor engine-hosting research and the M1 milestone docs.
 | `tools/proof/capture_window.ps1` | External window capture (DPI-aware; optional posted key) — needed for overlay proofs the engine screenshot path misses |
 | `tools/proof/run_solo5min.ps1` | M1.7 five-minute solo-run driver (posted I/W/Space/1 keys + captures every 30 s) |
 | `tools/render/preset_census.py` | Parse the 15 shipped graphics presets + editor config → `proof/render/option_matrix.tsv` / `varying.tsv`; deterministic census |
+| `tools/render/key_offsets.py` | Extract config-key → engine-struct offset candidates from the annotated disasm captures → `proof/render/key_offsets.tsv` (290 keys, self-checked) |
