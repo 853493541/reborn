@@ -316,6 +316,7 @@ static int installInlineHook(HMODULE mod, DWORD rva, void* hook, BYTE* saved,
 static HWND g_hostHwnd = NULL;
 static volatile LONG g_flagWatchArmed = 0;
 static volatile LONG g_movieWatchArmed = 0;
+static void* g_engineInstance = NULL;
 static volatile LONG g_flagWatchHit = 0;
 static BYTE g_ctwSaved[32];
 static BYTE* g_ctwTramp = NULL;
@@ -1882,10 +1883,12 @@ int main(void)
             long r = ((InitFn)ivt[0])(engIface, NULL, 4);
             logf("[host] iface->vt[0](0,4) -> %ld", r);
         }
+        // (g_engineInstance is set below once the engine instance is known)
         typedef void* (__stdcall *GetEngine2Fn)(void);
         engine = ((GetEngine2Fn)GetProcAddress(eng, "KG3D_GetEngine2"))();
     }
     logf("[host] engine instance=%p", engine);
+    g_engineInstance = engine;
     if (engine == NULL) return 4;
     __try
     {
@@ -3355,6 +3358,42 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] frame60: hash probe fault"); }
+                        // probe the engine's map manager ([engine+0x2B18]) - the map
+                        // object is needed by the map saver (KG3DEngineX64+0x35BE00)
+                        __try
+                        {
+                            // the engine instance global (set at startup):
+                            // the manager = [instance+0x2B18]
+                            void* inst = g_engineInstance;
+                            if (inst != NULL)
+                            {
+                                void* mm2 = *(void**)((BYTE*)inst + 0x2B18);
+                                logf("[host] frame60: engine inst=%p mapMgr=%p", inst, mm2);
+                                if (mm2 != NULL)
+                                {
+                                    int k3;
+                                    for (k3 = 0; k3 < 8; k3++)
+                                        logf("[host] frame60:   mm[+0x%X]=%p", k3 * 8,
+                                             *(void**)((BYTE*)mm2 + k3 * 8));
+                                    // try the engine's own map saver
+                                    // (KG3DEngineX64+0x35BE00) on the map object
+                                    // ([mapMgr+0x10]) to produce the compiled
+                                    // .map the destination scene needs.
+                                    HMODULE x64 = GetModuleHandleA("KG3DEngineX64.dll");
+                                    logf("[host] frame60: KG3DEngineX64=%p", x64);
+                                    void* map0 = *(void**)((BYTE*)mm2 + 0x10);
+                                    if (x64 != NULL && map0 != NULL)
+                                    {
+                                        long sr = ((long (__fastcall *)(void*, const char*, int))
+                                                   ((BYTE*)x64 + 0x35BE00))(map0, "a\\a.map", 0);
+                                        logf("[host] frame60: map saver -> 0x%08X (map=%p)",
+                                             (unsigned)sr, map0);
+                                    }
+                                }
+                            }
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: map mgr probe fault"); }
                         // The adapter's movie context (created by the adapter movie
                         // init, stored at adapter+0x2F5050) is what the movie
                         // engine's methods expect at [movie+0x38]; the skipped game

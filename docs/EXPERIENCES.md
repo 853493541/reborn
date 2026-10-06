@@ -2531,3 +2531,21 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   (from the map manager [engine+0x2B18]) and the name "a\a.map" to produce the compiled
   map the destination load needs - then the shadow scene loads and InitShadowScene
   proceeds. Evidence: host_exe104-108.out.
+
+## 2026-10-04 - Gate 1: rcdata discovered (jx3bd.rc); compiled-map requirement stands; engine map manager probed
+
+- Extracted from the paks into the sandbox: `data\rcdata\jx3bd.rc` (1.64 MB - the RC
+  resource container the map's `bd\<map>.rcidx` references via
+  `{"RCEffectName":"jx3bd"}`) and `data\rcdata\shadowparam\shadowparam.json`.
+- The destination-scene load still requires the COMPILED map
+  (`dwMask == 0x10203040`, line 903) - the RC files alone do not change the path.
+- Compiled `.map` sweep: 60+ candidate pak paths probed via PakV4SfxExtract (all NOT
+  FOUND) - the client ships no compiled maps; the saver lives in KG3DEngineX64.dll
+  (0x35BE00) which the client process does NOT load (GetModuleHandle = 0).
+- Engine map manager probed at runtime: [engineInstance+0x2B18] -> a heap object whose
+  [+0x10] is the likely map object; the saver needs KG3DEngineX64 (absent).
+- Remaining paths: (a) the real field name may resolve through the RC system
+  (jx3bd) rather than a file - test RC-based names; (b) load KG3DEngineX64.dll in the
+  host and use its saver to compile the map (the editor's own path) - then the
+  destination load finds the compiled map.
+- Evidence: host_exe109-112.out, map_probe_out5.
