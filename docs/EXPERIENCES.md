@@ -4236,3 +4236,16 @@ if the cache/host frames appear.
 - Main stays at `2d45e16` == `origin/main`; the running canonical/sandbox
   clients are the `2cbf004` rebuild (docs-only delta since).
 - Local only: not pushed to origin.
+
+### 2026-10-05 - Engine host - C (1.8 leftovers): key-offset generator + boundary closures
+
+- Did: added `tools/render/key_offsets.py` - parses the adapter/UI disasm captures into a
+  key -> struct-offset table (r9-destination + eax-store patterns): **290 keys**, exact on
+  the self-check pairs (`nShadowType 0x5c`, `nEngineGraphicsLevel 0x260`,
+  `fSpeedTreeCullDist 0xa40`) -> `proof/render/key_offsets.tsv`. Probed `configHttpFile`
+  in 10 install binaries (both installs): **0 hits** -> the `Init3DEngine` argument is
+  unused/ignored in this build. Closed the active-config merge owner and the
+  `GpuSwitchOptionTab` consumer as external (no install binary references them).
+- Evidence: `docs/engine_host/RENDERING_OPTIONS.md` §5 items 1-3 resolved;
+  `proof/render/key_offsets.tsv`; `tools/render/key_offsets.py`.
+- Outcome: C complete.
