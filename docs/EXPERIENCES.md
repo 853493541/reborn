@@ -4271,3 +4271,30 @@ if the cache/host frames appear.
 - Next: Phase 2 per-ability verification on the control set (FLWS, 临时飞爪,
   如意法, the 5 conflicts, the dash-layer rows), then Phase 3 `.Sfx` per-file
   re-test / direct SFX-manager wiring decision.
+
+### 2026-10-05 — v5 — staged-data inheritance + process decoupling (Phase 1 completed on the full baseline)
+
+- Found that `main`/`agent/v2` carry only 1 staged process; the 149 staged
+  abilities (PROCESS timelines, `skill_data.json` icons/desc, `build_skill_data.py`)
+  live on `agent/skillv2-sandbox`. Inherited that `ability_picker/` state into v5
+  (`git checkout agent/skillv2-sandbox -- ability_picker/`) and re-applied the
+  authoritative resolver on top.
+- Coupling bug found and fixed: `apply_overrides` attached a process only when the
+  row had a `matched` animation (`if e.get("matched")`), so dropping the three
+  heuristics silently removed the staged processes of 68 abilities. The host
+  (`RebornClient.loadFeiZhua`) reads the FIRST row per name, so the attach is now
+  "first row per name" and independent of the animation match. Result: all 149
+  process rows preserved, one per name.
+- Also noticed the map-viewer ability cache drifted since the committed dataset
+  (different ability keys for the same names), so the regen is compared to the
+  committed dataset by name, not key.
+- Regen (in place, idempotent): 383 abilities, 307 with tani candidates, 152
+  matched (dig 77 + dig-cat 54, tag 14, dash 7, 231 unresolved), 149 processes.
+- Evidence: `ability_picker/data/ability_candidates.json` (149 processes);
+  regen stdout "match sources: ..."; commit `9e582db`.
+- Next (Phase 2): per-ability verification of the control set against the tables
+  (anchors gathered: FLWS 1645 -> tag 719 -> F1s07cj重剑技能15_风来吴山HD.tani;
+  skills.tab col 57 `ScriptFile` = the skill's own Lua, extracted under
+  `ability-matcher/extracted/scripts/skill/`; `character_sfx.txt` = SkillID/ID ->
+  cast/target PSS; `skill_chain.txt` = chain PSS; Buff.tab `RepresentID` for
+  buff-sourced representations).

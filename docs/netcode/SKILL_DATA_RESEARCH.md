@@ -215,6 +215,12 @@ Rerun (deterministic; idempotent apart from `generatedAt`):
 
 Current regen: 383 abilities, 307 with tani candidates, 152 matched
 (dig 77 + dig-cat 54 curated, tag 14, dash 7 authoritative, 231 unresolved).
+The staged-PROCESS baseline (149 authored timelines, plus `skill_data.json`
+icons/descriptions and `build_skill_data.py`) is inherited from
+`agent/skillv2-sandbox`; the process attach is decoupled from the animation
+match - it attaches to the first row per name (the row the host reads), so the
+authoritative resolver dropping a heuristic match never removes a staged
+process.
 
 Known limits (next verification step): `skill_tag` covers 289 skill ids and
 `skill_dash` 76 - the rest of the game's animation selection (skill scripts,
