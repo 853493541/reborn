@@ -4225,3 +4225,24 @@ if the cache/host frames appear.
   attribution still works via the `build=` fingerprints, but the name should
   gain a PID/ms suffix.
 - Local only: not pushed to origin.
+
+### 2026-10-05 - Engine host - A1 day-night: managed API decoded, effect is install/data-bound
+
+- Did: extended the `RC_API_DUMP` filter (time/weather/env keywords), then added
+  reflection probes (`RC_ENV_PROBE=1/2/3`) that recovered the exact managed surface:
+  `KGSceneCLR.Set/GetTrueSkyDayTime(float)` (getter stuck at 0.5), season
+  relative-year time + `Set/GetSeasonParam` (values stick), `CreateGDBTimelineCurveFromFile`
+  + interpolation (E_FAIL, no timeline), `ResetEnvironment(dir)`, and the
+  `KG_EnvironmentCLR` surface (225 methods: `SetRealSystemDayTime/Timezone/MaxSun/
+  MaxMoonLightIntensity`, directional lights, wind, fog volumes, clouds, lens flares).
+  Decoded the map's `dayNightCycle` object - the shipped HD env authors **all
+  Max* intensities = 0**.
+- Tried: day-time sweeps via TrueSky and real-system setters, season params, sun
+  arcball, GDB interpolation, and an `RC_ENV_DIR` override (`ResetEnvironment` rc=0,
+  MaxSun=6). **All frames identical within noise** (`proof/render/daynight/`).
+- Outcome: boundary (HIGH) - the day-night effect needs the TrueSky module
+  (`KG3D_TrueSkyX64.dll` exists only in the game client, not in MovieEditor;
+  install read-only) and/or authored nonzero `dayNightCycle` intensities / a GDB
+  timeline (0/56 probe paths). Knobs kept: `RC_DAYTIME`, `RC_ENV_DIR`. Re-open when
+  TrueSky ships in the editor install or map data authors the cycle.
+- Evidence: `docs/engine_host/RENDERING_OPTIONS.md` §4d; logs `reborn_20261005_17*`.

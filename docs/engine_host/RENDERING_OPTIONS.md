@@ -167,6 +167,38 @@ option + game-time source. Open: 12-float param semantics, time-of-day source,
 `bShowTrueSky` (KG3D_TrueSkyX64.dll absent from the editor install — likely no-op here),
 volumetricCloud asset absent (non-fatal).
 
+### 4d. Day-night API decode + boundary (A1, 2026-10-05, `agent/weather-daynight`)
+
+Managed surface recovered via `RC_ENV_PROBE` (reflection, no guessing):
+
+- `KGSceneCLR`: `SetTrueSkyDayTime(float)` / `GetTrueSkyDayTime()` — the getter is stuck
+  at **0.5** and the setter is a no-op (TrueSky module absent); `Update/GetSeasonRelativeYearTime`
+  (values **stick**: 0.25 → 0.25), `Set/GetSeasonParam(bool,float,float)` (stick),
+  `CreateGDBTimelineCurveFromFile(dir)` / `SetGlobalDynamicEnvTimelineInterpolationForAllTimelineKey`
+  (**E_FAIL** — no timeline file ships), `EnableSunLightArcBall`, `ResetEnvironment(dir)`,
+  `GetEnvironment()`.
+- `KG_EnvironmentCLR` (225 methods): `SetRealSystemDayTime`/`Timezone`/`MaxSunLightIntensity`/
+  `MaxMoonLightIntensity` (values **stick**, initial sunMax/moonMax = 0),
+  `SetEnvDirectionalLightParameters`, `SetWindParameters` (16), `SetFogVolumeParam`,
+  `SetCloudParameters`, lens flares, indirect-light volumes.
+- Map data: `environment.json` has a full `dayNightCycle` object (`CurrentDate`, `Latitude`,
+  `Longitude`, `time`, `Timezone`, `StarTrailsEnable`, `MaxMilkyWayIntensity`,
+  `MaxSunLightIntensity`, `MaxMoonLightIntensity`, `MaxStarDensity/Twinkle/Intensity`,
+  `MaxMoonOpacity`) — the shipped HD env authors **all Max\* intensities = 0**.
+
+**Boundary (HIGH): day-night is inert in the editor host.**
+1. authored `dayNightCycle.Max*` intensities are zero;
+2. `KG3D_TrueSkyX64.dll` exists only in the game client (`zhcn_hd\bin64`), not in
+   MovieEditor — install read-only forbids copying it;
+3. no GDB timeline file ships (0/56 probe paths) → interpolation call E_FAILs;
+4. day-time sweeps (TrueSky + real-system), season params, and an `RC_ENV_DIR` override
+   (`ResetEnvironment` rc=0, MaxSun=6) all leave the rendered frame identical
+   (`proof/render/daynight/`, per-region RGB within noise).
+
+Knobs kept: `RC_DAYTIME=<0..1>` (real-system + TrueSky setters, logged) and
+`RC_ENV_DIR=<dir>` (host-side environment override). Re-open when TrueSky ships in the
+editor install, a map authors nonzero dayNightCycle intensities, or a GDB timeline exists.
+
 ## 5. Open items
 
 1. Which component performs the merge into the active `config.ini` (external

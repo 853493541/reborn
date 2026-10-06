@@ -420,7 +420,140 @@ internal static class RebornClient
         }
         Log("LoadMap result=" + loadResult + " ms=" + mMap);
         if (loadResult < 0) { Log("FATAL: LoadMap failed"); return; }
+        // Environment data override (weather workstream A1): apply a host-side
+        // copy of environment.json/playerEnvironment.json via ResetEnvironment
+        // (no install write). Used to drive dayNightCycle authored values.
+        if (Env("RC_ENV_DIR", "") != "")
+        {
+            try
+            {
+                int rr = scene.ResetEnvironment(Env("RC_ENV_DIR", ""));
+                Log("env override dir=" + Env("RC_ENV_DIR", "") + " rc=" + rr);
+            }
+            catch (Exception e) { Log("env override ex: " + e.Message); }
+        }
         scene.SetActiveEnvironment();
+        // Environment/day-night recon probe (weather workstream): exact managed
+        // signatures + the active dynamic-environment timeline path.
+        if (Env("RC_ENV_PROBE", "0") == "1")
+        {
+            try
+            {
+                Type st = typeof(KGSceneCLR);
+                string[] names = new string[] { "SetTrueSkyDayTime", "GetTrueSkyDayTime",
+                    "UpdateSeasonRelativeYearTime", "GetSeasonRelativeYearTime",
+                    "SetSeasonParam", "GetSeasonParam", "CreateGDBTimelineCurveFromFile",
+                    "SetGlobalDynamicEnvTimelineInterpolationForAllTimelineKey",
+                    "GetGlobalDynamicEnvTimelineInterpolationForAllTimelineKey",
+                    "GetCurrentGDBTimelineCurvePath", "EnableSunLightArcBall",
+                    "SetActiveEnvironment", "ResetEnvironment", "GetEnvironment" };
+                foreach (string mn in names)
+                {
+                    foreach (System.Reflection.MethodInfo mi in st.GetMethods())
+                    {
+                        if (mi.Name != mn) continue;
+                        string ps = "";
+                        foreach (System.Reflection.ParameterInfo pi in mi.GetParameters())
+                            ps += pi.ParameterType.Name + " " + pi.Name + ", ";
+                        Log("envprobe sig " + mn + " -> " + mi.ReturnType.Name + " (" + ps + ")");
+                    }
+                }
+                try
+                {
+                    object p = st.InvokeMember("GetCurrentGDBTimelineCurvePath",
+                        System.Reflection.BindingFlags.InvokeMethod, null, scene, new object[0]);
+                    Log("envprobe gdbTimeline=" + (p == null ? "(null)" : p.ToString()));
+                }
+                catch (Exception e) { Log("envprobe gdbTimeline ex: " + e.Message); }
+                try
+                {
+                    object t = st.InvokeMember("GetTrueSkyDayTime",
+                        System.Reflection.BindingFlags.InvokeMethod, null, scene, new object[0]);
+                    Log("envprobe trueSkyDayTime=" + (t == null ? "(null)" : t.ToString()));
+                }
+                catch (Exception e) { Log("envprobe trueSkyDayTime ex: " + e.Message); }
+            }
+            catch (Exception e) { Log("envprobe ex: " + e.Message); }
+        }
+        // Environment phase-2 probe: seasonal time/params, sun arcball, GDB
+        // interpolation + the KG_EnvironmentCLR method surface (A1 candidates).
+        if (Env("RC_ENV_PROBE", "0") == "2")
+        {
+            try
+            {
+                object env = scene.GetEnvironment();
+                if (env != null)
+                {
+                    foreach (System.Reflection.MethodInfo mi in env.GetType().GetMethods(
+                        System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance))
+                    {
+                        if (mi.DeclaringType == typeof(object)) continue;
+                        string ps = "";
+                        foreach (System.Reflection.ParameterInfo pi in mi.GetParameters())
+                            ps += pi.ParameterType.Name + ",";
+                        Log("envobj " + mi.Name + " -> " + mi.ReturnType.Name + " (" + ps + ")");
+                    }
+                }
+                int sr1 = scene.UpdateSeasonRelativeYearTime(0.25f);
+                Log(string.Format("season relative set rc={0} get={1:F3}", sr1, scene.GetSeasonRelativeYearTime()));
+                scene.SetSeasonParam(true, 0.25f, 1.0f);
+                bool be = false; float st = 0f, si = 0f;
+                scene.GetSeasonParam(ref be, ref st, ref si);
+                Log(string.Format("season param enable={0} time={1:F3} intensity={2:F3}", be, st, si));
+                int sr2 = scene.EnableSunLightArcBall(1);
+                Log("sunArcBall rc=" + sr2);
+                int sr3 = scene.SetGlobalDynamicEnvTimelineInterpolationForAllTimelineKey(1.0f);
+                Log(string.Format("gdbInterp rc={0} get={1:F3}", sr3, scene.GetGlobalDynamicEnvTimelineInterpolationForAllTimelineKey()));
+            }
+            catch (Exception e) { Log("envprobe2 ex: " + e.Message); }
+        }
+        // Phase-3 probe: real-system day time + sun/moon intensity together.
+        if (Env("RC_ENV_PROBE", "0") == "3")
+        {
+            try
+            {
+                object env = scene.GetEnvironment();
+                Type et = env.GetType();
+                Log(string.Format("envprobe3 init dayTime={0} tz={1} sunMax={2} moonMax={3}",
+                    InvokeEnv(et, env, "GetRealSystemDayTime"),
+                    InvokeEnv(et, env, "GetRealSystemTimezone"),
+                    InvokeEnv(et, env, "GetRealSystemMaxSunLightIntensity"),
+                    InvokeEnv(et, env, "GetRealSystemMaxMoonLightIntensity")));
+                InvokeEnv(et, env, "SetRealSystemTimezone", 0f);
+                InvokeEnv(et, env, "SetRealSystemDayTime", 0.25f);
+                InvokeEnv(et, env, "SetRealSystemMaxSunLightIntensity", 6.0f);
+                InvokeEnv(et, env, "SetRealSystemMaxMoonLightIntensity", 0.37f);
+                Log(string.Format("envprobe3 after dayTime={0} sunMax={1} moonMax={2}",
+                    InvokeEnv(et, env, "GetRealSystemDayTime"),
+                    InvokeEnv(et, env, "GetRealSystemMaxSunLightIntensity"),
+                    InvokeEnv(et, env, "GetRealSystemMaxMoonLightIntensity")));
+            }
+            catch (Exception e) { Log("envprobe3 ex: " + e.Message); }
+        }
+        // Day-time knob (weather workstream A1): the environment object's
+        // real-system day time is the day-night driver (RC_ENV_PROBE dump);
+        // SetTrueSkyDayTime is a no-op without KG3D_TrueSkyX64.dll (game-client only).
+        if (Env("RC_DAYTIME", "") != "")
+        {
+            float v;
+            if (float.TryParse(Env("RC_DAYTIME", "0.5"), out v))
+            {
+                try
+                {
+                    object env = scene.GetEnvironment();
+                    if (env != null)
+                    {
+                        InvokeEnv(env.GetType(), env, "SetRealSystemDayTime", v);
+                        InvokeEnv(env.GetType(), env, "SetRealSystemTimezone", 0f);
+                        object g = InvokeEnv(env.GetType(), env, "GetRealSystemDayTime");
+                        Log(string.Format("daytime real-system set {0:F3} -> get {1}", v, g));
+                    }
+                    scene.SetTrueSkyDayTime(v);
+                    Log(string.Format("daytime truesky set {0:F3} -> get {1:F3}", v, scene.GetTrueSkyDayTime()));
+                }
+                catch (Exception e) { Log("daytime ex: " + e.Message); }
+            }
+        }
         long winId = scene.AddOutputWindow("", panel.Handle.ToInt64(), 0);
         Log("winId=" + winId);
 
@@ -4185,6 +4318,19 @@ internal static class RebornClient
 
     // Recon helper: log the public managed methods whose name matters for the
     // player / visibility / near-plane paths.
+    // Reflection invoke by name+arity for the KG_EnvironmentCLR surface
+    // (no compile-time signature needed for recon probes).
+    static object InvokeEnv(Type t, object o, string name, params object[] args)
+    {
+        foreach (System.Reflection.MethodInfo mi in t.GetMethods())
+        {
+            if (mi.Name != name) continue;
+            if (mi.GetParameters().Length != args.Length) continue;
+            try { return mi.Invoke(o, args); } catch { }
+        }
+        return null;
+    }
+
     static void DumpApi(string label, Type t)
     {
         System.Reflection.MethodInfo[] ms = t.GetMethods(
@@ -4198,7 +4344,15 @@ internal static class RebornClient
                 n.IndexOf("Visible", StringComparison.OrdinalIgnoreCase) >= 0 ||
                 n.IndexOf("Camera", StringComparison.OrdinalIgnoreCase) >= 0 ||
                 n.IndexOf("View", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                n.IndexOf("Object", StringComparison.OrdinalIgnoreCase) >= 0)
+                n.IndexOf("Object", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Time", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Weather", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Day", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Environment", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Sky", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Cloud", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Season", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Light", StringComparison.OrdinalIgnoreCase) >= 0)
                 Log("api " + label + "." + n + "(" + mi.ReturnType.Name + ")");
         }
     }
