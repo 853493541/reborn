@@ -4236,3 +4236,38 @@ if the cache/host frames appear.
 - Main stays at `2d45e16` == `origin/main`; the running canonical/sandbox
   clients are the `2cbf004` rebuild (docs-only delta since).
 - Local only: not pushed to origin.
+
+### 2026-10-05 — v5 fork (agent/skillv5-sandbox) — sandbox process corrected: authoritative ability→animation mapping
+
+- Context: the client-stack pivot (agent/skillv2-sandbox) is parked; a fresh v5
+  worktree off main resumes the **MovieEditor sandbox** with a corrected skill
+  process. Verified the triggering claims before acting:
+  - FLWS "plays fully" = base `.ani` + host PSS + host WAV (`docs/audio/SOUND_PATH.md:77-85`;
+    dataset process row for 风来吴山 does not use the tani/.Sfx; sound via winmm);
+  - "MovieEditor cannot play .Sfx" was over-generalized: ME 09-14 AVs on
+    `c纯阳坐忘.Sfx` but several other .Sfx create cleanly per-file
+    (skillv2 EXPERIENCES:836-859); the client 09-27 engine creates the AV'ing file
+    cleanly (skillv2 EXPERIENCES:1063-1066) → build/format mismatch, not a wall;
+  - the mapping pipeline was heuristic (`name_match`/`body_match`/`wem_stem_match`
+    + token `tag_match`) and the staged PROCESS plays substituted base `.ani` -
+    both flagged and now addressed.
+- Did (Phase 1): rewrote `ability_picker/tools/build_candidates.py` resolution to
+  authoritative tables only - `skills.tab` (name→id, incl. `道具_`/`绝境_` variants)
+  → `skill_tag.txt`/`skill_dash.txt` (id→AnimationID) →
+  `player_animation_f1.txt` (AnimationID→F1 tani). Dropped `name_match`,
+  `body_match`, `wem_stem_match` and the token `tag_match`; curated dig layer kept
+  (labeled); unresolved rows stay `matched=""` (no guesses). Regenerated
+  `ability_picker/data/ability_candidates.json` (idempotent).
+- Verification anchor: 风来吴山 id 1645 → tag anim 719 →
+  `data\source\player\F1\动作\F1s07cj重剑技能15_风来吴山HD.tani`.
+- Result: 383 abilities, 307 with tani candidates, 152 matched (dig 77 + dig-cat 54,
+  tag 14, dash 7, 231 unresolved), vs the old heuristic set (name 75 + wem/tag 6).
+  147 matched paths changed; 5 authoritative-vs-heuristic conflicts to verify in
+  Phase 2 (e.g. 蛊虫献祭 tag:2226/820 → `F1swd08牺牲01_粉身碎骨.tani`, 玄水蛊
+  tag:3702/810 → `F1swd08蛊攻击11_万蛊蚀心.tani`; dash-layer clips are movement
+  clips for some rows - verify per ability before trusting).
+- Evidence: regen output (383/307/152, sources dig=77, dig-cat=54, tag=14, dash=7);
+  `docs/netcode/SKILL_DATA_RESEARCH.md` "Authoritative ability → animation mapping".
+- Next: Phase 2 per-ability verification on the control set (FLWS, 临时飞爪,
+  如意法, the 5 conflicts, the dash-layer rows), then Phase 3 `.Sfx` per-file
+  re-test / direct SFX-manager wiring decision.

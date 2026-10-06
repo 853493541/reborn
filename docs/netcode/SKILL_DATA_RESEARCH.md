@@ -181,3 +181,42 @@ Cross-checks: 太阴指 16 × 60 = 960 units = **15尺**; 斗转星移 6 × 128 
 Conversion summary: **units = 尺 × 64** (and our measured animation root motion of
 157 units for 太阴指 was the in-place animation sway, not the 960-unit script dash).
 
+
+## Authoritative ability → animation mapping (v5, 2026-10-05)
+
+The ability-picker candidate pipeline previously resolved a skill's F1 animation
+with heuristics (`name_match`, `body_match`, `wem_stem_match`) and a token-based
+`tag_match` (map-viewer cache + guesses). That violated AGENTS §6 and produced
+rows where the mapped clip only shared a substring with the ability name.
+
+The corrected resolver (`ability_picker/tools/build_candidates.py`) uses only the
+client's own tables (extracted read-only into
+`SeasunDownloaderV2.4\jx3-web-map-viewer\cache-extraction\pakv4-probe\`):
+
+| Layer | Table | Key → value |
+|---|---|---|
+| name → id | `ad-desc-probe-out\settings\skill\skills.tab` | `SkillName` (incl. `道具_`/`绝境_` variants) → `SkillID` |
+| id → anim | `skill-tables-out\Represent\skill\skill_tag.txt` | `SkillID` → `AnimationID` (+ RoleType/SkillType/DeathTag) |
+| id → anim | `skill-tables-out\Represent\skill\skill_dash.txt` | `SkillID` → `AnimationID` (dash movement clips) |
+| anim → clip | `player-animation-out\Represent\player\player_animation_f1.txt` | `AnimationID` → F1 `.tani` (`AnimationFile`, col 6) |
+
+Resolution order per ability: curated dig layer (proven chains, labeled `dig`) →
+`tag:<skillid>/<animid>` → `dash:<skillid>/<animid>`; no heuristics. Unresolved
+rows stay `matched=""` (marked, not guessed).
+
+Verification anchor: 风来吴山 = base skill `1645` → `skill_tag` anim `719` →
+`data\source\player\F1\动作\F1s07cj重剑技能15_风来吴山HD.tani` (the exact clip).
+
+Rerun (deterministic; idempotent apart from `generatedAt`):
+
+```powershell
+.venv\Scripts\python.exe ability_picker\tools\build_candidates.py
+```
+
+Current regen: 383 abilities, 307 with tani candidates, 152 matched
+(dig 77 + dig-cat 54 curated, tag 14, dash 7 authoritative, 231 unresolved).
+
+Known limits (next verification step): `skill_tag` covers 289 skill ids and
+`skill_dash` 76 - the rest of the game's animation selection (skill scripts,
+buff-sourced animations, default cast/attack clips by KindType/FunctionType) is
+not yet mapped; those rows stay unresolved rather than heuristically matched.

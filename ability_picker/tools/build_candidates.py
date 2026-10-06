@@ -464,7 +464,6 @@ def apply_overrides(all_entries: list) -> None:
 
 F1_DIR = r"data\source\player\f1\动作"
 TANI_RT = r"C:\SeasunGame\MovieEditor\ResourcePack\Tani.rt"
-BAD_TOKENS = {"技能", "攻击", "武器", "普通", "待机", "行走", "奔跑", "死亡"}
 
 
 def load_catalog_f1() -> list:
@@ -488,129 +487,76 @@ def catalog_find(pref: str, catalog: list) -> str:
     return hits[0]
 
 
-WEMS_INDEX = r"C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4\jx3-web-map-viewer\log\wwise-soundbank-index.json"
-
-
-def load_wems_index() -> dict:
-    """wwise wem id -> source wav name (the name mirrors the tani clip stem)"""
-    if not os.path.exists(WEMS_INDEX):
-        return {}
-    try:
-        return json.load(open(WEMS_INDEX, encoding="utf-8")).get("wems") or {}
-    except Exception:
-        return {}
-
-
 def load_tables(base: str):
-    rows = [r.split("\t") for r in
-            open(os.path.join(base, "ad-desc-probe-out", "settings", "skill", "skills.tab"),
-                 encoding="gb18030", errors="replace").read().splitlines()[1:]
-            if len(r.split("\t")) > 99]
+    """Authoritative skill tables (client's own, extracted read-only).
+
+    - skills.tab          SkillName -> SkillID (+ the prefixed variants)
+    - skill_tag.txt       SkillID -> AnimationID (represent tag layer)
+    - skill_dash.txt      SkillID -> AnimationID (dash layer)
+    - player_animation_f1 AnimationID -> F1 action filename
+    """
+    skill_ids_by_name: dict[str, list] = {}
+    for r in open(os.path.join(base, "ad-desc-probe-out", "settings", "skill", "skills.tab"),
+                  encoding="gb18030", errors="replace").read().splitlines()[1:]:
+        c = r.split("\t")
+        if len(c) > 2 and c[0] and c[1]:
+            skill_ids_by_name.setdefault(c[0], []).append(c[1])
     tag: dict[str, list] = {}
     for ln in open(os.path.join(base, "skill-tables-out", "Represent", "skill", "skill_tag.txt"),
                    encoding="gb18030", errors="replace").read().splitlines()[1:]:
         c = ln.split("\t")
-        if len(c) >= 3:
+        if len(c) >= 3 and c[0] and c[1]:
             tag.setdefault(c[0], []).append(c[1])
+    dash: dict[str, list] = {}
+    dp = os.path.join(base, "skill-tables-out", "Represent", "skill", "skill_dash.txt")
+    if os.path.exists(dp):
+        for ln in open(dp, encoding="gb18030", errors="replace").read().splitlines()[1:]:
+            c = ln.split("\t")
+            if len(c) >= 2 and c[0] and c[1]:
+                dash.setdefault(c[0], []).append(c[1])
     anim: dict[str, list] = {}
     for ln in open(os.path.join(base, "player-animation-out", "Represent", "player", "player_animation_f1.txt"),
                    encoding="gb18030", errors="replace").read().splitlines()[1:]:
         c = ln.split("\t")
         if len(c) >= 7 and c[0] and c[6]:
             anim.setdefault(c[0], []).append(c[6].replace("/", "\\").split("\\")[-1])
-    return rows, tag, anim
+    return skill_ids_by_name, tag, dash, anim
 
 
-def tag_match(name: str, rows, tag, anim) -> str:
-    """skill_tag exact layer: a skills.tab row related to the ability whose
-    tagged animation filename shares a distinctive token with the ability."""
-    ids = set()
-    for r in rows:
-        n = r[0]
-        if n.startswith(("道具_", "道具·", "绝境_", "绝境·", "伪传_", "伪传·")):
-            continue
-        if n == name or (name in n and len(n) <= len(name) + 12):
-            ids.add(r[1])
-    toks = {name[i:i + 2] for i in range(len(name) - 1)} - BAD_TOKENS
-    best = ""
-    for i in ids:
-        for a in tag.get(i, []):
-            for f in anim.get(a, []):
-                if any(t in f for t in toks) and ("\\f1\\" in f.lower() or f.lower().lstrip("_").startswith("f1")):
-                    if not best or len(f) < len(best):
-                        best = f
-    return best
+def auth_resolve(names: list, ids: list, skill_ids_by_name: dict, tag: dict,
+                 dash: dict, anim: dict) -> tuple:
+    """Authoritative skill -> AnimationID -> F1 path.
+
+    Candidate skill ids: the dataset's own ids first, then every id whose
+    skills.tab SkillName equals one of the ability's names. Resolution only
+    through the game's own tables (skill_tag, skill_dash, player_animation_f1);
+    no name/body/wem heuristics.
+    """
+    cand_ids: list = []
+    for sid in ids or []:
+        if str(sid) and str(sid) not in cand_ids:
+            cand_ids.append(str(sid))
+    for n in names or []:
+        for sid in skill_ids_by_name.get(n, []):
+            if sid not in cand_ids:
+                cand_ids.append(sid)
+    for sid in cand_ids:
+        for aid in tag.get(sid, []):
+            files = anim.get(aid, [])
+            if files:
+                return F1_DIR + "\\" + files[0], "tag:%s/%s" % (sid, aid)
+        for aid in dash.get(sid, []):
+            files = anim.get(aid, [])
+            if files:
+                return F1_DIR + "\\" + files[0], "dash:%s/%s" % (sid, aid)
+    return "", ""
 
 
-def name_match(name: str, tanis: list) -> str:
-    """conservative fallback: only when the ability name itself is in an f1
-    filename; prefers plain over 皮肤/悟 and the lowest phase number."""
-    cands = [t for t in tanis if "\\f1\\" in t.lower()]
-    named = [t for t in cands if name in t.replace("/", "\\").split("\\")[-1]]
-    if not named:
-        return ""
-    def score(t: str):
-        fn = t.replace("/", "\\").split("\\")[-1]
-        s = 0
-        if "_悟" in fn:
-            s += 100
-        if "皮肤" in fn:
-            s += 50
-        m = re.search(r"(\d{2})", fn)
-        s += int(m.group(1)) if m else 20
-        return (s, len(fn))
-    named.sort(key=score)
-    return named[0]
-
-
-def body_match(name: str, tanis: list) -> str:
-    """named clip on another body (borrow to f1, per the locked rule).
-    conservative: name must be in the filename; skips demo/皮肤, prefers non-悟
-    and the smallest body/phase."""
-    cands = [t for t in tanis if name in t.replace("/", "\\").split("\\")[-1] and "演武" not in t]
-    if not cands:
-        return ""
-    def score(t: str):
-        low = t.lower()
-        fn = t.replace("/", "\\").split("\\")[-1]
-        s = 0
-        if "_悟" in fn:
-            s += 100
-        if "皮肤" in fn:
-            s += 50
-        if "\\m1\\" in low:
-            s += 1
-        elif "\\m2\\" in low:
-            s += 2
-        elif "\\f2\\" in low:
-            s += 3
-        m = re.search(r"(\d{2})", fn)
-        s += int(m.group(1)) if m else 20
-        return (s, len(fn))
-    cands.sort(key=score)
-    return cands[0]
-
-
-def wem_stem_match(name: str, confirmed: list, wems_idx: dict, catalog: list) -> str:
-    """a human-confirmed wem whose source name is a tani clip stem proves the
-    animation (e.g. F1s16lxglianjineng08_hd.wav -> F1s16lxg链技能08_hd.tani)"""
-    if not wems_idx or not confirmed:
-        return ""
-    for wem in confirmed:
-        info = wems_idx.get(str(wem)) or {}
-        src = (info.get("name") or "").replace("/", "\\").split("\\")[-1]
-        if not src.lower().endswith(".wav"):
-            continue
-        stem = src[:-4]
-        if not stem:
-            continue
-        fn = catalog_find(stem, catalog)
-        if fn:
-            return F1_DIR + "\\" + fn
-    return ""
-
-
-def resolve_matched(name: str, tanis: list, rows, tag, anim, catalog: list, wems_idx: dict, confirmed: list) -> tuple[str, str]:
+def resolve_matched(name: str, tanis: list, skill_ids_by_name, tag, dash, anim,
+                    catalog: list, ids: list) -> tuple[str, str]:
+    """Curated dig layer first (proven chains), then the game's own tables
+    (skill_tag / skill_dash -> AnimationID -> player_animation_f1). No
+    name/body/wem heuristics (AGENTS 6)."""
     if name in NO_MATCH:
         return "", ""
     for pref in RESOLVE.get(name, []):
@@ -620,46 +566,25 @@ def resolve_matched(name: str, tanis: list, rows, tag, anim, catalog: list, wems
         fn = catalog_find(pref, catalog)
         if fn:
             return F1_DIR + "\\" + fn, "dig-cat"
-    w = wem_stem_match(name, confirmed, wems_idx, catalog)
-    if w:
-        for t in tanis:
-            if t.lower().endswith(w.lower().split("\\")[-1]):
-                return t, "wem"
-        return w, "wem"
-    f = tag_match(name, rows, tag, anim)
-    if f:
-        for t in tanis:
-            if t.lower().endswith(f.lower()):
-                return t, "tag"
-        fn = catalog_find(f[:-5] if f.lower().endswith(".tani") else f, catalog) or f
-        return F1_DIR + "\\" + fn, "tag"
-    t = name_match(name, tanis)
-    if t:
-        return t, "name"
-    t = body_match(name, tanis)
-    if t:
-        return t, "body"
-    return "", ""
+    return auth_resolve([name], ids, skill_ids_by_name, tag, dash, anim)
 
 
 def attach_matched(all_entries: list, cache_path: str) -> int:
     base = os.path.dirname(os.path.dirname(cache_path))
     try:
-        rows, tag, anim = load_tables(base)
+        skill_ids_by_name, tag, dash, anim = load_tables(base)
     except Exception as exc:
         print("resolve: tables unavailable (" + str(exc) + ")")
-        rows, tag, anim = [], {}, {}
+        skill_ids_by_name, tag, dash, anim = {}, {}, {}, {}
     catalog = load_catalog_f1()
-    wems_idx = load_wems_index()
     resolved = 0
     for e in all_entries:
         e.setdefault("matched", "")
         e.setdefault("matchSource", "")
         e.setdefault("deduced", "")
         e.setdefault("deduceNote", "")
-        if not e["ids"]:
-            continue
-        m, src = resolve_matched(e["name"], e["tanis"], rows, tag, anim, catalog, wems_idx, e.get("confirmedWems") or [])
+        m, src = resolve_matched(e["name"], e["tanis"], skill_ids_by_name, tag, dash,
+                                 anim, catalog, e["ids"])
         if m:
             have = {t.lower() for t in e["tanis"]}
             if m.lower() not in have:
@@ -820,6 +745,11 @@ def main() -> int:
         "resolved": resolved,
         "abilities": all_entries,
     }
+    src_counts: dict[str, int] = {}
+    for a in all_entries:
+        s = (a.get("matchSource") or "").split(":")[0]
+        src_counts[s or "(none)"] = src_counts.get(s or "(none)", 0) + 1
+    out["matchSources"] = src_counts
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as fh:
         json.dump(out, fh, ensure_ascii=False, indent=1)
@@ -827,6 +757,7 @@ def main() -> int:
           f"{out['withIds']} with ids ({attached}/{total_ids} ids attached), "
           f"{resolved} with an identified matched tani, "
           f"{merged_wems} confirmed wems merged")
+    print("match sources: " + ", ".join("%s=%d" % (k, v) for k, v in sorted(src_counts.items())))
     return 0
 
 
