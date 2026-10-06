@@ -2447,3 +2447,17 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Process rule reinforced: ALWAYS verify ports 80/3724/3725 are listening BEFORE launching the
   client; a down serverlist host is the real-server leak vector.
 - Client killed immediately on the user's report.
+
+### 2026-10-06 — V2 ROOT CAUSE PINNED: bind map manager (client+0x1280) lacks map id 1
+- The bind's map lookup 0x140212A40 (called by 0x140177490 with client+0x1280 + the map id):
+  head = [cont+0], tree nodes key = dword at node+0x1C (MAP ID only), value = node+0x20,
+  left@+0, right@+0x10, color@+0x19; returns null if the id is absent.
+- LIVE read of the manager (client+0x1280): contains real map ids (2, 3, 589, 995, ...) but
+  **map id 1 is NOT present** (and 296 also not loaded). The bind returns 0 (error line 0xD2A)
+  -> player+0x60 stays null -> the state machine refuses the confirm -> the loading-end hang.
+- This is the definitive stuck-at-loading root cause: our id-4 map must be an id that exists in
+  the client's map manager (a real MapList id), not the sandbox scene-registry key (1,0).
+- Live test with id-4 map=2: the client's client+0x14 stayed 1 (the handler did not write it) -
+  needs the id-4 early-path investigation (the copy block may be skipped for unknown reasons) or
+  a proper map id + data.
+- Frozen client policy: kill immediately (done repeatedly this session).
