@@ -44,31 +44,41 @@ the runtime mutations as data the viewer consumes:
   `section TAB method TAB args` TSV. Data APIs get deterministic stubs (Hungarian prefixes:
   `b*` → false, `s*` → "", `t*`/`h*`/`p*` → permissive sub-objects, other camelCase → 0; ALL_CAPS
   names → permissive constant tables; PascalCase → callable proxies; `Is*`/`Has*`/`Can*` → false).
-- **`module()` finding:** every script starts with `module("Name", ExportExternalLib)` (Lua 5.1
-  `loadlib`'s module system), which re-points the chunk's environment at a fresh plain table. The
-  engine's option function wires the module globals; the harness overrides `module` to chain the new
-  environment to `_G` afterwards (the wrapper must capture `getfenv`/`setmetatable`/`_G` as upvalues —
-  `module` re-setfenv's its caller). Without this, every module script failed on its first global.
+- **`module()` finding (fixed 2026-10-05):** every script starts with `module("Name", ExportExternalLib)`
+  (Lua 5.1 `loadlib`'s module system). Lua 5.1's `module()` re-setfenv's **its caller** — with the
+  harness calling it through a wrapper, that was the wrapper, so the script chunk kept `_G` and every
+  module global leaked into `_G` while the module table stayed empty; scripts reading their own module
+  table (`ArenaOpponent.Anchor`, `Craft`, `BattleField`, `LiveShowBuff`, `BrightMarkTitle`) then hit
+  nil/functions. The wrapper now takes `getfenv(1)` (its own env = the module table), chains
+  `__index = _G`, and **`setfenv(2, env)` on the script chunk**. 81 → 85 OK.
+- **Handle-property rule (2026-10-05):** in the section proxy, unauthored `hXxx`/`tXxx`/`pXxx`
+  properties resolve to the child control section (`hBtnProperty` → `BtnProperty`, case-folding the
+  first letter) or a permissive proxy — the engine exposes control handles/tables there, and returning
+  `0` aborted scripts that index them (`self.hBtnProperty:...`).
+- **PascalCase globals are callable proxies (2026-10-05):** unknown PascalCase names on a permissive
+  proxy return a callable+indexable proxy instead of a plain function, because some are module tables
+  the scripts index (`Craft.Foo`) and some are functions (`Craft.Foo()`); a plain function broke the
+  first form.
 - **Batch:** `tools/ui/replay_all.py` replays every same-stem `.lua`/`.ini` pair and writes
   `ui-process-app/Data/runtime_state/<stem>.tsv` + `replay_summary.tsv`. Entry chain:
   `OnFrameCreate` → `OnLoad` → `OnCreate` → `Init` → `OnOpen`.
-  Verified 2026-10-04 (rechecked): **81/122 scripts replay OK**, 41 partial (most with recorded
-  mutations; 3,298 mutations total). By tier — T-A (liked+recommended, 59 scripted): 35 OK /
-  23 partial / 1 no-entry; T-B (27): 19 / 6 / 2; T-C (36): 27 / 9 / 0. Top recordings:
+  Verified 2026-10-05 (rechecked): **85/122 scripts replay OK**, 37 partial (most with recorded
+  mutations; 3,410 mutations total). Top recordings:
   BigBagPanel 793, Player 179, TopMenu 106, MailPanel 101, SoundSettingPanel 93, MiniMap 92,
-  SocialPanel 91, MainBarPanel 89. Remaining errors are stub-tuning (data-object shapes); the
-  no-entry windows (Balloon/TradingSure/UISetting) have no standard init hook.
-- **Stub rules (2026-10-04 refinement):** unknown camelCase fields return permissive proxies (not 0)
-  so container fields the scripts index keep working, and the **number type gets a metatable**
-  (`debug.setmetatable(0, …)`) because Lua 5.1 resolves comparison/arith metamethods on the left
-  operand only — mixed number/proxy operations no longer abort replays. 79 → 81 OK.
+  SocialPanel 91, MainBarPanel 89. Remaining errors are stub-tuning (data-object shapes: numeric
+  loop bounds, table fields compared numerically); the no-entry windows (Balloon/TradingSure) have
+  no standard init hook.
+- **Stub rules (2026-10-05 refinement):** unknown camelCase fields return permissive proxies (not 0)
+  so container fields the scripts index keep working. Note: the `debug.setmetatable(0, …)` number
+  metatable cannot rescue mixed number/table **comparisons** in Lua 5.1 (mixed types error before
+  metamethods); those need the field to return a real number.
 
 ## Completion recheck (2026-10-04)
 
 | layer | state | evidence |
 |---|---|---|
 | A — KGUI conformance | **not started beyond the two engine fixes** | census: 14 unhandled variants (PosType 3/4/5=70, HandleType 1/2/4/5=137, FirstItemPosType 1-9=98) + approximate page-set/list/tree/scene types |
-| B — script replay | **input 79/122 full + 43 partial (3,265 mutations); viewer consumption DONE** | `replay_summary.tsv`; `LayoutPlanBuilder.ApplyRuntimeState` loads `Data/runtime_state/<stem>.tsv` and applies SetSize/SetRelPos/SetAbsPos/SetRelX/Y/SetW/H/SetFrame/SetText/SetFontScheme/SetAlpha/Show/Hide/SetVisible before the inventory overrides (root Hide ignored — the engine shows the window after init). BigBagPanel render: root 594x624, `runtime=284`, all six bag rows laid out; `--selftest` 1240/0/0 |
+| B — script replay | **input 85/122 full + 37 partial (3,410 mutations); viewer consumption DONE** | `replay_summary.tsv`; `LayoutPlanBuilder.ApplyRuntimeState` loads `Data/runtime_state/<stem>.tsv` and applies SetSize/SetRelPos/SetAbsPos/SetRelX/Y/SetW/H/SetFrame/SetText/SetFontScheme/SetAlpha/Show/Hide/SetVisible before the inventory overrides (root Hide ignored — the engine shows the window after init). BigBagPanel render: root 594x624, `runtime=284`, all six bag rows laid out; `--selftest` 1240/0/0 |
 | C — gates | **working** | `--selftest` 1240/0/0; `--status`; `--contact-sheet`; `ini_construct_census.py` |
 
 **Verdict:** the replay now drives the viewer for every window with a recorded TSV; windows without

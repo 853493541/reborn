@@ -2005,3 +2005,23 @@ solved it, and what is still open. **Newest at the bottom.**
   the atlas, 9 misc); real missing 401 -> 256; art ~99.0% -> ~99.4%; --selftest 1240/0/0.
 - QuestPanelButton `NormalGroup=3` now resolves to its authored frame instead of the bogus
   `Frame=35` fallback; `Arena_JJC11` etc. no longer placeholder.
+
+### 2026-10-05 ? UI ? replay harness: module env fix + handle/PascalCase rules (81 -> 85 OK, 3,410 mutations)
+- Root cause of a whole error class: Lua 5.1 `module()` setfenv's **its caller**, and the harness
+  called it through a wrapper, so the wrapper got the module table while the script chunk kept `_G`:
+  module globals leaked into `_G` and the module table stayed empty, so scripts reading their own
+  module table (`ArenaOpponent.Anchor`, `Craft`, `BattleField`, `LiveShowBuff`, `BrightMarkTitle`)
+  failed with nil/function errors. Proved with a disassembly of the module bytecode (built
+  `luac32.exe` from the same Lua 5.1.5 sources) + a `string.dump`/`debug.getinfo` probe of the
+  running function. Fix: wrapper uses `getfenv(1)` (its env = module table), chains `__index = _G`,
+  and `setfenv(2, env)` on the chunk. 81 -> 82 OK.
+- Section-proxy rule: unauthored `hXxx`/`tXxx`/`pXxx` properties now resolve to the child control
+  (`hBtnProperty` -> `BtnProperty`) or a permissive proxy instead of 0 (the engine exposes handles
+  there; 0 aborted `self.hBtnProperty:...`). HorsePanel + LuckyMeeting recovered. 82 -> 84 OK.
+- Permissive-proxy rule: unknown PascalCase globals are callable+indexable proxies (module tables
+  indexed as `Craft.Foo` vs functions called as `Craft.Foo()`); plain functions broke the first form.
+  ExpLine recovered; several partials got further. 84 -> 85 OK.
+- Batch: 85 OK / 37 partial, 3,410 mutations (from 81/41, 3,298). No previously-OK window regressed.
+- Remaining classes (stub-tuning): numeric loop bounds (`'for' limit must be a number`), fields
+  compared numerically (mixed-type comparisons cannot use metatables in Lua 5.1), module fields
+  nil (`frame`), pairs/sort on non-tables; 2 no-entry windows (Balloon/TradingSure).
