@@ -36,21 +36,17 @@ def build_body(template_path, target):
     patched = 0
     for line in lines:
         fields = line.split("\t")
-        if len(fields) >= 5 and fields[1] == target and patched == 0:
+        if len(fields) >= 5:
+            # Patch EVERY server entry to our local gateway. The client restores the
+            # last-played server (possibly a real one) - a single-entry patch left every
+            # other server with its real IP, so a login could reach the real server.
             fields[3] = "127.0.0.1"
             fields[4] = "3724"
             out.append("\t".join(fields))
             patched += 1
         else:
             out.append(line)
-    if patched == 0 and len(out) > 1:
-        fields = out[1].split("\t")
-        if len(fields) >= 5:
-            fields[3] = "127.0.0.1"
-            fields[4] = "3724"
-            out[1] = "\t".join(fields)
-            patched = 1
-    note = "patched %s" % target if patched else "no patch applied"
+    note = "patched ALL %d entries to 127.0.0.1:3724" % patched if patched else "no patch applied"
     return "\n".join(out).encode("gb18030"), note
 
 

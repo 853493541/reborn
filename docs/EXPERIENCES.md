@@ -2375,3 +2375,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Block summary: id25 move-state bytes (+0xB -> +0x44 etc. + packed type @+0x12); id47 skill
   effect 49 pairs (TSV); id607 competitor list layout above; the combat removal was reverted
   (ee70f53) per the user clarification.
+
+### 2026-10-06 — V2 HAZARD FIX: serverlist host patches EVERY entry (real-server leak closed)
+- Root cause of 'connected to real server' after the user played: the host patched only ONE
+  entry (乾坤一掷); the client restores the LAST-PLAYED server (a real one, e.g. 破阵子@双线区)
+  from its own cache/selection, and every other list entry kept its REAL IP -> login reached
+  the real server.
+- Fix: serverlist_host.py build_body now patches EVERY entry's IP/port to 127.0.0.1:3724
+  (names/regions kept). Verified live: served list = 268 lines, 0 non-local entries.
+- The test client was killed immediately when the user reported the real connection.
