@@ -1977,3 +1977,11 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Injected id-4 with field=1001 (role id) - session stayed alive; state readback pending the
   correct player object resolution.
 - Live env still up (client PID 9716, stub fixed 0x2FE auto-respond).
+
+### 2026-10-05 — V2 P3 MILESTONE-2: OnSyncPlayerBaseInfo LIVE-VERIFIED (player state = 4)
+- Lookup 0x140177EE0 = get-or-create over a std::map: container = [client+0x5673D8], map head
+  at +0x20, nodes {left@+0, parent@+8, right@+0x10, key@+0x20 = role id, value@+0x28 = player}.
+- Injected id-4 frame with field=1001 (role id): runtime traversal found the player object
+  (0x22D0D08EDC8) and **player+0xFDC = 4** -> the handler's copy block ran, enter-state set.
+- Session stayed alive (client pinging); next: client DoClientConfirmReady -> C->S op 3
+  (ApplyEnterScene), then world-sync set (ids 10/11/12/13) from game_protocol_layouts_live.tsv.
