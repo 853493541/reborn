@@ -70,7 +70,55 @@ So on the map a character is ~1.8 m against a 512 m terrain tile — about
 terrain data. `LogicalScene 2048x2048` in the map setting is therefore metres
 (2.05 km logical extent; MED).
 
-## 4. Reproduction
+## 4. Authored character-size table (`player.txt`, 2026-10-05)
+
+Extract `Represent/player/player.txt` (index key `PlayerTable` in `Represent/filepath.ini`),
+GBK TSV, 7 role rows (`RoleType`, `Desc`, `ModelHeight`, `ModelScale`, `MDLFilePath`):
+
+| RoleType | Desc | ModelHeight | ModelScale | Model |
+|---|---|---|---|---|
+| 0 | rtInvalid | 190 | 1 | M2_player.mdl |
+| 1 | rtStandardMale | 185 | 1 | M2_player.mdl |
+| 2 | rtStandardFemale | 173 | 1.04 | F2_player.mdl |
+| 3 | rtStrongMale | 190 | 1 | M3_临时套装.mdl |
+| 4 | rtSexyFemale | 190 | 1 | F2_player.mdl |
+| 5 | rtLittleBoy | 125 | 1.15 | M1_player.mdl |
+| 6 | rtLittleGirl (花萝 F1) | 125 | 1.1 | F1.mdl |
+
+- `ModelHeight` is authored in engine units (= cm). The mesh bind-pose census gives
+  181.6 for the adult male **body mesh** (table: 185 — logical height incl. gear/pose).
+- Consumer: `JX3RepresentX64.dll` parses `player.txt` (`PlayerTable` + `ModelHeight`
+  strings); the Lua helper `GetMasterModelHeight` (fn `0x1804171f0`) exposes it at runtime.
+- Host: per-role height/scale should come from this table, not hardcoded values.
+
+Host capsule proportion (for reference, registered proxy): 花萝 17/116 at ModelHeight
+125 and adult 25/170 at ~185 are both ≈ (0.136, 0.93) × ModelHeight — a host-chosen
+proportion, not a game-derived rule.
+
+## 5. Gameplay capsule (G-1) — dig result (2026-10-05): not in the client
+
+- The Semantic K/V schema names `capsules radius` / `capsules length` exist in **exactly
+  two modules** in both installs (`SIMWorldX64.dll`, `JX3RepresentX64.dll`) plus the
+  downloader copies; a full byte scan of the game client `bin64`, the MovieEditor install,
+  the `SeasunDownloaderV2.4` extraction tree and `C:\jx3tmp` found **no data file**
+  carrying the keys.
+- SIMWorld reader: interner `0x180001bc0` → global `0x18005E3B8`; the consumer around
+  `0x180032400` reads it through the K/V vtable (`call [rax+0x40]`) and feeds
+  `PhysicScene::_AddCapsules` (`0x1800223b0`); the only embedded constants are `0.01f`
+  epsilons — **no defaults**.
+- JX3Represent interner `0x180036f60` → global `0x180EC6EA0`; no RIP-relative reader in
+  module, no `rel32` callers, no pointer-table references; `GetMasterModelHeight`
+  (`0x1804171f0`) is the Lua height helper, not the capsule writer.
+- `physic_shape_param.krl.txt` capsule id 6 (`capsule r50/l50`) is a named dynamic-actor
+  shape (`PxWorld::GetRigidParam`/ShapeData), not the movement capsule;
+  `physic_character_param.krl.txt` is the 11-body ragdoll (`radius 4..13`, `length 6..18`)
+  plus `EnableCharacterCapsule=1`.
+- Conclusion (HIGH): the gameplay capsule value arrives through the Semantic K/V
+  scene-response stream — no client-shipped value exists to extract. Registered boundary;
+  the host keeps its capsule as a registered proxy, scaled per role from the authored
+  `player.txt` ModelHeight (§4) where a per-role value is needed.
+
+## 6. Reproduction
 
 ```powershell
 # character mesh census (needs .venv for numpy)
@@ -79,10 +127,13 @@ terrain data. `LogicalScene 2048x2048` in the map setting is therefore metres
 .\.venv\Scripts\python.exe tools\netcode\measure_character_size.py samples\mesh\m2_1018_body_hd.mesh --json proof\netcode\character_size\character_meshes.json
 ```
 
-## 5. Open items
+## 7. Open items
 
 1. GAME_FPS is inferred from script comments (`16帧等于1秒`); confirm against a
    movement-speed table if one is extracted (`player.nRunSpeed` is runtime-only).
 2. `LogicalScene 2048x2048` units (m vs 尺) — currently treated as metres (MED).
 3. Bone bind matrices in HD meshes carry zero translations on the last matrix
    (layout quirk); height measurement uses vertices, which is sufficient.
+4. Gameplay capsule (G-1): the values are not in the client install (§5) — a runtime /
+   server K/V boundary. The host capsule stays a registered proxy (optionally scaled
+   per role from the authored `ModelHeight`, §4); re-open only with a runtime source.

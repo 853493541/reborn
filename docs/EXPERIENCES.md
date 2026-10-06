@@ -4236,3 +4236,22 @@ if the cache/host frames appear.
 - Main stays at `2d45e16` == `origin/main`; the running canonical/sandbox
   clients are the `2cbf004` rebuild (docs-only delta since).
 - Local only: not pushed to origin.
+
+### 2026-10-05 - Unit scale (1.7) - character-size table found; gameplay capsule dig closes negative
+
+- Did: dug the client for G-1 (exact gameplay capsule), per user request.
+  Found the authored character-size table `Represent/player/player.txt`
+  (`ModelHeight` 185/173/190/125 + `ModelScale`; consumer `JX3RepresentX64.dll`,
+  Lua `GetMasterModelHeight` `0x1804171f0`). Capsule dig: the Semantic K/V keys
+  `capsules radius`/`capsules length` exist only as schema in `SIMWorldX64.dll`
+  (interner `0x180001bc0` -> global `0x18005E3B8`; consumer ~`0x180032400` ->
+  `PhysicScene::_AddCapsules` `0x1800223b0`; only `0.01f` epsilons) and
+  `JX3RepresentX64.dll` (interner `0x180036f60` -> global `0x180EC6EA0`, no
+  reader); a full byte scan of both installs + extraction trees found no data
+  file carrying the keys; shape-lib capsule id 6 (`r50/l50`) is a dynamic shape;
+  `physic_character_param.krl.txt` is the ragdoll list.
+- Evidence: `docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md` §4/§5;
+  `docs/movement/COLLISION_SYSTEM_COMPARISON.md` P3 update.
+- Outcome: 1.7 closes as a runtime/server K/V boundary (HIGH negative) with a new
+  authored size source; the host capsule stays a registered proxy, with optional
+  per-role scaling from `ModelHeight` pending approval.
