@@ -38,6 +38,7 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `JX3_MODE_LOAD_FLOW.md` | client-side **load flow** into the mode (settings tables + binary analysis) |
 | `JX3_MODE_GAP_REGISTER.md` | known / missing / how-to-get **gap register** (DONE vs open) |
 | `JX3_MODE_MATCH_LIFECYCLE.md` | **full match lifecycle** (queue → accept → load → arrival → loot → combat → phases/revive → endgame), all 绝境 maps, evidence-tagged, incl. the full-pass RE plan |
+| `JX3_MODE_HANDLER_EXPECTATIONS.md` | what the CLIENT validates per mode message (exact sizes 27/19, entity lookups, the `entity+0x60` scene-bind prerequisite) |
 | `JX3_MODE_EDGE_SYSTEMS.md` | edge systems: death/ghost/revive, observer, AFK report, disconnect/reconnect, guild league, rooms, rewards |
 | `JX3_MODE_UI_INVENTORY.md` | **UI inventory by stage** (queue → loading → HUD → death → settlement), evidence per window/label, missing-renderer hunt list + plan |
 | `JX3_MODE_UI_FLOW.md` | **screen-level flow**: queue UI → loading window (art/progress) → first HUD frame → result; per-map loading art extraction + consumer scan |

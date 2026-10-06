@@ -2329,3 +2329,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   the scene lookup for (map,region), the position packing, or the setter's cell/scene checks.
 - Next live probe: read the bind inputs at id-4 time - the registry scene lookup result for
   (client+0x14, client+0x18), the packed position, and the setter's return - one of them is 0.
+
+### 2026-10-05 — V2 P3 STATIC: mode handler expectations (what the client validates)
+- Extracted the early checks of the mode handlers (ids 170/581/607/609/610/803/804):
+  * 803 OnCreateBattlefieldRoomRespond: size MUST equal 27 (else err 0x8029); fields [+7] qword,
+    [+0xF] qword, [+0x17] dword -> UI vtable +0x1550.
+  * 804 OnForceStartBattleFieldChaosFightRespond: size MUST equal 19 (else err 0x8038);
+    [+7] qword, [+0xF] dword -> UI vtable +0x1558.
+  * 170 OnSetBattleFieldSide: entity id @+7 (bit30 -> global lookup) must resolve; side dword
+    @+0xB via 0x1802B46E0 must return non-zero.
+  * 581 OnSyncBFRoleData: player id @+0xF must resolve; array @+0x17 + count @+0x6F -> +0xEC8.
+  * 607 competitor base info: dwords @+9/+0xD -> lookup 0x18012B750.
+  * 609 CD state: player id @+7 must resolve AND entity+0x60 (scene) non-null (err 0x7FA4).
+- Doc: docs/netcode/JX3_MODE_HANDLER_EXPECTATIONS.md (registered in the README index).
