@@ -2126,3 +2126,21 @@ solved it, and what is still open. **Newest at the bottom.**
   upvalue chain resolves to a nil register value at creation; PLActionBar/ReputationPanel similar.
   These three need engine-set module state at open time, not shipped data - left partial with this
   evidence rather than fabricated. Final: **138/143 OK, 5,044 mutations**.
+
+### 2026-10-05 ? UI ? measured runtime gap: 671 dropped state-bearing calls (the missing-items answer)
+- User: "UIs are still missing items, wrongly placed - what can possibly be the reason". Built
+  `tools/ui/runtime_gap_report.py`: classifies every recorded replay call against the viewer's
+  consumer (`LayoutPlanBuilder.ApplyRuntimeMutations` handles only 14 property methods), joins
+  per-window render status, writes `docs/ui/UI_RUNTIME_GAP.md`.
+- Result: **671 state-bearing calls dropped** - item-creation 169 (Clear/AppendItemFromIni/
+  AppendContentFromIni/CreateItemData/... -> list rows never materialize), arrangement 330
+  (FormatAllItemPos/SetPoint/CorrectPos/SetSizeByAllItemSize/SetScrollPos/... -> items sit at
+  authored coords), render 53 (FromUITex/SetImageType/...), state 119 (Enable/Check/Expand/
+  ActivePage). Consumed 1,110; noise (Lookup/RegisterEvent/getters) 3,269.
+- Concrete: BigBagPanel drops 40 item-creation + 86 arrangement calls - `Clear`+9x
+  `AppendContentFromIni CheckBox_FilterMain0..8` (the filter checkboxes) and
+  `FormatAllItemPos`/`SetSizeByAllItemSize Handle_Bag*` (the bag grid). TopMenu drops 20
+  `FormatAllContentPos`; MailPanel 13 arrangement + 8 render; SecurityCard 28 item-creation.
+- The fix is executing the client's own recorded calls in the viewer (materialize clones, then run
+  the format/correct/scroll passes), not approximating them - the data is already in
+  `Data/runtime_state/*.tsv`.

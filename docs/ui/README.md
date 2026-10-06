@@ -14,6 +14,7 @@ UI system report + map/minimap research. Interactive viewer: `ui-process-app/`.
 | `UI_SYSTEM_COVERAGE.md` | Coverage audit vs the official client: per-axis percentages (constructs ≈99.7%, art ≈98.5%, text ≈84.6%, runtime replay 65% of scripted windows), gap list, reproduce |
 | `UI_INTERACTION_REPLAY.md` | Interaction replay (the missing system): replay_server.lua dispatches the scripts' own event handlers (proven: bag checkbox toggle), viewer wiring design |
 | `UI_REAL_CLIENT_ASSESSMENT.md` | Fidelity vs the real client: GT inventory, evidence-class matrix (client binary / client data / GT capture / self-assessed / unmeasured), partial-replay regression finding |
+| `UI_RUNTIME_GAP.md` | Measured runtime-consumption gap: the replay's 671 dropped state-bearing calls (item-creation 169, arrangement 330, render 53, state 119) with the full per-window list and the fix plan — the measured reason lists stay empty and items sit at authored coordinates |
 
 ## Tools
 
@@ -21,3 +22,4 @@ UI system report + map/minimap research. Interactive viewer: `ui-process-app/`.
 |---|---|
 | `tools/ui/extract_lua_string_table.py` | Decode a compiled UI string lib (`ui/String/string.lua`, `ui/String/hotkeystring.lua`, bound by `ui/module_info.xml` to `g_tStrings`/`g_tHotKey`) into the `ID\tLength\tString` TSV the viewer loads (`ui-process-app/Data/text/ui/String/string.txt`). Extract the lib from PakV4 first: `tools\netcode\extract_pak_paths.py --list <paths.txt with ui\String\string.lua> --out-dir <dir>`. |
 | `tools/ui/ini_construct_census.py` | KGUI construct census / conformance check: scans all shipped INIs and reports usage of every WndType/PosType/ImageType/HandleType/FirstItemPosType/AnchorDst against the viewer's coverage (`--strict` exits 1 while any is unhandled). Part of `docs/ui/UI_RUNTIME_REPLAY.md`. |
+| `tools/ui/runtime_gap_report.py` | Runtime-state gap report: classifies every recorded replay call against the viewer's consumer (`LayoutPlanBuilder.ApplyRuntimeMutations`), joins per-window render status, writes `docs/ui/UI_RUNTIME_GAP.md` (the missing-items / wrong-placement inventory). |
