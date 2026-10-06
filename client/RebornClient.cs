@@ -375,6 +375,66 @@ internal static class RebornClient
         if (!File.Exists(skillWav)) { Log("sound: skill wav missing at " + skillWav); skillWav = null; }
         else Log("sound: skill wav " + skillWav);
 
+        // Sound-shell recon (1.6 native audio): which shell/branch is active and
+        // which sound modules the host actually loads. Env-gated, read-only.
+        if (Env("RC_SOUND_DBG", "0") == "1")
+        {
+            try
+            {
+                string cfg = Path.Combine(workingDir, "config.ini");
+                string ww = "(config.ini missing)";
+                try
+                {
+                    if (File.Exists(cfg))
+                    {
+                        string[] cl = File.ReadAllLines(cfg);
+                        for (int i = 0; i < cl.Length; i++)
+                            if (cl[i].IndexOf("Wwise", StringComparison.OrdinalIgnoreCase) >= 0)
+                            { ww = cl[i].Trim(); break; }
+                    }
+                }
+                catch (Exception e2) { ww = "cfg ex: " + e2.Message; }
+                Log("sound-dbg config=" + cfg + " -> " + ww);
+                Type st = typeof(KG3DSoundCLR);
+                foreach (System.Reflection.FieldInfo fi in st.GetFields(
+                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public))
+                {
+                    object v = null;
+                    try { v = fi.GetValue(sound); } catch { }
+                    Log("sound-dbg field " + fi.Name + " (" + fi.FieldType.Name + ") = " + (v == null ? "(null)" : v.ToString()));
+                }
+                foreach (System.Diagnostics.ProcessModule m in System.Diagnostics.Process.GetCurrentProcess().Modules)
+                {
+                    string mn = m.ModuleName;
+                    if (mn.IndexOf("Sound", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        mn.IndexOf("Wwise", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        mn.IndexOf("FMOD", StringComparison.OrdinalIgnoreCase) >= 0)
+                        Log("sound-dbg module " + mn);
+                }
+            }
+            catch (Exception e) { Log("sound-dbg ex: " + e.Message); }
+        }
+
+        // Native Wwise call probe (1.6 recon): loads sound_probe.dll and hooks
+        // KG3D_WwiseX64.dll's PostEvent/LoadBank exports in this process only.
+        if (Env("RC_SOUND_HOOK", "0") == "1")
+        {
+            try
+            {
+                string probeDll = Path.Combine(Application.StartupPath, "sound_probe.dll");
+                string probeLog = Path.Combine(Application.StartupPath, "reborn_out", "sound_probe.log");
+                IntPtr hp = SoundProbe.Load(probeDll);
+                if (hp == IntPtr.Zero)
+                    Log("sound-hook: load failed (" + probeDll + ")");
+                else
+                {
+                    int pr = SoundProbe.Init(probeLog);
+                    Log("sound-hook: init rc=" + pr + " status=" + SoundProbe.Status());
+                }
+            }
+            catch (Exception e) { Log("sound-hook ex: " + e.Message); }
+        }
+
         var scene = new KGSceneCLR();
         // Recon: dump the managed wrapper API surface for the player / near-plane
         // paths (B1 exit; docs/camera/CLOSE_RANGE_RESEARCH.md §2). Env-gated.
@@ -4304,6 +4364,45 @@ internal static class RebornClient
             if (long.TryParse(p.Trim(), out v) && v > 0) list.Add(v);
         }
         return list.ToArray();
+    }
+
+    // Native sound probe loader (RC_SOUND_HOOK=1): see native/sound_probe.cpp.
+    internal static class SoundProbe
+    {
+        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+        static extern IntPtr LoadLibraryA(string name);
+        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+        static extern IntPtr GetProcAddress(IntPtr h, string name);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate int InitFn(IntPtr logPathAnsi);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate IntPtr StatusFn();
+        static IntPtr _init = IntPtr.Zero, _status = IntPtr.Zero;
+        public static IntPtr Load(string path)
+        {
+            IntPtr h = LoadLibraryA(path);
+            if (h != IntPtr.Zero)
+            {
+                _init = GetProcAddress(h, "RC_SoundProbe_Init");
+                _status = GetProcAddress(h, "RC_SoundProbe_Status");
+            }
+            return h;
+        }
+        public static int Init(string logPath)
+        {
+            if (_init == IntPtr.Zero) return -1;
+            InitFn f = (InitFn)Marshal.GetDelegateForFunctionPointer(_init, typeof(InitFn));
+            IntPtr p = Marshal.StringToHGlobalAnsi(logPath);
+            try { return f(p); }
+            finally { Marshal.FreeHGlobal(p); }
+        }
+        public static string Status()
+        {
+            if (_status == IntPtr.Zero) return "(no status export)";
+            StatusFn f = (StatusFn)Marshal.GetDelegateForFunctionPointer(_status, typeof(StatusFn));
+            IntPtr p = f();
+            return p == IntPtr.Zero ? "(null)" : Marshal.PtrToStringAnsi(p);
+        }
     }
 
     // Provisional skill sound: the decoded FLWS WAV (SOUND_PATH.md) played via

@@ -4236,3 +4236,24 @@ if the cache/host frames appear.
 - Main stays at `2d45e16` == `origin/main`; the running canonical/sandbox
   clients are the `2cbf004` rebuild (docs-only delta since).
 - Local only: not pushed to origin.
+
+### 2026-10-05 - Audio (1.6) - native probe: tag path proven to stop before Wwise
+
+- Did: recovered the host sound architecture (KG3DSoundCLR -> MovieEngineCLR loads
+  **KG3DSoundX64.dll** editor shell -> FMOD + `KG3D_WwiseX64.dll` per
+  `[WwiseSetting] UseWwise=1`; the game's `KG3DWwiseSoundX64.dll` is a thin shell not
+  in MovieEditor) and added a native probe (`native/sound_probe.cpp`,
+  `build_sound_probe.cmd`, `RC_SOUND_HOOK=1`) that inline-hooks
+  `AK::SoundEngine::PostEvent` (id/ANSI/wchar) and `LoadBank(wchar)` in our own
+  process, logging every call and tail-calling the originals.
+- Result: hooks install (rc=0) and the whole run - including the t=18.5 s skill cast -
+  shows **zero PostEvent and zero LoadBank calls** (`proof/audio/sound_probe_20261005.log`).
+  The native shell/Wwise stack is loaded and `GetWwiseManager` resolves, so the stop is
+  upstream of Wwise (Frida's spike finding now instrumented in-process, HIGH).
+  PSS particle SFX tags do fire, so the anim tag system works; only the sound path stops.
+- Next probes (ordered): hook `_OnProcessApplySoundTag` (INT3/VEH) to see whether the
+  callback fires; hook `KG3DModel::EnableSfxSoundTag` (`0x1800BA760`) and, if never
+  called, capture the model pointer via PlayAnimation and call it - the likely gate.
+- Evidence: `docs/audio/NATIVE_AUDIO_PROBE.md` (indexed); module dump
+  `reborn_20261005_182551.log`; probe run `reborn_20261005_183218.log`; committed
+  `proof/audio/*`. The winmm WAV stays the registered provisional.
