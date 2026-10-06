@@ -4258,3 +4258,20 @@ if the cache/host frames appear.
   are install/asset-bound. Post-FX caps matrix at 3 poses still open (A3 remainder).
 - Evidence: `proof/render/daynight/weather_w1.png` / `weather_w100.png`;
   `RENDERING_OPTIONS.md` §4d.
+
+### 2026-10-05 - Engine host - 1.9 finished: data-truth resolution + post-FX caps matrix
+
+- Did: resolved the day-night/weather question as a **data truth** - the BR maps contain
+  no TrueSky keys, only `oldSkySkyBox`/`oldSkyWeather` + a static `sunlight`/`moonlight`,
+  and a `dayNightCycle` object with all `Max*` = 0; a PATH experiment (game bin64 +
+  `bShowTrueSky=1`) shows `KG3D_TrueSkyX64.dll` is never loaded (module dump). So
+  day-night/TrueSky weather are **not applicable to the product's 5 maps**; the managed
+  APIs stay available for content that references them.
+- Also completed the post-FX caps matrix (tier 9, one key per run, 4x4 fingerprints):
+  visible = `bEnableRC_Bloom` (16/16 all poses), `bEnableRC_AmbientOcclusion` (16/16 at
+  the vista), `bEnableRC_Vignette` (12/16), `bEnableRC_AtmosphericFog` (15/16 at the
+  field); no-op at these poses = HeightFog, LightShaftBloom, SSR, SunLensflare, EnvProbe.
+- Outcome: 1.9 complete for the product maps (open: 12-float dynamic-weather semantics,
+  TrueSky/volumetric-cloud assets, GDB timeline - all registered with re-open criteria).
+- Evidence: `docs/engine_host/RENDERING_OPTIONS.md` §4d; `proof/render/postfx/` key pairs;
+  logs `reborn_20261005_1745*`.
