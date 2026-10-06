@@ -4299,3 +4299,29 @@ if the cache/host frames appear.
 - Evidence: `docs/engine_host/RENDERING_OPTIONS.md` §5 items 1-3 resolved;
   `proof/render/key_offsets.tsv`; `tools/render/key_offsets.py`.
 - Outcome: C complete.
+
+### 2026-10-05 - Engine host - B (1.10): LOD/cull per-option matrix at house + vista
+
+- Did: 26 isolated runs (13 keys x 2 poses, tier 9 base, one `RC_OPT_<KEY>` per run)
+  with 4x4 fingerprint diffs vs the tier-9 baseline. Visible levers at the vista:
+  `nShadowType=0` (8/16 cells), `fSpeedTreeCullDist=5000` (6/16),
+  `fSimpleModelCullDist=1000` (1/16, marginal). Model-LOD / node-LOD / view-angle /
+  foliage / particle keys show no visible delta at these poses (coarse grid, load-time
+  or no such geometry in view).
+- Evidence: `docs/engine_host/LOD_CULL_MATRIX.md`;
+  `proof/render/lod_vista/{base_t9,nShadowType,fSpeedTreeCullDist,fSimpleModelCullDist}.png`.
+- Outcome: partial - first matrix committed; foliage-rich pose, 8x8 grid for the LOD
+  keys and the causal tier fps ladder remain open.
+
+### 2026-10-05 - Engine host - B remainder: foliage pose, 8x8 LOD re-check, tier fps ladder
+
+- Did: parsed the baked foliage bin (FCOL v1) to pick the densest `.foliage` cluster
+  (`(173747,98442)`, 42 instances) and ran the foliage keys there - `nFoliageDensity`
+  0/999 no-op (**load-time**), cull/render toggles marginal (1-2/16 cells). Re-ran the
+  no-op model-LOD keys at the vista with aggressive values on an **8x8** grid: 0/64
+  cells each (inert in the editor host). Measured the causal tier ladder (t=16 s, 20 s
+  runs): house 592/550/352 fps and vista 453/563/333 fps for tiers 1/5/9; hitch <=14 ms.
+- Evidence: `docs/engine_host/LOD_CULL_MATRIX.md`;
+  `proof/render/{foliage,lod8}/` key PNGs; logs `reborn_20261005_18*`.
+- Outcome: B complete (first pass). Remaining open: foliage density map-reload A/B and
+  a close-up pose for the model-LOD keys.
