@@ -359,11 +359,16 @@ PROCESS = {
     "如意法": [
         {"t": 0, "kind": "anim", "v": r"data\source\player\f1\动作\f1smj10双刀buff04.ani",
          "durMs": 939,
-         "n": "免控姿态基础动画 31f@33fps=939ms, 播放一次 (tani 内嵌 .Sfx 标签会让宿主 AV; 播放其基础 .ani)"},
+         "n": "免控姿态基础动画 31f@33fps=939ms, 播放一次"},
         {"t": 0, "kind": "sound", "v": "75054615", "n": "riyuejiaohui.wav"},
-        {"t": 0, "kind": "dummy", "v": r"data\source\other\hd特效\技能\pss\发招\m_明教清净心01.pss",
-         "k": "ruyi_pss", "durMs": 12480,
-         "n": "清净心发招 PSS: 作者寿命最长 12480ms (RepeatTimes=1), 随施法者"},
+        {"t": 0, "kind": "sfx", "v": "m明教元素18.sfx",
+         "n": "tani F1smj10双刀buff04_清净心01 内嵌 .Sfx 标签; 引擎创建+播放 rc=0 (SFX_RE_TEST.md 2026-10-06); 时刻: tani 标签时刻未解析, 暂取施法起点"},
+        {"t": 0, "kind": "sfx", "v": "m明教元素19.sfx",
+         "n": "tani 内嵌 .Sfx 标签; 引擎创建+播放 rc=0"},
+        {"t": 0, "kind": "sfx", "v": "释放_气场聚集03.sfx",
+         "n": "tani 内嵌 .Sfx 标签; 引擎创建+播放 rc=0"},
+        {"t": 0, "kind": "sfx", "v": "g光晕02.sfx",
+         "n": "tani 内嵌 .Sfx 标签; ME 引擎创建 NULL (rc=7 优雅失败, 无 AV) - 见 SFX_RE_TEST.md"},
     ],
     "五蕴皆空": [
         {"t": 0, "kind": "anim", "v": r"data\source\player\f1\动作\f1ssl04袈裟攻击05.ani",
@@ -1708,8 +1713,9 @@ MECH = {
         "1) 脚本: EXECUTE_SCRIPT + DEL_MULTI_GROUP_BUFF_BY_FUNCTIONTYPE x4 (清除移动限制组) + BindBuff 4421 (明教_夜叉心_免控)\n"
         "2) 动画 = F1smj10双刀buff04_清净心01 (免控姿态, m_明教清净心01.pss)\n"
         "3) 音效 wem 75054615 = riyuejiaohui.wav\n"
-        "宿主(Skill 2026-09-29): tani F1smj10双刀buff04_清净心01 内嵌 .Sfx 标签 (m明教元素18/19.sfx, g光晕02.sfx, 释放_气场聚集03.sfx) "
-        "-> 播放该 tani 让宿主 AV (Render); 改播其基础 .ani f1smj10双刀buff04.ani (无标签) + 作者 PSS m_明教清净心01.pss 正常渲染 (火柱)"
+        "宿主(Skill 2026-10-06 修正): tani F1smj10双刀buff04_清净心01 内嵌 .Sfx 标签 (m明教元素18/19.sfx, g光晕02.sfx, 释放_气场聚集03.sfx) "
+        "-> 经 owner-chain shim 由引擎自身创建+播放: 18/19/03 rc=0, 光晕02 NULL (优雅失败, 无 AV) - 见 docs/engine_host/SFX_RE_TEST.md; "
+        "过程改用作者标签集 (旧 m_明教清净心01.pss 绑定未证, 不再作替身)"
     ),
 }
 

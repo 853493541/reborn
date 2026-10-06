@@ -4379,3 +4379,29 @@ if the cache/host frames appear.
 - Next: wire the engine-SFX step into the dataset processes (app hook exists);
   socket/bone binding; identify the create-NULL subset cause (client 09-27
   engine creates `c纯阳坐忘` cleanly -> suspected ME-build format gap).
+
+### 2026-10-06 — v5 — 如意法 process wired to its authored .Sfx tags (engine-driven; PSS stand-in removed)
+
+- Change: `PROCESS["如意法"]` in `build_candidates.py` now carries the four tani
+  tags (`m明教元素18/19.sfx`, `释放_气场聚集03.sfx`, `g光晕02.sfx`) as `kind:
+  "sfx"` steps instead of the staged PSS; the app gained an `sfx` step kind
+  (bare names resolve from `bin64\ability_picker\sfx`, `SB_SFX_DIR` override)
+  that calls `engineSfxPlay` (owner-chain shim: create+play). Tags staged
+  locally into the runtime dir (not tracked).
+- Verified (3 scripted runs, e.g. `Skill_20261006_160240.log`): `cast: 如意法
+  steps=6` (no dummy), `engine sfx play rc=0 -> obj=non-null exc=0` for
+  18/19/03 + `ok=1`, `g光晕02` rc=7 `ok=0` (known ME NULL), no AV.
+- Visual: engine `RC_SHOTS` frames show a transient delta burst peaking at
+  cast+0.8 s (1.03% changed px, 1076 bright px) decaying after; proof frames in
+  `proof/netcode/sfx_ruyi_cast_*.png`. Caveat: the 939 ms pose anim contributes
+  at the default 600u camera; effect-only attribution needs a closer camera
+  (open item).
+- Tooling lesson: window `CopyFromScreen` captures the screen REGION - an
+  unfocused/covered window yields the covering window instead (we first captured
+  a console + the terminal). For sandbox visuals use the app's own engine
+  screenshot path (`RC_SHOTS` + `scene.SetScreenShot`); the tool also got
+  `-AnyClass` + console-class skip + all-pids matching for hosts that own
+  several windows (Skill.exe parent/child).
+- Open: tani tag frame times not parsed (t=0 today); `g光晕02` NULL cause;
+  close-camera visual pass; same wiring for the other abilities whose authored
+  .Sfx create on ME.

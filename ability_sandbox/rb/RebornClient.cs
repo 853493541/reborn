@@ -146,6 +146,8 @@ internal static class RebornClient
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_picker", "ability_candidates.json"));
         string soundDir = Env("SB_SOUND_DIR",
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_picker", "sound"));
+        string sfxDir = Env("SB_SFX_DIR",
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_picker", "sfx"));
         bool soundOn = Env("SB_SOUND", "1") == "1";   // default on; P panel checkbox toggles
         long autoSkillMs = 0;
         long.TryParse(Env("SB_CAST_MS", "0"), out autoSkillMs);
@@ -2308,6 +2310,18 @@ internal static class RebornClient
                                 castPss = true; castPssPath = st.V;
                                 Log("cast dummy -> " + st.V);
                             }
+                        }
+                        else if (st.Kind == "sfx")
+                        {
+                            // authored .Sfx (e.g. the tani's embedded tags): created
+                            // and played by the engine itself via sfx_shim.dll's
+                            // owner chain. Bare names resolve against
+                            // bin64\ability_picker\sfx (SB_SFX_DIR overrides).
+                            string sfxPath = st.V.IndexOf('\\') >= 0 || st.V.IndexOf(':') >= 0
+                                ? st.V
+                                : Path.Combine(sfxDir, st.V);
+                            bool sfxOk = engineSfxPlay(sfxPath, px, py + 2f, pz);
+                            Log("cast sfx -> " + st.V + " ok=" + (sfxOk ? 1 : 0));
                         }
                     }
                     catch (Exception e) { Log("cast step ex (" + st.Kind + "): " + e.Message); }

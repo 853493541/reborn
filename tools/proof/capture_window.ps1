@@ -14,7 +14,8 @@ param(
     [Parameter(Mandatory=$true)][string]$Tag,
     [Parameter(Mandatory=$true)][int[]]$Times,
     [string]$Key = "",
-    [int]$KeyDelayMs = 800
+    [int]$KeyDelayMs = 800,
+    [switch]$AnyClass   # accept any visible top-level window (non-WinForms hosts, e.g. Skill.exe)
 )
 
 Add-Type -AssemblyName System.Drawing
@@ -41,29 +42,35 @@ public class WinCap {
 
 # Pick the largest visible WinForms window of the process (MainWindowHandle can
 # return a guard/error dialog instead of the client form).
-$targetPid = (Get-Process -Name $ProcessName -ErrorAction SilentlyContinue | Select-Object -First 1).Id
-if (-not $targetPid) { Write-Error "no process $ProcessName"; exit 1 }
+$targetPids = @(Get-Process -Name $ProcessName -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Id)
+if ($targetPids.Count -eq 0) { Write-Error "no process $ProcessName"; exit 1 }
 $script:hwnd = [IntPtr]::Zero
 $script:best = 0
 $cb = [WinCap+EnumProc]{
     param($h, $l)
     $pid2 = 0
     [void][WinCap]::GetWindowThreadProcessId($h, [ref]$pid2)
-    if ($pid2 -eq $targetPid -and [WinCap]::IsWindowVisible($h)) {
+    if ($targetPids -contains $pid2 -and [WinCap]::IsWindowVisible($h)) {
         $sb = New-Object System.Text.StringBuilder 256
         [void][WinCap]::GetClassName($h, $sb, 256)
-        if ($sb.ToString().StartsWith("WindowsForms")) {
+        $cls = $sb.ToString()
+        # never pick a console/conhost window: GUI apps launched from a shell
+        # may own one, and it is not the render surface (-AnyClass hosts)
+        if ($cls -eq "ConsoleWindowClass" -or $cls -eq "CASCADIA_HOSTING_WINDOW_CLASS") {
+            return $true
+        }
+        if ($AnyClass -or $cls.StartsWith("WindowsForms")) {
             $r = New-Object WinCap+RECT
             [void][WinCap]::GetWindowRect($h, [ref]$r)
             $area = ($r.Right - $r.Left) * ($r.Bottom - $r.Top)
-            if ($area -gt $script:best) { $script:best = $area; $script:hwnd = $h }
+            if ($area -gt $script:best) { $script:best = $area; $script:hwnd = $h; $script:hwndPid = $pid2 }
         }
     }
     return $true
 }
 [void][WinCap]::EnumWindows($cb, [IntPtr]::Zero)
-$proc = Get-Process -Id $targetPid
-if ($script:hwnd -eq [IntPtr]::Zero) { Write-Error "no WinForms window for pid $targetPid"; exit 1 }
+$proc = Get-Process -Id $script:hwndPid
+if ($script:hwnd -eq [IntPtr]::Zero) { Write-Error "no visible window for pid(s) $($targetPids -join ',')"; exit 1 }
 $hwnd = $script:hwnd
 $rect = New-Object WinCap+RECT
 [void][WinCap]::GetWindowRect($hwnd, [ref]$rect)

@@ -56,11 +56,79 @@ with no model/play tail.
   NULLs are suspected ME-build format gaps); socket/bone binding; wiring the
   engine-SFX step into the dataset processes (the app hook exists).
 
+## Wired into the dataset (如意法) - 2026-10-06
+
+The dataset's `sfx` step kind now plays authored `.Sfx` through the engine:
+
+- `ability_picker/tools/build_candidates.py` `PROCESS["如意法"]`: the staged PSS
+  stand-in was **replaced by the four authored tani tags** (`m明教元素18.sfx`,
+  `m明教元素19.sfx`, `释放_气场聚集03.sfx`, `g光晕02.sfx`) as `kind: "sfx"` steps.
+- App (`ability_sandbox/rb/RebornClient.cs`): a `sfx` cast step resolves a bare
+  name against `bin64\ability_picker\sfx` (`SB_SFX_DIR` override) and calls
+  `engineSfxPlay(...)` (the owner-chain shim, create + play).
+- Local staging: copy the extracted tags from
+  `%TEMP%\opencode\skillv2\out_sfx\data\source\other\特效\技能\sfx\释放\` into
+  `MovieEditor\bin64\ability_picker\sfx\` (runtime dir, not tracked).
+
+Run evidence (`Skill_20261006_160240.log`, `SB_ABILITY=如意法 SB_CAST_MS=3000`):
+
+```
+cast: 如意法 steps=6 animMs=939            <- no dummy step remains
+cast anim -> ...\f1smj10双刀buff04.ani
+cast sound -> 75054615
+engine sfx play rc=0 ... -> obj=0x16E652900 exc=0x0   cast sfx -> m明教元素18.sfx ok=1
+engine sfx play rc=0 ...                              cast sfx -> m明教元素19.sfx ok=1
+engine sfx play rc=0 ...                              cast sfx -> 释放_气场聚集03.sfx ok=1
+engine sfx play rc=7 ...                              cast sfx -> g光晕02.sfx ok=0
+```
+
+Visual fingerprint (engine `RC_SHOTS` renders, same run; character small at the
+default 600u camera - attribution caveat below):
+
+| frame | changed pixels vs pre-cast (>24/255) | bright delta (+60) |
+|---|---|---|
+| `rc_00_2600ms` (pre-cast) | - | - |
+| `rc_01_3200` (cast+0.2s) | 0.86% | - |
+| `rc_02_3800` (cast+0.8s) | **1.03%** | **1076 px** |
+| `rc_03_4400` (cast+1.4s) | 0.38% | - |
+| `rc_04_5200` (cast+2.2s) | 0.27% | 187 px |
+| `rc_06_8500` (cast+5.5s) | 0.21% | 131 px |
+
+A transient burst peaking at cast+0.8 s then decaying = the cast read (pose +
+effects). Proof frames: `proof/netcode/sfx_ruyi_cast_{pre_2600,peak_3800,post_5200}ms.png`.
+The pose animation (939 ms) also contributes changed pixels at this camera
+distance, so the effect-only attribution needs a closer camera (open item).
+
+Open items from this wiring: tag play **times** are `t=0` (the tani tag frame
+times are not parsed yet); `g光晕02` is the known ME NULL; a close-camera visual
+confirmation pass.
+
+Capture-tool notes (`tools/proof/capture_window.ps1`): extended with `-AnyClass`
++ console-class skip + all-process-pids matching (the Skill host owns several
+windows/processes). `CopyFromScreen` grabs the **screen region**, so an
+unfocused window is captured only where it is visibly uncovered - prefer the
+app's `RC_SHOTS` engine path for sandbox visuals.
+
 ## Reproduce
 
 The env block above, one run per file (~75 s each); read
 `bin64\Skill\out\Skill_*.log` for the `engine sfx play` line. Shims:
 `native/sfx_shim.cpp` + `native/build_sfx_shim.cmd` (built DLL staged in
 `MovieEditor\bin64`).
+
+Dataset-path run (no `RC_SFX_ENGINE` needed; the process carries the `sfx`
+steps): stage the tags into `MovieEditor\bin64\ability_picker\sfx\`, copy the
+regenerated `ability_picker\data\ability_candidates.json` to the runtime
+`bin64\ability_picker\`, then
+
+```powershell
+$env:RC_MAP='C:\jx3tmp\reborn_sandbox\map\龙门寻宝_s\龙门寻宝_s.jsonmap'
+$env:RC_AUTORUN='14000'; $env:SB_CAST_MS='3000'; $env:SB_ABILITY='如意法'
+$env:RC_SHOTS='2600,3200,3800,4400,5200,6500,8500'   # engine renders -> out
+& C:\SeasunGame\MovieEditor\bin64\Skill.exe
+```
+
+`ability_sandbox\build.cmd` rebuilds the app; `build_candidates.py` regenerates
+the tracked dataset.
 
 Last verified: 2026-10-06 (v5, `agent/skillv5-sandbox`).
