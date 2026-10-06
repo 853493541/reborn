@@ -2066,3 +2066,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Next: (a) read client+0x14/player pos ~1 s after the id-4 send; (b) decode the id-10 RST
   cause (appearance parse 0x14016AD70 outputs A/B/C + guard 0x140173D90 with a valid scene);
   (c) verify the confirm helper/ack path (the RST pattern matches the earlier ack-flag case).
+
+### 2026-10-05 — V2 P3: id4 map=1 aborts before player insert (map-switch path -> RST)
+- Poller (C:\jx3tmp\poll_world.py) during a live run: the player is NEVER inserted into the map
+  (all samples 'player-not-found'), i.e. the id-4 handler aborts before its get-or-create insert
+  (0x14015C3DB) when the packet carries map=1/region=1. The connection RSTs ~0.5 s after id 10.
+- Interpretation: with a non-zero map the id-4 handler takes the map-switch/load path (its
+  map/region writes at 0x14015C2F6 precede the insert) -> the client tears down the connection
+  (real switch flow reconnects) and never completes the player insert. With map=0 the insert
+  worked but the scene stayed empty (deadlock).
+- Next: (a) poll client+0x14 mid-window to see if the id-4 map write lands before the teardown;
+  (b) find a VALID map/region pair (the switch may require map data the client can load, and a
+  following reconnect the stub must serve); (c) check whether the real flow expects the client
+  to reconnect after the map announcement (the stub should then re-arm the sync).
