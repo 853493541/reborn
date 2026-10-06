@@ -2366,3 +2366,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   locals and call sub-parsers - their layouts need the call-target parse (next pass).
 - Note: the combat system REMOVAL commit was reverted (ee70f53) - the reference model/spec stay
   intact (user clarified the instruction was 'research more').
+
+### 2026-10-05 — V2 P3 research: mode competitor record layout (id 607) + block summary
+- id607 OnSyncBaseInfoFromBattlefieldCompetitorList (var): lookup by dwords @+9/+0xD must
+  succeed; the competitor object's list at +0xE8 is cleared (nodes freed, 0x70-byte records),
+  then rebuilt from the packet: count byte @+0x11, records start @+0x12 (loop with r13+0x16,
+  stride ~9 dwords/36 bytes per record) - the competitor base records (name/class/side/team).
+- Block summary: id25 move-state bytes (+0xB -> +0x44 etc. + packed type @+0x12); id47 skill
+  effect 49 pairs (TSV); id607 competitor list layout above; the combat removal was reverted
+  (ee70f53) per the user clarification.
