@@ -2247,3 +2247,14 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   -> player+0x1020), id 10/11/12/13 (other players / npcs / doodads / moves), id 8 (map switch),
   plus the time sync. UI: RoomBase/ApplyEnterScene is the cross-server dungeon flow, not the
   main world entry; the main UI (uishell) initializes on LOADING_END.
+
+### 2026-10-05 — V2 P3 STATIC: world handler requirements (id 11/12/13)
+- id 11 OnSyncNewNpc (153 B): [pkt+0x69] dword MUST be non-zero (the npc id; ==0 -> exit
+  0x140159F12); [pkt+0x94] flags byte bit7; then the local-player lookup and the npc spawn.
+- id 13 OnMoveCharacter (33 B): entity lookup by [pkt+7] (bit30 set -> 0x140174CB0 global-id
+  lookup, else 0x140174D10); the entity MUST have [entity+0x60] (scene) and [entity+0x58]
+  non-null else exit; then [pkt+0xB] byte -> entity+0x44, [pkt+0x18] byte -> entity+0x26C, etc.
+- id 12 OnSyncNewDoodad (68 B): null checks then the lookup (body further).
+- Common prerequisite across the world handlers: the entity's scene bind (player+0x60 and the
+  +0x58 companion) - exactly what the id-10 guard path (0x14017BDD0) sets. So the scene-bind
+  remains the gate for the whole world set, not just state 7.
