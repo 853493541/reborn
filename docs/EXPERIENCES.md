@@ -2384,3 +2384,22 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Fix: serverlist_host.py build_body now patches EVERY entry's IP/port to 127.0.0.1:3724
   (names/regions kept). Verified live: served list = 268 lines, 0 non-local entries.
 - The test client was killed immediately when the user reported the real connection.
+
+### 2026-10-06 — V2 CLIENT SESSION: real-server leak fixed + stable session + bind trigger hunt
+- serverlist fix verified live: ALL 268 list entries -> 127.0.0.1 (the client restores the
+  last-played real server; the single-entry patch leaked to the real server).
+- id-4 repeat RST identified and fixed: a repeated identical id 4 makes the client reset the
+  connection (both earlier RSTs followed a 2nd/3rd id 4). New stub sequence: id 4 ONCE
+  (map=1, triggers the loading) -> the client sends ApplyEnterScene (proto=3) ~5 s later ->
+  answer with S2C id 3 (time sync) only -> keepalive id 5. Session now STABLE for minutes
+  (pings + id5 keepalives, no RST).
+- Live state with the scene LOADED: the scene registry has (1,0) -> 0x20CD1D75608 (the
+  sandbox scene); client+0x14=1; player state=4; scene (player+0x60)=0x0.
+- Bind trigger hunt: the bind chain 0x140174970 -> 0x1401780D0 -> 0x14017BDD0 needs a trigger
+  AFTER the scene exists. Tested live: repeated id4 (RST), id8 (its start requires
+  player+0x60 non-null -> errors), id7 (no effect). Remaining candidates: 0x1401BA8F0 (the
+  pointer-called binder; checks 0x140112CB0==1 then binds with 0x1401135F0's result) and the
+  0x1402B1A70 reset+bind routine (zeroes +0xF88/+0xF98/+0x2BC/+0x2C8 then binds with edx=0;
+  its trigger is a pointer/registration).
+- Stub: game_server_stub.py sequence updated (id4 once -> await proto3 -> id3 -> id5
+  keepalive); run_gamestub_1.cmd = map=1/region=0.

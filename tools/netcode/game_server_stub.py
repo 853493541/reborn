@@ -137,17 +137,20 @@ def handle(conn, addr):
             now = time.time()
             if next_t and now >= next_t:
                 if sync_step == 1:
+                    # First id 4 (map from GAME_ID4_MAP, default 0): triggers the client's
+                    # world-entry/loading flow. Sent ONCE (a repeated identical id 4 makes the
+                    # client reset the connection); the real map arrives via the post-op3 id 4.
                     conn.sendall(sess.encrypt(id_frame(4, 343, ROLE_ID)))
-                    w("[%s] SYNC step1 id=4 (role=%d)" % (time.strftime("%H:%M:%S"), ROLE_ID))
-                    sync_step = 2
-                    next_t = now + 6.0
+                    w("[%s] SYNC step1 id=4 initial (map=%s) - triggers loading"
+                      % (time.strftime("%H:%M:%S"), os.environ.get("GAME_ID4_MAP", "0")))
+                    sync_step = 1.5
+                    next_t = now + 5.0
+                elif sync_step == 1.5:
+                    next_t = 0.0
                 elif sync_step == 2:
-                    if confirmed[0]:
-                        conn.sendall(sess.encrypt(id5_frame(ROLE_ID)))
-                        w("[%s] SYNC keepalive id=5 (post-confirm)" % time.strftime("%H:%M:%S"))
-                    else:
-                        conn.sendall(sess.encrypt(id_frame(4, 343, ROLE_ID)))
-                        w("[%s] SYNC keepalive id=4 (awaiting confirm)" % time.strftime("%H:%M:%S"))
+                    # Keepalive after the enter-scene id 4: id 5 only (id 4 must not repeat).
+                    conn.sendall(sess.encrypt(id5_frame(ROLE_ID)))
+                    w("[%s] SYNC keepalive id=5" % time.strftime("%H:%M:%S"))
                     next_t = now + 6.0
             if os.path.exists(CMD_FILE):
                 try:
@@ -195,6 +198,23 @@ def handle(conn, addr):
                     conn.sendall(sess.encrypt(resp))
                     w("[%s] SENT id=5 world data reply (sub=0 type=1) after client confirm"
                       % time.strftime("%H:%M:%S"))
+                elif proto == 3 and os.environ.get("GAME_SYNC", "1") == "1":
+                    # Client ApplyEnterScene (DoApplyEnterScene, 15B). The loading screen is
+                    # now up; answer with the S2C id 3 time sync and (re)send id 4 so the
+                    # scene bind runs while the sandbox scene exists.
+                    ts = int(time.time() * 1000) & 0xFFFFFFFF
+                    p = bytearray(19)
+                    struct.pack_into("<H", p, 0, 3)
+                    struct.pack_into("<I", p, 7, ts)
+                    conn.sendall(sess.encrypt(bytes(p)))
+                    w("[%s] SENT id=3 time sync after client ApplyEnterScene" % time.strftime("%H:%M:%S"))
+                    time.sleep(0.3)
+                    # NO repeated id 4 (it resets the connection). The enter-scene/loading
+                    # completion flow re-binds the scene client-side; keepalive with id 5 only.
+                    w("[%s] SYNC: enter-scene answered (id3 only, id4 not repeated)"
+                      % time.strftime("%H:%M:%S"))
+                    sync_step = 2
+                    next_t = time.time() + 6.0
     except Exception as e:
         w("[%s] error after %.1fs: %s" % (time.strftime("%H:%M:%S"), time.time() - t0, e))
     finally:
