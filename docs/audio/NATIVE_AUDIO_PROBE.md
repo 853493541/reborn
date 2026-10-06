@@ -63,10 +63,14 @@ host's Wwise IO cannot resolve it. Tried without effect: staging the `.wem` tree
 source position after posting and **falls back to the WAV** for that cast
 (`HOST_AUDIO_STEP1.md` Step 2).
 
-Root cause: the game client supplies Wwise with its own VFS-aware
-`IAkFileLocationResolver`; the MovieEditor engine has none. Closing it =
-`AK::StreamMgr::SetFileLocationResolver` (export present in `KG3D_WwiseX64.dll`)
-with a resolver that serves the pak media, or the game's resolver instance.
+Root cause (completed via HIRC parse + `CreateFileW` hook): the event is a plain
+Play of Sound `0x9253BB` referencing media `161340541`; the bank ships only
+`BKHD`+`HIRC` (no `DIDX`/`DATA`), so the media is streamed. The stream manager and
+resolver are non-null, yet **zero media opens reach the OS** (`KernelBase
+CreateFileW` hook silent) — the host's stream device has no usable low-level IO
+hook (the game client supplies it; the editor install does not). Closing it =
+recover/reuse the game's `IAkLowLevelIOHook`/media-delivery path with evidence,
+never by guessing the interface ABI.
 
 Recorded engine gap (unchanged): the engine's own tani SoundTag dispatch never calls
 PostEvent in the host (§3); the identified suspects are
