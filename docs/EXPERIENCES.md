@@ -1940,3 +1940,15 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   id-0x2FF frame; auto-sent after the client's proto-1 handshake (GAME_AUTORESP=1).
 - Lesson: slot-offset math must be anchored to the right base (id vs type table); the
   0x600 gap between handler arrays was the id table's size array, not a second table.
+
+### 2026-10-05 — V2 P3 MILESTONE: game-login handshake respond LIVE-VERIFIED
+- Off-by-one corrected: id-table slot(id) = 0x16460 + id*8, so handler slot 0x17C50 = id 766
+  = 0x2FE (not 0x2FF). The net thread's special case cmp word [r13], 0x2FE IS the respond
+  id. Size slot 0x18B20 = 0x17F28 + 766*4 confirms.
+- Live run (client 18:08, gateway->game flow): client game handshake (proto 1, 32B) received;
+  id-0x2FF attempt decrypted but not handled (mgr+0xE404 stayed 0); corrected id-0x2FE frame
+  injected via gsend.hex at 18:16:18 -> **mgr+0xE404 = 30 (our ReconnectTimeout)**: the
+  OnHandShakeRespond handler (0x140143A30) provably ran in the live client.
+- Cipher alignment proof: client receive-state 0x4B107CDF = exactly STATE0 advanced by two
+  decrypted packets (cmd 40B + respond 71B); client kept pinging (proto 6) throughout.
+- Stub fixed: RESPOND_ID = 0x2FE (tools/netcode/game_server_stub.py).

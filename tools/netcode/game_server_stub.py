@@ -38,7 +38,7 @@ def hello():
     return pframe(bytes([0x20, 0x00]) + b"\x00" * 40)
 
 
-RESPOND_ID = 0x2FF
+RESPOND_ID = 0x2FE
 
 
 def handshake_respond(server_name=b"127.0.0.1", timeout=30, recover=1, flag2=1, success=1):
