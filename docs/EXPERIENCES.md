@@ -2007,3 +2007,15 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   [client+0x6C] >= [rax+0x3C]; the state-7 write at 0x14015A854 sits behind this chain.
 - Next: decode 0x14016AD70 (what it reads from +0x4B) + the lookup key fields; fill the id-10
   template accordingly; re-run (keepalive already proven).
+
+### 2026-10-05 — V2 P3 Phase 3b: id-10 guard chain decoded; template parameterized
+- Parse 0x14016AD70(pkt+0x4B, player, out): out[+8]=(qword&0x3FFFF)=A -> handler [rbp-0x31],
+  out[+0xC]=(qword>>18)&0x3FFFF=B -> handler [rbp-0x2D], out[+0x10]=(qword>>36)&0x3FFFFF=C;
+  byte pkt+0x53 flags -> player+0x368/0x36C/0xC28; qword bits 58-63 (type 15/30) selects a
+  table lookup path (0x14023EC00, client+0x14438) vs the direct-fill path.
+- Guard call 0x140173D90 = a PACKING routine (builds appearance fields, returns success);
+  with zeros or pack=0x40000 (B=1) it returns 0 -> state-7 write skipped (player+0xFDC stays 4).
+- Stub: id-10 template now parameterized (GAME_ID10_PACK hex qword @+0x4B, GAME_ID10_FLAGS
+  byte @+0x53) for fast live iteration.
+- Next: decode the 0x140173D90 call-site args (0x14015A7xx) + its return condition to learn
+  the required A/B/C values (likely the role's appearance/model ids from the role data).

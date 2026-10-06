@@ -44,10 +44,18 @@ ROLE_ID = int(os.environ.get("GAME_ROLE_ID", "1001"))
 
 def id_frame(frame_id, size, role_id):
     """Build an S2C frame: [u16 id][u8 flags][u16 serial][u16 ack][u32 field] + payload.
-    For id 4/10 the field u32 at +7 carries the role/entity id (the handler's lookup key)."""
+    For id 4/10 the field u32 at +7 carries the role/entity id (the handler's lookup key).
+    id 10 also carries the packed appearance qword at +0x4B (GAME_ID10_PACK hex) and its
+    flag byte at +0x53 (GAME_ID10_FLAGS); the handler parses it (0x14016AD70) and the
+    state-7 write is gated on the resulting fields."""
     p = bytearray(size)
     struct.pack_into("<H", p, 0, frame_id)
     struct.pack_into("<I", p, 7, role_id)
+    if frame_id == 10:
+        pack = int(os.environ.get("GAME_ID10_PACK", "0"), 16)
+        flags = int(os.environ.get("GAME_ID10_FLAGS", "0"), 16)
+        struct.pack_into("<Q", p, 0x4B, pack & 0xFFFFFFFFFFFFFFFF)
+        p[0x53] = flags & 0xFF
     return bytes(p)
 
 
