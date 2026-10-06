@@ -34,8 +34,9 @@ fingerprints. Companion: `RENDERING_OPTIONS.md` (key↔offset reference), P2 cap
 | `fParticleSystemCullDist` | 1000 | 0 | 0 | no-op (no particles in view) |
 
 Evidence (committed): `proof/render/lod_vista/{base_t9,nShadowType,fSpeedTreeCullDist,fSimpleModelCullDist}.png`;
-the full 26-run set is in `bin64\reborn_out` run logs (uncommitted, attributable by the
-`reborn_client_lodperf` fingerprint).
+the full 26-run set is reproducible from the script below (run screenshots were not kept;
+run logs remain in `bin64\reborn_out`, attributable by the `reborn_client_lodperf`
+fingerprint).
 
 ## Findings
 
