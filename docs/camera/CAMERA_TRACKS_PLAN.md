@@ -25,7 +25,7 @@ Companion: `CLIENT_AUDIT.md` (missing list), `CONFIG_FILES.md`, `MODE_ANIM_STATU
 
 | Item | Where | Fact |
 |---|---|---|
-| `.mani` sample | `zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\action\turningeye.mani` (+ `f1/f2/m1/m2_turningeye.mani`) | 768–1008 B; **magic `ACON`**, u32 `42` at +4 (key/frame count candidate) |
+| `.mani` sample | `zhcn_hd\SeasunDownloaderV2.4\seasun\editortool\movieeditor\source\action\turningeye.mani` (+ `f1/f2/m1/m2_turningeye.mani`) | 768–1008 B; **magic `ACON`**; u32@+4 = **classId** (42 for these editor files), not a count — see `MANI_FORMAT.md` |
 | Rush-camera table | viewer tmp `nieyun-rush-out\represent\player\player_rush_camera.txt` (present) | `CameraID / File / Speed`, 4 rows → `\data\movie\camera\16.mani`, `17.mani`, speed 1 |
 | Skill-move camera table | `proof/netcode/camera_files/skill_move_camera.txt` (in the original checkout; untracked — copy in P0) | UTF-8, 8 rows; columns: `SkillID, bAniTag, 进入时间(ms), 退出时间(ms), 最大旋转角速度(0~2PI)/固定角度(>=30°), 保持时间, 屏幕特效开关, 边缘色(0~10), 色域饱和度(0~1)` |
 | Scene/dialog tables | `Represent/camera/SceneCameraAni.tab`, `npc_dialog_scene_camera_ani.txt`, `animation_camera_model.txt` | referenced by `CONFIG_FILES.md`; extract in P0 |
@@ -34,29 +34,34 @@ Companion: `CLIENT_AUDIT.md` (missing list), `CONFIG_FILES.md`, `MODE_ANIM_STATU
 
 ## 3. Phases
 
-### P0 — corpus + format (static, ~0.5 day)
-1. Copy `skill_move_camera.txt` into `proof/netcode/camera_files/` (tracked) with a SOURCES
-   note; extract `data/movie/camera/16.mani`, `17.mani`, `SceneCameraAni.tab`,
-   `npc_dialog_scene_camera_ani.txt` via `run_pakv4` into the ignored work dir (provenance
-   recorded; only the small table gets committed).
-2. `tools/camera/mani_probe.py` (new area tool): parse `ACON` (magic/version/count/stride),
-   test key layouts across turningeye (1008 B / 42) and 16/17; emit
-   `proof/camera_tracks/mani_keys.tsv`.
-3. Consumer hunt (read-only): xref `.mani` / `KRLCameraAni` / `PlaySceneCameraAni` in
-   `JX3RepresentX64.dll` / `KG3DEngineDX11EX64.dll` (tools/netcode/xref_string.py,
-   gbk_grep.py) → reader RVA + which runtime state triggers it.
-**Done:** format spec + reader citation; sample key table committed.
+### P0 — corpus + format (static, ~0.5 day) — **DONE 2026-10-06**
+1. Corpus: `skill_move_camera.txt` copied to `proof/camera_tracks/` (tracked); 16/17.mani,
+   `SceneCameraAni.tab`, `npc_dialog_scene_camera_ani.txt`, `animation_camera_model.txt` and
+   10 cameradata samples extracted to the ignored temp dir via `run_pakv4` (provenance in
+   `MANI_FORMAT.md`).
+2. `tools/camera/mani_probe.py`: full cameradata grammar decoder + sampler, `--selftest`
+   (14/14 PASS), `--verify` (10/10 shipped samples, exact payload consumption), `--tsv`
+   proof table (`proof/camera_tracks/mani_keys.tsv`).
+3. Format spec `docs/camera/MANI_FORMAT.md` + reader citation (KG3DMovieX64.dll:
+   validator `0x1238d0`, factory `0x1ba7a0`, header writer `0x123d20`, loader `0x1bb170`;
+   `OnPlaySceneCameraAni` @ `0x18031ed00` in JX3RepresentX64.dll).
+   **Result:** ACON = 40-byte section headers {magic, classId, 32 zeros}; cameradata =
+   class 25 (meta) + class 10 (track A `{x,frame,z,y}` + track B `{x,a,b,frame}`, sparse
+   keys, duration = last frame + 1). Rush variant deferred (different key grammar, §6.4).
+   Format: `MANI_FORMAT.md` (HIGH).
 
 ### P1 — host `.mani` playback (~1 day)
-1. `client/CameraTrack.cs`: `ACON` decoder + keyframe sampler (`Sample(t) -> pos/look/fov`),
-   track space resolved from the P0 reader (world vs actor-relative — **verify, don't guess**).
+1. `client/CameraTrack.cs`: ACON decoder + keyframe sampler (`Sample(frame) -> pos/look`),
+   cameradata grammar per `MANI_FORMAT.md` (world space, cm, Y up — resolved in P0;
+   track A = position, track B = look-at target, semantics MED). Rush variant rejected with
+   a clear log (deferred).
 2. Wire `RC_CAM_ANI=<vfs path>[,loop]` through the existing engine camera set path; log
    sampled vs applied values.
 3. Triggers: rush camera (`player_rush_camera.txt`) is the data-backed gameplay trigger but
    needs the rush/skill-move state (absent) — keep the hook point `CameraTrack.Play(id)` and
    register the dependency; scripted trigger proves the pipeline now.
-**Verify:** play 16/17/turningeye with per-keyframe screenshots + `image_stats` fingerprints,
-camera position log vs sampler; `camera_smoke` ALL PASS.
+**Verify:** play a cameradata track (e.g. `13_0`, `30_1`) with per-keyframe position logs +
+`image_stats` fingerprints; `camera_smoke` ALL PASS.
 
 ### P2 — skill-move camera FOV (~0.5 day)
 1. `client/SkillMoveCamera.cs`: parse the 8-row table; expose `TryGet(skillId)`.
@@ -110,7 +115,8 @@ space); P2/P3 are small. No blockers for P0–P3.
 
 ```powershell
 $env:RC_CLIENT_EXE='reborn_client_cameratracks.exe'; client\build_client.cmd
-.venv\Scripts\python.exe tools\camera\mani_probe.py <sample.mani> --keys-tsv proof\camera_tracks\mani_keys.tsv
+.venv\Scripts\python.exe tools\camera\mani_probe.py --selftest                  # 14/14 PASS
+.venv\Scripts\python.exe tools\camera\mani_probe.py --tsv proof\camera_tracks\mani_keys.tsv <cameradata .mani...>
 # run: cwd = C:\SeasunGame\MovieEditor
-$env:RC_CAM_ANI='data\movie\camera\16.mani'; $env:RC_AUTORUN='12000'; & bin64\reborn_client_cameratracks.exe
+$env:RC_CAM_ANI='represent\camera\cameradata\13_0.mani'; $env:RC_AUTORUN='12000'; & bin64\reborn_client_cameratracks.exe
 ```

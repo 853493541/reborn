@@ -4253,3 +4253,36 @@ if the cache/host frames appear.
 - Evidence: `docs/camera/CAMERA_TRACKS_PLAN.md`; `docs/camera/README.md`; managed API dump
   `%TEMP%\opencode\api_cameratracks.txt`.
 - Outcome: plan ready; P0 next. No code changed yet.
+
+### 2026-10-06 - Camera (B) - P0 done: `.mani` ACON format decoded + verified
+
+- Did: decoded the `.mani` container from the game-client binaries and verified it on the
+  shipped corpus. **ACON** = sequence of 40-byte section headers `{u32 magic, u32 classId,
+  32 zeros}` + class payload. Cameradata files = class 25 (meta) + class 10 (camera track):
+  `8x0 + {1, dur, 1, 0} + A-hdr {nA, 0, z0, y0} + (nA-1) x {x, frame, z, y} + B-hdr
+  {x0, 0, nB, 0} + nB x {x, a, b, frame}` (B's final key is a loop closure at frame 1;
+  duration = last frame + 1; keys sparse). Rush variant (`16/17.mani`) has a different key
+  grammar - deferred, not guessed.
+- How: xref/disasm of `KG3DMovieX64.dll` (validator `0x1238d0` reads 40 bytes and checks
+  magic + classId; factory `0x1ba7a0` id 10 -> ctor `0x19b8d0`, `+0xb8=10`; header writer
+  `0x123d20`; object loader `0x1bb170`), plus statistical/differential analysis of the
+  extracted samples (quat-norm scan for the rush transform stride; frame-classification
+  runs for the cameradata A/B sections). Earlier hypotheses (u32@+4 = count, 32-byte
+  records, 16-byte flat elements) were all **disproved** by exact-consumption parsing.
+- Evidence: `docs/camera/MANI_FORMAT.md`; `tools/camera/mani_probe.py` (`--selftest`
+  14/14 PASS, `--verify` 10/10 exact); `proof/camera_tracks/mani_keys.tsv`;
+  `proof/camera_tracks/disasm/*.txt` (validator, factory, case/ctor, loader, writer).
+- Outcome: P0 done; P1 (host playback of cameradata tracks) unblocked. Local only.
+
+### 2026-10-06 - Camera (B) - decode lessons (dead ends worth remembering)
+
+- `u32@+4` is the **classId**, not a record count: it is constant per class across file
+  sizes (25 for the set section, 10 for the track section, 42 for the editor turningeye
+  files). Any "count" interpretation breaks on the next sample.
+- Records are **not** a flat uniform array: cameradata class-10 payload is meta + A keys
+  (frame at +4) + B keys (frame at +12, loop key at the end). Fixed-stride assumptions
+  (32 B "records", 16 B "elements") survived several files by coincidence and then broke
+  on 21_2/23_0/30_1 - the fix was to require **exact payload consumption** and to classify
+  elements by which slot carries a monotonically increasing frame.
+- Rush `.mani` are a different grammar despite the same class id 10 - do not assume one
+  Load per id; the marker words differ (`{1, dur, 0, 1}` vs `{1, dur, 1, 0}`).

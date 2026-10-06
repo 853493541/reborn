@@ -18,6 +18,7 @@ Camera model and host work. Canonical gameplay spec in `docs/netcode/REBORN_CAME
 | `HANDOFF.md` | Camera work - handoff report (for a fresh session) |
 | `HOST_DEVIATIONS.md` | Host deviations register (camera) |
 | `INPUT_CONTROLS.md` | JX3 camera input controls — real client data (2026-09-23) |
+| `MANI_FORMAT.md` | `.mani`/ACON camera track format — decoded from KG3DMovieX64.dll (2026-10-06) |
 | `PENETRATION_PLAN.md` | Camera penetration plan (accurate, 2026-09-28) |
 | `REAL_VALUES.md` | JX3 camera — real values found (2026-09-23) |
 | `RECONCILIATION_STATUS.md` | Camera reconciliation status (2026-09-24) |
@@ -29,4 +30,5 @@ Camera model and host work. Canonical gameplay spec in `docs/netcode/REBORN_CAME
 | Tool | Purpose |
 |---|---|
 | `tools/camera/minidump_exc.py` | stdlib minidump reader: exception record, registers, module-resolved stack candidates, register-pointer strings. Used for the D6 crash analysis (no debugger installed; dumps in `%LOCALAPPDATA%\CrashDumps`). |
+| `tools/camera/mani_probe.py` | `.mani` (ACON) decoder: cameradata keyframe grammar + sampler; `--selftest` (14/14), `--verify <dir>`, `--tsv` proof table. Format spec: `MANI_FORMAT.md`. |
 | `tools/camera/drive_client.ps1` | Synthetic player input driver (camera drags + WASD via `mouse_event`/`keybd_event`) to reproduce interactive-only engine crashes (D6) on a running client. **It hijacks the real desktop cursor/keyboard - use only with the user's explicit approval; prefer internal env-driven test modes (`RC_*` scripted paths) for camera/input repros (2026-09-30).** |
