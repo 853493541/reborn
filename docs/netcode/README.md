@@ -62,6 +62,7 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `extract_hpkg_member.py` | CDN `.hpkg` member extractor (LZHAM index, raw/LZHAM payload variants) |
 | `lua51_dump.py`, `gbk_grep.py`, `search_tree.py` | Lua 5.1 bytecode proto/const dump, GBK/UTF-16 binary grep, tree token search |
 | `mine_protocol_layouts.py` | per-handler packet field offsets from S2C handler disassembly -> `proof/netcode/protocol_layouts_s2c.tsv` |
+| `extract_field_maps.py` | packet-read -> object-field pairs per S2C handler (dataflow pairing of mov/movzx) -> `proof/netcode/game_field_maps.tsv` |
 | `enum_named_objects.py` | list session named objects (mutexes/events/sections) — launcher-handoff gate hunting |
 | `reference/jx3_model.py` | runnable reference server+client (10/10 smoke) |
 
