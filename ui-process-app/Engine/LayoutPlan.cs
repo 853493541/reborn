@@ -675,7 +675,7 @@ namespace UiProcessApp.Engine
             // mid-init (sections hidden before the engine shows them), which would
             // break GT-matched windows (the minimap lost its whole subtree).
             if (!ReplayCompleted(statePath)) return 0;
-            return ApplyRuntimeMutations(filtered, File.ReadAllLines(statePath));
+            return ApplyRuntimeMutations(filtered, File.ReadAllLines(statePath), iniPath);
         }
 
         /// <summary>
@@ -683,11 +683,12 @@ namespace UiProcessApp.Engine
         /// shared by the on-disk runtime state and the interaction overlay (viewer clicks
         /// dispatched to tools/ui/replay_server.lua, docs/ui/UI_INTERACTION_REPLAY.md).
         /// </summary>
-        public static int ApplyRuntimeMutations(IniFile filtered, IEnumerable<string> lines)
+        public static int ApplyRuntimeMutations(IniFile filtered, IEnumerable<string> lines, string iniPath = null)
         {
             if (filtered == null || lines == null) return 0;
             var hidden = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var rootName = filtered.Sections.Count > 0 ? filtered.Sections[0].Name : null;
+            var sourceCache = new Dictionary<string, IniFile>(StringComparer.OrdinalIgnoreCase);
             int applied = 0;
             foreach (var line in lines)
             {
@@ -762,6 +763,162 @@ namespace UiProcessApp.Engine
                             hidden.Remove(section.Name);
                         applied++;
                         break;
+                    // ---- runtime item population (the engine's list building) ----
+                    case "Clear":
+                        // The engine empties the container's item list; mirror it so the
+                        // authored prototype does not linger under the appended clones.
+                        RemoveDescendants(filtered, section.Name);
+                        applied++;
+                        break;
+                    case "AppendItemFromIni":
+                    case "AppendItemFromData":
+                    case "AppendContentFromIni":
+                    {
+                        // AppendItemFromIni(container, iniPath, item [, flag]) and
+                        // AppendContentFromIni(container, iniPath, item [, newName]) clone
+                        // the named INI subtree under the container (the engine's item).
+                        var source = FindAppendSource(filtered, iniPath, parts, sourceCache);
+                        if (source != null)
+                        {
+                            var desired = parts.Length > 4 && !string.IsNullOrWhiteSpace(parts[4]) ? parts[4] : null;
+                            AppendClone(filtered, source, section.Name, desired);
+                            applied++;
+                        }
+                        break;
+                    }
+                    case "AppendItemFromString":
+                    {
+                        // Text-only item: a minimal Text section carrying the string.
+                        if (parts.Length > 2)
+                        {
+                            var name = UniqueName(filtered, section.Name + "~Text");
+                            var item = new IniSection { Name = name };
+                            item.Values["._WndType"] = "Text";
+                            item.Values["._Parent"] = section.Name;
+                            item.Values["$Text"] = parts[2];
+                            AddSection(filtered, item);
+                            applied++;
+                        }
+                        break;
+                    }
+                    // ---- the engine's arrangement passes ----
+                    case "FormatAllItemPos":
+                    case "FormatAllContentPos":
+                        section.Values["$FormatItems"] = "1";
+                        applied++;
+                        break;
+                    case "SetSizeByAllItemSize":
+                        section.Values["$SizeByItems"] = "1";
+                        applied++;
+                        break;
+                    case "SetPoint":
+                        // SetPoint(srcSide, sx, sy, dstSide, dx, dy) -> the viewer's
+                        // AnchorArgs "dstSide,srcSide,dx,dy" (ApplyAnchors format).
+                        if (parts.Length > 7)
+                        {
+                            section.Values["AnchorArgs"] = parts[5] + "," + parts[2] + "," + parts[6] + "," + parts[7];
+                            applied++;
+                        }
+                        break;
+                    case "SetOverTextPosition":
+                        SetValue(section, "Left", parts, 2);
+                        SetValue(section, "Top", parts, 3);
+                        applied++;
+                        break;
+                    case "SetOverTextFontScheme":
+                        SetValue(section, "FontScheme", parts, 2);
+                        applied++;
+                        break;
+                    // ---- runtime render source / mode ----
+                    case "FromUITex":
+                        if (parts.Length > 2 && !string.IsNullOrWhiteSpace(parts[2]))
+                            section.Values["Image"] = parts[2];
+                        SetValue(section, "Frame", parts, 3);
+                        applied++;
+                        break;
+                    case "SetImageType":
+                        SetValue(section, "ImageType", parts, 2);
+                        applied++;
+                        break;
+                    case "SetPercentage":
+                        SetValue(section, "$Percentage", parts, 2);
+                        applied++;
+                        break;
+                    case "SetFontColor":
+                        if (parts.Length > 2) section.Values["$FontColor"] = parts[2];
+                        applied++;
+                        break;
+                    // ---- control state ----
+                    case "Enable":
+                        if (parts.Length > 2)
+                            section.Values["$Disabled"] = parts[2].Equals("false", StringComparison.OrdinalIgnoreCase) ? "1" : "0";
+                        applied++;
+                        break;
+                    case "Check":
+                        if (parts.Length > 2)
+                            section.Values["$Checked"] = parts[2].Equals("false", StringComparison.OrdinalIgnoreCase) ? "0" : "1";
+                        applied++;
+                        break;
+                    case "CorrectPos":
+                        section.Values["$CorrectPos"] = "1";
+                        applied++;
+                        break;
+                    case "SetScrollPos":
+                        if (parts.Length > 2 && !string.IsNullOrWhiteSpace(parts[2]))
+                            section.Values["$ScrollPos"] = parts[2];
+                        applied++;
+                        break;
+                    case "SetStepCount":
+                        SetValue(section, "StepCount", parts, 2);
+                        applied++;
+                        break;
+                    case "EnableScroll":
+                        section.Values["$ScrollEnabled"] = "1";
+                        applied++;
+                        break;
+                    case "SetHAlign":
+                        SetValue(section, "HAlign", parts, 2);
+                        applied++;
+                        break;
+                    case "Scale":
+                    case "SetScale":
+                        SetValue(section, "Scale", parts, 2);
+                        applied++;
+                        break;
+                    case "SetOverText":
+                        if (parts.Length > 2) section.Values["$OverText"] = parts[2];
+                        applied++;
+                        break;
+                    case "SetMapPath":
+                        if (parts.Length > 2) section.Values["MapPath"] = parts[2];
+                        applied++;
+                        break;
+                    case "SetItemStartRelPos":
+                        if (parts.Length > 2) section.Values["ItemStartRelPos"] = parts[2];
+                        applied++;
+                        break;
+                    case "CreateItemData":
+                    case "SetObject":
+                    case "SetObjectIcon":
+                    case "SetObjectSelected":
+                        // Item-data bookkeeping: the visual rows come from the INI
+                        // prototypes, so these are recorded as applied without a
+                        // layout effect (an empty bag cell renders empty in game too).
+                        applied++;
+                        break;
+                    case "RemoveItem":
+                        RemoveLastChild(filtered, section.Name);
+                        applied++;
+                        break;
+                    case "Expand":
+                        section.Values["$Expanded"] = "1";
+                        applied++;
+                        break;
+                    case "ActivePage":
+                        if (parts.Length > 2 && !string.IsNullOrWhiteSpace(parts[2]))
+                            filtered.Sections[0].Values["page"] = parts[2];
+                        applied++;
+                        break;
                 }
             }
 
@@ -799,6 +956,144 @@ namespace UiProcessApp.Engine
             if (double.TryParse(parts[index], System.Globalization.NumberStyles.Float,
                     System.Globalization.CultureInfo.InvariantCulture, out var value))
                 section.Values[key] = value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        private static void AddSection(IniFile file, IniSection section)
+        {
+            file.Sections.Add(section);
+            file.ByName[section.Name] = section;
+        }
+
+        private static string UniqueName(IniFile file, string desired)
+        {
+            if (!file.ByName.ContainsKey(desired)) return desired;
+            for (int i = 1; i < 1000; i++)
+            {
+                var candidate = desired + "~" + i.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                if (!file.ByName.ContainsKey(candidate)) return candidate;
+            }
+            return desired + "~" + Guid.NewGuid().ToString("N");
+        }
+
+        private static IniSection CloneSection(IniSection source, string name)
+        {
+            var clone = new IniSection { Name = name };
+            foreach (var pair in source.Values) clone.Values[pair.Key] = pair.Value;
+            return clone;
+        }
+
+        /// <summary>
+        /// Removes every descendant of a container (the engine's Clear empties the
+        /// container's item list; the authored prototype is an item too).
+        /// </summary>
+        private static void RemoveDescendants(IniFile file, string rootName)        {
+            var doomed = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var stack = new Stack<string>();
+            stack.Push(rootName);
+            while (stack.Count > 0)
+            {
+                var name = stack.Pop();
+                foreach (var candidate in file.Sections.ToList())
+                {
+                    if (!string.Equals(candidate.Get("._Parent"), name, StringComparison.OrdinalIgnoreCase)) continue;
+                    if (doomed.Add(candidate.Name)) stack.Push(candidate.Name);
+                }
+            }
+            if (doomed.Count == 0) return;
+            file.Sections.RemoveAll(s => doomed.Contains(s.Name));
+            foreach (var name in doomed) file.ByName.Remove(name);
+        }
+
+        /// <summary>Removes a container's last item (the engine's RemoveItem).</summary>
+        private static void RemoveLastChild(IniFile file, string container)
+        {
+            IniSection last = null;
+            foreach (var candidate in file.Sections)
+            {
+                if (string.Equals(candidate.Get("._Parent"), container, StringComparison.OrdinalIgnoreCase))
+                    last = candidate;
+            }
+            if (last == null) return;
+            file.Sections.Remove(last);
+            file.ByName.Remove(last.Name);
+        }
+
+        /// <summary>
+        /// Materializes a runtime item: clones the source subtree under the container
+        /// (AppendItemFromIni / AppendContentFromIni). Descendants get unique prefixed
+        /// names so multiple clones of the same prototype can coexist.
+        /// </summary>
+        private static void AppendClone(IniFile file, IniSection source, string container, string desiredName)
+        {
+            var rootName = UniqueName(file, string.IsNullOrWhiteSpace(desiredName) ? source.Name : desiredName);
+            var root = CloneSection(source, rootName);
+            root.Values["._Parent"] = container;
+            AddSection(file, root);
+            var stack = new Stack<(IniSection Src, string Parent)>();
+            stack.Push((source, rootName));
+            while (stack.Count > 0)
+            {
+                var (src, parent) = stack.Pop();
+                foreach (var child in file.Sections.ToList())
+                {
+                    if (ReferenceEquals(child, source)) continue;
+                    if (!string.Equals(child.Get("._Parent"), src.Name, StringComparison.OrdinalIgnoreCase)) continue;
+                    var childName = UniqueName(file, parent + "~" + child.Name);
+                    var clone = CloneSection(child, childName);
+                    clone.Values["._Parent"] = parent;
+                    AddSection(file, clone);
+                    stack.Push((child, childName));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Resolves an append call's source section: same file first, then the named
+        /// sibling INI under the same assets root (AppendItemFromIni's iniPath arg).
+        /// </summary>
+        private static IniSection FindAppendSource(IniFile filtered, string iniPath, string[] parts,
+            Dictionary<string, IniFile> cache)
+        {
+            if (parts.Length < 4 || string.IsNullOrWhiteSpace(parts[3])) return null;
+            var item = parts[3];
+            if (TryFind(filtered, item, out var source)) return source;
+            var path = parts[2];
+            if (string.IsNullOrWhiteSpace(path)) return null;
+            var key = path.Replace('\\', '/');
+            if (!cache.TryGetValue(key, out var file))
+            {
+                file = null;
+                try
+                {
+                    var root = FindAssetsRoot(iniPath);
+                    if (root != null)
+                    {
+                        var full = Path.Combine(root, key.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+                        if (File.Exists(full)) file = IniFile.Load(full);
+                    }
+                }
+                catch
+                {
+                    file = null;
+                }
+                cache[key] = file;
+            }
+            if (file != null && file.ByName.TryGetValue(item, out source)) return source;
+            return null;
+        }
+
+        private static string FindAssetsRoot(string iniPath)
+        {
+            if (string.IsNullOrWhiteSpace(iniPath)) return null;
+            var dir = Path.GetDirectoryName(Path.GetFullPath(iniPath));
+            while (!string.IsNullOrWhiteSpace(dir))
+            {
+                if (string.Equals(Path.GetFileName(dir), "assets", StringComparison.OrdinalIgnoreCase)) return dir;
+                var parent = Path.GetDirectoryName(dir);
+                if (parent == dir) break;
+                dir = parent;
+            }
+            return null;
         }
 
         private static string FindRuntimeStateFile(string stem)

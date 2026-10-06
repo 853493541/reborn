@@ -50,7 +50,7 @@ local proxyOf
 local proxy
 local function record(sec, method, args)
   local flat = {}
-  for i = 1, math.min(#args, 4) do
+  for i = 1, math.min(#args, 8) do
     local a = args[i]
     if type(a) == "table" and a.__sectionName then a = "[" .. a.__sectionName .. "]"
     elseif type(a) == "table" then a = "{table}"

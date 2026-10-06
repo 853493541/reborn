@@ -2144,3 +2144,27 @@ solved it, and what is still open. **Newest at the bottom.**
 - The fix is executing the client's own recorded calls in the viewer (materialize clones, then run
   the format/correct/scroll passes), not approximating them - the data is already in
   `Data/runtime_state/*.tsv`.
+
+### 2026-10-05 ? UI ? runtime consumption implemented: dropped 671 -> 26 (items in place)
+- Executed the client's own recorded calls in the viewer:
+  - **item-creation**: `Clear` removes the container's item list (authored prototype included),
+    `AppendItemFromIni`/`AppendContentFromIni`/`AppendItemFromString` materialize the source
+    subtree as clones (unique prefixed descendant names, `._Parent` rewired; cross-INI sources
+    load from the assets root), `RemoveItem` drops the last item. The existing HandleType 3/6
+    flow pass then positions them; containers the script arranges get a `$FormatItems` marker so
+    the same flow applies (`WndContainer_FilterMainList` etc.).
+  - **arrangement**: `SetSizeByAllItemSize` sizes the container from the arranged rows,
+    `SetPoint` -> `AnchorArgs` (dstSide,srcSide,dx,dy), `CorrectPos` clamps into the parent,
+    `SetScrollPos` shifts the scroll's `Handle_*` content, `SetStepCount`/`EnableScroll`/
+    `SetHAlign`/`Scale`/`SetOverText*` store their values.
+  - **render/state**: `FromUITex` (image source), `SetImageType`, `SetPercentage`, `SetFontColor`;
+    `Enable` -> `$Disabled` (button `DisableGroup`, checkbox `Check/UnCheckAndDisable`),
+    `Check` -> `$Checked` (checked frame), `Expand`, `ActivePage`.
+- Also fixed the recorder: `record()` kept only 4 args, dropping `SetPoint`'s dx/dy and the
+  `AppendContentFromIni` newName - now 8 (both harness and server), batch re-run 138/143 OK.
+- Measured: `runtime_gap_report.py` dropped **671 -> 26** (item-creation 169->5, arrangement
+  330->8, render 53->13, state 119->0; consumed 1110->1753). Audit placeholders 531->516,
+  outOfBounds 6924->6892; selftest 1240/0/0. BigBagPanel applies 373 mutations (was 237) and
+  materializes the 9 filter checkboxes + subtrees (selftest sections 123 -> status 145).
+- Remaining 26: `AppendItemFromData` (function-arg rows, SocialPanel), drag registrations (no
+  visual), frame-animation/icon-source calls.

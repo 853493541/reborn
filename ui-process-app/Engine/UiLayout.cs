@@ -207,7 +207,10 @@ namespace MapUiApp.Engine
             foreach (var list in ini.Sections)
             {
                 var handleType = list.GetInt("HandleType");
-                if (handleType != 3 && handleType != 6) continue;
+                // The runtime marks containers the script arranges (FormatAllItemPos/
+                // FormatAllContentPos) so the engine's flow pass applies to them too.
+                bool runtimeFlow = list.Get("$FormatItems") == "1";
+                if (handleType != 3 && handleType != 6 && !runtimeFlow) continue;
                 double listW = SizeOf(list).W;
                 if (listW <= 0) continue;
                 // Invisible alternatives (Alpha=0 state variants) do not take list space.
@@ -267,6 +270,18 @@ namespace MapUiApp.Engine
                         x += size.W;
                     }
                     y += rowHeights[r] + rowSpacing;
+                }
+                // SetSizeByAllItemSize: the engine sizes the container to the items'
+                // extent after arranging them.
+                if (list.Get("$SizeByItems") == "1" && rows.Count > 0)
+                {
+                    double maxRowWidth = 0;
+                    foreach (var rw in rowWidths) maxRowWidth = Math.Max(maxRowWidth, rw);
+                    double totalHeight = 0;
+                    foreach (var rh in rowHeights) totalHeight += rh;
+                    totalHeight += rowSpacing * (rows.Count - 1);
+                    list.Values["Width"] = maxRowWidth.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    list.Values["Height"] = totalHeight.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 }
             }
 
@@ -535,13 +550,32 @@ namespace MapUiApp.Engine
                 var width = section.GetInt("Width");
                 var height = section.GetInt("Height");
                 // A checkbox created checked (CheckedWhenCreate=1, e.g. the queue mode
-                // tabs) paints its checked state frame group, not the unchecked one.
+                // tabs) paints its checked state frame group, not the unchecked one;
+                // the runtime's Check()/Enable() mutations override both.
                 var isChecked = type == "WndCheckBox" && section.GetInt("CheckedWhenCreate") == 1;
+                if (type == "WndCheckBox" && section.Get("$Checked") != null)
+                    isChecked = section.Get("$Checked") == "1";
+                bool disabled = section.Get("$Disabled") == "1";
+                int GroupOr(string groupKey, string fallbackKey)
+                {
+                    var group = section.GetInt(groupKey, -1);
+                    if (group >= 0 && !string.IsNullOrWhiteSpace(imagePath))
+                    {
+                        var grouped = textures.GetGroupFrame(imagePath, group);
+                        if (grouped >= 0) return grouped;
+                    }
+                    return FrameOrGroup(section, fallbackKey, textures, imagePath);
+                }
                 var frame = type switch
                 {
                     // Buttons render their normal-state frame group; Frame is only a fallback.
-                    "WndButton" => FrameOrGroup(section, "NormalGroup", textures, imagePath),
-                    "WndCheckBox" => FrameOrGroup(section, isChecked ? "CheckAndEnable" : "UnCheckAndEnable", textures, imagePath),
+                    "WndButton" => disabled
+                        ? GroupOr("DisableGroup", "NormalGroup")
+                        : FrameOrGroup(section, "NormalGroup", textures, imagePath),
+                    "WndCheckBox" => disabled
+                        ? GroupOr(isChecked ? "CheckAndDisable" : "UnCheckAndDisable",
+                                  isChecked ? "CheckAndEnable" : "UnCheckAndEnable")
+                        : FrameOrGroup(section, isChecked ? "CheckAndEnable" : "UnCheckAndEnable", textures, imagePath),
                     // Frame=-1 is authored for state/runtime-driven frames; default to 0.
                     _ => Math.Max(0, section.GetInt("Frame", 0)),
                 };
@@ -1156,6 +1190,23 @@ namespace MapUiApp.Engine
                         }
                     }
                     break;
+            }
+
+            // CorrectPos: the engine clamps a runtime-placed control into its parent.
+            if (section.Get("$CorrectPos") == "1")
+            {
+                if (parentWidth > 0 && elementWidth <= parentWidth)
+                    left = Math.Min(Math.Max(0, left), parentWidth - elementWidth);
+                if (parentHeight > 0 && elementHeight <= parentHeight)
+                    top = Math.Min(Math.Max(0, top), parentHeight - elementHeight);
+            }
+            // SetScrollPos: the scroll control's content handle shifts by -pos.
+            if (parentSection != null && section.Name.StartsWith("Handle_", StringComparison.OrdinalIgnoreCase) &&
+                parentSection.Get("$ScrollPos") != null &&
+                double.TryParse(parentSection.Get("$ScrollPos"), System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture, out var scrollPos))
+            {
+                top -= scrollPos;
             }
 
             Canvas.SetLeft(element, left);

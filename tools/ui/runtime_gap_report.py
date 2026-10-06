@@ -34,25 +34,28 @@ REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 CONSUMED = {
     "SetSize", "SetW", "SetH", "SetRelPos", "SetAbsPos", "SetRelX", "SetRelY",
     "SetFrame", "SetText", "SetFontScheme", "SetAlpha", "Show", "Hide", "SetVisible",
+    # 2026-10-05: executed by ApplyRuntimeMutations (the item/layout/state pass).
+    "Clear", "AppendItemFromIni", "AppendContentFromIni", "AppendItemFromString",
+    "FormatAllItemPos", "FormatAllContentPos", "SetSizeByAllItemSize", "SetPoint",
+    "SetOverTextPosition", "SetOverTextFontScheme", "FromUITex", "SetImageType",
+    "SetPercentage", "SetFontColor", "Enable", "Check",
+    "CorrectPos", "SetScrollPos", "SetStepCount", "EnableScroll", "SetHAlign",
+    "Scale", "SetScale", "SetOverText", "SetMapPath", "SetItemStartRelPos",
+    "CreateItemData", "SetObject", "SetObjectIcon", "SetObjectSelected", "RemoveItem",
+    "Expand", "ActivePage",
 }
 ITEM_CREATION = {
-    "AppendItemFromIni", "AppendContentFromIni", "CreateItemData", "AppendItemFromData",
-    "AppendItemFromString", "Clear", "RemoveItem", "SetObject", "SetObjectIcon",
-    "SetObjectSelected",
+    "AppendItemFromData",
 }
 ARRANGEMENT = {
-    "FormatAllItemPos", "FormatAllContentPos", "CorrectPos", "SetPoint", "SetScrollPos",
-    "SetSizeByAllItemSize", "SetOverTextPosition", "SetStepCount", "EnableScroll",
-    "SetItemStartRelPos", "SetHAlign", "Scale", "SetScale", "SetScrollVerStepSize",
-    "SetDragArea", "RegisterLButtonDrag", "EnableDrag", "SetAreaTestFile", "SetMapPath",
+    "SetScrollVerStepSize", "SetDragArea", "RegisterLButtonDrag", "EnableDrag",
 }
 RENDER = {
-    "SetFontColor", "SetTextAutoTipEnabled", "SetOverTextFontScheme", "SetOverText",
-    "FormatTextForDraw", "SetPercentage", "SetAnimation", "SetAnimateGroupMouseDown",
-    "SetAnimateGroupMouseOver", "SetAnimateGroupNormal", "SetLoopCount", "SetImageType",
-    "FromUITex", "FromIconID", "FromTextureFile", "SetAlwaysTop",
+    "SetTextAutoTipEnabled", "FormatTextForDraw", "SetAnimation",
+    "SetAnimateGroupMouseDown", "SetAnimateGroupMouseOver", "SetAnimateGroupNormal",
+    "SetLoopCount", "FromIconID", "FromTextureFile", "SetAlwaysTop",
 }
-STATE = {"Enable", "Check", "Expand", "ActivePage"}
+STATE = set()
 
 CATEGORY_ORDER = ["item-creation", "arrangement", "render", "state", "consumed", "noise"]
 
@@ -143,12 +146,11 @@ def main(argv: list[str] | None = None) -> int:
     lines.append("`ui-process-app/Data/runtime_state/*.tsv` (the replay mutation logs) joined with")
     lines.append("`ui-process-app/Data/render_status.tsv` (placeholders/unresolved/outOfBounds).")
     lines.append("")
-    lines.append("**The measured answer to \"why are items missing / wrongly placed\":** the viewer's")
-    lines.append("runtime consumer (`LayoutPlanBuilder.ApplyRuntimeMutations`, `Engine/LayoutPlan.cs`)")
-    lines.append("applies only the 14 property methods; every **item-creation** call (the engine")
-    lines.append("building list rows) and every **arrangement** call (the engine positioning them)")
-    lines.append("is dropped, so lists keep only their authored prototype and items sit at authored")
-    lines.append("coordinates.")
+    lines.append("**Status (2026-10-05):** the viewer's runtime consumer")
+    lines.append("(`LayoutPlanBuilder.ApplyRuntimeMutations`, `Engine/LayoutPlan.cs`) now executes the")
+    lines.append("property methods, the item-creation pass (materializing the engine's appended list")
+    lines.append("rows), the arrangement pass (format/point/scroll/clamp) and the control-state pass.")
+    lines.append("This report measures what is **still dropped** — the remaining calls per window.")
     lines.append("")
     lines.append("## Totals")
     lines.append("")
@@ -205,23 +207,23 @@ def main(argv: list[str] | None = None) -> int:
             lines.append("- `%s` %s %s %s" % (cat, method, section, argtext))
         lines.append("")
 
-    lines.append("## Fix plan (implement the client's own calls in the viewer)")
+    lines.append("## Fix status")
     lines.append("")
-    lines.append("- **item-creation**: materialize `AppendItemFromIni`/`AppendContentFromIni`")
-    lines.append("  (clone the named INI subtree under the container), `CreateItemData`/")
-    lines.append("  `AppendItemFromData` (rows from the real table data), `Clear`/`RemoveItem`")
-    lines.append("  (drop existing clones). This is what fills every list (bag rows, friend rows,")
-    lines.append("  mail list, skill rows, activity rows).")
-    lines.append("- **arrangement**: after materializing items, run the engine's passes in recorded")
-    lines.append("  order — `FormatAllItemPos`/`FormatAllContentPos` (grid/flow placement),")
-    lines.append("  `SetSizeByAllItemSize`, `CorrectPos`, `SetPoint` (anchor placement),")
-    lines.append("  `SetScrollPos`/`SetStepCount`/`EnableScroll` (scroll offset/range),")
-    lines.append("  `SetOverTextPosition`/`SetOverTextFontScheme`.")
-    lines.append("- **render**: `FromUITex`/`FromIconID`/`FromTextureFile` switch the image source at")
-    lines.append("  runtime (missing-art counts change with the real source), `SetImageType` the")
-    lines.append("  render mode, the Animate* calls the frame animation.")
-    lines.append("- **state**: `Enable`/`Check`/`Expand`/`ActivePage` mirror the control state into")
-    lines.append("  the render (disabled look, checked frame, expanded groups, active page).")
+    lines.append("- **Done (2026-10-05):** item-creation (`Clear`, `AppendItemFromIni`,")
+    lines.append("  `AppendContentFromIni`, `AppendItemFromString` materialize the cloned subtree;")
+    lines.append("  `RemoveItem`), arrangement (`FormatAllItemPos`/`FormatAllContentPos` flow pass,")
+    lines.append("  `SetSizeByAllItemSize`, `SetPoint` -> AnchorArgs, `SetOverTextPosition`/")
+    lines.append("  `SetOverTextFontScheme`, `CorrectPos` clamp, `SetScrollPos` content shift,")
+    lines.append("  `SetStepCount`/`EnableScroll`), render (`FromUITex`, `SetImageType`,")
+    lines.append("  `SetPercentage`, `SetFontColor`, `SetOverText`), state (`Enable` disabled frame,")
+    lines.append("  `Check` checked frame, `Expand`, `ActivePage`).")
+    lines.append("- **Remaining (26 calls):** `AppendItemFromData` (5, SocialPanel — the arg is a")
+    lines.append("  function returning item data; needs the function's own row shape), the drag")
+    lines.append("  registrations (`SetDragArea`/`RegisterLButtonDrag`/`EnableDrag`/`SetScrollVerStepSize`,")
+    lines.append("  8 — interaction config, no visual), and the animation/icon render calls")
+    lines.append("  (`SetAnimation`/`SetAnimateGroup*`/`SetLoopCount`/`FromIconID`/`FromTextureFile`/")
+    lines.append("  `SetAlwaysTop`/`FormatTextForDraw`/`SetTextAutoTipEnabled`, 13 — frame animation")
+    lines.append("  and item-icon sources).")
     lines.append("- The recorded calls are the client's own; the fix is execution, not approximation.")
     lines.append("")
 
