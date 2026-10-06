@@ -1867,3 +1867,22 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Outcome: injections safe (flags=0); the handshake respond still unidentified - the id-1
   sub-cases are the game->UI event fires, so the respond likely needs the correct sub+args
   (roleID at +0xB etc.). Next: match the UI vtable methods to the event names (JX3UIX64).
+
+### 2026-10-05 — V2 P3: id-1 = OME UI-response router; SO3UI bridge decoded; EXE KPlayerClient copy
+- Did: resolved the id-1 handler chain end-to-end: the id-1 sub-cases call methods on ONE global
+  UI object (DLL global 0x1809C1328), created from [0x180A00D80] (factory CreateSO3UI of
+  JX3UIX64.dll) -> the game interface static object at JX3UIX64+0x4A4E68 -> vtable 0x180392238.
+  Mapped the sub-case methods to their Lua event strings: sub=1 +0x580 = SKILL OME responses,
+  sub=3 +0x660 = QUEST (UI_OME_QUEST_RESPOND), sub=4 +0x378 = FELLOWSHIP, sub=5 +0x640 =
+  USE_ITEM, sub=6 +0x630 = ITEM, sub=7 +0x648 = TRADING, sub=8 +0x6E0 = CHAT; all via the
+  SYS_MSG dispatcher (arg0 = the message name, arg1 = payload). So id-1 = the game->UI
+  OME (UI operation) response router - NOT the handshake respond.
+- Also: SCENE_BEGIN_LOAD is fired by SO3UI vtable +0x2A8 (an engine-side scene notification);
+  the EXE carries its own KPlayerClient copy (handshake send 0x140169B60, dispatch 0x140168730,
+  registration in its reset 0x14011D570 - 53 core ids mirroring the DLL's); the game-login
+  success path (0x140124795) sets the session flag manager+0xE400=1 and launches the
+  game-session worker.
+- Outcome: the id-1 family is fully identified (UI OME responses). The handshake respond is
+  still open; remaining candidates: the core ids with correct content (roleID/key echo) or a
+  non-table path. Next: disassemble the core handlers (EXE ids 2..53) for the respond
+  signature (a state set + the scene load trigger).
