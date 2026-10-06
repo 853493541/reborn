@@ -2423,3 +2423,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   the remaining gate/path on the repeat needs tracing (or CheckScenePakComplete must pass).
 - Stable session: id4-once -> client ApplyEnterScene (proto=3) -> S2C id3 -> id5 keepalive
   (held 614 s).
+
+### 2026-10-06 — V2: id-4 skip-flag semantics + bind scene lookup uses client+0x1280
+- id-4 handler: mov rcx, [pkt+0xFA] (a qword) -> mov [client+0x1B108], rcx -> cmp ==0 -> run the
+  reset+bind; !=0 -> skip. So the packet's +0xFA qword = the world/scene handle the server can
+  send to SKIP the client reset; zeros (our stub) -> the reset+bind runs on every id-4.
+- The bind (0x1401780D0) scene lookup = 0x140177490: rcx = [client+0x1280] + map/region ->
+  0x140212A40; NULL -> error (line 0xD2A) -> return 0. NOTE: this is a DIFFERENT container than
+  the scene registry we read at client+0x5673D8 (that one has (1,0) -> the sandbox scene). The
+  bind needs the map/scene registered in the client+0x1280 manager.
+- Next live probe: read client+0x1280 + the (1,0) entry in its maps; if empty, the sandbox scene
+  is not in the manager the bind requires (explains the persistent scene=0).
+- Client watchdog: a frozen client (Responding=False) is now killed immediately (PID 26400 was
+  killed this block).
