@@ -415,9 +415,20 @@ internal static class RebornClient
             catch (Exception e) { Log("sound-dbg ex: " + e.Message); }
         }
 
-        // Native Wwise call probe (1.6 recon): loads sound_probe.dll and hooks
-        // KG3D_WwiseX64.dll's PostEvent/LoadBank exports in this process only.
-        if (Env("RC_SOUND_HOOK", "0") == "1")
+        // Native Wwise path (1.6): loads sound_probe.dll which (a) hooks the
+        // engine's PostEvent/LoadBank calls for evidence and (b) can load the
+        // game's own banks and post the skill event through the engine's Wwise.
+        // RC_SOUND_NATIVE=1 + RC_BANK=<skillremake.bnk>; WAV stays the fallback.
+        bool soundNative = false;
+        uint nativeEvent = 3378728138;   // FLWS event id (SOUND_PATH.md)
+        try
+        {
+            uint ev;
+            if (uint.TryParse(Env("RC_SOUND_EVENT", ""), out ev)) nativeEvent = ev;
+        }
+        catch { }
+        bool wantNative = Env("RC_SOUND_NATIVE", "1") != "0" && Env("RC_BANK", "").Length > 0;
+        if (Env("RC_SOUND_HOOK", "0") == "1" || wantNative)
         {
             try
             {
@@ -430,6 +441,21 @@ internal static class RebornClient
                 {
                     int pr = SoundProbe.Init(probeLog);
                     Log("sound-hook: init rc=" + pr + " status=" + SoundProbe.Status());
+                    if (wantNative)
+                    {
+                        string bank = Env("RC_BANK", "");
+                        if (bank.Length == 0) Log("sound-native: RC_BANK not set");
+                        else
+                        {
+                            string bankDir = Path.GetDirectoryName(bank);
+                            string initBnk = Path.Combine(bankDir, "Init.bnk");
+                            if (File.Exists(initBnk))
+                                Log("sound-native: Init.bnk rc=" + SoundProbe.LoadBankW(initBnk));
+                            int br = SoundProbe.LoadBankW(bank);
+                            if (br >= 0) { soundNative = true; Log("sound-native: bank ok id/rc=" + br); }
+                            else Log("sound-native: bank failed rc=" + br);
+                        }
+                    }
                 }
             }
             catch (Exception e) { Log("sound-hook ex: " + e.Message); }
@@ -2499,7 +2525,12 @@ internal static class RebornClient
                 // camera shake on the cast (host default; per-skill shake rows
                 // are data-gated)
                 camShake.Start(2.0, 0.5, 0.8, 3);
-                if (skillWav != null)
+                if (soundNative)
+                {
+                    uint pid = SoundProbe.PostEvent(nativeEvent, 1);
+                    Log("sound: native post id=" + nativeEvent + " playing=" + pid);
+                }
+                else if (skillWav != null)
                 {
                     bool played = PlaySound(skillWav, IntPtr.Zero,
                         SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
@@ -4377,7 +4408,11 @@ internal static class RebornClient
         delegate int InitFn(IntPtr logPathAnsi);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate IntPtr StatusFn();
-        static IntPtr _init = IntPtr.Zero, _status = IntPtr.Zero;
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate int LoadBankWFn([MarshalAs(UnmanagedType.LPWStr)] string path);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate uint PostEventFn(uint eventId, ulong go);
+        static IntPtr _init = IntPtr.Zero, _status = IntPtr.Zero, _loadBank = IntPtr.Zero, _postEvent = IntPtr.Zero;
         public static IntPtr Load(string path)
         {
             IntPtr h = LoadLibraryA(path);
@@ -4385,8 +4420,22 @@ internal static class RebornClient
             {
                 _init = GetProcAddress(h, "RC_SoundProbe_Init");
                 _status = GetProcAddress(h, "RC_SoundProbe_Status");
+                _loadBank = GetProcAddress(h, "RC_SoundProbe_LoadBankW");
+                _postEvent = GetProcAddress(h, "RC_SoundProbe_PostEvent");
             }
             return h;
+        }
+        public static int LoadBankW(string path)
+        {
+            if (_loadBank == IntPtr.Zero) return -1;
+            LoadBankWFn f = (LoadBankWFn)Marshal.GetDelegateForFunctionPointer(_loadBank, typeof(LoadBankWFn));
+            return f(path);
+        }
+        public static uint PostEvent(uint id, ulong go)
+        {
+            if (_postEvent == IntPtr.Zero) return 0;
+            PostEventFn f = (PostEventFn)Marshal.GetDelegateForFunctionPointer(_postEvent, typeof(PostEventFn));
+            return f(id, go);
         }
         public static int Init(string logPath)
         {

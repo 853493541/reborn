@@ -51,17 +51,19 @@ in-process with the same conclusion.
 Note: PSS **particle** SFX tags do fire in the host (M1.6 blade/ring), so the
 animation-tag system itself works; the stop is specific to the sound path.
 
-## 4. Next probes (ordered, not yet done)
+## 4. Outcome — native playback implemented (2026-10-05)
 
-1. Hook `KG3D_EngineEventManager::_OnProcessApplySoundTag` (adapter; INT3/VEH logger)
-   — decide whether the sound-tag callback fires at all during the skill.
-2. Hook `KG3DModel::EnableSfxSoundTag` (`0x1800BA760`) to see whether the host model
-   ever enables sound tags; if it never does, capture the model pointer (via the
-   `PlayAnimation` hook) and call it — the likely gate, given the editor's actor path.
-3. Extend `LoadBank` hooks to the by-ID / ANSI / memory-view overloads to classify
-   bank loading; then retest the tag path.
-4. Product state stays: `flws_sound.wav` via winmm is the **registered provisional**
-   (`HOST_AUDIO_STEP1.md`); retire it only when a PostEvent is observed.
+The product path is finished in `HOST_AUDIO_STEP1.md` Step 2: the client loads the
+game banks (`Init.bnk`, `skillremake.bnk`) into this same Wwise engine via
+`LoadBankMemoryView`, registers a game object + default listener, and posts the FLWS
+event `3378728138` on skill cast → **`playingId=1`** (evidence `reborn_20261005_184354.log`,
+`sound_probe_native_20261005.log`). The winmm WAV is now only the fallback when no
+bank is provided.
+
+Recorded engine gap (not blocking the product path): the engine's own tani SoundTag
+dispatch never calls PostEvent in the host (§3). If that path should ever be restored,
+the identified suspects are `KG3D_EngineEventManager::_OnProcessApplySoundTag` and the
+model gate `KG3DModel::EnableSfxSoundTag` (`0x1800BA760`).
 
 ## Reproduce
 

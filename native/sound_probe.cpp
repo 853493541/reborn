@@ -105,6 +105,67 @@ static int InstallHook(BYTE* target, const BYTE* expect, int steal,
     return 0;
 }
 
+// ---- native playback (1.6): drive the engine's own Wwise with game data ----
+typedef int (__cdecl *RegisterGameObjFn)(unsigned long long, const char*);
+typedef int (__cdecl *AddDefaultListenerFn)(unsigned long long);
+typedef int (__cdecl *LoadBankMemViewFn)(const void*, unsigned int, unsigned int*);
+
+static RegisterGameObjFn g_registerGameObj = NULL;
+static AddDefaultListenerFn g_addDefaultListener = NULL;
+static LoadBankMemViewFn g_loadBankMemoryView = NULL;
+static PostEventIdFn g_postEventId = NULL;
+
+static int ResolveAudio()
+{
+    HMODULE m = GetModuleHandleA("KG3D_WwiseX64.dll");
+    if (m == NULL) m = LoadLibraryA("KG3D_WwiseX64.dll");
+    if (m == NULL) return -1;
+    g_registerGameObj = (RegisterGameObjFn)GetProcAddress(m,
+        "?RegisterGameObj@SoundEngine@AK@@YA?AW4AKRESULT@@_KPEBD@Z");
+    g_addDefaultListener = (AddDefaultListenerFn)GetProcAddress(m,
+        "?AddDefaultListener@SoundEngine@AK@@YA?AW4AKRESULT@@_K@Z");
+    g_loadBankMemoryView = (LoadBankMemViewFn)GetProcAddress(m,
+        "?LoadBankMemoryView@SoundEngine@AK@@YA?AW4AKRESULT@@PEBXIAEAI@Z");
+    g_postEventId = (PostEventIdFn)GetProcAddress(m,
+        "?PostEvent@SoundEngine@AK@@YAII_KIP6AXW4AkCallbackType@@PEAUAkCallbackInfo@@@ZPEAXIPEAUAkExternalSourceInfo@@I@Z");
+    Log("sound_probe: audio register=%p listener=%p loadBankMem=%p postEvent=%p",
+        g_registerGameObj, g_addDefaultListener, g_loadBankMemoryView, g_postEventId);
+    return (g_registerGameObj && g_addDefaultListener && g_loadBankMemoryView && g_postEventId) ? 0 : -2;
+}
+
+// Load a .bnk from disk into Wwise memory; the buffer is kept for the session
+// (Wwise may reference it while the bank is loaded). Returns 0 on success.
+extern "C" __declspec(dllexport) int __cdecl RC_SoundProbe_LoadBankW(const wchar_t* path)
+{
+    if (ResolveAudio() != 0) return -1;
+    FILE* f = _wfopen(path, L"rb");
+    if (f == NULL) { Log("sound_probe: bank open failed '%ls'", path); return -2; }
+    fseek(f, 0, SEEK_END);
+    long sz = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    if (sz <= 0) { fclose(f); Log("sound_probe: bank empty"); return -3; }
+    void* buf = malloc((size_t)sz);
+    if (buf == NULL) { fclose(f); return -4; }
+    if (fread(buf, 1, (size_t)sz, f) != (size_t)sz) { fclose(f); free(buf); return -5; }
+    fclose(f);
+    unsigned int bankId = 0;
+    int rc = g_loadBankMemoryView(buf, (unsigned int)sz, &bankId);
+    Log("sound_probe: LoadBankMemoryView '%ls' size=%ld rc=%d bankId=%u", path, sz, rc, bankId);
+    return rc == 0 ? (int)bankId : rc;
+}
+
+// Register a local Wwise game object + listener and post an event on it.
+extern "C" __declspec(dllexport) unsigned int __cdecl RC_SoundProbe_PostEvent(unsigned int eventId, unsigned long long go)
+{
+    if (ResolveAudio() != 0) return 0;
+    int rr = g_registerGameObj(go, "reborn");
+    int lr = g_addDefaultListener(go);
+    Log("sound_probe: RegisterGameObj(%llu)=%d AddDefaultListener=%d", go, rr, lr);
+    unsigned int pid = g_postEventId(eventId, go, 0, NULL, NULL, 0, NULL, 0);
+    Log("sound_probe: PostEvent id=%u go=%llu -> playingId=%u", eventId, go, pid);
+    return pid;
+}
+
 extern "C" __declspec(dllexport) int __cdecl RC_SoundProbe_Init(const char* logPath)
 {
     if (logPath != NULL && g_log == NULL)

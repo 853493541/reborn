@@ -50,11 +50,34 @@ $env:RC_DEMO='1'; $env:RC_AUTORUN='22000'
 # log: bin64\reborn_out\reborn_<ts>.log — look for the sound: lines + skill cast
 ```
 
+## Step 2 — native Wwise playback (DONE, 2026-10-05, `agent/audio-native`)
+
+The host now plays the skill sound through the engine's **own Wwise engine**
+(`KG3D_WwiseX64.dll`, the same one the editor shell uses) with the game's own
+bank and event id — no winmm WAV in the default path.
+
+- Mechanism (`native/sound_probe.cpp`, loaded when `RC_BANK` is set):
+  `LoadBankMemoryView(Init.bnk)` → `LoadBankMemoryView(skillremake.bnk)` →
+  `RegisterGameObj(1)` + `AddDefaultListener(1)` → `PostEvent(3378728138, 1)`
+  on skill cast. Files come from the extracted game banks
+  (`assets/sound/`, gitignored, provenance `SOUND_PATH.md`).
+- Env: `RC_BANK=<path to skillremake.bnk>` enables native (default when set);
+  `RC_SOUND_NATIVE=0` disables; `RC_SOUND_EVENT=<id>` overrides the event
+  (default 3378728138 = FLWS). WAV via winmm remains the fallback when no bank
+  is provided.
+- Evidence (`reborn_20261005_184354.log` + `sound_probe.log`):
+  `Init.bnk rc=1`, `bank ok id/rc=1` (AKRESULT 1 = `AK_Success` in Wwise's enum),
+  `sound: native post id=3378728138 playing=1`, clean `DONE`.
+- The engine's own tani-SoundTag dispatch still does not fire in this host
+  (instrumented proof in `NATIVE_AUDIO_PROBE.md`); the client posting the
+  skill event is the product-side path, with the engine event id and bank from
+  game data.
+
 ## Confidence
 
 | Claim | Conf. | Source |
 |---|---|---|
 | Wwise init succeeds in the product host | HIGH | run log `sound: KG3DSoundCLR.Init ok` |
-| skill WAV plays (winmm accepted) | HIGH | run log `play rc=True` (audibility not machine-verifiable) |
-| engine SoundTag still silent | MED | no engine Wwise lines in the run; Frida evidence in `SOUND_PATH.md` |
-| native tag path needs the missing bank load | LOW | hypothesis; next probe = find the client's bank-load call |
+| native playback: banks load + event posts | HIGH | probe log (rc=1 both banks, playingId=1) `reborn_20261005_1843*` |
+| skill WAV fallback plays (winmm accepted) | HIGH | run log `play rc=True` (audibility not machine-verifiable) |
+| engine SoundTag dispatch silent in host | HIGH | instrumented hooks, `NATIVE_AUDIO_PROBE.md` |
