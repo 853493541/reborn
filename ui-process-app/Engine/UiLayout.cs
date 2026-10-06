@@ -211,13 +211,31 @@ namespace MapUiApp.Engine
                 // FormatAllContentPos) so the engine's flow pass applies to them too.
                 bool runtimeFlow = list.Get("$FormatItems") == "1";
                 if (handleType != 3 && handleType != 6 && !runtimeFlow) continue;
-                double listW = SizeOf(list).W;
-                if (listW <= 0) continue;
+                // Wrap at the authored control width (the engine's list box); fall back
+                // to the measured size only when the INI leaves it open.
+                double listW = list.GetInt("Width");
+                if (listW <= 0) listW = SizeOf(list).W;
+                if (listW <= 0)
+                {
+                    // A runtime-arranged AutoSize container grows to its items: lay
+                    // them in one row (the engine's FormatAllContentPos then sizes the
+                    // container from the items' extent).
+                    if (!runtimeFlow) continue;
+                    listW = double.MaxValue;
+                }
                 // Invisible alternatives (Alpha=0 state variants) do not take list space.
-                var items = ini.Sections.Where(s => !ReferenceEquals(s, list) &&
+                var candidates = ini.Sections.Where(s => !ReferenceEquals(s, list) &&
                     string.Equals(s.Get("._Parent"), list.Name, StringComparison.OrdinalIgnoreCase) &&
                     s.GetInt("Alpha", 255) > 0 &&
                     !(s.Get("Visible") != null && s.GetBool("Visible") == false)).ToList();
+                // A runtime-arranged container flows its appended items, not the authored
+                // background/decoration children (the engine's content list).
+                if (runtimeFlow)
+                {
+                    var runtimeItems = candidates.Where(s => s.Get("$RuntimeItem") == "1").ToList();
+                    if (runtimeItems.Count > 0) candidates = runtimeItems;
+                }
+                var items = candidates;
                 if (items.Count == 0) continue;
 
                 double rowSpacing = list.GetInt("RowSpacing");
@@ -280,8 +298,14 @@ namespace MapUiApp.Engine
                     double totalHeight = 0;
                     foreach (var rh in rowHeights) totalHeight += rh;
                     totalHeight += rowSpacing * (rows.Count - 1);
-                    list.Values["Width"] = maxRowWidth.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                    list.Values["Height"] = totalHeight.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    // Never grow past the authored box (the engine sizes the container to
+                    // the items but the authored rect is the layout slot).
+                    double authoredW = list.GetDouble("Width");
+                    double authoredH = list.GetDouble("Height");
+                    double newW = authoredW > 0 ? Math.Min(authoredW, maxRowWidth) : maxRowWidth;
+                    double newH = authoredH > 0 ? Math.Max(authoredH, totalHeight) : totalHeight;
+                    list.Values["Width"] = newW.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    list.Values["Height"] = newH.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 }
             }
 

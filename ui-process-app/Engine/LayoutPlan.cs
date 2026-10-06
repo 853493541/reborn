@@ -689,6 +689,9 @@ namespace UiProcessApp.Engine
             var hidden = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var rootName = filtered.Sections.Count > 0 ? filtered.Sections[0].Name : null;
             var sourceCache = new Dictionary<string, IniFile>(StringComparer.OrdinalIgnoreCase);
+            var pendingClear = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var addedByContainer = new Dictionary<string, List<IniSection>>(StringComparer.OrdinalIgnoreCase);
+            var lastCloneByContainer = new Dictionary<string, IniSection>(StringComparer.OrdinalIgnoreCase);
             int applied = 0;
             foreach (var line in lines)
             {
@@ -732,7 +735,16 @@ namespace UiProcessApp.Engine
                     case "SetText":
                         if (parts.Length > 2)
                         {
-                            section.Values["$Text"] = string.Join("\t", parts.Skip(2));
+                            // Per-item text: the harness records the clone's Lookup+SetText
+                            // on the container (it cannot model the clone), so a SetText
+                            // right after an append lands on the newest clone's Text child.
+                            var textSection = section;
+                            if (lastCloneByContainer.TryGetValue(section.Name, out var lastClone))
+                            {
+                                var textChild = FindTextChild(filtered, lastClone.Name);
+                                if (textChild != null) textSection = textChild;
+                            }
+                            textSection.Values["$Text"] = string.Join("\t", parts.Skip(2));
                             applied++;
                         }
                         break;
@@ -765,9 +777,11 @@ namespace UiProcessApp.Engine
                         break;
                     // ---- runtime item population (the engine's list building) ----
                     case "Clear":
-                        // The engine empties the container's item list; mirror it so the
-                        // authored prototype does not linger under the appended clones.
-                        RemoveDescendants(filtered, section.Name);
+                        // The engine empties the container's item list (the authored
+                        // prototype is an item too). Defer it: remove the old items only
+                        // when the script actually appends replacements, so a replay whose
+                        // data-driven append loop under-recorded cannot blank a list.
+                        pendingClear.Add(section.Name);
                         applied++;
                         break;
                     case "AppendItemFromIni":
@@ -780,8 +794,21 @@ namespace UiProcessApp.Engine
                         var source = FindAppendSource(filtered, iniPath, parts, sourceCache);
                         if (source != null)
                         {
+                            if (pendingClear.Remove(section.Name) &&
+                                addedByContainer.TryGetValue(section.Name, out var previous))
+                            {
+                                foreach (var clone in previous) RemoveDescendants(filtered, clone.Name);
+                                previous.Clear();
+                            }
                             var desired = parts.Length > 4 && !string.IsNullOrWhiteSpace(parts[4]) ? parts[4] : null;
-                            AppendClone(filtered, source, section.Name, desired);
+                            var appended = AppendClone(filtered, source, section.Name, desired);
+                            lastCloneByContainer[section.Name] = appended;
+                            if (!addedByContainer.TryGetValue(section.Name, out var list))
+                            {
+                                list = new List<IniSection>();
+                                addedByContainer[section.Name] = list;
+                            }
+                            list.Add(appended);
                             applied++;
                         }
                         break;
@@ -1004,6 +1031,29 @@ namespace UiProcessApp.Engine
             foreach (var name in doomed) file.ByName.Remove(name);
         }
 
+        /// <summary>First Text descendant of a clone (the item's label element).</summary>
+        private static IniSection FindTextChild(IniFile file, string rootName)
+        {
+            var queue = new Queue<string>();
+            queue.Enqueue(rootName);
+            IniSection fallback = null;
+            while (queue.Count > 0)
+            {
+                var name = queue.Dequeue();
+                foreach (var candidate in file.Sections)
+                {
+                    if (!string.Equals(candidate.Get("._Parent"), name, StringComparison.OrdinalIgnoreCase)) continue;
+                    if (string.Equals(candidate.Get("._WndType"), "Text", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (candidate.Name.IndexOf("Text", StringComparison.OrdinalIgnoreCase) >= 0) return candidate;
+                        if (fallback == null) fallback = candidate;
+                    }
+                    queue.Enqueue(candidate.Name);
+                }
+            }
+            return fallback;
+        }
+
         /// <summary>Removes a container's last item (the engine's RemoveItem).</summary>
         private static void RemoveLastChild(IniFile file, string container)
         {
@@ -1023,11 +1073,12 @@ namespace UiProcessApp.Engine
         /// (AppendItemFromIni / AppendContentFromIni). Descendants get unique prefixed
         /// names so multiple clones of the same prototype can coexist.
         /// </summary>
-        private static void AppendClone(IniFile file, IniSection source, string container, string desiredName)
+        private static IniSection AppendClone(IniFile file, IniSection source, string container, string desiredName)
         {
             var rootName = UniqueName(file, string.IsNullOrWhiteSpace(desiredName) ? source.Name : desiredName);
             var root = CloneSection(source, rootName);
             root.Values["._Parent"] = container;
+            root.Values["$RuntimeItem"] = "1";
             AddSection(file, root);
             var stack = new Stack<(IniSection Src, string Parent)>();
             stack.Push((source, rootName));
@@ -1045,6 +1096,7 @@ namespace UiProcessApp.Engine
                     stack.Push((child, childName));
                 }
             }
+            return root;
         }
 
         /// <summary>

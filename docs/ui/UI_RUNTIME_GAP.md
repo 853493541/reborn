@@ -47,15 +47,15 @@ State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13
 
 | window | stage | consumed | item-creation | arrangement | render | state | placeholders | unresolved | oob |
 |---|---|---|---|---|---|---|---|---|---|
-| SocialPanel | liked | 38 | 5 | 0 | 0 | 0 | 1 | 0 | 10 |
-| BigBagPanel | liked | 373 | 0 | 3 | 0 | 0 | 0 | 0 | 6 |
+| SocialPanel | liked | 38 | 5 | 0 | 0 | 0 | 2 | 0 | 51 |
+| BigBagPanel | liked | 373 | 0 | 3 | 0 | 0 | 0 | 0 | 108 |
 | QuestTraceList | recommended | 9 | 0 | 2 | 0 | 0 | 0 | 0 | 7 |
 | Matrix | liked | 15 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
 | NoticeBoard | other-ui | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 2 |
 | ReputationPanel | panels-ui | 84 | 0 | 1 | 3 | 0 | 2 | 0 | 4 |
 | AccelerateBall | liked | 2 | 0 | 0 | 0 | 0 | 2 | 0 | 13 |
 | ActionBar | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| ActivityList | recommended | 64 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| ActivityList | recommended | 64 | 0 | 0 | 0 | 0 | 2 | 0 | 229 |
 | AnimationMgr | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | ArenaCorpsPanel | modes-ui | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | ArenaOpponent | modes-ui | 5 | 0 | 0 | 0 | 0 | 1 | 0 | 13 |
@@ -63,7 +63,7 @@ State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13
 | Balloon | hud-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | BanksInterface | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | BigBankPanel | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 17 |
-| BuffFold | liked | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| BuffFold | liked | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | BuffList | ? | 6 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | BuffMonitorYaoZong | hud-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
 | Bullet | hud-ui | 7 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
@@ -95,7 +95,7 @@ State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13
 | FBlist | other-ui | 11 | 0 | 0 | 0 | 0 | 1 | 1 | 46 |
 | FightingNum | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | FightingStatistic | ? | 12 | 0 | 0 | 0 | 0 | ? | ? | ? |
-| FilterPanel | menus-ui | 56 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| FilterPanel | menus-ui | 56 | 0 | 0 | 0 | 0 | 4 | 0 | 6 |
 | GameTeach | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 11 |
 | GasMonitorCY | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | GetNamePanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -103,7 +103,7 @@ State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13
 | GoldTeamTotalLootList | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
 | GuildAddMember | recommended | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | GuildMainPanel | recommended | 3 | 0 | 0 | 0 | 0 | 0 | 8 | 3 |
-| HatredPanel | other-ui | 24 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| HatredPanel | other-ui | 24 | 0 | 0 | 0 | 0 | 0 | 0 | 34 |
 | HorsePanel | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 13 |
 | HotSpot | other-ui | 0 | 0 | 0 | 0 | 0 | 15 | 0 | 19 |
 | HotkeyPanel | liked | 10 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
@@ -147,20 +147,20 @@ State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13
 | PQprogressbar | hud-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | PVPShowPanel | modes-ui | 3 | 0 | 0 | 0 | 0 | 4 | 0 | 106 |
 | PakV4Loading | other-ui | 2 | 0 | 0 | 1 | 0 | 0 | 0 | 4 |
-| PartyRecruitPanel | other-ui | 16 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| PartyRecruitPanel | other-ui | 16 | 0 | 0 | 0 | 0 | 2 | 0 | 6 |
 | PetActionBar | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | PetPanel | liked | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 3 |
 | Player | ? | 46 | 0 | 0 | 2 | 0 | ? | ? | ? |
-| ProgressBar | hud-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ProgressBar | hud-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | PuppetActionBar | hud-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | QCSword | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | RaidPanel | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 15 |
 | RankingPanel | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 51 |
 | ReputationPanelNew | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | SafePanel | other-ui | 39 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
-| SecurityCard | other-ui | 140 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
+| SecurityCard | other-ui | 140 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
 | ServantDismiss | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| SkillFormulaPanel | panels-ui | 24 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| SkillFormulaPanel | panels-ui | 24 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
 | SkillGuideSettingPanel | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | SkillIntroduce | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 22 |
 | Skill_TalentComment | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
@@ -169,21 +169,21 @@ State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13
 | SummonBar | other-ui | 2 | 0 | 0 | 0 | 0 | 3 | 0 | 0 |
 | SystemMenu_Left | ? | 17 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | SystemMenu_Right | ? | 5 | 0 | 0 | 0 | 0 | ? | ? | ? |
-| TargetBuff | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| TargetBuff | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | TargetDeBuff | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | TargetTarget | liked | 2 | 0 | 0 | 0 | 0 | 5 | 0 | 6 |
 | TeamBuff | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | TeamBuildMessage | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| TeamBuilding | liked | 25 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| TeamBuilding | liked | 25 | 0 | 0 | 0 | 0 | 0 | 0 | 19 |
 | TeamSwitchBtn | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
-| Teammate | spare | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Teammate | spare | 3 | 0 | 0 | 0 | 0 | 10 | 0 | 16 |
 | TopMenu | recommended | 43 | 0 | 0 | 0 | 0 | 0 | 0 | 73 |
 | ToyBox | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | TradingPanels | menus-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | TradingSure | menus-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | UICustomModePanel | liked | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | UILock | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| UISetting | liked | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 109 |
+| UISetting | liked | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 107 |
 | VideoSettingPanel | liked | 20 | 0 | 0 | 0 | 0 | 1 | 0 | 43 |
 | ViewEquip | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | WantedPanel | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
@@ -262,14 +262,17 @@ State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13
 
 ## Fix status
 
-- **Done (2026-10-05):** item-creation (`Clear`, `AppendItemFromIni`,
-  `AppendContentFromIni`, `AppendItemFromString` materialize the cloned subtree;
-  `RemoveItem`), arrangement (`FormatAllItemPos`/`FormatAllContentPos` flow pass,
-  `SetSizeByAllItemSize`, `SetPoint` -> AnchorArgs, `SetOverTextPosition`/
-  `SetOverTextFontScheme`, `CorrectPos` clamp, `SetScrollPos` content shift,
-  `SetStepCount`/`EnableScroll`), render (`FromUITex`, `SetImageType`,
-  `SetPercentage`, `SetFontColor`, `SetOverText`), state (`Enable` disabled frame,
-  `Check` checked frame, `Expand`, `ActivePage`).
+- **Done (2026-10-05):** item-creation (`Clear` clears only the runtime items and
+  defers to the next append; `AppendItemFromIni`/`AppendContentFromIni`/
+  `AppendItemFromString` materialize the cloned subtree, `$RuntimeItem`-marked;
+  `RemoveItem`; per-item `SetText` after an append lands on the newest clone's
+  Text child), arrangement (`FormatAllItemPos`/`FormatAllContentPos` flow the
+  runtime items only - not the authored background children - and wrap at the
+  authored width, `SetSizeByAllItemSize` capped by the authored box, `SetPoint` ->
+  AnchorArgs, `SetOverTextPosition`/`SetOverTextFontScheme`, `CorrectPos` clamp,
+  `SetScrollPos` content shift, `SetStepCount`/`EnableScroll`), render (`FromUITex`,
+  `SetImageType`, `SetPercentage`, `SetFontColor`, `SetOverText`), state (`Enable`
+  disabled frame, `Check` checked frame, `Expand`, `ActivePage`).
 - **Remaining (26 calls):** `AppendItemFromData` (5, SocialPanel — the arg is a
   function returning item data; needs the function's own row shape), the drag
   registrations (`SetDragArea`/`RegisterLButtonDrag`/`EnableDrag`/`SetScrollVerStepSize`,
