@@ -1739,7 +1739,12 @@ static HWND createHostWindow(void)
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
     wc.lpszClassName = "reborn_skill_host_wnd";
     RegisterClassExA(&wc);
-    HWND h = CreateWindowExA(0, "reborn_skill_host_wnd", "sandbox-skillhost",
+    // feature title (AGENTS section 2.7): name the client build; RC_TITLE overrides
+    const char* title = "sandbox-skillv4";
+    char titleBuf[128];
+    if (GetEnvironmentVariableA("RC_TITLE", titleBuf, sizeof(titleBuf)) != 0)
+        title = titleBuf;
+    HWND h = CreateWindowExA(0, "reborn_skill_host_wnd", title,
                              WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
                              1280, 720, NULL, NULL, wc.hInstance, NULL);
     if (h != NULL) ShowWindow(h, SW_SHOW);

@@ -2570,3 +2570,14 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
     tool itself - a data-prep step producing the compiled .map the client's
     CreateSceneFromDestination requires.
 - Evidence: host_exe113-114.out, rc_inspect outputs.
+
+## 2026-10-04 - Client named skillv4; current visual state captured
+
+- The host window title is now sandbox-skillv4 (AGENTS 2.7; RC_TITLE overrides).
+- Run skillv4.png (RC_HOST_SHOT): the real client engine renders the map world -
+  desert terrain, adobe buildings, trees, a cannon (the static merged world, camera at
+  the sandbox spawn). Numeric fingerprint: 1264x681, mean #AEB6B1, sha256 f78c1584...
+  (tools/proof/image_stats.py). The bottom half is the terrain/water surface seen at a
+  grazing angle from the low spawn camera.
+- The RL scene / player character are NOT in the frame yet (Gate 1: the shadow-scene
+  init still blocks the real CreateRLScene; see the compiled-map findings).
