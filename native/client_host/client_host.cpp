@@ -35,6 +35,8 @@ static void gbk(const wchar_t* src, char* out, int cap)
     WideCharToMultiByte(936, 0, src, -1, out, cap, NULL, NULL);
 }
 
+static void describeAddr(DWORD64 a, char* out, size_t n);
+
 // Host adaptation: the map's whole-scene shadow mask is missing from the sandbox;
 // the engine falls back to data/public/defaultWhite.dds (64x64 DXT1) but the
 // rep-side shadow descriptors stay w=0/h=0 (the runtime's is reset mid-call by its
@@ -43,37 +45,37 @@ static void gbk(const wchar_t* src, char* out, int cap)
 // descriptor at use time (rep+0x33BE40 = the descriptor user) with the fallback
 // 64x64 dims - completing the engine's own fallback state. Documented deviation:
 // docs/EXPERIENCES.md; re-open when the map's shadow mask data is available.
-static void __fastcall shadowDescFix(void* desc)
+static void __fastcall shadowDescFix(void* desc, void* caller)
 {
     HMODULE rep = GetModuleHandleA("JX3RepresentX64.dll");
     if (rep == NULL || desc == NULL)
         return;
     __try
     {
-        // only the shadow descriptors (KRLShadowMgr [rep+0xED3F18]+0x610 and the
-        // shadow runtime [rep+0xED3FA8]+0x68); other users of the same builder
-        // must not be touched.
-        // NOTE: only the runtime descriptor here. The KRLShadowMgr descriptor
-        // ([rep+0xED3F18]+0x610) is legitimately empty during the startup engine
-        // scene load - fixing it there corrupts that load; it is fixed in frame60
-        // (before the real CreateRLScene) instead.
         static volatile long hookHits = 0;
         long h = InterlockedIncrement(&hookHits);
+        if (h <= 40)
+        {
+            char cb[64];
+            describeAddr((DWORD64)caller, cb, sizeof(cb));
+            logf("[host] shadowDescFix hit %ld desc=%p w=%u h=%u rb=%u acc=%u caller=%s",
+                 h, desc, *(unsigned*)((BYTE*)desc + 0x18),
+                 *(unsigned*)((BYTE*)desc + 0x1c), *(unsigned*)((BYTE*)desc + 0x20),
+                 *(unsigned*)((BYTE*)desc + 0x24), cb);
+        }
         // The shadow masks are missing from the sandbox; a zero descriptor makes
         // the builder memset a NULL dst (mask ~(h-1) with h=0 -> 0). Fix the
-        // descriptor at USE time (the runtime's init resets it mid-call) with the
-        // engine's own fallback mask dims (data/public/defaultWhite.dds, 64x64).
-        void* rt = *(void**)((BYTE*)rep + 0xED3FA8);
-        if (rt == NULL || desc != (void*)((BYTE*)rt + 0x68))
-            return;
-        if (*(unsigned*)((BYTE*)desc + 0x18) == 0)
+        // descriptor at USE time with the engine's own fallback mask dims
+        // (data/public/defaultWhite.dds, 64x64).
+        if (*(unsigned*)((BYTE*)desc + 0x18) == 0 &&
+            *(unsigned*)((BYTE*)desc + 0x24) == 0)
         {
-            *(unsigned*)((BYTE*)desc + 0x18) = 64;
-            *(unsigned*)((BYTE*)desc + 0x1c) = 64;
+            // the descriptor's row-bytes field is pre-set to 1024 by the ctor
+            // (1 byte per pixel) -> the shadow mask grid is 1024x1024.
+            *(unsigned*)((BYTE*)desc + 0x18) = 1024;
+            *(unsigned*)((BYTE*)desc + 0x1c) = 1024;
             *(unsigned*)((BYTE*)desc + 0x20) = 1024;
             *(unsigned*)((BYTE*)desc + 0x24) = 0;
-            if (h <= 6)
-                logf("[host] shadowDescFix dims applied (hit %ld)", h);
         }
     }
     __except (EXCEPTION_EXECUTE_HANDLER) { }
@@ -90,11 +92,15 @@ static int installShadowDescHook(HMODULE rep)
     if (stub == NULL)
         return 0;
     int i = 0;
+    stub[i++] = 0x4C; stub[i++] = 0x8B; stub[i++] = 0x14; stub[i++] = 0x24;
+                                            // mov r10, [rsp] (caller return addr)
     stub[i++] = 0x51;                       // push rcx
     stub[i++] = 0x52;                       // push rdx
     stub[i++] = 0x41; stub[i++] = 0x50;     // push r8
     stub[i++] = 0x41; stub[i++] = 0x51;     // push r9
     stub[i++] = 0x48; stub[i++] = 0x83; stub[i++] = 0xEC; stub[i++] = 0x28;
+    stub[i++] = 0x4C; stub[i++] = 0x89; stub[i++] = 0xD2;
+                                            // mov rdx, r10 (2nd arg = caller)
     stub[i++] = 0x49; stub[i++] = 0xB8;     // mov r8, fixfn
     *(void**)(stub + i) = (void*)shadowDescFix; i += 8;
     stub[i++] = 0x41; stub[i++] = 0xFF; stub[i++] = 0xD0;   // call r8
@@ -3102,6 +3108,29 @@ int main(void)
                             logf("[host] frame60: [singleton+0x1A0+0x260] := %p, readback=%p",
                                  cand, *(void**)((BYTE*)holder60 + 0x260));
                         }
+                        // RLResourceLoader::SetResourceMgr(rep+0x34C1B0): the RL
+                        // loader's static resource/engine managers (ms_piResourceMgr
+                        // [rep+0xED2730] / ms_pi3DEngineManager [rep+0xED2738]) are
+                        // never set in this host, so RLResourceLoader::StartLoadModel
+                        // fails -> KRLScene::InitShadowScene E_FAIL. Set them: the RL
+                        // loader as resource manager, the engine manager
+                        // (singleton+0xB0) as engine manager.
+                        __try
+                        {
+                            void* engMgr60 = *(void**)((BYTE*)g_repSingleton + 0xB0);
+                            if (g_rlLoader != NULL && engMgr60 != NULL)
+                            {
+                                ((void (__fastcall *)(void*, void*, void*))
+                                 ((BYTE*)g_repModule + 0x34C1B0))(
+                                    g_rlLoader, g_rlLoader, engMgr60);
+                                logf("[host] frame60: RL SetResourceMgr(rlLoader=%p, engMgr=%p) -> [0xED2730]=%p [0xED2738]=%p",
+                                     g_rlLoader, engMgr60,
+                                     *(void**)((BYTE*)g_repModule + 0xED2730),
+                                     *(void**)((BYTE*)g_repModule + 0xED2738));
+                            }
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: RL SetResourceMgr fault"); }
                         // the shadow runtime descriptor is fixed at use time by the
                         // installed hook; the KRLShadowMgr descriptor must be fixed
                         // here (before the real call) - it is legitimately empty

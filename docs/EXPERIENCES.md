@@ -2384,3 +2384,25 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Note: the process still dies later with 0xC0000374 (delayed heap issue from a later
   host block - the manual scene path / char chain after the failed real call).
 - Evidence: host_exe64-80.out.
+
+## 2026-10-04 - Gate 1: shadow builds cleanly (1024x1024); RL loader statics set; InitShadowScene E_FAIL moves to line 1848
+
+- Shadow descriptor hook refined: log every hit with its caller (stub now passes the
+  caller's return address in rdx). The crashing descriptors were the KRLShadowMgr
+  ([rep+0xED3F18]+0x610, caller rep+0x36D440) and the shadow runtime
+  (caller rep+0x3CFC62) plus a third (caller rep+0x36D7C7). Their ctor pre-sets
+  rb=1024 (1 byte/px) -> the mask grid is **1024x1024**; the hook now fixes the zero
+  descriptors to w=h=rb=1024 at use time.
+- Result: the shadow bitmap builds (tile counter acc counts down 1023..1011+, no
+  crash), run exits 0.
+- `KRLScene::InitShadowScene` still fails with E_FAIL, but the inner error moved:
+  the `RLResourceLoader::StartLoadModel` / `ms_piResourceMgr` errors are GONE after
+  calling the game's own setter `RLResourceLoader::SetResourceMgr`
+  (rep+0x34C1B0; stores ms_piResourceMgr -> [rep+0xED2730],
+  ms_pi3DEngineManager -> [rep+0xED2738]) in frame60 with
+  (rlLoader, rlLoader, singleton+0xB0). Log confirms both statics set.
+- Remaining: `KGLOG_COM_PROCESS_ERROR(0x80004005) at line 1848 in
+  KRLScene::InitShadowScene` (a COM call inside the shadow-scene init returning
+  E_FAIL, no inner KGLOG). Next probe: locate the InitShadowScene line-1848 call
+  (the COM/engine call after the bitmap builds) and its missing input.
+- Evidence: host_exe81-84.out.
