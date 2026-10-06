@@ -2450,3 +2450,21 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   vt[7] (0x111DE0) writes it at 0x1120DA (call 0x126E40(rsi = the field,
   r14 = the created shadow)) when the device's vt[0xA0] shadow creation succeeds.
 - Evidence: host_exe92-98.out.
+
+## 2026-10-04 - Gate 1: shadow-scene field is a .map filename; adapter ctx shadow creation is the remaining step
+
+- Runtime hook on the adapter context's shadow function (adapter+0x111DE0) confirms it
+  receives the field ([rlScene+0xF2890]) holding the name string; the function does
+  `strrchr(field, '.')` then `strcpy_s(ext, ".map")` - the field is the shadow-scene
+  MAP FILENAME (extension replaced with .map), then the shadow is created via the
+  window (ctx+0x10, method vt[0x198]) and device (ctx+0x100, method vt[0xA0]) and
+  written back (0x126E40 stores into the holder+0x18); the name is copied into the
+  created object at +0xB4.
+- With a no-extension name the context returns early (no-op) and the shadow init
+  fails (KRLScene::Init line 198) -> the scene cleanup then dereferences the field as
+  an object pointer and AVs at rep+0x58CCCD (a consequence, not the root).
+- The map's bd folder has no .map/shadow-scene data (only environment.json,
+  playerEnvironment.json, shadowparam.json, map.rcidx = {"RCEffectName":"jx3bd"});
+  the real shadow-scene map data is missing from the extracted sandbox.
+- Adapter context fully initialized (ctx+0x10 window, ctx+0x100 device non-null);
+  movie ctx linked; movie shadow-name hook active. Evidence: host_exe95-99.out.
