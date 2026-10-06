@@ -2183,3 +2183,20 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   * id-4 +0xCC/+0xD1/+0xD5 -> player+0x201E8/+0xEE4/+0xEE8 (from the earlier copy block)
 - Loading completion: state 4 -> DoClientConfirmReady (C2S 11-byte confirm) -> state 7 ->
   server per-player data (S2C id 5) -> scene/loading finish.
+
+### 2026-10-05 — V2 P3 STATIC: LoadingPanel.lua decoded (loading completion chain named)
+- LoadingPanel.lua (proof/netcode/ui_scripts/b11/out/LoadingPanel.lua) is compiled Lua but its
+  string/name tables are readable. The loading flow:
+  * The panel polls the ENGINE scene loading: OnSyncSceneLoadingProcess / RealOnSyncSceneLoadingProcess
+    (GetSceneLoadingProcess(dwID), GetSceneLoadingTaskCount) + OnGetLoadingTaskCount.
+  * When the scene load completes it runs EndLoading -> calls **ConfirmClientReady** (the C2S
+    confirm we observed as proto=5 len=11) -> LoadingComplete (fires event 7) -> events:
+    LOADING_ENDING, FIRST_LOADING_END, LOADING_END, ON_UI_SHELL_LOAD_END, LOADING_PANEL_CLOSED.
+  * Registered events: LOGIN_NOTIFY, UPDATE_REGION_INFO, SCENE_BEGIN_LOAD, SCENE_END_LOAD,
+    SWITCH_GS_NOTIFY, SYNC_ROLE_DATA_BEGIN/END, ON_3DSCENE_LOADED, CLIENT_LOADING_END,
+    FIRST_LOADING_END, PLAYER_ENTER_GAME, CONNECT_GAME_SERVER_FAILED, ...
+  * Also: BeginMPakDownload/UpdateMPakDownload (the pakv4 stream download progress), GetLoadingBg
+    reads minimap\config.ini, GetClientScene(dwID) - the loading is keyed by the game map id.
+- Conclusion: the loading screen completes when the game-level scene for dwMapID reports 100%
+  loading; the missing server piece = the data that lets the game scene (registry (1,0)) finish
+  loading + the ConfirmClientReady round-trip.
