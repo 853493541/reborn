@@ -4236,3 +4236,21 @@ if the cache/host frames appear.
 - Main stays at `2d45e16` == `origin/main`; the running canonical/sandbox
   clients are the `2cbf004` rebuild (docs-only delta since).
 - Local only: not pushed to origin.
+
+### 2026-10-05 - Movement/stability - spawn AV triage: out-of-extent fixed; underwater-grounded boundary
+
+- Did: root-caused the 2026-10-04 AV (KG3DEngineDX11EX64+0x12282B3) with a discriminating
+  run matrix on clean main: it triggers when the actor's x/z are **outside the map extent**
+  (海岛绝境 origin (0,0), 4x4 grid; the original coords assumed the 龙门 origin). 8x8 maps
+  tolerate out-of-extent test spawns. Fixed with a spawn-extent clamp in `RebornClient`
+  (`TerrainSampler` now exposes the loader extent) - the original repro now exits clean
+  (DONE) while inside spawns are unchanged.
+- After the clamp a second position-dependent AV remains: a **grounded actor below sea
+  level** on 海岛 (sampled height < 0) still AVs at the same offset, while ungrounded free
+  fall through a hole (y to -44045) is clean. Registered as a boundary (water/underwater
+  render path suspected - same class as the TrueSky/editor-install gaps); next probes in
+  the doc.
+- Evidence: `docs/movement/VOID_SPAWN_CRASH_TRIAGE.md`; crash logs `reborn_20261005_21*`;
+  dump `reborn_client.exe.42808.dmp`. Gates: collision 36/36; gravity/jx3_model/loot PASS.
+- Outcome: partial - out-of-extent crash fixed and verified (before/after); underwater
+  boundary open.

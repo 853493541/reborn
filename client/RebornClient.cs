@@ -898,6 +898,28 @@ internal static class RebornClient
                 // default test spawn on 龙门寻宝 (override with RC_SPAWN=x,y,z)
                 px = 18991f; py = 962f; pz = 33853f;
             }
+            // Spawn-extent validation (crash guard): on the 4x4 海岛绝境 map an
+            // out-of-extent actor AVs the engine render stack
+            // (KG3DEngineDX11EX64+0x12282B3, reproduced 2026-10-05; see
+            // docs/movement/VOID_SPAWN_CRASH_TRIAGE.md). Clamp test spawns into
+            // the map extent (one cell margin) with a loud log; in play the
+            // actor cannot leave the extent (x/z are server/map-owned).
+            if (sampler != null)
+            {
+                float loX = sampler.ExtentMinX + 100f, hiX = sampler.ExtentMaxX - 100f;
+                float loZ = sampler.ExtentMinZ + 100f, hiZ = sampler.ExtentMaxZ - 100f;
+                float cx = px, cz = pz;
+                if (cx < loX) cx = loX; else if (cx > hiX) cx = hiX;
+                if (cz < loZ) cz = loZ; else if (cz > hiZ) cz = hiZ;
+                if (cx != px || cz != pz)
+                {
+                    Log(string.Format(
+                        "spawn clamped into map extent: ({0:F0},{1:F0}) -> ({2:F0},{3:F0}) [extent {4:F0}..{5:F0} x {6:F0}..{7:F0}]",
+                        px, pz, cx, cz, sampler.ExtentMinX, sampler.ExtentMaxX,
+                        sampler.ExtentMinZ, sampler.ExtentMaxZ));
+                    px = cx; pz = cz;
+                }
+            }
             // The physics terrain loader tracks the engine's streamed terrain:
             // right after the camera jumps it can return all-zero heights for
             // the spawn region. The engine streams around the PLAYER MODEL, which
