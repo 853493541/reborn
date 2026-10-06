@@ -71,6 +71,17 @@ def id_frame(frame_id, size, role_id):
     return bytes(p)
 
 
+def id5_frame(role_id, sub=0, dtype=1, data=b""):
+    """S2C id 5 (per-player world data; handler 0x14015EB70, min size 15):
+    [player id dword @+9][sub-code byte @+0xD][type byte @+0xE][data @+0xF].
+    sub0 -> parse 0x140327680 into player+0x1020 (type 1..3, data = TLV list)."""
+    payload = struct.pack("<I", role_id) + bytes([sub & 0xFF, dtype & 0xFF]) + data
+    p = bytearray(9 + len(payload))
+    struct.pack_into("<H", p, 0, 5)
+    p[9:9 + len(payload)] = payload
+    return bytes(p)
+
+
 def handshake_respond(server_name=b"127.0.0.1", timeout=30, recover=1, flag2=1, success=1):
     """S2C id 0x2FF, min size 71 (0x47). Handler 0x140143A30 (OnHandShakeRespond):
     reads dwords at +7/+0xB/+0xF/+0x13, copies 32B ServerName from +0x17 to
@@ -114,6 +125,7 @@ def handle(conn, addr):
     sess = GameSession()
     sync_step = 0
     next_t = 0.0
+    confirmed = [False]
     try:
         time.sleep(0.2)
         conn.sendall(hello())
@@ -125,33 +137,15 @@ def handle(conn, addr):
                     conn.sendall(sess.encrypt(id_frame(4, 343, ROLE_ID)))
                     w("[%s] SYNC step1 id=4 (role=%d)" % (time.strftime("%H:%M:%S"), ROLE_ID))
                     sync_step = 2
-                    next_t = now + 0.5
+                    next_t = now + 6.0
                 elif sync_step == 2:
-                    conn.sendall(sess.encrypt(id_frame(10, 161, ROLE_ID)))
-                    w("[%s] SYNC step2 id=10 bootstrap (role=%d)" % (time.strftime("%H:%M:%S"), ROLE_ID))
-                    sync_step = 3
-                    next_t = now + 0.5
-                elif sync_step == 3:
-                    if os.environ.get("GAME_ID7", "0") == "1":
-                        conn.sendall(sess.encrypt(id_frame(7, 37, ROLE_ID)))
-                        w("[%s] SYNC step3 id=7 (map=%s region=%s pos=%s,%s,%s)"
-                          % (time.strftime("%H:%M:%S"), os.environ.get("GAME_MAP_ID", "296"),
-                             os.environ.get("GAME_MAP_REGION", "0"), os.environ.get("GAME_POS_X", "100"),
-                             os.environ.get("GAME_POS_Y", "100"), os.environ.get("GAME_POS_Z", "0")))
-                    sync_step = 4
-                    next_t = now + 0.5
-                elif sync_step == 4:
-                    conn.sendall(sess.encrypt(id_frame(10, 161, ROLE_ID)))
-                    w("[%s] SYNC step4 id=10 final (role=%d)" % (time.strftime("%H:%M:%S"), ROLE_ID))
-                    sync_step = 5
-                    next_t = now + 8.0
-                elif sync_step == 5:
-                    if os.environ.get("GAME_ID7", "0") == "1":
-                        conn.sendall(sess.encrypt(id_frame(7, 37, ROLE_ID)))
-                    conn.sendall(sess.encrypt(id_frame(10, 161, ROLE_ID)))
-                    w("[%s] SYNC keepalive id=%s" % (time.strftime("%H:%M:%S"),
-                       "7+10" if os.environ.get("GAME_ID7", "0") == "1" else "10"))
-                    next_t = now + 8.0
+                    if confirmed[0]:
+                        conn.sendall(sess.encrypt(id5_frame(ROLE_ID)))
+                        w("[%s] SYNC keepalive id=5 (post-confirm)" % time.strftime("%H:%M:%S"))
+                    else:
+                        conn.sendall(sess.encrypt(id_frame(4, 343, ROLE_ID)))
+                        w("[%s] SYNC keepalive id=4 (awaiting confirm)" % time.strftime("%H:%M:%S"))
+                    next_t = now + 6.0
             if os.path.exists(CMD_FILE):
                 try:
                     hx = open(CMD_FILE).read().strip()
@@ -190,7 +184,14 @@ def handle(conn, addr):
                     if os.environ.get("GAME_SYNC", "1") == "1":
                         sync_step = 1
                         next_t = time.time() + 0.5
-                        w("[%s] SYNC armed (id4 -> id10 -> keepalive)" % time.strftime("%H:%M:%S"))
+                        w("[%s] SYNC armed (id4 -> await confirm -> id5 keepalive)" % time.strftime("%H:%M:%S"))
+                elif proto == 5 and os.environ.get("GAME_SYNC", "1") == "1":
+                    confirmed[0] = True
+                    time.sleep(0.2)
+                    resp = id5_frame(ROLE_ID)
+                    conn.sendall(sess.encrypt(resp))
+                    w("[%s] SENT id=5 world data reply (sub=0 type=1) after client confirm"
+                      % time.strftime("%H:%M:%S"))
     except Exception as e:
         w("[%s] error after %.1fs: %s" % (time.strftime("%H:%M:%S"), time.time() - t0, e))
     finally:

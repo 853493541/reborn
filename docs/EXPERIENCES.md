@@ -2213,3 +2213,10 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Consequence: the client sends the confirm only AFTER the loading screen's scene load finishes;
   the server side must (a) let the game scene (registry key (1,0)) report 100% and (b) answer
   the confirm with the per-player world data (S2C id 5 sub-codes 0/1/2).
+
+### 2026-10-05 — V2 P3: stub answers the client's confirm with S2C id 5
+- game_server_stub.py: on the client's C2S proto=5 (ConfirmClientReady's confirm) it now replies
+  with an S2C id-5 frame (sub=0, type=1, empty TLV) and switches the keepalive to id 5; before
+  the confirm the keepalive re-sends id 4. (id 10 was dropped for the local player - it is
+  rejected by design for the local id.)
+- Next live: expect loading screen -> confirm (proto=5) -> id5 reply -> state 7 -> loading ends.
