@@ -20,6 +20,7 @@ Terrain, gravity, jump/fall and collision research. Bake output: `tools/bake_map
 | `TERRAIN_REGION_STREAMING.md` | Terrain region streaming — border-load audit, bounded LRU region cache (`RC_TERR_CACHE`), hole A/B status (2026-10-04) |
 | `TERRAIN_R32_BCH_RELATION.md` | R32 ↔ BCH relation — same heightfield, row-flipped, exact affine; BCH header decoded (2026-10-04) |
 | `VOID_SPAWN_CRASH_TRIAGE.md` | Spawn/position AV triage (KG3DEngineDX11EX64+0x12282B3) — out-of-extent spawn fixed; underwater-grounded boundary open (2026-10-05) |
+| `COLLISION_RESIDUALS_STATUS.md` | `.srt` trunk recon, slope/drop server rule, capsule/step server contract (2026-10-05) |
 
 ## Tools
 

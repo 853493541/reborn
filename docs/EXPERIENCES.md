@@ -4254,3 +4254,17 @@ if the cache/host frames appear.
   dump `reborn_client.exe.42808.dmp`. Gates: collision 36/36; gravity/jx3_model/loot PASS.
 - Outcome: partial - out-of-extent crash fixed and verified (before/after); underwater
   boundary open.
+
+### 2026-10-05 - Movement/collision - C residuals: .srt recon, slope server rule, capsule contract
+
+- Did: bounded `.srt` recon - sceneinfo_full references bare `.srt` basenames
+  (`S_xb多枝枯树003_*`), direct foliage-path guesses missed (folder field not decoded);
+  recorded the two native recovery routes (resolve+parse the SpeedTree binary, or cook the
+  tree mesh through the game's own PhysicsEngine) with the prism proxy unchanged. Wrote the
+  definitive slope/drop boundary (shipped BCH has no packed cell slopes; the rule needs
+  server/nav cell data) as a server contract, plus the capsule/step server-contract table
+  (64 u step, 0.707 slope, `RC_BODY` table from the capsule-dig branch; contact offset N/A).
+- Evidence: `docs/movement/COLLISION_RESIDUALS_STATUS.md`; extraction probes in
+  `%TEMP%\opencode\srt_*`.
+- Outcome: C2/C3/C4 documented as boundaries + server contract; no code change (nothing
+  invented).
