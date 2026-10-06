@@ -95,10 +95,12 @@ static void __fastcall movieNameFix(void* movie, void* nameBuf)
     {
         if (*(char*)nameBuf == 0)
         {
-            // NOTE: the field is only 8 bytes (the next member lives at +8) -
-            // write a short non-empty name to satisfy the caller's checks.
-            strcpy((char*)nameBuf, "shadow");
-            logf("[host] movieNameFix: shadow scene name set");
+            // The field is the shadow-scene MAP FILENAME (the adapter context does
+            // strrchr(name,'.') then strcpy_s(ext, ".map")); it is at most 8 bytes
+            // (the next member lives at +8). Short name with an extension so the
+            // context proceeds with its shadow creation + object write-back.
+            strcpy((char*)nameBuf, "a.map");
+            logf("[host] movieNameFix: shadow scene name set ('a.map')");
         }
     }
     __except (EXCEPTION_EXECUTE_HANDLER) { }
@@ -107,11 +109,30 @@ static void __fastcall movieNameFix(void* movie, void* nameBuf)
 // log the adapter context's shadow-scene creation entry (field + first qword)
 static void __fastcall ctxShadowLog(void* ctx, void* field)
 {
-    (void)ctx;
     __try
     {
         logf("[host] ctx vt7 enter: ctx=%p field=%p first8=%p", ctx, field,
              (field != NULL) ? *(void**)field : NULL);
+        if (ctx != NULL)
+        {
+            void* win = *(void**)((BYTE*)ctx + 0x10);
+            void* dev = *(void**)((BYTE*)ctx + 0x100);
+            char w1[64] = {0}, w2[64] = {0}, w3[64] = {0}, d1[64] = {0};
+            if (win != NULL)
+            {
+                void** wvt = *(void***)win;
+                describeAddr((DWORD64)wvt[0x198 / 8], w1, sizeof(w1));
+                describeAddr((DWORD64)wvt[0x1A8 / 8], w2, sizeof(w2));
+                describeAddr((DWORD64)wvt[0x1B0 / 8], w3, sizeof(w3));
+            }
+            if (dev != NULL)
+            {
+                void** dvt = *(void***)dev;
+                describeAddr((DWORD64)dvt[0xA0 / 8], d1, sizeof(d1));
+            }
+            logf("[host] ctx vt7: win=%p vt198=%s vt1A8=%s vt1B0=%s dev=%p vtA0=%s",
+                 win, w1, w2, w3, dev, d1);
+        }
     }
     __except (EXCEPTION_EXECUTE_HANDLER) { }
 }

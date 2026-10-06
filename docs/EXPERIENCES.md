@@ -2468,3 +2468,24 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   the real shadow-scene map data is missing from the extracted sandbox.
 - Adapter context fully initialized (ctx+0x10 window, ctx+0x100 device non-null);
   movie ctx linked; movie shadow-name hook active. Evidence: host_exe95-99.out.
+
+## 2026-10-04 - Gate 1: the shadow .map load - engine resolution traced; SRScene copy does not satisfy it
+
+- Worktree/branch restored: `reborn-iso-skillv2-sandbox` @ agent/skillv2-sandbox at
+  c1869a2 (the v2 branch was merged into agent/item1-completion as ec9e3a1 and then
+  reverted by a8b37bc; the commits survive and the worktree was recreated from c1869a2;
+  the uncommitted 'a.map' + ctx-hook edits were preserved).
+- Process followed on the name: with a name carrying an extension ('a.map'), the adapter
+  context runs its full path: strrchr('.') -> strcpy_s(ext,'.map') -> the window's
+  vt[0x198] (engine, eng+0x8AFC40) -> KG3D_Engine::CreateSceneFromDestination
+  (engine+0x9ACBF0) -> scene alloc + 0x9B3710 (InitFromDestination) -> the load fails
+  (`load scene "a.map" fail.`, KG3D_Scene::InitFromDestination line 1981).
+- The engine resolves the name via KG3D_ConvertToStandardHashString + _splitpath_s
+  (engine+0x9AD3A0) - a file-system lookup, not a raw open. Copying the map's
+  .SRScene (SRS format) to `<root>\a.map` did NOT satisfy the load (format and/or
+  file-system registration mismatch).
+- The scene ctor (rep+0x588F40) zeroes [scene+0xF2890] (4 bytes; the field is the
+  8-byte name/filename slot before the member at +0xF2898) and no other writer exists
+  in rep/logic/exe - the real name source remains unidentified (likely the engine
+  writes it during the map scene load in the full game).
+- Evidence: host_exe99-102.out.
