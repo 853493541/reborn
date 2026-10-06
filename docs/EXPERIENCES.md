@@ -2200,3 +2200,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Conclusion: the loading screen completes when the game-level scene for dwMapID reports 100%
   loading; the missing server piece = the data that lets the game scene (registry (1,0)) finish
   loading + the ConfirmClientReady round-trip.
+
+### 2026-10-05 — V2 P3 STATIC: ConfirmClientReady = the state machine (full entry chain closed)
+- DLL .data registration table @0x18097CB80: {name 'ConfirmClientReady' @0x1807C1EE0,
+  fn **0x1803525F0**} - the registered Lua name for the state machine we decoded. (Next entry:
+  0x1807C1EF8 -> fn 0x180376290.)
+- So the full chain is: LoadingPanel.lua polls the engine scene load (GetSceneLoadingProcess/
+  TaskCount) -> when 100% it runs EndLoading -> calls ConfirmClientReady (= state machine
+  0x1803525F0) -> if [player+0xFDC]==4 it calls DoClientConfirmReady (sends the C2S 11-byte
+  confirm) -> on success writes state 7 -> LoadingComplete (event 7) -> LOADING_ENDING /
+  FIRST_LOADING_END / LOADING_END / ON_UI_SHELL_LOAD_END -> world UI.
+- Consequence: the client sends the confirm only AFTER the loading screen's scene load finishes;
+  the server side must (a) let the game scene (registry key (1,0)) report 100% and (b) answer
+  the confirm with the per-player world data (S2C id 5 sub-codes 0/1/2).
