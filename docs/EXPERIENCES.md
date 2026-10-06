@@ -2403,3 +2403,23 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   its trigger is a pointer/registration).
 - Stub: game_server_stub.py sequence updated (id4 once -> await proto3 -> id3 -> id5
   keepalive); run_gamestub_1.cmd = map=1/region=0.
+
+### 2026-10-06 — V2: stuck-at-loading root cause fully identified (scene bind gate chain)
+- The client waits at loading-end because the DLL state machine (ConfirmClientReady) requires
+  player+0x60 (scene) -> it never binds -> no confirm -> no state 7 -> stuck.
+- Bind triggers decoded:
+  * The Lua API 0x1401BA8F0 = **CheckScenePakComplete** (registration table @0x140A0D4A8 pairs
+    {name 'CheckScenePakComplete' @0x1407F67B8, fn 0x1401BA8F0}): calls 0x140112CB0 (a vector
+    count at [client+0x20]-[client+0x28] /16), requires the count == 1, then binds via
+    0x1401135F0's result. Our client: [client+0x20]=heap ptr, [client+0x28]=0 -> count != 1 ->
+    the bind skips (for a real map with pak tasks it would be 1).
+  * The id-4 reset+bind block runs every id-4 (the [client+0x1B108] gate self-clears) but the
+    first id-4 runs BEFORE the scene exists -> the bind's scene lookup fails.
+- Bind position/cell rule decoded (setter's check 0x1403D5220): cell index = player+0x2C +
+    player+0x30*64 where the bind packs pos/32 -> the cell must exist in the scene grid
+    ([scene+0x20][idx] non-null). Sandbox cells = (0,0)-(1,1) -> pos must be < 64. Fixed the
+    stub position to (16,16) - live-verified the player pos lands (16,16,0).
+- id-4 repeat with pos (16,16): NO RST anymore (earlier repeats RST'd) but still no bind -
+  the remaining gate/path on the repeat needs tracing (or CheckScenePakComplete must pass).
+- Stable session: id4-once -> client ApplyEnterScene (proto=3) -> S2C id3 -> id5 keepalive
+  (held 614 s).
