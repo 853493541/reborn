@@ -2085,3 +2085,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   id4 (map=0, insert + state 4) -> id10 (guard stores player+0x60 scene bootstrap) -> id7
   (map=1/region/pos, now scene non-null) -> id10 (guard validates against a real scene -> state 7).
   Keepalive repeats id7+id10. Envs: GAME_ID4_MAP/REGION (default 0), GAME_MAP_ID/REGION/POS for id7.
+
+### 2026-10-05 — V2 P3 BREAKTHROUGH: map id found - 龙门寻宝 = 296 (MovieEditor MapList.tab)
+- The map id table lives in MovieEditor\ResourcePack\MapList.tab: TSV rows 'id<TAB>name<TAB>path<TAB>0';
+  龙门寻宝 = 296, 龙门寻宝_夜晚 = 297 (ids are in the 290s, so map=1 was invalid -> id4 aborted
+  before the player insert; that abort was the invalid-map error path, not a switch path).
+- Map data (extracted via PakV4SfxExtract.exe from Trunk.dir paths): data\source\maps\龙门寻宝\
+  sceneinfo: RegionSize 512, UnitSize 100, WorldOrigin -102400,-102400, RegionTableSize 8x8;
+  risettings.ini RegionCountXZ=128,128.
+- Wrapper C:\jx3tmp\run_gamestub_296.cmd sets GAME_ID4_MAP=296/GAME_MAP_ID=296 (region 0).
