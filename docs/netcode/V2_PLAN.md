@@ -24,9 +24,9 @@ playable in-world session. Personal use only (AGENTS §1: never commercial, neve
 |---|---|---|---|
 | P0 | Recon + probe harness | reproducible direct launch; single blocker identified | **DONE** |
 | P1 | Startup gate (critical path) | client survives past the ~2.3 s WinMain timeout; module Initialize runs; `state_sub+0x18 != NULL` | **DONE (provisional: `config+0xe10=0`)** |
-| P2 | Login + gateway stub | client passes login against our gateway | **IN PROGRESS (static-first)** |
-| P3 | Game server stub (enter world) | client loads the world and holds the session | pending |
-| P4 | Playable loop | walk around 5 min, no desync/disconnect | pending |
+| P2 | Login + gateway stub | client passes login against our gateway | **DONE (live-verified 2026-10-05)** |
+| P3 | Game server stub (enter world) | client loads the world and holds the session | **IN PROGRESS — login sync + loading + confirm decoded; world-data set next** |
+| P4 | Playable loop | walk around 5 min, no desync/disconnect | pending (movement ops identified) |
 | P5 | Packaging / ops | one-command cold start to in-world | pending |
 
 ## P0 — Recon + harness (done)
@@ -99,9 +99,48 @@ verifies locally or forwards.
 
 ## P3 — Game server stub (enter world)
 
+**Status (checkpoint 2026-10-05):** the whole entry chain is decoded and live-verified up to
+the loading screen.
+
+### Done (live-verified)
+- Gateway login chain (P2): handshake op2 -> verify op3 -> verify respond + role list op9 ->
+  role select -> op10 -> login key op14 -> client moves to the game server.
+- Game transport: 42-byte hello, stream cipher (state 0xC9FFFFFF, LCG `state*0x1F+0x8088405`),
+  frame `[u16 id][u8 flags][u16 serial][u16 ack][u32 field] + payload`; ack flag bit1 must be 0.
+- Handshake respond: S2C id **0x2FE** (71 B; ServerName @+0x17, ReconnectTimeout @+0x37 ->
+  `mgr+0xE404`, flags @+0x3B/+0x3F/+0x43). Live proof: `mgr+0xE404 = 30`.
+- `id 4` OnSyncPlayerBaseInfo (343 B): name @+0xB (32 B -> `player+0x88`), map @+0x2C and
+  region @+0x30 (-> `client+0x14/0x18`), position X/Y/Z @+0x34/+0x38/+0x3C ->
+  `player+0x10/0x14/0x18`; sets `player+0xFDC = 4`. Live proof: `client+0x14 = 1` (sandbox
+  map), player inserted, state 4.
+- Scene registry (`client+0x5673D8`): the reborn sandbox map registers as key **(1, 0)**
+  (dims 32..64, 4 loaded cells). The engine loads `C:\jx3tmp\reborn_sandbox\map\龙门寻宝_s`
+  at the loading screen.
+- Loading/confirm chain (static + LoadingPanel.lua): the loading panel polls the engine scene
+  load; at 100% it runs EndLoading -> **ConfirmClientReady** (= DLL state machine 0x1803525F0)
+  -> `DoClientConfirmReady` sends the C2S 11-byte confirm (observed `proto=5 len=11`) ->
+  state 4 -> **state 7** (0x180352700) -> LoadingComplete (event 7) -> LOADING_END -> world UI.
+- Post-entry request: `KPlayerClient::DoApplyEnterScene` = C2S id 3, 15 B (`[client+0x788]`
+  at +0xB); S2C id 3 = time-sync reply (server timestamp at +7 -> `client+0x28EF0`).
+- `id 10` is for OTHER entities (local id is rejected by design; state 7 for the local player
+  comes from the state machine).
+
+### Remaining (next static targets)
+1. **S2C id 5** (per-player world data after the confirm; min 15 B): sub0 -> 256-dword
+   attribute array -> `player+0x1020` (parser 0x140327680; type 0 = 256 dwords, types 1..3 =
+   [count][dwords]); sub1 -> other players (local-id compare -> notify); sub2 -> vtable notify.
+   Stub already replies with a zero array (frame 1039 B).
+2. **World data set**: ids 10/11/12/13 (players/npcs/doodads/moves), id 8 (map switch),
+   id 5 attrs — decode the minimal spawn set the HUD/scene needs.
+3. **Movement (P4 preview)**: C2S `DoCharacterJump` (0x14/0x4E/0x0E/0x12),
+   `DoMoveExteriorRequest` (0x1C), `DoMoveViewPointRequest` (0xBF); S2C id 13 OnMoveCharacter.
+4. **Live test window**: requires the user's real client closed (raw client has no namespace
+   isolation — EXPERIENCES 2026-10-05 hazard entry).
+
 - **P3.1** Per-SID handler/size/layout RE for the enter-world path (static; sizes already
-  extracted).
-- **P3.2** Minimal S2C: enter-world accept, map/terrain load, self entity spawn, tick/heartbeat.
+  extracted) — DONE for ids 1..54 (`game_protocol_layouts_live.tsv`).
+- **P3.2** Minimal S2C: enter-world accept, map/terrain load, self entity spawn, tick/heartbeat
+  — IN PROGRESS (stub: hello, handshake 0x2FE, id 4, id 5 reply; pending: the world data set).
 - **Exit**: client loads the world and holds the session (no disconnect) against our server.
 
 ## P4 — Playable loop
