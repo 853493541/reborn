@@ -17,6 +17,17 @@ by this rule.
 
 ## 2. Workflow modes
 
+### ACTIVE RULE — NO CLIENT STARTS (user, 2026-10-05, until the user removes it)
+
+**Static research ONLY.** The user is playing the real JX3 on this machine.
+
+- Never launch JX3ClientX64, reborn_client*.exe, the launcher emulator (`launcher_emulator.py`,
+  `run_emul.cmd`), or any run that starts a game client.
+- Never run the gateway/game/serverlist stubs against a live client; no client drives, no
+  window automation, no memory reads of a running game client.
+- Work only on binaries, IL, paks, tables, and docs (copy & analyze). This rule stays until
+  the user explicitly lifts it.
+
 ### Default mode
 
 Work directly in the current checkout on the current branch, as normal.
