@@ -2276,3 +2276,14 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   (the loading screen loads it later) and the map-change branch does not re-run for identical
   id-4 packets. Next live test: force a map/region CHANGE after the loading screen is up (or
   re-send id 4 with a different region) and read player+0x60 + state.
+
+### 2026-10-05 — V2 P3 STATIC: id-4 reset+bind block gate ([client+0x1B108] == 0)
+- Inside the id-4 handler: cmp [client+0x1B108],0 -> jne 0x14015C7DE (skip); if ==0 the block runs:
+  zeroes the world state (client+0x1B110..+0x1B164), re-inits the list head at client+0x1B168,
+  iterates + destroys the existing entity nodes (call 0x14011CDF0 + free 0x14079AEAC), then
+  scene init 0x140381F90 + the local scene bind 0x140174970 (edx=1) with [client+0x80]/[client+0x88].
+- So the world reset+bind is gated by a once-only flag at client+0x1B108 (likely set by the
+  bind/scene path). If the first run's bind fails (no scene yet at id-4 time), the retry
+  behaviour depends on whether the flag got set - the next live probe should read
+  [client+0x1B108] and player+0x60 together after the loading screen is up.
+- [client+0x80]/[client+0x88] feed the scene init (xmm double from [client+0x80]).
