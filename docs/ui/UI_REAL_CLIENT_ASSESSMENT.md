@@ -101,6 +101,38 @@ sections `runtime=284` (complete replay still applied).
 8. Basic-UI fidelity: unmeasured (no GT) — capture wishlist in §6.
 9. Interaction: dispatch core proven; viewer wiring not built.
 
+## 5b. Full-flow check (2026-10-05): four questions, chain order
+
+1. **Do we have the full UI system?** System definition: `ui/module_info.xml` = 1,016 modules /
+   1,783 script entries (tracked). Locally: all 1,244 Default INIs (1,240 catalog windows render),
+   but **scripts 314/1,783 (18%)** — 1,461 `.lua` missing (1,235 under `Config/Default`, 96
+   `ui/Script`, 73 `scripts/Include/UIscript`, ...). Probe 2026-10-05: 5/5 sampled missing scripts
+   (`CoinShop_Main.lua`, `HouseUpgrade.lua`, `module.lua`, `UIscriptDanmu.lua`,
+   `TwoDimensionalLogin.lua`) extract from PakV4 by exact manifest path. **Answer: No** — the layout
+   half is in the tree; the behavior half is not (extraction gap, not availability).
+2. **Do we have full resources for each UI?** Art: 40,802 image instances, 534 placeholders
+   (278 intentional `TextureName=no`; 256 real = 231 files + 16 frames beyond the atlas + 9 misc)
+   → ~99.4%; text 49/3,303 unresolved (99.85%); fonts 5/5; all 1,121 scanned atlases parse (v1/v2
+   fix). Re-probe 2026-10-05: `QuestPanelButton.UITex` + `.Tga` **do extract** (the 2026-10-04
+   "not extractable by path today" claim is stale); `Cloud.tga`, `mpbj.tga` MISS at their authored
+   paths. **Answer: mostly** — the 231-file tail is mixed (recoverable + genuinely absent) and needs
+   a systematic re-probe.
+3. **Does every UI fully decode/import correctly?** INI 1,240/1,240 load and render
+   (`--selftest` 1240/0/0); scripts 138/143 replays OK (client bytecode in a real Lua 5.1 VM);
+   constructs: 14 unhandled variants (305 occurrences — PosType 3/4/5 = 70, HandleType 1/2/4/5 =
+   137, FirstItemPosType 1-9 = 98) + 868 sections under approximated WndTypes
+   (page-set/list/tree/scene/flex) ≈ 1.3% of sections. **Answer: No** for that 1.3%; yes for the rest.
+4. **Are we using everything correctly — wired up?** Runtime consumption: dropped calls 671 → 26
+   (`tools/ui/runtime_gap_report.py`); A/B: 6 windows fuller than static, no collapse; guards
+   documented. But runtime applies to 143 windows only, and **1,075 catalog windows have a manifest
+   script that is not extracted at all**, so their behavior is not wired; constructs approximated;
+   interaction partial; basic-UI fidelity unmeasured. **Answer: the wired part is correct
+   (evidence-backed); coverage is the bottleneck.**
+
+Chain-fix order: (1) extract the 1,461 missing scripts (probe-proven) → (2) replay batch over the
+expanded corpus → (3) wire/verify runtime for the newly completed replays (A/B) → (4) systematic
+art re-probe of the 231-file tail → (5) construct decode (Yoga/flex lead).
+
 ## 6. Verdict
 - **Client-binary-verified**: the draw/layout core we implemented (slicing, PosType set, anchors).
 - **Client-data-verified**: inputs (INI/scripts/assets) and runtime state for the completed replays.

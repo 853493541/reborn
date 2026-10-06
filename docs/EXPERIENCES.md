@@ -2205,3 +2205,19 @@ solved it, and what is still open. **Newest at the bottom.**
 - Final A/B: 6 windows fuller than static (SecurityCard +69, BigBagPanel +37, HatredPanel +35,
   ActivityList +15, FilterPanel +6, PartyRecruitPanel +2), 12 modest deficits, no collapse.
   Audit ph=538 oob=7388; selftest 1240/0/0.
+
+### 2026-10-05 ? UI ? full-flow check (4 questions): scripts are the missing half; two stale claims corrected
+- Q1 system: manifest 1,016 modules / 1,783 scripts; local 314/1,783 (18%) - 1,461 .lua missing
+  (1,235 Config/Default, 96 ui/Script, 73 scripts/Include/UIscript). Probe: 5/5 missing scripts
+  (CoinShop_Main, HouseUpgrade, module, UIscriptDanmu, TwoDimensionalLogin) extract by exact manifest
+  path -> extraction gap, not availability. 1,075 of the missing scripts have a local catalog INI
+  (windows that would gain replay once extracted).
+- Q2 resources: art 99.4% (256 real placeholders = 231 files + 16 frames + 9 misc); text 99.85%
+  (49/3,303); fonts 5; atlases 1,121 parse. Re-probe: QuestPanelButton.UITex+.Tga DO extract now
+  (the 2026-10-04 "not extractable by path today" claim was stale); Cloud.tga/mpbj.tga MISS at the
+  authored paths (genuinely absent/renamed).
+- Q3 decode: INI 1,240/1,240; replays 138/143 OK; constructs 14 unhandled variants (305 occurrences)
+  + 868 approximate sections (~1.3%).
+- Q4 wiring: dropped calls 671->26; A/B 6 fuller, no collapse; but runtime covers 143 windows only.
+- Written into UI_REAL_CLIENT_ASSESSMENT.md ?5b (registered doc); next chain: extract 1,461 scripts ->
+  replay batch -> wire -> art re-probe -> construct decode.
