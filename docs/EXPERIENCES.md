@@ -2236,3 +2236,14 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   required). Entries are written into the player attribute block at player+0x1020.
 - Stub id5_frame now defaults to sub0/type0 with a 1024-byte zero array (frame 1039 B).
 - Live test pending a window where the user's real client is closed (namespace hazard 8b04e62).
+
+### 2026-10-05 — V2 P3 STATIC: post-entry flow (ApplyEnterScene + world data set)
+- C2S catalog: KPlayerClient::DoApplyEnterScene = protocol 0x0003, size 0xF (the observed
+  'proto=3 len=15' after loading). Builder 0x18016BCA5: message [word 3][dword [client+0x788]
+  at +0xB], sent via 0x1801ACDA0. The live frame carried 0x10FBF at +0xB (a scene/tick value).
+- S2C id 3 (0x1401477A0) = the time-sync reply: reads server timestamp at [pkt+7] and folds it
+  into [client+0x28EF0] with a GetTickCount-style delta (clock alignment for movement).
+- Post-entry server data set (what the world needs next): id 5 sub0 (256-dword attribute array
+  -> player+0x1020), id 10/11/12/13 (other players / npcs / doodads / moves), id 8 (map switch),
+  plus the time sync. UI: RoomBase/ApplyEnterScene is the cross-server dungeon flow, not the
+  main world entry; the main UI (uishell) initializes on LOADING_END.
