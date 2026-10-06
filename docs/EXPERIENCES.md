@@ -4236,3 +4236,20 @@ if the cache/host frames appear.
 - Main stays at `2d45e16` == `origin/main`; the running canonical/sandbox
   clients are the `2cbf004` rebuild (docs-only delta since).
 - Local only: not pushed to origin.
+
+### 2026-10-05 - Camera (B) - workstream B plan: .mani tracks + skill-FOV + minimal UI
+
+- Did: entered `#iso` as agent B (`agent/camera-tracks`, off main `8e0352a`); grounded the
+  plan on local evidence: `.mani` samples in the editor tree (`turningeye.mani`, 1008 B,
+  magic **`ACON`** + u32 `42` at +4), `player_rush_camera.txt` (4 rows -> `data/movie/
+  camera/16.mani`, `17.mani`), the 8-row UTF-8 `skill_move_camera.txt` (columns decoded),
+  and the managed API dump (only editor playback: `ExportCameraTrack` / `SetCameraTrack
+  PlaySpeedPerMS` / `SetCameraTrackPlayMethod` — no load-by-name, so host playback needs
+  our own ACON reader). Wrote `docs/camera/CAMERA_TRACKS_PLAN.md` (P0 corpus/format ->
+  P1 playback -> P2 skill FOV -> P3 minimal UI -> P4 closures) and registered it.
+- Boundaries carried (not faked): auto mode switching (WW removed by user decision +
+  absent engine states), glider/dynamic-follow, edge/saturation post FX, rush/dialog
+  gameplay triggers (scripted path only), engine `[Camera]` ini absent.
+- Evidence: `docs/camera/CAMERA_TRACKS_PLAN.md`; `docs/camera/README.md`; managed API dump
+  `%TEMP%\opencode\api_cameratracks.txt`.
+- Outcome: plan ready; P0 next. No code changed yet.

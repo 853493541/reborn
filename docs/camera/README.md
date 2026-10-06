@@ -6,6 +6,7 @@ Camera model and host work. Canonical gameplay spec in `docs/netcode/REBORN_CAME
 |---|---|
 | `ADOPTION_FOR_ONLINE_CLIENT.md` | Camera: what the online client (`reborn-online`) should take from the camera work |
 | `CLIENT_AUDIT.md` | Main client camera audit (`reborn-merge`, branch `merge`) |
+| `CAMERA_TRACKS_PLAN.md` | Workstream B plan (1.5) — `.mani` tracks, skill-move FOV, minimal UI + boundaries (2026-10-05) |
 | `CLOSE_RANGE_RESEARCH.md` | Close-range camera + obstruction return - engine research (2026-09-24) |
 | `COMPLETION_PLAN.md` | Camera plan #2 — first fix, then full completion |
 | `CONFIG_FILES.md` | JX3 camera config files — inventory and where the values live |
