@@ -2113,3 +2113,15 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Live state before the copy: client+0x14=296, player inserted, state=4, pos=100,100,0, scene=null
   (the map could not load without the data).
 - Next: fresh run - expect the scene to load -> id 10 guard passes -> player+0xFDC=7.
+
+### 2026-10-05 — V2 P3: UGC data placed (binkp1/binkp4/admin); scene still not loading
+- Copied the 975 MB UGC map to data\UGC\{binkp1,binkp4,admin}\龙门寻宝 (per-account UGC layout).
+- Live (fresh client): map=296, player inserted, state=4, pos=100,100,0, scene=null - the client
+  does not load the map into the scene (dims at [scene+0x790] never set) even with the data in
+  place. Client keeps sending pings; stub keepalives keep the session alive.
+- The id-10 handler's lookup 0x1401391A0(scene, X, Y) = a 128x128 scene grid cell lookup that
+  validates X/Y against [scene+0x790/0x794]<<11 and reads [scene + cell*8 + 0x7A8]; with an
+  unloaded scene (dims 0) it returns null -> the handler exits before the guard/state-7.
+- Open: what triggers the map load into the scene (engine load call chain: dims setter
+  0x1400B2310 <- fn 0x14009DB60; who calls it in the live flow?), or whether the client's
+  loading UI needs a server message (scene-begin) / a UI action.
