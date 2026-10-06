@@ -2425,3 +2425,28 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   or the movie "Open/CreatePlayer" method that builds the context; then the shadow
   init succeeds -> real CreateRLScene completes -> Gate 1 checkpoint.
 - Evidence: host_exe85-88.out.
+
+## 2026-10-04 - Gate 1: shadow-scene chain advanced to the shadow-object write-back
+
+- The line-1848/1849 chain is now: the rep calls the movie engine's shadow-scene
+  getter (movie+0x2A00) with rdx = &[rlScene+0xF2890]; the movie forwards to the
+  adapter movie context (adapter+0x2F5050, class ctor 0x1110D0, init vt[3] 0x111930)
+  which creates the shadow scene via the window/device and is supposed to write the
+  object back into the field.
+- Fixed along the way (all host-side completions of skipped game init):
+  - movie engine context linked: [movie+0x38] = adapter ctx (the game init normally
+    links them) -> error moved 1848 -> 1849.
+  - movie shadow-name hook (movie+0x2A00 entry): fills the 8-byte name field when
+    empty (short "shadow"; a longer name overflows into [rlScene+0xF2898] and breaks
+    the container there) -> the name check passes.
+  - adapter movie init called with the adapter object ([[adapter+0x6C940()]+8]) and
+    the working-root string (adapter vt[0xAE0]); the context is fully initialized
+    (ctx+0x10 = window, ctx+0x100 = device both non-null).
+- Current fault: rep+0x58CCCD dereferences [rlScene+0xF2890] as a POINTER (the
+  shadow object) - the field still holds the name string, i.e. the context's
+  write-back did not happen (the window/device shadow-creation path at
+  0x111F49/0x112084 returned without writing [rsi] via 0x126E40).
+- The field is a struct: +0x0 object pointer, +0x80 flag; the context's
+  vt[7] (0x111DE0) writes it at 0x1120DA (call 0x126E40(rsi = the field,
+  r14 = the created shadow)) when the device's vt[0xA0] shadow creation succeeds.
+- Evidence: host_exe92-98.out.

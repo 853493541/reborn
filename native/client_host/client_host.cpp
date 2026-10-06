@@ -81,6 +81,69 @@ static void __fastcall shadowDescFix(void* desc, void* caller)
     __except (EXCEPTION_EXECUTE_HANDLER) { }
 }
 
+// Host adaptation: the RL scene's shadow-scene name ([rlScene+0xF2890]) is empty
+// because the map's shadow data is missing from the sandbox; the movie engine's
+// shadow-scene getter (movie+0x2A00) then fails its caller's non-empty check
+// (KRLScene::InitShadowScene line 1849). Fill the name (GBK) when empty at call
+// time. Documented deviation: docs/EXPERIENCES.md.
+static void __fastcall movieNameFix(void* movie, void* nameBuf)
+{
+    (void)movie;
+    if (nameBuf == NULL)
+        return;
+    __try
+    {
+        if (*(char*)nameBuf == 0)
+        {
+            // NOTE: the field is only 8 bytes (the next member lives at +8) -
+            // write a short non-empty name to satisfy the caller's checks.
+            strcpy((char*)nameBuf, "shadow");
+            logf("[host] movieNameFix: shadow scene name set");
+        }
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { }
+}
+
+static int installMovieNameHook(void)
+{
+    HMODULE mv = GetModuleHandleA("KG_MovieEngineX64.dll");
+    if (mv == NULL)
+        return 0;
+    BYTE* site = (BYTE*)mv + 0x2A00;
+    const int origLen = 17;
+    static const BYTE orig[17] = { 0x48,0x83,0xEC,0x38,0x48,0x8B,0x49,0x38,
+                                   0x48,0xC7,0x44,0x24,0x40,0x00,0x00,0x00,0x00 };
+    BYTE* stub = (BYTE*)VirtualAlloc(NULL, 0x100, MEM_COMMIT | MEM_RESERVE,
+                                     PAGE_EXECUTE_READWRITE);
+    if (stub == NULL)
+        return 0;
+    int i = 0;
+    stub[i++] = 0x51; stub[i++] = 0x52; stub[i++] = 0x41; stub[i++] = 0x50;
+    stub[i++] = 0x41; stub[i++] = 0x51;
+    stub[i++] = 0x48; stub[i++] = 0x83; stub[i++] = 0xEC; stub[i++] = 0x28;
+    stub[i++] = 0x49; stub[i++] = 0xB8;
+    *(void**)(stub + i) = (void*)movieNameFix; i += 8;
+    stub[i++] = 0x41; stub[i++] = 0xFF; stub[i++] = 0xD0;
+    stub[i++] = 0x48; stub[i++] = 0x83; stub[i++] = 0xC4; stub[i++] = 0x28;
+    stub[i++] = 0x41; stub[i++] = 0x59; stub[i++] = 0x41; stub[i++] = 0x58;
+    stub[i++] = 0x5A; stub[i++] = 0x59;
+    memcpy(stub + i, orig, origLen); i += origLen;
+    stub[i++] = 0x48; stub[i++] = 0xB8;
+    *(void**)(stub + i) = (void*)(site + origLen); i += 8;
+    stub[i++] = 0xFF; stub[i++] = 0xE0;
+    DWORD old;
+    if (!VirtualProtect(site, origLen, PAGE_EXECUTE_READWRITE, &old))
+        return 0;
+    site[0] = 0x48; site[1] = 0xB8;
+    *(void**)(site + 2) = (void*)stub;
+    site[10] = 0xFF; site[11] = 0xE0;
+    for (int k = 12; k < origLen; k++)
+        site[k] = 0x90;
+    VirtualProtect(site, origLen, old, &old);
+    FlushInstructionCache(GetCurrentProcess(), site, origLen);
+    return 1;
+}
+
 static int installShadowDescHook(HMODULE rep)
 {
     BYTE* site = (BYTE*)rep + 0x33BE40;
@@ -177,6 +240,7 @@ static int installInlineHook(HMODULE mod, DWORD rva, void* hook, BYTE* saved,
 
 static HWND g_hostHwnd = NULL;
 static volatile LONG g_flagWatchArmed = 0;
+static volatile LONG g_movieWatchArmed = 0;
 static volatile LONG g_flagWatchHit = 0;
 static BYTE g_ctwSaved[32];
 static BYTE* g_ctwTramp = NULL;
@@ -612,17 +676,19 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
         }
     }
     else if (ep->ExceptionRecord->ExceptionCode == EXCEPTION_SINGLE_STEP &&
-             g_flagWatchArmed && g_flagWatchHit < 10)
+             (g_flagWatchArmed || g_movieWatchArmed) && g_flagWatchHit < 10)
     {
         g_flagWatchHit++;
         DWORD64 rip = (DWORD64)ep->ExceptionRecord->ExceptionAddress;
-        logf("[host] flag write watch #%d: rip=eng+0x%llX",
-             g_flagWatchHit, (rip > (DWORD64)g_eng) ? (rip - (DWORD64)g_eng) : 0);
+        char wd[64];
+        describeAddr(rip, wd, sizeof(wd));
+        logf("[host] write watch #%d: rip=%s", g_flagWatchHit, wd);
         ep->ContextRecord->Dr6 = 0;
         if (g_flagWatchHit >= 10)
         {
             ep->ContextRecord->Dr0 = 0;
             ep->ContextRecord->Dr7 = 0;
+            g_movieWatchArmed = 0;
         }
         return EXCEPTION_CONTINUE_EXECUTION;
     }
@@ -2077,6 +2143,26 @@ int main(void)
                                     }
                                     __except (EXCEPTION_EXECUTE_HANDLER)
                                     { logf("[host] render module fault"); }
+                                    // KJX3VideoModule (exe): Create 0xC0480 +
+                                    // Initialize(state 3) 0xC0360 - initializes the
+                                    // video/movie engine (creates the movie context
+                                    // [movie+0x38] that KRLScene::InitShadowScene
+                                    // needs via the movie engine's vt[0x28]).
+                                    __try
+                                    {
+                                        void* vm = ((void* (__fastcall *)(void))
+                                                    ((BYTE*)g_exeModule + 0xC0480))();
+                                        logf("[host] KJX3VideoModule::Create -> %p", vm);
+                                        if (vm != NULL)
+                                        {
+                                            long vir = ((long (__fastcall *)(void*, int))
+                                                        ((BYTE*)g_exeModule + 0xC0360))(vm, 3);
+                                            logf("[host] KJX3VideoModule::Initialize(3) -> 0x%08X",
+                                                 (unsigned)vir);
+                                        }
+                                    }
+                                    __except (EXCEPTION_EXECUTE_HANDLER)
+                                    { logf("[host] video module fault"); }
                                     // KJX3ConvertResourceModule: Create 0xA65C0 +
                                     // OnInitialize 0xA6470 (may create the engine's
                                     // resource manager, facade+0x260).
@@ -3108,6 +3194,77 @@ int main(void)
                             logf("[host] frame60: [singleton+0x1A0+0x260] := %p, readback=%p",
                                  cand, *(void**)((BYTE*)holder60 + 0x260));
                         }
+                        // The adapter (KG3DEngineAdapterX64) creates the movie
+                        // engine + context in its movie init (adapter+0x7CC20,
+                        // called with the adapter's engine object). Try it with the
+                        // engine manager (SEH-guarded) so the movie context
+                        // [movie+0x38] exists for KRLScene::InitShadowScene.
+                        __try
+                        {
+                            HMODULE ad2 = GetModuleHandleA("KG3DEngineAdapterX64.dll");
+                            if (ad2 != NULL)
+                            {
+                                // the adapter singleton = [[adapter+0x6C940()]+8]
+                                void* st = ((void* (__fastcall *)(void))
+                                            ((BYTE*)ad2 + 0x6C940))();
+                                void* adObj = (st != NULL)
+                                    ? *(void**)((BYTE*)st + 8) : NULL;
+                                logf("[host] frame60: adapter obj=%p +0x9B8=%p +0x1FF8=%p",
+                                     adObj, (adObj != NULL) ? *(void**)((BYTE*)adObj + 0x9B8) : NULL,
+                                     (adObj != NULL) ? *(void**)((BYTE*)adObj + 0x1FF8) : NULL);
+                                if (adObj != NULL &&
+                                    *(void**)((BYTE*)adObj + 0x1FF8) != NULL)
+                                {
+                                    // the movie init's 2nd arg = the engine's
+                                    // working root path (adapter vt[0xAE0] fills it)
+                                    char rootBuf[0x104];
+                                    memset(rootBuf, 0, sizeof(rootBuf));
+                                    void** avt = *(void***)adObj;
+                                    ((void (__fastcall *)(void*, char*))
+                                     avt[0xAE0 / 8])(adObj, rootBuf);
+                                    logf("[host] frame60: adapter root='%s'", rootBuf);
+                                    logf("[host] frame60: adapter device global [0x2A5368]=%p",
+                                         *(void**)((BYTE*)ad2 + 0x2A5368));
+                                    long mr = ((long (__fastcall *)(void*, void*))
+                                               ((BYTE*)ad2 + 0x7CC20))(adObj, rootBuf);
+                                    logf("[host] frame60: adapter movie init -> 0x%08X", (unsigned)mr);
+                                    void* ctxA = *(void**)((BYTE*)ad2 + 0x2F5050);
+                                    logf("[host] frame60: ctx=%p ctx+0x10(window)=%p ctx+0x100(device)=%p",
+                                         ctxA,
+                                         (ctxA != NULL) ? *(void**)((BYTE*)ctxA + 0x10) : NULL,
+                                         (ctxA != NULL) ? *(void**)((BYTE*)ctxA + 0x100) : NULL);
+                                }
+                            }
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: adapter movie init fault"); }
+                        // install the movie shadow-name hook (fills the empty
+                        // [rlScene+0xF2890] name at call time)
+                        logf("[host] frame60: movie name hook -> %d", installMovieNameHook());
+                        // The adapter's movie context (created by the adapter movie
+                        // init, stored at adapter+0x2F5050) is what the movie
+                        // engine's methods expect at [movie+0x38]; the skipped game
+                        // init normally links them. Link it here.
+                        __try
+                        {
+                            HMODULE ad3 = GetModuleHandleA("KG3DEngineAdapterX64.dll");
+                            void* main2 = *(void**)((BYTE*)g_repModule + 0xEDDFE0);
+                            void* movie2 = (main2 != NULL)
+                                ? *(void**)((BYTE*)main2 + 0xE8) : NULL;
+                            void* ctx2 = (ad3 != NULL)
+                                ? *(void**)((BYTE*)ad3 + 0x2F5050) : NULL;
+                            logf("[host] frame60: movie=%p adapter ctx=%p [movie+0x38]=%p",
+                                 movie2, ctx2,
+                                 (movie2 != NULL) ? *(void**)((BYTE*)movie2 + 0x38) : NULL);
+                            if (movie2 != NULL && ctx2 != NULL &&
+                                *(void**)((BYTE*)movie2 + 0x38) == NULL)
+                            {
+                                *(void**)((BYTE*)movie2 + 0x38) = ctx2;
+                                logf("[host] frame60: linked [movie+0x38] = adapter ctx");
+                            }
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: movie link probe fault"); }
                         // probe [rep+0xEDDFE0]+0xE8 (the object whose vt[0x28]
                         // fails with E_FAIL at InitShadowScene line 1848)
                         __try
@@ -3127,8 +3284,25 @@ int main(void)
                                                    (LPCSTR)svt[0x28 / 8], &hm);
                                 if (hm != NULL)
                                     GetModuleFileNameA(hm, mb, MAX_PATH);
-                                logf("[host] frame60: [main+0xE8]=%p vt=%p vt[0x28]=%s mod=%s base=%p",
-                                     sub, svt, fb, mb, (void*)hm);
+                                logf("[host] frame60: [main+0xE8]=%p vt=%p vt[0x28]=%s mod=%s base=%p ctx(+0x38)=%p",
+                                     sub, svt, fb, mb, (void*)hm,
+                                     *(void**)((BYTE*)sub + 0x38));
+                                // hardware write watch on [movie+0x38] to catch its
+                                // writer (8-byte write on Dr0)
+                                CONTEXT mctx;
+                                memset(&mctx, 0, sizeof(mctx));
+                                mctx.ContextFlags = CONTEXT_DEBUG_REGISTERS;
+                                if (GetThreadContext(GetCurrentThread(), &mctx))
+                                {
+                                    mctx.Dr0 = (DWORD64)((BYTE*)sub + 0x38);
+                                    mctx.Dr7 = (mctx.Dr7 & ~0x000F0001ULL) | 0x00090001ULL;
+                                    if (SetThreadContext(GetCurrentThread(), &mctx))
+                                    {
+                                        g_movieWatchArmed = 1;
+                                        logf("[host] frame60: movie +0x38 write watch armed (%p)",
+                                             (void*)((BYTE*)sub + 0x38));
+                                    }
+                                }
                             }
                             else
                                 logf("[host] frame60: [main+0xE8]=NULL");
