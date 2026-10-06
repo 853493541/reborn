@@ -2149,3 +2149,23 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   intermediate step still fails; its call-site args (0x14015A807: rcx=client, rdx=player,
   r8=[rbp-0x61] scene, r9=A, stack B/C from the +0x4B parse) are the next instrumentation target.
 - Tried id10 pack qword = 0x6400064 (A=100,B=100) live - no change.
+
+### 2026-10-05 — V2 P3 STATIC (no client): loading completion + character identity decoded
+- id 10 = OnSyncNewPlayer for OTHER entities: if [pkt+7] == [client+4] (the local id) the handler
+  logs (line 0x3596) and EXITS (jmp 0x14015AEEC). The local player is excluded from id 10 - our
+  earlier id-10 injections with field=1001 were rejected exactly there.
+- The LOCAL player's state 7 is AUTOMATIC: DLL state machine 0x1803525F0 -> if [player+0xFDC]==4
+  (0x1803526D5) it calls DoClientConfirmReady 0x180170DD0; on non-zero return it writes state 7
+  (0x180352700). DoClientConfirmReady builds an 11-byte C2S message (word 2; send via
+  0x1801ACDA0; failure -> log line 0xA2B). The observed C2S 'proto=5 len=11' IS this confirm.
+- After state 7 the client waits for the server's per-player data: S2C id 5 (min size 15;
+  sub-code byte at +0xD: 0 -> 0x140327680 into player+0x1020; 1 -> 0x140327420 + local-id
+  compare; 2 -> generic vtable notify).
+- Character identity fields:
+  * position: id-10 packet +0x4B packed qword: X=bits0-17, Y=bits18-35, Z=bits36-41 ->
+    guard 0x140173D90 = SetPlayerPosition writes player+0x10/0x14/0x18 then validates against
+    the scene dims (0x14017BDD0) and binds player+0x60 = scene.
+  * map/region: id-4 +0x2C/+0x30 -> client+0x14/0x18 (scene registry lookup key).
+  * appearance/attributes: id-10 +0x54 (packed -> player+0x268/0x26C/0x270/0x2F8/0x2FC/0x320),
+    +0x64 (-> player+0xFAC/0xFB0/0xFB4 + list at +0xFB8), +0x6C (-> player+0x1F8/0x208).
+- ACTIVE RULE added to AGENTS.md: NO CLIENT STARTS - static research only (user is playing JX3).
