@@ -3108,6 +3108,33 @@ int main(void)
                             logf("[host] frame60: [singleton+0x1A0+0x260] := %p, readback=%p",
                                  cand, *(void**)((BYTE*)holder60 + 0x260));
                         }
+                        // probe [rep+0xEDDFE0]+0xE8 (the object whose vt[0x28]
+                        // fails with E_FAIL at InitShadowScene line 1848)
+                        __try
+                        {
+                            void* main0 = *(void**)((BYTE*)g_repModule + 0xEDDFE0);
+                            void* sub = (main0 != NULL)
+                                ? *(void**)((BYTE*)main0 + 0xE8) : NULL;
+                            char fb[64] = {0};
+                            if (sub != NULL)
+                            {
+                                void** svt = *(void***)sub;
+                                describeAddr((DWORD64)svt[0x28 / 8], fb, sizeof(fb));
+                                HMODULE hm = NULL;
+                                char mb[MAX_PATH] = {0};
+                                GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                                                   GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                                                   (LPCSTR)svt[0x28 / 8], &hm);
+                                if (hm != NULL)
+                                    GetModuleFileNameA(hm, mb, MAX_PATH);
+                                logf("[host] frame60: [main+0xE8]=%p vt=%p vt[0x28]=%s mod=%s base=%p",
+                                     sub, svt, fb, mb, (void*)hm);
+                            }
+                            else
+                                logf("[host] frame60: [main+0xE8]=NULL");
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: main+0xE8 probe fault"); }
                         // RLResourceLoader::SetResourceMgr(rep+0x34C1B0): the RL
                         // loader's static resource/engine managers (ms_piResourceMgr
                         // [rep+0xED2730] / ms_pi3DEngineManager [rep+0xED2738]) are
@@ -3203,6 +3230,35 @@ int main(void)
                                         ((BYTE*)g_repModule + 0x924B))(2);
                             logf("[host] frame60: GetRLScene(2) -> %p (3DScene=%p)",
                                  sc, (sc != NULL) ? *(void**)((BYTE*)sc + 0xF1978) : NULL);
+                            __try
+                            {
+                                void* main1 = *(void**)((BYTE*)g_repModule + 0xEDDFE0);
+                                void* sub1 = (main1 != NULL)
+                                    ? *(void**)((BYTE*)main1 + 0xE8) : NULL;
+                                if (sub1 != NULL)
+                                {
+                                    void** svt1 = *(void***)sub1;
+                                    char fb1[64] = {0};
+                                    describeAddr((DWORD64)svt1[0x28 / 8], fb1, sizeof(fb1));
+                                    logf("[host] frame60: after call [main+0xE8]=%p vt[0x28]=%s",
+                                         sub1, fb1);
+                                    // the movie's sub-object ([movie+0x38]) whose
+                                    // vt[0x38] is the actual E_FAIL source
+                                    void* msub = *(void**)((BYTE*)sub1 + 0x38);
+                                    if (msub != NULL)
+                                    {
+                                        void** mvt = *(void***)msub;
+                                        char fb2[64] = {0}, fb3[64] = {0};
+                                        describeAddr((DWORD64)mvt[0x38 / 8], fb2, sizeof(fb2));
+                                        logf("[host] frame60: movie sub=%p vt[0x38]=%s",
+                                             msub, fb2);
+                                        (void)fb3;
+                                    }
+                                    else
+                                        logf("[host] frame60: movie sub (movie+0x38)=NULL");
+                                }
+                            }
+                            __except (EXCEPTION_EXECUTE_HANDLER) { }
                         }
                         // Phase C: manual RL scene creation (CreateRLScene's own
                         // registration steps; its resource-manager lookup

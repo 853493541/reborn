@@ -2406,3 +2406,22 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   E_FAIL, no inner KGLOG). Next probe: locate the InitShadowScene line-1848 call
   (the COM/engine call after the bitmap builds) and its missing input.
 - Evidence: host_exe81-84.out.
+
+## 2026-10-04 - Gate 1: InitShadowScene line-1848 root-caused to the movie engine's NULL context
+
+- The line-1848 E_FAIL is the call at rep+0x58DBCA:
+  `[rep+0xEDDFE0]+0xE8 -> vt[0x28](rlScene+0xF2890)`; the object = the movie engine
+  singleton (KG_MovieEngineX64.dll; vtable RVA 0x13E3D8; slot 5 = movie+0x2A00).
+- The movie function (0x2A00) returns E_FAIL because **`[movie+0x38]` (the movie
+  context/player object) is NULL** (verified at runtime before and after the call).
+  Its inner log goes to the movie engine's own (uncaptured) logger - that is why no
+  inner KGLOG appears.
+- KG_CreateMovieEngine (movie+0x3590) explicitly zeroes +0x38; the context is
+  assigned elsewhere (not in the movie vtable slots 0-19, not among the movie
+  module's disp8/disp32 `mov [reg+0x38]` stores checked - likely set by the game's
+  own init in the exe, which this host skips with RC_HOST_EXE_NOINIT).
+- Next probe: find the writer of the movie singleton's +0x38 (scan the exe + all
+  loaded modules for stores to [movie+0x38] where movie = [KG_MovieEngine+0x1D6EE8]),
+  or the movie "Open/CreatePlayer" method that builds the context; then the shadow
+  init succeeds -> real CreateRLScene completes -> Gate 1 checkpoint.
+- Evidence: host_exe85-88.out.
