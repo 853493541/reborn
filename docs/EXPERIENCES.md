@@ -2019,3 +2019,15 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   byte @+0x53) for fast live iteration.
 - Next: decode the 0x140173D90 call-site args (0x14015A7xx) + its return condition to learn
   the required A/B/C values (likely the role's appearance/model ids from the role data).
+
+### 2026-10-05 — V2 P3 BREAKTHROUGH: id 7 (OnSwitchGS) sets map/region/position; sequence fixed
+- Root cause of the id-10 guard failure: 0x14017BDD0 validates the player position X/Y/Z
+  against the scene dims ([scene+0x790]/+0x794]<<11) - with no map loaded the dims are 0 ->
+  any position fails -> state-7 write skipped.
+- id 7 handler (0x14014C9B0) at 0x14014D065+: pkt+7 -> [client+0x14] (map id),
+  pkt+0xB -> [client+0x18] (region id), pkt+0xF/+0x13/+0x17 -> player+0x10/0x14/0x18 (X/Y/Z).
+- Stub sequence corrected: id 4 -> id 7 (map/region/pos, GAME_MAP_ID/GAME_MAP_REGION/
+  GAME_POS_X/Y/Z) -> id 10 -> keepalive id 7+10.
+- Caveat: restarting the stub resets the cipher; a RESUME handshake (last byte 01) keeps the
+  client's old cipher state -> mismatch -> RST. Need a FRESH session (fresh handshake 00) after
+  a stub restart: full re-login, not just reconnect.

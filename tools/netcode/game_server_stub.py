@@ -56,6 +56,12 @@ def id_frame(frame_id, size, role_id):
         flags = int(os.environ.get("GAME_ID10_FLAGS", "0"), 16)
         struct.pack_into("<Q", p, 0x4B, pack & 0xFFFFFFFFFFFFFFFF)
         p[0x53] = flags & 0xFF
+    if frame_id == 7:
+        struct.pack_into("<I", p, 7, int(os.environ.get("GAME_MAP_ID", "1")))
+        struct.pack_into("<I", p, 0xB, int(os.environ.get("GAME_MAP_REGION", "1")))
+        struct.pack_into("<I", p, 0xF, int(os.environ.get("GAME_POS_X", "100")))
+        struct.pack_into("<I", p, 0x13, int(os.environ.get("GAME_POS_Y", "100")))
+        struct.pack_into("<I", p, 0x17, int(os.environ.get("GAME_POS_Z", "0")))
     return bytes(p)
 
 
@@ -113,15 +119,24 @@ def handle(conn, addr):
                     conn.sendall(sess.encrypt(id_frame(4, 343, ROLE_ID)))
                     w("[%s] SYNC step1 id=4 (role=%d)" % (time.strftime("%H:%M:%S"), ROLE_ID))
                     sync_step = 2
-                    next_t = now + 0.8
+                    next_t = now + 0.5
                 elif sync_step == 2:
-                    conn.sendall(sess.encrypt(id_frame(10, 161, ROLE_ID)))
-                    w("[%s] SYNC step2 id=10 (role=%d)" % (time.strftime("%H:%M:%S"), ROLE_ID))
+                    conn.sendall(sess.encrypt(id_frame(7, 37, ROLE_ID)))
+                    w("[%s] SYNC step2 id=7 (map=%s region=%s pos=%s,%s,%s)"
+                      % (time.strftime("%H:%M:%S"), os.environ.get("GAME_MAP_ID", "1"),
+                         os.environ.get("GAME_MAP_REGION", "1"), os.environ.get("GAME_POS_X", "100"),
+                         os.environ.get("GAME_POS_Y", "100"), os.environ.get("GAME_POS_Z", "0")))
                     sync_step = 3
-                    next_t = now + 8.0
+                    next_t = now + 0.5
                 elif sync_step == 3:
                     conn.sendall(sess.encrypt(id_frame(10, 161, ROLE_ID)))
-                    w("[%s] SYNC keepalive id=10" % time.strftime("%H:%M:%S"))
+                    w("[%s] SYNC step3 id=10 (role=%d)" % (time.strftime("%H:%M:%S"), ROLE_ID))
+                    sync_step = 4
+                    next_t = now + 8.0
+                elif sync_step == 4:
+                    conn.sendall(sess.encrypt(id_frame(7, 37, ROLE_ID)))
+                    conn.sendall(sess.encrypt(id_frame(10, 161, ROLE_ID)))
+                    w("[%s] SYNC keepalive id=7+id=10" % time.strftime("%H:%M:%S"))
                     next_t = now + 8.0
             if os.path.exists(CMD_FILE):
                 try:
