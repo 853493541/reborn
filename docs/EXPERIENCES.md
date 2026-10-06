@@ -4255,3 +4255,16 @@ if the cache/host frames appear.
 - Outcome: 1.7 closes as a runtime/server K/V boundary (HIGH negative) with a new
   authored size source; the host capsule stays a registered proxy, with optional
   per-role scaling from `ModelHeight` pending approval.
+
+### 2026-10-05 - Unit scale (1.7) - body-type capsule table (RC_BODY, 4 hardcoded sizes)
+
+- Did: per user request, skipped `player.txt` parsing and hardcoded the four
+  canonical body heights (f1/m1 125, f2 173, m2 185) into the capsule derivation
+  (`r = 0.136*H`, `h = 0.928*H`; env `RC_BODY=f1|m1|f2|m2`; explicit
+  `RC_RADIUS`/`RC_HEIGHT` still win) — a registered proxy from the authored table,
+  no parsing, no new files.
+- Verified: build ok; runs log `capsule body=m2 ... r=25.2 h=171.7` and f2
+  23.5/160.5; m2-capsule crossing demo clean (`terrain stats` 2 loads, `DONE`);
+  collision selftest 36/36.
+- Evidence: `UNIT_SCALE_AND_CHARACTER_SIZE.md` §4 (implementation paragraph);
+  `client/RebornClient.cs`.

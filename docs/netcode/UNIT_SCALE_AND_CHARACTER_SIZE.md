@@ -95,6 +95,15 @@ Host capsule proportion (for reference, registered proxy): 花萝 17/116 at Mode
 125 and adult 25/170 at ~185 are both ≈ (0.136, 0.93) × ModelHeight — a host-chosen
 proportion, not a game-derived rule.
 
+**Host implementation (2026-10-05, `agent/capsule-dig`):** `client/RebornClient.cs`
+derives the capsule from four hardcoded authored heights — `RC_BODY=f1|m1` (125) →
+r 17.0 / h 116.0, `f2` (173) → 23.5 / 160.5, `m2` (185) → 25.2 / 171.7
+(`r = 0.136·H`, `h = 0.928·H`); explicit `RC_RADIUS`/`RC_HEIGHT` still override;
+no `RC_BODY` = the M1 花萝 17/116. Verified: feature build ok; runs log
+`capsule body=m2 ModelHeight=185 -> r=25.2 h=171.7 (player.txt proxy)` and the f2
+pair; an m2-capsule crossing demo exits clean (`terrain stats` 2 loads, `DONE`);
+collision selftest 36/36.
+
 ## 5. Gameplay capsule (G-1) — dig result (2026-10-05): not in the client
 
 - The Semantic K/V schema names `capsules radius` / `capsules length` exist in **exactly
