@@ -4298,3 +4298,11 @@ if the cache/host frames appear.
 - Evidence: `proof/host/lod_close/{base,fNodeLodLowLimit_20,fModelLodRadius_100}.png`;
   logs `reborn_20261005_22*`.
 - Outcome: D6 done - model-LOD controls verified as effective; no boundary needed.
+
+### 2026-10-05 - Host polish - D7: HUD hitch readout
+
+- Did: added a `hitch <n>ms` line to the info panel - max unclamped frame delta since the
+  last HUD update (250 ms window), reset per update; `RC_HUD_OPEN=1` opens the panel.
+- Verify: build exit 0; camera_smoke ALL PASS; collision selftest 36/36 (both exercise
+  the 250 ms hud.SetText path); HUD-open run screenshot `proof/host/hud_hitch.png`.
+- Outcome: D7 done - workstream D (D1-D7) complete on `agent/host-polish`.

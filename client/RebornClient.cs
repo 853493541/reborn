@@ -1754,6 +1754,7 @@ internal static class RebornClient
         int propFixEvents = 0;
         long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0, lastPostLog = 0, lastMouseDragMs = 0;
         long hitchMaxMs = 0;   // max unclamped frame delta since the last status line
+        long hudHitchMs = 0;   // max unclamped frame delta since the last HUD update (D7)
         // camera anchor-Y smooth-follow (B14): the engine smooths the followed
         // character position (JX3RepresentX64 "DynamicFollowSmoothObjectPosition",
         // CharacterCameraSmoothTime=60 ms in Represent/common/number.krl.txt).
@@ -1982,6 +1983,7 @@ internal static class RebornClient
             long now = sw.ElapsedMilliseconds;
             long rawFrameMs = now - lastMs;   // unclamped: hitch evidence
             if (rawFrameMs > hitchMaxMs) hitchMaxMs = rawFrameMs;
+            if (rawFrameMs > hudHitchMs) hudHitchMs = rawFrameMs;
             float dt = (now - lastMs) / 1000f;
             lastMs = now;
             if (dt < 0f) dt = 0f;
@@ -4055,11 +4057,13 @@ internal static class RebornClient
                                 : walkMode ? pSpeed
                                 : pRun;
                 hud.SetText(string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport | Esc info\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nhitch {12}ms\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport | Esc info\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance,
-                    curClip == null ? "-" : Path.GetFileName(curClip)));
+                    curClip == null ? "-" : Path.GetFileName(curClip),
+                    hudHitchMs));
+                hudHitchMs = 0;
                 // top-left control-mode name (always visible)
                 hud.SetModeText("CONTROL: "
                     + (cameraSettings.OperationMode == CameraOperationMode.Joystick

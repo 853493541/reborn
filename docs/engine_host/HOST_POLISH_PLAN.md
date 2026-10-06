@@ -83,8 +83,14 @@ server-owned state, packaging.
 - Evidence: `proof/host/lod_close/{base,fNodeLodLowLimit_20,fModelLodRadius_100}.png`;
   logs `reborn_20261005_22*`.
 
-### D7 — HUD perf readout (optional, small)
-- Show `hitch` max (predraw metric) alongside fps in the info panel.
+### D7 — HUD perf readout — DONE
+- The info panel gained a `hitch <n>ms` line: max unclamped frame delta since the last
+  HUD update (250 ms window, separate from the 2 s heartbeat `hitchMaxMs`), reset per
+  update. `RC_HUD_OPEN=1` starts the panel open.
+- Verify: rebuild exit 0; `camera_smoke_hostpolish.exe` **ALL PASS** and
+  `collision_selftest_reborn_client_hostpolish.exe` **36/36 PASS** (both run the 250 ms
+  `hud.SetText` path with the new argument); HUD-open run screenshot
+  `proof/host/hud_hitch.png` (no crash, panel rendered).
 
 ## Verification / definition of done
 
