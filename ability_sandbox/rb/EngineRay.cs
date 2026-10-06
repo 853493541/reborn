@@ -301,12 +301,8 @@ internal sealed class EngineRay
     }
 
     // Vertical backend: height of the first geometry hit on a vertical line at
-    // (x, y, z) within range; -1 when nothing is hit. This is the game mask's
-    // vertical probe (cliffs, terrain-baked walls). NOTE: the mask also returns
-    // phantom collision heights (verified 2026-09-29: ~9045/29122 u above plain
-    // dune columns), so gameplay target/floor resolution uses scene/terrain
-    // descent rays instead (RebornClient.visibleTop); this probe remains for
-    // the camera obstruction ladder only.
+    // (x, z) within range; -1 when nothing is hit. This is the game mask's
+    // vertical probe (cliffs, terrain-baked walls).
     public float RayVerticalHeight(float x, float y, float z, float range, out int hr)
     {
         hr = -1;

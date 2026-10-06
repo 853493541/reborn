@@ -155,7 +155,6 @@ def build_plan(m: str, nm: str, cx: int, cy: int, cw: int, ch: int) -> list[tupl
 
     for f in ENV_PROBE_FILES:
         add(base + "\\env_probe\\" + f, "env_probe\\" + f)
-        add(base + "\\bd\\env_probe\\" + f, "bd\\env_probe\\" + f)
 
     add(base + "\\water\\" + m + "_waterinfo.json", "water\\" + nm + "_waterinfo.json")
     add(base + "\\water\\wave.json", "water\\wave.json")
@@ -226,16 +225,6 @@ def main(argv: list[str] | None = None) -> int:
 
     origin_x = -102400.0 + cx * 51200.0
     origin_y = -102400.0 + cy * 51200.0
-    # shadowparam.json: the map-level file is not in the PakV4; the engine's own
-    # global default ships in the updater cache (data\rcdata\shadowparam).
-    shadow_dst = map_dir / "bd" / "shadowparam.json"
-    if not shadow_dst.is_file():
-        for cand in client_root.glob(
-                "SeasunDownloader*/seasun/client/_HttpFileForDebug_/local/data/rcdata/shadowparam/shadowparam.json"):
-            shadow_dst.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(cand, shadow_dst)
-            print("[%s] shadowparam.json <- %s" % (nm, cand))
-            break
     sceneinfo = map_dir / "entities" / (nm + "_sceneinfo.json")
     landinfo = map_dir / "landscape" / (nm + "_landscapeinfo.json")
     if sceneinfo.is_file():

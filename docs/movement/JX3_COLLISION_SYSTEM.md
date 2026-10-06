@@ -1376,37 +1376,12 @@ non-spatial.
 ### 16.4 Ground-target reproduction (临时飞爪) [HOST]
 
 The ability client implements the only ground-target path in our repo
-(`ability_sandbox/rb/RebornClient.cs`): camera pos + a view basis, panel aspect, cursor NDC
-(`lastMousePt`) → ray → `engineRay.RayTerrain`/`RayScene` (4000-u probe) → clamp to
-`FEI_MAX_RANGE = 40 尺 = 2560 u` → visible-top resolve at the aimed column → authored
-range-select marker. Two-press targeting (first press aims, second confirms). The skill's real
-cast point is `player.GetCoordinateBulletTarget()` (`scripts/skill/沙漠风暴/绝境·临时飞爪.lua`),
-`nMaxRadius = 40 * LENGTH_BASE`; the ray itself is still a host reconstruction (G-20 residual).
-
-**Update 2026-09-29 — Z "half way" / "stops in mid-air and locks":** the standable-surface probe
-used the game-mask vertical ray (`EngineRay.RayVerticalHeight`) which returns **phantom collision
-heights** (~9045 u / ~29122 u over plain dune columns where real surfaces are ~870 u), and a
-scene-ray descent (`RayScene` straight down) could hit **non-collidable visuals** — the player
-was pulled to a visual surface with no collision and `roofHold` locked them floating. The
-target/floor resolution now uses `visibleTop(x,z)` = max(first hit of the **baked collision
-geometry** cast straight down from y=40000, baked terrain) — the geometry the player can actually
-stand on — with no height cap and a 3-D-distance pull budget. Verified: roof/rock column
-(26034,24524) resolves to Y=1168 (collision top), climb 407 u, `landed at (26034,1168,24524)`
-standing on the surface (log 2026-09-29 18:44); tall rock (24534,21524) resolves to the
-collision top 2886 u. The game-mask vertical probe is retained only for the camera-obstruction
-ladder. **The earlier PSS hint-circle substitution was wrong and has been reverted.**
-
-Indicator (2026-09-29): the area-selection resource is the `释放_范围选择01` family (the shape
-is correct), but this host cannot display it faithfully: MovieEngineCLR cannot play the `.Sfx`
-(AddDummyModel AVs; AddStateMachineModel E_FAIL), the mesh has **no material in the VFS** so the
-engine falls back to the error material (dark/red; washes out on bright ground, visible only on
-dark surfaces), and its glow/textures live in the `.Sfx` emitters. Correct display requires the
-engine's own effect path (`KG3DScene::GetSceneSFXEditor` / `KG3DSFX`) — not wired yet; the aim
-marker stays the authored mesh at scale 1 (`SB_FEI_RING_SCALE` override). The chain 28032 is the
-same class of blocker.
-
-**Chain 28032** (`S_rh` → `S_fxmid`, `s_锁链01.pss`): log-only / BLOCKED (2026-09-29) — a
-represent-layer `KRLSfx` feature with no MovieEngineCLR play path; no stand-in added.
+(`ability_sandbox/rb/RebornClient.cs:1139-1187`): camera pos + a view basis, `tan(50°/2)`
+hardcoded FOV, panel aspect, cursor NDC (`lastMousePt`) → ray → `engineRay.RayTerrain` (4000-u
+probe) → clamp to `FEI_MAX_RANGE = 40 尺 = 2560 u` → `sampler.Sample` vertical snap → marker
+mesh. Two-press targeting (first press aims, second confirms). This matches the skill data
+(`PointArea`, `CastSkillXYZ`) but the FOV/range constants are invented approximations
+(gap G-20).
 
 ---
 
@@ -2270,7 +2245,7 @@ shipped data allow. Closure types:
 | G-17 | camera ray mask bits | **[SOLVED]** | option→mask builder decoded (`0x180446920`): bit0→`0x301`, bit1→`|0x101`, bit2→bit8, bit3→bit0, bit4→bit1; filters option1=FilterCamera, option2=FilterLogic; dispatcher keeps nearest hit (§15.2) |
 | G-18 | cursor scene-pos internals | **[SOLVED — sufficient]** | conversion path documented: `GetViewMgr` + view struct at `global+0x24AE8` passed into the helper; no collision decision depends on its internals |
 | G-19 | target.lua/skill.lua selection | **[SOLVED]** | decompiled scripts committed; TARGET enum, candidate source, per-skill flags/modes recovered (§16.3); ordering of `GetSearchTargetPlayer` is UI-side and does not gate casts (server validates) |
-| G-20 | ability ground-target constants | **[PARTIAL — 2026-09-29]** | FOV now the applied projection (48° x factor); Z targets resolved from visible tops (phantom game-mask probe no longer used); residual: ray is a host reconstruction, engine pick ray not wired |
+| G-20 | ability ground-target constants | **[BACKLOG]** | reproduction path works with documented 50° FOV/40 尺 clamp; replacing them with engine-contract values is tuning work |
 | G-21 | SceneResponse semantics | **[SOLVED]** | plugin = 2 exports; `<map>.SRScene` fixed 524-byte container (`SRS`, empty); the static gate is the physic lists; unit-template keys are engine config read by scene response at load |
 | G-22 | environment volumes | **[NEGATIVE]** | `KG3DRepresentEnvironmentVolume` + `QueryPositionIsIndoor` are indoor/ambient classification; no collision consumer found |
 | G-23 | interaction range | **[SOLVED]** | range is the player attribute `atCustomInteractRange` (name `CUSTOM_INTERACT_RANGE`) applied by `ProcessCustomInteractRange`; per-doodad legality server-side |

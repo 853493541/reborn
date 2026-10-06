@@ -13,14 +13,11 @@
 //   RC_SCALE=1                    player model scale
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using System.Web.Script.Serialization;
 using MovieEngineCLR;
-using MovieEditor.ActorEditor;
 
 internal static class RebornClient
 {
@@ -36,7 +33,6 @@ internal static class RebornClient
     internal class ProcStep
     {
         public int T;
-        public int Dur;   // authored duration in ms (anim length / effect life)
         public string Kind = "";
         public string V = "";
         public string N = "";
@@ -51,32 +47,9 @@ internal static class RebornClient
     const uint SND_NODEFAULT = 0x0002;
     const uint SND_FILENAME = 0x00020000;
 
-    // sfx_shim.dll probe (engine SFX factories); see native/sfx_shim.cpp
-    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-    static extern IntPtr LoadLibrary(string path);
-
-    [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
-    static extern IntPtr GetProcAddress(IntPtr module, string name);
-
-    delegate int SfxProbeFn();
-
-    delegate int SfxPlayFn([MarshalAs(UnmanagedType.LPStr)] string path, float x, float y, float z);
-
-    delegate IntPtr SfxStatusFn();
-
     [STAThread]
     private static void Main(string[] args)
     {
-        // diagnostic: unhandled managed exceptions land in %TEMP%\skill_unhandled.txt
-        AppDomain.CurrentDomain.UnhandledException += delegate(object s, UnhandledExceptionEventArgs ue)
-        {
-            try
-            {
-                File.AppendAllText(Path.Combine(Path.GetTempPath(), "skill_unhandled.txt"),
-                    DateTime.Now.ToString("HH:mm:ss") + " " + ue.ExceptionObject + "\r\n");
-            }
-            catch { }
-        };
         // SUPERVISOR (default on; SB_NO_SUPERVISOR=1 disables): if the engine
         // init race with another client kills the app early, relaunch it. Our
         // app is never "affected" by other clients - it self-heals. The
@@ -86,7 +59,7 @@ internal static class RebornClient
             try
             {
                 string self = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                string supLog = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(self), "Skill", "out", "supervisor.log");
+                string supLog = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(self), "ability_sandbox", "out", "supervisor.log");
                 try { System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(supLog)); } catch { }
                 for (int attempt = 1; attempt <= 8; attempt++)
                 {
@@ -105,10 +78,8 @@ internal static class RebornClient
             catch { }
             return;
         }
-        string editorRoot = Env("RC_EDITOR_ROOT", @"C:\SeasunGame\MovieEditor");
-        // RC_BIN64: engine DLL directory override (probe hosts can point the
-        // engine at another engine build without touching the canonical install)
-        string startupPath = Env("RC_BIN64", Path.Combine(editorRoot, "bin64"));
+        string editorRoot = @"C:\SeasunGame\MovieEditor";
+        string startupPath = Path.Combine(editorRoot, "bin64");
         string workingDir = @"C:\SeasunGame\Game\JX3\bin\zhcn_hd";
         string mapPath = Env("RC_MAP",
             "data\\source\\maps\\\u9F99\u95E8\u5BFB\u5B9D\\\u9F99\u95E8\u5BFB\u5B9D.jsonmap");
@@ -137,48 +108,24 @@ internal static class RebornClient
         long autoRunMs = 0;
         long.TryParse(Env("RC_AUTORUN", "0"), out autoRunMs);
 
-        // ---- ability selection (P panel): dataset-driven, default 临时飞爪 ----
-        string abilitySel = Env("SB_ABILITY", "feizhua");
-        if (abilitySel == "feizhua") abilitySel = "临时飞爪";
-        else if (abilitySel == "ruyifa") abilitySel = "如意法";
-        else if (abilitySel == "flws") abilitySel = "风来吴山";
+        // ---- ability selection (P panel): flws (default) / 临时飞爪 ----
+        string abilitySel = Env("SB_ABILITY", "feizhua");    // default 临时飞爪
         string dataPath = Env("SB_DATA",
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_picker", "ability_candidates.json"));
         string soundDir = Env("SB_SOUND_DIR",
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_picker", "sound"));
-        bool soundOn = Env("SB_SOUND", "1") == "1";   // default on; P panel checkbox toggles
+        bool soundOn = Env("SB_SOUND", "0") == "1";
         long autoSkillMs = 0;
         long.TryParse(Env("SB_CAST_MS", "0"), out autoSkillMs);
         bool autoSkillDone = false;
-        bool clickCastRequested = false;   // P panel click -> cast in the frame loop
 
         var feiSteps = new List<ProcStep>();
         var feiTanis = new List<string>();
         string feiMatched = "";
-        // generic dataset-driven cast state (any ability with a staged process)
-        var castSteps = new List<ProcStep>();
-        var castTanis = new List<string>();
-        string castMatched = "";
-        string castName = "";
-        bool castActive = false;
-        long castStart = 0, castUntil = 0;
-        int castIdx = 0;
-        bool castPss = false;
-        bool castPssEngine = false;   // effect created by the engine (RC_SFX_ENGINE)
-        string castPssPath = "";
-        long castPssHandle = 0;
-        float lastCastX = 1e9f, lastCastZ = 1e9f;
-        // 3 s cooldown between ability casts: one press = one cast, one
-        // animation, one effect. Spam presses are ignored (no restart).
-        const long castCooldownMs = 3000;
-        long castCooldownUntil = 0;
-        var datasetAbilityNames = new List<string>();   // panel: abilities with a process
         System.Drawing.Point lastMousePt = new System.Drawing.Point(0, 0);
         bool feiAiming = false, feiConfirm = false, feiCancel = false;
         bool autoSkillConfirmDone = false;
-        // dataset entry loader shared by every ability (anim/sound/dummy steps)
-        Action<string, List<ProcStep>, List<string>, string[]> loadAbility =
-            delegate(string abName, List<ProcStep> abSteps, List<string> abTanis, string[] abMatched)
+        Action loadFeiZhua = delegate
         {
             try
             {
@@ -191,19 +138,12 @@ internal static class RebornClient
                     var d = o as Dictionary<string, object>;
                     if (d == null) continue;
                     object nv;
-                    if (!d.TryGetValue("name", out nv) || nv == null || nv.ToString() != abName) continue;
-                    // the dataset has duplicate rows per name (resolved + empty);
-                    // skip the unresolved duplicates
-                    object mv0;
-                    bool hasMatched = d.TryGetValue("matched", out mv0) && mv0 != null && mv0.ToString() != "";
-                    object pv0;
-                    bool hasProc = d.TryGetValue("process", out pv0) && pv0 is object[] && ((object[])pv0).Length > 0;
-                    if (!hasMatched && !hasProc) continue;
+                    if (!d.TryGetValue("name", out nv) || nv == null || nv.ToString() != "临时飞爪") continue;
                     object mv;
-                    if (d.TryGetValue("matched", out mv) && mv != null) abMatched[0] = mv.ToString();
+                    if (d.TryGetValue("matched", out mv) && mv != null) feiMatched = mv.ToString();
                     object tv;
                     if (d.TryGetValue("tanis", out tv) && tv is object[])
-                        foreach (object t in (object[])tv) if (t != null) abTanis.Add(t.ToString());
+                        foreach (object t in (object[])tv) if (t != null) feiTanis.Add(t.ToString());
                     object pv2;
                     if (d.TryGetValue("process", out pv2) && pv2 is object[])
                     {
@@ -220,145 +160,19 @@ internal static class RebornClient
                             st.V = StrOf(pd, "v");
                             st.N = StrOf(pd, "n");
                             st.K = StrOf(pd, "k");
-                            int dm = 0;
-                            if (int.TryParse(StrOf(pd, "durMs"), out dm)) st.Dur = dm;
                             float f;
                             if (float.TryParse(StrOf(pd, "x"), out f)) st.X = f;
                             if (float.TryParse(StrOf(pd, "y"), out f)) st.Y = f;
                             if (float.TryParse(StrOf(pd, "z"), out f)) st.Z = f;
                             if (float.TryParse(StrOf(pd, "s"), out f) && f > 0f) st.S = f;
-                            abSteps.Add(st);
+                            feiSteps.Add(st);
                         }
                     }
                     break;
                 }
-                Log(abName + " loaded: steps=" + abSteps.Count + " tanis=" + abTanis.Count + " matched=" + abMatched[0]);
+                Log("feizhua loaded: steps=" + feiSteps.Count + " tanis=" + feiTanis.Count + " matched=" + feiMatched);
             }
-            catch (Exception e) { Log("loadAbility(" + abName + ") ex: " + e.Message); }
-        };
-        string[] feiMatchedBox = new string[1] { "" };
-        string[] castMatchedBox = new string[1] { "" };
-        Action loadFeiZhua = delegate { loadAbility("临时飞爪", feiSteps, feiTanis, feiMatchedBox); feiMatched = feiMatchedBox[0]; };
-        Action<string> loadCastAbility = delegate(string abName)
-        {
-            castSteps.Clear(); castTanis.Clear();
-            castName = abName; castMatched = ""; castMatchedBox[0] = "";
-            loadAbility(abName, castSteps, castTanis, castMatchedBox);
-            castMatched = castMatchedBox[0];
-        };
-        // panel list: every dataset ability that has a staged process
-        Action loadDatasetNames = delegate
-        {
-            datasetAbilityNames.Clear();
-            try
-            {
-                if (!File.Exists(dataPath)) return;
-                var ser = new JavaScriptSerializer();
-                var root = ser.DeserializeObject(File.ReadAllText(dataPath, System.Text.Encoding.UTF8)) as Dictionary<string, object>;
-                if (root == null || !root.ContainsKey("abilities")) return;
-                foreach (object o in (object[])root["abilities"])
-                {
-                    var d = o as Dictionary<string, object>;
-                    if (d == null) continue;
-                    string nm = StrOf(d, "name");
-                    if (nm == "") continue;
-                    object pv2;
-                    if (!d.TryGetValue("process", out pv2) || !(pv2 is object[]) || ((object[])pv2).Length == 0) continue;
-                    string mt = StrOf(d, "matched");
-                    if (mt == "") continue;   // skip unresolved duplicate rows
-                    if (!datasetAbilityNames.Contains(nm)) datasetAbilityNames.Add(nm);
-                }
-            }
-            catch (Exception e) { Log("loadDatasetNames ex: " + e.Message); }
-        };
-
-        // client skill data (ability_picker/tools/build_skill_data.py): icon/desc/
-        // school per ability, straight from the client's own Skill.txt + Icon.txt
-        var skillData = new Dictionary<string, Dictionary<string, object>>();
-        string skillDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_picker", "skill_data.json");
-        string skillIconDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_picker", "icons");
-        string skillDataError = "";
-        try
-        {
-            if (File.Exists(skillDataPath))
-            {
-                var ser = new JavaScriptSerializer();
-                var root = ser.DeserializeObject(File.ReadAllText(skillDataPath, System.Text.Encoding.UTF8)) as Dictionary<string, object>;
-                object abilObj;
-                if (root != null && root.TryGetValue("abilities", out abilObj))
-                {
-                    var abil = abilObj as Dictionary<string, object>;
-                    if (abil != null)
-                        foreach (KeyValuePair<string, object> kv in abil)
-                        {
-                            var d = kv.Value as Dictionary<string, object>;
-                            if (d != null) skillData[kv.Key] = d;
-                        }
-                }
-            }
-        }
-        catch (Exception e) { skillDataError = e.Message; }
-        // client tooltip markup (<SKILL ...>, <BUFF ...>) is stripped for display
-        Func<string, string> stripMarkup = delegate(string s)
-        {
-            if (string.IsNullOrEmpty(s)) return "";
-            var sb = new System.Text.StringBuilder();
-            bool inTag = false;
-            foreach (char ch in s)
-            {
-                if (ch == '<') { inTag = true; continue; }
-                if (ch == '>') { inTag = false; continue; }
-                if (!inTag) sb.Append(ch);
-            }
-            return sb.ToString();
-        };
-        Func<string, string> skillTipText = delegate(string nm)
-        {
-            string tip = nm;
-            try
-            {
-                Dictionary<string, object> d;
-                if (skillData.TryGetValue(nm, out d))
-                {
-                    string school = StrOf(d, "school");
-                    string kind = StrOf(d, "kind");
-                    if (school != "" || kind != "")
-                        tip += "  [" + kind + (kind != "" && school != "" ? " " : "") + school + "]";
-                    string desc = stripMarkup(StrOf(d, "desc"));
-                    if (desc != "") tip += "\n" + desc;
-                    string sd = stripMarkup(StrOf(d, "simpleDesc"));
-                    if (desc == "" && sd != "") tip += "\n" + sd;
-                }
-            }
-            catch { }
-            return tip;
-        };
-
-        // engine SFX playback (RC_SFX_ENGINE=1): creates the effect through the
-        // engine's own KG3D_CreateSFXFromFile (sfx_shim.dll) at the given world
-        // position instead of the host dummy approximation
-        Func<string, float, float, float, bool> engineSfxPlay = delegate(string path, float x, float y, float z)
-        {
-            try
-            {
-                string shimPath = Path.Combine(startupPath, "sfx_shim.dll");
-                IntPtr shim = LoadLibrary(shimPath);
-                if (shim == IntPtr.Zero)
-                {
-                    Log("engine sfx: shim not loaded err=" + Marshal.GetLastWin32Error());
-                    return false;
-                }
-                IntPtr fn = GetProcAddress(shim, "RC_Shim_SfxPlay");
-                if (fn == IntPtr.Zero) { Log("engine sfx: export missing"); return false; }
-                var play = (SfxPlayFn)Marshal.GetDelegateForFunctionPointer(fn, typeof(SfxPlayFn));
-                int rc = play(path, x, y, z);
-                IntPtr st = GetProcAddress(shim, "RC_Shim_SfxStatus");
-                string status = st == IntPtr.Zero ? "" : Marshal.PtrToStringAnsi(
-                    ((SfxStatusFn)Marshal.GetDelegateForFunctionPointer(st, typeof(SfxStatusFn)))());
-                Log("engine sfx play rc=" + rc + " status=" + status);
-                return rc == 0;
-            }
-            catch (Exception e) { Log("engine sfx ex: " + e.Message); return false; }
+            catch (Exception e) { Log("loadFeiZhua ex: " + e.Message); }
         };
 
         // resolve a process step's clip name to a vfs path
@@ -367,21 +181,19 @@ internal static class RebornClient
             if (string.IsNullOrEmpty(needle)) return "";
             foreach (string t in feiTanis)
                 if (t.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0) return t;
-            foreach (string t in castTanis)
-                if (t.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0) return t;
             return f1 + "F1" + needle + ".tani";
         };
 
-        outDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Skill", "out");
+        outDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_sandbox", "out");
         Directory.CreateDirectory(outDir);
         // keep a per-run log (overwrite-safe for parallel sessions) and the
         // stable reborn.log used by the analysis scripts
-        string runLog = Path.Combine(outDir, "Skill_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".log");
+        string runLog = Path.Combine(outDir, "ability_sandbox_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".log");
         var logLines = new System.Collections.Generic.List<string>();
         Log = delegate(string s)
         {
             string line = DateTime.Now.ToString("HH:mm:ss.fff") + " " + s + "\r\n";
-            try { File.AppendAllText(Path.Combine(outDir, "Skill.log"), line); } catch { }
+            try { File.AppendAllText(Path.Combine(outDir, "ability_sandbox.log"), line); } catch { }
             try { File.AppendAllText(runLog, line); } catch { }
             Console.WriteLine(s);
             lock (logLines)
@@ -391,11 +203,9 @@ internal static class RebornClient
             }
         };
         Log("start map=" + mapPath);
-        Log("skill data: " + skillData.Count + " abilities"
-            + (skillDataError != "" ? " (load ex: " + skillDataError + ")" : ""));
         {
             string exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            string fp = "brand=Skill exe=" + Path.GetFileName(exePath)
+            string fp = "brand=ability_sandbox exe=" + Path.GetFileName(exePath)
                 + " build=" + File.GetLastWriteTime(exePath).ToString("yyyy-MM-dd HH:mm:ss")
                 + " size=" + new FileInfo(exePath).Length
                 + " pid=" + System.Diagnostics.Process.GetCurrentProcess().Id;
@@ -408,15 +218,14 @@ internal static class RebornClient
             bool haveMutex = false;
             try
             {
-                var mm = new System.Threading.Mutex(true, "Global\\Skill_SingleInstance", out haveMutex);
+                var mm = new System.Threading.Mutex(true, "Global\\AbilitySandbox_SingleInstance", out haveMutex);
                 GC.KeepAlive(mm);
             }
             catch { haveMutex = true; }
             if (!haveMutex)
-                Log("note: another Skill instance is running - continuing (no limit)");
+                Log("note: another ability_sandbox instance is running - continuing (no limit)");
         }
         loadFeiZhua();
-        loadDatasetNames();
 
         var form = new Form();
         form.Text = "sandbox-ability";
@@ -459,91 +268,27 @@ internal static class RebornClient
         abilityBtn.Font = new System.Drawing.Font("Consolas", 10f, System.Drawing.FontStyle.Bold);
         abilityBtn.Cursor = Cursors.Hand;
         var abilityPanel = new Panel();
-        abilityPanel.Size = new System.Drawing.Size(224, 200);
+        abilityPanel.Size = new System.Drawing.Size(224, 96);
         abilityPanel.BackColor = System.Drawing.Color.FromArgb(210, 0, 0, 0);
         abilityPanel.Visible = false;
-        Func<string> abilityLabel = delegate { return "P: " + abilitySel; };
-        var abilityItems = new List<string>();
-        abilityItems.Add("风来吴山");                 // single-clip demo
-        foreach (string nm in datasetAbilityNames) abilityItems.Add(nm);
-        // client icons (build_skill_data.py -> bin64\ability_picker\icons\<id>.png)
-        var skillIcons = new Dictionary<string, Image>();
-        Func<string, Image> iconFor = delegate(string nm)
+        var abilityList = new ListBox();
+        abilityList.Items.Add("风来吴山 (flws)");
+        abilityList.Items.Add("临时飞爪 (feizhua)");
+        abilityList.SelectedIndex = abilitySel == "feizhua" ? 1 : 0;
+        abilityList.Location = new System.Drawing.Point(6, 6);
+        abilityList.Size = new System.Drawing.Size(212, 60);
+        abilityList.SelectedIndexChanged += delegate
         {
-            Image img;
-            if (skillIcons.TryGetValue(nm, out img)) return img;
-            img = null;
-            try
-            {
-                Dictionary<string, object> d;
-                if (skillData.TryGetValue(nm, out d))
-                {
-                    string png = StrOf(d, "iconPng");
-                    if (png != "")
-                    {
-                        string p = Path.Combine(skillIconDir, png);
-                        if (File.Exists(p))
-                        {
-                            // copy through a stream so the file is not locked
-                            using (var fs = File.OpenRead(p))
-                            using (var tmp = Image.FromStream(fs))
-                                img = new Bitmap(tmp);
-                        }
-                    }
-                }
-            }
-            catch { img = null; }
-            skillIcons[nm] = img;
-            return img;
+            abilitySel = abilityList.SelectedIndex == 1 ? "feizhua" : "flws";
+            abilityBtn.Text = "P: " + (abilitySel == "feizhua" ? "临时飞爪" : "风来吴山");
+            Log("ability selected: " + abilitySel);
         };
-        // icon grid: 6 per row, no labels (hover = client tooltip, click = cast)
-        var abilityGrid = new FlowLayoutPanel();
-        abilityGrid.Location = new System.Drawing.Point(6, 6);
-        abilityGrid.Size = new System.Drawing.Size(212, 158);
-        abilityGrid.AutoScroll = true;
-        abilityGrid.BackColor = System.Drawing.Color.FromArgb(12, 12, 12);
-        abilityGrid.FlowDirection = FlowDirection.LeftToRight;
-        abilityGrid.WrapContents = true;
-        var skillTip = new ToolTip();
-        skillTip.InitialDelay = 200;
-        skillTip.ReshowDelay = 100;
-        skillTip.AutoPopDelay = 20000;
-        var abilityIcons = new List<PictureBox>();
-        int abilitySelIdx = abilityItems.IndexOf(abilitySel);
-        if (abilitySelIdx < 0) abilitySelIdx = 0;
-        if (abilityItems.Count > 0) abilitySel = abilityItems[abilitySelIdx];
-        for (int i = 0; i < abilityItems.Count; i++)
-        {
-            string name = abilityItems[i];
-            int idx = i;
-            var pb = new PictureBox();
-            pb.Size = new System.Drawing.Size(32, 32);
-            pb.Margin = new Padding(1);
-            pb.SizeMode = PictureBoxSizeMode.Zoom;
-            pb.Cursor = Cursors.Hand;
-            pb.BackColor = System.Drawing.Color.FromArgb(24, 24, 24);
-            pb.BorderStyle = (idx == abilitySelIdx) ? BorderStyle.FixedSingle : BorderStyle.None;
-            Image img = iconFor(name);
-            if (img != null) pb.Image = img;
-            skillTip.SetToolTip(pb, skillTipText(name));
-            pb.Click += delegate
-            {
-                abilitySel = name;
-                for (int k = 0; k < abilityIcons.Count; k++)
-                    abilityIcons[k].BorderStyle = (k == idx) ? BorderStyle.FixedSingle : BorderStyle.None;
-                abilityBtn.Text = abilityLabel();
-                clickCastRequested = true;
-                Log("ability click-cast: " + abilitySel);
-            };
-            abilityGrid.Controls.Add(pb);
-            abilityIcons.Add(pb);
-        }
-        abilityPanel.Controls.Add(abilityGrid);
+        abilityPanel.Controls.Add(abilityList);
         var soundBox = new CheckBox();
         soundBox.Text = "sound";
         soundBox.ForeColor = System.Drawing.Color.White;
         soundBox.Checked = soundOn;
-        soundBox.Location = new System.Drawing.Point(6, 172);
+        soundBox.Location = new System.Drawing.Point(6, 70);
         soundBox.AutoSize = true;
         soundBox.CheckedChanged += delegate { soundOn = soundBox.Checked; };
         abilityPanel.Controls.Add(soundBox);
@@ -557,7 +302,7 @@ internal static class RebornClient
         {
             abilityBtn.Location = new System.Drawing.Point(Math.Max(0, panel.ClientSize.Width - 150), 10);
             abilityPanel.Location = new System.Drawing.Point(Math.Max(0, panel.ClientSize.Width - 236), 36);
-            abilityBtn.Text = abilityLabel();
+            abilityBtn.Text = "P: " + (abilitySel == "feizhua" ? "临时飞爪" : "风来吴山");
         };
         panel.Resize += delegate { placeAbilityUi(); };
         panel.Controls.Add(abilityBtn);
@@ -576,7 +321,7 @@ internal static class RebornClient
         Directory.CreateDirectory(Path.Combine(startupPath, "logs"));
         int r1 = 0, r2 = 0, r3 = 0;
         try { r1 = baselib.InitPath(workingDir, false); } catch (Exception e) { Log("InitPath ex: " + e.Message); }
-        try { r2 = baselib.InitMemory("Skill.memory"); } catch (Exception e) { Log("InitMemory ex: " + e.Message); }
+        try { r2 = baselib.InitMemory("AbilitySandbox.memory"); } catch (Exception e) { Log("InitMemory ex: " + e.Message); }
         try { r3 = baselib.InitPak(false); } catch (Exception e) { Log("InitPak ex: " + e.Message); }
         Log(string.Format("InitPath={0} InitMemory={1} InitPak={2}", r1, r2, r3));
 
@@ -591,16 +336,6 @@ internal static class RebornClient
         if (ok == 0) { Log("FATAL: engine init failed"); return; }
         try { Log("editor.Init result=" + editor.Init(editorRoot, err, form.Handle.ToInt64())); }
         catch (Exception e) { Log("editor.Init ex: " + e.Message); }
-
-        // editor EngineLayer::Init order (rule 6): KG3DSoundCLR.Init + actor
-        // options + engine command + async load flags. The .Sfx tag renderer
-        // touches the Wwise/sound path, so the sound system must be up.
-        try { Log("sound.Init result=" + sound.Init(startupPath, form.Handle.ToInt64())); }
-        catch (Exception e) { Log("sound.Init ex: " + e.Message); }
-        try { Log("SetActorCreateOption=" + engine.SetActorCreateOption(0)); }
-        catch (Exception e) { Log("SetActorCreateOption ex: " + e.Message); }
-        try { Log("ExecCommand(rtxradius 0)=" + engine.ExecCommand("rtxradius 0")); }
-        catch (Exception e) { Log("ExecCommand ex: " + e.Message); }
 
         var scene = new KGSceneCLR();
         int loadResult = scene.LoadMap(mapPath, false);
@@ -699,36 +434,6 @@ internal static class RebornClient
         // Step C native bridge (optional, version-checked): near plane /
         // absolute camera Y / FilterCamera ray; managed fallback if absent
         CameraShim.TryLoad(Log);
-
-        // engine SFX wiring probe (RC_SFX_PROBE=1): loads the isolated
-        // sfx_shim.dll and calls the engine's own CreateScreen3DSFX /
-        // CreateSFXTrackData on the live engine instance; the shim dumps the
-        // interface vtables to Skill\out\sfx_probe.log
-        if (Env("RC_SFX_PROBE", "0") == "1")
-        {
-            try
-            {
-                string shimPath = Path.Combine(startupPath, "sfx_shim.dll");
-                IntPtr shim = LoadLibrary(shimPath);
-                if (shim == IntPtr.Zero)
-                    Log("sfx probe: sfx_shim.dll not loaded (err=" + Marshal.GetLastWin32Error() + ")");
-                else
-                {
-                    IntPtr fn = GetProcAddress(shim, "RC_Shim_SfxProbe");
-                    if (fn == IntPtr.Zero) Log("sfx probe: export missing");
-                    else
-                    {
-                        var probe = (SfxProbeFn)Marshal.GetDelegateForFunctionPointer(fn, typeof(SfxProbeFn));
-                        int rc = probe();
-                        IntPtr st = GetProcAddress(shim, "RC_Shim_SfxStatus");
-                        string status = st == IntPtr.Zero ? "" : Marshal.PtrToStringAnsi(
-                            ((SfxStatusFn)Marshal.GetDelegateForFunctionPointer(st, typeof(SfxStatusFn)))());
-                        Log("sfx probe rc=" + rc + " status=" + status);
-                    }
-                }
-            }
-            catch (Exception e) { Log("sfx probe ex: " + e.Message); }
-        }
 
         // NOTE (2026-09-27): the engine camera contract is recovered (see
         // EngineRay comments: scene vt+0x50 -> camera, cam vt+0x50/+0x58
@@ -857,7 +562,7 @@ internal static class RebornClient
         {
             double sc;
             if (double.TryParse(Env("RC_CAMERA_SCALE", ""), out sc) && sc > 0) camSys.UnitsPerMeter = sc;
-            string camCfg = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Skill", "camera.json");
+            string camCfg = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_sandbox", "camera.json");
             if (File.Exists(camCfg))
             {
                 try { camSys.LoadConfig(camCfg); Log("camera config: " + camCfg); }
@@ -875,11 +580,6 @@ internal static class RebornClient
                 camSys.Mode, camSys.Distance,
                 camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter, camSys.UnitsPerMeter));
         }
-        // projected vertical FOV actually applied to the engine view: the
-        // install default (config.ini KG3DENGINE CammeraAngle = 0.837757 rad =
-        // 48.0 deg, the SetViewAngleFactor divisor) x factor. The aim ray must
-        // use this, not the panel-default 50 deg (G-20).
-        double feiAimFovDeg = 60.0;
         try
         {
             // FOV: the editor's view-angle factor. A wider value makes the
@@ -894,8 +594,7 @@ internal static class RebornClient
                 Log("view angle factor test override=" + va);
             }
             scene.SetViewAngleFactor(va);
-            feiAimFovDeg = VideoSettings.DefaultAngle * 180.0 / Math.PI * va;
-            Log("view angle factor applied=" + va + " aimFov=" + feiAimFovDeg.ToString("F2") + " deg");
+            Log("view angle factor applied=" + va);
         }
         catch (Exception e) { Log("view angle: " + e.Message); }
         float worldDirX = 0f, worldDirZ = 0f;
@@ -904,7 +603,7 @@ internal static class RebornClient
         // (find columns with a raised standable surface near the spawn) -
         // engine-driven target discovery, no guessing. One row per frame.
         bool scanOn = Env("SB_SCAN", "0") == "1";
-        int scanRow = -14;
+        int scanRow = -9;
         long loopStartMs = 0;
         long handle = 0, attachedHandle = -999;
         var model = new KGModelCLR();
@@ -1284,7 +983,6 @@ internal static class RebornClient
             {
                 abilityPanel.Visible = !abilityPanel.Visible;
                 if (abilityPanel.Visible) abilityPanel.BringToFront();
-                Log("ability panel " + (abilityPanel.Visible ? "shown" : "hidden"));
             }
             else if (e.KeyCode == Keys.C && !cDown) { cDown = true; teleportToStructure = true; }
             else if ((e.KeyCode == Keys.Divide || e.KeyCode == Keys.OemQuestion) && !divDown)
@@ -1360,32 +1058,6 @@ internal static class RebornClient
         bool feiBuffered = false;
         bool feiHitSounded = false;
         long feiSeqStart = 0;
-        long feiPullMs = 3500;          // pull budget (3-D distance based)
-        float feiRayY = -1e9f;          // raw aim-ray hit Y (pre-surface resolve)
-        float feiSurfY = -1e9f;         // visible top Y at the aimed column
-        // Player-collidable top of a column: first hit of the baked collision
-        // geometry (roofs, rocks, foliage) cast straight down, max with the
-        // baked terrain. The scene-ray descent could hit non-collidable visuals
-        // (a "roof" in mid-air that locked the player in place); the collision
-        // bake is the geometry the player can actually stand on.
-        Func<float, float, float> visibleTop = delegate(float sx, float sz)
-        {
-            float best = sampler != null ? sampler.Sample(sx, sz) : -1f;
-            try
-            {
-                if (col != null)
-                {
-                    float d = col.Raycast(sx, 40000f, sz, sx, 0f, sz);
-                    if (d > 0f)
-                    {
-                        float y = 40000f - d;
-                        if (y > best) best = y;
-                    }
-                }
-            }
-            catch { }
-            return best;
-        };
         float feiPX = 0f, feiPY = 0f, feiPZ = 0f, feiDist = 0f;
         float lastMarkerX = 1e9f, lastMarkerZ = 1e9f;
         long lastPullLogMs = 0;
@@ -1527,9 +1199,8 @@ internal static class RebornClient
         camSys.Distance = camSys.ClampDistanceUnits(camSys.Distance);
 
         // ---- 临时飞爪 (28031): PointArea target ray + cast action ----
-        // the area-selection resource (释放_范围选择01 family), exact authored
-        // path from the .Sfx dependency list
-        const string FEI_RANGE_UI = @"data\source\other\特效\技能\mesh\释放\释放_范围选择01.mesh";
+        const string FEI_RANGE_UI = @"data\source\other\特效\技能\MESH\释放\释放_范围选择01.Mesh";
+        const string FEI_RANGE_SFX = @"data\source\other\特效\技能\SFX\释放\释放_范围选择01.Sfx";
         Func<float[]> computeFeiTarget = delegate
         {
             try
@@ -1540,15 +1211,18 @@ internal static class RebornClient
                 if (float.TryParse(Env("SB_AIM_WX", ""), out awx) && float.TryParse(Env("SB_AIM_WZ", ""), out awz))
                 {
                     float ahy = sampler != null ? sampler.Sample(awx, awz) : py;
-                    // visible top at the aimed column (same backend as the
-                    // cursor path; no height ceiling)
-                    float aTop = visibleTop(awx, awz);
-                    if (aTop > ahy)
+                    try
                     {
-                        ahy = aTop;
-                        feiSurfY = aTop;
+                        // scene hit first (buildings included - same backend the
+                        // real cursor ray uses), vertical segment downward
+                        float shs = engineRay.RayScene(awx, 10000f, awz, awx, -2000f, awz);
+                        if (shs > 0f)
+                        {
+                            float ays = 10000f - shs;
+                            if (ays > ahy && ays - py <= 1200f) ahy = ays;
+                        }
                     }
-                    feiRayY = ahy;
+                    catch { }
                     float addx = awx - px, addz = awz - pz;
                     return new float[] { awx, ahy, awz, (float)Math.Sqrt(addx * addx + addz * addz) };
                 }
@@ -1573,7 +1247,7 @@ internal static class RebornClient
                 float ny = (ph * 0.5f - mp.Y) / (ph * 0.5f);
                 float aimTestX;
                 if (float.TryParse(Env("SB_AIM_NDC_X", ""), out aimTestX)) nx = aimTestX;
-                double tanY = Math.Tan(feiAimFovDeg * Math.PI / 180.0 * 0.5);
+                double tanY = Math.Tan(50.0 * Math.PI / 180.0 * 0.5);
                 double tanX = tanY * ((double)pw / ph);
                 float dx3 = fx + rgx * (float)(nx * tanX) + ux5 * (float)(ny * tanY);
                 float dy3 = fy + uy5 * (float)(ny * tanY);
@@ -1599,17 +1273,18 @@ internal static class RebornClient
                     hitX = px + mdx * kk; hitZ = pz + mdz * kk;
                     hitY = sampler != null ? sampler.Sample(hitX, hitZ) : hitY;
                 }
-                // visible top at the target column (roof/rock/terrain): if the
-                // horizontal ray hit a wall face, resolve to the surface on top
-                // of it. 28031's cast point is the picked point and the visible
-                // top at the aimed column is what the pick lands on; no cap.
-                feiRayY = hitY;
-                float sTop = visibleTop(hitX, hitZ);
-                if (sTop > hitY)
+                // standable surface at the target column (roof/ground): if the
+                // horizontal ray hit a wall face, pull to the surface on top of it
+                try
                 {
-                    feiSurfY = sTop;
-                    hitY = sTop;
+                    int vhrT;
+                    float vhT = engineRay.RayVerticalHeight(hitX, 10000f, hitZ, 30000f, out vhrT);
+                    // game semantics: the pull goes to the picked point; the
+                    // standable surface at that column is the top face (roof),
+                    // so aim columns resolve upward (cap: 1200u above the caster)
+                    if (vhT > 0f && vhT - py <= 1200f) hitY = vhT;
                 }
+                catch { }
                 return new float[] { hitX, hitY, hitZ, mdl };
             }
             catch { return null; }
@@ -1619,12 +1294,8 @@ internal static class RebornClient
             float gy = sampler != null ? sampler.Sample(feiPX, feiPZ) : feiPY;
             feiSeqActive = true; feiSeqStart = nowMs;
             feiPull = false; feiBuffered = false; feiHitSounded = false;
-            // pull budget from the full 3-D travel (DASH_TO_POINT(120) = 120 u
-            // per logic frame at 15 fps): a fixed deadline cut tall pulls short
-            float d3 = (float)Math.Sqrt(feiDist * feiDist + (feiPY - py) * (feiPY - py));
-            feiPullMs = (long)(d3 / (120f * 15f) * 1000f) + 900;
-            if (feiPullMs < 1200) feiPullMs = 1200;
-            skillUntil = nowMs + feiPullMs;
+            float estSec = feiDist / (120f * 15f);
+            skillUntil = nowMs + (long)(estSec * 1000.0) + 700;
             curClip = null;
             setClip(resolveTani("s16lxg链技能03_释放HD"));
             if (soundOn)
@@ -1633,32 +1304,9 @@ internal static class RebornClient
                 if (File.Exists(wav)) PlaySound(wav, IntPtr.Zero, SND_ASYNC | SND_FILENAME | SND_NODEFAULT);
             }
             Log("skill cast: 临时飞爪 -> target (" + (int)feiPX + "," + (int)feiPY + "," + (int)feiPZ
-                + ") dist=" + (int)feiDist + "u range=2560u(40尺) pullMs=" + feiPullMs
-                + " rawY=" + (int)feiRayY + " surfY=" + (int)feiSurfY
-                + " climb=" + (int)(feiPY - py)
+                + ") dist=" + (int)feiDist + "u range=2560u(40尺) pullMs=" + (int)(estSec * 1000)
                 + " terrainY=" + (int)gy + " device=67816/70025(hidden)");
         };
-
-        // SB_ACTOR_TEST=1: play the ability tani on the editor's own actor object
-        // (KGMovieActorCLR + AppendModel) instead of the dummy model - tests
-        // whether .Sfx tag playback needs the actor path (rule 6: editor's way).
-        if (Env("SB_ACTOR_TEST", "0") == "1")
-        {
-            try
-            {
-                var actor = new KGMovieActorCLR();
-                actor.Init();
-                ActorEditorCommandHelper.LoadFromFile(actor, actorPath, 0);
-                long ah = actor.GetModelHandle();
-                scene.AppendModel(ah);
-                try { scene.FocusOnModel(); } catch { }
-                var am = new KGModelCLR();
-                am.AttachModel(ah);
-                string tani = Env("SB_ACTOR_TANI", @"data\source\player\f1\动作\F1smj10双刀buff04_清净心01.tani");
-                Log("actor test: handle=" + ah + " tani=" + tani + " play=" + am.PlayAnimation(tani, 0, 1.0f, 0));
-            }
-            catch (Exception e) { Log("actor test ex: " + e.Message); }
-        }
 
         // SB_PROBE_MESHES=1: ground-mesh probe (find which candidate renders as a range ring)
         if (Env("SB_PROBE_MESHES", "0") == "1")
@@ -2109,11 +1757,6 @@ internal static class RebornClient
             float hz = (float)cfz;
 
             // auto-cast (smoke/test): SB_CAST_MS (feizhua: aim then auto-confirm)
-            if (clickCastRequested)
-            {
-                clickCastRequested = false;
-                skillPressed = true;
-            }
             if (autoSkillMs > 0 && !autoSkillDone && now >= autoSkillMs)
             {
                 autoSkillDone = true;
@@ -2131,16 +1774,7 @@ internal static class RebornClient
             if (skillPressed)
             {
                 skillPressed = false;
-                if (now < castCooldownUntil)
-                {
-                    Log("cast blocked: cooldown " + ((castCooldownUntil - now + 999) / 1000)
-                        + "s (" + abilitySel + ")");
-                }
-                else if (castActive && abilitySel == castName)
-                {
-                    Log("cast blocked: effect still playing (" + abilitySel + ")");
-                }
-                else if (abilitySel == "临时飞爪")
+                if (abilitySel == "feizhua")
                 {
                     // PointArea: first press enters the targeting phase, the
                     // second press (or a ground click) confirms at the marker
@@ -2154,38 +1788,15 @@ internal static class RebornClient
                         feiConfirm = true;
                     }
                 }
-                else if (abilitySel == "风来吴山")
+                else
                 {
                     skillUntil = now + skillMs;
-                    castCooldownUntil = now + castCooldownMs;
                     curClip = null;
                     setClip(clipSkill);
                     // camera shake on the cast (host default; per-skill shake rows
                     // are data-gated)
                     camShake.Start(2.0, 0.5, 0.8, 3);
                     Log("skill cast: 风来吴山");
-                }
-                else
-                {
-                    // dataset-driven cast: any staged ability's process steps.
-                    // Timing from the authored data (anim length, effect life);
-                    // the animation plays ONCE.
-                    loadCastAbility(abilitySel);
-                    long animMs = 1000, pssMs = 3000;
-                    foreach (ProcStep s in castSteps)
-                    {
-                        if (s.Kind == "anim" && s.Dur > 0) animMs = s.Dur;
-                        if (s.Kind == "dummy" && s.Dur > 0) pssMs = s.Dur;
-                    }
-                    skillUntil = now + animMs + 40;
-                    curClip = null;
-                    castActive = true; castStart = now; castUntil = now + pssMs + 120;
-                    castIdx = 0; castPss = false; castPssPath = "";
-                    lastCastX = 1e9f; lastCastZ = 1e9f;
-                    castCooldownUntil = now + castCooldownMs;
-                    // a new cast replaces any previous effect instance
-                    try { scene.RemoveDummyModel("cast_pss"); } catch { }
-                    Log("cast: " + abilitySel + " steps=" + castSteps.Count + " animMs=" + animMs + " pssMs=" + pssMs);
                 }
             }
 
@@ -2202,7 +1813,7 @@ internal static class RebornClient
                 {
                     feiConfirm = false; feiAiming = false;
                     try { scene.RemoveDummyModel("fei_marker"); } catch { }
-                    if (feiDist > 0f) { doFeiCast(now); castCooldownUntil = now + castCooldownMs; }
+                    if (feiDist > 0f) doFeiCast(now);
                 }
                 else
                 {
@@ -2222,17 +1833,14 @@ internal static class RebornClient
                             lastMarkerX = feiPX; lastMarkerZ = feiPZ;
                             var mpos = new CLRfloat3(); mpos.x = feiPX; mpos.y = feiPY + 8f; mpos.z = feiPZ;
                             var mrot = new CLRfloat4(); mrot.w = 1f;
-                            // authored size at scale 1; SB_FEI_RING_SCALE for review
-                            float ringScale = 1f;
-                            float.TryParse(Env("SB_FEI_RING_SCALE", "1"), out ringScale);
-                            if (ringScale <= 0f) ringScale = 1f;
-                            var mscl = new CLRfloat3(); mscl.x = ringScale; mscl.y = ringScale; mscl.z = ringScale;
+                            var mscl = new CLRfloat3(); mscl.x = 1.3f; mscl.y = 1.3f; mscl.z = 1.3f;
+                            // NOTE: the .Sfx wrapper must NOT be fed to AddDummyModel -
+                            // it returns a handle but AVs the engine later (verified).
+                            // Only the raw mesh is placeable in this host.
                             long mh = scene.AddDummyModel("fei_marker", FEI_RANGE_UI, mpos, mrot, mscl);
                             Log("feizhua marker -> (" + (int)feiPX + "," + (int)feiPY + "," + (int)feiPZ + ") d=" + (int)feiDist
                                 + "u / 2560u" + (feiDist <= 40f * 64f ? " [castable]" : " [out of range]")
-                                + " rawY=" + (int)feiRayY + " surfY=" + (int)feiSurfY
-                                + " climb=" + (int)(feiPY - py)
-                                + " scale=" + ringScale.ToString("F1") + " marker=" + mh);
+                                + " handle=" + mh);
                         }
                     }
                 }
@@ -2268,102 +1876,6 @@ internal static class RebornClient
                 }
             }
 
-            // generic dataset process runner (anim / sound / dummy PSS on caster)
-            if (castActive)
-            {
-                long rel = now - castStart;
-                while (castIdx < castSteps.Count && castSteps[castIdx].T <= rel)
-                {
-                    ProcStep st = castSteps[castIdx];
-                    castIdx++;
-                    try
-                    {
-                        if (st.Kind == "anim")
-                        {
-                            // full vfs paths pass through; short names resolve
-                            // against the ability's tani list
-                            string path = st.V.IndexOf('\\') >= 0 ? st.V : resolveTani(st.V);
-                            if (!string.IsNullOrEmpty(path)) { curClip = null; setClip(path); }
-                            Log("cast anim -> " + st.V + " = " + path);
-                        }
-                        else if (st.Kind == "sound")
-                        {
-                            if (soundOn)
-                            {
-                                string wav = Path.Combine(soundDir, st.V + ".wav");
-                                if (File.Exists(wav)) PlaySound(wav, IntPtr.Zero, SND_ASYNC | SND_FILENAME | SND_NODEFAULT);
-                            }
-                            Log("cast sound -> " + st.V);
-                        }
-                        else if (st.Kind == "dummy")
-                        {
-                            if (Env("SB_CAST_NOPSS", Env("SB_RUYI_NOPSS", "0")) == "1")
-                            {
-                                Log("cast dummy skipped (SB_CAST_NOPSS) -> " + st.V);
-                            }
-                            else
-                            {
-                                castPss = true; castPssPath = st.V;
-                                Log("cast dummy -> " + st.V);
-                            }
-                        }
-                    }
-                    catch (Exception e) { Log("cast step ex (" + st.Kind + "): " + e.Message); }
-                }
-                if (castPss && castPssPath.Length > 0)
-                {
-                    // RC_SFX_ENGINE=1: the engine creates the effect itself
-                    // (KG3D_CreateSFXFromFile); the dummy path is the fallback.
-                    // Otherwise the dummy follows the caster by throttled re-adds
-                    // (the engine reuses the same handle; the faithful fix is
-                    // engine socket binding).
-                    bool first = lastCastX > 1e8f;
-                    if (first)
-                    {
-                        lastCastX = px; lastCastZ = pz;
-                        bool engineOk = false;
-                        if (Env("RC_SFX_ENGINE", "0") == "1")
-                        {
-                            string sfxTest = Env("RC_SFX_TEST_PATH", "");
-                            engineOk = engineSfxPlay(sfxTest != "" ? sfxTest : castPssPath, px, py + 2f, pz);
-                        }
-                        castPssEngine = engineOk;
-                        if (!engineOk)
-                        {
-                            var pp = new CLRfloat3(); pp.x = px; pp.y = py + 2f; pp.z = pz;
-                            float half = curYaw * 0.5f;
-                            var pr = new CLRfloat4(); pr.y = (float)Math.Sin(half); pr.w = (float)Math.Cos(half);
-                            var ps = new CLRfloat3(); ps.x = 1f; ps.y = 1f; ps.z = 1f;
-                            long h = scene.AddDummyModel("cast_pss", castPssPath, pp, pr, ps);
-                            castPssHandle = h;
-                            Log("cast pss -> " + castPssPath + " handle=" + h + " (follows caster)");
-                        }
-                    }
-                    else if (!castPssEngine &&
-                             (Math.Abs(px - lastCastX) > 32f || Math.Abs(pz - lastCastZ) > 32f))
-                    {
-                        lastCastX = px; lastCastZ = pz;
-                        var pp = new CLRfloat3(); pp.x = px; pp.y = py + 2f; pp.z = pz;
-                        float half = curYaw * 0.5f;
-                        var pr = new CLRfloat4(); pr.y = (float)Math.Sin(half); pr.w = (float)Math.Cos(half);
-                        var ps = new CLRfloat3(); ps.x = 1f; ps.y = 1f; ps.z = 1f;
-                        long h = scene.AddDummyModel("cast_pss", castPssPath, pp, pr, ps);
-                        if (h != castPssHandle) { castPssHandle = h; Log("cast pss re-added handle=" + h + " (effect restarted)"); }
-                    }
-                }
-                if (now >= castUntil)
-                {
-                    castActive = false;
-                    if (castPss)
-                    {
-                        castPss = false;
-                        if (!castPssEngine) { try { scene.RemoveDummyModel("cast_pss"); } catch { } }
-                        else Log("cast pss engine-managed (no dummy to remove)");
-                    }
-                    Log("cast done: " + castName);
-                }
-            }
-
             // input -> direction; hold the world-space direction while the key
             // set is unchanged (the camera may rotate without curving the run)
             float inX = 0f, inZ = 0f;
@@ -2391,7 +1903,9 @@ internal static class RebornClient
                 lastVhX = px; lastVhZ = pz; lastVhMs = now;
                 try
                 {
-                    lastVhY = visibleTop(px, pz);
+                    int vhr2;
+                    float vh2 = engineRay.RayVerticalHeight(px, 10000f, pz, 30000f, out vhr2);
+                    lastVhY = vh2;
                 }
                 catch { lastVhY = -1f; }
             }
@@ -2426,11 +1940,11 @@ internal static class RebornClient
             // full 3D - the pull climbs to the target height (roofs included)
             if (feiPull)
             {
-                if (now - feiSeqStart > feiPullMs)
+                if (now - feiSeqStart > 3500)
                 {
                     feiPull = false; feiBuffered = true;
                     grounded = true; vy = 0f;
-                    Log("feizhua pull timeout (target unreachable) after " + feiPullMs + "ms");
+                    Log("feizhua pull timeout (target unreachable)");
                 }
                 float pdx = feiPX - px, pdz = feiPZ - pz, pdy = feiPY - py;
                 float pdl = (float)Math.Sqrt(pdx * pdx + pdz * pdz);
@@ -2559,26 +2073,27 @@ internal static class RebornClient
             if (scanOn)
             {
                 if (loopStartMs == 0) loopStartMs = now;
-                if (now - loopStartMs >= 8000 && scanRow <= 14)
+                if (now - loopStartMs >= 8000 && scanRow <= 9)
                 {
-                    if (scanRow == -14) { scanRow = -14; }
-                    if (scanRow <= 14)
+                    if (scanRow == -9) { scanRow = -9; }
+                    if (scanRow <= 9)
                     {
                         float dz = scanRow * 300f;
-                        for (int sx = -10; sx <= 10; sx++)
+                        for (int sx = -4; sx <= 4; sx++)
                         {
                             float dx = sx * 300f;
                             try
                             {
-                                float vh3 = visibleTop(px + dx, pz + dz);
-                                if (vh3 > py + 100f)
+                                int hr3;
+                                float vh3 = engineRay.RayVerticalHeight(px + dx, 10000f, pz + dz, 30000f, out hr3);
+                                if (vh3 > py + 100f && vh3 - py <= 1200f)
                                     Log("scan candidate (" + (int)(px + dx) + "," + (int)vh3 + "," + (int)(pz + dz)
-                                        + ") rise=" + (int)(vh3 - py));
+                                        + ") rise=" + (int)(vh3 - py) + " hr=" + hr3);
                             }
                             catch { }
                         }
                         scanRow++;
-                        if (scanRow > 14) Log("scan done");
+                        if (scanRow > 9) Log("scan done");
                     }
                 }
             }
