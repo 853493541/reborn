@@ -2053,3 +2053,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   id-10 guard could never validate -> deadlock.
 - Stub id-4 builder now packs map/region/pos (GAME_MAP_ID/GAME_MAP_REGION/GAME_POS_X/Y/Z,
   default 1/1/100/100/0). id 7 remains for later map switches.
+
+### 2026-10-05 — V2 P3: id4 map/region live - client now acts (RST after id10), reads post-RST are 0
+- Live run with id4 carrying map=1/region=1/pos=100,100,0: sequence ran; the client RST the game
+  connection 2.5 s after the id-10 send - NEW behavior (with map 0 it just ignored). So the scene
+  lookup now succeeds and the id-10 handler goes deeper (likely failing in the appearance/guard
+  chain and taking the net error path).
+- Post-RST reads: client+0x14/0x18 = 0, player pos 0 (either the writes never landed or the
+  client cleared the session state on disconnect). Next run must read DURING the window (after
+  id4, before the RST) to confirm.
+- Client stays alive (Responding=True) but must be force-closed before the next test.
+- Next: (a) read client+0x14/player pos ~1 s after the id-4 send; (b) decode the id-10 RST
+  cause (appearance parse 0x14016AD70 outputs A/B/C + guard 0x140173D90 with a valid scene);
+  (c) verify the confirm helper/ack path (the RST pattern matches the earlier ack-flag case).
