@@ -1747,7 +1747,15 @@ static HWND createHostWindow(void)
     HWND h = CreateWindowExA(0, "reborn_skill_host_wnd", title,
                              WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
                              1280, 720, NULL, NULL, wc.hInstance, NULL);
-    if (h != NULL) ShowWindow(h, SW_SHOW);
+    if (h != NULL)
+    {
+        // make sure the window is visible, restored and in front (a minimized
+        // window sits at -32000 and is invisible to the user)
+        ShowWindow(h, SW_SHOWNORMAL);
+        ShowWindow(h, SW_RESTORE);
+        SetWindowPos(h, HWND_TOP, 80, 60, 1280, 760, SWP_SHOWWINDOW);
+        SetForegroundWindow(h);
+    }
     return h;
 }
 
