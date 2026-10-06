@@ -635,6 +635,13 @@ if entry == nil then
   os.exit(5)
 end
 ok2, err2 = xpcall(function() return mod[entry](root) end, handler)
+-- The engine also opens the window after creating it (the module's Open sets its
+-- open flag and runs the state refresh); some inits gate that refresh on the flag
+-- (LuckyMeeting.IsOpened) and stay fully hidden without it. Open is best-effort:
+-- its failure must not fail the window's replay.
+if ok2 and entry ~= "OnOpen" and type(mod.Open) == "function" then
+  pcall(function() return mod.Open(root) end)
+end
 
 local out = assert(io.open(outPath, "w"))
 out:write("section\tmethod\targs\n")

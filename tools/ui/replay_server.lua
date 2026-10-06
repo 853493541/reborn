@@ -632,6 +632,11 @@ for _, name in ipairs({ "OnFrameCreate", "OnLoad", "OnCreate", "Init", "OnOpen" 
   if type(mod[name]) == "function" then initialEntry = name; break end
 end
 if initialEntry then pcall(function() return mod[initialEntry](root) end) end
+-- The engine also opens the window (module Open sets its flag and refreshes state);
+-- best-effort so a failing Open cannot break the session.
+if initialEntry and initialEntry ~= "OnOpen" and type(mod.Open) == "function" then
+  pcall(function() return mod.Open(root) end)
+end
 
 local function dumpFrom(fromIndex)
   for i = fromIndex + 1, #log do

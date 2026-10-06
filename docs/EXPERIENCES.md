@@ -2191,3 +2191,17 @@ solved it, and what is still open. **Newest at the bottom.**
 - Remaining visible gaps: the stub-data Hide branches over-hide some windows (LuckyMeeting
   145->3 - the replay hides both page variants because the mode data is a stub); the materialized
   clones' text children sit at their authored offsets (counted oob, the engine clips).
+
+### 2026-10-05 ? UI ? over-hide guards + Open phase (no window collapses; A/B clean)
+- The A/B showed 12 windows rendering FEWER sections under the runtime state; LuckyMeeting
+  145->3 and systemmenu-right 28->3 were stub-session reset hides (the init hides every state
+  variant/page part, then shows the active one from live data that is stubbed). Two guards:
+  a hide whose parent would have no visible child is reverted, and a hide set leaving less than
+  half the authored sections visible is dropped entirely (keep the authored layout - the client's
+  own default). Worst deficit is now safepanel 125->105 (84%, legitimate state hides).
+- Harness/server also run the module's `Open` best-effort after the entry chain (the engine opens
+  the window after creating it; some inits gate their refresh on the open flag). Best-effort so a
+  failing Open cannot fail a window: batch stays 138/143 OK.
+- Final A/B: 6 windows fuller than static (SecurityCard +69, BigBagPanel +37, HatredPanel +35,
+  ActivityList +15, FilterPanel +6, PartyRecruitPanel +2), 12 modest deficits, no collapse.
+  Audit ph=538 oob=7388; selftest 1240/0/0.

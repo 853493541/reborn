@@ -19,7 +19,7 @@ This report measures what is **still dropped** — the remaining calls per windo
 | render | 13 | DROPPED — runtime image source/mode/animation |
 | state | 0 | DROPPED — control state (enable/check/expand/page) |
 | consumed | 1753 | applied by the viewer today |
-| noise | 3271 | engine plumbing, no visual state (lookup/events/getters) |
+| noise | 3272 | engine plumbing, no visual state (lookup/events/getters) |
 
 State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13 + state 0).
 
@@ -101,7 +101,7 @@ State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13
 | GetNamePanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | GoldTeam | recommended | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 14 |
 | GoldTeamTotalLootList | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
-| GuildAddMember | recommended | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| GuildAddMember | recommended | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 15 |
 | GuildMainPanel | recommended | 3 | 0 | 0 | 0 | 0 | 0 | 8 | 3 |
 | HatredPanel | other-ui | 24 | 0 | 0 | 0 | 0 | 0 | 0 | 34 |
 | HorsePanel | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 13 |
@@ -113,7 +113,7 @@ State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13
 | LXGMonitor | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | LoadingPanel | ? | 25 | 0 | 0 | 1 | 0 | ? | ? | ? |
 | LockPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| LoginDeleteRole | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| LoginDeleteRole | modes-ui | 3 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
 | LoginMessage | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | LoginPayFor | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | LoginRename | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -125,7 +125,7 @@ State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13
 | LootList | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | LootRoll | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | LootRollMini | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| LuckyMeeting | modes-ui | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| LuckyMeeting | modes-ui | 15 | 0 | 0 | 0 | 0 | 2 | 0 | 13 |
 | MailPanel | recommended | 50 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | MainBarPanel | ? | 28 | 0 | 0 | 1 | 0 | ? | ? | ? |
 | MainMessageLine | ? | 10 | 0 | 0 | 0 | 0 | ? | ? | ? |
@@ -184,7 +184,7 @@ State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13
 | UICustomModePanel | liked | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | UILock | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | UISetting | liked | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 107 |
-| VideoSettingPanel | liked | 20 | 0 | 0 | 0 | 0 | 1 | 0 | 43 |
+| VideoSettingPanel | liked | 20 | 0 | 0 | 0 | 0 | 1 | 0 | 45 |
 | ViewEquip | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | WantedPanel | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | WhoSeeMe | recommended | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -197,9 +197,9 @@ State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13
 
 ### SocialPanel
 
-- `item-creation` AppendItemFromData PageSet_Company function: 02B7EF58
-- `item-creation` AppendItemFromData PageSet_Company function: 02B7F4F8
-- `item-creation` AppendItemFromData PageSet_Company function: 02B7FA38
+- `item-creation` AppendItemFromData PageSet_Company function: 02FBDE88
+- `item-creation` AppendItemFromData PageSet_Company function: 02FBDBB8
+- `item-creation` AppendItemFromData PageSet_Company function: 02FBDF48
 - `item-creation` AppendItemFromData PageSet_Company [SocialPanel]
 - `item-creation` AppendItemFromData PageSet_Company [SocialPanel]
 
@@ -281,3 +281,18 @@ State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13
   `SetAlwaysTop`/`FormatTextForDraw`/`SetTextAutoTipEnabled`, 13 — frame animation
   and item-icon sources).
 - The recorded calls are the client's own; the fix is execution, not approximation.
+
+## Viewer guard policies (2026-10-05)
+
+- **Runtime items only in the flow**: a runtime-arranged container flows its
+  `$RuntimeItem` clones, not authored background children (BigBagPanel's filter
+  container has a ~595px `Handle_BG` that pushed the checkboxes off-window).
+- **Clear defers**: `Clear` clears only items added by earlier appends and waits
+  for the next append, so a replay whose data-driven loop under-recorded cannot
+  blank a list.
+- **Never empty a container / never collapse a window**: a hide whose parent
+  would have no visible child is reverted, and a hide set that would leave less
+  than half the authored sections visible is dropped entirely (stub-session reset
+  hides whose mode-driven Show never ran - LuckyMeeting 145 -> 3).
+- **Open phase**: after the entry chain the module's `Open` runs best-effort
+  (the engine opens the window after creating it).

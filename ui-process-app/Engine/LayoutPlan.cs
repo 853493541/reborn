@@ -962,7 +962,38 @@ namespace UiProcessApp.Engine
                     }
                     return false;
                 }
+                // Never let the replay empty a container. Some init functions first hide
+                // every state variant / page part and then show the active one from live
+                // data; when that data is stubbed the Show never runs and the authored
+                // layout would be wiped (LuckyMeeting hid both page variants, 145 -> 3
+                // sections). A parent whose visible children would all be hidden keeps
+                // them instead - the authored state is the client's own default.
+                for (int pass = 0; pass < 4; pass++)
+                {
+                    var parentsWithVisible = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    foreach (var section in filtered.Sections)
+                    {
+                        if (Dropped(section.Name)) continue;
+                        parentsWithVisible.Add(section.Get("._Parent") ?? "");
+                    }
+                    var restore = new List<string>();
+                    foreach (var name in hidden)
+                    {
+                        if (!filtered.ByName.TryGetValue(name, out var section)) continue;
+                        var parent = section.Get("._Parent") ?? "";
+                        if (string.IsNullOrEmpty(parent) || Dropped(parent)) continue;
+                        if (!parentsWithVisible.Contains(parent)) restore.Add(name);
+                    }
+                    if (restore.Count == 0) break;
+                    foreach (var name in restore) hidden.Remove(name);
+                }
                 var keep = filtered.Sections.Where(s => !Dropped(s.Name)).ToList();
+                // A replay whose hides collapse the window (less than half the authored
+                // sections visible) is a stub-session reset whose mode-driven Show never
+                // ran (LuckyMeeting hid both page variants, 145 -> 3 sections). Keep the
+                // authored layout in that case; the authored INI is the client's default.
+                if (keep.Count * 2 < filtered.Sections.Count)
+                    keep = filtered.Sections.ToList();
                 if (keep.Count != filtered.Sections.Count)
                 {
                     filtered.Sections.Clear();
