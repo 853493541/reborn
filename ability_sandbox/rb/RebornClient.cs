@@ -421,7 +421,7 @@ internal static class RebornClient
         loadDatasetNames();
 
         var form = new Form();
-        form.Text = "sandbox-ability";
+        form.Text = Env("RC_TITLE", "skill v5");
         form.StartPosition = FormStartPosition.CenterScreen;
         form.ClientSize = new System.Drawing.Size(1280, 720);
         var panel = new Panel();
