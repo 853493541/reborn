@@ -2229,3 +2229,10 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Consequence: live V2 tests require the real client to be closed first (or a namespace-isolated
   build). The reborn_client_*.exe builds support RC_MEM_NS, but the raw-client V2 flow has no
   override. Add to the test checklist: check for a running JX3ClientX64 before any emulator launch.
+
+### 2026-10-05 — V2 P3 STATIC: id-5 sub0 data format decoded (256-dword attribute array)
+- Parse 0x140327680: type byte [pkt+0xE]; type 0 -> count = 0x100 (256) and the data is 256
+  dwords (1024 B) directly; types 1..3 -> [count dword][count dwords] (count >= 0, count*4 bytes
+  required). Entries are written into the player attribute block at player+0x1020.
+- Stub id5_frame now defaults to sub0/type0 with a 1024-byte zero array (frame 1039 B).
+- Live test pending a window where the user's real client is closed (namespace hazard 8b04e62).

@@ -71,10 +71,13 @@ def id_frame(frame_id, size, role_id):
     return bytes(p)
 
 
-def id5_frame(role_id, sub=0, dtype=1, data=b""):
+def id5_frame(role_id, sub=0, dtype=0, data=None):
     """S2C id 5 (per-player world data; handler 0x14015EB70, min size 15):
     [player id dword @+9][sub-code byte @+0xD][type byte @+0xE][data @+0xF].
-    sub0 -> parse 0x140327680 into player+0x1020 (type 1..3, data = TLV list)."""
+    sub0 -> parse 0x140327680 into player+0x1020: type 0 = 256 dwords (1024 B),
+    type 1..3 = [count dword][count dwords]."""
+    if data is None:
+        data = b"\x00" * 1024 if dtype == 0 else struct.pack("<I", 0)
     payload = struct.pack("<I", role_id) + bytes([sub & 0xFF, dtype & 0xFF]) + data
     p = bytearray(9 + len(payload))
     struct.pack_into("<H", p, 0, 5)
