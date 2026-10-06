@@ -2549,3 +2549,24 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   host and use its saver to compile the map (the editor's own path) - then the
   destination load finds the compiled map.
 - Evidence: host_exe109-112.out, map_probe_out5.
+
+## 2026-10-04 - Gate 1: (a) RC is a render effect, not a scene; (b) editor map compiler cannot load in-process
+
+- (a) `data\rcdata\jx3bd.rc` inspected: it is an XML render-composite effect graph
+  ("EffectWidget"/"SceneRenderNode"/"RCOutputNode"/"BD Low"/RCEffectNodePy::RCSwitch10,
+  textures data/rcdata/textures/*.dds). It visualises the baked data; it contains no
+  scene/map references. The `.rcidx` "RCEffectName" therefore does NOT resolve the
+  shadow scene; the destination field still needs a compiled map name. (negative result,
+  documented)
+- (b) The map saver lives in KG3DEngineX64.dll (the EDITOR engine build).
+  - Sandbox bin64 lacked SO3StatsSystemX64.dll -> load err=126; copied it from the
+    client's bundled MovieEditor bin64.
+  - Retry: err=127 (ERROR_PROC_NOT_FOUND) - KG3DEngineX64 imports symbols the client's
+    already-loaded engine DLLs (X3DEngine/Engine_Lua5X64, client versions) do not
+    export. The editor engine build is incompatible with the client engine stack in
+    one process.
+  - Consequence: the map compile cannot run in the host process. It needs either a
+    separate process with the editor stack (MovieEditor's full bin64), or the editor
+    tool itself - a data-prep step producing the compiled .map the client's
+    CreateSceneFromDestination requires.
+- Evidence: host_exe113-114.out, rc_inspect outputs.

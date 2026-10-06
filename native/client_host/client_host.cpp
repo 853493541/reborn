@@ -3375,12 +3375,23 @@ int main(void)
                                     for (k3 = 0; k3 < 8; k3++)
                                         logf("[host] frame60:   mm[+0x%X]=%p", k3 * 8,
                                              *(void**)((BYTE*)mm2 + k3 * 8));
-                                    // try the engine's own map saver
-                                    // (KG3DEngineX64+0x35BE00) on the map object
-                                    // ([mapMgr+0x10]) to produce the compiled
-                                    // .map the destination scene needs.
+                                    // (b) load the client's own map compiler
+                                    // (KG3DEngineX64.dll) and run its map saver
+                                    // (0x35BE00) on the map object ([mapMgr+0x10])
+                                    // to produce the compiled .map the destination
+                                    // scene load needs.
                                     HMODULE x64 = GetModuleHandleA("KG3DEngineX64.dll");
-                                    logf("[host] frame60: KG3DEngineX64=%p", x64);
+                                    if (x64 == NULL)
+                                    {
+                                        char p64[MAX_PATH];
+                                        sprintf_s(p64, MAX_PATH, "%s\\bin64\\KG3DEngineX64.dll",
+                                                  g_rootA);
+                                        x64 = LoadLibraryExA(p64, NULL,
+                                            LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR |
+                                            LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
+                                        logf("[host] frame60: KG3DEngineX64 load -> %p (err=%u)",
+                                             x64, x64 ? 0 : GetLastError());
+                                    }
                                     void* map0 = *(void**)((BYTE*)mm2 + 0x10);
                                     if (x64 != NULL && map0 != NULL)
                                     {
@@ -3388,6 +3399,13 @@ int main(void)
                                                    ((BYTE*)x64 + 0x35BE00))(map0, "a\\a.map", 0);
                                         logf("[host] frame60: map saver -> 0x%08X (map=%p)",
                                              (unsigned)sr, map0);
+                                        WIN32_FILE_ATTRIBUTE_DATA fad;
+                                        if (GetFileAttributesExA("a\\a.map",
+                                                GetFileExInfoStandard, &fad))
+                                            logf("[host] frame60: a.map written size=%u",
+                                                 fad.nFileSizeLow);
+                                        else
+                                            logf("[host] frame60: a.map NOT written");
                                     }
                                 }
                             }
