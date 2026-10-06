@@ -2220,3 +2220,12 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   the confirm the keepalive re-sends id 4. (id 10 was dropped for the local player - it is
   rejected by design for the local id.)
 - Next live: expect loading screen -> confirm (proto=5) -> id5 reply -> state 7 -> loading ends.
+
+### 2026-10-05 — V2 P3 HAZARD: raw JX3ClientX64 has NO single-instance/namespace isolation
+- With the user's real client running (PID 19420, engine namespace MovieEditor.memory), launching
+  a second raw client via the emulator SUCCEEDED - the engine did NOT block it. Both clients then
+  share MovieEditor.memory (exactly the state the AGENTS rule forbids). The test client was killed
+  immediately (PID 5016); the user's client survived (Responding=True).
+- Consequence: live V2 tests require the real client to be closed first (or a namespace-isolated
+  build). The reborn_client_*.exe builds support RC_MEM_NS, but the raw-client V2 flow has no
+  override. Add to the test checklist: check for a running JX3ClientX64 before any emulator launch.
