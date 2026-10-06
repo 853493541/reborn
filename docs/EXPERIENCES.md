@@ -4298,3 +4298,28 @@ if the cache/host frames appear.
   `ability-matcher/extracted/scripts/skill/`; `character_sfx.txt` = SkillID/ID ->
   cast/target PSS; `skill_chain.txt` = chain PSS; Buff.tab `RepresentID` for
   buff-sourced representations).
+
+### 2026-10-05 — v5 — Phase 2: control-set verification against the client's own tables
+
+- Verified the staged processes for the control set (doc:
+  `docs/netcode/SKILL_MAPPING_VERIFICATION.md`):
+  - 风来吴山: anim PROVEN (`skill_tag` 1645 → anim 719 → `F1s07cj重剑技能15_风来吴山HD.tani`);
+    staged base `.ani` = registered deviation for the ME `.Sfx` AV; sound PROVEN
+    (tani SoundTag → wem, `docs/audio/SOUND_PATH.md`); staged PSS
+    `c_藏剑刀光01b.pss` UNPROVEN (character_sfx.txt has 藏剑刀光 15/11/光01 variants,
+    no 01b row).
+  - 临时飞爪: anims PROVEN (`skill_dash` 28033 → 91076 → `F1s16lxg链技能03b_hd.tani`;
+    release/buffer via the script's CastSkill/CastSkillXYZ); chain PSS PROVEN
+    (`skill_chain` 28032 → `...\pss\状态\s_锁链01.pss`); sounds from the wem review.
+  - 如意法: script chain PROVEN partial (`道具_如意法.lua` → BindBuff 4421 /
+    AddBuff 4422/4432/4433/4434; `Buff.tab` → RepresentID 10208) - the represent
+    10208 data is not yet extracted; staged anim/PSS UNPROVEN until then.
+- Resolver caveat found: `skill_dash` matches are the id's MOVEMENT clip, not the
+  cast clip (跃潮斩波 → generic 掌法HD; 千蝶吐瑞 → 飞行01). Dash-sourced matches keep
+  their `dash:<id>/<anim>` label; the staged process is unaffected; per-ability
+  represent chain must decide cast vs movement.
+- Controls' scripts read from
+  `...\ability-matcher\extracted\scripts\skill\` (the control skills are present;
+  `skills.tab` col 57 `ScriptFile` is the authoritative pointer).
+- Next: extract `settings/represent/*` to resolve RepresentID 10208 (如意法) and
+  the FLWS cast effect; then the `.Sfx` per-file re-test (Phase 3).

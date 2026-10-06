@@ -30,6 +30,7 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `REBORN_SERVER_SPEC.md` | implementable server+client contract (our own opcodes, rates, AOI, combat) |
 | `SKILL_DATA_RESEARCH.md` | skill scaling (attack %/weapon %/adaptive), dash attributes, tooltip DB, 尺 conversion |
 | `SKILL_DATA_EXTRACTION.md`, `SKILL_MOTION_METHOD.md` | skill/asset extraction methods |
+| `SKILL_MAPPING_VERIFICATION.md` | v5 per-ability verification: staged processes vs the client's own tables (control set + resolver caveats) |
 | `JX3_CAMERA_RESEARCH.md`, `REBORN_CAMERA_SPEC.md` | camera behaviour research + spec |
 | `JX3_MODE_*.md`, `JX3_LOOT_PROTOCOL_LAYOUTS.md` | 绝境 mode loading and loot protocol layouts |
 | `JX3_MODE_JUEJING.md` | 绝境战场 client-side **data map** (static mining: tables, symbols, MapList) |
