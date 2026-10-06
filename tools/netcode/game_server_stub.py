@@ -39,6 +39,16 @@ def hello():
 
 
 RESPOND_ID = 0x2FE
+ROLE_ID = int(os.environ.get("GAME_ROLE_ID", "1001"))
+
+
+def id_frame(frame_id, size, role_id):
+    """Build an S2C frame: [u16 id][u8 flags][u16 serial][u16 ack][u32 field] + payload.
+    For id 4/10 the field u32 at +7 carries the role/entity id (the handler's lookup key)."""
+    p = bytearray(size)
+    struct.pack_into("<H", p, 0, frame_id)
+    struct.pack_into("<I", p, 7, role_id)
+    return bytes(p)
 
 
 def handshake_respond(server_name=b"127.0.0.1", timeout=30, recover=1, flag2=1, success=1):
@@ -82,11 +92,29 @@ def handle(conn, addr):
     conn.settimeout(0.2)
     buf = b""
     sess = GameSession()
+    sync_step = 0
+    next_t = 0.0
     try:
         time.sleep(0.2)
         conn.sendall(hello())
         w("[%s] SENT game hello (42B)" % time.strftime("%H:%M:%S"))
         while True:
+            now = time.time()
+            if next_t and now >= next_t:
+                if sync_step == 1:
+                    conn.sendall(sess.encrypt(id_frame(4, 343, ROLE_ID)))
+                    w("[%s] SYNC step1 id=4 (role=%d)" % (time.strftime("%H:%M:%S"), ROLE_ID))
+                    sync_step = 2
+                    next_t = now + 0.8
+                elif sync_step == 2:
+                    conn.sendall(sess.encrypt(id_frame(10, 161, ROLE_ID)))
+                    w("[%s] SYNC step2 id=10 (role=%d)" % (time.strftime("%H:%M:%S"), ROLE_ID))
+                    sync_step = 3
+                    next_t = now + 8.0
+                elif sync_step == 3:
+                    conn.sendall(sess.encrypt(id_frame(10, 161, ROLE_ID)))
+                    w("[%s] SYNC keepalive id=10" % time.strftime("%H:%M:%S"))
+                    next_t = now + 8.0
             if os.path.exists(CMD_FILE):
                 try:
                     hx = open(CMD_FILE).read().strip()
@@ -122,6 +150,10 @@ def handle(conn, addr):
                     conn.sendall(sess.encrypt(resp))
                     w("[%s] SENT handshake respond id=0x%X len=%d"
                       % (time.strftime("%H:%M:%S"), RESPOND_ID, len(resp)))
+                    if os.environ.get("GAME_SYNC", "1") == "1":
+                        sync_step = 1
+                        next_t = time.time() + 0.5
+                        w("[%s] SYNC armed (id4 -> id10 -> keepalive)" % time.strftime("%H:%M:%S"))
     except Exception as e:
         w("[%s] error after %.1fs: %s" % (time.strftime("%H:%M:%S"), time.time() - t0, e))
     finally:

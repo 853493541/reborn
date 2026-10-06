@@ -1985,3 +1985,14 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   (0x22D0D08EDC8) and **player+0xFDC = 4** -> the handler's copy block ran, enter-state set.
 - Session stayed alive (client pinging); next: client DoClientConfirmReady -> C->S op 3
   (ApplyEnterScene), then world-sync set (ids 10/11/12/13) from game_protocol_layouts_live.tsv.
+
+### 2026-10-05 — V2 P3 Phase 2: scripted world-sync in the game stub
+- Static (Phase 1): id 10 handler packet map captured (86 field reads; entity id at +7 compared
+  with [client+4]=1001; state 7 write at 0x14015A854 guarded by helper call 0x140173D90 on a
+  packet-parsed dword; per-player init 0x14031BD10(player,[pkt+0x2B]); subsystem 0x140169940).
+  Net thread dead-timeout constant confirmed at 0x14016A3E8 (add eax, 0x2EE0 = 12 s).
+- Phase 2: game_server_stub.py now runs a scripted sequence after the handshake respond:
+  id 4 (343B, field=role id) -> id 10 (161B, field=role id) -> keepalive id 10 every 8 s.
+  Env: GAME_SYNC (default 1), GAME_ROLE_ID (default 1001). Manual gsend.hex still works.
+- Next (Phase 3): restart stub, re-trigger client, verify player+0xFDC 4 -> 7 live; if the
+  id-10 zeros template is rejected (guard line 0x3624/0x362C), iterate the packet fields.
