@@ -104,6 +104,58 @@ static void __fastcall movieNameFix(void* movie, void* nameBuf)
     __except (EXCEPTION_EXECUTE_HANDLER) { }
 }
 
+// log the adapter context's shadow-scene creation entry (field + first qword)
+static void __fastcall ctxShadowLog(void* ctx, void* field)
+{
+    (void)ctx;
+    __try
+    {
+        logf("[host] ctx vt7 enter: ctx=%p field=%p first8=%p", ctx, field,
+             (field != NULL) ? *(void**)field : NULL);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER) { }
+}
+
+static int installCtxShadowHook(void)
+{
+    HMODULE ad = GetModuleHandleA("KG3DEngineAdapterX64.dll");
+    if (ad == NULL)
+        return 0;
+    BYTE* site = (BYTE*)ad + 0x111DE0;
+    const int origLen = 18;
+    static const BYTE orig[18] = { 0x48,0x89,0x5C,0x24,0x10, 0x48,0x89,0x6C,0x24,0x18,
+                                   0x56,0x57,0x41,0x57, 0x48,0x83,0xEC,0x50 };
+    BYTE* stub = (BYTE*)VirtualAlloc(NULL, 0x100, MEM_COMMIT | MEM_RESERVE,
+                                     PAGE_EXECUTE_READWRITE);
+    if (stub == NULL)
+        return 0;
+    int i = 0;
+    stub[i++] = 0x51; stub[i++] = 0x52; stub[i++] = 0x41; stub[i++] = 0x50;
+    stub[i++] = 0x41; stub[i++] = 0x51;
+    stub[i++] = 0x48; stub[i++] = 0x83; stub[i++] = 0xEC; stub[i++] = 0x28;
+    stub[i++] = 0x49; stub[i++] = 0xB8;
+    *(void**)(stub + i) = (void*)ctxShadowLog; i += 8;
+    stub[i++] = 0x41; stub[i++] = 0xFF; stub[i++] = 0xD0;
+    stub[i++] = 0x48; stub[i++] = 0x83; stub[i++] = 0xC4; stub[i++] = 0x28;
+    stub[i++] = 0x41; stub[i++] = 0x59; stub[i++] = 0x41; stub[i++] = 0x58;
+    stub[i++] = 0x5A; stub[i++] = 0x59;
+    memcpy(stub + i, orig, origLen); i += origLen;
+    stub[i++] = 0x48; stub[i++] = 0xB8;
+    *(void**)(stub + i) = (void*)(site + origLen); i += 8;
+    stub[i++] = 0xFF; stub[i++] = 0xE0;
+    DWORD old;
+    if (!VirtualProtect(site, origLen, PAGE_EXECUTE_READWRITE, &old))
+        return 0;
+    site[0] = 0x48; site[1] = 0xB8;
+    *(void**)(site + 2) = (void*)stub;
+    site[10] = 0xFF; site[11] = 0xE0;
+    for (int k = 12; k < origLen; k++)
+        site[k] = 0x90;
+    VirtualProtect(site, origLen, old, &old);
+    FlushInstructionCache(GetCurrentProcess(), site, origLen);
+    return 1;
+}
+
 static int installMovieNameHook(void)
 {
     HMODULE mv = GetModuleHandleA("KG_MovieEngineX64.dll");
@@ -3241,6 +3293,7 @@ int main(void)
                         // install the movie shadow-name hook (fills the empty
                         // [rlScene+0xF2890] name at call time)
                         logf("[host] frame60: movie name hook -> %d", installMovieNameHook());
+                        logf("[host] frame60: ctx shadow hook -> %d", installCtxShadowHook());
                         // The adapter's movie context (created by the adapter movie
                         // init, stored at adapter+0x2F5050) is what the movie
                         // engine's methods expect at [movie+0x38]; the skipped game
