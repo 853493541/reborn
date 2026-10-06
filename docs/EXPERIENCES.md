@@ -4268,3 +4268,17 @@ if the cache/host frames appear.
   `%TEMP%\opencode\srt_*`.
 - Outcome: C2/C3/C4 documented as boundaries + server contract; no code change (nothing
   invented).
+
+### 2026-10-05 - Movement/collision - underwater AV root-cause pass + .srt path resolved
+
+- Did: (1) underwater AV - option matrix eliminated (`nWaterEffectLevel=0`, `RC_QUALITY=1`
+  still AV), crash site disassembled: NULL rbtree-lookup deref at `+0x12282B3` in function
+  RVA `0x1226A70..0x1228419` (lookup helper `0x18105CF50`, key from static `0x182D5BD10`);
+  host has zero water wiring (G-24: water = compressed scene blocks + `_Water.mesh`,
+  never loaded) -> native-fix probe = load the water layer. (2) `.srt` path RESOLVED via
+  sceneinfo `comRender.actorModel`: `Data\source\maps_source\树\<name>.srt`; sample
+  extracted (.srt `SRT 07.0.0` 398,236 B; `.CollisionMesh` 28,962 B HSEM = the file
+  FULL_MAP_COLLISION cites; `.mesh` 43,761 B) - pipeline already correct, no change.
+- Evidence: `docs/movement/VOID_SPAWN_CRASH_TRIAGE.md` §2.1-2.4,
+  `docs/movement/COLLISION_RESIDUALS_STATUS.md` §1, `proof/movement/disasm/crash_*`.
+- Outcome: boundary fully characterized with next probes; no invented fix.

@@ -5,31 +5,26 @@
 server contract. Companion: `COLLISION_SYSTEM_STATUS.md`, `JX3_COLLISION_SYSTEM.md`,
 `TERRAIN_R32_BCH_RELATION.md`, `VOID_SPAWN_CRASH_TRIAGE.md`.
 
-## 1. `.srt` tree trunks (1.4) — bounded recon, no change
+## 1. `.srt` tree trunks (1.4) — recon complete, pipeline confirmed
 
-Current state (unchanged this session): the bake uses the shipped
-`<base>.CollisionMesh` when usable; **62 of 68** SpeedTree objects in 龙门寻宝 ship a
-degenerate fragment, so `export_structure_collision.trunk_prism_from_mesh` measures a
-**250-u trunk prism from the visual mesh** (registered host proxy 4e).
+**Path RESOLVED (2026-10-05):** the sceneinfo `comRender.actorModel` field carries the
+full logical path — `Data\source\maps_source\树\S_xb多枝枯树003_001.srt` (folder `树`).
+The physics engine appends `.CollisionMesh` to the base name
+(`PhysicsEngineX64::_GetCollisionGeometryFilesFromFile`, `FULL_MAP_COLLISION.md` §Phase 3).
 
-Recon this session:
-- The map's `entities/sceneinfo_full/002_002.json` references **8 `.srt` basenames**
-  (`S_xb多枝枯树003_*`); the real logical path is resolved through a sceneinfo folder
-  field that was not decoded before the extraction work dir was overwritten — the direct
-  guesses (`maps_source/foliage/…`, `maps_source/植被/…`) all missed.
-- The engine builds tree collision from `<base>.CollisionMesh` (per
-  `PhysicsEngine::_GetCollisionGeometryFilesFromFile`); the shipped fragments are
-  degenerate, so `_srt` itself carries no ready collision mesh in a known format.
+Extraction verified end-to-end through the pak (`run_pakv4`, one sample):
 
-Recovery options (evidence-first, pick one):
-1. **Resolve the `.srt` path** (decode the sceneinfo folder field, extract one sample) and
-   inspect the SpeedTree binary header. No local format spec → this is RE work.
-2. **Engine obstacle production**: cook the tree's visual `.mesh` (or the degenerate
-   `.CollisionMesh`) through the game's own `PhysicsEngineX64` in-host (the P5 probe
-   already boots the physics stack) and bake the cooked obstacle — the native geometry
-   instead of the prism.
-3. Keep the registered prism proxy (current behaviour; trees block like the client per
-   the audit's 62/68 substitution notes).
+| File | Size | Evidence |
+|---|---|---|
+| `…/maps_source/树/S_xb多枝枯树003_001.srt` | 398,236 B | header ASCII `SRT 07.0.0` (SpeedTree 7), md5 `0896851391…` |
+| `…/S_xb多枝枯树003_001.CollisionMesh` | 28,962 B | HSEM mesh, md5 `2434c6b125…` — the exact file `FULL_MAP_COLLISION.md` calls "used verbatim (118 trees)" |
+| `…/S_xb多枝枯树003_001.mesh` | 43,761 B | visual mesh (used by the measured-trunk path for the 68 degenerate trees) |
+
+So the bake's tree handling is already correct: shipped HSEM `CollisionMesh` verbatim
+where usable (118 trees), measured 250-u trunk prism from the visual mesh where the
+fragment is degenerate (62 of 68; 6 `s_xca小树` walk-through as in the client). Earlier
+"path unknown" probes only guessed the wrong folder name (`植被`/`foliage`); no pipeline
+change is needed and the registered proxy 4e stays as-is.
 
 ## 2. Slope/drop (`ProcessDropSpeed`, 1.3) — definitive client-side boundary
 
@@ -63,6 +58,6 @@ one source when M2 lands.
 
 | Claim | Conf. | Source |
 |---|---|---|
-| `.srt` refs are basenames; direct path guesses miss | HIGH | this session's extraction probes |
+| `.srt` path = `Data\source\maps_source\树\<name>.srt`; CollisionMesh sibling ships | HIGH | sceneinfo `actorModel` field + pak extraction (sizes/md5 above) |
 | shipped BCH carries no packed cell slopes | HIGH | `TERRAIN_R32_BCH_RELATION.md` (payload = float/half grid) |
 | step/slope/capsule contract values | HIGH | `COLLISION_SYSTEM_COMPARISON.md` §8.1 4f, `capsule-dig` branch |
