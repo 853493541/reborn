@@ -2498,3 +2498,17 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   the client+0x1280 manager) it fails -> next probe: read the bind's intermediates at runtime
   (the scene lookup return, the 0x140382200 return, the position packing) - the first zero is
   the fix target. Frozen clients killed on sight.
+
+### 2026-10-06 — V2: manager keys are per-session (0,2,3,995); map=410 run; bind still exits pre-setter
+- The bind's map manager (client+0x1280) is DYNAMIC per session: session A keys = 2,3,589,995;
+  session B keys = 0,2,3,995. It is NOT the decisive gate: map=2 was present in session A and the
+  bind still failed. It looks like an appointment/known-maps set, not the loaded-scene registry.
+- The login screen loads 海岛绝境 (410) as its background scene (KG3D log at client start) - but
+  410 is NOT in the manager and the id-4 map=410 run also failed to bind (state=4, scene=0).
+- The bind runs every id-4 (reset block confirmed) but exits before the setter 0x14017BDD0
+  (whose first store would set player+0x60). Remaining candidates inside 0x1401780D0 after the
+  scene lookup: the calls 0x140212A90 / 0x140382200 / the vtable [+0x2B0], or the scene value
+  passed to the setter. NEXT SESSION FIRST TASK: runtime-read those intermediates (a hardware-BP
+  probe or a poll right after the id-4) - the first zero is the fix target.
+- Workflow per the user: run long autonomous blocks (launch -> flow -> read -> kill frozen ->
+  fix -> retest), not 1-minute reports.
