@@ -4582,3 +4582,66 @@ if the cache/host frames appear.
 - Open (registered): rush `.mani` grammar; gameplay triggers for rush/dialog; FOV ramp curve
   (HOST_DEVIATIONS B16); edge/saturation post FX; settings write path.
 
+
+### 2026-10-05 - Movement/stability - spawn AV triage: out-of-extent fixed; underwater-grounded boundary
+
+- Did: root-caused the 2026-10-04 AV (KG3DEngineDX11EX64+0x12282B3) with a discriminating
+  run matrix on clean main: it triggers when the actor's x/z are **outside the map extent**
+  (海岛绝境 origin (0,0), 4x4 grid; the original coords assumed the 龙门 origin). 8x8 maps
+  tolerate out-of-extent test spawns. Fixed with a spawn-extent clamp in `RebornClient`
+  (`TerrainSampler` now exposes the loader extent) - the original repro now exits clean
+  (DONE) while inside spawns are unchanged.
+- After the clamp a second position-dependent AV remains: a **grounded actor below sea
+  level** on 海岛 (sampled height < 0) still AVs at the same offset, while ungrounded free
+  fall through a hole (y to -44045) is clean. Registered as a boundary (water/underwater
+  render path suspected - same class as the TrueSky/editor-install gaps); next probes in
+  the doc.
+- Evidence: `docs/movement/VOID_SPAWN_CRASH_TRIAGE.md`; crash logs `reborn_20261005_21*`;
+  dump `reborn_client.exe.42808.dmp`. Gates: collision 36/36; gravity/jx3_model/loot PASS.
+- Outcome: partial - out-of-extent crash fixed and verified (before/after); underwater
+  boundary open.
+
+### 2026-10-05 - Movement/collision - C residuals: .srt recon, slope server rule, capsule contract
+
+- Did: bounded `.srt` recon - sceneinfo_full references bare `.srt` basenames
+  (`S_xb多枝枯树003_*`), direct foliage-path guesses missed (folder field not decoded);
+  recorded the two native recovery routes (resolve+parse the SpeedTree binary, or cook the
+  tree mesh through the game's own PhysicsEngine) with the prism proxy unchanged. Wrote the
+  definitive slope/drop boundary (shipped BCH has no packed cell slopes; the rule needs
+  server/nav cell data) as a server contract, plus the capsule/step server-contract table
+  (64 u step, 0.707 slope, `RC_BODY` table from the capsule-dig branch; contact offset N/A).
+- Evidence: `docs/movement/COLLISION_RESIDUALS_STATUS.md`; extraction probes in
+  `%TEMP%\opencode\srt_*`.
+- Outcome: C2/C3/C4 documented as boundaries + server contract; no code change (nothing
+  invented).
+
+### 2026-10-05 - Movement/collision - underwater AV root-cause pass + .srt path resolved
+
+- Did: (1) underwater AV - option matrix eliminated (`nWaterEffectLevel=0`, `RC_QUALITY=1`
+  still AV), crash site disassembled: NULL rbtree-lookup deref at `+0x12282B3` in function
+  RVA `0x1226A70..0x1228419` (lookup helper `0x18105CF50`, key from static `0x182D5BD10`);
+  host has zero water wiring (G-24: water = compressed scene blocks + `_Water.mesh`,
+  never loaded) -> native-fix probe = load the water layer. (2) `.srt` path RESOLVED via
+  sceneinfo `comRender.actorModel`: `Data\source\maps_source\树\<name>.srt`; sample
+  extracted (.srt `SRT 07.0.0` 398,236 B; `.CollisionMesh` 28,962 B HSEM = the file
+  FULL_MAP_COLLISION cites; `.mesh` 43,761 B) - pipeline already correct, no change.
+- Evidence: `docs/movement/VOID_SPAWN_CRASH_TRIAGE.md` §2.1-2.4,
+  `docs/movement/COLLISION_RESIDUALS_STATUS.md` §1, `proof/movement/disasm/crash_*`.
+- Outcome: boundary fully characterized with next probes; no invented fix.
+
+### 2026-10-06 - Movement/collision - underwater AV scope corrected + BCH min scan
+
+- Did: (1) falsified "grounded below sea level = AV" — 龙门 real sub-zero cell
+  `(121500,43500)` y=-1216 grounded -> DONE (only console assert spam); 白龙 edge-cell
+  runs clean; the AV reproduces only on 海岛. (2) Offline BCH header+payload scan of all
+  5 maps: sub-zero regions 龙门 14/64 (min -6727), 龙门_夜晚 14/64, 白龙 2/64 (-2726),
+  天原 44/64 (sentinel -819200), 海岛 16/16 (-17361). (3) BCH conversion live-verified
+  (`worldY = f32@32 + v*(f32@28-f32@32)`, row=Z no flip; 5652.2 vs 5652 and -7119.7 vs
+  -7120) — closes `TERRAIN_R32_BCH_RELATION.md`'s open header-semantics item. (4)
+  `RayIntersection` assert spam (line 1701) appears at every grounded sub-zero test
+  (console-only, not in log) and shares the failing path (MED). (5) the crash function
+  has no direct callers (indirect-only; deeper RE in next probes).
+- Evidence: `docs/movement/VOID_SPAWN_CRASH_TRIAGE.md` §2.0-2.5; logs
+  `reborn_20261006_1545..1600`; `proof/movement/disasm/crash_*`.
+- Outcome: scope corrected and documented; no code change (nothing invented).
+

@@ -41,11 +41,13 @@ Implications:
 
 ## Open
 
-- **Header float semantics.** Candidate `h = f32 + b * (f28 − f32)` gives
-  651.5 cm at the MINI sandbox spawn (23334,24224) vs the logged sampler value
-  761 cm — not confirmed (off by ~110 cm). Next probe: disasm
-  `_LoadHegihtRegionBCH` (PhysicsEngineX64) or A/B `LoadRegion` output at known
-  cells to recover the exact de-normalization.
+- **Header float semantics. RESOLVED 2026-10-06** (live verification, branch
+  `agent/stability-physics`): `worldY = f32@32 + v · (f32@28 − f32@32)`, grid
+  **row = Z, column = X, no flip** — decoded 5652.2 vs engine 5652 at 龙门 `(0,5962)`
+  and −7119.7 vs engine −7120 at 海岛 `(100,30450)`. The earlier ~110 cm discrepancy
+  came from sampling the r32 band instead of the BCH value (and the BCH row flip belongs
+  to the r32↔BCH relation, not to direct BCH reads). See
+  `docs/movement/VOID_SPAWN_CRASH_TRIAGE.md` §2.5.
 - The coarse BCH variants: `_000_000.bch` is 129 samples float32 (format @16=1),
   `_001_002.bch` is 129 samples **16-bit** (format @16=0, payload 129²×2). The
   16-bit variant decodes to ~6090 cm at (-1000,24224) under the header min/max
