@@ -2455,3 +2455,14 @@ solved it, and what is still open. **Newest at the bottom.**
   The single ERR is WulinShenghuiDuizhen (assert on absent server data; the tolerant-assert attempt
   is rejected - it changes pcall-guarded branches, cf. EmotionPanel).
 - Gates: selftest 1240/0/0; gap report visual drops 1 (FromIconID); commits 5abb30a, fbe22ad.
+
+### 2026-10-06 ? UI ? plan closed: Phase 2 verified-authored, final state
+- Phase 2 (9 NOENTRY): the windows define only click/breathe handlers; their state at open is the
+  authored INI. Drivers exist in the corpus for Cyclopaedia_Active (Cyclopaedia), FieldPQPanel
+  (QuestTraceList), GoldTeamSetSubsidy (GoldTeam), but the popup itself has no init to replay -
+  closed as verified-authored (the opener's `opens=` chain is surfaced in the viewer).
+- Viewer A/B with the 1,201 completed replays: 35 windows render fuller than static - the biggest
+  are newoperationactivity +572 (43->615), guildbankpanel +291, desertpreset +232,
+  numericalpanel +221, horsepanel +139, securitycard +124, creditspanel +112, charge +110.
+- Plan status: phases 0-6 executed; only Phase 7 (GT capture, user-driven) remains; the plan doc
+  records the per-phase outcomes.

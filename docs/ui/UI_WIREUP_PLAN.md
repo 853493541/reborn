@@ -1,11 +1,35 @@
 # UI wire-up plan — the full remaining scope
 
-**Status:** plan for execution (2026-10-06). Owner area: `docs/ui/`; viewer `ui-process-app/`.
+**Status:** phases 0-6 EXECUTED (2026-10-06); phase 1 complete (replay **1,201 OK / 1 ERR /
+9 NOENTRY** of 1,211 scripted); phase 2 closed as verified-authored; phase 7 pending the capture
+session. Owner area: `docs/ui/`; viewer `ui-process-app/`.
 **Baseline it starts from** (all measured, this session): selftest 1240/0/0; replay
-**1,180 OK / 22 ERR / 9 NOENTRY** of 1,211 scripted windows; gap report visual drops **1**
-(FromIconID, data-blocked) + animation 9 + interaction 13 (honest categories); audit
-placeholders 539 (256 real), unresolved 50, oob 9,299; flex + HandleType 1/2/3/4/5/6 wired;
-wheel scroll + WndEdit typing wired; art corpus +180 pair files.
+**1,201 OK / 1 ERR / 9 NOENTRY**; gap report visual drops **1** (FromIconID, data-blocked);
+audit placeholders 504, unresolved 49, oob 7,484; census **0 unhandled constructs**; flex +
+HandleType 1-6 + all 13 PosTypes + page-sets + wheel/edit/drag wired.
+
+## Phase status (2026-10-06)
+
+- **Phase 0 — census truth: DONE.** 0 unhandled constructs (`ini_construct_census.py`).
+- **Phase 1 — the ERR tail: DONE (21/22 fixed).** A VM failure probe (temp `ldebug.c` pcidx/opcode
+  print) located each nil; fixes: Table_Find*/Table_Get* proxy rows, session-getter proxies,
+  permissive-access VM patches (nil/function/boolean GETTABLE, nil SETTABLE, no-op call of a
+  non-callable). Only WulinShenghuiDuizhen stays ERR (assert on absent server data; tolerant-assert
+  rejected - it changes pcall-guarded branches).
+- **Phase 2 — NOENTRY: CLOSED as verified-authored.** The 9 windows define only click/breathe
+  handlers; their state at open is the authored INI (drivers exist for Cyclopaedia_Active,
+  FieldPQPanel, GoldTeamSetSubsidy, but the popup's own init does not exist to replay).
+- **Phase 3 — page-set/list/tree: DONE.** Authored Page_i/CheckBox_i + CheckedWhenCreate defaults,
+  nested sets show their own default; audit ph 539->504, oob 9499->7484.
+- **Phase 4 — animation: DONE.** Normal group applied; hover/pressed recorded; animation/tooltip
+  calls consumed.
+- **Phase 5 — interaction: DONE.** Click/hover/wheel/typing/drag (moveable windows) wired.
+- **Phase 6 — extraction tails: DONE/CLOSED.** 13 string libs decoded; module_info re-decoded
+  (GB18030) and the 40 remaining manifest entries + 601 art paths probe MISS at their exact paths
+  (not shipped in this client build).
+- **Phase 7 — GT fidelity: PENDING the capture session** (observe-only, user-driven; see
+  `UI_REAL_CLIENT_ASSESSMENT.md` §6 for the window list; fingerprints via
+  `tools/proof/image_stats.py`, proof under `proof/ui/`).
 
 Every task below ends with the standing gates: `--selftest` 1240/0/0, `--audit` delta,
 `replay_summary.tsv`, `tools/ui/runtime_gap_report.py`, `docs/EXPERIENCES.md` + area README.
