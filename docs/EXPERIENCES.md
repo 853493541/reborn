@@ -2542,3 +2542,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   scene lookup) - that is the last gate. The scene registry at client+0x5673D8 (map +8) holds
   (1,0) -> 0x... so the lookup should pass; the cell check's scene grid is the suspect.
 - Stub now sends id 189 (11 B) after the enter-scene answer; wrapper map=1.
+
+### 2026-10-06 — V2: id189 cell-check diagnostics (scene cell state unset; both tested positions fail)
+- Live scene fields (client+0x5673D8 scene (1,0)): [scene+0x64]=1 (the check's range base),
+  [scene+0x20DCC]=[scene+0x20DD0]=-1 (the scene's stored cell = UNSET), dims [scene+0x790/794]=32.
+- The cell check 0x1401830B0(scene, cellX=posX>>11, cellY=posY>>11, 1): eax=[scene+0x64]=1 ->
+  eax+=2 -> the loop over the cell range; compares the cell with [scene+0x20DCC/0x20DD0] (-1,-1)
+  -> mismatch flag -> the scan. Both tested positions failed: (16,16) -> cell (0,0) and the
+  sandbox spawn (23334,24224,761) -> cell (11,11) (the position lands correctly - live read).
+- So the id189 bind requires the scene's cell data to be SET (the -1 stored cell = the scene's
+  cell not activated) - the sandbox scene loads only a small cell set. Next: decode the check's
+  loop result (0x14018313B+) and the scene cell-activation flow (what sets [scene+0x20DCC]) -
+  likely the map-data streaming/cell-load, possibly satisfied by a real map region or a
+  different sandbox crop. Stub: map=1 + spawn pos + id189 wired.
