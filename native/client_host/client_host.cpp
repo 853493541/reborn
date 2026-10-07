@@ -3636,6 +3636,14 @@ int main(void)
                                                      *(void**)((BYTE*)lua60 + 0x170030),
                                                      *(void**)((BYTE*)lua60 + 0x170040),
                                                      *(void**)((BYTE*)lua60 + 0x170048));
+                                                char pakFlag = *(char*)((BYTE*)lua60 + 0x1729C0);
+                                                logf("[host] frame60: lua pakFlag(0x1729C0)=%d",
+                                                     (int)pakFlag);
+                                                if (pakFlag == 0)
+                                                {
+                                                    *(char*)((BYTE*)lua60 + 0x1729C0) = 1;
+                                                    logf("[host] frame60: lua pakFlag set to 1 (pak path)");
+                                                }
                                             }
                                         }
                                         __except (EXCEPTION_EXECUTE_HANDLER)
