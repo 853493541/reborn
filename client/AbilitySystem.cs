@@ -36,6 +36,13 @@ internal static class AbilitySystem
     const uint SND_NODEFAULT = 0x0002;
     const uint SND_FILENAME = 0x00020000;
 
+    [DllImport("kernel32.dll", CharSet = CharSet.Ansi)]
+    static extern IntPtr LoadLibraryA(string name);
+    [DllImport("kernel32.dll", CharSet = CharSet.Ansi)]
+    static extern IntPtr GetProcAddress(IntPtr mod, string name);
+    delegate int SfxPlayFn(string path, float x, float y, float z);
+    static bool warmed = false;
+
     static KGSceneCLR scene;
     static Action<string> log;
     static Func<string, int> playClip;
@@ -51,7 +58,9 @@ internal static class AbilitySystem
     static string sel = "";
     static bool castReq = false;
     static bool active = false;
-    static long startMs = 0, untilMs = 0;
+    static long startMs = 0, untilMs = 0, animUntil = 0;
+    static long cooldownUntil = 0;   // rapid re-casts AV the engine tag manager
+    static int lastFormW = 0, lastFormH = 0;
     static int stepIdx = 0;
     static bool pss = false;
     static string pssPath = "";
@@ -62,6 +71,10 @@ internal static class AbilitySystem
     public static string Selected { get { return sel; } }
     public static bool Active { get { return active; } }
 
+    // the client's state-clip machine must not override the ability animation
+    // while it plays (otherwise the cast shows only sound, no motion/effects)
+    public static bool AnimActiveAt(long now) { return active && now < animUntil; }
+
     public static void Init(KGSceneCLR sceneIn, Action<string> logIn, Func<string, int> playClipIn,
                             Form formIn, string startupDir)
     {
@@ -71,6 +84,8 @@ internal static class AbilitySystem
         LoadDataset();
         BuildPanel();
         if (names.Count > 0) sel = names[0];
+        string pre = Environment.GetEnvironmentVariable("RC_ABILITY");
+        if (pre != null && pre.Length > 0 && names.Contains(pre)) sel = pre;
         log("abilities: " + names.Count + " loaded (P panel, 1 casts) selected=" + sel);
     }
 
@@ -181,7 +196,7 @@ internal static class AbilitySystem
         panel = new Panel();
         panel.Size = new Size(260, 420);
         panel.BackColor = Color.FromArgb(210, 0, 0, 0);
-        panel.Visible = false;
+        panel.Visible = true;   // visible by default; P toggles
         var grid = new FlowLayoutPanel();
         grid.Location = new Point(6, 6);
         grid.Size = new Size(248, 378);
@@ -252,6 +267,28 @@ internal static class AbilitySystem
         log("ability select: " + sel);
     }
 
+    static void WarmUp(float px, float py, float pz)
+    {
+        try
+        {
+            string sfxDir = Path.Combine(dataDir, "sfx");
+            if (!Directory.Exists(sfxDir)) { log("sfx warm: no sfx dir"); return; }
+            IntPtr mod = LoadLibraryA(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sfx_shim.dll"));
+            if (mod == IntPtr.Zero) mod = LoadLibraryA("sfx_shim.dll");
+            if (mod == IntPtr.Zero) { log("sfx warm: sfx_shim.dll missing"); return; }
+            IntPtr fp = GetProcAddress(mod, "RC_Shim_SfxPlay");
+            if (fp == IntPtr.Zero) { log("sfx warm: RC_Shim_SfxPlay missing"); return; }
+            SfxPlayFn play = (SfxPlayFn)System.Runtime.InteropServices.Marshal.GetDelegateForFunctionPointer(
+                fp, typeof(SfxPlayFn));
+            string[] files = Directory.GetFiles(sfxDir, "*.sfx");
+            int ok = 0;
+            foreach (string f in files)
+                if (play(f, px + 20000f, py - 2000f, pz + 20000f) == 0) ok++;
+            log("sfx warm: " + ok + "/" + files.Length + " cached (far position)");
+        }
+        catch (Exception e) { log("sfx warm ex: " + e.Message); }
+    }
+
     static void StartCast(long now, float px, float py, float pz, float yaw)
     {
         List<ProcStep> steps;
@@ -265,13 +302,44 @@ internal static class AbilitySystem
             if (s.Kind == "dummy" && s.Dur > 0) pssMs = s.Dur;
         }
         untilMs = now + pssMs + 120;
+        animUntil = now + animMs + 150;
+        cooldownUntil = untilMs + 2000;
         try { scene.RemoveDummyModel("cast_pss"); } catch { }
         log("cast: " + sel + " steps=" + steps.Count + " animMs=" + animMs + " pssMs=" + pssMs);
     }
 
     public static void Tick(long now, float px, float py, float pz, float yaw)
     {
-        if (castReq) { castReq = false; StartCast(now, px, py, pz, yaw); }
+        // one-time .Sfx warm-up (the engine AVs the FIRST create of ~27 of the
+        // staged tags once the scene has settled; creating them once far from
+        // the player caches the resources so cast-time spawns succeed - the
+        // proven ME-sandbox recipe, via the shared sfx_shim.dll)
+        if (!warmed)
+        {
+            warmed = true;
+            WarmUp(px, py, pz);
+        }
+        // the picker panel follows window resizes / fullscreen (form.Resize
+        // alone misses the maximized path on some hosts)
+        if (panel != null && form != null &&
+            (form.ClientSize.Width != lastFormW || form.ClientSize.Height != lastFormH))
+        {
+            lastFormW = form.ClientSize.Width; lastFormH = form.ClientSize.Height;
+            panel.Location = new Point(Math.Max(0, lastFormW - 272), 36);
+            if (panel.Visible) panel.BringToFront();
+        }
+        if (castReq)
+        {
+            castReq = false;
+            // guard: a cast while the previous effect is still running (or in
+            // the short cooldown) AVs the engine's tag manager - drop it
+            if (active || now < cooldownUntil)
+            {
+                log("cast blocked: " + (active ? "effect still playing" : "cooldown")
+                    + " (" + sel + ")");
+            }
+            else StartCast(now, px, py, pz, yaw);
+        }
         if (!active) return;
         long rel = now - startMs;
         List<ProcStep> steps;

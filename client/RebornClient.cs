@@ -3468,7 +3468,7 @@ internal static class RebornClient
             float rpz = lastTickZ + (pz - lastTickZ) * rAlpha;
 
             // animation state
-            if (skillUntil > now) { /* skill clip playing */ }
+            if (skillUntil > now || AbilitySystem.AnimActiveAt(now)) { /* skill/ability clip playing */ }
             else if (!grounded) setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
             else if (now < landClipUntil) setClip(clipLand);
             else if (sitting) setClip(clipSit);
