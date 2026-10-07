@@ -120,11 +120,12 @@ with `this` = the sender control.
 
 **Viewer (MainWindow.xaml.cs).**
 - A press arms the sequence by section role: scrollbar thumb (a press on the **bar** —
-  `WndNewScrollBar` or a viewport's `SlideBtn`; a `WndScroll` is the viewport and its children
-  are content, so a press there stays an item/click — 1026 shipped scroll controls have no
-  resolvable `ScrollHandle`), drag handle (`$DragRegistered`/`$DragEnabled` →
-  `OnDragButtonBegin`), item (`Box_*`/`__lt_*` → `OnItemLButtonDown`). Release finishes it:
-  item drag → `OnItemLButtonUp` then
+  `WndNewScrollBar` or a viewport's `SlideBtn` — and only when its content is known, i.e. a
+  `RegisterScrollControl` binding or an authored `ScrollHandle`; a `WndScroll` is the viewport
+  and its children are content, so a press there stays an item/click — 1026 shipped scroll
+  controls carry no resolvable handle and are left alone), drag handle
+  (`$DragRegistered`/`$DragEnabled` → `OnDragButtonBegin`), item (`Box_*`/`__lt_*` →
+  `OnItemLButtonDown`). Release finishes it: item drag → `OnItemLButtonUp` then
   `OnItemLButtonDragEnd`; no drag → the click handler (`OnItemLButtonClick` /
   `OnCheckBoxCheck` / `OnLButtonClick`), which now fires on release like the engine. Drag dispatch
   is throttled to ~40 ms (the engine fires per move; the viewer's round trip + re-render is heavier).

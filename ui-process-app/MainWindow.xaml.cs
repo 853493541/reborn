@@ -1298,11 +1298,15 @@ namespace UiProcessApp
                 var slide = scrollSec.Get("SlideBtn");
                 if (string.IsNullOrWhiteSpace(slide) || !IsUnderSection(sectionName, slide, scrollName)) return false;
             }
-            // A press on a content item (inside the target handle) is an item event,
-            // not a thumb drag.
+            // The content must be known (RegisterScrollControl binding or the authored
+            // ScrollHandle). Without it, the first-child fallback is the bar's own track,
+            // so a "drag" would translate the wrong element — do nothing instead.
             var target = scrollSec.Get("$ScrollTarget");
             if (string.IsNullOrWhiteSpace(target)) target = scrollSec.Get("ScrollHandle");
-            if (!string.IsNullOrWhiteSpace(target) && IsUnderSection(sectionName, target, scrollName)) return false;
+            if (string.IsNullOrWhiteSpace(target)) return false;
+            // A press on a content item (inside the target handle) is an item event,
+            // not a thumb drag.
+            if (IsUnderSection(sectionName, target, scrollName)) return false;
             if (!TryGetScrollContent(scrollName, out _, out _)) return false;
             _scrollDragName = scrollName;
             _scrollDragStartY = pos.Y;

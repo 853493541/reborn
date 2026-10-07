@@ -2577,8 +2577,10 @@ solved it, and what is still open. **Newest at the bottom.**
   no resolvable `ScrollHandle` (839 `WndNewScrollBar`, 187 `WndScroll`). The first cut armed a
   thumb drag for any press inside a scroll control whose target was empty, which would have
   swallowed item/click events inside `WndScroll` viewports.
-- Fix (MainWindow `TryBeginScrollDrag`): arm only on the bar — `WndNewScrollBar`, or a viewport
-  whose `SlideBtn` was pressed. A `WndScroll`'s children are content, so a press there stays a
-  normal item/click event. Wheel behavior unchanged (it still resolves the viewport/bar content).
+- Fix (MainWindow `TryBeginScrollDrag`): arm only on the bar with a known content target
+  (`$ScrollTarget`/`ScrollHandle`) — `WndNewScrollBar`, or a viewport whose `SlideBtn` was
+  pressed. A `WndScroll`'s children are content, so a press there stays a normal item/click
+  event; an unbound bar (839 of them) has no content and is left alone rather than dragging its
+  own track. Wheel behavior unchanged (it still resolves the viewport/bar content).
 - Verified: build 0 warnings; `--selftest` 1240/0/0; `--drag bigbagpanel Btn_Drag` and
   `--click bigbagpanel Btn_Bank` unchanged.
