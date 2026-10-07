@@ -6,6 +6,9 @@
 //   Triples[school][0] = first 跳跃, [1] = 二段跳 press, [2]/[3] = further presses.
 //   Each triple is { JumpSpeedXY, VelocityZ, Gravity } in units per 15 Hz
 //   logic frame (1 m = 192 u; tick = 1/15 s).
+//   EndTriples[school][j] = the ...End triple applied when the segment ends
+//   (ModifySprintEndSpeed 0x1403140A0 semantics: apply End, jumpCount := 1).
+//   TotalFrame[school][j] = JumpFrameParam.TotalFrame (segment length, ticks).
 internal static class JumpTable
 {
     public static readonly int[] MaxJumpCount = new int[] { 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 4, 11, 11, 11, 8, 8, 15, 14, 15, 13, 13, 6 };
@@ -35,5 +38,59 @@ internal static class JumpTable
         new int[][] { new int[] { 40, 90, 11 }, new int[] { 50, 400, 25 }, new int[] { 70, 300, 13 }, new int[] { 100, 700, 36 }, new int[] { 100, -250, 8 }, new int[] { 120, 10, 10 }, new int[] { 120, 10, 10 }, new int[] { 120, 10, 10 }, new int[] { 120, 10, 10 }, new int[] { 120, 10, 10 }, new int[] { 120, 10, 10 }, new int[] { 10, 10, 10 }, new int[] { 10, 10, 10 } }, // school 20
         new int[][] { new int[] { 40, 90, 11 }, new int[] { 50, 400, 25 }, new int[] { 70, 300, 13 }, new int[] { 100, 700, 36 }, new int[] { 100, -250, 8 }, new int[] { 120, 10, 10 }, new int[] { 120, 10, 10 }, new int[] { 120, 10, 10 }, new int[] { 120, 10, 10 }, new int[] { 120, 10, 10 }, new int[] { 120, 10, 10 }, new int[] { 10, 10, 10 }, new int[] { 10, 10, 10 } }, // school 21
         new int[][] { new int[] { 40, 90, 11 }, new int[] { 50, 400, 25 }, new int[] { 70, 300, 13 }, new int[] { 100, 700, 36 }, new int[] { 100, -250, 8 }, new int[] { 120, 10, 10 } }, // school 22
+    };
+
+    public static readonly int[][][] EndTriples = new int[][][]
+    {
+        new int[][] { new int[] { 60, 90, 11 }, new int[] { 60, 90, 11 }, new int[] { 60, 90, 11 }, new int[] { 60, 90, 11 } }, // school 0
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 } }, // school 1
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 } }, // school 2
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 } }, // school 3
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 } }, // school 4
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 } }, // school 5
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 } }, // school 6
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 } }, // school 7
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -245, 6 }, new int[] { 125, -115, 12 }, new int[] { 125, -180, 12 }, new int[] { 125, -140, 12 } }, // school 8
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 } }, // school 9
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 } }, // school 10
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 } }, // school 11
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 } }, // school 12
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 } }, // school 13
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 } }, // school 14
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 } }, // school 15
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 } }, // school 16
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 10, 10, 10 }, new int[] { 10, 10, 10 }, new int[] { 10, 10, 10 }, new int[] { 10, 10, 10 } }, // school 17
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 10, 10, 10 }, new int[] { 10, 10, 10 }, new int[] { 10, 10, 10 } }, // school 18
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 10, 10, 10 }, new int[] { 10, 10, 10 }, new int[] { 10, 10, 10 }, new int[] { 10, 10, 10 } }, // school 19
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 10, 10, 10 }, new int[] { 10, 10, 10 } }, // school 20
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 100, -140, 12 }, new int[] { 10, 10, 10 }, new int[] { 10, 10, 10 } }, // school 21
+        new int[][] { new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 125, -140, 12 }, new int[] { 100, -140, 12 } }, // school 22
+    };
+
+    public static readonly int[][] TotalFrame = new int[][]
+    {
+        new int[] { 0, 0, 0, 0 }, // school 0
+        new int[] { 0, 0, 0, 0, 0 }, // school 1
+        new int[] { 0, 0, 0, 0, 0 }, // school 2
+        new int[] { 0, 0, 0, 0, 0 }, // school 3
+        new int[] { 0, 0, 0, 0, 0 }, // school 4
+        new int[] { 0, 0, 0, 0, 0 }, // school 5
+        new int[] { 0, 0, 0, 0, 0 }, // school 6
+        new int[] { 0, 0, 0, 0, 0 }, // school 7
+        new int[] { 0, 0, 0, 0, 0 }, // school 8
+        new int[] { 0, 0, 0, 0, 0, 0 }, // school 9
+        new int[] { 11, 81, 81, 51 }, // school 10
+        new int[] { 17, 38, 39, 54 }, // school 11
+        new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // school 12
+        new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // school 13
+        new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // school 14
+        new int[] { 0, 0, 0, 0, 0, 0, 0, 0 }, // school 15
+        new int[] { 0, 0, 0, 0, 0, 0, 0, 0 }, // school 16
+        new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // school 17
+        new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // school 18
+        new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // school 19
+        new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // school 20
+        new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // school 21
+        new int[] { 0, 0, 0, 0, 0, 0 }, // school 22
     };
 }
