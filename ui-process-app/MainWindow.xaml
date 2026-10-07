@@ -90,6 +90,24 @@
                         </ScrollViewer>
                     </TabItem>
 
+                    <TabItem Header="清单">
+                        <DockPanel Background="#1B1B1B">
+                            <WrapPanel DockPanel.Dock="Top" Margin="8,6">
+                                <TextBlock x:Name="ItemCheckSummary" Foreground="#CCC" VerticalAlignment="Center"
+                                           FontWeight="Bold" Text="已核对 0 / 0"/>
+                                <Button Content="全选" Margin="14,0,0,0" Padding="12,2"
+                                        Background="#333" Foreground="#EEE" Click="OnItemCheckAll"/>
+                                <Button Content="清除" Margin="6,0,0,0" Padding="12,2"
+                                        Background="#333" Foreground="#EEE" Click="OnItemCheckNone"/>
+                                <TextBlock Foreground="#777" FontSize="11" VerticalAlignment="Center" Margin="14,0,0,0"
+                                           Text="勾选 = 该条目已核对；点击条目名在画布中高亮"/>
+                            </WrapPanel>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <StackPanel x:Name="ItemCheckList" Margin="10,4"/>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </TabItem>
+
                     <TabItem Header="文案">
                         <DataGrid x:Name="LabelsGrid" Background="#1B1B1B" Foreground="#E0E0E0"
                                   RowBackground="#1B1B1B" AlternatingRowBackground="#212121"

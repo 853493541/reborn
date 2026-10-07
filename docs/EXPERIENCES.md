@@ -2466,3 +2466,15 @@ solved it, and what is still open. **Newest at the bottom.**
   numericalpanel +221, horsepanel +139, securitycard +124, creditspanel +112, charge +110.
 - Plan status: phases 0-6 executed; only Phase 7 (GT capture, user-driven) remains; the plan doc
   records the per-phase outcomes.
+
+### 2026-10-06 ? UI ? per-item review checklist (清单 tab)
+- User request: "a checklist for each model to display each item" - a per-window item checklist so
+  single items can be ticked off while reviewing.
+- New `ui-process-app/ItemCheckStore.cs` (Data/item_checks.tsv: windowId TAB section TAB 1/0, the
+  RejectionStore pattern) + a 清单 tab in MainWindow: every rendered item (section) of the current
+  window in INI order with a checkbox, 全选/清除 buttons, a 已核对 X / Y header; clicking an item
+  name outlines its element in the canvas (yellow overlay). Items come from the build result
+  (cached per layout key so the list survives cache hits). Entries persist across switches and
+  restarts; the checklist rebuilds on window/page/hide changes.
+- Also removed the now-unused PageOf helper in LayoutPlan.Build (0 warnings).
+- Gates: build 0 errors; --selftest 1240/0/0; app relaunched.

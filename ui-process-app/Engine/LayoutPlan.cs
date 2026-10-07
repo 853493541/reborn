@@ -311,23 +311,6 @@ namespace UiProcessApp.Engine
 
         public static LayoutPlan Build(IniFile ini, string selectedPage)
         {
-            var pageCache = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            string PageOf(string name)
-            {
-                if (pageCache.TryGetValue(name, out var cached)) return cached;
-                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                var current = name;
-                string result = null;
-                while (!string.IsNullOrWhiteSpace(current) && seen.Add(current))
-                {
-                    if (current.StartsWith("Page_", StringComparison.OrdinalIgnoreCase)) { result = current; break; }
-                    var parent = ini.ByName.TryGetValue(current, out var section) ? section.Get("._Parent") : null;
-                    current = parent;
-                }
-                pageCache[name] = result;
-                return result;
-            }
-
             // Page-sets: each WndPageSet shows exactly one page. The viewer's selected
             // page wins for its own page-set; every other page-set shows its authored
             // default (the tab whose checkbox has CheckedWhenCreate=1, else Page_0).

@@ -17,6 +17,11 @@ in `docs/ui/BASIC_UI_HUD.md`.
   rejected window to restore it to its original stage. State is a side file `Data/rejected.tsv`
   (windowId TAB originalStageId) — the catalog JSON stays clean; headless equivalent:
   `UiProcessApp.exe --reject <windowId>` (toggles, no selection).
+- **清单 (per-item checklist)**: the 清单 tab lists every rendered item (section) of the current
+  window in INI order with a checkbox — tick items off while reviewing; clicking an item name
+  outlines its element in the canvas (yellow overlay). State is a side file
+  `Data/item_checks.tsv` (windowId TAB section TAB 1/0); 全选/清除 buttons; the header shows
+  `已核对 X / Y`. Entries survive window switches and restarts.
 - **Render status (P1)**: `UiProcessApp.exe --status` writes `Data/render_status.tsv` (per window:
   size/sections/elements/leaves/placeholders/unresolved/outOfBounds/pages/page/lsh/runtime-hosts/
   flags) + stage totals; the viewer shows `status: ph=.. str=.. oob=.. flags` in the AssetNote line

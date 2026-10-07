@@ -47,6 +47,13 @@ namespace UiProcessApp
         private bool _windowDragActive;
         private System.Windows.Point _windowDragStart;
         private double _windowDragOffX, _windowDragOffY;
+        // Per-item review checklist (Data/item_checks.tsv) + the rendered-item list
+        // per layout cache key + the canvas highlight overlay.
+        private readonly System.Collections.Generic.Dictionary<string, bool> _itemChecks =
+            new System.Collections.Generic.Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+        private readonly System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<(string Name, string Type)>> _checklistCache =
+            new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<(string Name, string Type)>>(StringComparer.OrdinalIgnoreCase);
+        private System.Windows.Controls.Border _checkHighlight;
 
         // Render speed: the resolver/texture cache is shared across renders (atlas TGAs
         // decode once per session) and built layouts are cached per window/page/hide so
@@ -86,6 +93,7 @@ namespace UiProcessApp
             _inventory = LoadInventory();
             _rejected = RejectionStore.Load(Paths.AppRoot);
             RejectionStore.Apply(_inventory, _rejected);
+            foreach (var pair in ItemCheckStore.Load(Paths.AppRoot)) _itemChecks[pair.Key] = pair.Value;
             _status = LoadStatus();
             BuildTree(null);
             StatusText.Text =
@@ -606,6 +614,8 @@ namespace UiProcessApp
                     ShowCanvas(cached, (_layoutNotes.TryGetValue(key, out var cachedNote) ? cachedNote : "") + "  (cached)");
                     _lastBuild = null;
                     _elementToSection = null;
+                    _checklistCache.TryGetValue(key, out var cachedItems);
+                    PopulateItemChecklist(cachedItems ?? new System.Collections.Generic.List<(string Name, string Type)>());
                     SchedulePrewarm();
                     return;
                 }
@@ -647,6 +657,21 @@ namespace UiProcessApp
                 }
                 if (_openedWindows.TryGetValue(window.Id, out var openedNow) && openedNow.Count > 0)
                     AssetNote.Text += "  opens=" + string.Join(",", openedNow.Select(Path.GetFileName));
+                // The per-item review checklist reflects the rendered items (INI order).
+                if (buildResult != null && _currentIni != null)
+                {
+                    var items = _currentIni.Sections
+                        .Where(s => buildResult.Elements.ContainsKey(s.Name))
+                        .Select(s => (Name: s.Name, Type: s.Get("._WndType") ?? ""))
+                        .ToList();
+                    _checklistCache[key] = items;
+                    PopulateItemChecklist(items);
+                }
+                else
+                {
+                    _checklistCache.TryGetValue(key, out var cachedItems);
+                    PopulateItemChecklist(cachedItems ?? new System.Collections.Generic.List<(string Name, string Type)>());
+                }
                 SchedulePrewarm();
             }
             catch (Exception ex)
@@ -654,6 +679,141 @@ namespace UiProcessApp
                 LayoutHost.Child = ShowMessage("Layout render failed: " + ex.Message);
                 AssetNote.Text = "";
             }
+        }
+
+        /// <summary>Fills the 清单 tab with the rendered items of the current window
+        /// (INI order): a checkbox per item, persisted in Data/item_checks.tsv; clicking
+        /// an item name highlights its element in the canvas.</summary>
+        private void PopulateItemChecklist(System.Collections.Generic.List<(string Name, string Type)> items)
+        {
+            ClearItemHighlight();
+            ItemCheckList.Children.Clear();
+            if (_currentWindow == null)
+            {
+                ItemCheckSummary.Text = "已核对 0 / 0";
+                return;
+            }
+            int checkedCount = 0;
+            foreach (var item in items)
+            {
+                bool isChecked = ItemCheckStore.IsChecked(_itemChecks, _currentWindow.Id, item.Name);
+                if (isChecked) checkedCount++;
+                var row = new System.Windows.Controls.DockPanel { Margin = new Thickness(0, 1, 0, 1) };
+                var cb = new System.Windows.Controls.CheckBox
+                {
+                    IsChecked = isChecked,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Width = 20,
+                    Tag = item.Name,
+                };
+                cb.Checked += OnItemCheckToggled;
+                cb.Unchecked += OnItemCheckToggled;
+                System.Windows.Controls.DockPanel.SetDock(cb, Dock.Left);
+                row.Children.Add(cb);
+                var label = new System.Windows.Controls.TextBlock
+                {
+                    Text = item.Name + "   [" + item.Type + "]",
+                    Foreground = new SolidColorBrush(Color.FromRgb(0xD8, 0xD8, 0xD8)),
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Tag = item.Name,
+                    Cursor = System.Windows.Input.Cursors.Hand,
+                };
+                label.MouseLeftButtonUp += (o, e) =>
+                {
+                    var tb = o as System.Windows.Controls.TextBlock;
+                    if (tb != null) HighlightItem(tb.Tag as string);
+                };
+                row.Children.Add(label);
+                ItemCheckList.Children.Add(row);
+            }
+            ItemCheckSummary.Text = string.Format("已核对 {0} / {1}", checkedCount, items.Count);
+        }
+
+        private void OnItemCheckToggled(object sender, RoutedEventArgs e)
+        {
+            if (_currentWindow == null) return;
+            var cb = sender as System.Windows.Controls.CheckBox;
+            if (cb == null || !(cb.Tag is string name)) return;
+            ItemCheckStore.Set(_itemChecks, _currentWindow.Id, name, cb.IsChecked == true);
+            ItemCheckStore.Save(Paths.AppRoot, _itemChecks);
+            UpdateItemCheckSummary();
+        }
+
+        private void UpdateItemCheckSummary()
+        {
+            int total = 0, done = 0;
+            foreach (var child in ItemCheckList.Children)
+            {
+                if (!(child is System.Windows.Controls.DockPanel row)) continue;
+                foreach (var c in row.Children)
+                {
+                    if (c is System.Windows.Controls.CheckBox cb)
+                    {
+                        total++;
+                        if (cb.IsChecked == true) done++;
+                    }
+                }
+            }
+            ItemCheckSummary.Text = string.Format("已核对 {0} / {1}", done, total);
+        }
+
+        private void OnItemCheckAll(object sender, RoutedEventArgs e) { SetAllChecks(true); }
+        private void OnItemCheckNone(object sender, RoutedEventArgs e) { SetAllChecks(false); }
+
+        private void SetAllChecks(bool value)
+        {
+            if (_currentWindow == null) return;
+            foreach (var child in ItemCheckList.Children)
+            {
+                if (!(child is System.Windows.Controls.DockPanel row)) continue;
+                foreach (var c in row.Children)
+                {
+                    if (c is System.Windows.Controls.CheckBox cb && cb.Tag is string name)
+                    {
+                        cb.IsChecked = value;  // fires OnItemCheckToggled (writes the store)
+                    }
+                }
+            }
+            UpdateItemCheckSummary();
+        }
+
+        /// <summary>Outlines the item's element in the canvas (a yellow overlay on the
+        /// element's parent canvas at its position/size).</summary>
+        private void HighlightItem(string sectionName)
+        {
+            ClearItemHighlight();
+            if (_lastBuild == null || string.IsNullOrWhiteSpace(sectionName)) return;
+            if (!_lastBuild.Elements.TryGetValue(sectionName, out var element)) return;
+            var fe = element as FrameworkElement;
+            if (fe == null) return;
+            var parent = VisualTreeHelper.GetParent(fe) as System.Windows.Controls.Panel;
+            if (parent == null) return;
+            double x = Canvas.GetLeft(fe); if (double.IsNaN(x)) x = 0;
+            double y = Canvas.GetTop(fe); if (double.IsNaN(y)) y = 0;
+            double w = fe.ActualWidth > 0 ? fe.ActualWidth : fe.Width;
+            double h = fe.ActualHeight > 0 ? fe.ActualHeight : fe.Height;
+            if (double.IsNaN(w) || w <= 0) w = 40;
+            if (double.IsNaN(h) || h <= 0) h = 20;
+            _checkHighlight = new System.Windows.Controls.Border
+            {
+                BorderBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xD0, 0x40)),
+                BorderThickness = new Thickness(2),
+                Width = w + 2,
+                Height = h + 2,
+                IsHitTestVisible = false,
+                Background = new SolidColorBrush(Color.FromArgb(30, 0xFF, 0xD0, 0x40)),
+            };
+            Canvas.SetLeft(_checkHighlight, x - 1);
+            Canvas.SetTop(_checkHighlight, y - 1);
+            parent.Children.Add(_checkHighlight);
+        }
+
+        private void ClearItemHighlight()
+        {
+            if (_checkHighlight == null) return;
+            if (VisualTreeHelper.GetParent(_checkHighlight) is System.Windows.Controls.Panel p)
+                p.Children.Remove(_checkHighlight);
+            _checkHighlight = null;
         }
 
         /// <summary>Starts the per-window interaction server (tools/ui/replay_server.lua):
