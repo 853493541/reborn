@@ -2875,3 +2875,11 @@ HIGH-confidence findings:
   CRT guards, stepCtrl/invoke conventions, address-arithmetic traps), the
   evidence/commit index, and the fallbacks.
 - Evidence: docs commit 5a46839; host_exe146-178.out.
+
+## 2026-10-06 - Handoff guide: explicit worktree/branch section
+
+- Expanded NEXT_AGENT_HANDOFF.md section 1 per user request: main checkout vs
+  this task's worktree path, branch agent/skillv2-sandbox, the git worktree add
+  setup pattern, four verify commands, the merge/revert incident history
+  (ec9e3a1 -> a8b37bc, restored at c1869a2), and the commit/never-push/shared-
+  resource rules. Evidence: commit a614387.
