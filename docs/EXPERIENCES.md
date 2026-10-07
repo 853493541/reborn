@@ -2650,3 +2650,35 @@ HIGH-confidence findings:
   the name hook as a fallback and log which shadow branch is taken.
 - Reproduce: capstone disassembly of the cited RVAs (session scripts; rep+0x58D800,
   rep+0xB0C7B0, adapter+0x111DE0, adapter+0x2B0DF8, eng+0x8AFC40/0x8AFF10/0x8B0180).
+
+## 2026-10-06 - Window fix (off-screen + closeable + watchdog) + Gate 1 line-198 cleared (vt[6] setter); new blocker = RL table list
+
+- Window: the host window now shows OFF-SCREEN by default (SW_SHOWNOACTIVATE +
+  SetWindowPos(-4000,-4000); a fully hidden window breaks engine init). RC_HOST_SHOW=1
+  puts it on screen. WM_CLOSE destroys the window + sets g_hostQuit (the frame loop
+  exits); WM_DESTROY posts WM_QUIT. A watchdog thread force-exits after RC_HOST_MAXSEC
+  (default 240 s) - no run can leave a stuck window. (User report fixed: the window was
+  topmost and unclosable - PostQuitMessage alone never destroyed it.)
+- Off-screen caveat: KG3D_Window::_DoScreenShot asserts m_SwapChainObject.piSwapChain
+  (NULL off-screen) - the engine-API screenshot needs the on-screen window; visual-proof
+  runs use RC_HOST_SHOW=1.
+- Frame-0 flakiness: one run died at frame 0 in KG3D_SceneObjectContainer::Update
+  (piEnvironment NULL) + AV - a race, not the window (a rerun of the same build
+  completed); noted.
+- Gate 1 progress: KRLScene::Init line-198 gate (rep+0x2FD130) = the scene registration
+  needing [SO3Represent+0x108] non-null. Writer = the SO3Represent setter at vtable
+  index 6 (rep+0x3E7B40: [rcx+0x108]=rdx; tail-calls rep+0x2530B). The host now calls it
+  with g_so3World before CreateRLScene -> line 198 cleared; the Init reaches the shadow
+  step (movieNameFix fires, no 1848/1849) and fails at line 212:
+  KRLWeatherController::Init (rep+0x43BAB0) line 27: [SO3Represent+0x210]
+  (m_TableList.m_tabCommon) is NULL.
+- The RL table list = SO3Represent+0x1B0..+0x248 (ctor rep+0x3DFxxx zeroes them);
+  loader = KTableList::Init (lambda body rep+0x80B9C3, names via the file loader
+  [rax+0x48]); perf marker "game.startup.init.rl.table" (0x3E3DE1) inside the timed
+  wrapper rep+0x3E3D90, called by rep+0x3E59C0 (vtable rep+0xC99D30 slot 1) of the
+  table-loader object the SO3Represent::Init creates (rep+0x3E64FF/0x3E653D). The
+  frame60 Init(Param) already runs with the full param (+0x70/+0x78 worlds) and returns
+  1, yet +0x210 stays NULL - the table-load sub-step is the next probe (check
+  [main+0x210] after the Init; find why the lambda does not run / its arg objects).
+- Evidence: host_exe119-124.out; commits 78e32e5 (destination args + no-dot shadow
+  name), 3a55132 (window fix + vt[6] gate + probes).
