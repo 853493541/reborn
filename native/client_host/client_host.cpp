@@ -415,10 +415,6 @@ static void __fastcall hookTableBuilder(void* a1, unsigned a2, void* a3, void* a
 //   0xB5060 g_IsFileExist(path)
 //   0xCC670 KG_OpenPakV4File(name, flags)
 //   0xB1C70 internal loose open(obj, name, mode); vt slot [rax+0x58] + fopen
-static BYTE g_gfpSaved[32];
-static BYTE* g_gfpTramp = NULL;
-static BYTE g_gfp2Saved[32];
-static BYTE* g_gfp2Tramp = NULL;
 static BYTE g_ofSaved[32];
 static BYTE* g_ofTramp = NULL;
 static BYTE g_ifeSaved[32];
@@ -441,28 +437,6 @@ static void safeCopyStr(char* out, size_t cap, const char* s)
     }
     __except (EXCEPTION_EXECUTE_HANDLER)
     { out[0] = 0; }
-}
-
-static void __fastcall hookGetFullPath(void* buf, const char* name, void* a3, void* a4)
-{
-    char n[260];
-    safeCopyStr(n, sizeof(n), name);
-    logf("[host] lua GetFullPath name='%s'", n);
-    ((void (__fastcall *)(void*, const char*, void*, void*))g_gfpTramp)(buf, name, a3, a4);
-    char r[260];
-    safeCopyStr(r, sizeof(r), (const char*)buf);
-    logf("[host] lua GetFullPath -> '%s'", r);
-}
-
-static void __fastcall hookGetPriorFullPath(void* buf, const char* name, void* a3, void* a4)
-{
-    char n[260];
-    safeCopyStr(n, sizeof(n), name);
-    logf("[host] lua GetPriorFullPath name='%s'", n);
-    ((void (__fastcall *)(void*, const char*, void*, void*))g_gfp2Tramp)(buf, name, a3, a4);
-    char r[260];
-    safeCopyStr(r, sizeof(r), (const char*)buf);
-    logf("[host] lua GetPriorFullPath -> '%s'", r);
 }
 
 static void* __fastcall hookOpenFileLua(const char* name, int flags, int mode)
@@ -2631,11 +2605,12 @@ int main(void)
                 else
                     logf("[host] file layer InitPak skipped (loose only)");
             }
-            logf("[host] lua file hooks gfp=%d gfp2=%d of=%d ife=%d opv4=%d loose=%d",
-                 installInlineHook(lua, 0xB4390, (void*)hookGetFullPath,
-                                   g_gfpSaved, &g_gfpTramp, 15),
-                 installInlineHook(lua, 0xB4570, (void*)hookGetPriorFullPath,
-                                   g_gfp2Saved, &g_gfp2Tramp, 15),
+            // NOTE: g_GetFullPath (0xB4390) / g_GetPriorFullPath (0xB4570) are
+            // deliberately NOT hooked: their prologues contain a RIP-relative
+            // `lea r9,[root]`, which an inline-hook trampoline would replay at
+            // the wrong address (latent bug; benign only because the filepath is
+            // drive-prefixed). Use installTableLoadHook-style replay if needed.
+            logf("[host] lua file hooks of=%d ife=%d opv4=%d loose=%d",
                  installInlineHook(lua, 0xB2F50, (void*)hookOpenFileLua,
                                    g_ofSaved, &g_ofTramp, 15),
                  installInlineHook(lua, 0xB5060, (void*)hookIsFileExist,
