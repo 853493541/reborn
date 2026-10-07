@@ -36,7 +36,7 @@ engine draw (slicing/masks/anchors).
 | **KGUI constructs** (weighted by section usage) | WndType 112,453/113,321 exact + 868 approximate; PosType 85,210/85,280; ImageType 18,104/18,104; HandleType 26,302/26,439; FirstItemPosType 23,954/24,052; AnchorDst 1,674/1,674 (mechanism) | **≈99.7%** | `tools/ui/ini_construct_census.py` |
 | **Art (image instances)** | 40,802 Image sections; 534 placeholder instances — 278 are the intentional `TextureName=no`, 256 real (231 files absent from the scanned paks, 16 authored Frames beyond the atlas, 9 misc) | **≈99.4%** | `--audit`; `ui-process-app/assets/uitex` |
 | **Text (text instances)** | 21,191 Text sections; 49 unresolved string ids after adding the 136 extracted module tables (`Data/text/ui/Scheme/Case`, 145 total) | **≈99.8%** | `--audit` (was 3,254 unresolved; remaining 49 are dev/unreached tables, each ×1-4) |
-| **Runtime state (scripted windows)** | 122/1,240 windows ship a script (9.8%); replay 81 full + 41 partial; the viewer consumes the state (`ApplyRuntimeState`, completed replays only — partials fall back to the authored/GT state) | **66% of scripted windows fully** (6.5% of all windows); T-A (liked+recommended, 59 scripted): 35 full / 23 partial | `replay_summary.tsv`, `--render` `runtime=N` |
+| **Runtime state (scripted windows)** | 1,210/1,240 windows ship a script (97.6%, after extracting the manifest's missing scripts 2026-10-05); replay **1,148 full + 63 partial**; the viewer consumes the state (`ApplyRuntimeState`, completed replays only — partials fall back to the authored/GT state) | **94.9% of scripted windows fully** (92.6% of all windows) | `replay_summary.tsv`, `--render` `runtime=N` |
 | **Interaction / behavior** | events, hover/checked transitions, animations (`Animate`/`SFX`), 3D scenes (`WndScene`), web (`WndWebCef`), native bars | **0% in the viewer** (static review render); out of scope for the viewer — the product runs the real engine for these | census types; `UI_RUNTIME_REPLAY.md` |
 
 **Per-construct gaps (counts):** PosType 3/4/5 = 70 · HandleType 1/2/4/5 = 137 · FirstItemPosType
@@ -44,9 +44,11 @@ engine draw (slicing/masks/anchors).
 movie ~90, FlexHandle/FlexContainer ~110). AnchorDst: 848 special (root/client) + 826 relative-name
 (all resolved by name; unresolvable fall back to the parent).
 
-**Runtime coverage by tier** (scripted windows): T-A 59 → 35 OK / 23 partial / 1 no-entry; T-B 27 →
-18 / 7 / 2; T-C 36 → 26 / 10 / 0. Top recorded states: BigBagPanel 793, Player 179, TopMenu 106,
-MailPanel 101, SoundSettingPanel 93, MiniMap 92, SocialPanel 91, MainBarPanel 89.
+**Runtime coverage (2026-10-05 full batch):** 1,148 OK / 63 ERR of 1,211 scripted windows. The 63
+partials are stub-tune classes: `pairs`/`sort` on a nil stub table, index-a-number on container
+fields, `isPlaying`/`isItemShow` stub fields that should be functions, table-vs-number compares,
+`concat` with a table element, `assert` in Init, and 18 no-entry windows (base-class scripts whose
+entry lives in an inherited parent).
 
 ## 3. Verdict
 
@@ -55,16 +57,17 @@ MailPanel 101, SoundSettingPanel 93, MiniMap 92, SocialPanel 91, MainBarPanel 89
   layout gap is small and enumerated above.
 - **Text: ≈99.8%** — the 136 extracted module string tables (added 2026-10-04 to
   `Data/text/ui/Scheme/Case`) resolved 3,254 → 49 unresolved ids; the tail is dev/unreached tables.
-- **Runtime state: 65% of scripted windows fully replayed**; the rest carry partial state (not
-  applied until complete). Windows without a script (1,118) are authored-complete.
+- **Runtime state: 95% of scripted windows fully replayed** (1,148/1,210); the 63 partials carry
+  partial state (not applied until complete). Windows without a script (30) are authored-complete.
 - **Behavior/interaction: 0% in the viewer** — deliberately out of scope; the product's UI runs in
   the real engine where events/animation/3D are native.
 
-**Aggregate:** for the viewer's purpose (a faithful *static* review render) the system is **~95%**
-overall — high-90s layout/art, mid-80s text, ~65% runtime replay of the scripted subset. The path to
-higher numbers is concrete: (1) extract the remaining module string tables, (2) stub-tune the 43
-partial replays, (3) close the census list (PosType 3/4/5, HandleType 1/2/4/5, FirstItemPosType 1-9,
-page-set/list/tree semantics).
+**Aggregate:** for the viewer's purpose (a faithful *static + replayed-runtime* review render) the
+system is **~97%** overall — high-90s layout/art, high-90s text, 95% runtime replay of the scripted
+subset. The path to higher numbers is concrete: (1) stub-tune the 63 partial replays, (2) close the
+census list (PosType 3/4/5, HandleType 1/2/4/5, FirstItemPosType 1-9, page-set/list/tree semantics),
+(3) the 41 manifest scripts that still fail to extract (22 mobile-Traits, 4 mainbar, 15 CJK/corrupted
+manifest paths).
 
 ## 4. Gap list (prioritized)
 

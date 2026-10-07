@@ -133,6 +133,15 @@ Chain-fix order: (1) extract the 1,461 missing scripts (probe-proven) → (2) re
 expanded corpus → (3) wire/verify runtime for the newly completed replays (A/B) → (4) systematic
 art re-probe of the 231-file tail → (5) construct decode (Yoga/flex lead).
 
+**Update (same day, steps 1-3 done):** extracted 1,420/1,469 missing scripts (PakV4 HIT log) →
+manifest now **1,742/1,783 (97.7%)**; the 41 remaining are 22 `ui/Traits/mobilestreaming` (mobile
+config root), 4 `mainbar_*`, ~15 CJK/corrupted manifest paths. `engine_base.txt` 181 → 207 manifest
+base files. Replay batch: **1,148 OK / 63 ERR** of 1,211 scripted windows (from 138/7 of 143);
+1,210/1,240 catalog windows now ship a script. A/B: 20 windows render fuller than static
+(tongbaogift +752, creditspanel +112, charge +110, selectmacroiconpanel +64, buffmonitor +53, ...),
+29 state-driven reductions, none collapses (guards hold). Selftest 1240/0/0; audit ph=538,
+oob=8698.
+
 ## 6. Verdict
 - **Client-binary-verified**: the draw/layout core we implemented (slicing, PosType set, anchors).
 - **Client-data-verified**: inputs (INI/scripts/assets) and runtime state for the completed replays.

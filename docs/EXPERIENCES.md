@@ -2221,3 +2221,22 @@ solved it, and what is still open. **Newest at the bottom.**
 - Q4 wiring: dropped calls 671->26; A/B 6 fuller, no collapse; but runtime covers 143 windows only.
 - Written into UI_REAL_CLIENT_ASSESSMENT.md ?5b (registered doc); next chain: extract 1,461 scripts ->
   replay batch -> wire -> art re-probe -> construct decode.
+
+### 2026-10-05 ? UI ? chain step 1-3: missing scripts extracted (1,742/1,783), replay 138 -> 1,148 OK
+- Built the missing list from the manifest (1,469) and extracted via the official PakV4 extractor with
+  a new `--keep-paths` option (manifest-path placement; window scripts then flattened next to their
+  INIs like the INI corpus): **1,420 HIT / 40 MISS**, manifest 314 -> **1,742/1,783 (97.7%)**; the 41
+  missing are 22 `ui/Traits/mobilestreaming` (mobile root), 4 `mainbar_*`, ~15 CJK/corrupted manifest
+  paths. Also fixed a UnicodeEncodeError printing U+FFFD manifest paths (stdout reconfigure).
+- `engine_base.txt` extended 181 -> 207 (every manifest layer-1 load=true / lib-type file now present;
+  incl. ui/Script/module.lua, customdata.lua, questlogic.lua, common libs) - the engine's own base set.
+- `replay_all.py` got a TimeoutExpired guard (a hanging window no longer kills the batch).
+- Full batch: **OK=1148 ERR=63** of 1,211 scripted windows (was 138/7 of 143); 1,210/1,240 catalog
+  windows now have a script. ERR classes: pairs/sort on nil stubs, index-a-number containers,
+  isPlaying/isItemShow should-be-functions, concat-with-table, assert in Init, 18 no-entry
+  base-class scripts.
+- A/B vs static: 20 windows fuller (tongbaogift +752 sections 164->916, creditspanel +112, charge +110,
+  selectmacroiconpanel +64, buffmonitor +53, vampirecountpanel +40, macrosettingpanel +36), 29
+  state-driven reductions (worst dynamicweathersetting 133->92, 69% - no collapse), selftest
+  1240/0/0, audit ph=538 oob=8698.
+- Verified: extract log 1420 HIT/40 MISS; replay_summary OK=1148 ERR=63; --selftest 1240/0/0.
