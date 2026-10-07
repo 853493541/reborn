@@ -264,11 +264,12 @@ SHIM_EXPORT int RC_Shim_SfxPlay(const char* path, float x, float y, float z)
     DWORD64 fault = 0;
     PEXCEPTION_POINTERS ep = NULL;
     char stackDump[1024] = {0};
-    // args mirror the engine's SFX-module caller (code @0xE3412A): a6 is an
-    // object (the tag context's model/scene pointer), a8 = out slot; r9/a5/a7
-    // zero. The world matrix is applied separately below (tag offsets live in
-    // the tag data, not here).
-    __try { sfx = create(owner, path, NULL, NULL, NULL, scene, 0, &outParam); }
+    // args mirror the engine's SFX-module caller (code @0xE3412A): a4 = the
+    // out slot, a5 = 0, a6 = the tag's matrix block (engine passes
+    // tagdata+0x288 - the tag's world transform), a7 = a flag dword
+    // (tagdata+0x58), a8 = the caller context (entry rcx). Passing NULL for
+    // a6 (the old shim) left the effect without a transform - nothing rendered.
+    __try { sfx = create(owner, path, NULL, &outParam, NULL, mtx, 0, owner); }
     __except (ep = GetExceptionInformation(),
               exc = ep->ExceptionRecord->ExceptionCode,
               fault = (DWORD64)ep->ExceptionRecord->ExceptionAddress,
@@ -331,10 +332,32 @@ SHIM_EXPORT int RC_Shim_SfxPlay(const char* path, float x, float y, float z)
                 PlayFn play = (PlayFn)mvt[0xD58 / 8];
                 long prc = 0;
                 if (play != NULL) prc = play(model, 1, 1, 0);
+                // engine tag update @0xE341F2..0xE34210: vt[0xD60](model, ctx)
+                // where ctx = tagObj+8, or NULL when the tag has no owner
+                // (cmove rdx, r13) - NULL is a valid engine path
+                long crc = 0;
+                typedef long (__fastcall *CtxFn)(void* self, void* ctx);
+                CtxFn setctx = (CtxFn)mvt[0xD60 / 8];
+                if (setctx != NULL) crc = setctx(model, NULL);
+                // engine tag update @0xE342A1: vt[0x180](model, matrix) - the
+                // tag's world transform (built @0xE34217 from the tag record);
+                // without it the effect never gets a position/transform
+                long mrc = 0;
+                typedef long (__fastcall *MtxFn)(void* self, void* mtx);
+                MtxFn setmtx = (MtxFn)mvt[0x180 / 8];
+                if (setmtx != NULL) mrc = setmtx(model, mtx);
+                // @0xE342BD: vt[0x190]() returns the scene node after the matrix
+                long src = 0;
+                typedef long (__fastcall *NodeFn)(void* self);
+                NodeFn getnode = (NodeFn)mvt[0x190 / 8];
+                if (getnode != NULL) src = getnode(model);
                 sprintf_s(g_status + strlen(g_status), sizeof(g_status) - strlen(g_status),
-                          " | model=0x%p mvt0=0x%X play=0x%X rc=0x%08X",
+                          " | model=0x%p mvt0=0x%X play=0x%X rc=0x%08X ctx_rc=0x%08X mtx=0x%X mtx_rc=0x%08X node=0x%X",
                           model, (unsigned)((BYTE*)mvt[0] - g_base),
-                          (unsigned)((BYTE*)mvt[0xD58 / 8] - g_base), (unsigned)prc);
+                          (unsigned)((BYTE*)mvt[0xD58 / 8] - g_base), (unsigned)prc,
+                          (unsigned)crc,
+                          (unsigned)((BYTE*)mvt[0x180 / 8] - g_base), (unsigned)mrc,
+                          (unsigned)src);
             }
             else
             {
