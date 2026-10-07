@@ -16,6 +16,7 @@ UI system report + map/minimap research. Interactive viewer: `ui-process-app/`.
 | `UI_REAL_CLIENT_ASSESSMENT.md` | Fidelity vs the real client: GT inventory, evidence-class matrix (client binary / client data / GT capture / self-assessed / unmeasured), partial-replay regression finding |
 | `UI_RUNTIME_GAP.md` | Measured runtime-consumption gap: the replay's 671 dropped state-bearing calls (item-creation 169, arrangement 330, render 53, state 119) with the full per-window list and the fix plan — the measured reason lists stay empty and items sit at authored coordinates |
 | `UI_WIREUP_PLAN.md` | Full remaining wire-up plan (2026-10-06 baseline): phases 0-7 — census truth, the 22 ERR windows by class, the 9 NOENTRY drivers, page-set/list/tree semantics, animation, interaction completion, extraction tails, GT fidelity |
+| `HANDOFF_UI.md` | Session handoff (2026-10-07): current gates, what was done, open items, provisional VM patches, critical gotchas, commands — read before continuing the UI work |
 
 ## Tools
 
