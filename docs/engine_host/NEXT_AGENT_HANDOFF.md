@@ -72,25 +72,44 @@ stays NULL after the loader. A hardware **write watch on `singleton+0x210`**
 armed across the whole task run got **zero hits** — the loader does not publish
 it; the game must do it in a step the host has not run.
 
-**Prime suspect:** the **register task** path. The builder creates a
-`register` functor (rep+0x80E340 -> `registerTasks` rep+0x80B6A0) and a `run`
-functor (rep+0x80E360 -> `runTasks` 0x80B8C0); the host only ever runs the
-`run` path — the `hookRegisterTasks` hook (on 0x80B6A0) has **never fired**.
-`registerTasks` creates task functors (vtables 0xCD8020/0xCD8048/0xCD8070) and
-almost certainly registers the loaded tables where the weather check reads
-them. Next probes:
+**Prime suspect:** the **register step**. Concrete state (2026-10-07, runs
+195-201):
 
-1. Find where the builder (rep+0x8261F0) queues the register vs run tasks
-   (the functor vtables are `0xCD80C8` = register, vt[0]=0x80E340; `0xCD8000`
-   = run, vt[0]=0x80E360). The step controller (the game's own runner) runs
-   them; the host's `g_taskInvokeStub` calls **vt[1]**, but these step objects
-   may use **vt[0]** as the invoke. Walk the container(s) the builder writes:
-   `[stepBuf+0x70]` (host already walks it), and the wrapper's out struct
-   (`r9 = [rbp+0x38]` in the timed wrapper 0x3E3D90, filled via 0x18002363c).
-2. Invoke the register functor (0x80E340) — or call `registerTasks` directly
-   with the right object — and re-check `[singleton+0x210]` + the write watch.
-   (Order: register probably expects the run to have completed.)
-3. Then re-check `real CreateRLScene` (should pass line 212) and
+- The builder's list-push helper is `rep+0x3E52A0` (reached via the jmp thunk
+  at rep+0x2363C; `call` targets print as 0x2363C). It appends a node
+  `{next at +0, value at +8}` at `container+0x78` (head) / `+0x80` (tail). The
+  host now hooks it (`hookTaskPush`, 80 calls logged).
+- The builder builds a **tree of containers** and pushes the two step functors:
+  - run functor: vtable `rep+0xCD8000`, slot0 = operator() `0x80E360` ->
+    runTasks 0x80B8C0.
+  - register functor: vtable `rep+0xCD80C0`, slot1 = operator() `0x80E340` ->
+    registerTasks 0x80B6A0 (slot0 = deleting dtor 0x80C540, slot2 = no-op
+    0x1DADE).
+  The register functor IS captured in-host now (taskPush #9) into
+  `g_registerFunctor`.
+- The host invokes it at frame60 AFTER the run task, with rdx = stepCtrl
+  (param+0xC8): `registerTasks enter` FIRES for the first time, then the
+  process dies with 0xC0000005 and **no VEH line** (log buffering loses the
+  last lines on abrupt exit - add `fflush` in the VEH to see it). Likely cause:
+  the register functor's payload (functor+8..+0x28) holds values captured from
+  the builder's stack temporaries; by frame60 they may be stale, or the step
+  must run BEFORE the run step / with a different arg2 (the builder's out
+  container).
+
+Next probes (in order):
+
+1. Invoke the register functor **immediately after the builder returns** (inside
+   `hookTableBuilder`, while its stack temporaries are alive), with rdx = the
+   builder's arg4 (out container) and/or the stepCtrl; log the functor payload
+   (`[functor+8..+0x28]`) first.
+2. Make the VEH output robust: `fflush` the log in the VEH handler before
+   anything else, so an abrupt registerTasks crash is not silent.
+3. Compare against the game order: the step controller likely runs the register
+   step before the run step; the host currently runs the run task first.
+4. After registerTasks succeeds, walk the tasks it queued (the host already
+   walks `sc+0x70/0x78/0x80` after the register call) and re-check
+   `[singleton+0x210]`.
+5. Then re-check `real CreateRLScene` (should pass line 212) and
    `GetRLScene(2)`.
 
 ## 1. Where the work lives — worktree + branch (READ FIRST)

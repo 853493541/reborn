@@ -2949,5 +2949,33 @@ HIGH-confidence findings:
   for publishing m_tabCommon. Note both functor vtables carry their work in
   **vt[0]**, while the host's task stub calls vt[1] - check the slot before
   invoking.
+- Run 194 addendum: the stepBuf list does NOT contain the register task. Its
+  two entries are std::function-like objects: the run task ([val+8] = invoke
+  thunk 0x9E3F -> jmp 0x80E440 -> runTasks) and a no-op wrapper task (invoke
+  0x3E5A30). The builder's register functor (operator() 0x80E340, vtable
+  0xCD80C0) is pushed into a container built inside the builder itself (its
+  r15); the wrapper hands the builder an out struct at [rbp+0x38] (host global
+  g_builderOut). Next: scan the KTableList (singleton+0x1A0) and the source
+  ([param+0xA8]+0x10) for the 0xCD80C0/0x80E340 values, or trace the builder's
+  push target, then invoke the register functor's operator() after the run.
+- Runs 195-201 addendum: the register functor WAS captured and invoked.
+  - The RL list-push helper is rep+0x3E52A0 (call sites print as the jmp thunk
+    rep+0x2363C): it appends a node {next at +0, value at +8} at
+    container+0x78/+0x80. A new `hookTaskPush` logs the first 80 pushes and
+    captures the register functor whenever a pushed value's vtable is
+    rep+0xCD80C0 (taskPush #9 in run 201).
+  - The builder pushes a tree of containers; the run functor's vtable is
+    rep+0xCD8000 (slot0 = operator() 0x80E360 -> runTasks), the register
+    functor's vtable is rep+0xCD80C0 (slot1 = operator() 0x80E340 ->
+    registerTasks; slot0 = deleting dtor 0x80C540). The host invokes it via the
+    vt1 address with rdx = the stepCtrl (param+0xC8).
+  - Result: `registerTasks enter` FIRES (a1=functor+8, a2=stepCtrl) - then the
+    process dies with 0xC0000005 and no VEH line (stdio buffer lost the trace;
+    the VEH now fflushes first). Prime suspects: the functor payload
+    (functor+8..+0x28) holds builder-stack temporaries that are stale by
+    frame60; and/or the register step must run BEFORE the run step / with a
+    different arg2 (the builder's out container).
+  - Evidence: host_exe195-201.out; commits 78a13a9 + this one; the handoff
+    guide section 0 carries the ordered next probes.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
