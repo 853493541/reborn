@@ -2,7 +2,7 @@
   "title": "JX3 绝境战场 — UI process explorer",
   "generated": "2026-09-24",
   "source": "docs/netcode/JX3_MODE_UI_INVENTORY.md (evidence: PakV4 ui/ config, string tables, protocol layouts)",
-  "defaultWindow": "plactionbar",
+  "defaultWindow": "bigbagpanel",
   "stages": [
     {
       "id": "recommended",
