@@ -291,14 +291,14 @@ static BYTE* g_buildTramp = NULL;
 static void* g_builderOut = NULL;
 static void* g_wrapperThis = NULL;
 
-static void __fastcall hookTableWrapper(void* a1, void* a2)
+static long __fastcall hookTableWrapper(void* a1, void* a2)
 {
     logf("[host] table wrapper enter (this=%p a2=%p)", a1, a2);
     g_wrapperThis = a1;
-    ((void (__fastcall *)(void*, void*))g_wrapTramp)(a1, a2);
+    return ((long (__fastcall *)(void*, void*))g_wrapTramp)(a1, a2);
 }
 
-static void __fastcall hookTableBuilder(void* a1, unsigned a2, void* a3, void* a4)
+static long __fastcall hookTableBuilder(void* a1, unsigned a2, void* a3, void* a4)
 {
     logf("[host] table builder enter (a1=%p a2=%u a3=%p a4=%p)", a1, a2, a3, a4);
     g_builderOut = a4;
@@ -310,7 +310,7 @@ static void __fastcall hookTableBuilder(void* a1, unsigned a2, void* a3, void* a
     }
     __except (EXCEPTION_EXECUTE_HANDLER)
     { logf("[host] table builder a4 probe fault"); }
-    ((void (__fastcall *)(void*, unsigned, void*, void*))g_buildTramp)(a1, a2, a3, a4);
+    long brc = ((long (__fastcall *)(void*, unsigned, void*, void*))g_buildTramp)(a1, a2, a3, a4);
     // After the builder: the register functor (vtable rep+0xCD80C0,
     // operator() 0x80E340) is inside a 0x88-byte container object (vtable
     // rep+0xCCE548) referenced from the KTableList (a1). Locate and remember it
@@ -398,6 +398,7 @@ static void __fastcall hookTableBuilder(void* a1, unsigned a2, void* a3, void* a
     }
     __except (EXCEPTION_EXECUTE_HANDLER)
     { logf("[host] builder: register functor scan fault"); }
+    return brc;
 }
 
 // --- lua file-layer trace hooks (Gate 1: RL table load) ---------------------
@@ -3343,6 +3344,24 @@ int main(void)
                                         logf("[host] param event mgr +0x%X = %p (global %p)",
                                              poffs[ei], em, g);
                                     }
+                                    // other Param objects the exe's Initialize sets
+                                    // (from exe globals; each global +0x18).
+                                    DWORD eo2[3] = { 0xA8C220, 0xA8C1E8, 0xA8C2B0 };
+                                    DWORD po2[3] = { 0x40, 0x48, 0x50 };
+                                    for (int ei = 0; ei < 3; ei++)
+                                    {
+                                        void* g = *(void**)((BYTE*)g_exeModule + eo2[ei]);
+                                        void* em = (g != NULL)
+                                            ? *(void**)((BYTE*)g + 0x18) : NULL;
+                                        *(void**)(param + po2[ei]) = em;
+                                        logf("[host] param obj +0x%X = %p (global %p)",
+                                             po2[ei], em, g);
+                                    }
+                                    // +0x70 is a direct global
+                                    void* g70 = *(void**)((BYTE*)g_exeModule + 0xA755B8);
+                                    *(void**)(param + 0x70) = g70;
+                                    logf("[host] param obj +0x70 = %p (global 0xA755B8)",
+                                         g70);
                                 }
                                 // SO3Represent::Init also requires pSO3World(+0x70) /
                                 // pSO3WorldClient(+0x78) - the logic module's worlds -
