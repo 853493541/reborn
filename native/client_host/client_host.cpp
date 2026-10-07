@@ -1232,6 +1232,11 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
         // stack trace for AVs (a wild call lands outside every known module -
         // always trace, the caller chain identifies the faulting call site).
         static int vehTraces = 0;
+        CONTEXT* cr = ep->ContextRecord;
+        logf("[VEH]   regs rip=%p rsp=%p rbp=%p rax=%p rbx=%p rcx=%p rdx=%p rsi=%p rdi=%p",
+             (void*)cr->Rip, (void*)cr->Rsp, (void*)cr->Rbp, (void*)cr->Rax,
+             (void*)cr->Rbx, (void*)cr->Rcx, (void*)cr->Rdx, (void*)cr->Rsi,
+             (void*)cr->Rdi);
         DWORD64 fa = (DWORD64)ep->ExceptionRecord->ExceptionAddress;
         int inRep = (g_repModule != NULL && fa >= (DWORD64)g_repModule &&
                      fa < (DWORD64)g_repModule + 0x2000000);
