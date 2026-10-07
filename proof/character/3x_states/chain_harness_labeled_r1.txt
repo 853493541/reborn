@@ -1,0 +1,108 @@
+22:35:28.181 build=reborn_client_3x_states.exe 2026-10-06 22:28:29 git=df4ea7c dirty=3 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80,BACKFACE=1,HITWIN=0,OPMODE=joystick)
+22:35:28.182 start map=data\source\maps\龙门寻宝\龙门寻宝.jsonmap
+22:35:28.183 asset_root=C:\SeasunGame\Game\JX3\bin\zhcn_hd phys=C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\PhysicsEngineX64.dll
+22:35:28.200 window: client=1280x720 fullscreen=0
+22:35:28.262 Startup shim: rc=0 mode=nodb applied=0 armed (waiting KG3D_MaterialSystemX64.dll)
+22:35:28.711 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_3x_states.memory ms=(15,16,406)
+22:35:28.711 initcfg=./configHttpFile.ini
+22:35:31.857 Init3DEngine=1 err=1 ms=3156
+22:35:31.858 Startup: mode=nodb applied=1 sites=1 build=ok
+22:35:31.895 editor.Init result=0
+22:35:31.897 sound: KG3DSoundCLR.Init ok
+22:35:31.897 sound: skill wav C:\SeasunGame\MovieEditor\bin64\flws_sound.wav
+22:35:31.911 lazyseed: rcpiscene base=0x7FF90DA00000 slots=129 seeded=121
+22:35:33.742 LoadMap result=0 ms=1828
+22:35:33.745 watersim: EnableFluxWaterSimulation rc=-2147467259 (0=ok; 0x80004005=E_FAIL, no flux world in the editor host; engine water layer stays M2)
+22:35:34.030 winId=2230478
+22:35:34.031 clr m_pScene=0x1031FEC08 unmapped exec=0
+22:35:34.031 clr scene.vt=0x7FF97CD8F278 KG_EngineEditorX64.dll+0x6F278
+22:35:34.031 clr scene: obj=00000001031FEC08 vt=00007FF97CD8F278 48=00007FF97CD5D5F0(0) 50=00007FF97CD5D710(0) 58=00007FF97CD5D7E0(0) 60=00007FF97CD5D810(0)
+22:35:34.032 clr sceneCam=0x164C94808 unmapped exec=0
+22:35:34.032 clr cam: obj=0000000164C94808 vt=00007FF97CD91FA8 48=00007FF97CD703A0(0) 50=00007FF97CD703E0(0) 58=00007FF97CD70440(0) 60=00007FF97CD704A0(0)
+22:35:34.032 clr camGet rc=0 pos=(0.0,500.0,-800.0) tgt=(0.0,0.0,0.0) managed=(0.0,500.0,-800.0)
+22:35:34.035 TerrainSampler: size=512 regions=8x8 cell=100 origin=(-102400,-102400) cache=4
+22:35:34.042 terrain load (2,2) ms=3.9 holes=0 cache=1
+22:35:34.667 FoliageCollision: instances=5107 meshes=685 camflag0=310 noObstacle=184 foliage=龙门寻宝_foliage_collision.bin structures=龙门寻宝_structure_collision.bin
+22:35:34.668 EngineRay: exports ok, waiting for engine/scene
+22:35:34.669 EngineCam bind ex: Object contains non-primitive or non-blittable data.
+22:35:34.670 CameraShim: loaded rc=0 selftest=0x53484D01 status=obj=0000000164C94808 vt=00007FF97CD91FA8 48=00007FF97CD703A0(0) 50=00007FF97CD703E0(0) 58=00007FF97CD70440(0) 60=00007FF97CD704A0(0) d6=seed slot=0x00007FF91075BBD0 value=0x392E0BFA0428F080
+22:35:34.674 camera config: C:\SeasunGame\MovieEditor\bin64\camera.json
+22:35:34.674 ad habit: strafe (RC_ADHABIT=strafe|turn)
+22:35:34.744 CameraSettings: loaded real per-role camera settings: C:\SeasunGame\Game\JX3\bin\zhcn_hd\userdata\binkp1\双线区\破阵子\测试角色\custom.dat
+22:35:34.744 CameraSettings: mapId=296 sceneInit=1 yaw=5.109930 pitch=-0.219 max=821 drag=1.00/1.00 eyeScale=1.00
+22:35:34.744 CameraSettings: operationMode=joystick perModeFollow classic=0 joystick=0
+22:35:34.745 CameraSettings extra: mode=1 resetSpring=1.00 resetCam=1.00 smoothing=1 curve=0 eyeFollow=1
+22:35:34.745 opmode applied: op=joystick followMode=0 springReset=1.00 cameraReset=1.00
+22:35:34.745 CameraSystem ready: mode=character dist=821u height=200u units/m=100 op=joystick
+22:35:34.746 view angle factor=1
+22:35:34.747 fov source=client-max-default angle=60.00 deg (1.0472 rad) factor=1.2500 [panel 30-60, default 50]
+22:35:34.747 view angle factor applied=1.250002
+22:35:35.088 spawn=(18991,962,33853) view=(0.00,1.00)
+22:35:35.677 player handle=5848161368
+22:35:35.678 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+22:35:36.185 anchor bone: actor=0x1026336A0 idx=1
+22:35:36.436 spawn ground settle took 250ms py=962
+22:35:36.436 target ui: RC_UI_ROOT not set - target HUD art disabled
+22:35:36.443 target dummy rid=35901 model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl' ani='data\source\npc_source\练功木桩001\动作\wj_练功木桩001_st02.ani' handle=4342616968 at (18991,961,34253)
+22:35:36.443 target entity registered: 初级试炼木桩 lv131 hp=500000000 (Tab = facing cone search)
+22:35:36.444 target dummy ani -> 0
+22:35:36.444 camera yaw init=-1.571 (view dir 0.00,1.00)
+22:35:36.447 hotkeys: source=embedded (proof/movement/extracted snapshot) rows=286 commands=430 overrides=0
+22:35:36.447 hotkeys: context=''
+22:35:36.448 hotkey MOVEFORWARD = W / Up
+22:35:36.448 hotkey MOVEBACKWARD = S / Down
+22:35:36.448 hotkey STRAFELEFT = A
+22:35:36.448 hotkey STRAFERIGHT = D
+22:35:36.448 hotkey TURNLEFT =  / Left
+22:35:36.450 hotkey TURNRIGHT =  / Right
+22:35:36.450 hotkey JUMP = Space
+22:35:36.450 hotkey TOGGLERUN = Num/
+22:35:36.450 hotkey TOGGLEAUTORUN = G / NumLock
+22:35:36.450 mount: data ride=0 model='data\source\NPC_source\Horse\模型\Horse_01_01a_00.mdl' rider='data\source\player\f1\动作\f1bqg_horse_run.ani'
+22:35:36.456 jump: mode=chain school=0 scale=0.520 (apex 191u ~ 191cm per jump)
+22:35:36.456 WARNING: RC_DJUMP=chain is a TEST HARNESS - NOT GAME BEHAVIOR. The J1+ rows are the 轻功 flight arcs; the client consumes them only in the powered move-record path (KCharacter::Jump 0x313975: [char+0x1F8] != 0 plus the power pool [char+0x20194+idx*4]), and the air-jump grant comes from script op MAX_JUMP_COUNT (attribute [char+0x334], setter 0x140431180). The host has no 轻功 grant, so chain output is labeled 'HARNESS - NOT GAME BEHAVIOR'. See docs/character/3_5_3_7_RAGDOLL_SWIM_FLY.md
+22:35:36.457 states: waterBoxes=0 swim=300u/s chainSegTicks=20 suspendDemo=0
+22:35:36.459 skillmove table: 7 rows from <embedded>
+22:35:36.460 camera init applied mapId=296 yaw=5.110 gamePitch=-0.219 modelPitch=0.219
+22:35:36.462 clip -> data\source\player\f1\动作\f1b02yd小跳c.ani (0)
+22:35:36.464 terrain load (2,1) ms=0.2 holes=0 cache=2
+22:35:36.516 EngineRay: ready scene=0x102F08DB0 terrain+950=0x1026A4450 terrain+A28=0x0 vtB8=True space=0x782B44B8 spaceRay=True entity=0x11DC56488 entityRay=True entCount=10 guardCell=0x3F4449E0
+22:35:36.530 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+22:35:37.970 camBind rc=0 pos=(19299.6,1437.3,33113.2) cam=0000000102F08DB0 posOff=0x9E0 bound=1
+22:35:37.971 camObjDump: obj=0000000102F08DB0 vt=00007FF90FBC5598 48=00007FF90E373870(1) 50=00007FF90E373A40(1) 58=00007FF90E398810(1) 60=00007FF90E373C70(1)
+22:35:37.971 slot50: slot50=00007FF90E373A40: 48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 41 56
+22:35:37.972 slot58: slot58=00007FF90E398810: 40 53 48 83 EC 30 4C 89 4C 24 20 BB 05 40 00 80 4D 8B C8 4C 8B C2 48 8B
+22:35:37.972 slot60: slot60=00007FF90E373C70: 48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 65 48 8B 04 25 58 00 00 00
+22:35:37.972 slot68: slot68=00007FF90E373D50: 48 89 5C 24 18 48 89 6C 24 20 56 57 41 56 48 83 EC 40 48 8B FA 48 8B F1
+22:35:38.467 t=2s fps=275 pos=(18991,962,33853) vy=0 grounded=True blocked=False hits=0 colCalls=30 colBlocked=0 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=16 clip=f1b01ty普通待机01.ani mount=off
+22:35:38.995 jump xy takeoff vj=(0,0) u/s dir=(0.00,0.00)
+22:35:38.995 djb press n=1 mode=chain triple=40,90,11 vy=702 g=1287 pos=18991,962,33853  [HARNESS - NOT GAME BEHAVIOR]
+22:35:38.995 chain: seg=1 start ticks=20 endMs=+1333 [HARNESS - NOT GAME BEHAVIOR]
+22:35:38.996 clip -> data\source\player\f1\动作\f1b02yd小跳b.ani (0)
+22:35:39.528 djb apex n=1 py=1125 modelY=1130
+22:35:39.530 clip -> data\source\player\f1\动作\f1b02yd小跳c.ani (0)
+22:35:39.661 jump xy takeoff vj=(0,0) u/s dir=(0.00,0.00)
+22:35:39.661 djb press n=2 mode=chain triple=30,300,20 vy=2340 g=2340 pos=18991,1115,33853  [HARNESS - NOT GAME BEHAVIOR]
+22:35:39.662 chain: seg=2 start ticks=20 endMs=+1333 [HARNESS - NOT GAME BEHAVIOR]
+22:35:39.662 clip -> data\source\player\f1\动作\f1b02yd二段跳a.ani (0)
+22:35:40.463 jump xy takeoff vj=(0,0) u/s dir=(0.00,0.00)
+22:35:40.463 djb press n=3 mode=chain triple=50,400,20 vy=3120 g=2340 pos=18991,2176,33853  [HARNESS - NOT GAME BEHAVIOR]
+22:35:40.463 chain: seg=3 start ticks=20 endMs=+1333 [HARNESS - NOT GAME BEHAVIOR]
+22:35:40.471 t=4s fps=279 pos=(18991,2374,33853) vy=2964 grounded=False blocked=False hits=0 colCalls=60 colBlocked=0 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=11 clip=f1b02yd二段跳a.ani mount=off
+22:35:41.727 djb apex n=3 py=4152 modelY=4152
+22:35:41.728 clip -> data\source\player\f1\动作\f1b02yd小跳c.ani (0)
+22:35:41.796 chain: end seg=3 end=60,90,11 vy=702 pos=(18991,4142,33853) [HARNESS - NOT GAME BEHAVIOR]
+22:35:41.797 clip -> data\source\player\f1\动作\f1b02yd小跳b.ani (0)
+22:35:42.396 djb apex n=1 py=4305 modelY=4310
+22:35:42.397 clip -> data\source\player\f1\动作\f1b02yd小跳c.ani (0)
+22:35:42.470 t=6s fps=282 pos=(18991,4295,33853) vy=-156 grounded=False blocked=False hits=0 colCalls=90 colBlocked=0 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=5 clip=f1b02yd小跳c.ani mount=off
+22:35:44.472 t=8s fps=260 pos=(18991,1323,33853) vy=-2730 grounded=False blocked=False hits=0 colCalls=120 colBlocked=0 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=6 clip=f1b02yd小跳c.ani mount=off
+22:35:44.596 clip -> data\source\player\f1\动作\f1b02yd握拳小跳c.ani (0)
+22:35:44.596 land drop=1214u roll=1 clip=f1b02yd握拳小跳c.ani rc=0
+22:35:44.597 djb land n=1 pos=18991,962,33853 vy=-2902 drop=1214
+22:35:45.298 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+22:35:45.466 terrain stats terrLoads=2 msTotal=4.1 msMax=3.9 last=0.2 cache=2 zeroRetries=0
+22:35:45.466 shutdown sound ok
+22:35:45.467 shutdown log ok
+22:35:45.468 shutdown memory ok
+22:35:45.468 DONE

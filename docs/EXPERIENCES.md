@@ -5032,3 +5032,45 @@ if the cache/host frames appear.
   moving triple, double-press reject with mount intact, facing dot +1.00 at all
   headings; 2 run logs + 6 screenshots + fingerprints; gates ALL PASS / 36/36.
 
+
+### 2026-10-06 - 3x-states: water-entry AV root cause (lazy RCPI_Scene hash) + seed fix
+
+- Follow-up to the waterguard entry above: the guard stopped the crash by blocking
+  movement; the root cause was still open. Re-triaged the dump + disasm: the
+  `+0x12282B3` fault is a NULL rbtree find (0x18105CF50) whose key is the engine's
+  lazily computed FNV-1 of "RCPI_Scene" (129 per-call-site value slots in
+  KG3DEngineDX11EX64; the D6 seed covers one at 0x2D5BBD0, the water/render path reads
+  others - crash site guard 0x2D5BD08 / value 0x2D5BD10). The guard gate can let a
+  render worker read a slot before init -> hash 0 -> miss -> NULL deref.
+  FNV-1("RCPI_Scene") = 0x392E0BFA0428F080 (validated against the D6 seed constant).
+- Fix: the client seeds all 129 slots before LoadMap (slot==0 only), gated on the
+  engine PE timestamp 0x6AA7C1F5; `RC_SEED_RCPISCENE=0` A/B. The interim movement
+  guard was removed as superseded (movement into water is no longer blocked).
+- Verified: seed off -> crash x3 at 0x12282B3 (crash_before_215647 / 220045,
+  crash_seed_off_221659); seed on -> clean standing at the bed and driving through the
+  basin to y=-551 (`seed_on_stand_221934`, `seed_on_drive_222125`,
+  `seed_on_final_222651`; the user's own 22:28 runs also clean). Honest variance: one
+  seed-off run was clean - the race is timing-dependent (`seed_off_race_clean_222616`).
+  Gates: build 0, smoke ALL PASS, collision 36/36.
+- Method + slot table: `proof/character/3x_states/seed_rcpiscene_slots.txt`; docs
+  updated (`VOID_SPAWN_CRASH_TRIAGE.md` §4, `3_5_3_7_RAGDOLL_SWIM_FLY.md`).
+- Outcome: water-entry crash fixed at the engine lookup; the engine water *physics*
+  layer stays M2 scope (re-open when the engine build changes - the seed logs
+  `not seeded`).
+
+
+### 2026-10-06 - Correction: the W6 entry overstated the 轻功 part (harness, not game behavior)
+
+The earlier W6 entry ("轻功 chain End phase ... implemented and verified") overstated the
+轻功 item: `RC_DJUMP=chain` is a **test harness**, not the game's system. Decoded the
+real gate (`KCharacter::Jump`): plain air presses are accepted while
+`jumpCount < [char+0x334]` (granted by script op `MAX_JUMP_COUNT`, tiny setter
+`0x140431180`) and apply the J0-profile 二段跳; the J1+ flight rows are consumed only
+in the powered move-record path (`0x313975`: `[char+0x1F8] != 0` + power pool
+`[char+0x20194+idx*4]`), which needs a 轻功 grant the host does not have. Fixes:
+plain presses now gate on the modeled `RC_MAXJUMP` grant (default 2), every chain
+harness line is labeled `HARNESS - NOT GAME BEHAVIOR` (startup warning too), and the
+3_5_3_7 doc section was rewritten from "how to play" to the harness + decoded path
+with citations. The real grant source (which buffs/skills invoke the ops) and the
+power-pool values remain undecoded (re-open criteria in the doc).
+
