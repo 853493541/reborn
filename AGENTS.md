@@ -279,8 +279,18 @@ dotnet run --project ui-process-app
   explicitly asks**.
 - **Engine ops**: engine init ~24 s, each test run ~2 min — automate with env switches and
   log/timestamp outputs; kill stale hosts before rebuilds; never run two engine clients in
-  the same memory namespace (concurrent isolated feature builds are allowed — §2);
-  commit recon dumps so they are never redone.
+  the same memory namespace (concurrent isolated feature builds are allowed — §2); commit recon
+  dumps so they are never redone.
+- **Frozen client (raw V2 client, user rule 2026-10-06)**: a freeze is expected during V2 work —
+  detect it clearly, **grab the logs, then kill the client**. Use
+  `tools\netcode\watch_freeze.py` (hung = no WM_NULL answer + `IsHungAppWindow` + a static
+  screen for `--frozen-secs`, default 90 s; the static-screen check separates a freeze from a
+  long loading screen). On freeze it copies the client's own KG3D engine log
+  (`zhcn_hd\logs\KG3D_Engine\<date>\`), the stub/gateway tails, a one-shot state read and a
+  screenshot into `C:\jx3tmp\freeze_<stamp>\` and then terminates the client. For live test
+  sessions run it in the background: `C:\jx3tmp\run_freeze_watch.cmd` (hidden via
+  `launch_hidden.ps1`); stop the watcher when the session ends (it must never run while the
+  user's real client is playing).
 - **Background processes**: never launch long-lived processes (emulator, stub, watchers)
   with `Start-Process` from the tool shell — `.venv\Scripts\python.exe` is a venv redirector
   that spawns the real interpreter as a child; on a tool timeout-kill the redirector dies but
