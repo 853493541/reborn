@@ -844,7 +844,16 @@ namespace UiProcessApp.Engine
                         applied++;
                         break;
                     case "Show":
-                        hidden.Remove(section.Name);
+                        // Show(bShow): the engine's setter takes a boolean, so
+                        // Show(false) hides (TopMenu's parked dropdown list is hidden
+                        // at rest this way and must not render at its off-window spot).
+                        if (parts.Length > 2 && parts[2].Equals("false", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (!string.Equals(section.Name, rootName, StringComparison.OrdinalIgnoreCase))
+                                hidden.Add(section.Name);
+                        }
+                        else
+                            hidden.Remove(section.Name);
                         applied++;
                         break;
                     case "Hide":
@@ -1114,6 +1123,8 @@ namespace UiProcessApp.Engine
 
             if (hidden.Count > 0)
             {
+                if (Environment.GetEnvironmentVariable("RC_RUNTIME_DEBUG") == "1")
+                    Console.Error.WriteLine("runtime hidden=" + hidden.Count + " containsList=" + hidden.Contains("WndContainer_List") + " keepBefore=" + filtered.Sections.Count);
                 bool Dropped(string name)
                 {
                     var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -1151,12 +1162,77 @@ namespace UiProcessApp.Engine
                     foreach (var name in restore) hidden.Remove(name);
                 }
                 var keep = filtered.Sections.Where(s => !Dropped(s.Name)).ToList();
-                // A replay whose hides collapse the window (less than half the authored
-                // sections visible) is a stub-session reset whose mode-driven Show never
-                // ran (LuckyMeeting hid both page variants, 145 -> 3 sections). Keep the
-                // authored layout in that case; the authored INI is the client's default.
-                if (keep.Count * 2 < filtered.Sections.Count)
-                    keep = filtered.Sections.ToList();
+                // Reset-like collapse (the script hid every alternative and the data-gated
+                // Show never ran): a page-set always shows one page, so restore each
+                // fully-hidden page-set's default page. Everything else stays hidden -
+                // a replay that hides on-demand popups at rest is legitimate (TopMenu
+                // hides its parked dropdowns; showing them parked is the wrong-place
+                // artifact this guard used to reintroduce).
+                if (keep.Count * 5 < filtered.Sections.Count)
+                {
+                    bool restored = false;
+                    foreach (var ps in filtered.Sections)
+                    {
+                        if (!string.Equals(ps.Get("._WndType"), "WndPageSet", StringComparison.OrdinalIgnoreCase)) continue;
+                        var pages = new List<string>();
+                        for (int i = 0; i < 64; i++)
+                        {
+                            var page = ps.Get("Page_" + i);
+                            if (string.IsNullOrWhiteSpace(page)) break;
+                            pages.Add(page);
+                        }
+                        if (pages.Count == 0) continue;
+                        bool allHidden = true;
+                        foreach (var page in pages)
+                        {
+                            if (!hidden.Contains(page) && !Dropped(page)) { allHidden = false; break; }
+                        }
+                        if (!allHidden) continue;
+                        string fallbackPage = null;
+                        for (int i = 0; i < pages.Count; i++)
+                        {
+                            var tab = ps.Get("CheckBox_" + i);
+                            if (!string.IsNullOrWhiteSpace(tab) && filtered.ByName.TryGetValue(tab, out var tabSec) &&
+                                tabSec.GetInt("CheckedWhenCreate") == 1)
+                            {
+                                fallbackPage = pages[i];
+                                break;
+                            }
+                        }
+                        fallbackPage ??= pages[0];
+                        hidden.Remove(fallbackPage);
+                        restored = true;
+                    }
+                    if (restored) keep = filtered.Sections.Where(s => !Dropped(s.Name)).ToList();
+                    // Still collapsed: only revert the hides when nothing parked was
+                    // hidden. A hidden section authored off-window (Left/Top < 0, e.g.
+                    // TopMenu's parked dropdown host) means the replay is hiding
+                    // on-demand popups at rest - legitimate, and re-showing them parked
+                    // is the wrong-place artifact. Otherwise it is the stub-session
+                    // reset (LuckyMeeting's page variants are authored inside).
+                    if (keep.Count * 5 < filtered.Sections.Count)
+                    {
+                        bool parkedHidden = false;
+                        foreach (var name in hidden)
+                        {
+                            if (!filtered.ByName.TryGetValue(name, out var hiddenSection)) continue;
+                            if (hiddenSection.GetInt("Left") < 0 || hiddenSection.GetInt("Top") < 0)
+                            {
+                                parkedHidden = true;
+                                break;
+                            }
+                        }
+                        if (!parkedHidden) keep = filtered.Sections.ToList();
+                    }
+                }
+                if (Environment.GetEnvironmentVariable("RC_RUNTIME_DEBUG") == "1")
+                    Console.Error.WriteLine("runtime keep=" + keep.Count + " droppedList=" + Dropped("WndContainer_List") + " hasByName=" + filtered.ByName.ContainsKey("WndContainer_List"));
+                // A replay whose hides collapse the window (less than a fifth of the
+                // authored sections visible) is a stub-session reset whose mode-driven
+                // Show never ran (LuckyMeeting hid both page variants, 145 -> 3).
+                // Keep the authored layout in that case; the authored INI is the
+                // client's default. A legitimate partial hide (TopMenu hides its parked
+                // dropdowns, ~half the sections) is honored.
                 if (keep.Count != filtered.Sections.Count)
                 {
                     filtered.Sections.Clear();
