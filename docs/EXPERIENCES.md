@@ -2529,3 +2529,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   different world-entry binder. NEXT: trace the id-10 equal-path (0x14015A178..0x14015A1A8)
   control flow precisely (does it really exit or continue to the guard?).
 - Workflow: long autonomous blocks per the user.
+
+### 2026-10-06 — V2: id 189 (0xBD) = the world-bind handler; gate chain traced to the cell check
+- fn 0x14015FA70 is REGISTERED as S2C handler id 189 (0xBD), min size 7 (registration at
+  0x14011E973: lea -> 0x14015FA70, slot [rdi+0x16A40] -> id 189, size [rdi+0x18218]=7).
+  Its flow: local player lookup (0x140174D10 by [client+4]) -> scene lookup
+  0x140174E50(client, [client+0x14]=map, [client+0x18]=region) -> cell check
+  0x1401830B0(scene, cellX=posX>>11, cellY=posY>>11, 1) -> vtable +0x8D8 notify ->
+  THE GUARD 0x140173D90 (player pos + scene) -> the setter stores player+0x60.
+- Live with map=1 (scene registry has (1,0)) + id 189 sent after op3: player+0x60 still 0 ->
+  the flow exits before the setter => the CELL CHECK 0x1401830B0(scene,0,0,1) fails (or the
+  scene lookup) - that is the last gate. The scene registry at client+0x5673D8 (map +8) holds
+  (1,0) -> 0x... so the lookup should pass; the cell check's scene grid is the suspect.
+- Stub now sends id 189 (11 B) after the enter-scene answer; wrapper map=1.
