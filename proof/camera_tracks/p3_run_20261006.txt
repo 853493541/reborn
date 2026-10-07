@@ -1,0 +1,45 @@
+P3 evidence - minimal camera UI in the host client (2026-10-06)
+================================================================
+
+Build:  reborn_client_cameratracks.exe (title sandbox-cameratracks)
+Run A:  baseline HUD (no track, no skill effect)
+Run B:  RC_CAM_ANI=13_0.mani + RC_SKILL_MOVE_CAM=20788,1000 (effect holds 100 s)
+Both:   RC_HUD_OPEN=1 RC_HUD_LOG=1 RC_HUD_DUMP=<png> RC_AUTORUN=20000
+
+HUD camera line (verbatim RC_HUD_LOG output)
+--------------------------------------------
+A: hudtext fps=260 cam=character yaw=1.40 dist=2000 fov=60deg obst=ON len=1830
+B: hudtext fps=283 cam=character yaw=1.40 dist=2000 fov=100deg obst=off len=1862 ani f174/175 skillmove s1
+
+Interpretation
+--------------
+- `fov 60deg` baseline = the VideoSettings base (factor 1.250002 * 0.837757 rad).
+- `fov 100deg` = base 60 + skill 20788's +0.70 rad (40.1 deg) - the temporary FOV
+  holds at stage s1 exactly as the P2 effect computes.
+- `obst ON len 1830` (follow camera pulled in) vs `obst off len 1862` (authored track
+  bypasses obstruction) - the state line reflects the real per-frame pipeline.
+- `ani f174/175` = the P1 track sampler at its held last frame.
+
+Layered-buffer fingerprints (tools/proof/image_stats.py --grid 4x4)
+-------------------------------------------------------------------
+A p3_hud_base.png  633x237  sha256=4f03679348fa6f2b
+B p3_hud_ani.png   678x237  sha256=6195fb17b0419776
+(the width change is the added camera-line text; both distinct)
+
+Keys added (host test keys, P3)
+-------------------------------
+F5 = cycle camera rows (character -> sprint -> carrier -> air_combat -> npc_dialog -> god)
+F6/F8 = base FOV -/+ 5 deg (clamped 10..170 deg, factor = angle / 0.837757)
+PgUp/PgDn = follow distance +/- 100 u (clamped 100..5000)
+Esc/I = toggle the panel (existing); the panel's top line now also shows the camera row.
+Settings stay read-only (no custom.dat writes); persistence is deferred to the
+settings-UI (system 4) - registered.
+
+Reproduce
+---------
+$env:RC_CLIENT_EXE='reborn_client_cameratracks.exe'; client\build_client.cmd
+# cwd = C:\SeasunGame\MovieEditor
+$env:RC_HUD_OPEN='1'; $env:RC_HUD_LOG='1'
+$env:RC_HUD_DUMP='C:\SeasunGame\MovieEditor\bin64\reborn_out\p3_hud_base.png'
+$env:RC_AUTORUN='20000'; & bin64\reborn_client_cameratracks.exe
+# B: add RC_CAM_ANI=<13_0.mani> and RC_SKILL_MOVE_CAM='20788,1000', new dump path

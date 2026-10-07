@@ -50,11 +50,47 @@ $env:RC_DEMO='1'; $env:RC_AUTORUN='22000'
 # log: bin64\reborn_out\reborn_<ts>.log — look for the sound: lines + skill cast
 ```
 
+## Step 2 — native Wwise path (event/bank calls succeed, source does not render)
+
+Status: **partial** (2026-10-05, `agent/audio-native`). The Wwise API chain works,
+but no audio renders, so the client verifies rendering per cast and **falls back
+to the WAV** — the user hears the skill sound via the registered provisional.
+
+- What works (`native/sound_probe.cpp`, loaded when `RC_BANK` is set):
+  `LoadBankMemoryView(Init.bnk)` → `LoadBankMemoryView(skillremake.bnk)` →
+  `RegisterGameObj(1)` + `AddDefaultListener(1)` → `PostEvent(3378728138, 1)`.
+  AKRESULT 1 = `AK_Success`; `playingId=1` returned; Wwise `IsInitialized=1`
+  (48 kHz, 1024/帧).
+- What fails: the bank's audio is **streamed** (`161340541.wem`, bank has 0
+  embedded RIFF blocks), and the editor host's Wwise IO cannot resolve it —
+  `GetSourcePlayPosition(playingId)` returns `AK_Fail` and position 0 in every
+  configuration tried: staged media tree + cwd switch, `SetCurrentLanguage`
+  (`Base`/empty), name and id file variants. No render → silence.
+- Client behavior: after `PostEvent`, `SoundProbe.Diag(pid)` requires the source
+  position to advance; if not, native is disabled and the WAV plays for that cast
+  (`sound-native: no rendering (streamed media unresolved) - WAV fallback`).
+- Root cause (completed 2026-10-05, HIRC + IO evidence): the event is a plain
+  Play of Sound `0x9253BB`, whose media reference is `161340541` (size 22,067).
+  The shipped bank contains only `BKHD` + `HIRC` — **no `DIDX`/`DATA` media
+  chunks** — so the media must be streamed. In-host, the Wwise stream manager
+  and file-location resolver are non-null, the cwd/language/media tree are all
+  set, yet a KernelBase `CreateFileW` hook records **zero media open attempts**:
+  the host's stream device has no usable low-level IO hook for these media (the
+  game client supplies that layer; the editor install does not).
+  Closing it therefore requires the game's `IAkLowLevelIOHook`/media-delivery
+  path (recover its interface evidence-first; do not guess the ABI), or finding
+  the shell's own bank/media loader.
+
+- Env: `RC_BANK=<path to skillremake.bnk>` enables the native attempt;
+  `RC_SOUND_MEDIA=<staged tree>` sets the media root; `RC_SOUND_NATIVE=0`
+  disables; `RC_SOUND_EVENT=<id>` overrides the event (default 3378728138).
+
 ## Confidence
 
 | Claim | Conf. | Source |
 |---|---|---|
-| Wwise init succeeds in the product host | HIGH | run log `sound: KG3DSoundCLR.Init ok` |
-| skill WAV plays (winmm accepted) | HIGH | run log `play rc=True` (audibility not machine-verifiable) |
-| engine SoundTag still silent | MED | no engine Wwise lines in the run; Frida evidence in `SOUND_PATH.md` |
-| native tag path needs the missing bank load | LOW | hypothesis; next probe = find the client's bank-load call |
+| Wwise init succeeds in the product host | HIGH | run log `sound: KG3DSoundCLR.Init ok`; `IsInitialized=1`, 48 kHz |
+| native banks load + event posts (API level) | HIGH | probe log rc=1 both banks, `playingId=1`, `reborn_20261005_1843*` |
+| native source does **not** render (streamed media unresolved) | HIGH | `playPos rc=2/2 pos=0/0` in all tried configs (`sound_probe_streamed_media_diag_20261005.log`) |
+| audible path is the WAV fallback | HIGH | run `reborn_20261005_1902*`: `no rendering … WAV fallback` then `skill wav play rc=True` |
+| engine SoundTag dispatch silent in host | HIGH | instrumented hooks, `NATIVE_AUDIO_PROBE.md` |

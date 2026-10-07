@@ -1,0 +1,25 @@
+D1 - clean shutdown A/B (2026-10-05, branch agent/host-polish)
+Build: reborn_client_hostpolish.exe (RC_STARTUP=nodb, RC_AUTORUN=5000), one run per mode.
+Each step is guarded/logged; exit code recorded after DONE.
+
+RC_SHUTDOWN    steps executed                 exit code      note
+0 (disabled)   none                           0              baseline behaviour (clean)
+sound          sound.UnInit()                  0              clean
+engine         engine.UnInit3DEngine()        -1073741819    AV (0xC0000005) after "DONE"
+log            baselib.UninitLog()             0              clean
+mem            baselib.UnInitMemory()          0              clean
+all            sound+engine+log+mem           -1073741819    AV (engine step)
+safe (default) sound+log+mem                   0              clean; shipped default
+
+Evidence logs (bin64\reborn_out, fingerprint build=reborn_client_hostpolish.exe):
+- default/safe : reborn_20261005_213613.log
+    shutdown sound ok / shutdown log ok / shutdown memory ok / DONE   exit=0
+- engine repro : reborn_20261005_213628.log
+    shutdown engine ok / DONE                                          exit=0xC0000005
+- mode matrix   : reborn_20261005_213411..213529.log (0/sound/engine/log/mem/all)
+
+Boundary (registered): engine.UnInit3DEngine() is not safe to call at this process
+lifecycle point - the process AVs after DONE (engine-internal teardown). Default
+`safe` releases Wwise/log/memory and exits cleanly; engine uninit stays available as
+`RC_SHUTDOWN=engine` for reproduction. Re-open: recover the editor's own close sequence
+(MovieEditorHD teardown path / IL) or an engine-side fix, then re-run this matrix.
