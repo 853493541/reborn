@@ -3375,5 +3375,21 @@ HIGH-confidence findings:
   (a `[RLScene+X]` field or the represent singleton) and call
   `KRLDummyMgr::Create` + `KRLDummy::CreateDummyEntity`/`AddRenderer` with the F1 model.
   Evidence: rep string/xref scan; static disasm.
+
+## 2026-10-07 - Gate 4 manager-capture hook hazard (why not a quick hook)
+
+- `KRLDummyMgr::Init` registers event functors with the event mgr
+  (`[rep_main+0x25BC0]`): struct `{vtable=rep+0xC9F5D0 (fn 0x4100C0/0x411500), this=mgr}`,
+  passed to `rep+0x1DF48` -> `0x5BC8A0`. Capturing `rdx+8` there would yield the
+  KRLDummyMgr instance.
+- BUT `0x5BC8A0` begins `mov r11,rsp; push rbx; sub rsp,0x80; ...` and later writes
+  `[r11-0x50]`/`[r11+8]` - a trampoline hook would capture the trampoline's rsp and
+  corrupt the frame (the same class of bug as the earlier `len` mistakes). The
+  `rep+0x1DF48` entry is a RIP-relative `jmp` thunk - also unsafe to replay.
+- So manager discovery must be done without trampoline-hooking that path: read the
+  event mgr's handler list at runtime, or find the `[RLScene+X]` / singleton field
+  holding the manager. `KRLDummyMgr::Init` stores `[mgr+0x2B0]=scene`.
+- Gate 4 next probe: locate the KRLDummyMgr holder (event-mgr handler list or RL scene
+  field), then `KRLDummyMgr::Create(mgr, id, arg)`. Evidence: static disasm.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
