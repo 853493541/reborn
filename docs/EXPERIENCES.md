@@ -4965,3 +4965,19 @@ if the cache/host frames appear.
   dirty=0, `d6=seed`, LoadMap 8x8, normal spawn, DONE.
 - Outcome: 3.x integration green with all five workstreams; boundaries/provisionals
   unchanged (tier gate, face SD mesh, ride fade AV, swim/chain provisionals, D selector).
+
+### 2026-10-06 - Mount seat bug fix: rider seated on b_hs, camera collapse gone
+
+- Problem (user, integration build): after T the camera zoomed in and the rider was
+  visible UNDER the horse.
+- Reproduced: mount -> camera `r` collapsed 1187 -> 63 with `hit=4.6` (terrain probe)
+  while the head-bone anchor dropped to yRaw=991 (riding clip head local y=29 with the
+  model still at ground); no obs hit unmounted (anchor 1058).
+- Fix: seat the rider model on the horse's b_hs bone (s_hs socket parent; Agent A's
+  shim FindBoneActor/ActorBoneMatrix; saddle 174 u) and compose the camera anchor from
+  the model placement (`modelPlaceX/Y/Z`) instead of the physics render pos.
+- Evidence: `proof/character/mount/run_20261006_220215_seatfix.txt` (anchor 1169 while
+  mounted, obst=0, camera stable ~1200, DONE), screenshots + fingerprints; gates
+  camera_smoke ALL PASS, collision 36/36.
+- Note: the school-999 PlayerRush rows are the acceleration/afterimage set (bqg加速跑 +
+  horse dismount columns) - not the mounted locomotion override (deviation text fixed).

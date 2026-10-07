@@ -1236,6 +1236,9 @@ internal static class RebornClient
         float lastTickX = 0f, lastTickY = 0f, lastTickZ = 0f;
         bool lastTickInit = false;
         long handle = 0, attachedHandle = -999;
+        // actual model placement (== render physics pos, or the mount seat when
+        // mounted); the camera anchor composes from THIS, not the physics pos.
+        float modelPlaceX = 0f, modelPlaceY = 0f, modelPlaceZ = 0f;
         var model = new KGModelCLR();
         string curClip = null;
         float curYaw = 0f;
@@ -1424,6 +1427,7 @@ internal static class RebornClient
                     scene.RemoveDummyModel("player");
                     handle = scene.AddDummyModel("player", actorPath, pos, rot, scl);
                 }
+                modelPlaceX = x; modelPlaceY = y; modelPlaceZ = z;
             }
             catch (Exception e) { Log("placePlayer ex: " + e.Message); }
         };
@@ -4107,19 +4111,26 @@ internal static class RebornClient
             else if (sheathOn && (long)Environment.TickCount < sheathDrawUntil) setClip(clipSheathDraw);
             else setClip(sheathOn ? clipSheathHold : clipIdle);
 
+            // mount horse follows the rider's physics position first; the seat
+            // bone matrix is read after the horse's frame is placed.
+            if (mount.Mounted)
+                mount.Update(scene, rpx, rpy, rpz, curYaw, grounded, moving, Log);
             // model update (only when changed; keeps animation alive).
             // Y must be part of the gate: a standing jump changes py only, and
             // without it the model stays at the takeoff height (stutter/"stuck
             // in the middle"); moving jumps updated via X/Z and looked fine.
-            if (Math.Abs(rpx - lastModelX) > 0.5f || Math.Abs(rpy - lastModelY) > 0.5f ||
-                Math.Abs(rpz - lastModelZ) > 0.5f ||
+            // Mounted: the rider model rides the horse's b_hs seat (the riding
+            // clips are authored relative to that bind point) - camera goes in.
+            float mpx = rpx, mpy = rpy, mpz = rpz;
+            if (mount.Mounted)
+                mount.SeatWorld(rpx, rpy, rpz, curYaw, Log, out mpx, out mpy, out mpz);
+            if (Math.Abs(mpx - lastModelX) > 0.5f || Math.Abs(mpy - lastModelY) > 0.5f ||
+                Math.Abs(mpz - lastModelZ) > 0.5f ||
                 Math.Abs(curYaw - lastModelYaw) > 0.01f)
             {
-                placePlayer(rpx, rpy, rpz, curYaw);
-                lastModelX = rpx; lastModelY = rpy; lastModelZ = rpz; lastModelYaw = curYaw;
+                placePlayer(mpx, mpy, mpz, curYaw);
+                lastModelX = mpx; lastModelY = mpy; lastModelZ = mpz; lastModelYaw = curYaw;
             }
-            if (mount.Mounted)
-                mount.Update(scene, rpx, rpy, rpz, curYaw, grounded, moving, Log);
             // re-attach whenever the dummy handle changes, including while
             // stationary (the hide/show path re-adds the dummy; without this
             // the animated model stays on the old handle and can remain visible
@@ -4257,8 +4268,8 @@ internal static class RebornClient
                 // airborne frames pass through. Kill switch RC_CAM_YFOLLOW=0.
                 // Camera anchor C1: query the engine's head-bone matrix (world =
                 // model placement x bone local); chest+90 stays the fallback.
-                double ay2Raw = py + 90.0;
-                double ax2Raw = rpx, az2Raw = rpz;
+                double ay2Raw = modelPlaceY + 90.0;
+                double ax2Raw = modelPlaceX, az2Raw = modelPlaceZ;
                 bool boneResolvedFrame = false;
                 if (boneAnchorOn && boneActor != IntPtr.Zero && boneHeadIdx != -1)
                 {
@@ -4268,15 +4279,15 @@ internal static class RebornClient
                         double aC1 = curYaw + yawOffset;
                         double txC1 = bmC1[12] * scale, tyC1 = bmC1[13] * scale, tzC1 = bmC1[14] * scale;
                         double caC1 = Math.Cos(aC1), saC1 = Math.Sin(aC1);
-                        ax2Raw = rpx + txC1 * caC1 + tzC1 * saC1;
-                        ay2Raw = rpy + tyC1;
-                        az2Raw = rpz - txC1 * saC1 + tzC1 * caC1;
+                        ax2Raw = modelPlaceX + txC1 * caC1 + tzC1 * saC1;
+                        ay2Raw = modelPlaceY + tyC1;
+                        az2Raw = modelPlaceZ - txC1 * saC1 + tzC1 * caC1;
                         boneResolvedFrame = true;
                         if (anchorDbg && Environment.TickCount - boneLogLast > 2000)
                         {
                             boneLogLast = Environment.TickCount;
                             Log(string.Format("anchorbone t=({0:F1},{1:F1},{2:F1}) yRaw={3:F1} chest={4:F1}",
-                                txC1, tyC1, tzC1, ay2Raw, rpy + 90.0));
+                                txC1, tyC1, tzC1, ay2Raw, modelPlaceY + 90.0));
                         }
                     }
                 }
@@ -4312,9 +4323,9 @@ internal static class RebornClient
                     camYSmooth = ay2Raw;
                     camYEasing = false;
                 }
-                double ax2 = boneResolvedFrame ? ax2Raw : rpx;
-                double ay2 = camYFollow ? camYSmooth : (boneResolvedFrame ? ay2Raw : (rpy + 90.0));
-                double az2 = boneResolvedFrame ? az2Raw : rpz;
+                double ax2 = boneResolvedFrame ? ax2Raw : modelPlaceX;
+                double ay2 = camYFollow ? camYSmooth : (boneResolvedFrame ? ay2Raw : (modelPlaceY + 90.0));
+                double az2 = boneResolvedFrame ? az2Raw : modelPlaceZ;
                 if (camYDbg)
                 {
                     double aStep = camYAnchorInit ? ay2 - camYAnchorPrev : 0.0;
