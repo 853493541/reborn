@@ -165,6 +165,15 @@ def collect(pid, hwnd, frozen_info, out_root):
     return d, report
 
 
+def safe_print(line):
+    """The report can contain GB18030 map names / U+FFFD; the console is GBK.
+    Never let a print encoding error kill the watcher before it reports."""
+    try:
+        print(line, flush=True)
+    except UnicodeEncodeError:
+        print(line.encode("gbk", "replace").decode("gbk", "replace"), flush=True)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--frozen-secs", type=float, default=90.0)
@@ -185,7 +194,7 @@ def main():
         if not alive or alive != pid:
             info = {"frozen": "exit", "no_pump": False, "hung_flag": False, "cpu": -1.0}
             d, rep = collect(pid, 0, info, args.out)
-            print(rep, flush=True)
+            safe_print(rep)
             print("incident dir: %s" % d, flush=True)
             return 0
         wins = F.find_game_window(pid)
@@ -206,7 +215,7 @@ def main():
             info["frozen"] = frozen
             if frozen:
                 d, rep = collect(pid, wins[0], info, args.out)
-                print(rep, flush=True)
+                safe_print(rep)
                 if not args.no_kill:
                     F.kill(pid)
                     print("client killed", flush=True)
