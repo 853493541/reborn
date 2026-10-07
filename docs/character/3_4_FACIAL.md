@@ -457,6 +457,28 @@ asserts are the only server coupling in this area; the face data itself is produ
 
 ---
 
+## Implementation status (2026-10-06, agent/3x-face)
+
+- **Offline pipeline: DONE.** `tools/character/face_data.py` parses the CNDK save
+  (crc32 verified on both real saves), validates all 187 `tBone` values against the
+  extracted `settings/FaceLiftV2/Bone/LittleGirl.tab` (0 violations), and wraps
+  `FaceLiftDataConverterX64.exe KMETAFACE` (valid JSON: BodyType/Bone=187/Decal=29/
+  FacePart, 9329 B). `selftest` = 4-stage gate, PASS.
+- **Client load path: DONE.** `client/FaceData.cs` + `RC_FACE_JSON=<json>` after
+  `model.AttachModel`; resolves `KGModelCLR.m_pModel` (`IKG3DModelProxy*`) via a
+  DynamicMethod `ldfld` (the CLR object cannot be pinned - it holds `List<long>`;
+  `FieldInfo.GetValue` rejects pointer fields). Verified in-engine:
+  `face: metaface json=metaface_01.json bytes=9329 model=0x15CE92BF8` +
+  `face: apply pending agent A shim export RC_ModelLoadMetaFaceJson`.
+- **Engine apply: PENDING agent A.** The shared `camera_shim.dll` export
+  `RC_ModelLoadMetaFaceJson(IKG3DModelProxy*, const char* json)` is owned by
+  `agent/3x-rig`; rebase on it and re-run for the visual before/after fingerprint.
+  The research's natural target is `KG3DModelProxy::LoadMetaFaceDefinitionJson`
+  (~`KG3DEngineAdapterX64.dll` 0x18012F740) on the pointer the client already resolves.
+- Evidence: `proof/character/face_pipeline_20261006.txt`; run
+  `reborn_out/reborn_20261006_192307.log`; gates: build exit 0, `camera_smoke_3x_face`
+  ALL PASS, collision 36/36.
+
 ## Reproduce (commands used)
 
 ```

@@ -4757,3 +4757,26 @@ if the cache/host frames appear.
   `docs/README.md` and AGENTS §10). Split plan for 3.x workstreams W1-W7 is in the area README.
 - Outcome: 3.x research complete to the client's limit; remaining items are host wiring or
   registered provisional/boundary items.
+
+### 2026-10-06 - Character 3.4 face pipeline (agent/3x-face): offline + client load done, apply pending A
+
+- Did: new `tools/character/face_data.py` (CNDK container parse with crc32 check; tBone
+  187 int8 with `[0]` written last; tDecal 29; tDecoration 2; clamp validation vs the
+  extracted `settings/FaceLiftV2/Bone/LittleGirl.tab`; FaceLiftDataConverterX64
+  KMETAFACE wrapper). Extracted both clamp tables (v2 2075 B / v1 558 B) and the
+  converter copy via `tools/netcode/extract_pak_paths.py` into ignored
+  `proof/character/face_tab/**` + `proof/character/fltool/`; `.gitignore` updated.
+- Verify: `face_data.py selftest` 4/4 PASS - synthetic CNDK round-trip; both real saves
+  crc-parse (0x5A067DE9 / 0xEEBF146D) with **0 V2-clamp violations**; V1 49 rows;
+  converter emits valid MetaFace JSON (Bone=187, Decal=29), output 9329 B.
+- Client: `client/FaceData.cs` + `RC_FACE_JSON` hook after `model.AttachModel`.
+  `KGModelCLR.m_pModel` is an `IKG3DModelProxy*` raw pointer and the CLR object cannot
+  be pinned (holds `List<long>`): `GCHandle.Alloc(Pinned)` fails with "non-primitive or
+  non-blittable data" and `FieldInfo.GetValue` rejects pointer fields - resolved with a
+  tiny DynamicMethod (`ldfld; ret`). Guarded P/Invoke `RC_ModelLoadMetaFaceJson` logs
+  "apply pending agent A shim export" until the shared shim lands.
+- Evidence: `proof/character/face_pipeline_20261006.txt`; run
+  `reborn_20261006_192307.log` (`metaface ... bytes=9329 model=0x15CE92BF8`, `d6=seed`,
+  DONE). Gates: build exit 0; `camera_smoke_3x_face` ALL PASS; collision 36/36.
+- Outcome: pipeline offline+load complete; visual apply + fingerprint deferred to the
+  `agent/3x-rig` rebase (agent A owns camera_shim). Branch `agent/3x-face` @ 28180fb.
