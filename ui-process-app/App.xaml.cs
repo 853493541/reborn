@@ -515,6 +515,7 @@ namespace UiProcessApp
                 var textures = new UiTexCache(assets);
                 var report = new StringBuilder();
                 int totalPlaceholders = 0, totalUnresolved = 0, totalOutOfBounds = 0;
+                var totalOobByClass = new Dictionary<string, int>(StringComparer.Ordinal);
 
                 foreach (var stage in inventory.Stages)
                 {
@@ -561,7 +562,14 @@ namespace UiProcessApp
                         host.Arrange(new Rect(0, 0, width, height));
                         host.UpdateLayout();
 
-                        var outOfBounds = new List<string>();
+                        // Out-of-window classes (docs/ui/UI_OOB_FIX_PLAN.md):
+                        //   clipped  = the viewer clips it (WndScroll viewport / $Clip) -> not visible
+                        //   parked   = authored off-window (negative Left/Top on the parent chain)
+                        //   clone    = a runtime item clone (__lt_*)
+                        //   edge-pos = an edge-anchored PosType (3/4/5/8-12)
+                        //   overhang = expected placement outside the frame (the engine draws it)
+                        var outOfBounds = new List<(string Name, string Class, string Rect)>();
+                        var oobClass = new Dictionary<string, int>(StringComparer.Ordinal);
                         foreach (var pair in build.Elements)
                         {
                             var element = pair.Value;
@@ -572,7 +580,11 @@ namespace UiProcessApp
                                 var p = element.TransformToAncestor(build.Root).Transform(new Point(0, 0));
                                 double w = element.ActualWidth, h = element.ActualHeight;
                                 if (p.X < -1 || p.Y < -1 || p.X + w > width + 1 || p.Y + h > height + 1)
-                                    outOfBounds.Add($"{pair.Key} ({p.X:F0},{p.Y:F0} {w:F0}x{h:F0})");
+                                {
+                                    var cls = ClassifyOutOfBounds(plan.Filtered, pair.Key);
+                                    outOfBounds.Add((pair.Key, cls, $"({p.X:F0},{p.Y:F0} {w:F0}x{h:F0})"));
+                                    oobClass[cls] = (oobClass.TryGetValue(cls, out var n) ? n : 0) + 1;
+                                }
                             }
                             catch { }
                         }
@@ -580,17 +592,27 @@ namespace UiProcessApp
                         totalPlaceholders += build.Placeholders.Count;
                         totalUnresolved += build.UnresolvedStrings.Count;
                         totalOutOfBounds += outOfBounds.Count;
+                        foreach (var kv in oobClass)
+                            totalOobByClass[kv.Key] = (totalOobByClass.TryGetValue(kv.Key, out var tn) ? tn : 0) + kv.Value;
 
+                        var classNote = oobClass.Count == 0
+                            ? ""
+                            : " [" + string.Join(" ", oobClass.OrderByDescending(kv => kv.Value)
+                                .Select(kv => kv.Key + "=" + kv.Value)) + "]";
                         report.AppendLine($"== {window.Id} ({window.Title}) {width:0}x{height:0} " +
                                           $"sections={plan.Filtered.Sections.Count} elements={build.Elements.Count} " +
                                           $"placeholders={build.Placeholders.Count} unresolved={build.UnresolvedStrings.Count} " +
-                                          $"outOfBounds={outOfBounds.Count}");
+                                          $"outOfBounds={outOfBounds.Count}{classNote}");
                         foreach (var item in build.Placeholders.Take(40)) report.AppendLine("   placeholder  " + item);
                         foreach (var item in build.UnresolvedStrings.Take(40)) report.AppendLine("   unresolved   " + item);
-                        foreach (var item in outOfBounds.Take(40)) report.AppendLine("   outOfBounds  " + item);
+                        foreach (var item in outOfBounds)
+                            report.AppendLine($"   oob[{item.Class}] {item.Name} {item.Rect}");
                     }
                 }
                 report.AppendLine($"TOTAL placeholders={totalPlaceholders} unresolved={totalUnresolved} outOfBounds={totalOutOfBounds}");
+                if (totalOobByClass.Count > 0)
+                    report.AppendLine("TOTAL oob classes: " + string.Join(" ", totalOobByClass.OrderByDescending(kv => kv.Value)
+                        .Select(kv => kv.Key + "=" + kv.Value)));
 
                 outPath ??= Path.Combine(AppContext.BaseDirectory, "ui_process_audit.txt");
                 File.WriteAllText(outPath, report.ToString());
@@ -602,6 +624,35 @@ namespace UiProcessApp
                 Console.WriteLine("audit failed: " + ex.Message);
                 return 1;
             }
+        }
+
+        /// <summary>Out-of-window class of a section (docs/ui/UI_OOB_FIX_PLAN.md):
+        /// `clipped` (under a WndScroll viewport or a $Clip container — the viewer clips
+        /// it, so it is not visible outside), `parked` (authored negative Left/Top),
+        /// `clone` (runtime item clone), `edge-pos` (edge-anchored PosType), else
+        /// `overhang` (expected placement outside the frame; the engine draws it).</summary>
+        private static string ClassifyOutOfBounds(IniFile ini, string sectionName)
+        {
+            if (sectionName.StartsWith("__lt_", StringComparison.OrdinalIgnoreCase)) return "clone";
+            var cursor = sectionName;
+            var guard = 0;
+            bool parked = false, edge = false;
+            while (!string.IsNullOrWhiteSpace(cursor) && guard++ < 64)
+            {
+                if (!ini.ByName.TryGetValue(cursor, out var sec)) break;
+                var type = sec.Get("._WndType") ?? "";
+                // The viewer only clips WndScroll viewports (and inventory $Clip): the
+                // bar control (WndNewScrollBar) is not a clipping parent.
+                if (type.Equals("WndScroll", StringComparison.OrdinalIgnoreCase)) return "clipped";
+                if (sec.Get("$Clip") == "1") return "clipped";
+                if (sec.GetInt("Left") < 0 || sec.GetInt("Top") < 0) parked = true;
+                int pt = sec.GetInt("PosType");
+                if (pt == 3 || pt == 4 || pt == 5 || (pt >= 9 && pt <= 12)) edge = true;
+                cursor = sec.Get("._Parent");
+            }
+            if (parked) return "parked";
+            if (edge) return "edge-pos";
+            return "overhang";
         }
 
         /// <summary>

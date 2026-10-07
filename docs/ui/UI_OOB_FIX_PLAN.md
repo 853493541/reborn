@@ -9,12 +9,21 @@ labelled rather than "fixed" by invention.
 
 ## 1. Measured baseline (2026-10-07)
 
-- `--audit` detail is capped at 40 items/window (`.Take(40)`, `App.xaml.cs:590`); the analysis
-  below parses the first 40 of every window: **6,254 of 7,690** elements.
-- Raw classes (first 40/window): scroll 1,194 · parked (negative Left/Top on the parent chain)
-  1,347 · negative-pos 457 · edge-PosType 149 · not-in-ini 204 · other 2,903.
-- Post-filter (excluding scroll/parked/runtime clones): **container-overhang 1,548 ·
-  leaf-content 1,204 · decor-art 708**.
+**P0 is DONE** — `--audit` now writes every flagged element with its class
+(`oob[class] name (x,y wxh)`) and a `TOTAL oob classes:` line (no more 40/window cap).
+The uncapped split of **oob=7,690**:
+
+| class | count | meaning |
+|---|---|---|
+| `overhang` | 3,516 | expected placement outside the frame; the engine draws it (C) |
+| `clipped` | 2,168 | under a `WndScroll` viewport / `$Clip` — the viewer clips it (D) |
+| `parked` | 1,633 | authored negative Left/Top on the parent chain (B candidate) |
+| `edge-pos` | 371 | edge-anchored PosType 3/4/5/9-12 (A candidate) |
+| `clone` | 2 | runtime item clone (`__lt_*`) |
+
+The earlier capped analysis (first 40/window, 6,254 elements) gave scroll 1,194 · parked 1,347 ·
+negative-pos 457 · edge 149 · other 2,903, and the post-filter container 1,548 / leaf 1,204 /
+decor 708 — consistent with the uncapped totals.
 - Frame sizing: 1,123 root `WndFrame`s carry **no** `AutoSize` key, 95 carry `=1`, 26 `=0`.
   The engine's INI decoder (`UI::KUiComponentsDecoder::DecodeItem`, KGUIX64 0x1800b83f0; AutoSize
   xref at 0x1800b86df) writes `Width`/`Height` with the auto-size field cleared and `AutoSize`
@@ -45,19 +54,18 @@ frames on purpose, so clipping everything would invent behavior.
 
 ## 3. Phases
 
-**P0 — honest measurement (0.5-1 session).**
-1. Raise/remove the 40/window audit cap; keep the report readable with a per-class summary.
-2. Classify every flagged element into A/B/C/D:
-   - D: walk the parent chain for a clipping control (WndScroll/WndNewScrollBar, `$Clip`).
-   - B: element is runtime-hidden or a list prototype (the runtime TSV's `Clear`/`AppendItemFromIni`
-     receivers), or its `LockShowAndHide`/`show` state says hidden.
-   - A vs C: compare the rendered rect with the plan's expected rect (the layout pass already
-     computes the intended position/size; carry it through the build, or recompute from the plan).
-3. Output: `actionable=A+B` separate from `overhang=C` and `clipped=D`, plus the A/B per-window
-   lists. This turns the current 7,690 into a work queue.
-4. Tool placement: extend `App.xaml.cs --audit` (viewer math is there) or add
-   `tools/ui/oob_report.py` for offline classification; register in `docs/ui/README.md`.
-5. Acceptance: the audit prints the four classes; the A/B lists are stable across runs.
+**P0 — honest measurement — DONE (2026-10-07).**
+- `--audit` no longer caps at 40/window; every flagged element is written as
+  `oob[<class>] <name> (<x>,<y> <w>x<h>)`, the per-window header carries `[class=n ...]`, and the
+  file ends with `TOTAL oob classes:`.
+- Classifier `App.xaml.cs ClassifyOutOfBounds` (walk the `._Parent` chain):
+  `clipped` (WndScroll / `$Clip`), `parked` (negative Left/Top), `clone` (`__lt_*`),
+  `edge-pos` (PosType 3/4/5/9-12), else `overhang`.
+- Honest caveat on A vs C: the viewer's rendered rect *is* its layout output, so an automated
+  rendered-vs-expected diff would be circular. `edge-pos` (371) is the automated A-review queue;
+  the remaining `overhang` (3,516) is C unless a specific section is shown to be mis-placed in P3
+  against the engine's PosType/anchor rules (or a GT capture).
+- Acceptance met: stable per-class totals; the file is now a work queue.
 
 **P1 — engine clip/size truth (0.5 session, alongside P0).**
 1. Determine which control classes clip in the engine (WndScroll is confirmed by prior evidence;
@@ -111,17 +119,17 @@ frames on purpose, so clipping everything would invent behavior.
 ## 5. Reproduce
 
 ```powershell
-ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --audit      # ph/unresolved/oob
+ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --audit      # ph/unresolved/oob + class totals
 ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --selftest   # 1240/0/0
-# class breakdown used for section 1 (first 40/window):
-#   parse ui_process_audit.txt, join the INIs + Data/runtime_state/*.tsv,
-#   walk parent chains (scroll/parked), then split the rest by element type/name
+# the audit report now ends with e.g.
+#   TOTAL oob classes: overhang=3516 clipped=2168 parked=1633 edge-pos=371 clone=2
 .venv\Scripts\python.exe tools\ui\runtime_gap_report.py                 # dropped calls stay 1
 ```
 
-**Confidence:** baseline counts HIGH (tool output 2026-10-07); class split MED (first 40/window
-sample; P0 removes the cap); engine AutoSize default MED (DecodeItem 0x1800b86df; P1 confirms);
-clip classes MED (WndScroll HIGH from prior evidence, others to confirm).
+**Confidence:** class totals HIGH (uncapped `--audit` 2026-10-07); classifier rules HIGH (direct
+parent-chain walk, WndScroll clip HIGH from prior evidence); engine AutoSize default MED
+(DecodeItem 0x1800b86df; P1 confirms); A-vs-C split MED (needs P3 engine-rules review or GT).
 
-Last verified: 2026-10-07 (`--audit` oob=7,690; 6,254 parsed; post-filter container 1,548 /
-leaf 1,204 / decor 708; 1,123 root frames without AutoSize; 66 script-sized roots).
+Last verified: 2026-10-07 (`--audit` oob=7,690 → overhang=3,516 clipped=2,168 parked=1,633
+edge-pos=371 clone=2; 1,123 root frames without AutoSize; 66 script-sized roots; `--selftest`
+1240/0/0).

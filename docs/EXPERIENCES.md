@@ -2601,3 +2601,19 @@ solved it, and what is still open. **Newest at the bottom.**
   hidden-but-shown B / authored overhang C / clip false positive D), P1 engine clip+size truth,
   P2 fix B, P3 fix A, P4 script/page sizing, P5 gates+proof. Only A and B are bugs.
 - No code changed this entry; the commit is docs only.
+
+### 2026-10-07 — UI — oob P0: classified audit (uncapped, per-element class)
+
+- `--audit` no longer caps the detail at 40/window and now writes every flagged element as
+  `oob[class] name (x,y wxh)` plus `TOTAL oob classes:`. Classifier
+  `App.xaml.cs ClassifyOutOfBounds` walks the `._Parent` chain: `clipped` (WndScroll/$Clip),
+  `parked` (negative Left/Top), `clone` (`__lt_*`), `edge-pos` (PosType 3/4/5/9-12), else
+  `overhang`.
+- Uncapped split of oob=7,690: overhang=3,516 · clipped=2,168 · parked=1,633 · edge-pos=371 ·
+  clone=2. So 2,168 are viewer-clipped (not visible outside) and 1,633 are authored off-window —
+  the actionable review queues are `parked` (B) and `edge-pos` (A candidates).
+- Honest limit: rendered-vs-expected cannot separate A from C automatically (the render *is* the
+  viewer's layout output); A review uses `edge-pos` + the engine's PosType/anchor rules (P3), or a
+  GT capture.
+- Gates: `--selftest` 1240/0/0; `--audit` placeholders 482, unresolved 49, oob 7,690 (unchanged
+  total, now classed).
