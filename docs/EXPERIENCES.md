@@ -3271,5 +3271,21 @@ HIGH-confidence findings:
 - Full ECS prerequisites now wired in-host: named-object manager
   (0x920D10), ECS root (0x924B20), scene-system init (0xADEFD0).
 - Evidence: host_exe235.out; commit (scene-system init).
+
+## 2026-10-07 - Correction: the "local-character" chain (0x58CE20) is the CAMERA lookup
+
+- Static check of `0x58CE20`: `ecx=[scene+0xF1970]; world=0x924B(id);` then
+  `[world+0xF29E8]` (the scene node) -> `0x1B9D7` -> `[x+0x20]+0x70`. `0x1B9D7`
+  jumps to `0x304650`, which searches the scene node's hash map for the string
+  **`"camera"`** (strncmp vs rep+0xC81394). So the chain retrieves the scene's
+  **camera entity**, not the local player - the plan's "local-player" label was
+  inaccurate.
+- With the ECS scene init fixed, `[world+0xF29E8]` is non-null but the map has
+  no `"camera"` entry yet (`0x1B9D7 -> 0`). The camera entity is created by a
+  later scene/per-frame step (the host already drives its own manual camera).
+- The actual local player is created by the logic world (`AddPlayer`/
+  `LuaAddPlayer`; `LuaCreateHangPet` 0x5BE120 needs a pCharacter) - that remains
+  the open Gate 3/4 piece.
+- Evidence: host_exe235.out; static disasm.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
