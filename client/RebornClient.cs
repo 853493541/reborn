@@ -1345,6 +1345,9 @@ internal static class RebornClient
         model.AttachModel(handle);
         attachedHandle = handle;
         setClip(clipIdle);
+        // dataset-driven ability system (client port of the ability sandbox):
+        // P = picker panel, 1 = cast the selected ability
+        AbilitySystem.Init(scene, Log, setClip, form, Application.StartupPath);
         Pump(engine, 500);
 
         // Spawn ground settle (deferred): the engine streams terrain around the
@@ -1914,7 +1917,8 @@ internal static class RebornClient
                 hotkeys.Match((int)e.KeyCode, e.Control, e.Shift, e.Alt);
             for (int hi = 0; hi < hcmds.Count; hi++) keyCommand(hcmds[hi], true);
             // host/test keys outside the movement command set
-            if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; skillPressed = true; }
+            if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; AbilitySystem.RequestCast(); }
+            else if (e.KeyCode == Keys.P) AbilitySystem.Toggle();
             else if (e.KeyCode == Keys.C && !cDown) { cDown = true; teleportToStructure = true; }
             else if (e.KeyCode == Keys.I && !iDown) { iDown = true; hud.ToggleInfo(); hud.UpdateLayered(); }
             else if (e.KeyCode == Keys.F7 || e.KeyCode == Keys.OemQuestion)
@@ -2707,7 +2711,8 @@ internal static class RebornClient
                 if (now >= 12500 && !demoJumped) { demoJumped = true; jumpPressed = true; }
                 // second press while airborne (ground jump apex ~0.55 s) -> 二段跳
                 if (now >= 13000 && demoJumped && !demoJumped2) { demoJumped2 = true; jumpPressed = true; }
-                if (now >= 18500 && !demoSkilled) { demoSkilled = true; skillPressed = true; }
+                // scripted FLWS demo disabled - key 1 now drives the ability system
+            if (now >= 18500 && !demoSkilled) { demoSkilled = true; }
             }
             if (demoCollide)
             {
@@ -2976,6 +2981,9 @@ internal static class RebornClient
             double cfx = -Math.Cos(moveYaw), cfz = -Math.Sin(moveYaw);
             float hx = (float)cfx;
             float hz = (float)cfz;
+
+            // dataset-driven ability cast (client port): step machine + PSS follow
+            AbilitySystem.Tick(now, px, py, pz, curYaw);
 
             // skill
             if (skillPressed)
