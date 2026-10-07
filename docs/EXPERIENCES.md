@@ -2989,5 +2989,30 @@ HIGH-confidence findings:
   weather line 27 still fails). Next unit of work: reconstruct/drive the exe's
   KGAsyncTask group so registerTasks runs legitimately (handoff section 0).
   Evidence: host_exe202-204.out; commits 57cac00 + docs.
+
+## 2026-10-07 - Gate 1: m_tabCommon is set by KTableList::LoadConfigureFile (line 27/212 cleared)
+
+- The register/async-queue theory for m_tabCommon was a red herring. The writer
+  is the game's own `KTableList::LoadConfigureFile` (rep+0x833260): it opens
+  `"CommonKRL"` through the rep fs, `SemanticX64!CreateRLFile()` ->
+  `[kt+0x23A68] = m_pCommon`, then `m_pCommon->vt[2](file,1,1)` ->
+  `[kt+0x70] = m_tabCommon`. Evidence: the member-name asserts at rep+0xCD27E8
+  ("m_pCommon") / 0xCD27F8 ("m_tabCommon"), file name 0xCD27B0 ("CommonKRL").
+- The runTasks chain only runs the *misc* loader (0x836510); the host now calls
+  `LoadConfigureFile(kt)` at frame60 before CreateRLScene. Result:
+  `[main+0x210]` becomes non-null (`after LoadConfigureFile [main+0x210]=...`,
+  host_exe206/208) and **KRLScene::Init line 27 (weather) and line 212 now
+  PASS**. CreateRLScene proceeds far deeper: it loads the represent lua scripts
+  (`represent/scripts/rust_animation/...`) and sets up scene objects.
+- New blocker: a wild call inside CreateRLScene (exc 0xC0000005 at
+  0x...16001D, module-unknown). The VEH now also scans the raw stack and prints
+  `[VEH] stk[i]`; the chain is CreateRLScene (rep+0xB0BB74) ->
+  rep+0xAEE2DD / rep+0xAE000F / rep+0x3DB9B7 (return after `call [rax+0xD0]`
+  on `[scene+0xF1978]`) -> the wild target. Same class as the earlier wild
+  call: an uninitialized table/object in a newly reached path. Next probes are
+  in NEXT_AGENT_HANDOFF section 0.
+- VEH improvement: traces up to 60 AVs and scans 400 stack qwords for code
+  addresses (isCodeAddr) so frameless wild calls still show their callers.
+- Evidence: host_exe205-208.out; commit 5bb2f49.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.

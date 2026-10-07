@@ -67,57 +67,39 @@ the RL table chain now completes).
 
 **The remaining blocker (one logical link):** `[g_repSingleton + 0x210]`
 (m_tabCommon, read by `KRLWeatherController::Init` line 27 as
-`g_pRL->m_TableList.m_tabCommon`) is still NULL. `kt+0x70` (== singleton+0x210)
-stays NULL after the loader. A hardware **write watch on `singleton+0x210`**
-armed across the whole task run got **zero hits** — the loader does not publish
-it; the game must do it in a step the host has not run.
+`g_pRL->m_TableList.m_tabCommon`) is still NULL. **RESOLVED 2026-10-07**
+(runs 205-208): the writer is the game's own **`KTableList::LoadConfigureFile`
+(rep+0x833260)** — it opens `"CommonKRL"`, `SemanticX64!CreateRLFile()` ->
+`[kt+0x23A68]` = m_pCommon, then `m_pCommon->vt[2](file,1,1)` ->
+`[kt+0x70]` = m_tabCommon. The runTasks chain only runs the *misc* loader
+(0x836510); the host now calls LoadConfigureFile(kt) at frame60 before
+CreateRLScene. Result: `[main+0x210]` becomes non-null and **KRLScene::Init
+line 27/212 now PASS** — CreateRLScene proceeds far deeper (loads the represent
+lua scripts, sets up entities).
 
-**Prime suspect:** the **register step**. Concrete state (2026-10-07, runs
-195-201):
+**New blocker (a wild call inside CreateRLScene):** after LoadConfigureFile,
+CreateRLScene faults with `exc 0xC0000005 at 0x...16001D (module?)`. The VEH now
+also scans the raw stack (`[VEH] stk[i] ...`). The chain:
+`CreateRLScene (rep+0xB0BB74)` -> `rep+0xAEE2DD` / `rep+0xAE000F` /
+`rep+0x3DB9B7` (a return after `call [rax+0xD0]` on `[scene+0xF1978]`) -> the
+wild target. This is the same class of fault as the earlier "wild call": an
+uninitialized table/object in a newly reached path. Next probes:
 
-- The builder's list-push helper is `rep+0x3E52A0` (reached via the jmp thunk
-  at rep+0x2363C; `call` targets print as 0x2363C). It appends a node
-  `{next at +0, value at +8}` at `container+0x78` (head) / `+0x80` (tail). The
-  host now hooks it (`hookTaskPush`, 80 calls logged).
-- The builder builds a **tree of containers** and pushes the two step functors:
-  - run functor: vtable `rep+0xCD8000`, slot0 = operator() `0x80E360` ->
-    runTasks 0x80B8C0.
-  - register functor: vtable `rep+0xCD80C0`, slot1 = operator() `0x80E340` ->
-    registerTasks 0x80B6A0 (slot0 = deleting dtor 0x80C540, slot2 = no-op
-    0x1DADE).
-  The register functor IS captured in-host now (taskPush #9) into
-  `g_registerFunctor`.
-- The host invokes it at frame60 AFTER the run task, with rdx = stepCtrl
-  (param+0xC8): `registerTasks enter` FIRES for the first time, then the
-  process dies with 0xC0000005. Root cause (runs 202-204): registerTasks
-  enqueues its created tasks through `0x80CED0(queue, task)`, which dereferences
-  a sync object at `[queue+8]` and an allocator at `[queue+0x10]`. The
-  builder-created containers (class vtable `rep+0xCCE548`, captured as
-  `g_taskQueue`) and the fabricated stepCtrl both have `+8 = NULL` -> AV at
-  `[rcx+0x12]` inside `0x3E7830`. The **game's real async-task queue** (the exe
-  dispatcher creates a task group at exe+0xBC6D2) is what provides a live
-  sync object; the host never builds it.
-- The register invoke is now **gated behind `RC_HOST_REGINVOKE=1`** so normal
-  runs stay usable (run 204 baseline verified: `runTasks -> 1`, register
-  skipped, weather line 27 still fails).
+1. Identify the object at `[scene+0xF1978]` (the 3D scene) and the vtable slot
+   `[+0xD0]`; the call is at rep+0x3DB9B1. Check which loaded table/config
+   should have been applied first.
+2. Trace `rep+0xAEE2DD` (return after `call 0x15BF4`) and `rep+0xAE000F`
+   (return after `call 0xD4EA`) — likely another table-driven create that needs
+   a table the host has not loaded.
+3. If it is a missing table load, add the corresponding game loader call (as
+   done for `LoadConfigureFile`) rather than fabricating.
+4. Then re-check the CreateRLScene return and `GetRLScene(2)`.
 
-Next probes (in order):
-
-1. **Reconstruct/drive the game's async-task queue**: the queue class has a
-   sync object at `+8`, an allocator at `+0x10`, flags `+0x60`/`+0x61`, a
-   refcount `+0x64`; its vtable is `rep+0xCCE548` (slot0 = deleting dtor
-   `rep+0x80CA40`, slot1 = method `rep+0x80E440` via the 0x9E3F thunk).
-   The exe dispatcher (`exe+0xBC6A0` state 3) creates a task group
-   (`exe+0x79AEE0` alloc, list init, passed to `exe+0xA01A0`); capture that
-   group and give it a valid sync object, or use the game's own group so
-   `registerTasks` runs legitimately.
-2. Alternatively capture the real source object's `+8` sync (the builder does
-   `r15+8 = [source+8]`); if the host's param+0xA8/source is missing it, fix
-   the source wiring.
-3. Re-run with `RC_HOST_REGINVOKE=1`, walk the tasks registerTasks queued into
-   the queue, and re-check `[singleton+0x210]`.
-4. Then re-check `real CreateRLScene` (should pass line 212) and
-   `GetRLScene(2)`.
+**Superseded leads (kept for context):** the register-step / async-queue theory
+for m_tabCommon was a red herring — `LoadConfigureFile` sets it directly. The
+register functor capture/invoke machinery remains in the host but is gated
+behind `RC_HOST_REGINVOKE=1` (the fabricated stepCtrl lacks the async queue's
+`[+8]` sync object, so the invoke AVs; it is not needed for m_tabCommon).
 
 ## 1. Where the work lives — worktree + branch (READ FIRST)
 
