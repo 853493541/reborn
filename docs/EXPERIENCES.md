@@ -3156,5 +3156,22 @@ HIGH-confidence findings:
   handling RIP-relative prologues (as installTableLoadHook does) if those hooks
   are kept.
 - Evidence: host_exe224-226.out; commit 1110bd9.
+
+## 2026-10-07 - Gate 2: char chain runs on the real CreateRLScene scene
+
+- The frame60 code still ran the legacy manual "Phase C" scene creation
+  (`0x22E08` slot + `NewScene` 0x16DB5 + push + GetRLScene), which overrode the
+  real scene from `CreateRLScene` with a broken one (`3DScene=0x4`). Fixed:
+  re-fetch `GetRLScene(2)` and use the **real** scene; only run Phase C if it is
+  NULL.
+- Result (run 231): `char scene (real) = 0x…C040 (3DScene=0x…8F38)`;
+  `local character (0x58CE20) -> 0`; `char chain world = 0x924B(2) = 0x…C040`
+  (non-null); `[world+0xF29E8] = 0`. The chain runs **fault-free** on the real
+  scene. `0x924B(2)` returns the KRLScene itself (the plan's "world").
+- Gate 2 checkpoint met (non-null world/scene via the real path). Gate 3 next:
+  `[world+0xF29E8]` (local player) is 0 - the logic world must create it. The
+  logic module (`JX3LogicEditOperationX64.dll`) exposes `AddPlayer`/`LuaAddPlayer`
+  bindings; find the logic-side local-player creation and drive it.
+- Evidence: host_exe230/231.out; commit (Gate 2 fix).
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
