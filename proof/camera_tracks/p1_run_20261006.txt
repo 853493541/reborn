@@ -1,0 +1,62 @@
+P1 evidence - .mani camera track playback in the host client (2026-10-06)
+=======================================================================
+
+Run:      reborn_client_cameratracks.exe (title sandbox-cameratracks)
+Build:    git=38acd0a dirty=5, built 2026-10-06 15:36:16
+Log:      C:\SeasunGame\MovieEditor\bin64\reborn_out\reborn_20261006_153805.log
+Namespace: reborn_client_cameratracks.memory (feature build, no peer running)
+Track:    represent\camera\cameradata\13_0.mani (extracted sample; 175 frames, 80 A keys, 81 B keys)
+Env:      RC_CAM_ANI=<abs path>, RC_SHOTS=1000,2500,4000,5500, RC_AUTORUN=32000
+Shim:     d6=seed slot=0x00007FF94A61BBD0 value=0x392E0BFA0428F080 (shared shim, D6 fix present)
+Result:   no crash; DONE at ~35 s; sampled camera == applied camera on every logged frame.
+
+Key log lines (verbatim)
+------------------------
+15:38:30.036 Init3DEngine=1 err=1 ms=24094
+15:38:32.614 CameraShim: loaded rc=0 selftest=0x53484D01 ... d6=seed slot=0x00007FF94A61BBD0 value=0x392E0BFA0428F080
+15:38:32.987 spawn=(18991,962,33853) view=(0.00,1.00)
+15:38:34.380 camera track loaded: source=...\cameradata\13_0.mani duration=175f camKeys=80 aimKeys=81 fps=30 loop=False
+15:38:35.382 camani frame=30.0/175 cam=(103225,760,88590) aim=(90721,-772,110783) applied=(103225,760,88590)
+15:38:36.382 camani frame=60.0/175 cam=(103225,919,88755) aim=(90721,-772,110783) applied=(103225,919,88755)
+15:38:37.384 camani frame=90.1/175 cam=(103270,997,89308) aim=(92043,-350,109664) applied=(103270,997,89308)
+15:38:38.418 camani frame=121.1/175 cam=(103397,925,90559) aim=(95751,831,106528) applied=(103397,925,90559)
+15:38:39.418 camani frame=151.1/175 cam=(103539,911,90798) aim=(98404,-738,101685) applied=(103539,911,90798)
+15:38:40.422 camani frame=174.0/175 cam=(103539,911,90798) aim=(98404,-738,101685) applied=(103539,911,90798)   [holds last pose]
+15:38:35.418 shot -> ...\rc_00_1000ms.png
+15:38:36.915 shot -> ...\rc_01_2500ms.png
+15:38:38.418 shot -> ...\rc_02_4000ms.png
+15:38:39.916 shot -> ...\rc_03_5500ms.png
+
+Cross-check: host sampler (C#) vs verified Python reference (tools/camera/mani_probe.py)
+----------------------------------------------------------------------------------------
+frame   Python cam            C# applied cam        Python aim            C# aim
+30.0    103225,760,88590      103225,760,88590      90721,-772,110783     90721,-772,110783
+60.0    103225,919,88755      103225,919,88755      90721,-772,110783     90721,-772,110783
+90.1    103270,997,89310      103270,997,89308      92048,-349,109660     92043,-350,109664
+121.1   103397,924,90560      103397,925,90559      95753,832,106526      95751,831,106528
+151.1   103539,911,90798      103539,911,90798      98404,-738,101685     98404,-738,101685
+(max deviation 5 u on the 0.1-frame rows = frame-fraction rounding; identical on integer frames)
+
+Visual fingerprints (tools/proof/image_stats.py --grid 4x4; all four distinct)
+-------------------------------------------------------------------------------
+rc_00_1000ms.png  sha256=d1ebc60cd2dce6a5  mean=#9F9385
+rc_01_2500ms.png  sha256=1cc0332ebaa52c47  mean=#A09486
+rc_02_4000ms.png  sha256=384a2f281222bbb4  mean=#9D9184
+rc_03_5500ms.png  sha256=f3b1742091d8396a  mean=#A09689
+
+Gates (same branch)
+-------------------
+camera_smoke_cameratracks.exe: ALL PASS
+collision_selftest_reborn_client_cameratracks.exe: 36/36 PASS
+tools/netcode/reference/jx3_model.py: 10x PASS
+tools/gravity/verify_model.py: PASS
+tools/netcode/loot/capture.py selftest: PASS
+tools/camera/mani_probe.py --selftest: 14/14 PASS; --verify cameradata: 10/10 parsed
+
+Reproduce
+---------
+$env:RC_CLIENT_EXE='reborn_client_cameratracks.exe'; client\build_client.cmd
+# cwd = C:\SeasunGame\MovieEditor
+$env:RC_CAM_ANI='<abs path>\represent\camera\cameradata\13_0.mani'
+$env:RC_SHOTS='1000,2500,4000,5500'; $env:RC_AUTORUN='32000'
+& bin64\reborn_client_cameratracks.exe

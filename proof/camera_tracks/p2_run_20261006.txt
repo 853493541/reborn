@@ -1,0 +1,58 @@
+P2 evidence - skill-move camera FOV effect in the host client (2026-10-06)
+=======================================================================
+
+Run:      reborn_client_cameratracks.exe (title sandbox-cameratracks)
+Build:    git=cb5a4f2 dirty=3, built 2026-10-06 15:45:32
+Log:      C:\SeasunGame\MovieEditor\bin64\reborn_out\reborn_20261006_154545.log
+Namespace: reborn_client_cameratracks.memory (feature build)
+Trigger:  RC_SKILL_MOVE_CAM=124841,2000  (scripted; gameplay hook waits for the skill runtime)
+Row:      skill 124841: enter 1800 ms, exit 200 ms, duration 0, fov +0.30 rad, screenFX 1, edge 0.2, sat 0
+Base FOV: 60.0 deg (factor 1.250002; factor = angle / 0.837757 rad per VideoSettings)
+Result:   no crash; full in-ramp -> end cycle in 4.0 s; factor returns to base.
+
+Key log lines (verbatim)
+------------------------
+15:46:13.064 view angle factor applied=1.250002
+15:46:14.753 skillmove table: 7 rows from <embedded>
+15:46:14.753 skillmove armed skill=124841 fire=2000ms enter=1800 exit=200 dur=0 fov=0.30rad+ fx=1 edge=0.2 sat=0
+15:46:16.756 skillmove start skill=124841 t=2001ms ... (screenFX=1 edge=0.2 sat=0 logged only)
+15:46:16.756 skillmove stage=0 phase=0.00 angle=60.0deg factor=1.250 (linear ramp, provisional)
+15:46:17.258 skillmove stage=0 phase=0.28 angle=64.8deg factor=1.350 (linear ramp, provisional)
+15:46:17.759 skillmove stage=0 phase=0.56 angle=69.6deg factor=1.450 (linear ramp, provisional)
+15:46:18.324 skillmove stage=0 phase=0.87 angle=75.0deg factor=1.562 (linear ramp, provisional)
+15:46:18.756 skillmove end t=4001ms -> base factor 1.250
+15:46:17.326 shot -> ...\rc_00_2500ms.png
+15:46:18.321 shot -> ...\rc_01_3500ms.png
+15:46:18.924 shot -> ...\rc_02_4100ms.png
+
+Ramp check (linear, provisional; target = 60 + 0.30 rad = 77.19 deg)
+-------------------------------------------------------------------
+phase 0.00 -> 60.0 deg  (1.250)
+phase 0.28 -> 64.8 deg  (1.350)   expected 60 + 17.19*0.28 = 64.8  ok
+phase 0.56 -> 69.6 deg  (1.450)   expected 69.6                   ok
+phase 0.87 -> 75.0 deg  (1.562)   expected 75.0                   ok
+t=4001 ms (enter 1800 + exit 200 after fire 2001) -> base 1.250   ok
+
+Visual fingerprints (tools/proof/image_stats.py --grid 4x4; all distinct)
+-------------------------------------------------------------------------------
+rc_00_2500ms.png  sha256=ab1ac6b639357195  mean=#AE957A   (phase 0.28)
+rc_01_3500ms.png  sha256=dd932c260a1fc9f1  mean=#AF957A   (phase 0.87)
+rc_02_4100ms.png  sha256=9f66fd9275efd9d2  mean=#AF957A   (after end, base)
+
+Notes
+-----
+- Post-FX fields (screen FX / edge aberration / saturation) are logged only:
+  the host has no post-render pipeline (registered boundary, plan section 6.3).
+- The FOV ramp is LINEAR and provisional (client curve still open,
+  JX3_CAMERA_RESEARCH.md section 9; deviation registered in HOST_DEVIATIONS.md).
+- `KGLOG_ASSERT_EXIT(pRetMinDistanceRet) ... RayIntersect` appears on the console
+  in runs with obstruction probes on (also without this feature); it is not
+  written to the run log and is not caused by the FOV effect.
+
+Reproduce
+---------
+$env:RC_CLIENT_EXE='reborn_client_cameratracks.exe'; client\build_client.cmd
+# cwd = C:\SeasunGame\MovieEditor
+$env:RC_SKILL_MOVE_CAM='124841,2000'
+$env:RC_SHOTS='2500,3500,4100'; $env:RC_AUTORUN='32000'
+& bin64\reborn_client_cameratracks.exe

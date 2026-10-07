@@ -289,6 +289,22 @@ internal static class RebornClient
         }
         form.StartPosition = FormStartPosition.CenterScreen;
         form.ClientSize = new System.Drawing.Size(1280, 720);
+        // Window / render-target sizing (D3): the engine renders into a child window of
+        // the panel, so the client size drives the render target. RC_WIDTH/RC_HEIGHT
+        // override it; RC_FULLSCREEN=1 goes borderless maximized.
+        {
+            int rw = 0, rh = 0;
+            if (int.TryParse(Env("RC_WIDTH", ""), out rw) && int.TryParse(Env("RC_HEIGHT", ""), out rh)
+                && rw >= 320 && rh >= 240)
+                form.ClientSize = new System.Drawing.Size(rw, rh);
+            if (Env("RC_FULLSCREEN", "0") == "1")
+            {
+                form.FormBorderStyle = FormBorderStyle.None;
+                form.WindowState = FormWindowState.Maximized;
+            }
+            Log(string.Format("window: client={0}x{1} fullscreen={2}",
+                form.ClientSize.Width, form.ClientSize.Height, Env("RC_FULLSCREEN", "0")));
+        }
         var panel = new Panel();
         panel.Dock = DockStyle.Fill;
         form.Controls.Add(panel);
@@ -301,6 +317,14 @@ internal static class RebornClient
         if (Env("RC_HUD_OPEN", "0") == "1") hud.ShowInfo = true;   // test: start open
         form.Show();
         hud.PlaceOver(form);
+        // Loading overlay (D4): WinForms controls sit behind the engine's child window,
+        // so the loading text is a separate top-level window; RC_NOLOADING=1 disables.
+        LoadingOverlay loading = null;
+        if (Env("RC_NOLOADING", "0") != "1")
+        {
+            try { loading = new LoadingOverlay(); loading.Phase("Initializing engine..."); }
+            catch { loading = null; }
+        }
         // COPY LOG row (clickable inside the open panel); copies the recent
         // run log to the clipboard.
         hud.OnCopyLog = delegate
@@ -346,7 +370,10 @@ internal static class RebornClient
         int err = 1;
         int ok = 0;
         long t3d = Environment.TickCount;
-        try { ok = engine.Init3DEngine(startupPath, startupPath, workingDir, 0, "./configHttpFile.ini", ref err); }
+        string initCfg = Env("RC_INIT_CFG", "./configHttpFile.ini");
+        Log("initcfg=" + initCfg);
+        if (loading != null) loading.Phase("Initializing engine...");
+        try { ok = engine.Init3DEngine(startupPath, startupPath, workingDir, 0, initCfg, ref err); }
         catch (Exception e) { Log("Init3DEngine ex: " + e); return; }
         Log(string.Format("Init3DEngine={0} err={1} ms={2}", ok, err, Environment.TickCount - t3d));
         if (startupOverride)
@@ -354,6 +381,75 @@ internal static class RebornClient
         if (ok == 0) { Log("FATAL: engine init failed"); return; }
         try { VideoOptions.Apply(engine, Env("RC_GAME_CONFIG_DIR", @"C:\SeasunGame\Game\JX3\bin\zhcn_hd\config"), startupPath, Log); }
         catch (Exception e) { Log("VideoOptions ex: " + e.Message); }
+
+        // D2: engine option read-back. `KGEngineOptionProxyCLR` has public fields
+        // (recovered by RC_OPT_PROBE=1); `GetEngineOption(ref proxy)` fills them with
+        // the engine's active values. RC_OPT_DUMP=<file> writes them as key=value.
+        string optDump = Env("RC_OPT_DUMP", "");
+        if (Env("RC_OPT_PROBE", "0") == "1" || optDump.Length > 0)
+        {
+            try
+            {
+                Type pt = typeof(KGEngineCLR).Assembly.GetType("MovieEngineCLR.KGEngineOptionProxyCLR");
+                Log("optprobe type=" + (pt == null ? "(not found)" : pt.FullName));
+                if (pt != null)
+                {
+                    if (Env("RC_OPT_PROBE", "0") == "1")
+                    {
+                        foreach (System.Reflection.MemberInfo mi in pt.GetMembers(
+                            System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Static))
+                            Log("optprobe member " + mi.MemberType + " " + mi.Name);
+                    }
+                    object proxy = null;
+                    try { proxy = Activator.CreateInstance(pt); } catch (Exception e) { Log("optprobe new ex: " + e.Message); }
+                    if (proxy != null)
+                    {
+                        System.Reflection.MethodInfo gm = typeof(KGEngineCLR).GetMethod("GetEngineOption");
+                        if (gm != null)
+                        {
+                            try
+                            {
+                                object[] gmArgs = new object[] { proxy };
+                                object rc = gm.Invoke(engine, gmArgs);
+                                Log("optprobe GetEngineOption rc=" + rc);
+                                proxy = gmArgs[0];
+                            }
+                            catch (Exception e) { Log("optprobe GetEngineOption ex: " + e.Message); }
+                        }
+                        else Log("optprobe GetEngineOption method not found");
+
+                        System.Collections.Generic.List<string> lines = new System.Collections.Generic.List<string>();
+                        foreach (System.Reflection.FieldInfo fi in pt.GetFields(
+                            System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance))
+                        {
+                            string v = "(err)";
+                            try
+                            {
+                                object o = fi.GetValue(proxy);
+                                Array arr = o as Array;
+                                if (arr != null)
+                                {
+                                    string[] parts = new string[arr.Length];
+                                    for (int ai = 0; ai < parts.Length; ai++)
+                                        parts[ai] = arr.GetValue(ai).ToString();
+                                    v = string.Join(",", parts);
+                                }
+                                else v = o == null ? "(null)" : o.ToString();
+                            }
+                            catch { }
+                            lines.Add(fi.Name + "=" + v);
+                            if (Env("RC_OPT_PROBE", "0") == "1") Log("optprobe value " + fi.Name + "=" + v);
+                        }
+                        if (optDump.Length > 0)
+                        {
+                            try { File.WriteAllLines(optDump, lines.ToArray()); Log("optdump -> " + optDump + " keys=" + lines.Count); }
+                            catch (Exception e) { Log("optdump ex: " + e.Message); }
+                        }
+                    }
+                }
+            }
+            catch (Exception e) { Log("optprobe ex: " + e.Message); }
+        }
         try { Log("editor.Init result=" + editor.Init(editorRoot, err, form.Handle.ToInt64())); }
         catch (Exception e) { Log("editor.Init ex: " + e.Message); }
 
@@ -364,6 +460,22 @@ internal static class RebornClient
         // skill sound is played from the decoded WAV as a REGISTERED PROVISIONAL
         // until the native tag path is recovered (re-open: the SoundTag fires
         // with the banks loaded in the host).
+        // Wwise streamed media: the shell resolves its relative BasePath
+        // (config.ini [WwiseSetting] BasePath=data/wwiseaudio/...) at sound init,
+        // and the install is read-only. With RC_SOUND_MEDIA we switch the process
+        // cwd to a staged media tree BEFORE sound.Init so that base path resolves
+        // against it (data/wwiseaudio/GeneratedSoundBanks/Windows/<lang>/<id>.wem).
+        string mediaRoot = Env("RC_SOUND_MEDIA", "");
+        if (mediaRoot.Length > 0 && Directory.Exists(mediaRoot))
+        {
+            try
+            {
+                if (SetCurrentDirectoryW(mediaRoot))
+                    Log("sound-native: cwd for Wwise IO -> " + mediaRoot);
+                else Log("sound-native: cwd switch failed");
+            }
+            catch (Exception e) { Log("sound-native cwd ex: " + e.Message); }
+        }
         bool soundReady = false;
         if (Env("RC_SOUND", "1") != "0")
         {
@@ -374,6 +486,93 @@ internal static class RebornClient
         string skillWav = Path.Combine(Application.StartupPath, "flws_sound.wav");
         if (!File.Exists(skillWav)) { Log("sound: skill wav missing at " + skillWav); skillWav = null; }
         else Log("sound: skill wav " + skillWav);
+
+        // Sound-shell recon (1.6 native audio): which shell/branch is active and
+        // which sound modules the host actually loads. Env-gated, read-only.
+        if (Env("RC_SOUND_DBG", "0") == "1")
+        {
+            try
+            {
+                string cfg = Path.Combine(workingDir, "config.ini");
+                string ww = "(config.ini missing)";
+                try
+                {
+                    if (File.Exists(cfg))
+                    {
+                        string[] cl = File.ReadAllLines(cfg);
+                        for (int i = 0; i < cl.Length; i++)
+                            if (cl[i].IndexOf("Wwise", StringComparison.OrdinalIgnoreCase) >= 0)
+                            { ww = cl[i].Trim(); break; }
+                    }
+                }
+                catch (Exception e2) { ww = "cfg ex: " + e2.Message; }
+                Log("sound-dbg config=" + cfg + " -> " + ww);
+                Type st = typeof(KG3DSoundCLR);
+                foreach (System.Reflection.FieldInfo fi in st.GetFields(
+                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public))
+                {
+                    object v = null;
+                    try { v = fi.GetValue(sound); } catch { }
+                    Log("sound-dbg field " + fi.Name + " (" + fi.FieldType.Name + ") = " + (v == null ? "(null)" : v.ToString()));
+                }
+                foreach (System.Diagnostics.ProcessModule m in System.Diagnostics.Process.GetCurrentProcess().Modules)
+                {
+                    string mn = m.ModuleName;
+                    if (mn.IndexOf("Sound", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        mn.IndexOf("Wwise", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        mn.IndexOf("FMOD", StringComparison.OrdinalIgnoreCase) >= 0)
+                        Log("sound-dbg module " + mn);
+                }
+            }
+            catch (Exception e) { Log("sound-dbg ex: " + e.Message); }
+        }
+
+        // Native Wwise path (1.6): loads sound_probe.dll which (a) hooks the
+        // engine's PostEvent/LoadBank calls for evidence and (b) can load the
+        // game's own banks and post the skill event through the engine's Wwise.
+        // RC_SOUND_NATIVE=1 + RC_BANK=<skillremake.bnk>; WAV stays the fallback.
+        bool soundNative = false;
+        uint nativeEvent = 3378728138;   // FLWS event id (SOUND_PATH.md)
+        try
+        {
+            uint ev;
+            if (uint.TryParse(Env("RC_SOUND_EVENT", ""), out ev)) nativeEvent = ev;
+        }
+        catch { }
+        bool wantNative = Env("RC_SOUND_NATIVE", "1") != "0" && Env("RC_BANK", "").Length > 0;
+        if (Env("RC_SOUND_HOOK", "0") == "1" || wantNative)
+        {
+            try
+            {
+                string probeDll = Path.Combine(Application.StartupPath, "sound_probe.dll");
+                string probeLog = Path.Combine(Application.StartupPath, "reborn_out", "sound_probe.log");
+                IntPtr hp = SoundProbe.Load(probeDll);
+                if (hp == IntPtr.Zero)
+                    Log("sound-hook: load failed (" + probeDll + ")");
+                else
+                {
+                    int pr = SoundProbe.Init(probeLog);
+                    Log("sound-hook: init rc=" + pr + " status=" + SoundProbe.Status());
+                    if (wantNative)
+                    {
+                        string bank = Env("RC_BANK", "");
+                        if (bank.Length == 0) Log("sound-native: RC_BANK not set");
+                        else
+                        {
+                            string bankDir = Path.GetDirectoryName(bank);
+                            string initBnk = Path.Combine(bankDir, "Init.bnk");
+                            if (File.Exists(initBnk))
+                                Log("sound-native: Init.bnk rc=" + SoundProbe.LoadBankW(initBnk));
+                            int br = SoundProbe.LoadBankW(bank);
+                            if (br >= 0) { soundNative = true; Log("sound-native: bank ok id/rc=" + br); }
+                            else Log("sound-native: bank failed rc=" + br);
+
+                        }
+                    }
+                }
+            }
+            catch (Exception e) { Log("sound-hook ex: " + e.Message); }
+        }
 
         var scene = new KGSceneCLR();
         // Recon: dump the managed wrapper API surface for the player / near-plane
@@ -406,6 +605,7 @@ internal static class RebornClient
         // lazy material/shader loader (missing build-machine DataStores -> AV)
         // is not raced while running through the map. Env-gated for A/B first.
         bool fullLoad = Env("RC_FULLLOAD", "0") == "1";
+        if (loading != null) loading.Phase("Loading map...");
         long tMap = Environment.TickCount;
         int loadResult = scene.LoadMap(mapPath, false);
         long mMap = Environment.TickCount - tMap;
@@ -415,12 +615,159 @@ internal static class RebornClient
             {
                 int fr = scene.SetSceneFullLoading(true);
                 Log("fullload rc=" + fr + " progress=" + scene.GetLoadingProgress().ToString("F3"));
+                if (loading != null) loading.Phase("Loading scene... " + (scene.GetLoadingProgress() * 100.0).ToString("F0") + "%");
             }
             catch (Exception e) { Log("fullload ex: " + e.Message); }
         }
         Log("LoadMap result=" + loadResult + " ms=" + mMap);
+        if (loading != null) loading.Phase("Preparing scene...");
         if (loadResult < 0) { Log("FATAL: LoadMap failed"); return; }
+        // Environment data override (weather workstream A1): apply a host-side
+        // copy of environment.json/playerEnvironment.json via ResetEnvironment
+        // (no install write). Used to drive dayNightCycle authored values.
+        if (Env("RC_ENV_DIR", "") != "")
+        {
+            try
+            {
+                int rr = scene.ResetEnvironment(Env("RC_ENV_DIR", ""));
+                Log("env override dir=" + Env("RC_ENV_DIR", "") + " rc=" + rr);
+            }
+            catch (Exception e) { Log("env override ex: " + e.Message); }
+        }
         scene.SetActiveEnvironment();
+        // Environment/day-night recon probe (weather workstream): exact managed
+        // signatures + the active dynamic-environment timeline path.
+        if (Env("RC_ENV_PROBE", "0") == "1")
+        {
+            try
+            {
+                Type st = typeof(KGSceneCLR);
+                string[] names = new string[] { "SetTrueSkyDayTime", "GetTrueSkyDayTime",
+                    "UpdateSeasonRelativeYearTime", "GetSeasonRelativeYearTime",
+                    "SetSeasonParam", "GetSeasonParam", "CreateGDBTimelineCurveFromFile",
+                    "SetGlobalDynamicEnvTimelineInterpolationForAllTimelineKey",
+                    "GetGlobalDynamicEnvTimelineInterpolationForAllTimelineKey",
+                    "GetCurrentGDBTimelineCurvePath", "EnableSunLightArcBall",
+                    "SetActiveEnvironment", "ResetEnvironment", "GetEnvironment" };
+                foreach (string mn in names)
+                {
+                    foreach (System.Reflection.MethodInfo mi in st.GetMethods())
+                    {
+                        if (mi.Name != mn) continue;
+                        string ps = "";
+                        foreach (System.Reflection.ParameterInfo pi in mi.GetParameters())
+                            ps += pi.ParameterType.Name + " " + pi.Name + ", ";
+                        Log("envprobe sig " + mn + " -> " + mi.ReturnType.Name + " (" + ps + ")");
+                    }
+                }
+                try
+                {
+                    string mods = "";
+                    foreach (System.Diagnostics.ProcessModule m in System.Diagnostics.Process.GetCurrentProcess().Modules)
+                    {
+                        if (m.ModuleName.IndexOf("TrueSky", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                            m.ModuleName.IndexOf("Wwise", StringComparison.OrdinalIgnoreCase) >= 0)
+                            mods += m.ModuleName + " ";
+                    }
+                    Log("envprobe modules: " + (mods.Length == 0 ? "(none)" : mods));
+                }
+                catch (Exception e) { Log("envprobe modules ex: " + e.Message); }
+                try
+                {
+                    object p = st.InvokeMember("GetCurrentGDBTimelineCurvePath",
+                        System.Reflection.BindingFlags.InvokeMethod, null, scene, new object[0]);
+                    Log("envprobe gdbTimeline=" + (p == null ? "(null)" : p.ToString()));
+                }
+                catch (Exception e) { Log("envprobe gdbTimeline ex: " + e.Message); }
+                try
+                {
+                    object t = st.InvokeMember("GetTrueSkyDayTime",
+                        System.Reflection.BindingFlags.InvokeMethod, null, scene, new object[0]);
+                    Log("envprobe trueSkyDayTime=" + (t == null ? "(null)" : t.ToString()));
+                }
+                catch (Exception e) { Log("envprobe trueSkyDayTime ex: " + e.Message); }
+            }
+            catch (Exception e) { Log("envprobe ex: " + e.Message); }
+        }
+        // Environment phase-2 probe: seasonal time/params, sun arcball, GDB
+        // interpolation + the KG_EnvironmentCLR method surface (A1 candidates).
+        if (Env("RC_ENV_PROBE", "0") == "2")
+        {
+            try
+            {
+                object env = scene.GetEnvironment();
+                if (env != null)
+                {
+                    foreach (System.Reflection.MethodInfo mi in env.GetType().GetMethods(
+                        System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance))
+                    {
+                        if (mi.DeclaringType == typeof(object)) continue;
+                        string ps = "";
+                        foreach (System.Reflection.ParameterInfo pi in mi.GetParameters())
+                            ps += pi.ParameterType.Name + ",";
+                        Log("envobj " + mi.Name + " -> " + mi.ReturnType.Name + " (" + ps + ")");
+                    }
+                }
+                int sr1 = scene.UpdateSeasonRelativeYearTime(0.25f);
+                Log(string.Format("season relative set rc={0} get={1:F3}", sr1, scene.GetSeasonRelativeYearTime()));
+                scene.SetSeasonParam(true, 0.25f, 1.0f);
+                bool be = false; float st = 0f, si = 0f;
+                scene.GetSeasonParam(ref be, ref st, ref si);
+                Log(string.Format("season param enable={0} time={1:F3} intensity={2:F3}", be, st, si));
+                int sr2 = scene.EnableSunLightArcBall(1);
+                Log("sunArcBall rc=" + sr2);
+                int sr3 = scene.SetGlobalDynamicEnvTimelineInterpolationForAllTimelineKey(1.0f);
+                Log(string.Format("gdbInterp rc={0} get={1:F3}", sr3, scene.GetGlobalDynamicEnvTimelineInterpolationForAllTimelineKey()));
+            }
+            catch (Exception e) { Log("envprobe2 ex: " + e.Message); }
+        }
+        // Phase-3 probe: real-system day time + sun/moon intensity together.
+        if (Env("RC_ENV_PROBE", "0") == "3")
+        {
+            try
+            {
+                object env = scene.GetEnvironment();
+                Type et = env.GetType();
+                Log(string.Format("envprobe3 init dayTime={0} tz={1} sunMax={2} moonMax={3}",
+                    InvokeEnv(et, env, "GetRealSystemDayTime"),
+                    InvokeEnv(et, env, "GetRealSystemTimezone"),
+                    InvokeEnv(et, env, "GetRealSystemMaxSunLightIntensity"),
+                    InvokeEnv(et, env, "GetRealSystemMaxMoonLightIntensity")));
+                InvokeEnv(et, env, "SetRealSystemTimezone", 0f);
+                InvokeEnv(et, env, "SetRealSystemDayTime", 0.25f);
+                InvokeEnv(et, env, "SetRealSystemMaxSunLightIntensity", 6.0f);
+                InvokeEnv(et, env, "SetRealSystemMaxMoonLightIntensity", 0.37f);
+                Log(string.Format("envprobe3 after dayTime={0} sunMax={1} moonMax={2}",
+                    InvokeEnv(et, env, "GetRealSystemDayTime"),
+                    InvokeEnv(et, env, "GetRealSystemMaxSunLightIntensity"),
+                    InvokeEnv(et, env, "GetRealSystemMaxMoonLightIntensity")));
+            }
+            catch (Exception e) { Log("envprobe3 ex: " + e.Message); }
+        }
+        // Day-time knob (weather workstream A1): the environment object's
+        // real-system day time is the day-night driver (RC_ENV_PROBE dump);
+        // SetTrueSkyDayTime is a no-op without KG3D_TrueSkyX64.dll (game-client only).
+        if (Env("RC_DAYTIME", "") != "")
+        {
+            float v;
+            if (float.TryParse(Env("RC_DAYTIME", "0.5"), out v))
+            {
+                try
+                {
+                    object env = scene.GetEnvironment();
+                    if (env != null)
+                    {
+                        InvokeEnv(env.GetType(), env, "SetRealSystemDayTime", v);
+                        InvokeEnv(env.GetType(), env, "SetRealSystemTimezone", 0f);
+                        object g = InvokeEnv(env.GetType(), env, "GetRealSystemDayTime");
+                        Log(string.Format("daytime real-system set {0:F3} -> get {1}", v, g));
+                    }
+                    scene.SetTrueSkyDayTime(v);
+                    Log(string.Format("daytime truesky set {0:F3} -> get {1:F3}", v, scene.GetTrueSkyDayTime()));
+                }
+                catch (Exception e) { Log("daytime ex: " + e.Message); }
+            }
+        }
         long winId = scene.AddOutputWindow("", panel.Handle.ToInt64(), 0);
         Log("winId=" + winId);
 
@@ -776,6 +1123,7 @@ internal static class RebornClient
                 camSys.Row.F("CameraHeight", 2.0) * camSys.UnitsPerMeter, camSys.UnitsPerMeter,
                 CameraOperationMode.Name(cameraSettings.OperationMode)));
         }
+        float baseViewAngle = 1f;
         try
         {
             // FOV: the editor's view-angle factor. A wider value makes the
@@ -790,6 +1138,7 @@ internal static class RebornClient
                 Log("view angle factor test override=" + va);
             }
             scene.SetViewAngleFactor(va);
+            baseViewAngle = va;
             Log("view angle factor applied=" + va);
         }
         catch (Exception e) { Log("view angle: " + e.Message); }
@@ -897,6 +1246,64 @@ internal static class RebornClient
             {
                 // default test spawn on 龙门寻宝 (override with RC_SPAWN=x,y,z)
                 px = 18991f; py = 962f; pz = 33853f;
+            }
+            // Spawn-extent validation (crash guard): on the 4x4 海岛绝境 map an
+            // out-of-extent actor AVs the engine render stack
+            // (KG3DEngineDX11EX64+0x12282B3, reproduced 2026-10-05; see
+            // docs/movement/VOID_SPAWN_CRASH_TRIAGE.md). Clamp test spawns into
+            // the map extent (one cell margin) with a loud log; in play the
+            // actor cannot leave the extent (x/z are server/map-owned).
+            if (sampler != null)
+            {
+                float loX = sampler.ExtentMinX + 100f, hiX = sampler.ExtentMaxX - 100f;
+                float loZ = sampler.ExtentMinZ + 100f, hiZ = sampler.ExtentMaxZ - 100f;
+                float cx = px, cz = pz;
+                if (cx < loX) cx = loX; else if (cx > hiX) cx = hiX;
+                if (cz < loZ) cz = loZ; else if (cz > hiZ) cz = hiZ;
+                if (cx != px || cz != pz)
+                {
+                    Log(string.Format(
+                        "spawn clamped into map extent: ({0:F0},{1:F0}) -> ({2:F0},{3:F0}) [extent {4:F0}..{5:F0} x {6:F0}..{7:F0}]",
+                        px, pz, cx, cz, sampler.ExtentMinX, sampler.ExtentMaxX,
+                        sampler.ExtentMinZ, sampler.ExtentMaxZ));
+                    px = cx; pz = cz;
+                    // A clamped point can still land on sub-sea-level ground or a
+                    // hole, where the engine render stack AVs (2026-10-06, with the
+                    // camera workstream active; see VOID_SPAWN_CRASH_TRIAGE.md §2).
+                    // Relocate to the nearest in-extent point with solid ground
+                    // above sea level (bounded spiral over real loader data).
+                    float g;
+                    if (!sampler.SampleGround(px, pz, out g) || g <= 0f)
+                    {
+                        float[] sdx = new float[] { 1f, 0f, -1f, 0f, 1f, -1f, 1f, -1f };
+                        float[] sdz = new float[] { 0f, 1f, 0f, -1f, 1f, 1f, -1f, -1f };
+                        bool found = false;
+                        float bx = px, bz = pz, bg = 0f;
+                        for (int ring = 1; ring <= 64 && !found; ring++)
+                        {
+                            float r = ring * 1024f;
+                            for (int k = 0; k < 8 && !found; k++)
+                            {
+                                float tx = px + sdx[k] * r, tz = pz + sdz[k] * r;
+                                if (tx < loX || tx > hiX || tz < loZ || tz > hiZ) continue;
+                                float tg;
+                                if (sampler.SampleGround(tx, tz, out tg) && tg > 0f)
+                                {
+                                    bx = tx; bz = tz; bg = tg; found = true;
+                                }
+                            }
+                        }
+                        if (found)
+                        {
+                            Log(string.Format(
+                                "spawn relocated to solid ground: ({0:F0},{1:F0}) -> ({2:F0},{3:F0}) ground={4:F0}",
+                                px, pz, bx, bz, bg));
+                            px = bx; pz = bz;
+                        }
+                        else
+                            Log("spawn guard: no solid above-sea-level point found in extent; keeping clamped spawn");
+                    }
+                }
             }
             // The physics terrain loader tracks the engine's streamed terrain:
             // right after the camera jumps it can return all-zero heights for
@@ -1557,6 +1964,42 @@ internal static class RebornClient
                 alignAim();
                 Log("camera view preset: " + (e.KeyCode == Keys.End ? "front" : "behind"));
             }
+            else if (e.KeyCode == Keys.F5)
+            {
+                // host test key (P3): cycle the camera rows. No gameplay trigger
+                // (WW removed 2026-09-30); rows are test-reachable only.
+                string[] rows = new string[] {
+                    CameraSystem.MODE_CHARACTER, CameraSystem.MODE_SPRINT,
+                    CameraSystem.MODE_CARRIER, CameraSystem.MODE_AIR_COMBAT,
+                    CameraSystem.MODE_NPC_DIALOG, CameraSystem.MODE_GOD };
+                int ridx = 0;
+                for (int i = 0; i < rows.Length; i++) if (rows[i] == camSys.Mode) ridx = i;
+                string nextRow = rows[(ridx + 1) % rows.Length];
+                camSys.SwitchMode(nextRow, false);
+                Log("camera row -> " + nextRow + " (F5 cycle)");
+            }
+            else if (e.KeyCode == Keys.F6 || e.KeyCode == Keys.F8)
+            {
+                // host test key (P3): base FOV +/- 5 deg (factor = angle / 0.837757)
+                double d5 = 5.0 * Math.PI / 180.0;
+                double ang = baseViewAngle * VideoSettings.DefaultAngle +
+                             (e.KeyCode == Keys.F8 ? d5 : -d5);
+                if (ang < 10.0 * Math.PI / 180.0) ang = 10.0 * Math.PI / 180.0;
+                if (ang > 170.0 * Math.PI / 180.0) ang = 170.0 * Math.PI / 180.0;
+                baseViewAngle = (float)(ang / VideoSettings.DefaultAngle);
+                try { scene.SetViewAngleFactor(baseViewAngle); } catch (Exception) { }
+                Log(string.Format("camera fov base -> {0:F1} deg (factor {1:F3})",
+                    ang * 180.0 / Math.PI, baseViewAngle));
+            }
+            else if (e.KeyCode == Keys.PageUp || e.KeyCode == Keys.PageDown)
+            {
+                // host test key (P3): follow distance +/- 100 u
+                double d = camSys.Distance + (e.KeyCode == Keys.PageUp ? 100.0 : -100.0);
+                if (d < 100.0) d = 100.0;
+                if (d > 5000.0) d = 5000.0;
+                camSys.Distance = d;
+                Log(string.Format("camera distance -> {0:F0} u (PgUp/PgDn)", d));
+            }
         };
         form.KeyUp += delegate(object s, KeyEventArgs e)
         {
@@ -1630,8 +2073,29 @@ internal static class RebornClient
         // meshes. Capsule radius scaled from the old adult preset (25 at 170)
         // by the same ratio.
         float playerRadius = 17f, playerHeight = 116f;
-        float.TryParse(Env("RC_RADIUS", "17"), out playerRadius);
-        float.TryParse(Env("RC_HEIGHT", "116"), out playerHeight);
+        // Body-type capsule (registered proxy): authored heights from
+        // Represent/player/player.txt ModelHeight (cm; UNIT_SCALE doc §4)
+        // scaled by the host proportion r=0.136*H, h=0.928*H (125 -> 17/116,
+        // the M1 花萝 values). RC_BODY=f1|m1|f2|m2; explicit RC_RADIUS /
+        // RC_HEIGHT still win.
+        {
+            string body = Env("RC_BODY", "");
+            float bodyH = body == "f1" ? 125f
+                        : body == "m1" ? 125f
+                        : body == "f2" ? 173f
+                        : body == "m2" ? 185f : 0f;
+            if (bodyH > 0f)
+            {
+                playerRadius = (float)Math.Round(bodyH * 0.136f, 1);
+                playerHeight = (float)Math.Round(bodyH * 0.928f, 1);
+                Log(string.Format("capsule body={0} ModelHeight={1:F0} -> r={2:F1} h={3:F1} (player.txt proxy)",
+                    body, bodyH, playerRadius, playerHeight));
+            }
+        }
+        string radEnv = Env("RC_RADIUS", "");
+        if (radEnv.Length > 0) float.TryParse(radEnv, out playerRadius);
+        string hgtEnv = Env("RC_HEIGHT", "");
+        if (hgtEnv.Length > 0) float.TryParse(hgtEnv, out playerHeight);
         // Character step budget (host proxy for the server-authoritative step;
         // the client's own prediction has no capsule-vs-mesh blocking at all,
         // CLIENT_COLLISION_IMPROVEMENT_PLAN 8.3). 64 u = the game-side ground/landing
@@ -1655,6 +2119,7 @@ internal static class RebornClient
         int propFixEvents = 0;
         long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0, lastPostLog = 0, lastMouseDragMs = 0;
         long hitchMaxMs = 0;   // max unclamped frame delta since the last status line
+        long hudHitchMs = 0;   // max unclamped frame delta since the last HUD update (D7)
         // camera anchor-Y smooth-follow (B14): the engine smooths the followed
         // character position (JX3RepresentX64 "DynamicFollowSmoothObjectPosition",
         // CharacterCameraSmoothTime=60 ms in Represent/common/number.krl.txt).
@@ -1743,6 +2208,7 @@ internal static class RebornClient
         double aimPitchOverride = double.NaN;   // set when the ground clamp moves the camera
         int adjYawPx = 0, adjPitchPx = 0;       // CameraMovePitch*/FollowYaw feed (RC_MOVE_PITCH)
         bool camDebug = Env("RC_CAM_DEBUG", "0") == "1";
+        bool hudLog = Env("RC_HUD_LOG", "0") == "1";   // P3: log the HUD text (test)
         // M0 knob: disable the park-below character hide so the engine's own
         // near-plane clipping can be bracketed with the clearance ladder
         bool hideNear = Env("RC_PLAYER_HIDE", "1") == "1";
@@ -1776,6 +2242,86 @@ internal static class RebornClient
         }
         bool camSetTarget = Env("RC_CAM_SET_TARGET", "0") == "1";
         bool camSnapGuard = Env("RC_CAM_SNAPGUARD", "0") == "1";
+        // Workstream B P1: .mani camera-track playback (RC_CAM_ANI=<path>[,loop]).
+        // The sampler drives camera + look-at through the normal engine set path;
+        // obstruction/shake/snapguard are bypassed for authored tracks.
+        CameraTrack camTrack = null;
+        bool camTrackActive = false;
+        long lastTrackLog = 0;
+        {
+            string camAniEnv = Env("RC_CAM_ANI", "");
+            if (camAniEnv.Length > 0)
+            {
+                bool trackLoop = false;
+                int comma = camAniEnv.LastIndexOf(',');
+                if (comma > 1)
+                {
+                    string tail = camAniEnv.Substring(comma + 1).Trim().ToLowerInvariant();
+                    if (tail == "loop") { trackLoop = true; camAniEnv = camAniEnv.Substring(0, comma); }
+                }
+                try
+                {
+                    camTrack = CameraTrack.Load(camAniEnv);
+                    float fpsOv;
+                    if (float.TryParse(Env("RC_CAM_ANI_FPS", ""), out fpsOv) && fpsOv > 0f)
+                        camTrack.Fps = (int)fpsOv;
+                    camTrack.Play(trackLoop);
+                    Log("camera track loaded: " + camTrack.Describe() + " loop=" + trackLoop);
+                }
+                catch (Exception e)
+                {
+                    Log("camera track load failed: " + e.Message);
+                    camTrack = null;
+                }
+            }
+        }
+        // Workstream B P2: skill-move camera FOV (skill_move_camera.txt, GB18030
+        // columns decoded 2026-10-06: value <30 = FOV increase in radians,
+        // >=30 = fixed FOV in degrees). The FOV ramp is LINEAR (provisional -
+        // the client's curve is still open, HOST_DEVIATIONS); post-FX fields
+        // are logged only (no post pipeline in the host).
+        SkillMoveCamera.LoadEmbedded(Log);
+        string smcTable = Env("RC_SKILL_MOVE_TABLE", "");
+        if (smcTable.Length > 0) SkillMoveCamera.LoadFile(smcTable, Log);
+        SkillMoveCamera.Effect skillMoveFx = null;
+        SkillMoveCamera.Row skillMoveRow = null;
+        double skillMoveFireMs = -1.0;
+        {
+            string smc = Env("RC_SKILL_MOVE_CAM", "");
+            if (smc.Length > 0)
+            {
+                string[] parts = smc.Split(',');
+                int sid;
+                if (int.TryParse(parts[0].Trim(), out sid))
+                {
+                    skillMoveRow = SkillMoveCamera.Get(sid);
+                    if (skillMoveRow == null)
+                    {
+                        Log("skillmove: no table row for skill " + sid + " (effect skipped)");
+                    }
+                    else
+                    {
+                        skillMoveFireMs = 1000.0;
+                        if (parts.Length > 1)
+                        {
+                            double fm;
+                            if (double.TryParse(parts[1].Trim(), out fm)) skillMoveFireMs = fm;
+                        }
+                        skillMoveFx = new SkillMoveCamera.Effect();
+                        Log(string.Format("skillmove armed skill={0} fire={1:F0}ms enter={2:F0} exit={3:F0} dur={4:F0} fov={5} fx={6} edge={7} sat={8}",
+                            sid, skillMoveFireMs, skillMoveRow.EnterMs, skillMoveRow.ExitMs,
+                            skillMoveRow.DurationMs,
+                            skillMoveRow.FixedFov
+                                ? skillMoveRow.FovValue.ToString("F0") + "deg"
+                                : skillMoveRow.FovValue.ToString("F2") + "rad+",
+                            skillMoveRow.ScreenFx ? 1 : 0, skillMoveRow.Edge, skillMoveRow.Sat));
+                    }
+                }
+                else Log("skillmove: bad RC_SKILL_MOVE_CAM=" + smc);
+            }
+        }
+        long lastSkillMoveLog = 0;
+        int skillMoveStage = -1;   // HUD: current skill-FOV stage (0 in / 1 hold / 2 out)
         bool camPokeOnce = Env("RC_CAM_POKE_ONCE", "0") == "1";
         // legacy look-at approximation: experiment only, default OFF. The
         // engine-faithful path (m_pScene -> cam vt+0x50 pos / vt+0x58 look-at,
@@ -1877,11 +2423,13 @@ internal static class RebornClient
 
         var sw = System.Diagnostics.Stopwatch.StartNew();
 
+        if (loading != null) { loading.Done(); loading = null; }
         while (!form.IsDisposed)
         {
             long now = sw.ElapsedMilliseconds;
             long rawFrameMs = now - lastMs;   // unclamped: hitch evidence
             if (rawFrameMs > hitchMaxMs) hitchMaxMs = rawFrameMs;
+            if (rawFrameMs > hudHitchMs) hudHitchMs = rawFrameMs;
             float dt = (now - lastMs) / 1000f;
             lastMs = now;
             if (dt < 0f) dt = 0f;
@@ -2439,7 +2987,23 @@ internal static class RebornClient
                 // camera shake on the cast (host default; per-skill shake rows
                 // are data-gated)
                 camShake.Start(2.0, 0.5, 0.8, 3);
-                if (skillWav != null)
+                bool playedNative = false;
+                if (soundNative)
+                {
+                    // ensure the media cwd + Wwise language at cast time too
+                    // (the engine resets the process cwd during map load)
+                    string media = Env("RC_SOUND_MEDIA", "");
+                    if (media.Length > 0) SoundProbe.SetMediaDir(media);
+                    uint pid = SoundProbe.PostEvent(nativeEvent, 1);
+                    Log("sound: native post id=" + nativeEvent + " playing=" + pid);
+                    if (pid != 0 && SoundProbe.Diag(pid) == 1) playedNative = true;
+                    else
+                    {
+                        soundNative = false;
+                        Log("sound-native: no rendering (streamed media unresolved) - WAV fallback");
+                    }
+                }
+                if (!playedNative && skillWav != null)
                 {
                     bool played = PlaySound(skillWav, IntPtr.Zero,
                         SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
@@ -3012,6 +3576,9 @@ internal static class RebornClient
                 // no automatic camera-mode switching: the sprint trigger
                 // (double-tap W, WW) was removed 2026-09-30; the sprint row is
                 // reachable only through the RC_CAM_MODE test harness.
+                // P1 track playback clock (frames at 30 fps; RC_CAM_ANI_FPS overrides)
+                camTrackActive = camTrack != null && camTrack.Active;
+                if (camTrackActive) camTrack.Update(dt * 1000.0);
                 double dist = camSys.UpdateDistance(dt) * cameraSettings.EyeScale;
                 // any distance change (zoom, sprint pull-back, EyeScale)
                 // changes the aim pitch; flag a re-pin (S1)
@@ -3109,7 +3676,7 @@ internal static class RebornClient
                 string hitSrc = "";
                 bool obstDbg = Env("RC_CAM_OBSTDBG", "0") == "1";
                 if (colProf) camSw.Restart();
-                bool doCamQuery = true;
+                bool doCamQuery = !camTrackActive;
                 if (camQueryHz > 0.0)
                 {
                     camQueryAcc += dt;
@@ -3363,9 +3930,23 @@ internal static class RebornClient
                         hitDist, hitSrc, offLen, camLen));
                 }
 
-                double camX = ax2 + rSm[0];
-                double camY = ay2 + rSm[1];
-                double camZ = az2 + rSm[2];
+                double camX, camY, camZ;
+                if (camTrackActive)
+                {
+                    // authored .mani track: camera position from track A, look-at
+                    // from track B; no orbit/obstruction/shake/terrain-clamp.
+                    double tkx, tky, tkz, tax, tay, taz;
+                    camTrack.Sample(camTrack.Frame,
+                        out tkx, out tky, out tkz, out tax, out tay, out taz);
+                    ax2 = tax; ay2 = tay; az2 = taz;
+                    camX = tkx; camY = tky; camZ = tkz;
+                    aimPitchOverride = double.NaN;
+                }
+                else
+                {
+                camX = ax2 + rSm[0];
+                camY = ay2 + rSm[1];
+                camZ = az2 + rSm[2];
                 aimPitchOverride = double.NaN;
                 if (sampler != null)
                 {
@@ -3387,10 +3968,11 @@ internal static class RebornClient
                 camX += camShake.Offset[0];
                 camY += camShake.Offset[1];
                 camZ += camShake.Offset[2];
+                }
                 // final-camera wall gate (T1.5): the camera->anchor segment must
                 // be clear; if any wall sits between, retract along that line so
                 // the camera can never sit on the far side of geometry
-                if (wallGate && engineRay.Available)
+                if (!camTrackActive && wallGate && engineRay.Available)
                 {
                     // same camera gate as the probes
                     float g1 = col != null ? col.Raycast((float)camX, (float)camY, (float)camZ,
@@ -3516,7 +4098,12 @@ internal static class RebornClient
                         Log("camset native failed rc=" + brc + ", falling back");
                     }
                 }
-                if (!usedNativeCam)
+                if (!usedNativeCam && camTrackActive)
+                {
+                    // authored track: one exact managed set, no snap guard
+                    scene.SetCameraPos((float)camX, (float)camY, (float)camZ, false);
+                }
+                else if (!usedNativeCam)
                 {
                     // B7 (experimental, opt-in RC_CAM_SNAPGUARD=1): SetCameraPos
                     // lifts the camera to the render surface at its xz when the
@@ -3571,6 +4158,54 @@ internal static class RebornClient
                         Log(string.Format("setdbg moved={0:F1} intended=({1:F0},{2:F0},{3:F0}) actual=({4:F0},{5:F0},{6:F0})",
                             sd, camX, camY, camZ, sx, sy, sz));
                 }
+                if (camTrackActive && now - lastTrackLog >= 1000)
+                {
+                    lastTrackLog = now;
+                    float tx2 = 0f, ty2 = 0f, tz2 = 0f;
+                    try { scene.GetCameraPos(ref tx2, ref ty2, ref tz2); } catch { }
+                    Log(string.Format("camani frame={0:F1}/{1:F0} cam=({2:F0},{3:F0},{4:F0}) aim=({5:F0},{6:F0},{7:F0}) applied=({8:F0},{9:F0},{10:F0})",
+                        camTrack.Frame, camTrack.Duration, camX, camY, camZ, ax2, ay2, az2, tx2, ty2, tz2));
+                }
+                // P2 skill-move camera FOV (scripted trigger; gameplay hook waits
+                // for the skill runtime - FLWS has no table row).
+                if (skillMoveRow != null)
+                {
+                    if (!skillMoveFx.Active && skillMoveFireMs >= 0.0 && now >= skillMoveFireMs)
+                    {
+                        skillMoveFx.Start(skillMoveRow, now);
+                        Log(string.Format("skillmove start skill={0} t={1}ms enter={2:F0} exit={3:F0} dur={4:F0} fov={5} (screenFX={6} edge={7} sat={8} logged only)",
+                            skillMoveRow.SkillId, now, skillMoveRow.EnterMs, skillMoveRow.ExitMs,
+                            skillMoveRow.DurationMs,
+                            skillMoveRow.FixedFov
+                                ? skillMoveRow.FovValue.ToString("F0") + "deg"
+                                : skillMoveRow.FovValue.ToString("F2") + "rad+",
+                            skillMoveRow.ScreenFx ? 1 : 0, skillMoveRow.Edge, skillMoveRow.Sat));
+                    }
+                    if (skillMoveFx.Active)
+                    {
+                        double smPhase; int smStage;
+                        double smAngle = skillMoveFx.AngleAt(now, baseViewAngle * VideoSettings.DefaultAngle,
+                            out smPhase, out smStage);
+                        skillMoveStage = smStage;
+                        if (smAngle > 0.0)
+                        {
+                            float smFactor = (float)(smAngle / VideoSettings.DefaultAngle);
+                            try { scene.SetViewAngleFactor(smFactor); } catch (Exception) { }
+                            if (now - lastSkillMoveLog >= 500)
+                            {
+                                lastSkillMoveLog = now;
+                                Log(string.Format("skillmove stage={0} phase={1:F2} angle={2:F1}deg factor={3:F3} (linear ramp, provisional)",
+                                    smStage, smPhase, smAngle * 180.0 / Math.PI, smFactor));
+                            }
+                        }
+                        else
+                        {
+                            try { scene.SetViewAngleFactor(baseViewAngle); } catch (Exception) { }
+                            Log(string.Format("skillmove end t={0}ms -> base factor {1:F3}", now, baseViewAngle));
+                            skillMoveRow = null;   // one-shot scripted effect
+                        }
+                    }
+                }
 
                 // Character visibility near the camera: the native client fades
                 // the character out as the camera closes in (engine model fade
@@ -3605,6 +4240,7 @@ internal static class RebornClient
 
             engine.FrameMove();
             if (soundReady) { try { sound.FrameMove(); } catch { } }
+            if (soundNative) { try { SoundProbe.Render(); } catch { } }
             // Step C test: write the model's exact placement into a post-process
             // camera record BETWEEN FrameMove and Render (bypasses the clamp)
             if (camPreIdx >= 0 && preSet && CameraShim.Available &&
@@ -3954,17 +4590,34 @@ internal static class RebornClient
                 float moveSpeed = shiftDown ? pRun * 10f
                                 : walkMode ? pSpeed
                                 : pRun;
+                double hudFovFactor = 1.0;
+                try { hudFovFactor = scene.GetViewAngleFactor(); } catch (Exception) { }
+                string camExtra = string.Format(" fov {0:F0}deg obst {1} len {2:F0}",
+                    hudFovFactor * VideoSettings.DefaultAngle * 180.0 / Math.PI,
+                    camObst.Obstructed ? "ON" : "off", dbgLen);
+                if (camTrackActive)
+                    camExtra += string.Format(" ani f{0:F0}/{1:F0}", camTrack.Frame, camTrack.Duration);
+                if (skillMoveRow != null)
+                    camExtra += string.Format(" skillmove s{0}", skillMoveStage);
                 hud.SetText(string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}\nclip {11}\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport | Esc info\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}{11}\nclip {12}\nhitch {13}ms\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport | Esc info\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view\nF5 row | F6/F8 fov | PgUp/PgDn dist",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
-                    camSys.Mode, camSys.Yaw, camSys.Distance,
-                    curClip == null ? "-" : Path.GetFileName(curClip)));
+                    camSys.Mode, camSys.Yaw, camSys.Distance, camExtra,
+                    curClip == null ? "-" : Path.GetFileName(curClip),
+                    hudHitchMs));
+                if (hudLog)
+                    Log("hudtext " + string.Format(
+                        "fps={0} cam={1} yaw={2:F2} dist={3:F0} fov={4:F0}deg obst={5} len={6:F0}{7} hitch={8}ms",
+                        fps, camSys.Mode, camSys.Yaw, camSys.Distance,
+                        hudFovFactor * VideoSettings.DefaultAngle * 180.0 / Math.PI,
+                        camObst.Obstructed ? "ON" : "off", dbgLen, camExtra, hudHitchMs));
+                hudHitchMs = 0;
                 // top-left control-mode name (always visible)
                 hud.SetModeText("CONTROL: "
                     + (cameraSettings.OperationMode == CameraOperationMode.Joystick
                         ? "JOYSTICK" : "CLASSICAL")
-                    + "   [/] switch");
+                    + "   [/] switch   cam " + camSys.Mode + " (F5)");
                 hud.PlaceOver(form);
                 hud.UpdateLayered();
             }
@@ -4174,6 +4827,24 @@ internal static class RebornClient
             if (autoRunMs > 0 && now >= autoRunMs) break;
         }
         if (sampler != null) Log("terrain stats " + sampler.StatsLine());
+        // Clean shutdown (workstream D1). Isolation A/B (proof/host/d1_shutdown_ab.txt):
+        // sound/log/mem uninit exit cleanly; engine.UnInit3DEngine() AVs the process at
+        // exit (0xC0000005 after DONE) - so it is opt-in only for reproduction
+        // (RC_SHUTDOWN=engine) and the default releases the safe subsystems.
+        // RC_SHUTDOWN: "safe" (default) = sound+log+mem; "all" = same + engine (AV);
+        // "engine" = repro only; "0" = disabled.
+        string shut = Env("RC_SHUTDOWN", "safe");
+        if (shut != "0")
+        {
+            if (shut == "all" || shut == "safe" || shut == "sound")
+            { try { sound.UnInit(); Log("shutdown sound ok"); } catch (Exception e) { Log("shutdown sound ex: " + e.Message); } }
+            if (shut == "all" || shut == "engine")
+            { try { engine.UnInit3DEngine(); Log("shutdown engine ok"); } catch (Exception e) { Log("shutdown engine ex: " + e.Message); } }
+            if (shut == "all" || shut == "safe" || shut == "log")
+            { try { baselib.UninitLog(); Log("shutdown log ok"); } catch (Exception e) { Log("shutdown log ex: " + e.Message); } }
+            if (shut == "all" || shut == "safe" || shut == "mem")
+            { try { baselib.UnInitMemory(); Log("shutdown memory ok"); } catch (Exception e) { Log("shutdown memory ex: " + e.Message); } }
+        }
         Log("DONE");
     }
 
@@ -4185,6 +4856,19 @@ internal static class RebornClient
 
     // Recon helper: log the public managed methods whose name matters for the
     // player / visibility / near-plane paths.
+    // Reflection invoke by name+arity for the KG_EnvironmentCLR surface
+    // (no compile-time signature needed for recon probes).
+    static object InvokeEnv(Type t, object o, string name, params object[] args)
+    {
+        foreach (System.Reflection.MethodInfo mi in t.GetMethods())
+        {
+            if (mi.Name != name) continue;
+            if (mi.GetParameters().Length != args.Length) continue;
+            try { return mi.Invoke(o, args); } catch { }
+        }
+        return null;
+    }
+
     static void DumpApi(string label, Type t)
     {
         System.Reflection.MethodInfo[] ms = t.GetMethods(
@@ -4198,7 +4882,15 @@ internal static class RebornClient
                 n.IndexOf("Visible", StringComparison.OrdinalIgnoreCase) >= 0 ||
                 n.IndexOf("Camera", StringComparison.OrdinalIgnoreCase) >= 0 ||
                 n.IndexOf("View", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                n.IndexOf("Object", StringComparison.OrdinalIgnoreCase) >= 0)
+                n.IndexOf("Object", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Time", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Weather", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Day", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Environment", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Sky", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Cloud", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Season", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                n.IndexOf("Light", StringComparison.OrdinalIgnoreCase) >= 0)
                 Log("api " + label + "." + n + "(" + mi.ReturnType.Name + ")");
         }
     }
@@ -4305,6 +4997,94 @@ internal static class RebornClient
         }
         return list.ToArray();
     }
+
+    // Native sound probe loader (RC_SOUND_HOOK=1): see native/sound_probe.cpp.
+    internal static class SoundProbe
+    {
+        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+        static extern IntPtr LoadLibraryA(string name);
+        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+        static extern IntPtr GetProcAddress(IntPtr h, string name);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate int InitFn(IntPtr logPathAnsi);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate IntPtr StatusFn();
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate int LoadBankWFn([MarshalAs(UnmanagedType.LPWStr)] string path);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate uint PostEventFn(uint eventId, ulong go);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate int DiagFn(uint playingId);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate int RenderFn();
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate int SetMediaDirFn([MarshalAs(UnmanagedType.LPWStr)] string dir);
+        static IntPtr _init = IntPtr.Zero, _status = IntPtr.Zero, _loadBank = IntPtr.Zero, _postEvent = IntPtr.Zero, _diag = IntPtr.Zero, _render = IntPtr.Zero, _mediaDir = IntPtr.Zero;
+        public static IntPtr Load(string path)
+        {
+            IntPtr h = LoadLibraryA(path);
+            if (h != IntPtr.Zero)
+            {
+                _init = GetProcAddress(h, "RC_SoundProbe_Init");
+                _status = GetProcAddress(h, "RC_SoundProbe_Status");
+                _loadBank = GetProcAddress(h, "RC_SoundProbe_LoadBankW");
+                _postEvent = GetProcAddress(h, "RC_SoundProbe_PostEvent");
+                _diag = GetProcAddress(h, "RC_SoundProbe_Diag");
+                _render = GetProcAddress(h, "RC_SoundProbe_Render");
+                _mediaDir = GetProcAddress(h, "RC_SoundProbe_SetMediaDir");
+            }
+            return h;
+        }
+        public static int SetMediaDir(string dir)
+        {
+            if (_mediaDir == IntPtr.Zero) return -1;
+            SetMediaDirFn f = (SetMediaDirFn)Marshal.GetDelegateForFunctionPointer(_mediaDir, typeof(SetMediaDirFn));
+            return f(dir);
+        }
+        public static int Render()
+        {
+            if (_render == IntPtr.Zero) return -1;
+            RenderFn f = (RenderFn)Marshal.GetDelegateForFunctionPointer(_render, typeof(RenderFn));
+            return f();
+        }
+        public static int Diag(uint playingId)
+        {
+            if (_diag == IntPtr.Zero) return -1;
+            DiagFn f = (DiagFn)Marshal.GetDelegateForFunctionPointer(_diag, typeof(DiagFn));
+            return f(playingId);
+        }
+        public static int LoadBankW(string path)
+        {
+            if (_loadBank == IntPtr.Zero) return -1;
+            LoadBankWFn f = (LoadBankWFn)Marshal.GetDelegateForFunctionPointer(_loadBank, typeof(LoadBankWFn));
+            return f(path);
+        }
+        public static uint PostEvent(uint id, ulong go)
+        {
+            if (_postEvent == IntPtr.Zero) return 0;
+            PostEventFn f = (PostEventFn)Marshal.GetDelegateForFunctionPointer(_postEvent, typeof(PostEventFn));
+            return f(id, go);
+        }
+        public static int Init(string logPath)
+        {
+            if (_init == IntPtr.Zero) return -1;
+            InitFn f = (InitFn)Marshal.GetDelegateForFunctionPointer(_init, typeof(InitFn));
+            IntPtr p = Marshal.StringToHGlobalAnsi(logPath);
+            try { return f(p); }
+            finally { Marshal.FreeHGlobal(p); }
+        }
+        public static string Status()
+        {
+            if (_status == IntPtr.Zero) return "(no status export)";
+            StatusFn f = (StatusFn)Marshal.GetDelegateForFunctionPointer(_status, typeof(StatusFn));
+            IntPtr p = f();
+            return p == IntPtr.Zero ? "(null)" : Marshal.PtrToStringAnsi(p);
+        }
+    }
+
+    // cwd switch for the Wwise streamed-media base path (RC_SOUND_MEDIA).
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    static extern bool SetCurrentDirectoryW(string path);
 
     // Provisional skill sound: the decoded FLWS WAV (SOUND_PATH.md) played via
     // winmm, because the engine's tani SoundTag does not fire in the host.

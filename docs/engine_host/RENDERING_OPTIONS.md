@@ -167,20 +167,117 @@ option + game-time source. Open: 12-float param semantics, time-of-day source,
 `bShowTrueSky` (KG3D_TrueSkyX64.dll absent from the editor install — likely no-op here),
 volumetricCloud asset absent (non-fatal).
 
+### 4d. Day-night API decode + boundary (A1, 2026-10-05, `agent/weather-daynight`)
+
+Managed surface recovered via `RC_ENV_PROBE` (reflection, no guessing):
+
+- `KGSceneCLR`: `SetTrueSkyDayTime(float)` / `GetTrueSkyDayTime()` — the getter is stuck
+  at **0.5** and the setter is a no-op (TrueSky module absent); `Update/GetSeasonRelativeYearTime`
+  (values **stick**: 0.25 → 0.25), `Set/GetSeasonParam(bool,float,float)` (stick),
+  `CreateGDBTimelineCurveFromFile(dir)` / `SetGlobalDynamicEnvTimelineInterpolationForAllTimelineKey`
+  (**E_FAIL** — no timeline file ships), `EnableSunLightArcBall`, `ResetEnvironment(dir)`,
+  `GetEnvironment()`.
+- `KG_EnvironmentCLR` (225 methods): `SetRealSystemDayTime`/`Timezone`/`MaxSunLightIntensity`/
+  `MaxMoonLightIntensity` (values **stick**, initial sunMax/moonMax = 0),
+  `SetEnvDirectionalLightParameters`, `SetWindParameters` (16), `SetFogVolumeParam`,
+  `SetCloudParameters`, lens flares, indirect-light volumes.
+- Map data: `environment.json` has a full `dayNightCycle` object (`CurrentDate`, `Latitude`,
+  `Longitude`, `time`, `Timezone`, `StarTrailsEnable`, `MaxMilkyWayIntensity`,
+  `MaxSunLightIntensity`, `MaxMoonLightIntensity`, `MaxStarDensity/Twinkle/Intensity`,
+  `MaxMoonOpacity`) — the shipped HD env authors **all Max\* intensities = 0**.
+
+**Boundary (HIGH): day-night is inert in the editor host.**
+1. authored `dayNightCycle.Max*` intensities are zero;
+2. `KG3D_TrueSkyX64.dll` exists only in the game client (`zhcn_hd\bin64`), not in
+   MovieEditor — install read-only forbids copying it;
+3. no GDB timeline file ships (0/56 probe paths) → interpolation call E_FAILs;
+4. day-time sweeps (TrueSky + real-system), season params, and an `RC_ENV_DIR` override
+   (`ResetEnvironment` rc=0, MaxSun=6) all leave the rendered frame identical
+   (`proof/render/daynight/`, per-region RGB within noise).
+
+Knobs kept: `RC_DAYTIME=<0..1>` (real-system + TrueSky setters, logged) and
+`RC_ENV_DIR=<dir>` (host-side environment override). Re-open when TrueSky ships in the
+editor install, a map authors nonzero dayNightCycle intensities, or a GDB timeline exists.
+
+**A2 dynamic weather (2026-10-05):** `RC_WEATHER=1` applies (`EnableDynamicWeather(1)=0`)
+and `RC_WEATHER_PARAMS` accepts 12 floats, but sweeps (all-1, all-100) are pixel-identical
+to the dry baseline (`proof/render/daynight/weather_w1.png`, `weather_w100.png`).
+
+**Data-truth resolution (2026-10-05, HIGH): the BR maps author a static old-sky day.**
+- The HD `environment.json` contains **no TrueSky keys at all** — only `oldSkySkyBox` /
+  `oldSkyWeather`, plus a static `sunlight` (`dir`, `diffuse`, `intensity 6.0`) and
+  `moonlight` (`dir`, `intensity 0.37`), and a `dayNightCycle` object whose `Max*`
+  intensities are all **0**.
+- A process-PATH experiment (game-client `bin64` prepended, `RC_OPT_bShowTrueSky=1`)
+  shows `KG3D_TrueSkyX64.dll` is **never loaded** (module dump: only
+  `TrueSkyPluginRender_MT.dll` + Wwise), and `SetTrueSkyDayTime` stays at 0.5 — the maps
+  simply do not use TrueSky.
+- Consequence: **day-night and TrueSky weather are not applicable to the product's 5 BR
+  maps** (their authored state is a fixed sun/sky); the managed APIs (`SetRealSystemDayTime`,
+  season params, `SetFogVolumeParam`, `SetWindParameters`, `SetCloudParameters`, lens
+  flares) remain available for content that references them. Re-open: a map/server state
+  that references TrueSky or authors nonzero `dayNightCycle` intensities / a GDB timeline.
+
+**A3 post-FX caps matrix (2026-10-05, tier 9 base, one key per run, 4×4 fingerprint
+diff vs the same-pose baseline):**
+
+| Key (set to 0) | House (P2) | Vista | Field | Verdict |
+|---|---:|---:|---:|---|
+| `bEnableRC_Bloom` | 16/16 | **16/16** | **16/16** | visible everywhere (dominant brightness) |
+| `bEnableRC_AmbientOcclusion` | 0/16 | **16/16** | 0/16 | visible at the vista (open geometry) |
+| `bEnableRC_Vignette` | — | **12/16** | **12/16** | visible (edge darkening) |
+| `bEnableRC_AtmosphericFog` | — | 0/16 | **15/16** | visible at the field pose (low ground) |
+| `bEnableRC_HeightFog` | — | 0/16 | 0/16 | no-op at these poses |
+| `bEnableRC_LightShaftBloom` | — | 0/16 | 0/16 | no-op at these poses |
+| `bEnableRC_SSR` | 0/16 | 0/16 | 0/16 | no-op (no reflective surfaces in view) |
+| `bEnableRC_SunLensflare` | — | 0/16 | 0/16 | no-op at these poses |
+| `bEnableRC_EnvProbe` | — | 0/16 | 0/16 | no-op at these poses |
+
+Evidence (committed): `proof/render/postfx/` key pairs — `vista_` baseline +
+`vista_bEnableRC_{AmbientOcclusion,Bloom,Vignette}`, `field_` baseline +
+`field_bEnableRC_{AtmosphericFog,Bloom}`; house column from §4b. The full 20-run set is
+reproducible (one key per run). Pose set: house `(18991,962,33853)`, vista
+`(23334,761,24224)`, field `(15007,398,25400)`.
+
+**A3 sky/cloud boundaries (2026-10-05, verified):** `KG3D_TrueSkyX64.dll` ships only in
+the game client (`zhcn_hd\bin64`) — and is not referenced by the BR maps (above);
+`volumetricCloud.json` ships in no map tier (0/16 probe; only `focus_face_env_params.json`
+in `bd/`), so the StingRay volumetric cloud option stays non-functional.
+
+**1.9 status: complete for the product's maps.** Day-night/TrueSky weather are not
+applicable to the 5 BR maps (static old-sky data, above); the post-FX option surface is
+classified (visible levers vs pose-dependent no-ops). Remaining registered opens: the
+12-float dynamic-weather semantics (only needed if future content references TrueSky),
+TrueSky module/volumetric-cloud assets, and the GDB timeline file — all with re-open
+criteria in this section.
+
 ## 5. Open items
 
-1. Which component performs the merge into the active `config.ini` (external
-   launcher/patch tooling vs panel-triggered adapter save); `GpuSwitchOptionTab.tab`
-   consumer not found anywhere in the install (see §2.1).
-2. Full key extraction from the adapter load fn + UI schema fn (a generator can turn the
-   disasm captures into the complete key ↔ offset table); `KGEngineOptionProxyCLR` has no
-   public fields (reflection), so per-key read-back needs the native `GetOption` export or
-   a config-file round-trip.
-3. `configHttpFile.ini` (224 keys): its name is **not** present in the MovieEditor adapter
-   binary (xref negative) — role still unknown; `Init3DEngine` passes it as an argument.
-4. Caps probe done for 6 options at the house pose (§4b); remaining: foliage options at a
+1. ~~Which component performs the merge into the active `config.ini`~~ **Closed as
+   external (2026-10-05):** the preset file names appear in no install binary (full-install
+   scan, §2.1) and `GpuSwitchOptionTab.tab`'s column names likewise (§5 item 5) — the
+   merge/selection owner is external launcher/patch tooling. Re-open if a launcher binary
+   becomes available locally.
+2. ~~Full key extraction~~ **Done (2026-10-05):** `tools/render/key_offsets.py` parses both
+   annotated disasm captures (adapter load fn + UI schema fn) into
+   `proof/render/key_offsets.tsv` — **290 keys with struct offsets** (r9-destination and
+   eax-store patterns), self-checked against the three known pairs (`nShadowType +0x5c`,
+   `nEngineGraphicsLevel +0x260`, `fSpeedTreeCullDist +0xa40`, all exact). Per-key
+   read-back still needs the native `GetOption` export or a config-file round-trip
+   (unchanged).
+3. ~~`configHttpFile.ini` role~~ **Closed (2026-10-05):** the literal `configHttpFile`
+   appears in **zero** install binaries (adapter/DX11 engine/MovieEditorHD/MovieEngineCLR/
+   KG_EngineEditor/JX3ClientX64, both installs). The owner is the MovieEditor shell's HTTP
+   config feature — `MovieEditor.EditorConfig::get_EnableHttpFile` / `get_HttpConfig`
+   (metadata dump: fields `m_bEnableHttpFile` / `m_strHttpConfig`) — and the path is passed
+   to `Init3DEngine` by the caller. Our host passes `./configHttpFile.ini` (spike recipe);
+   the engine itself never reads the literal, so the argument is inert in this build.
+   Re-open if another build/consumer reads it.
+4. ~~Caps probe done for 6 options at the house pose (§4b); remaining: foliage options at a
    foliage-rich pose, per-LOD-option isolation (P5), weather param semantics + game-time
-   source (P4).
+   source (P4).~~ **Closed for 1.9 (2026-10-05):** post-FX caps matrix at house/vista/field
+   (§4d); weather/day-night resolved as a data truth (BR maps author a static old-sky day,
+   §4d); foliage/LOD isolation is the 1.10 track (`docs/engine_host/LOD_CULL_MATRIX.md`).
 5. `GpuSwitchOptionTab.tab` consumer: its header column names (`bEnableGpuCullDynamic`,
    `GpuSwitch`) appear in **no** install binary → consumer is external (launcher/device
    tooling), same boundary as the preset-file selection writer (§2.1). Re-open if a

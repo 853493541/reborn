@@ -4226,6 +4226,56 @@ if the cache/host frames appear.
   gain a PID/ms suffix.
 - Local only: not pushed to origin.
 
+### 2026-10-05 - Engine host - A1 day-night: managed API decoded, effect is install/data-bound
+
+- Did: extended the `RC_API_DUMP` filter (time/weather/env keywords), then added
+  reflection probes (`RC_ENV_PROBE=1/2/3`) that recovered the exact managed surface:
+  `KGSceneCLR.Set/GetTrueSkyDayTime(float)` (getter stuck at 0.5), season
+  relative-year time + `Set/GetSeasonParam` (values stick), `CreateGDBTimelineCurveFromFile`
+  + interpolation (E_FAIL, no timeline), `ResetEnvironment(dir)`, and the
+  `KG_EnvironmentCLR` surface (225 methods: `SetRealSystemDayTime/Timezone/MaxSun/
+  MaxMoonLightIntensity`, directional lights, wind, fog volumes, clouds, lens flares).
+  Decoded the map's `dayNightCycle` object - the shipped HD env authors **all
+  Max* intensities = 0**.
+- Tried: day-time sweeps via TrueSky and real-system setters, season params, sun
+  arcball, GDB interpolation, and an `RC_ENV_DIR` override (`ResetEnvironment` rc=0,
+  MaxSun=6). **All frames identical within noise** (`proof/render/daynight/`).
+- Outcome: boundary (HIGH) - the day-night effect needs the TrueSky module
+  (`KG3D_TrueSkyX64.dll` exists only in the game client, not in MovieEditor;
+  install read-only) and/or authored nonzero `dayNightCycle` intensities / a GDB
+  timeline (0/56 probe paths). Knobs kept: `RC_DAYTIME`, `RC_ENV_DIR`. Re-open when
+  TrueSky ships in the editor install or map data authors the cycle.
+- Evidence: `docs/engine_host/RENDERING_OPTIONS.md` §4d; logs `reborn_20261005_17*`.
+
+### 2026-10-05 - Engine host - A2/A3: dynamic weather inert, sky/cloud boundaries verified
+
+- Did: swept `RC_WEATHER=1` + `RC_WEATHER_PARAMS` (all-1, all-100) - `EnableDynamicWeather(1)=0`
+  applies but both frames are pixel-identical to the dry baseline; the 12-float semantics
+  stay undecoded. Probed `KG3D_TrueSkyX64.dll` (game client only; absent from MovieEditor)
+  and `volumetricCloud.json` (0/16 map-tier hits; only `focus_face_env_params.json` ships).
+- Outcome: boundaries registered - dynamic weather needs the native consumer decode + the
+  `oldSkyWeather` particle assets at a weather-authored state; TrueSky and volumetric cloud
+  are install/asset-bound. Post-FX caps matrix at 3 poses still open (A3 remainder).
+- Evidence: `proof/render/daynight/weather_w1.png` / `weather_w100.png`;
+  `RENDERING_OPTIONS.md` §4d.
+
+### 2026-10-05 - Engine host - 1.9 finished: data-truth resolution + post-FX caps matrix
+
+- Did: resolved the day-night/weather question as a **data truth** - the BR maps contain
+  no TrueSky keys, only `oldSkySkyBox`/`oldSkyWeather` + a static `sunlight`/`moonlight`,
+  and a `dayNightCycle` object with all `Max*` = 0; a PATH experiment (game bin64 +
+  `bShowTrueSky=1`) shows `KG3D_TrueSkyX64.dll` is never loaded (module dump). So
+  day-night/TrueSky weather are **not applicable to the product's 5 maps**; the managed
+  APIs stay available for content that references them.
+- Also completed the post-FX caps matrix (tier 9, one key per run, 4x4 fingerprints):
+  visible = `bEnableRC_Bloom` (16/16 all poses), `bEnableRC_AmbientOcclusion` (16/16 at
+  the vista), `bEnableRC_Vignette` (12/16), `bEnableRC_AtmosphericFog` (15/16 at the
+  field); no-op at these poses = HeightFog, LightShaftBloom, SSR, SunLensflare, EnvProbe.
+- Outcome: 1.9 complete for the product maps (open: 12-float dynamic-weather semantics,
+  TrueSky/volumetric-cloud assets, GDB timeline - all registered with re-open criteria).
+- Evidence: `docs/engine_host/RENDERING_OPTIONS.md` §4d; `proof/render/postfx/` key pairs;
+  logs `reborn_20261005_1745*`.
+
 ### 2026-10-05 - repo - Cleanup: agent/predraw worktree + branch closed after merge
 
 - Removed worktree `Desktop\reborn-iso-predraw` and branch `agent/predraw`
@@ -4236,6 +4286,453 @@ if the cache/host frames appear.
 - Main stays at `2d45e16` == `origin/main`; the running canonical/sandbox
   clients are the `2cbf004` rebuild (docs-only delta since).
 - Local only: not pushed to origin.
+
+### 2026-10-05 - Engine host - C (1.8 leftovers): key-offset generator + boundary closures
+
+- Did: added `tools/render/key_offsets.py` - parses the adapter/UI disasm captures into a
+  key -> struct-offset table (r9-destination + eax-store patterns): **290 keys**, exact on
+  the self-check pairs (`nShadowType 0x5c`, `nEngineGraphicsLevel 0x260`,
+  `fSpeedTreeCullDist 0xa40`) -> `proof/render/key_offsets.tsv`. Probed `configHttpFile`
+  in 10 install binaries (both installs): **0 hits** -> the `Init3DEngine` argument is
+  unused/ignored in this build. Closed the active-config merge owner and the
+  `GpuSwitchOptionTab` consumer as external (no install binary references them).
+- Evidence: `docs/engine_host/RENDERING_OPTIONS.md` §5 items 1-3 resolved;
+  `proof/render/key_offsets.tsv`; `tools/render/key_offsets.py`.
+- Outcome: C complete.
+
+### 2026-10-05 - Engine host - B (1.10): LOD/cull per-option matrix at house + vista
+
+- Did: 26 isolated runs (13 keys x 2 poses, tier 9 base, one `RC_OPT_<KEY>` per run)
+  with 4x4 fingerprint diffs vs the tier-9 baseline. Visible levers at the vista:
+  `nShadowType=0` (8/16 cells), `fSpeedTreeCullDist=5000` (6/16),
+  `fSimpleModelCullDist=1000` (1/16, marginal). Model-LOD / node-LOD / view-angle /
+  foliage / particle keys show no visible delta at these poses (coarse grid, load-time
+  or no such geometry in view).
+- Evidence: `docs/engine_host/LOD_CULL_MATRIX.md`;
+  `proof/render/lod_vista/{base_t9,nShadowType,fSpeedTreeCullDist,fSimpleModelCullDist}.png`.
+- Outcome: partial - first matrix committed; foliage-rich pose, 8x8 grid for the LOD
+  keys and the causal tier fps ladder remain open.
+
+### 2026-10-05 - Engine host - B remainder: foliage pose, 8x8 LOD re-check, tier fps ladder
+
+- Did: parsed the baked foliage bin (FCOL v1) to pick the densest `.foliage` cluster
+  (`(173747,98442)`, 42 instances) and ran the foliage keys there - `nFoliageDensity`
+  0/999 no-op (**load-time**), cull/render toggles marginal (1-2/16 cells). Re-ran the
+  no-op model-LOD keys at the vista with aggressive values on an **8x8** grid: 0/64
+  cells each (inert in the editor host). Measured the causal tier ladder (t=16 s, 20 s
+  runs): house 592/550/352 fps and vista 453/563/333 fps for tiers 1/5/9; hitch <=14 ms.
+- Evidence: `docs/engine_host/LOD_CULL_MATRIX.md`;
+  `proof/render/{foliage,lod8}/` key PNGs; logs `reborn_20261005_18*`.
+- Outcome: B complete (first pass). Remaining open: foliage density map-reload A/B and
+  a close-up pose for the model-LOD keys.
+
+### 2026-10-05 - Camera - E: modes/skill-FOV/tracks status (blocked, no invented triggers)
+
+- Did: investigated the 1.5 remainder instead of implementing invented triggers.
+  (1) Auto mode switching: the WW sprint trigger was **removed by user decision**
+  (EXPERIENCES 2026-09-30) and the real state sources (engine sprint/mount/dialog/
+  spectate) do not exist in the host -> blocked; re-open when those states are modeled.
+  (2) Skill-move camera: decoded `proof/netcode/camera_files/skill_move_camera.txt`
+  (8 rows; duration/hold/yaw-rate/screen-FX/edge/saturation); the test skill has no row;
+  the consumer is the SkillMove runtime -> blocked on the skill runtime.
+  (3) Camera tracks: the managed surface (`KGMovieEditorCLR.ExportCameraTrack` /
+  `SetCameraTrackPlaySpeedPerMS` / `SetCameraTrackPlayMethod` / `SetTrackForEditor`) is
+  editor playback only; next probe = the `.mani`/KRLCameraAni consumer in the game client.
+- Evidence: `docs/camera/MODE_ANIM_STATUS.md`; no code change (nothing invented).
+- Outcome: E documented as blocked + next probes; nothing implemented by design.
+
+### 2026-10-05 - Audio (1.6) - native probe: tag path proven to stop before Wwise
+
+- Did: recovered the host sound architecture (KG3DSoundCLR -> MovieEngineCLR loads
+  **KG3DSoundX64.dll** editor shell -> FMOD + `KG3D_WwiseX64.dll` per
+  `[WwiseSetting] UseWwise=1`; the game's `KG3DWwiseSoundX64.dll` is a thin shell not
+  in MovieEditor) and added a native probe (`native/sound_probe.cpp`,
+  `build_sound_probe.cmd`, `RC_SOUND_HOOK=1`) that inline-hooks
+  `AK::SoundEngine::PostEvent` (id/ANSI/wchar) and `LoadBank(wchar)` in our own
+  process, logging every call and tail-calling the originals.
+- Result: hooks install (rc=0) and the whole run - including the t=18.5 s skill cast -
+  shows **zero PostEvent and zero LoadBank calls** (`proof/audio/sound_probe_20261005.log`).
+  The native shell/Wwise stack is loaded and `GetWwiseManager` resolves, so the stop is
+  upstream of Wwise (Frida's spike finding now instrumented in-process, HIGH).
+  PSS particle SFX tags do fire, so the anim tag system works; only the sound path stops.
+- Next probes (ordered): hook `_OnProcessApplySoundTag` (INT3/VEH) to see whether the
+  callback fires; hook `KG3DModel::EnableSfxSoundTag` (`0x1800BA760`) and, if never
+  called, capture the model pointer via PlayAnimation and call it - the likely gate.
+- Evidence: `docs/audio/NATIVE_AUDIO_PROBE.md` (indexed); module dump
+  `reborn_20261005_182551.log`; probe run `reborn_20261005_183218.log`; committed
+  `proof/audio/*`.
+
+
+### 2026-10-05 - Audio (1.6) - native Wwise playback finished (game banks + skill event)
+
+- Did: extended the native probe (`native/sound_probe.cpp`) into the playback path and
+  wired it in the client: loads the game's own banks (`Init.bnk`, `skillremake.bnk` from
+  the extracted `assets/sound/`) into the engine's `KG3D_WwiseX64.dll` via
+  `LoadBankMemoryView`, registers game object 1 + default listener, and posts the FLWS
+  event `3378728138` on skill cast. Env: `RC_BANK` enables native (default when set),
+  `RC_SOUND_NATIVE=0` disables, `RC_SOUND_EVENT` overrides. The winmm WAV is now only
+  the fallback when no bank is provided.
+- Evidence: `reborn_20261005_184354.log` (`sound-native: Init.bnk rc=1`, `bank ok
+  id/rc=1`, `sound: native post id=3378728138 playing=1`, clean DONE); probe log
+  `proof/audio/sound_probe_native_20261005.log` (LoadBankMemoryView rc=1,
+  RegisterGameObj/AddDefaultListener =1, PostEvent playingId=1). Wwise enum note:
+  AKRESULT 1 = `AK_Success` (0 = `AK_NotImplemented`).
+- Context: the engine's own tani SoundTag dispatch still never calls PostEvent in the
+  host (instrumented, `NATIVE_AUDIO_PROBE.md` §3); the client posting the event with the
+  game's bank/id is the product path. Recorded suspects if the engine path is ever
+  restored: `_OnProcessApplySoundTag`, `KG3DModel::EnableSfxSoundTag` (`0x1800BA760`).
+- Outcome: solved - 1.6 runtime audio plays through the engine's own Wwise.
+
+
+### 2026-10-05 - Audio (1.6) - correction: Wwise API success is not audibility; WAV fallback active
+
+- Finding: the previous entry concluded native playback (banks + `playingId=1`) but the
+  user heard nothing. Diagnostics: `IsInitialized=1` (48 kHz, 1024/frame);
+  `GetSourcePlayPosition(playingId)` -> `AK_Fail`, pos 0/0 in **every** tried
+  configuration - staged `.wem` tree (file-id + source-name variants under
+  `Base`/`English(US)`/`SFX`/root), process-cwd switch, `SetCurrentLanguage(Base)`,
+  `RenderAudio` ticks. The bank has **0 embedded RIFF blocks**: the audio is streamed
+  (`161340541.wem`), and the editor host's Wwise IO cannot resolve it (the game client
+  supplies its own VFS-aware `IAkFileLocationResolver`; MovieEditor has none).
+- Fix (product behavior): after `PostEvent`, the client requires the source position to
+  advance (`SoundProbe.Diag`); if not, native is disabled and the winmm WAV plays the
+  cast. Verified: `sound-native: no rendering (streamed media unresolved) - WAV
+  fallback` followed by `sound: skill wav play rc=True`.
+- Open (for a future pick-up): `AK::StreamMgr::SetFileLocationResolver` (export
+  present in `KG3D_WwiseX64.dll`) with a resolver that serves the pak media, or reuse
+  the game's resolver; then the fallback can be dropped.
+- Evidence: `proof/audio/sound_probe_streamed_media_diag_20261005.log`,
+  `proof/audio/client_audionative_fallback_20261005.log`; corrected docs
+  `HOST_AUDIO_STEP1.md` Step 2 and `NATIVE_AUDIO_PROBE.md` §4.
+
+
+
+### 2026-10-05 - Audio (1.6) - native root cause completed: no media chunks, no IO opens
+
+- Did: parsed the bank's HIRC offline: event `0xC9634CCA` = one EventAction
+  (scope 3, type 4 = Play) -> Sound `0x9253BB` -> media `161340541` (size 22,067).
+  The shipped `skillremake.bnk` contains only `BKHD` + `HIRC` chunks (**no
+  `DIDX`/`DATA` media**; fresh extraction from the pak is byte-identical), so the
+  media must be streamed. Added a `KernelBase!CreateFileW` hook (15-byte prologue,
+  tail-called) and an IO diagnostic (`streamMgr`/resolver pointers): the stream
+  manager and resolver are non-null, but **zero media opens reach the OS**.
+- Why: the host's Wwise stream device has no usable low-level IO hook for these
+  media (the game client supplies its IO/media-delivery layer; the editor install
+  does not). Not a path/cwd/language problem - all were set and the hook stayed
+  silent.
+- Outcome: native streamed playback is a **documented boundary**; the client keeps
+  the verified fallback (post, check position, else winmm WAV) so the skill sound
+  is audible. Re-open: recover the game's `IAkLowLevelIOHook`/media delivery with
+  evidence (no ABI guessing).
+- Evidence: probe log additions (`streamMgr=... resolver=...`, `playPos rc=2`,
+  no `CreateFileW` lines), HIRC parse outputs; docs corrected.
+
+
+### 2026-10-05 - Unit scale (1.7) - character-size table found; gameplay capsule dig closes negative
+
+- Did: dug the client for G-1 (exact gameplay capsule), per user request.
+  Found the authored character-size table `Represent/player/player.txt`
+  (`ModelHeight` 185/173/190/125 + `ModelScale`; consumer `JX3RepresentX64.dll`,
+  Lua `GetMasterModelHeight` `0x1804171f0`). Capsule dig: the Semantic K/V keys
+  `capsules radius`/`capsules length` exist only as schema in `SIMWorldX64.dll`
+  (interner `0x180001bc0` -> global `0x18005E3B8`; consumer ~`0x180032400` ->
+  `PhysicScene::_AddCapsules` `0x1800223b0`; only `0.01f` epsilons) and
+  `JX3RepresentX64.dll` (interner `0x180036f60` -> global `0x180EC6EA0`, no
+  reader); a full byte scan of both installs + extraction trees found no data
+  file carrying the keys; shape-lib capsule id 6 (`r50/l50`) is a dynamic shape;
+  `physic_character_param.krl.txt` is the ragdoll list.
+- Evidence: `docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md` §4/§5;
+  `docs/movement/COLLISION_SYSTEM_COMPARISON.md` P3 update.
+- Outcome: 1.7 closes as a runtime/server K/V boundary (HIGH negative) with a new
+  authored size source; the host capsule stays a registered proxy, with optional
+  per-role scaling from `ModelHeight` pending approval.
+
+### 2026-10-05 - Unit scale (1.7) - body-type capsule table (RC_BODY, 4 hardcoded sizes)
+
+- Did: per user request, skipped `player.txt` parsing and hardcoded the four
+  canonical body heights (f1/m1 125, f2 173, m2 185) into the capsule derivation
+  (`r = 0.136*H`, `h = 0.928*H`; env `RC_BODY=f1|m1|f2|m2`; explicit
+  `RC_RADIUS`/`RC_HEIGHT` still win) — a registered proxy from the authored table,
+  no parsing, no new files.
+- Verified: build ok; runs log `capsule body=m2 ... r=25.2 h=171.7` and f2
+  23.5/160.5; m2-capsule crossing demo clean (`terrain stats` 2 loads, `DONE`);
+  collision selftest 36/36.
+- Evidence: `UNIT_SCALE_AND_CHARACTER_SIZE.md` §4 (implementation paragraph);
+  `client/RebornClient.cs`.
+
+
+### 2026-10-05 - Camera (B) - workstream B plan: .mani tracks + skill-FOV + minimal UI
+
+- Did: entered `#iso` as agent B (`agent/camera-tracks`, off main `8e0352a`); grounded the
+  plan on local evidence: `.mani` samples in the editor tree (`turningeye.mani`, 1008 B,
+  magic **`ACON`** + u32 `42` at +4), `player_rush_camera.txt` (4 rows -> `data/movie/
+  camera/16.mani`, `17.mani`), the 8-row UTF-8 `skill_move_camera.txt` (columns decoded),
+  and the managed API dump (only editor playback: `ExportCameraTrack` / `SetCameraTrack
+  PlaySpeedPerMS` / `SetCameraTrackPlayMethod` — no load-by-name, so host playback needs
+  our own ACON reader). Wrote `docs/camera/CAMERA_TRACKS_PLAN.md` (P0 corpus/format ->
+  P1 playback -> P2 skill FOV -> P3 minimal UI -> P4 closures) and registered it.
+- Boundaries carried (not faked): auto mode switching (WW removed by user decision +
+  absent engine states), glider/dynamic-follow, edge/saturation post FX, rush/dialog
+  gameplay triggers (scripted path only), engine `[Camera]` ini absent.
+- Evidence: `docs/camera/CAMERA_TRACKS_PLAN.md`; `docs/camera/README.md`; managed API dump
+  `%TEMP%\opencode\api_cameratracks.txt`.
+- Outcome: plan ready; P0 next. No code changed yet.
+
+### 2026-10-06 - Camera (B) - P0 done: `.mani` ACON format decoded + verified
+
+- Did: decoded the `.mani` container from the game-client binaries and verified it on the
+  shipped corpus. **ACON** = sequence of 40-byte section headers `{u32 magic, u32 classId,
+  32 zeros}` + class payload. Cameradata files = class 25 (meta) + class 10 (camera track):
+  `8x0 + {1, dur, 1, 0} + A-hdr {nA, 0, z0, y0} + (nA-1) x {x, frame, z, y} + B-hdr
+  {x0, 0, nB, 0} + nB x {x, a, b, frame}` (B's final key is a loop closure at frame 1;
+  duration = last frame + 1; keys sparse). Rush variant (`16/17.mani`) has a different key
+  grammar - deferred, not guessed.
+- How: xref/disasm of `KG3DMovieX64.dll` (validator `0x1238d0` reads 40 bytes and checks
+  magic + classId; factory `0x1ba7a0` id 10 -> ctor `0x19b8d0`, `+0xb8=10`; header writer
+  `0x123d20`; object loader `0x1bb170`), plus statistical/differential analysis of the
+  extracted samples (quat-norm scan for the rush transform stride; frame-classification
+  runs for the cameradata A/B sections). Earlier hypotheses (u32@+4 = count, 32-byte
+  records, 16-byte flat elements) were all **disproved** by exact-consumption parsing.
+- Evidence: `docs/camera/MANI_FORMAT.md`; `tools/camera/mani_probe.py` (`--selftest`
+  14/14 PASS, `--verify` 10/10 exact); `proof/camera_tracks/mani_keys.tsv`;
+  `proof/camera_tracks/disasm/*.txt` (validator, factory, case/ctor, loader, writer).
+- Outcome: P0 done; P1 (host playback of cameradata tracks) unblocked. Local only.
+
+### 2026-10-06 - Camera (B) - decode lessons (dead ends worth remembering)
+
+- `u32@+4` is the **classId**, not a record count: it is constant per class across file
+  sizes (25 for the set section, 10 for the track section, 42 for the editor turningeye
+  files). Any "count" interpretation breaks on the next sample.
+- Records are **not** a flat uniform array: cameradata class-10 payload is meta + A keys
+  (frame at +4) + B keys (frame at +12, loop key at the end). Fixed-stride assumptions
+  (32 B "records", 16 B "elements") survived several files by coincidence and then broke
+  on 21_2/23_0/30_1 - the fix was to require **exact payload consumption** and to classify
+  elements by which slot carries a monotonically increasing frame.
+- Rush `.mani` are a different grammar despite the same class id 10 - do not assume one
+  Load per id; the marker words differ (`{1, dur, 0, 1}` vs `{1, dur, 1, 0}`).
+
+### 2026-10-06 - Camera (B) - P1 done: host plays cameradata `.mani` tracks
+
+- Did: `client/CameraTrack.cs` (ACON decoder + sampler, C# 5) and `RC_CAM_ANI=<path>[,loop]`
+  (+`RC_CAM_ANI_FPS`, default 30 from `SceneCameraAni.tab` duration/enter-ms) wired into the
+  main camera block: track A -> camera position, track B -> look-at, applied through the
+  existing engine set path; obstruction/shake/terrain-clamp/snapguard bypassed for authored
+  tracks; per-second `camani` log (sampled vs applied). Rush variant rejected with a clear
+  message (deferred). Build script lists the new source; feature exe
+  `reborn_client_cameratracks.exe` (title `sandbox-cameratracks`).
+- Verified: engine run of `13_0.mani` - sampled == applied on every logged frame (e.g.
+  frame 90.1 cam=(103270,997,89308) applied=(103270,997,89308)), camera advances
+  30 -> 174 frames and holds the last pose, no crash; C# sampler matches the Python
+  reference (<=5 u at 0.1-frame rows); 4 screenshots distinct (sha256 + 4x4 RGB);
+  `camera_smoke_cameratracks` ALL PASS; collision 36/36; jx3_model 10x; gravity/loot PASS.
+- Evidence: `proof/camera_tracks/p1_run_20261006.txt`; `docs/camera/MANI_FORMAT.md` §3;
+  `docs/camera/CAMERA_TRACKS_PLAN.md` P1.
+- Outcome: P1 done. P2 (skill-move FOV) next. Local only.
+
+### 2026-10-06 - Camera (B) - P2 done: skill-move camera FOV effect
+
+- Did: `client/SkillMoveCamera.cs` parses `skill_move_camera.txt` (embedded resource +
+  `RC_SKILL_MOVE_TABLE` override) and implements the temporary-FOV state machine;
+  `RC_SKILL_MOVE_CAM=<skill>,<ms>` scripted trigger applies the angle through
+  `SetViewAngleFactor` (factor = angle / 0.837757). **Column decode corrected**: the header
+  (GB18030) says 广角增幅(弧度)/固定广角(角度≥30) = FOV, not a rotation rate - value <30 is a
+  radian FOV increase over the base, >=30 is a fixed FOV in degrees (the earlier plan row had
+  it wrong; fixed). Post-FX fields (screen FX / edge aberration / saturation) logged only.
+- Provisional: the client's FOV interpolation curve is still open research, so the ramp is
+  LINEAR - registered as `HOST_DEVIATIONS.md` B16 with re-open criteria
+  (`ApplySkillMoveCameraTag` `0x1802F8D20` / KRLCameraAni FOV writes).
+- Verified: skill 124841 run - ramp 60.0 -> 64.8 -> 69.6 -> 75.0 deg exactly matches
+  `base + 0.30 rad * phase`, effect ends at enter+exit (t=4001 ms) back to base factor
+  1.250, 3 distinct screenshot fingerprints, no crash. Gates: camera_smoke ALL PASS
+  (rebuilt after the change), collision 36/36.
+- Evidence: `proof/camera_tracks/p2_run_20261006.txt`;
+  `docs/camera/CAMERA_TRACKS_PLAN.md` P2; `docs/camera/HOST_DEVIATIONS.md` B16.
+- Outcome: P2 done. P3 (minimal camera UI) next. Local only.
+
+### 2026-10-06 - Camera (B) - P3 done: minimal camera UI (HUD line + test keys)
+
+- Did: HUD camera line extended (mode/yaw/dist/fov/obst+len + `ani f../..` + `skillmove sN`
+  when active; top line names the camera row); host test keys F5 (row cycle), F6/F8 (base
+  FOV +/-5 deg), PgUp/PgDn (distance +/-100 u); `RC_HUD_LOG=1` logs the composed HUD text so
+  the panel content is verifiable without reading images. Settings stay read-only (no
+  custom.dat write); persistence deferred to the settings-UI (registered).
+- Verified: baseline run `fov 60deg obst=ON len=1830` vs track+skillmove run
+  `fov 100deg obst=off len=1862 ani f174/175 skillmove s1` (exactly the P1 held frame and
+  the P2 held 60+0.7 rad target); layered-buffer dumps 633x237 vs 678x237 with distinct
+  hashes; no crash.
+- Evidence: `proof/camera_tracks/p3_run_20261006.txt`;
+  `docs/camera/CAMERA_TRACKS_PLAN.md` P3.
+- Outcome: P3 done. P4 (closures: CLIENT_AUDIT statuses, README, boundaries) next.
+
+### 2026-10-06 - Camera (B) - P4 done: workstream B closed (P0-P4)
+
+- Did: closed the workstream - `CLIENT_AUDIT.md` missing items 4 (track camera -> DONE via
+  P1) and 7 (skill-move FOV -> DONE, screen FX logged only) annotated with a dated status
+  note, item 8 annotated (P3 read-only HUD, custom.dat write path still deferred); plan
+  boundaries updated (rush `.mani` grammar + gameplay hooks remain open); README index and
+  tools table already carried `MANI_FORMAT.md` + `mani_probe.py` from P0.
+- Result: `.mani` camera tracks play in the host (sampled == applied, cross-checked against
+  the Python decoder), skill-move FOV effect works from the real table, HUD shows the camera
+  state, all four phases verified in-engine with numeric fingerprints.
+- Gates: camera_smoke ALL PASS (feature build `camera_smoke_cameratracks.exe`),
+  collision_selftest 36/36, jx3_model 10x, gravity PASS, loot selftest PASS,
+  `mani_probe.py --selftest` 14/14, `--verify` cameradata 10/10.
+- Commits: `c521185` (plan), `38acd0a` (P0), `0d68302`+`cb5a4f2` (P1), `bb15cfc` (P2),
+  `b21da84` (P3), this P4 docs commit. Branch `agent/camera-tracks`, local only.
+- Open (registered): rush `.mani` grammar; gameplay triggers for rush/dialog; FOV ramp curve
+  (HOST_DEVIATIONS B16); edge/saturation post FX; settings write path.
+
+
+### 2026-10-05 - Movement/stability - spawn AV triage: out-of-extent fixed; underwater-grounded boundary
+
+- Did: root-caused the 2026-10-04 AV (KG3DEngineDX11EX64+0x12282B3) with a discriminating
+  run matrix on clean main: it triggers when the actor's x/z are **outside the map extent**
+  (海岛绝境 origin (0,0), 4x4 grid; the original coords assumed the 龙门 origin). 8x8 maps
+  tolerate out-of-extent test spawns. Fixed with a spawn-extent clamp in `RebornClient`
+  (`TerrainSampler` now exposes the loader extent) - the original repro now exits clean
+  (DONE) while inside spawns are unchanged.
+- After the clamp a second position-dependent AV remains: a **grounded actor below sea
+  level** on 海岛 (sampled height < 0) still AVs at the same offset, while ungrounded free
+  fall through a hole (y to -44045) is clean. Registered as a boundary (water/underwater
+  render path suspected - same class as the TrueSky/editor-install gaps); next probes in
+  the doc.
+- Evidence: `docs/movement/VOID_SPAWN_CRASH_TRIAGE.md`; crash logs `reborn_20261005_21*`;
+  dump `reborn_client.exe.42808.dmp`. Gates: collision 36/36; gravity/jx3_model/loot PASS.
+- Outcome: partial - out-of-extent crash fixed and verified (before/after); underwater
+  boundary open.
+
+### 2026-10-05 - Movement/collision - C residuals: .srt recon, slope server rule, capsule contract
+
+- Did: bounded `.srt` recon - sceneinfo_full references bare `.srt` basenames
+  (`S_xb多枝枯树003_*`), direct foliage-path guesses missed (folder field not decoded);
+  recorded the two native recovery routes (resolve+parse the SpeedTree binary, or cook the
+  tree mesh through the game's own PhysicsEngine) with the prism proxy unchanged. Wrote the
+  definitive slope/drop boundary (shipped BCH has no packed cell slopes; the rule needs
+  server/nav cell data) as a server contract, plus the capsule/step server-contract table
+  (64 u step, 0.707 slope, `RC_BODY` table from the capsule-dig branch; contact offset N/A).
+- Evidence: `docs/movement/COLLISION_RESIDUALS_STATUS.md`; extraction probes in
+  `%TEMP%\opencode\srt_*`.
+- Outcome: C2/C3/C4 documented as boundaries + server contract; no code change (nothing
+  invented).
+
+### 2026-10-05 - Movement/collision - underwater AV root-cause pass + .srt path resolved
+
+- Did: (1) underwater AV - option matrix eliminated (`nWaterEffectLevel=0`, `RC_QUALITY=1`
+  still AV), crash site disassembled: NULL rbtree-lookup deref at `+0x12282B3` in function
+  RVA `0x1226A70..0x1228419` (lookup helper `0x18105CF50`, key from static `0x182D5BD10`);
+  host has zero water wiring (G-24: water = compressed scene blocks + `_Water.mesh`,
+  never loaded) -> native-fix probe = load the water layer. (2) `.srt` path RESOLVED via
+  sceneinfo `comRender.actorModel`: `Data\source\maps_source\树\<name>.srt`; sample
+  extracted (.srt `SRT 07.0.0` 398,236 B; `.CollisionMesh` 28,962 B HSEM = the file
+  FULL_MAP_COLLISION cites; `.mesh` 43,761 B) - pipeline already correct, no change.
+- Evidence: `docs/movement/VOID_SPAWN_CRASH_TRIAGE.md` §2.1-2.4,
+  `docs/movement/COLLISION_RESIDUALS_STATUS.md` §1, `proof/movement/disasm/crash_*`.
+- Outcome: boundary fully characterized with next probes; no invented fix.
+
+### 2026-10-06 - Movement/collision - underwater AV scope corrected + BCH min scan
+
+- Did: (1) falsified "grounded below sea level = AV" — 龙门 real sub-zero cell
+  `(121500,43500)` y=-1216 grounded -> DONE (only console assert spam); 白龙 edge-cell
+  runs clean; the AV reproduces only on 海岛. (2) Offline BCH header+payload scan of all
+  5 maps: sub-zero regions 龙门 14/64 (min -6727), 龙门_夜晚 14/64, 白龙 2/64 (-2726),
+  天原 44/64 (sentinel -819200), 海岛 16/16 (-17361). (3) BCH conversion live-verified
+  (`worldY = f32@32 + v*(f32@28-f32@32)`, row=Z no flip; 5652.2 vs 5652 and -7119.7 vs
+  -7120) — closes `TERRAIN_R32_BCH_RELATION.md`'s open header-semantics item. (4)
+  `RayIntersection` assert spam (line 1701) appears at every grounded sub-zero test
+  (console-only, not in log) and shares the failing path (MED). (5) the crash function
+  has no direct callers (indirect-only; deeper RE in next probes).
+- Evidence: `docs/movement/VOID_SPAWN_CRASH_TRIAGE.md` §2.0-2.5; logs
+  `reborn_20261006_1545..1600`; `proof/movement/disasm/crash_*`.
+- Outcome: scope corrected and documented; no code change (nothing invented).
+
+
+### 2026-10-05 - Host polish - workstream D forked (#iso) + plan of record
+
+- Forked `agent/host-polish` (worktree `Desktop\reborn-iso-host-polish`) off main
+  (`8e0352a`) to close the host-polish remainder of system 1: clean shutdown, device/
+  window settings, loading screen, native option read-back, and the two 1.10 LOD pose
+  probes. Audio (1.6), weather semantics (1.9) and packaging stay parked.
+- Recon grounding the plan: `KGEngineCLR.UnInit3DEngine()` + `KGBaseCLR.UnInit/UninitLog/
+  UnInitMemory` exist (clean shutdown); `GetEngineOption(ref proxy)` +
+  `GetEngineOptionFromConfigFile(path, out proxy)` exist (read-back; proxy fields not
+  public - probe first); `HudOverlay` is created before `Init3DEngine` (overlay can show
+  during init); the `Init3DEngine` 5th argument (`./configHttpFile.ini`) is a candidate
+  for init-time resolution keys.
+- Plan of record: `docs/engine_host/HOST_POLISH_PLAN.md` (D1-D7 with repro/verification
+  and boundary policy). Base note: forked off main per team convention; the unmerged
+  `agent/item1-completion` work is re-derived where needed instead of depended on.
+- Outcome: plan committed; execution next (D1 shutdown first).
+
+### 2026-10-05 - Host polish - D1 clean shutdown: safe subset + engine-teardown boundary
+
+- Did: wired guarded shutdown at the end of the run loop (`sound.UnInit()` +
+  `baselib.UninitLog()` + `baselib.UnInitMemory()`, `RC_SHUTDOWN` selects steps) and
+  A/B'd each step with exit codes: `0`/`sound`/`log`/`mem` all exit 0;
+  `engine.UnInit3DEngine()` AVs the process after `DONE` (0xC0000005). Default is the
+  safe subset; engine uninit stays opt-in (`RC_SHUTDOWN=engine`) for reproduction.
+- Evidence: `proof/host/d1_shutdown_ab.txt`; logs
+  `reborn_20261005_213411..213628.log` (fingerprint `reborn_client_hostpolish.exe`).
+- Outcome: D1 done - clean shutdown for Wwise/log/memory; engine-teardown boundary
+  registered (re-open: recover the editor's close sequence or an engine fix).
+
+### 2026-10-05 - Host polish - D2-D5: option schema, window sizing, loading overlay, foliage clamp
+
+- D2 (option read-back, PARTIAL): `RC_OPT_PROBE`/`RC_OPT_DUMP` recover 49 public fields
+  of `KGEngineOptionProxyCLR` (schema), but the values are the **defaults**, not the
+  applied preset (tier9 `nShadowType=3` vs dump `0`) - the proxy is the panel option
+  object. Active-value read-back needs the native `GetOption`/adapter-save route
+  (boundary + next probe). Evidence: `proof/host/active_t{1,9}.ini`.
+- D3 (device/window settings, DONE): `RC_WIDTH/RC_HEIGHT` drive the render target
+  (engine screenshot 1280x720 -> 1600x900); `RC_FULLSCREEN=1` = borderless 1920x1080;
+  a **nonexistent** `RC_INIT_CFG` path still inits (`Init3DEngine=1 ms=3141`) -> the
+  `configHttpFile.ini` argument is inert in this build. Evidence:
+  `proof/host/size_{base,1600}.png`.
+- D4 (loading screen, DONE): `client/LoadingOverlay.cs` (420x84 NOACTIVATE/TOOLWINDOW)
+  with phase text; window enumeration on the shipped 24 s path: overlay present at
+  t=8 s, **gone** at t=33 s (after spawn). `RC_NOLOADING=1` disables.
+- D5 (foliage density, DONE): at the densest `.foliage` cell, density 0 removes 2/64
+  cells (8x8 fingerprint), 100 == base, 999 == 100 -> **clamp at 100 confirmed in-host**.
+  Evidence: `proof/host/foliage8/*.png`.
+- Outcome: D2-D5 executed; D2 leaves a registered boundary (values-not-authoritative).
+
+### 2026-10-05 - Host polish - D6 close-up LOD pose: model-LOD keys are effective
+
+- Did: probed the model-LOD keys at a close-up pose (teleport-in-front-of-structure demo,
+  tier 9, 8x8 fingerprints): `fNodeLodLowLimit=20` changes **27/64** cells,
+  `fModelLodRadius=100,..` 9/64, `bEnableModelLodViewAngle=0` 9/64,
+  `fNodeLodHighLimit=100` 7/64, `nMinimumModelLod=3` 6/64.
+- Correction: the earlier vista-only "0/64, inert" classification was distance/grid
+  resolution - the keys work at close range (`LOD_CULL_MATRIX.md` on the item1 branch
+  should note this at merge).
+- Evidence: `proof/host/lod_close/{base,fNodeLodLowLimit_20,fModelLodRadius_100}.png`;
+  logs `reborn_20261005_22*`.
+- Outcome: D6 done - model-LOD controls verified as effective; no boundary needed.
+
+### 2026-10-05 - Host polish - D7: HUD hitch readout
+
+- Did: added a `hitch <n>ms` line to the info panel - max unclamped frame delta since the
+  last HUD update (250 ms window), reset per update; `RC_HUD_OPEN=1` opens the panel.
+- Verify: build exit 0; camera_smoke ALL PASS; collision selftest 36/36 (both exercise
+  the 250 ms hud.SetText path); HUD-open run screenshot `proof/host/hud_hitch.png`.
+- Outcome: D7 done - workstream D (D1-D7) complete on `agent/host-polish`.
+
+### 2026-10-06 - Item 1.x merge into main (finalize)
+
+- Did: merged `agent/item1-completion` @ `0ac8de1` into main `--no-ff` -> `2b01a36`;
+  zero conflicts (main `8e0352a` was an ancestor of the branch, `merge-tree` exit 0
+  preflight). 98 files: camera tracks P0-P4 (`CameraTrack.cs`, `SkillMoveCamera.cs`,
+  HUD keys, `mani_probe.py`), stability physics + spawn guard v2, host polish
+  (`LoadingOverlay.cs`, shutdown, window/device, D6/D7), audio probe, LOD/cull matrix,
+  proof + docs.
+- Verify: canonical + mini builds exit 0; `camera_smoke` ALL PASS; `collision_selftest`
+  36/36; gravity/loot/jx3_model PASS. Tag `item1-complete-20261006`.
+- Note: during the branch-merge sequence the original spawn repro AV regression (camera
+  merge flip, corner case) was caught by the per-merge checks and fixed by guard v2
+  (`5ddc628`, validated clamped spawn + relocation to solid above-sea-level ground;
+  repro clean x2, default spawn unchanged).
+- Outcome: item 1.x complete on main (pushed to origin per explicit request).
+  Registered boundaries remain: FOV ramp provisional, spawn test-guard, underwater/slope
+  AV (server-owned), option read-back D2 partial.
 
 ### 2026-10-05 — v5 fork (agent/skillv5-sandbox) — sandbox process corrected: authoritative ability→animation mapping
 

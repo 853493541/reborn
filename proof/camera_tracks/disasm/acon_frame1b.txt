@@ -1,0 +1,222 @@
+0014a180  2440                   and     al, 0x40
+0014a182  4805c4000000           add     rax, 0xc4
+0014a188  4c8b4c2448             mov     r9, qword ptr [rsp + 0x48]
+0014a18d  41b801000000           mov     r8d, 1
+0014a193  ba04000000             mov     edx, 4
+0014a198  488bc8                 mov     rcx, rax
+0014a19b  ff15df400a00           call    qword ptr [rip + 0xa40df]  ; imp:MSVCR110.dll!fwrite
+0014a1a1  488b442440             mov     rax, qword ptr [rsp + 0x40]
+0014a1a6  4805c8000000           add     rax, 0xc8
+0014a1ac  4c8b4c2448             mov     r9, qword ptr [rsp + 0x48]
+0014a1b1  41b801000000           mov     r8d, 1
+0014a1b7  ba04000000             mov     edx, 4
+0014a1bc  488bc8                 mov     rcx, rax
+0014a1bf  ff15bb400a00           call    qword ptr [rip + 0xa40bb]  ; imp:MSVCR110.dll!fwrite
+0014a1c5  488b442440             mov     rax, qword ptr [rsp + 0x40]
+0014a1ca  4805cc000000           add     rax, 0xcc
+0014a1d0  4c8b4c2448             mov     r9, qword ptr [rsp + 0x48]
+0014a1d5  41b801000000           mov     r8d, 1
+0014a1db  ba04000000             mov     edx, 4
+0014a1e0  488bc8                 mov     rcx, rax
+0014a1e3  ff1597400a00           call    qword ptr [rip + 0xa4097]  ; imp:MSVCR110.dll!fwrite
+0014a1e9  488b442440             mov     rax, qword ptr [rsp + 0x40]
+0014a1ee  4805e0000000           add     rax, 0xe0
+0014a1f4  4c8b4c2448             mov     r9, qword ptr [rsp + 0x48]
+0014a1f9  41b801000000           mov     r8d, 1
+0014a1ff  ba04000000             mov     edx, 4
+0014a204  488bc8                 mov     rcx, rax
+0014a207  ff1573400a00           call    qword ptr [rip + 0xa4073]  ; imp:MSVCR110.dll!fwrite
+0014a20d  488b442440             mov     rax, qword ptr [rsp + 0x40]
+0014a212  4805dc000000           add     rax, 0xdc
+0014a218  4c8b4c2448             mov     r9, qword ptr [rsp + 0x48]
+0014a21d  41b801000000           mov     r8d, 1
+0014a223  ba04000000             mov     edx, 4
+0014a228  488bc8                 mov     rcx, rax
+0014a22b  ff154f400a00           call    qword ptr [rip + 0xa404f]  ; imp:MSVCR110.dll!fwrite
+0014a231  c744242400000000       mov     dword ptr [rsp + 0x24], 0
+0014a239  8b442424               mov     eax, dword ptr [rsp + 0x24]
+0014a23d  4883c438               add     rsp, 0x38
+0014a241  c3                     ret     
+0014a242  cc                     int3    
+0014a243  cc                     int3    
+0014a244  cc                     int3    
+0014a245  cc                     int3    
+0014a246  cc                     int3    
+0014a247  cc                     int3    
+0014a248  cc                     int3    
+0014a249  cc                     int3    
+0014a24a  cc                     int3    
+0014a24b  cc                     int3    
+0014a24c  cc                     int3    
+0014a24d  cc                     int3    
+0014a24e  cc                     int3    
+0014a24f  cc                     int3    
+0014a250  4889542410             mov     qword ptr [rsp + 0x10], rdx
+0014a255  48894c2408             mov     qword ptr [rsp + 8], rcx
+0014a25a  4883ec68               sub     rsp, 0x68
+0014a25e  48c7442430feffffff     mov     qword ptr [rsp + 0x30], 0xfffffffffffffffe
+0014a267  c744242405400080       mov     dword ptr [rsp + 0x24], 0x80004005
+0014a26f  c744242005400080       mov     dword ptr [rsp + 0x20], 0x80004005
+0014a277  488b442478             mov     rax, qword ptr [rsp + 0x78]
+0014a27c  8b400c                 mov     eax, dword ptr [rax + 0xc]
+0014a27f  89442428               mov     dword ptr [rsp + 0x28], eax
+0014a283  837c24280e             cmp     dword ptr [rsp + 0x28], 0xe
+0014a288  7402                   je      0x18014a28c
+0014a28a  eb4f                   jmp     0x18014a2db
+0014a28c  4533c9                 xor     r9d, r9d
+0014a28f  488b442478             mov     rax, qword ptr [rsp + 0x78]
+0014a294  448b401c               mov     r8d, dword ptr [rax + 0x1c]
+0014a298  488b442478             mov     rax, qword ptr [rsp + 0x78]
+0014a29d  488b5020               mov     rdx, qword ptr [rax + 0x20]
+0014a2a1  488d4c2438             lea     rcx, [rsp + 0x38]
+0014a2a6  e8359d0300             call    0x180183fe0
+0014a2ab  90                     nop     
+0014a2ac  488b442470             mov     rax, qword ptr [rsp + 0x70]
+0014a2b1  4805e0000000           add     rax, 0xe0
+0014a2b7  488bd0                 mov     rdx, rax
+0014a2ba  488d4c2438             lea     rcx, [rsp + 0x38]
+0014a2bf  e8fc9a0300             call    0x180183dc0
+0014a2c4  488b4c2470             mov     rcx, qword ptr [rsp + 0x70]
+0014a2c9  e822010000             call    0x18014a3f0
+0014a2ce  90                     nop     
+0014a2cf  488d4c2438             lea     rcx, [rsp + 0x38]
+0014a2d4  e8779d0300             call    0x180184050
+0014a2d9  eb22                   jmp     0x18014a2fd
+0014a2db  488b542478             mov     rdx, qword ptr [rsp + 0x78]
+0014a2e0  488b4c2470             mov     rcx, qword ptr [rsp + 0x70]
+0014a2e5  e896a9fdff             call    0x180124c80
+0014a2ea  89442420               mov     dword ptr [rsp + 0x20], eax
+0014a2ee  837c242000             cmp     dword ptr [rsp + 0x20], 0
+0014a2f3  7d02                   jge     0x18014a2f7
+0014a2f5  eb0e                   jmp     0x18014a305
+0014a2f7  33c0                   xor     eax, eax
+0014a2f9  85c0                   test    eax, eax
+0014a2fb  75f1                   jne     0x18014a2ee
+0014a2fd  c744242400000000       mov     dword ptr [rsp + 0x24], 0
+0014a305  8b442424               mov     eax, dword ptr [rsp + 0x24]
+0014a309  4883c468               add     rsp, 0x68
+0014a30d  c3                     ret     
+0014a30e  cc                     int3    
+0014a30f  cc                     int3    
+0014a310  cc                     int3    
+0014a311  cc                     int3    
+0014a312  cc                     int3    
+0014a313  cc                     int3    
+0014a314  cc                     int3    
+0014a315  cc                     int3    
+0014a316  cc                     int3    
+0014a317  cc                     int3    
+0014a318  cc                     int3    
+0014a319  cc                     int3    
+0014a31a  cc                     int3    
+0014a31b  cc                     int3    
+0014a31c  cc                     int3    
+0014a31d  cc                     int3    
+0014a31e  cc                     int3    
+0014a31f  cc                     int3    
+0014a320  4889542410             mov     qword ptr [rsp + 0x10], rdx
+0014a325  48894c2408             mov     qword ptr [rsp + 8], rcx
+0014a32a  4883ec68               sub     rsp, 0x68
+0014a32e  48c7442430feffffff     mov     qword ptr [rsp + 0x30], 0xfffffffffffffffe
+0014a337  c744242405400080       mov     dword ptr [rsp + 0x24], 0x80004005
+0014a33f  c744242005400080       mov     dword ptr [rsp + 0x20], 0x80004005
+0014a347  41b901000000           mov     r9d, 1
+0014a34d  488b442478             mov     rax, qword ptr [rsp + 0x78]
+0014a352  448b401c               mov     r8d, dword ptr [rax + 0x1c]
+0014a356  488b442478             mov     rax, qword ptr [rsp + 0x78]
+0014a35b  488b5020               mov     rdx, qword ptr [rax + 0x20]
+0014a35f  488d4c2438             lea     rcx, [rsp + 0x38]
+0014a364  e8779c0300             call    0x180183fe0
+0014a369  90                     nop     
+0014a36a  488b442478             mov     rax, qword ptr [rsp + 0x78]
+0014a36f  8b400c                 mov     eax, dword ptr [rax + 0xc]
+0014a372  89442428               mov     dword ptr [rsp + 0x28], eax
+0014a376  837c24280e             cmp     dword ptr [rsp + 0x28], 0xe
+0014a37b  7402                   je      0x18014a37f
+0014a37d  eb17                   jmp     0x18014a396
+0014a37f  488b442470             mov     rax, qword ptr [rsp + 0x70]
+0014a384  8b90e0000000           mov     edx, dword ptr [rax + 0xe0]
+0014a38a  488d4c2438             lea     rcx, [rsp + 0x38]
+0014a38f  e88c9b0300             call    0x180183f20
+0014a394  eb22                   jmp     0x18014a3b8
+0014a396  488b542478             mov     rdx, qword ptr [rsp + 0x78]
+0014a39b  488b4c2470             mov     rcx, qword ptr [rsp + 0x70]
+0014a3a0  e84babfdff             call    0x180124ef0
+0014a3a5  89442420               mov     dword ptr [rsp + 0x20], eax
+0014a3a9  837c242000             cmp     dword ptr [rsp + 0x20], 0
+0014a3ae  7d02                   jge     0x18014a3b2
+0014a3b0  eb0e                   jmp     0x18014a3c0
+0014a3b2  33c0                   xor     eax, eax
+0014a3b4  85c0                   test    eax, eax
+0014a3b6  75f1                   jne     0x18014a3a9
+0014a3b8  c744242400000000       mov     dword ptr [rsp + 0x24], 0
+0014a3c0  8b442424               mov     eax, dword ptr [rsp + 0x24]
+0014a3c4  8944242c               mov     dword ptr [rsp + 0x2c], eax
+0014a3c8  488d4c2438             lea     rcx, [rsp + 0x38]
+0014a3cd  e87e9c0300             call    0x180184050
+0014a3d2  8b44242c               mov     eax, dword ptr [rsp + 0x2c]
+0014a3d6  4883c468               add     rsp, 0x68
+0014a3da  c3                     ret     
+0014a3db  cc                     int3    
+0014a3dc  cc                     int3    
+0014a3dd  cc                     int3    
+0014a3de  cc                     int3    
+0014a3df  cc                     int3    
+0014a3e0  cc                     int3    
+0014a3e1  cc                     int3    
+0014a3e2  cc                     int3    
+0014a3e3  cc                     int3    
+0014a3e4  cc                     int3    
+0014a3e5  cc                     int3    
+0014a3e6  cc                     int3    
+0014a3e7  cc                     int3    
+0014a3e8  cc                     int3    
+0014a3e9  cc                     int3    
+0014a3ea  cc                     int3    
+0014a3eb  cc                     int3    
+0014a3ec  cc                     int3    
+0014a3ed  cc                     int3    
+0014a3ee  cc                     int3    
+0014a3ef  cc                     int3    
+0014a3f0  48894c2408             mov     qword ptr [rsp + 8], rcx
+0014a3f5  4883ec38               sub     rsp, 0x38
+0014a3f9  488b442440             mov     rax, qword ptr [rsp + 0x40]
+0014a3fe  488b00                 mov     rax, qword ptr [rax]
+0014a401  488b4c2440             mov     rcx, qword ptr [rsp + 0x40]
+0014a406  ff90d0000000           call    qword ptr [rax + 0xd0]
+0014a40c  4889442420             mov     qword ptr [rsp + 0x20], rax
+0014a411  488b442440             mov     rax, qword ptr [rsp + 0x40]
+0014a416  480590000000           add     rax, 0x90
+0014a41c  488b4c2440             mov     rcx, qword ptr [rsp + 0x40]
+0014a421  4881c1bc000000         add     rcx, 0xbc
+0014a428  488b542440             mov     rdx, qword ptr [rsp + 0x40]
+0014a42d  4881c2c0000000         add     rdx, 0xc0
+0014a434  4c8bc8                 mov     r9, rax
+0014a437  4c8bc1                 mov     r8, rcx
+0014a43a  488b4c2420             mov     rcx, qword ptr [rsp + 0x20]
+0014a43f  e8ccbcfcff             call    0x180116110
+0014a444  488b4c2440             mov     rcx, qword ptr [rsp + 0x40]
+0014a449  e802a7fdff             call    0x180124b50
+0014a44e  4883c438               add     rsp, 0x38
+0014a452  c3                     ret     
+0014a453  cc                     int3    
+0014a454  cc                     int3    
+0014a455  cc                     int3    
+0014a456  cc                     int3    
+0014a457  cc                     int3    
+0014a458  cc                     int3    
+0014a459  cc                     int3    
+0014a45a  cc                     int3    
+0014a45b  cc                     int3    
+0014a45c  cc                     int3    
+0014a45d  cc                     int3    
+0014a45e  cc                     int3    
+0014a45f  cc                     int3    
+0014a460  48894c2408             mov     qword ptr [rsp + 8], rcx
+0014a465  4883ec48               sub     rsp, 0x48
+0014a469  48c744242800000000     mov     qword ptr [rsp + 0x28], 0
+0014a472  488b442450             mov     rax, qword ptr [rsp + 0x50]
+0014a477  4883784000             cmp     qword ptr [rax + 0x40], 0
+0014a47c  0f                     .byte   0x0f
+0014a47d  84                     .byte   0x84
+0014a47e  8400                   test    byte ptr [rax], al
