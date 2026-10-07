@@ -28,8 +28,10 @@ from probe_state_timeline import (
     CREATE_SUSPENDED, STARTUPINFO, PROCESS_INFORMATION, build_block, module_list,
 )
 
+import client_root
+
 OPEN_RIGHTS = 0x400 | 0x10 | 0x20 | 0x8          # QUERY | VM_READ | VM_WRITE | VM_OP
-ROOT_STR = "C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd"
+ROOT_STR = client_root.root()
 ROOT_WIDE = ROOT_STR.encode("utf-16-le")
 NEW_WIDE = "C:\\jx3t\\".encode("utf-16-le")
 LOG_FILE = r"C:\jx3tmp\client_log.txt"

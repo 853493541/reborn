@@ -11,9 +11,13 @@ from __future__ import annotations
 import argparse
 import os
 import shutil
+import sys
 import time
 
-SRC = r"C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\minidump"
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import client_root
+
+SRC = client_root.minidump_dir()
 
 
 def main():

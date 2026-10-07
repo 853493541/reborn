@@ -34,13 +34,14 @@ import sys
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import client_root
 import watch_world_bind as W
 
 u32 = ctypes.windll.user32
 k32 = ctypes.windll.kernel32
 SMTO_ABORTIFHUNG = 0x0002
 SMTO_BLOCK = 0x0001
-CLIENT_LOGS = r"C:\SeasunGame\Game\JX3\bin\zhcn_hd\logs"
+CLIENT_LOGS = client_root.logs_dir()
 
 
 def find_game_window(pid):

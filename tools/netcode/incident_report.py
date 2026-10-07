@@ -23,13 +23,14 @@ import sys
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import client_root
 import watch_world_bind as W
 import watch_freeze as F
 
 u32 = ctypes.windll.user32
 k32 = ctypes.windll.kernel32
-LOGS = r"C:\SeasunGame\Game\JX3\bin\zhcn_hd\logs"
-MINIDUMP = r"C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\minidump"
+LOGS = client_root.logs_dir()
+MINIDUMP = client_root.minidump_dir()
 
 
 def newest(glob_root, suffix, since=None):

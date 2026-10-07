@@ -20,8 +20,11 @@ import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import gateway_cipher as gc
+import client_root
 
-CLIENT_EXE = r"C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\JX3ClientX64.exe"
+# V3: the cipher table must come from the exact build being driven (frozen install via
+# RC_CLIENT_ROOT/RC_V3_ROOT; live install otherwise).
+CLIENT_EXE = client_root.exe()
 
 DEFAULT_PORT = 3724
 DEFAULT_LOG = r"C:\jx3tmp\gateway_stub.log"

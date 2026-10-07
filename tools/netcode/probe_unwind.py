@@ -19,6 +19,7 @@ sys.path.insert(0, r"C:\Users\ZHIBIN~1\AppData\Local\Temp\opencode")
 
 from cipher_table import derive_table, encrypt_with_table
 from unwind import PEModule, REG_NAMES, unwind_frame
+import client_root
 
 k32 = ctypes.windll.kernel32
 CREATE_SUSPENDED = 0x4
@@ -26,8 +27,8 @@ FILE_MAP_ALL_ACCESS = 0xF001F
 NAME_FMT = "400BBBA7-F29F-4357-9B07-%04X-D62109852BD6"
 BLOCK = 0x275C
 INVALID_HANDLE_VALUE = ctypes.c_void_p(-1).value
-EXE = r"C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\JX3ClientX64.exe"
-CWD = r"C:\SeasunGame\Game\JX3\bin\zhcn_hd"
+EXE = client_root.exe()
+CWD = client_root.root()
 TABLE = derive_table()
 CONTEXT_FULL = 0x10000B
 

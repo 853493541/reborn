@@ -25,6 +25,12 @@ from probe_state_timeline import (
 )
 from probe_logpatch import scan_root, read_mem, write_mem, ROOT_WIDE, ROOT_STR, NEW_WIDE
 
+import client_root
+
+# V3: resolve the client root from RC_CLIENT_ROOT/RC_V3_ROOT (frozen install) with the
+# live install as the default fallback.
+EXE = client_root.exe()
+CWD = client_root.root()
 CLIENT_DIR = os.path.dirname(EXE)
 DOWNLOADER = os.path.join(CLIENT_DIR, "KGPK4_StreamDownloaderX64.exe")
 CREATE_SUSPENDED = 0x4
