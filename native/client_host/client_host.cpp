@@ -5316,6 +5316,15 @@ int main(void)
                                 }
                                 __except (EXCEPTION_EXECUTE_HANDLER)
                                 { logf("[host] frame60: NewClientScene fault"); }
+                                __try
+                                {
+                                    void* np = ((void* (__fastcall *)(void*, unsigned))
+                                                ((BYTE*)g_logicModule + 0x12CB30))(
+                                        g_so3World, 0);
+                                    logf("[host] frame60: KSO3World::NewPlayer(world,0) -> %p", np);
+                                }
+                                __except (EXCEPTION_EXECUTE_HANDLER)
+                                { logf("[host] frame60: NewPlayer fault"); }
                             }
                             __try
                             {

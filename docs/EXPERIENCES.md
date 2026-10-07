@@ -3465,5 +3465,18 @@ HIGH-confidence findings:
   plan's Phase B represent-Param wiring), which the host has not fully connected. This
   is the remaining Gate 4 blocker.
 - Evidence: host_exe240.out; static disasm (logic lea xrefs).
+
+## 2026-10-07 - NewClientScene + NewPlayer still do not create the represent managers
+
+- Added `KSO3World::NewPlayer(g_so3World, 0)` (logic+0x12CB30) after `NewClientScene`.
+  Run 241: `NewClientScene -> 0x9CE2BEC8`, `NewPlayer -> 0x24F9CE732D8` (both valid
+  heap pointers) - yet still **no manager registration** (`g_rlActorMgr=0`, one ev-reg
+  of the unrelated class). Creating the logic scene + a logic player does not make the
+  represent construct `RLActorMgrNT`/`KRLDummyMgr`.
+- Remaining Gate 4 blocker: the represent's managers are built from a **dispatcher
+  scene-enter event** (the plan's Phase B represent-Param wiring), not from the logic
+  scene/player objects directly. The host has the logic world and scene/player now; the
+  missing link is the logic->represent event dispatch.
+- Evidence: host_exe240.out, host_exe241.out.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
