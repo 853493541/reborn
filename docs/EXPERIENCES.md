@@ -3615,5 +3615,21 @@ HIGH-confidence findings:
   (`m_AsyncTask.Delegates` at rep_main+0x262C0). Once `Init` succeeds, call
   `CreateRLActorNT(mgr, F1id, type)` + `RLActorNT::LoadModel`.
 - Evidence: host_exe253.out; static disasm (`0x36A1D0`, `0x36DCC4`).
+
+## 2026-10-07 - Async-task system located (for Gate 4 Init completion)
+
+- Run 254: `delegate registry @ rep_main+0x262C0 count=0 array=NULL` - `m_AsyncTask` is
+  unconstructed, so `Init`'s delegate registrations all fail (`edx >= count`).
+- Located the async-task classes/functions (debug names): `RLAsyncTaskMgr`
+  (`RLAsyncTaskMgr::Init` = `rep+0x375F50` - creates the worker thread via
+  `CreateThread`/`0x109B200`), `InitAsyncTask` = `rep+0x372F20`, `RLThreadSafeTask::Init`
+  (`rep+0x351653` region), `Delegate.Initialize(<COUNT>)` (the pattern used elsewhere:
+  `m_Delegate.Initialize(KRL_HOMELAND_MSG_COUNT)` `rep+0xCE5B50`).
+- So the represent's `m_AsyncTask.Delegates` (at `rep_main+0x262C0`) needs its
+  `Initialize(count)` (or the `InitAsyncTask`/`RLAsyncTaskMgr::Init` path) before
+  `RLActorMgrNT::Init` can register its 8 handlers.
+- Next: call the delegate-registry `Initialize` (find the exact `Delegate::Initialize`
+  address) or `InitAsyncTask`, verify count>0, then re-run `RLActorMgrNT::Init`.
+- Evidence: host_exe254.out (count=0); static disasm/strings.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
