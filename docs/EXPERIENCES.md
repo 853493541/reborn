@@ -3034,5 +3034,24 @@ HIGH-confidence findings:
   `0x35B1DFE0` likely indexes a function table with a missing registration
   (same class as the earlier wild call). Details in NEXT_AGENT_HANDOFF section 0.
 - Evidence: host_exe206-212.out; commits 5bb2f49, cb8a54f, <tid commit>.
+
+## 2026-10-07 - CreateRLScene wild call located with an exec-breakpoint tracer
+
+- Added a hardware **execute breakpoint + single-step tracer** (`armExecTrace`,
+  Dr1 + the trap flag, VEH-driven) and armed it at `rep+0xAEE2D8` before
+  CreateRLScene (the call whose return address `0xAEE2DD` sits on the faulting
+  stack). The trace (runs 213-215): `HIT rep+0xAEE2D8` ->
+  `step[0] rip=rep+0x15BF4` -> **immediate AV at the wild target** (no further
+  steps).
+- The live bytes at frame60 are the direct forms and unmodified:
+  `rep+0xAEE2D8 = E8 17 79 52 FF` (call `0x15BF4`) and
+  `rep+0x15BF4 = E9 D7 83 AD 00` (jmp `rep+0xAEDFD0`), yet the single-step does
+  not reach `0xAEDFD0` — the next exception is the wild AV. Therefore the wild
+  transfer is at `rep+0x15BF4` (or `0xAEDFD0`'s first indirect call,
+  `call [0x109B3D8]`). `rax=0x35B1DFE0` constant; the stack carries
+  `scene[000002]` (assert format `"scene[%.6u]"` at rep+0xD0A2B0).
+- Next: inline-hook `rep+0x15BF4`/`0xAEDFD0`, log rcx/rdx/r8 and the IAT slot;
+  find the unset object/registration. Evidence: host_exe213-215.out; commit
+  (exec tracer).
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.

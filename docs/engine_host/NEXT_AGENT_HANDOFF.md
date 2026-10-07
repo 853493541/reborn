@@ -99,16 +99,27 @@ module) plus a filtered game-stack scan. Observed (runs 209-212):
 
 Next probes:
 
-1. Find the indirect transfer: disassemble the function that reaches
-   rep+0xAEE2DD (`call 0x15BF4` -> 0xAEDFD0 at 0xAEE2D8) and its callees
-   (0xE5D4, 0x4750, 0x1384A, 0x4B33) for a `jmp`/`call` through a table.
-2. Search why `rax=0x35B1DFE0` (constant) — likely an ID/hash used to index a
-   function table; a missing registration leaves a garbage entry.
-3. Check the scene callbacks: the `scene[%.6u]` wrapper (0xAD38B0) and the
-   scene-id dispatch (0x14E2F); the host creates scene id 2 manually.
-4. When identified, wire the game's own registration (as done for
+1. **The wild transfer is located** (runs 213-215) with a new hardware
+   execute-breakpoint + single-step tracer (`armExecTrace`, Dr1 + trap flag):
+   armed at `rep+0xAEE2D8`, the trace is `HIT rep+0xAEE2D8` ->
+   `step[0] rip=rep+0x15BF4` -> **immediate AV at the wild target** (no
+   further steps). So the `call` at `0xAEE2D8` (bytes `E8 17 79 52 FF`,
+   target `0x15BF4`) is on the faulting path and the wild transfer happens at
+   `rep+0x15BF4` or its immediate target.
+   The live bytes were verified unmodified at frame60:
+   `rep+0x15BF4 = E9 D7 83 AD 00` (`jmp rep+0xAEDFD0`) and
+   `rep+0xAEE2D8 = E8 17 79 52 FF`; so the file/runtime bytes are the direct
+   forms, yet the single-step does not reach `0xAEDFD0` — the next exception is
+   the wild AV. Investigate `rep+0x15BF4`/`0xAEDFD0` (inline-hook them, log
+   rcx/rdx/r8, and check whether `0xAEDFD0`'s `call [0x109B3D8]` IAT slot or an
+   argument object is unset). `rax=0x35B1DFE0` is constant.
+2. The scene-id wrapper/assert `"scene[%.6u]"` (rep+0xD0A2B0, fn 0xAD38B0) and
+   the `scene[000002]` string on the faulting stack are nearby context.
+3. When identified, wire the game's own registration (as done for
    `LoadConfigureFile`); then re-check the CreateRLScene return and
    `GetRLScene(2)`.
+- The exec tracer is always installed (only fires if `0xAEE2D8` executes,
+  i.e. the failing path); it costs nothing on normal runs.
 
 **Superseded leads (kept for context):** the register-step / async-queue theory
 for m_tabCommon was a red herring — `LoadConfigureFile` sets it directly. The
