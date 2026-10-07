@@ -14,39 +14,84 @@ If a prompt points you here, read in this order:
 1. **This file** (the working map: state, chain, blocker, next probes).
 2. `docs\engine_host\CLIENT_CHARACTER_PLAN.md` — the Gate 1..5 plan
    (Gate 1 = the real `CreateRLScene` completing).
-3. `docs\EXPERIENCES.md` — the 2026-10-06 entries (8 of them) are the
-   blow-by-blow narrative of how the current state was reached.
+3. `docs\EXPERIENCES.md` — the 2026-10-06 entries and the 2026-10-07 entries
+   (the lua file-layer fix + RL table chain completion).
 4. `AGENTS.md` §2 (isolation/worktree rules) and §15 (response protocol:
    Verified line + game-design check + EXPERIENCES entry).
-5. Session logs: `%TEMP%\opencode\skillv2\host_exe146-178.out` (the current
-   chain) and `host_exe119-145.out` (window fix + earlier Gate 1 steps).
+5. Session logs: `%TEMP%\opencode\skillv2\host_exe*.out` — the 2026-10-07 runs
+   are `host_exe179-193.out` (the current chain); 146-178 is the previous
+   session.
 
-Last updated: 2026-10-06 (end of a very long session). Read this top to bottom
-before touching anything.
+Last updated: 2026-10-07 (mid-session, after the lua file layer was fixed and
+the RL table chain now completes).
 
-## 0. TL;DR — what to do next
+## 0. TL;DR — what changed and what to do next
 
-The RL table task chain now runs through the game's own code (builder +
-runTasks runner) and dies inside the **Engine_Lua5X64 file open**. The single
-next job:
+**Major progress (2026-10-07):**
 
-1. Probe the lua file-system root/prefix globals in-host:
-   - `lua+0x1709C0` (the pak-path prefix string used by the pak path builder
-     0xB3710) — log its value AND its string content.
-   - Check what the host's `SetRoot` calls (`lua+0xB5400` / `lua+0xB5220`) and
-     `InitPak` (`lua+0xCC2D0`) actually set; the lua path formatter expects the
-     base path to END WITH A BACKSLASH (`%sbin64\%s`), and the host passes
-     `rootA` without one.
-2. Fix the root/prefix (or the pak flag path), re-run, and watch for
-   `[host] registerTasks` / `runTasks` / `tableLoad` hooks + the tables probe
-   `[main+0x210]` becoming non-null.
-3. When `[SO3Represent+0x210]` (m_tabCommon) is set, KRLScene::Init line 212
-   (weather) passes and Gate 1 can proceed to its checkpoint: the real
-   `CreateRLScene` completes + `GetRLScene(2)` non-null through the game's path.
+1. **The lua file layer works.** The old "wild call" was the host's OWN
+   instrumentation bug: `installTableLoadHook` used a 5-byte `jmp rel32` to a
+   `VirtualAlloc(NULL,..)` stub that could land >2 GB away — the truncated
+   displacement jumped wild (nvcuda64 / module-unknown addresses). Fixed with
+   `allocNear()` (near allocation) + a stub that forces 16-byte stack
+   alignment and saves rsp in a callee-saved register (the lambda at
+   `rep+0x80B9C3` is reached by a **non-call jump** — a plain `call` from a
+   misaligned stack crashed inside the CRT `movdqa`).
+2. **The lua "pak flag" was a misread.** `lua+0x1729C0` is not a bool — it is
+   the **prior-root string** (export `g_SetPriorRootPath` = lua+0xB5380).
+   The real globals:
+   - root `0x170060` (`g_SetRootPath` 0xB5400, strips a trailing separator),
+   - file path `0x170170` (`g_SetFilePath` 0xB5220),
+   - prior root `0x1729C0` (`g_SetPriorRootPath` 0xB5380; empty = loose),
+   - pak manager `0x1730B8` + type vector `0x1730A0..0x1730A8`
+     (`KG_InitPakV4FileSystem` = lua+0xCC2D0).
+   `0x1709C0` does not exist (0 refs) — drop that lead.
+3. **Pak mode matters:** `KG_InitPakV4FileSystem(..., arg4)` select the file
+   priority: 0 = pak-first, 1 = loose-first. The host now runs with `arg4=1`
+   (`RC_HOST_PAK=1`, matching `config.ini` `PakFirst=0`) — the sandbox's loose
+   files win; the pak supplies only what is missing loose (e.g.
+   `GI_DetailTracingCommon.hlsli`, `Represent/skill/skill_caster_model.ini`).
+   Without the pak the engine's shader compile fails; pak-first shadows the
+   sandbox map (scene environment NULL -> frame-0 paint fault).
+4. **SemanticX64 file IO must be installed before the RL table task.** The
+   represent Init installs it in the game; in-host it ran later (MapConverter).
+   The host now calls `SemanticX64!SetFileIOFunctions(rep+0x788D, rep+0x1EB0,
+   rep+0x10DC, rep+0x18926)` — see
+   `frame60: Semantic SetFileIOFunctions installed (pre-RL-task)`.
+   Before this, `sLoadNumberFromFile` got a NULL `Table` (CreateRLFile failed).
+5. **The RL table chain now COMPLETES:** `runTasks enter` -> `tableLoad lambda
+   enter` (the rep+0x80B9C3 hook now fires!) -> **`runTasks exit -> 1`** with
+   `KTableList::Init` (rep+0x836510) succeeding. The loaded tables land in the
+   KTableList at **`g_repSingleton + 0x1A0`** (`kt`), whose members
+   `+0x11FF8`, `+0x12000`, `+0x1DE40`, `+0x23BB8` are non-null after the run.
 
-If the lua route dead-ends, the fallback is documented at the end (fab the
-tables / the offline editor-stack map compile) — but exhaust the lua file
-layer first: the chain is one step away.
+**The remaining blocker (one logical link):** `[g_repSingleton + 0x210]`
+(m_tabCommon, read by `KRLWeatherController::Init` line 27 as
+`g_pRL->m_TableList.m_tabCommon`) is still NULL. `kt+0x70` (== singleton+0x210)
+stays NULL after the loader. A hardware **write watch on `singleton+0x210`**
+armed across the whole task run got **zero hits** — the loader does not publish
+it; the game must do it in a step the host has not run.
+
+**Prime suspect:** the **register task** path. The builder creates a
+`register` functor (rep+0x80E340 -> `registerTasks` rep+0x80B6A0) and a `run`
+functor (rep+0x80E360 -> `runTasks` 0x80B8C0); the host only ever runs the
+`run` path — the `hookRegisterTasks` hook (on 0x80B6A0) has **never fired**.
+`registerTasks` creates task functors (vtables 0xCD8020/0xCD8048/0xCD8070) and
+almost certainly registers the loaded tables where the weather check reads
+them. Next probes:
+
+1. Find where the builder (rep+0x8261F0) queues the register vs run tasks
+   (the functor vtables are `0xCD80C8` = register, vt[0]=0x80E340; `0xCD8000`
+   = run, vt[0]=0x80E360). The step controller (the game's own runner) runs
+   them; the host's `g_taskInvokeStub` calls **vt[1]**, but these step objects
+   may use **vt[0]** as the invoke. Walk the container(s) the builder writes:
+   `[stepBuf+0x70]` (host already walks it), and the wrapper's out struct
+   (`r9 = [rbp+0x38]` in the timed wrapper 0x3E3D90, filled via 0x18002363c).
+2. Invoke the register functor (0x80E340) — or call `registerTasks` directly
+   with the right object — and re-check `[singleton+0x210]` + the write watch.
+   (Order: register probably expects the run to have completed.)
+3. Then re-check `real CreateRLScene` (should pass line 212) and
+   `GetRLScene(2)`.
 
 ## 1. Where the work lives — worktree + branch (READ FIRST)
 
@@ -64,7 +109,7 @@ layer first: the chain is one step away.
 - Verify you are in the right place before editing (all four must match):
   `git worktree list` (shows the worktree + branch),
   `git branch --show-current` -> `agent/skillv2-sandbox`,
-  `git log -1 --oneline` -> a `Client:`/`Docs:` commit from the 2026-10-06 session,
+  `git log -1 --oneline` -> a `Client:`/`Docs:` commit,
   `git status --short` -> clean.
 - History note: this worktree/branch was once accidentally merged into
   `agent/item1-completion` (commit `ec9e3a1`) and then reverted (`a8b37bc`);
@@ -82,22 +127,29 @@ layer first: the chain is one step away.
 
 **Build/run (from the worktree root):**
 - Build: `native\client_host\build_client_host.cmd` -> `native\client_host\out\client_host.exe`
-- Run (PowerShell; the host reads these env vars):
+- Run (PowerShell; the host reads these env vars — **the map name is
+  `龙门寻宝_s` (U+9F99 U+95E8 U+5BFB U+5B9D + `_s`); an ASCII transliteration
+  silently loads no scene and the frame-0 paint faults**):
 
 ```powershell
 $env:RC_HOST_ROOT = "$env:TEMP\opencode\skillv2\client_root"
-$env:RC_HOST_MAP  = "data\source\maps\龙门寻宝_s\龙门寻宝_s.jsonmap"
+$mapDir = [char]0x9F99 + [char]0x95E8 + [char]0x5BFB + [char]0x5B9D + "_s"
+$env:RC_HOST_MAP  = "data\source\maps\$mapDir\$mapDir.jsonmap"
 $env:RC_HOST_SHOT = "$env:TEMP\opencode\skillv2\host_exeNNN.png"
 $env:RC_HOST_RLLOADER = "1"; $env:RC_HOST_LOGIC = "1"
 $env:RC_HOST_EXE = "1";     $env:RC_HOST_EXE_NOINIT = "1"
+$env:RC_HOST_PAK = "1"      # InitPak(...,mode=1 loose-first; required: pak has shader includes + the RL ini
+$env:RC_HOST_MAXSEC = "500" # the shader map may recompile once (~165 s); after that init is ~5 s
 & "...\native\client_host\out\client_host.exe" *> "$env:TEMP\opencode\skillv2\host_exeNNN.out"
 ```
 
-- The window is OFF-SCREEN by default (visible to the engine, invisible to the
-  user). `RC_HOST_SHOW=1` shows it. A watchdog force-exits after
-  `RC_HOST_MAXSEC` (default 240 s). Long KEEP runs hit the game protection.
+- The window is OFF-SCREEN by default. `RC_HOST_SHOW=1` shows it. A watchdog
+  force-exits after `RC_HOST_MAXSEC` (default 240 s). Long KEEP runs hit the
+  game protection.
 - Read the log with e.g.
-  `Select-String host_exeNNN.out -Pattern "frame60|runTasks|new task|fault|line 212"`.
+  `Select-String host_exeNNN.out -Pattern "runTasks|tableLoad|main\+0x210|line 212|fault"`.
+- Note: the run opens many thousands of files while logging — the log is
+  ~20 MB. All opens go through the lua hooks; the noise is expected.
 
 ## 2. The current Gate and where the chain stands
 
@@ -106,137 +158,95 @@ Gate 1 = the real `CreateRLScene` (rep+0xB0B5C0) completes and
 
 Chain status (all in `native/client_host/client_host.cpp`, frame60):
 
-1. Phase A/B done long ago (logic boot, `SO3Represent::Init -> 1`, map load
-   725 objects, resource manager, shadow descriptor fix).
+1. Phase A/B done long ago (logic boot, `SO3Represent::Init -> 1`, map load,
+   resource manager, shadow descriptor fix).
 2. **The exe's own `KJX3RepresentModule::Initialize` (exe+0xBC150) COMPLETES**
-   (`exit -> 0x00000001`) through the game's dispatcher (exe+0xBC6A0, state 3).
-   To get there the host:
-   - calls exe+0xAF4A0 -> creates the KJX3LogicModule (stored at exe+0xA8C208);
-   - creates the four subsystem modules 0xB2910/0xB72F0/0xBF440/0xC54D0 with
-     caller storage + calls their OnInitialize = **vtable slot 5**
-     (0xB2CE0/0xB7D20/0xBFA00/0xC5DB0);
-   - fabricates exe globals: 0xA8C1C8 (zeroed config whose +0x18 = a stub whose
-     vt[0x80]() returns g_ifUI), 0xA8C1E8 (+0x18 = g_ifXLogic), 0xA8C1E0 (UI
-     shell module with +0x60 = the JX3UIX64.dll handle);
-   - patches the Initialize's post-init block away: 0xBC4DA -> 0xBC5F7.
-3. The host's own Param + `SO3Represent::Init(Param) -> 1` queues **5 tasks**
-   into the fabricated stepCtrl's inner list (`stepA`; list fields
-   +0x70/+0x78/+0x80). The table-loader task = vtable `rep+0xC99D30`, its
-   invoke = slot 1 (`rep+0x3E59C0`).
-4. The host invokes that task through `g_taskInvokeStub`:
-   `mov rax,[rcx]; mov rax,[rax+8]; jmp rax` with **rcx = the task, rdx = the
-   stepCtrl** (the wrapper reads the stepCtrl from its arg2 -> its rdx-save ->
-   `[rbp+0x38]` -> the builder's arg4).
-5. `param+0xA8` = `[exe+0xA8C208 + 0x18]` (the KJX3LogicModule **sub-object**,
-   vtable exe+0x952B20; its slot 3 = exe+0x98A20 = the table-source getter).
-6. The timed wrapper (rep+0x3E3D90) runs -> calls the game's own task-list
-   builder (rep+0x8261F0) -> **completes without fault**. The builder pushes
-   its register/run tasks into the **stepBuf's own list** (sc+0x70), NOT the
-   stepA list.
-7. The host re-walks `sc+0x70` and invokes the new tasks with the same stub ->
-   **the game's own runTasks runner (0x80E360 -> 0x80B8C0) runs**.
-8. The runner: opens `SkillCasterModel` via the rep fs (works) -> lua
-   `g_OpenIniFile` (Engine_Lua5X64 export 0xBBA30; the rep IAT 0x109A020
-   resolves to it correctly) -> `g_OpenFile` (0xB2F50) -> `KG_OpenPakV4File`
-   (0xCC670) -> branches on the pak flag `lua+0x1729C0`:
-   - flag 0 -> the loose path (`g_OpenAloneFile` 0xB2EA0 -> the open 0xB1C70);
-   - flag 1 -> the pak path (`0xB4570` -> the path builder `0xB3710`).
-   Both paths currently end in a **wild call/AV** (a 64KB-aligned address
-   outside every loaded module; the VEH prints `(module?)`; in one run it
-   happened to land in nvcuda64's range). The lua fs callbacks
-   0x170030/0x170040/0x170048 are all set and valid.
-9. **Current blocker**: that wild call inside the lua file layer. The pak path
-   builder 0xB3710 copies `prefix (r9 = [lua+0x1709C0]) + name` into a buffer;
-   a wild prefix/root is the prime suspect (the host's SetRoot passes `rootA`
-   with no trailing backslash while the lua formats `%sbin64\%s`).
+   (`exit -> 1`) through the game's dispatcher (exe+0xBC6A0, state 3).
+3. The host's Param + `SO3Represent::Init(Param) -> 1` queues 5 tasks into the
+   fabricated stepCtrl's stepA list; the table-loader task = vtable
+   `rep+0xC99D30`, invoke = slot 1 (`rep+0x3E59C0`).
+4. The builder (rep+0x8261F0) builds register/run tasks into the stepBuf list
+   (sc+0x70). The host walks it and invokes the tasks; **runTasks
+   (rep+0x80B8C0) now completes with 1** (2026-10-07).
+5. runTasks opens `Represent/skill/skill_caster_model.ini` (from the pak),
+   reads `Count` == 7, then `KTableList::Init` (rep+0x836510, reached by the
+   `jmp` thunk at rep+0x8003) loads the sub-tables via SemanticX64
+   (`CreateRLFile`, `g_OpenIniFile`) and stores them into the KTableList at
+   `singleton+0x1A0` (+0x11FF8/+0x12000/+0x1DE40/+0x23BB8 non-null).
+6. **Blocker:** `[singleton+0x210]` (m_tabCommon) never gets set; the weather
+   check then fails (line 27) and `KRLScene::Init` line 212 fails. The write
+   watch shows the task run does not write it (see §0 for the register-task
+   lead).
 
-## 3. The next job — concrete probes (in order)
+## 3. Instrumentation already in the host (do not re-add)
 
-1. Extend the existing lua probe block in frame60 (search for
-   `[host] frame60: lua=` in `client_host.cpp`; it already logs the base, the
-   fs callbacks and the pak flag) to also log:
-   - `*(void**)(lua+0x1709C0)` and the string it points to (`%.200s`);
-   - the same for any nearby root strings (dump 0x170000-0x170060 as qwords);
-   - the values after the host's SetRoot/InitPak calls (they run earlier in
-     main — find `SetRootFn` / `InitPakFn`).
-2. Hook the lua's `0xB3710` entry (use the host's `installInlineHook` pattern;
-   the first 15 bytes: `push rbx; mov rbx,rdx; mov r10,r8; movzx edx,[r8+1]`
-   = 1+3+3+4 = 11 bytes — pick len 15) and log `rcx/rdx/r8/r9` (the buf, size,
-   name, prefix) to see which pointer is wild.
-3. If the prefix is empty/wild, fix the root the lua way: re-check the host's
-   `SetRoot` calls — the base path likely needs a trailing backslash and/or a
-   different SetRoot variant; the game's own exe calls these from its startup.
-   Grep the lua for what writes `lua+0x1709C0` / `lua+0x1729C0` (stores to the
-   globals; the pak flag was 0 in-host until we set it).
-4. After a fix, the success markers are:
-   - `[host] registerTasks enter` (hook on 0x80B6A0) and/or `tableLoad lambda`
-     (hook on 0x80B9C3) firing;
-   - `[main+0x210]` (m_tabCommon) becoming non-null after the task run
-     (`[host] frame60: after task run [main+0x210]=...`);
-   - no `KGLOG_PROCESS_ERROR(g_pRL->m_TableList.m_tabCommon) at line 27` and no
-     `line 212 in KRLScene::Init` in the log.
-5. Then re-check the CreateRLScene result (`real CreateRLScene -> ...`,
-   `GetRLScene(2) -> ...`) — that is Gate 1's checkpoint.
-
-## 4. Instrumentation already in the host (do not re-add)
-
-- Trace hooks (installed in main, near the exe module setup):
-  - `hookRegisterTasks` on rep+0x80B6A0; `hookRunTasks` on rep+0x80B8C0;
-  - `installTableLoadHook` on rep+0x80B9C3 (the load lambda);
+- Trace hooks (installed in main):
+  - `hookRegisterTasks` on rep+0x80B6A0 (never fired so far);
+    `hookRunTasks` on rep+0x80B8C0 (fires; logs kt fields on exit);
+  - `installTableLoadHook` on rep+0x80B9C3 (fires; logs the 7 module-side
+    table names at rep+0xF16AF0 — empty in-host, they are runtime-filled);
   - `hookTableWrapper` on rep+0x3E3D90; `hookTableBuilder` on rep+0x8261F0;
-  - `hookExeInit` on exe+0xBC150 (logs the Initialize's args);
-  - `hookTableBuilder`'s a4 probe logs `[a4]` and `[a4]+0x10`.
-- frame60 probes (search `frame60:` in the log):
-  - `tables [main+0x1B0]/[main+0x210]`, `taskList`, `stepCtrl`, `stepA list`,
-    `stepA task[i]` (vtable names), `invoke RL table task`, `new task[i]`,
-    `after task run`, `holder[0]`, `FetchResult`, `lua=...`, `lua fs cb ...`,
-    `lua pakFlag(0x1729C0)=...`, `exe sys globals`, `exe Create(...)`,
-    `exe OnInitialize(...)`, `exe Represent Initialize enter/exit`,
-    `exe dispatcher(state 3)`.
-- `g_taskInvokeStub` (asm, VirtualAlloc) — the task invoke with the stepCtrl.
-- The VEH prints backtraces for faults in rep/exe/CRT/ntdll modules.
+  - `hookExeInit` on exe+0xBC150.
+- lua file-layer hooks (installed in main with the lua load):
+  - `hookGetFullPath` (0xB4390), `hookGetPriorFullPath` (0xB4570),
+    `hookOpenFileLua` (0xB2F50), `hookIsFileExist` (0xB5060),
+    `hookOpenPakV4` (0xCC670, logs the pak mgr vtable slot 2),
+    `hookLooseOpen` (0xB1C70). All log and forward.
+- `allocNear()` — allocate within ±1 GB for rel32 hooks.
+- `armWriteWatch(addr)` — Dr0/Dr7 4-byte write watch + VEH logs the writer RIP
+  (used on `singleton+0x210`; zero hits).
+- VEH now captures a backtrace for up to 24 AVs (not only rep/CRT/exe/ntdll).
+- frame60 probes: lua root/filepath/priorRoot strings, pak manager + type
+  vector, `tableSite` patch bytes/protection, `Semantic SetFileIOFunctions`,
+  `runTasks`/`tableLoad`/`registerTasks`, `[main+0x1B0..0x248]` dump after the
+  task run, `[param+0xA8]` member dump.
+- `g_taskInvokeStub` (asm, VirtualAlloc) — the task invoke (vt[1], rdx=stepCtrl).
 
-## 5. Pitfalls learned the hard way (read before editing)
+## 4. Pitfalls learned the hard way (read before editing)
 
+- **rel32 hooks**: never allocate a stub with plain `VirtualAlloc(NULL,...)` for
+  a 5-byte `jmp rel32` patch — the stub can be >2 GB away and the truncated
+  displacement jumps wild. Use `allocNear(site, ...)`.
+- **Non-call entry points**: rep+0x80B9C3 is reached by a `jmp`, not a `call` —
+  the ABI's 16-byte stack alignment is not guaranteed. The stub must save rsp
+  in a **callee-saved** register (`rbp`), align, call the logger, restore.
+  (A volatile register gets clobbered by the hook call.)
 - **Order bugs**: patches/hooks must be applied BEFORE the code that needs them
-  runs. Two such bugs cost hours: the 0x9FA70 guard stub and the fabrication
-  block were applied after the code that needed them. Check the frame60
-  sequence order whenever a "should work" fix doesn't.
+  runs. The entire 178-era "wild call" was this stub bug.
 - **The CRT guards**: the exe's magic-static guards 0x79B6E0/0x79B680/0x79B3F0
   must be stubbed for the OnInitialize blocks, but NOT before the module
-  Creates' ctors (they need their statics to initialize). 0x9FA70 is a
-  different guard flavor (stub with `exeGuardNoop`).
+  Creates' ctors. 0x9FA70 uses `exeGuardNoop`.
 - **The stepCtrl structure**: the rep Init reads the pool allocator via
   `[[stepCtrl]+0x10]`; the builder reads it via `[stepCtrl+0x10]`. The host's
-  fake provides it at BOTH (`stepA+0x10` and `stepBuf+0x10`).
+  fake provides it at BOTH.
 - **The invoke convention**: the V tasks and the builder's functors both use
-  `vt[1]` (from the object's vtable pointer) as the invoke; the wrapper's arg2
-  is the stepCtrl (rdx), and the game's task runner passes it. Do not call
-  `tvt[1](val)` directly — use the stub with (val, stepCtrl).
-- **Exe addresses**: the arithmetic in the old notes had several off-by-0x1000/
-  0x1000000 errors (e.g. movie singleton = KG_MovieEngine+0x19F8E8, not
-  0x1D6EE8). Verify every address by computing it in the script, not mentally.
+  `vt[1]` as the invoke; the wrapper's arg2 is the stepCtrl (rdx). Do not call
+  `tvt[1](val)` directly — use the stub with (val, stepCtrl). NOTE: the
+  builder's register/run step objects (vtables 0xCD80C8 / 0xCD8000) have their
+  work in **vt[0]**; this may be the reason register never runs — verify.
+- **Exe addresses**: verify every address by computing it in a script.
 - **NEVER call the singleton vt[1] (activate)** — it hangs.
-- **Window**: default off-screen; the on-screen present is still unfixed (the
-  frame loop calls beginPaint/beginView/endView/endPaint but no present).
+- **Window**: default off-screen; the on-screen present is still unfixed.
 - **No shell edits of `client_host.cpp`** — use the edit tool or a Python
-  script (the file has CRLF; the shell mangles quotes). Python helpers from
-  this session are in `%TEMP%\opencode\skillv2\*.py`.
+  script (the file has CRLF). Python helpers from the sessions are in
+  `%TEMP%\opencode\skillv2\*.py`.
+- **Run env**: `RC_HOST_PAK=1` (loose-first) is required for a full init; the
+  map name must be the real `龙门寻宝_s` (see §1).
 
-## 6. Evidence and commits
+## 5. Evidence and commits
 
-- Logs: `%TEMP%\opencode\skillv2\host_exe146-178.out` (the current chain),
-  host_exe119-145 (window fix + earlier Gate 1 steps).
+- Logs: `%TEMP%\opencode\skillv2\host_exe179-193.out` (2026-10-07 chain);
+  `host_exe146-178.out` (the 2026-10-06 chain).
 - Key commits (branch `agent/skillv2-sandbox`, all local):
-  - `78e32e5` destination args + no-dot shadow name;
-  - `3a55132` window fix + vt[6] setter (line 198 cleared);
-  - `cd6cb3f` the exe's own Initialize completes;
-  - `478090a` param+0xA8 = KJX3LogicModule sub-object; builder completes;
-  - `5dd1b33` runTasks runner reached;
-  - `f7dce23` lua pak flag set (pak path).
-- The full narrative: `docs/EXPERIENCES.md` 2026-10-06 entries (8 of them).
+  - 2026-10-07: `6b552db` lua file-layer trace hooks + real globals + frame60
+    latch + VEH traces; `4796241` table-load hook stub fix (near stub + stack
+    alignment); `70b9154` Semantic file IO before the RL task; `a53d874`,
+    `c947771` write watch + KTableList probes.
+  - 2026-10-06: `78e32e5`, `3a55132`, `cd6cb3f`, `478090a`, `5dd1b33`,
+    `f7dce23` (see git log; the narrative is in `docs/EXPERIENCES.md`).
+- The full narrative: `docs/EXPERIENCES.md` 2026-10-06/07 entries.
 
-## 7. Fallbacks (only if the lua file layer dead-ends)
+## 6. Fallbacks (only if the RL-table publish dead-ends)
 
 - Fabricate the tables directly: the weather check only needs
   `[SO3Represent+0x210]` non-null; the table pointers live at
@@ -246,10 +256,12 @@ Chain status (all in `native/client_host/client_host.cpp`, frame60):
   client-bundled editor stack (`zhcn_hd\MovieEditor\bin64`, needs
   SO3StatsSystemX64.dll) — the user approved "do both a and b" for this.
 
-## 8. Response protocol (mandatory, AGENTS §15)
+## 7. Response protocol (mandatory, AGENTS §15)
 
 - End every response with a `Verified:` line (command -> result) and the
   game-design check sentence.
 - Append a compact entry to `docs/EXPERIENCES.md` after every work-bearing
   response; register new docs in the area README index.
 - Commit after every change (`Area: summary` style); never push.
+- **If a client start is blocked by the single-instance guard**, the response
+  must end by naming the conflicting session (process name, PID, start time).

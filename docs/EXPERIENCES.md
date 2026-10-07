@@ -2893,3 +2893,61 @@ HIGH-confidence findings:
   reading list (guide -> CLIENT_CHARACTER_PLAN.md -> EXPERIENCES 2026-10-06 ->
   AGENTS section 2/15 -> the host_exe logs). The area index row is marked
   START HERE. Evidence: commit bc84105.
+
+## 2026-10-07 - Gate 1: the "wild call" was the host's own rel32 table hook; lua file layer fixed
+
+- Root cause of every 2026-10-06 "wild call": `installTableLoadHook`
+  (rep+0x80B9C3) patched a 5-byte `jmp rel32` to a stub from
+  `VirtualAlloc(NULL,...)`. The stub landed >2 GB from the rep module
+  (0x2EB...) and the truncated displacement jumped to 0x7FFF93720000 - the
+  nvcuda64 / "(module?)" addresses. `allocNear(site, ...)` + a 16-byte-stack-
+  aligned stub (the lambda is reached by a **non-call jump**; entry rsp is not
+  the ABI's call alignment, and rsp must be stashed in a callee-saved register
+  or the hook call clobbers it) fixed it: `tableLoad lambda enter` now fires.
+- lua file layer ground truth (exports of Engine_Lua5X64): `g_SetRootPath`
+  0xB5400 -> root string 0x170060 (strips trailing sep); `g_SetFilePath` 0xB5220
+  -> file path 0x170170; `g_SetPriorRootPath` 0xB5380 -> prior root 0x1729C0
+  (the "pak flag" read at 0xB1CB8/0xB461F is this string's first byte, NOT a
+  bool - the previous `=1` hack wrote a garbage prefix); `KG_InitPakV4FileSystem`
+  0xCC2D0 creates the pak manager 0x1730B8 + the type vector 0x1730A0/0xA8
+  (mode arg4: 0 pak-first, 1 loose-first); `0x1709C0` has zero refs (dead lead).
+- InitPak mode matters: with the pak uninitialized the engine shader include
+  `GI_DetailTracingCommon.hlsli` is not found (compile fail, engine init dies);
+  with pak-first the pak's map data shadows the sandbox and the frame-0 scene
+  update faults (piEnvironment NULL). `arg4=1` (loose-first, matching
+  `config.ini` PakFirst=0) gives both: loose sandbox wins, pak supplies the
+  missing shader/include + `skill_caster_model.ini`.
+- Two run-command gotchas: the sandbox map name is `龙门寻宝_s` (an ASCII
+  transliteration silently loads no scene -> frame-0 paint fault); the corrected
+  env recipe is in NEXT_AGENT_HANDOFF section 1.
+- Also: the frame60 probe is now latched (`f>=60 && !g_logicDone` holds the
+  frame budget) because the logic worker now loads pak tables and takes longer
+  than 60 fast frames; VEH backtraces all AVs (limit 24).
+- Evidence: host_exe179-186.out; commits 6b552db, 4796241.
+
+## 2026-10-07 - Gate 1: semantic file IO installed pre-task; runTasks completes (1); m_tabCommon still unpublished
+
+- The RL table task first failed logically: `sLoadNumberFromFile` got a NULL
+  `Table` because the SemanticX64 file IO was installed AFTER the task ran.
+  `CreateRLFile` = SemanticX64 import at rep+0x109AAD0. The host now calls
+  `[rep+0x109AAE8]` = `SetFileIOFunctions(rep+0x788D, rep+0x1EB0, rep+0x10DC,
+  rep+0x18926)` right after `SO3Represent::Init`, before the task invoke.
+- Result: `runTasks enter` -> `tableLoad lambda enter` -> `runTasks exit -> 1`;
+  `KTableList::Init` (rep+0x836510, reached by the jmp thunk at rep+0x8003 from
+  runTasks) loads the 7 sub-tables and stores them into the KTableList at
+  `g_repSingleton+0x1A0` (= the builder's a1; runTasks' kt): +0x11FF8, +0x12000,
+  +0x1DE40, +0x23BB8 are non-null afterwards.
+- STILL NULL: `[g_repSingleton+0x210]` (m_tabCommon, `KRLWeatherController::Init`
+  line 27) - the weather check fails at KRLScene::Init line 212. A Dr0 4-byte
+  write watch on singleton+0x210 (new `armWriteWatch`) got ZERO hits across the
+  whole task run: nothing in this path publishes it. Static search found no
+  `[singleton+0x210]` store in rep (only ctors zeroing it).
+- Lead: the builder creates BOTH a register functor (0x80E340 -> registerTasks
+  0x80B6A0, functor vtable 0xCD80C8) and a run functor (0x80E360 -> runTasks
+  0x80B8C0, vtable 0xCD8000). The host only ever runs the run path - the
+  `registerTasks` hook has NEVER fired. The register step is the prime suspect
+  for publishing m_tabCommon. Note both functor vtables carry their work in
+  **vt[0]**, while the host's task stub calls vt[1] - check the slot before
+  invoking.
+- Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
+  map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
