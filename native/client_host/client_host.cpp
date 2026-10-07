@@ -3321,17 +3321,12 @@ int main(void)
                         // table resource. The exe fills it from the dispatcher
                         // arg; the host uses the RL resource loader.
                         *(void**)(param + 0xA8) = g_rlLoader;
-                        // try the MapConverter resource manager as the wrapper's
-                        // resource member (the table loads go through the rep
-                        // resource manager)
-                        {
-                            void* conv60 = *(void**)((BYTE*)g_repSingleton + 0x1A0 + 0x260);
-                            if (conv60 != NULL)
-                            {
-                                *(void**)(param + 0xA8) = conv60;
-                                logf("[host] frame60: param+0xA8 = convMgr %p", conv60);
-                            }
-                        }
+                        // NOTE: the wrapper's resource member (param+0xA8) is still
+                        // unidentified; candidates tried: g_rlLoader (vt[3] =
+                        // rep+0x18AB6), g_ifMgr (x3d+0x201D0), g_ifConv - all return
+                        // a bad object from vt[3] and the wrapper faults at
+                        // rep+0x3E3DC4. The exe passes the module dispatcher's r8
+                        // (0xBC6A0) here - see EXPERIENCES 2026-10-06.
                         // probe: the wrapper calls [param+0xA8]'s vt[3](); log the
                         // candidate members' slots to pick a valid one
                         __try
