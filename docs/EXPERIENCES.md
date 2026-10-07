@@ -2508,3 +2508,22 @@ solved it, and what is still open. **Newest at the bottom.**
 - Unresolved strings: 43 ids, all in unreachable/dev tables (probed MISS). Raw oob (6,188
   lines/921 windows) is dominated by scroll overflow (legit) + parked prototypes; the checklist
   excludes scroll overflow.
+
+### 2026-10-06 ? UI ? oob class root causes: Show(false), prototype Clear, collapse guard (placement)
+- User lead: the 超出窗口 class likely explains the wrongly-placed UI. Diagnosed and fixed three
+  causes (commit 0d8778a + d08ad66):
+  1. **Show(false) was ignored**: the engine's Show takes a boolean; the viewer always un-hid. The
+     scripts hide their parked dropdowns at rest this way (TopMenu's WndContainer_List at
+     Left=-212) - the parked group rendered at the window's edge. Now Show(false) hides.
+  2. **Deferred Clear did not empty the list**: the engine's Clear removes every item including the
+     authored prototype; the viewer kept it (plus previous clones' roots) so prototypes rendered
+     parked once runtime items existed. Now removed (sharestation 420 -> 210 sections, real items
+     only).
+  3. **Collapse guard refined**: it used to revert ALL hides when the window collapsed below 20%
+     (LuckyMeeting's reset) - but that re-showed legitimately hidden parked popups (TopMenu 93
+     sections). Now: restore only fully-hidden page-sets' default page; honor the hides when any
+     hidden section is parked (Left/Top < 0); revert only in-window resets. LuckyMeeting keeps its
+     authored 145, TopMenu renders its 4 rest sections with 0 oob.
+- Audit: placeholders 504 -> 482, oob 7770 -> 7610, unresolved 49; selftest 1240/0/0.
+- The remaining oob bulk is scroll-content overflow (legit, clipped) + authored off-window
+  decorations; clones (runtime items) are only 199 of 6,165 raw oob lines.
