@@ -136,7 +136,8 @@ internal static class RebornClient
             @"C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\PhysicsEngineX64.dll");
         string mapPath = Env("RC_MAP",
             "data\\source\\maps\\\u9F99\u95E8\u5BFB\u5B9D\\\u9F99\u95E8\u5BFB\u5B9D.jsonmap");
-        string actorPath = Path.Combine(editorRoot, "source", "\u82B1\u841D\u65E0\u52A8\u4F5C.actor");
+        string actorPath = Env("RC_ACTOR",
+            Path.Combine(editorRoot, "source", "\u82B1\u841D\u65E0\u52A8\u4F5C.actor"));
         string flws =
             "data\\source\\player\\f1\\\u52A8\u4F5C\\f1s07cj\u91CD\u5251\u6280\u80FD15_\u98CE\u6765\u5434\u5C71\u7EA2\u8272hd.tani";
         string f1 = "data\\source\\player\\f1\\\u52A8\u4F5C\\";
@@ -1416,6 +1417,16 @@ internal static class RebornClient
         };
         placePlayer(px, py, pz, curYaw);
         Log("player handle=" + handle);
+        if (handle <= 0)
+        {
+            // AddDummyModel can return E_FAIL (0x80004005 sign-extended) for an
+            // actor whose parts do not resolve - historically the negative handle
+            // went straight into AttachModel and AV'd the client. Bail out with
+            // evidence instead (2026-10-06, RC_ACTOR probe).
+            Log("player model FAILED: handle=" + handle + " actor=" + actorPath
+                + " - exiting before attach");
+            return;
+        }
         model.AttachModel(handle);
         attachedHandle = handle;
         setClip(clipIdle);
@@ -1555,7 +1566,7 @@ internal static class RebornClient
         // Apply is pending the agent A shim export; see client/FaceData.cs.
         string faceJson = Env("RC_FACE_JSON", "");
         if (faceJson.Length > 0)
-            FaceData.Apply(faceJson, model, delegate(string m) { Log(m); });
+            FaceData.Apply(faceJson, handle, model, delegate(string m) { Log(m); });
 
         // Spawn ground settle (deferred): the engine streams terrain around the
         // player model; until the spawn region arrives the loader returns zeros

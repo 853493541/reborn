@@ -33,7 +33,7 @@ internal static class FaceData
         return read(obj);
     }
 
-    internal static void Apply(string jsonPath, object model, Action<string> log)
+    internal static void Apply(string jsonPath, long handle, object model, Action<string> log)
     {
         try
         {
@@ -50,20 +50,29 @@ internal static class FaceData
                 log("face: json lacks Bone/BodyType markers, not a MetaFace JSON");
                 return;
             }
-            IntPtr mp;
-            try { mp = ReadPointerField(model, "m_pModel"); }
-            catch (Exception pe)
+            // Prefer the AddDummyModel handle: it is the RTTI-verified
+            // KG3DModelProxy (KG_EngineEditorX64.dll) that the shim's other
+            // proxy exports (anchor/find) already use. The CLR's m_pModel is a
+            // different proxy object and returned E_FAIL for the face apply
+            // (2026-10-06). Fall back to m_pModel when the handle is 0.
+            IntPtr mp = handle > 0 ? new IntPtr(handle) : IntPtr.Zero;
+            string src = "handle";
+            if (mp == IntPtr.Zero)
             {
-                log("face: m_pModel read ex: " + pe.Message);
-                return;
+                try { mp = ReadPointerField(model, "m_pModel"); src = "m_pModel"; }
+                catch (Exception pe)
+                {
+                    log("face: m_pModel read ex: " + pe.Message);
+                    return;
+                }
             }
             if (mp == IntPtr.Zero)
             {
-                log("face: m_pModel is null");
+                log("face: no proxy pointer (handle=0, m_pModel null)");
                 return;
             }
-            log(string.Format("face: metaface json={0} bytes={1} model=0x{2:X}",
-                Path.GetFileName(jsonPath), json.Length, mp.ToInt64()));
+            log(string.Format("face: metaface json={0} bytes={1} proxy=0x{2:X} ({3})",
+                Path.GetFileName(jsonPath), json.Length, mp.ToInt64(), src));
             int rc = RC_ModelLoadMetaFaceJson(mp, json);
             log("face: apply rc=" + rc);
         }

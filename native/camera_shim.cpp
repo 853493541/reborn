@@ -1367,16 +1367,18 @@ SHIM_EXPORT int RC_ActorFindBoneHash(void* actor, unsigned long long hash, void*
 }
 
 // ---- face apply exports (for the 3x-face workstream) -----------------------
-// KG3DModelProxy::LoadMetaFaceDefinitionJson (fn 0x46FB0) forwards the JSON
-// string to the actor's model; SetFaceLiftParams (fn 0x47710) forwards three
-// args to the actor's vt[+0x538] (signature not decoded - passthrough).
+// KG3DModelProxy::LoadMetaFaceDefinitionJson (fn 0x47010; the neighbouring
+// 0x46FB0 wrapper is LoadFaceDefinitionINI - calling that with JSON returns
+// E_FAIL, 2026-10-06) forwards the JSON string to the actor's model;
+// SetFaceLiftParams (fn 0x47710) forwards three args to the actor's vt[+0x538]
+// (signature not decoded - passthrough).
 SHIM_EXPORT int RC_ModelLoadMetaFaceJson(void* proxy, const char* jsonUtf8)
 {
     if (proxy == NULL || jsonUtf8 == NULL) return -1;
     HMODULE m = ProxyModule();
     if (m == NULL) return -2;
     typedef int (*Fn)(void*, const char*);
-    Fn fn = (Fn)((BYTE*)m + 0x46FB0);
+    Fn fn = (Fn)((BYTE*)m + 0x47010);
     __try { return fn(proxy, jsonUtf8); }
     __except (EXCEPTION_EXECUTE_HANDLER) { return -3; }
 }
