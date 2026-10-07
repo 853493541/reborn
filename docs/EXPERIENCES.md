@@ -3214,5 +3214,24 @@ HIGH-confidence findings:
   entity types used by InitializeScene resolve; then `[KRLScene+0xF29E8]` should
   be set and the local-player chain can proceed.
 - Evidence: host_exe232/233.out; commits (manager init, InitializeScene hook).
+
+## 2026-10-07 - Gate 3 layer 2: ECS root initialized; component registry still empty
+
+- The ECS root entity `[rep+0xF512A8]` (returned by the export
+  `GetRepresentECSRootEntity`, impl 0x925040) is set by `rep+0x924B20`; calling
+  it (no args) builds the root entities from a table and returns 1:
+  `entityFactory('root')`, `entityFactory('reference')`,
+  `[rep+0xF512A8]=0x…`. The host now calls it before CreateRLScene (run 234).
+- `InitializeScene` still fails: `KGLOG_PROCESS_ERROR(pRegistry) at line 104 in
+  CreateComponent` (func 0xAE5D40). That function does a **`bsearch`** (import
+  rep+0x109B560) over a component-factory registry table; the table entry is
+  NULL in-host, so `CreateTransformEntity` (line 30) and `InitializeScene`
+  (line 54) fail. So the ECS root is necessary but the **component registry
+  table** must also be populated.
+- Next: find the component-registry table global and its registration
+  initializer (likely a `RegisterComponent`-style function that the represent
+  init runs; not yet called in-host), and populate it; then `CreateComponent`
+  succeeds and `[KRLScene+0xF29E8]` is set.
+- Evidence: host_exe234.out; commit (ECS root init).
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
