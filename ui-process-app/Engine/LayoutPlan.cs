@@ -689,9 +689,11 @@ namespace UiProcessApp.Engine
             var hidden = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var rootName = filtered.Sections.Count > 0 ? filtered.Sections[0].Name : null;
             var sourceCache = new Dictionary<string, IniFile>(StringComparer.OrdinalIgnoreCase);
-            var pendingClear = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var addedByContainer = new Dictionary<string, List<IniSection>>(StringComparer.OrdinalIgnoreCase);
-            var lastCloneByContainer = new Dictionary<string, IniSection>(StringComparer.OrdinalIgnoreCase);
+        var pendingClear = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var addedByContainer = new Dictionary<string, List<IniSection>>(StringComparer.OrdinalIgnoreCase);
+        var lastCloneByContainer = new Dictionary<string, IniSection>(StringComparer.OrdinalIgnoreCase);
+        // receiver section -> containers its appends landed in (the engine's item list)
+        var containersByReceiver = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
             int applied = 0;
             foreach (var line in lines)
             {
@@ -781,7 +783,9 @@ namespace UiProcessApp.Engine
                         // prototype is an item too). Defer it: remove the old items only
                         // when the script actually appends replacements, so a replay whose
                         // data-driven append loop under-recorded cannot blank a list.
-                        pendingClear.Add(section.Name);
+                        pendingClear.Add(ResolveContentTarget(filtered, section).Name);
+                        if (containersByReceiver.TryGetValue(section.Name, out var clearTargets))
+                            foreach (var c in clearTargets) pendingClear.Add(c);
                         applied++;
                         break;
                     case "AppendItemFromIni":
@@ -794,19 +798,31 @@ namespace UiProcessApp.Engine
                         var source = FindAppendSource(filtered, iniPath, parts, sourceCache);
                         if (source != null)
                         {
-                            if (pendingClear.Remove(section.Name) &&
-                                addedByContainer.TryGetValue(section.Name, out var previous))
+                            // The engine appends the clone into the list that owns the
+                            // prototype (its authored parent), not the Lua receiver: the
+                            // scripts call AppendItemFromIni on the window/page while the
+                            // prototype lives under its handle (Page_Progress -> the
+                            // scroll's Handle_QuestList, SelectMacroIconPanel -> Handle_Icon).
+                            var container = ResolveAppendContainer(filtered, section, source);
+                            if (!containersByReceiver.TryGetValue(section.Name, out var receivers))
+                            {
+                                receivers = new List<string>();
+                                containersByReceiver[section.Name] = receivers;
+                            }
+                            if (!receivers.Contains(container.Name)) receivers.Add(container.Name);
+                            if (pendingClear.Remove(container.Name) &&
+                                addedByContainer.TryGetValue(container.Name, out var previous))
                             {
                                 foreach (var clone in previous) RemoveDescendants(filtered, clone.Name);
                                 previous.Clear();
                             }
                             var desired = parts.Length > 4 && !string.IsNullOrWhiteSpace(parts[4]) ? parts[4] : null;
-                            var appended = AppendClone(filtered, source, section.Name, desired);
-                            lastCloneByContainer[section.Name] = appended;
-                            if (!addedByContainer.TryGetValue(section.Name, out var list))
+                            var appended = AppendClone(filtered, source, container.Name, desired);
+                            lastCloneByContainer[container.Name] = appended;
+                            if (!addedByContainer.TryGetValue(container.Name, out var list))
                             {
                                 list = new List<IniSection>();
-                                addedByContainer[section.Name] = list;
+                                addedByContainer[container.Name] = list;
                             }
                             list.Add(appended);
                             applied++;
@@ -831,13 +847,25 @@ namespace UiProcessApp.Engine
                     // ---- the engine's arrangement passes ----
                     case "FormatAllItemPos":
                     case "FormatAllContentPos":
-                        section.Values["$FormatItems"] = "1";
+                    {
+                        // Mark the container(s) the receiver's appends went into (the
+                        // engine's FormatAllItemPos arranges the receiver's item list).
+                        ResolveContentTarget(filtered, section).Values["$FormatItems"] = "1";
+                        if (containersByReceiver.TryGetValue(section.Name, out var formatTargets))
+                            foreach (var c in formatTargets)
+                                if (TryFind(filtered, c, out var t)) t.Values["$FormatItems"] = "1";
                         applied++;
                         break;
+                    }
                     case "SetSizeByAllItemSize":
-                        section.Values["$SizeByItems"] = "1";
+                    {
+                        ResolveContentTarget(filtered, section).Values["$SizeByItems"] = "1";
+                        if (containersByReceiver.TryGetValue(section.Name, out var sizeTargets))
+                            foreach (var c in sizeTargets)
+                                if (TryFind(filtered, c, out var t)) t.Values["$SizeByItems"] = "1";
                         applied++;
                         break;
+                    }
                     case "SetPoint":
                         // SetPoint(srcSide, sx, sy, dstSide, dx, dy) -> the viewer's
                         // AnchorArgs "dstSide,srcSide,dx,dy" (ApplyAnchors format).
@@ -1005,6 +1033,18 @@ namespace UiProcessApp.Engine
                     }
                 }
             }
+            // A receiver whose appends landed in another container (the prototype's
+            // list) must not format its own authored children: Page_Progress's scroll
+            // would be stacked as an item by the receiver's $FormatItems.
+            foreach (var kv in containersByReceiver)
+            {
+                if (kv.Value.Count == 0) continue;
+                if (!filtered.ByName.TryGetValue(kv.Key, out var receiver)) continue;
+                var target = ResolveContentTarget(filtered, receiver);
+                if (kv.Value.Contains(target.Name)) continue;
+                target.Values.Remove("$FormatItems");
+                target.Values.Remove("$SizeByItems");
+            }
             return applied;
         }
 
@@ -1163,6 +1203,32 @@ namespace UiProcessApp.Engine
             }
             if (file != null && file.ByName.TryGetValue(item, out source)) return source;
             return null;
+        }
+
+        /// <summary>
+        /// The engine's WndScroll holds its items in the section named by ScrollHandle;
+        /// recorded calls on the scroll (AppendItemFromIni / FormatAllItemPos / Clear)
+        /// apply to that content handle, whose own Left/Top offsets the items.
+        /// </summary>
+        private static IniSection ResolveContentTarget(IniFile file, IniSection section)
+        {
+            if (section == null) return section;
+            var handle = section.Get("ScrollHandle");
+            if (string.IsNullOrWhiteSpace(handle)) return section;
+            return TryFind(file, handle, out var target) ? target : section;
+        }
+
+        /// <summary>
+        /// AppendItemFromIni clones the prototype into the list that owns it (the
+        /// prototype's authored parent), not into the Lua receiver; fall back to the
+        /// receiver (through its ScrollHandle) when the parent is not in this file.
+        /// </summary>
+        private static IniSection ResolveAppendContainer(IniFile file, IniSection receiver, IniSection source)
+        {
+            var parentName = source.Get("._Parent");
+            if (!string.IsNullOrWhiteSpace(parentName) && TryFind(file, parentName, out var parent))
+                return parent;
+            return ResolveContentTarget(file, receiver);
         }
 
         private static string FindAssetsRoot(string iniPath)

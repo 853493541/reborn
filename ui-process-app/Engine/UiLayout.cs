@@ -475,6 +475,9 @@ namespace MapUiApp.Engine
                 if (width > 0) container.Width = width;
                 if (height > 0) container.Height = height;
                 if (section.GetInt("$Clip") == 1) container.ClipToBounds = true;
+                // A WndScroll is a viewport: its content (ScrollHandle items and any
+                // overhanging children) is clipped to the scroll's rect, as the engine does.
+                else if (type.Equals("WndScroll", StringComparison.OrdinalIgnoreCase)) container.ClipToBounds = true;
                 if (Wireframe)
                 {
                     container.Background = new SolidColorBrush(Color.FromArgb(16, 0x6F, 0xC0, 0xEF));
