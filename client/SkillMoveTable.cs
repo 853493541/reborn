@@ -33,6 +33,48 @@ internal sealed class SkillMoveRow
     public int[] Frame = new int[0]; // -1 = no quad at that index (slot disabled)
 }
 
+// Host skill -> motion mapping (SPEC_MOTION_P2 "Skill->move mapping" + "Host
+// acceptance criteria"). There is NO shipped skill->SkillMoveID map and neither
+// verified skill uses a SkillMove.tab row:
+//   228  太阴指   -> the DASH primitive (KCharacter::Dash, HD 0x14030F7C0):
+//                    DASH_BACKWARD = 16 frames x nSpeed(60 @level 1) u per
+//                    15 Hz tick along the ABSOLUTE heading byte facing+0x80;
+//                    facing/model yaw untouched; z=0; gravity normal; state 0x11.
+//   1645 风来吴山 -> no displacement (channel): walk stays live at x1.10 (buff
+//                    2151 随风), jump blocked (buff 1856 不工); the spin is the
+//                    clip. CAST_SKILL_TARGET_DST is a channel re-cast, not movement.
+// SkillMove.tab rows remain valid only for SKILL_MOVE-type skills (server-named
+// rows; RC_SKILL_MOVEID authors them for the generic SPEC_MOTION §5 tests).
+internal sealed class SkillMotionDef
+{
+    public int Id;
+    public string Name;
+    public int Kind;            // 1 = dash, 0 = channel / no displacement
+    public int DashFrames;
+    public int DashSpeed;       // u per 15 Hz tick (script nSpeed at level 1)
+    public int DashDirOff;      // heading byte offset from facing (0x80 = backward)
+    public float ChannelMoveMul;
+    public bool ChannelBlockJump;
+}
+
+internal static class SkillMotionMap
+{
+    static readonly SkillMotionDef[] Defs = new SkillMotionDef[]
+    {
+        new SkillMotionDef { Id = 228, Name = "\u592A\u9634\u6307", Kind = 1,
+                             DashFrames = 16, DashSpeed = 60, DashDirOff = 0x80 },
+        new SkillMotionDef { Id = 1645, Name = "\u98CE\u6765\u5434\u5C71", Kind = 0,
+                             ChannelMoveMul = 1.10f, ChannelBlockJump = true },
+    };
+
+    public static SkillMotionDef Get(int id)
+    {
+        for (int i = 0; i < Defs.Length; i++)
+            if (Defs[i].Id == id) return Defs[i];
+        return null;
+    }
+}
+
 internal static class SkillMoveTable
 {
     // "id|igng|total|col|fly|death|keep|jump|ban|f,vxy,vz,dir;..."
@@ -52,21 +94,11 @@ internal static class SkillMoveTable
         "2|0|50|50|0|1|0|0|0|0,0,0,64;1,65,0,64;2,0,0,-64;3,0,0,0;4,0,0,0;5,0,0,0;6,0,0,0;7,0,0,0;8,0,0,0;9,12,0,64;10,54,0,0;11,12,0,0;12,0,0,-64;13,0,0,0;14,42,0,64;15,0,0,-64;16,0,0,0;17,0,0,0;18,0,0,0;19,0,0,0;20,0,0,0;21,0,0,0;22,0,0,0;23,74,0,64;24,67,0,0;25,50,0,0;26,40,0,0;27,34,0,0;28,27,0,0;29,21,0,0;30,19,0,0;31,17,0,0;32,16,0,0;33,16,0,0;34,17,0,0;35,20,0,0;36,22,0,0;37,21,0,0;38,16,0,0;39,6,0,0;40,0,0,-64;41,0,0,0;42,0,0,0;43,0,0,0;44,0,0,0;45,0,0,0;46,0,0,0;47,0,0,0;48,0,0,0;49,0,0,0;50,0,0,0;51,0,0,0;52,0,0,0;53,0,0,0;54,0,0,0;55,0,0,0"
     };
 
-    // Host-owned skill -> moveID map (SPEC_MOTION §2.3 step 1; registered
-    // host-data gap - the shipped ObjSlotInfo.tab is all-zero). Key = skill clip
-    // basename, lowercase. Empty until the live producer is found: a cast of an
-    // unmapped skill performs no displacement (no invented row).
-    static readonly Dictionary<string, int> SkillMap =
-        new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-
+    // Skill -> row mapping: none exists (SPEC_MOTION_P2 "Skill->move mapping" -
+    // ObjSlotInfo is all-zero in both stores, skills.tab has no move column, and
+    // the two verified skills use their own primitives; see SkillMotionMap).
+    // Rows are selected explicitly with RC_SKILL_MOVEID for the generic tests.
     static Dictionary<int, SkillMoveRow> _full;
-
-    public static int MapSkill(string skillKey)
-    {
-        if (string.IsNullOrEmpty(skillKey)) return 0;
-        int id;
-        return SkillMap.TryGetValue(skillKey, out id) ? id : 0;
-    }
 
     public static SkillMoveRow Load(int id)
     {

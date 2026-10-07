@@ -5153,3 +5153,30 @@ power-pool values remain undecoded (re-open criteria in the doc).
   guard. No install content was modified.
 - Gates: build 0, camera_smoke_3x_states ALL PASS, collision 36/36.
 
+### 2026-10-07 - 3x-motion P2: per-skill motion rebuilt (228 dash / 1645 channel), camera 0.45, cast shake removed
+
+- Rebuilt per SPEC_MOTION_P2 (the SkillMove-row displacement did not apply to the
+  two verified skills). Host map `client/SkillMotionMap`: 228 太阴指 = the Dash
+  primitive (16 frames × nSpeed 60 = 960 u along the ABSOLUTE heading byte
+  facing+0x80; facing untouched; state 0x11 modelled as a 16-tick move state);
+  1645 风来吴山 = channel, no displacement (walk live ×1.10, buff 2151; jump
+  rejected, buff 1856); `RC_SKILL_ID` selects (default 1645 = the demo clip). The
+  SkillMove row path stays only for the generic §5 tests (`RC_SKILL_MOVEID`); no
+  invented skill→row map (the old empty MapSkill removed).
+- Camera: yaw-follow dead zone 0.26 → the shipped 0.45
+  (`camera_common.krl.txt`); the cast camera shake (host-invented) removed
+  (`RC_CAM_SHAKE=1` A/B). Verified: 228 dash Δz = −960 exact with camYaw/camPitch
+  constant and camPos translating with the character; FLWS standing pos delta 0;
+  FLWS walk 330 u/s (Δz/Δt = 660/2 s); jump rejected at 5.5 s; camera yaw/pitch
+  constant through the spin; idle no-cast camPos exactly constant ×15 samples.
+- Named boundary (evidence-first): a standing FLWS cast still sways camPos ±26 u
+  slowly during the clip (settles exactly at the clip end; yaw/pitch unaffected) —
+  the C1 camera anchor follows the animated head-bone matrix, so the spin clip
+  feeds the camera position. Idle baseline proves it is clip-induced, not
+  input/spring. Re-open: camera workstream anchors on the logic position + offset.
+- Gates: build 0, camera_smoke_3x_motion ALL PASS, collision 36/36; §5 row
+  regressions re-run (standing moved=0 + camera constant; moving row gates input
+  then RUN resumes).
+- Proofs: `proof/character/3x_motion/p2_*.txt` + the README P2 table; spec note
+  appended to SPEC_MOTION_P2.md.
+
