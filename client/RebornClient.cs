@@ -2789,8 +2789,8 @@ internal static class RebornClient
             if (demoStates)
             {
                 if (now >= 2500 && !stJump1) { stJump1 = true; jumpPressed = true; }
-                if (now >= 4000 && !stJump2) { stJump2 = true; jumpPressed = true; }
-                if (now >= 6000 && !stJump3) { stJump3 = true; jumpPressed = true; }
+                if (now >= 3200 && !stJump2) { stJump2 = true; jumpPressed = true; }
+                if (now >= 4000 && !stJump3) { stJump3 = true; jumpPressed = true; }
             }
             if (demoMove)
             {

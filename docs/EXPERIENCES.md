@@ -4757,3 +4757,27 @@ if the cache/host frames appear.
   `docs/README.md` and AGENTS §10). Split plan for 3.x workstreams W1-W7 is in the area README.
 - Outcome: 3.x research complete to the client's limit; remaining items are host wiring or
   registered provisional/boundary items.
+
+### 2026-10-06 - 3x-states W6: swim states + 轻功 chain End phase + fly/suspend harness
+
+- Did: implemented W6 in the client (`WaterField.cs`, RebornClient states):
+  swim states 6/7/8 with the decoded float rule (`max(base, surface-0.589h)`,
+  player factor `6h*11/112`) and `CharacterSwimSpeed` 20 u/f -> 300 u/s; the
+  轻功 chain End phase (`JumpTable.EndTriples`/`TotalFrame` regenerated from the
+  tables; apply the `...End` triple + `jumpCount := 1` on segment end); a
+  fly/suspend harness logging the decoded state codes; scripted harnesses
+  (`RC_DEMO_STATES`, `RC_CHAIN_SEG`, `RC_SWIM_LOG`, `RC_CHAIN_LOG`).
+- Verified runs (`proof/character/3x_states/`): swim idle `state=7 float=994
+  depth=68`; swim moving `state=6` at 300 u/s + exit; swim jump `state=8`;
+  chain `end seg=3 end=60,90,11` then land n=1; suspend `FlyTo 0x1F` /
+  `EndFlyJump 0x21 -> 4`. Gates: build 0, `camera_smoke_3x_states` ALL PASS,
+  `collision_selftest_reborn_client_3x_states` 36/36.
+- Lesson: the default `RC_SHOTS` proof screenshots block the loop for seconds
+  (the engine `DoScreenShotImmediate`); phase-timing runs must set
+  `RC_SHOTS=999999` (first chain run was polluted by the 8000 ms shot).
+- Registered provisionals (§6, re-open criteria in the 3_5_3_7 doc): water source
+  (RC_WATER; the logic m_pCell stream is not host-reachable - water/regiondata is
+  a MISS in the paks), swim-jump impulse (J0 triple), buoyancy hold, chain segment
+  length (RC_CHAIN_SEG), suspend hover. No managed water query exists; the
+  physics terrain loader carries no water layer.
+- Outcome: W6 swim/轻功 implemented and verified; fly/suspend is harness-only.
