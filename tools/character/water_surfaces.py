@@ -99,6 +99,7 @@ def parse_list(raw: bytes) -> list[dict]:
                 "bw": float(value.get("BaseWidth", 0.0)),
                 "bl": float(value.get("BaseLenght", 0.0)),
                 "depth": float(value.get("Depth", 0.0)),
+                "roty": float(value.get("RotY", 0.0)),
             }
         )
     bodies.sort(key=lambda b: b["id"])
@@ -121,7 +122,7 @@ def csharp_table(maps: dict[str, list[dict]]) -> str:
         "    public struct Body",
         "    {",
         "        public int Type;",
-        "        public float X, Y, Z, ScaleX, ScaleZ, BaseW, BaseL, Depth;",
+        "        public float X, Y, Z, ScaleX, ScaleZ, BaseW, BaseL, Depth, RotY;",
         "    }",
         "",
     ]

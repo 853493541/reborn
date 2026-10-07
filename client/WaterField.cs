@@ -1,22 +1,15 @@
-// Water source per SPEC_STATES.md section 1 / P1.
+// Water source per SPEC_STATES_P2 section "Water surface data semantics".
 //
 // Truth: the authored per-map surface list (client/WaterSurfaces.cs, generated
 // by tools/character/water_surfaces.py from
 // data\source\maps\<map>\water\surface\watersurfacelist.json in the client
-// PakV4 store). The gameplay logic water is the character cell
-// (m_pCell = [char+0x50]; flag bit0; surface = word[+6]<<6; floor =
-// word[+4]<<6, helper 0x140312440) streamed from the not-yet-traced
-// KMiniScene/.Map.Logical loader (SPEC_STATES P1), so the host maps the
-// authored surfaces to cells with a REGISTERED HEURISTIC:
-//   - type 0 (ocean): global plane - water wherever ground(x,z) < surfaceY;
-//   - type 1 (bwater): within radius 4096 u * Scale of the body center and
-//     ground(x,z) < surfaceY.
-// Calibrated against the one known in-game water point (龙门寻宝 64293,55238,
-// spec section 1.1): 4302 u from water1 (Scale 2 -> radius 8192).
-// Re-open: trace the cell-stream writer (P1).
-//
-// RC_WATER boxes remain a TEST-ONLY override (same P1): those are the only
-// hand-authored data allowed, and they are never a default.
+// PakV4 store). This list is the RENDER/WAVE placement; the gameplay region is
+// the terrain logic cell (m_pCell = [char+0x50]; flag bit0; surface =
+// word[+6]<<6; floor = word[+4]<<6, helper 0x140312440) whose writer is still
+// untraced (P1). The interim mapping is the authored rectangle:
+//   center = Postion, half-extents = 0.5*BaseWidth*ScaleX x 0.5*BaseLenght*ScaleZ,
+//   yaw = RotY; type 0 = global plane; always gated on ground < surface.
+// Labeled P1-provisional. RC_WATER boxes remain a TEST-ONLY override.
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -30,9 +23,6 @@ internal sealed class WaterField
 
     readonly List<Box> _boxes = new List<Box>();
     WaterSurfaces.Body[] _bodies = new WaterSurfaces.Body[0];
-
-    // P1 heuristic: authored surface base radius (u) multiplied by Scale.
-    public const float SurfaceBaseRadius = 4096f;
 
     public int BodyCount { get { return _bodies.Length; } }
     public int BoxCount { get { return _boxes.Count; } }
@@ -96,8 +86,20 @@ internal sealed class WaterField
             }
             float dx = x - b.X;
             float dz = z - b.Z;
-            float r = SurfaceBaseRadius * Math.Max(b.ScaleX, b.ScaleZ);
-            if (dx * dx + dz * dz <= r * r)
+            float hx = 0.5f * b.BaseW * b.ScaleX;
+            float hz = 0.5f * b.BaseL * b.ScaleZ;
+            if (hx <= 0f) hx = 1f;
+            if (hz <= 0f) hz = 1f;
+            if (b.RotY != 0f)
+            {
+                float ca = (float)Math.Cos(-b.RotY);
+                float sa = (float)Math.Sin(-b.RotY);
+                float rx = dx * ca - dz * sa;
+                float rz = dx * sa + dz * ca;
+                dx = rx;
+                dz = rz;
+            }
+            if (Math.Abs(dx) <= hx && Math.Abs(dz) <= hz)
             {
                 surface = b.Y;
                 found = true;
@@ -108,7 +110,7 @@ internal sealed class WaterField
 
     public string Describe()
     {
-        return string.Format("waterBodies={0} waterBoxes={1} (P1 heuristic radius=Scale*{2:F0})",
-            _bodies.Length, _boxes.Count, SurfaceBaseRadius);
+        return string.Format("waterBodies={0} waterBoxes={1} (P1 authored-rect mapping; true region = terrain cell layer)",
+            _bodies.Length, _boxes.Count);
     }
 }
