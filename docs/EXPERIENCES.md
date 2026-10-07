@@ -2394,3 +2394,19 @@ solved it, and what is still open. **Newest at the bottom.**
   PakV4 (811 candidates: 205 HIT / 601 MISS); copied only complete UITex+Tga pairs (the pair rule) -
   +180 files in the corpus; placeholders ~flat (537 -> 539; 7 lone copies reverted).
 - Gates: selftest 1240/0/0; audit ph=539 unresolved=50 oob=9299; commits 04171b4, bedda1f, 5dee6d9.
+
+### 2026-10-06 ? UI ? plan execution: string libs + census truth + PosType flow (0 unhandled)
+- Phase 6 (text): decoded the remaining UI string libs into Data/text/ui/String (auctionstring 95,
+  gluestring 182, dungeonstring 28, EquipInquireString 22, HoroCompass 27, expressionstring 16, ...,
+  +~380 ids; the loader picks the directory up automatically). The 50-id tail (STR_COLLECTION* 23,
+  STR_GUILD_ALLIANCELOLI x4, ...) is NOT in any reachable pak table: probed string_Collection.txt,
+  String.txt (uppercase, HIT but different table), variants - all MISS; documented as unreachable/dev.
+- Phase 0 (census truth): updated the census handled sets (HandleType 1-6, FirstItemPosType 0-12,
+  flex/list exact, PosType 0-12) - **0 unhandled constructs** (was 14 variants).
+- PosType tail: decoded the per-item flow jump table (fn 0x180108600, table 0x180108998) - each
+  item's PosType places it relative to the previous item's rect (1 left-bottom, 2 left, 3
+  left-vcenter, 4 above, 5 right-bottom, 6 above-hcenter, 7/11 right, 8 right-bottom, 9/12
+  below-hcenter, 10 below, 0 new line). Implemented in TryFlowAfterPrevious; Attach routes
+  3/4/5/9/10/12 through it for item-flow handles. Evidence appended to kgui_handle_layout.txt.
+- Gates: selftest 1240/0/0; audit ph=539 unresolved=50 oob=9499 (list content overflow, legitimate);
+  commits 2dd611d, e766aa0.
