@@ -19,3 +19,15 @@ Registered provisionals (AGENTS §6; details in `docs/character/3_5_3_7_RAGDOLL_
 water source (`RC_WATER` boxes), swim-jump impulse (J0 triple), swim buoyancy hold
 (float height), chain segment length (`RC_CHAIN_SEG`, default 51 ticks), suspend float **law now decoded**
 (floor = terrain + 256 u) with the entry trigger still a harness.
+
+## Water-entry AV — root cause + seed fix A/B (2026-10-06)
+
+| log (captured) | run | env | what it shows |
+|---|---|---|---|
+| `crash_before_215647.txt` / `crash_before_220045.txt` | pre-fix drive/spawn into the NE basin | — | log ends abruptly, WER `KG3DEngineDX11EX64+0x12282B3` |
+| `crash_seed_off_221659.txt` | seed off, stand at (64293,-125,55238) | `RC_SEED_RCPISCENE=0 RC_SPAWN=64293,-125,55238` | crash ~2 s after spawn (WER 22:17:12) |
+| `seed_on_stand_221934.txt` | seed on, same spot | `RC_SPAWN=64293,-125,55238` | `lazyseed ... seeded=121`, 15 s standing, `DONE` |
+| `seed_on_drive_222125.txt` | seed on, drive (0.99,0.17) from (63098,242,55063) | `RC_DEMO_COLLIDE=1 RC_DEMO_DIR=0.99,0.17` | through the basin to y=-551, `DONE` |
+| `seed_off_race_clean_222616.txt` | seed off, same spot (race variance) | `RC_SEED_RCPISCENE=0` | clean `DONE` — the guard race is timing-dependent (3 of 4 seed-off attempts crashed) |
+| `seed_on_final_222651.txt` | final build, seed default on | `RC_SPAWN=64293,-125,55238` | `lazyseed ... seeded=121`, `DONE` |
+| `seed_rcpiscene_slots.txt` | evidence | — | crash site disasm, FNV validation, all 129 slot RVAs, A/B summary |

@@ -1,0 +1,68 @@
+Lazy "RCPI_Scene" name-hash seed — water-entry AV root cause (2026-10-06)
+=========================================================================
+
+Crash signature
+---------------
+- Fault: KG3DEngineDX11EX64.dll+0x12282B3, AV 0xc0000005, `mov rbx,[rdi]` with rdi=0
+  (WER dumps: reborn_client_3x.exe 21:44:34 pid 0x65D8; reborn_client_3x_states.exe
+  22:17:12 pid 0x9214; earlier 21:57:00).
+- Trigger: the actor below a map water surface (龙门寻宝 NE lake basin) — walking in,
+  standing at the bed, or spawning in the basin.
+- Site disasm (0x1812282A6): `call 0x18105cf50` (hash-keyed rbtree find) returns NULL;
+  the caller's `je 0x1812282b3` jumps INTO the deref (rdi stays 0) -> AV.
+
+Root cause
+----------
+The lookup key is the engine's lazily computed FNV-1 of "RCPI_Scene":
+- magic static { guard dword @RVA 0x2D5BD08, value qword @RVA 0x2D5BD10 } (this site);
+- init lambda hashes the string at VA 0x1821CB2A8 = "RCPI_Scene" (FNV-1: mul 0x100000001b3,
+  xor byte; basis 0xcbf29ce484222325);
+- the guard gate (`cmp [guard], tls; jg init`) can let a render worker thread read the
+  value before init -> value 0 -> lookup miss -> NULL deref. Same class as D6, which
+  seeded only its own slot (RVA 0x2D5BBD0).
+- FNV-1("RCPI_Scene") = 0x392E0BFA0428F080 (validated: equals the D6 seed constant).
+
+Scope
+-----
+KG3DEngineDX11EX64.dll (ts 0x6AA7C1F5) contains 129 lazy value slots for "RCPI_Scene"
+(one per call site). Scan: find `48 B8 25 23 22 84 E4 9C F2 CB` (movabs FNV basis),
+resolve the nearby `lea rdx,[rip+..]` string; keep sites whose string is "RCPI_Scene";
+record the value-slot store target. Slots (hex RVAs):
+
+0x257F2E0 0x2D26770 0x2D26798 0x2D267A0 0x2D267C0 0x2D267C8 0x2D267D0 0x2D267F0
+0x2D5B440 0x2D5B980 0x2D5B990 0x2D5B9A0 0x2D5B9B0 0x2D5B9C0 0x2D5B9D0 0x2D5B9E0
+0x2D5B9F0 0x2D5BA00 0x2D5BA10 0x2D5BA20 0x2D5BA30 0x2D5BA50 0x2D5BA60 0x2D5BA70
+0x2D5BA80 0x2D5BA90 0x2D5BAA0 0x2D5BAB0 0x2D5BAC0 0x2D5BAD0 0x2D5BAE0 0x2D5BAF0
+0x2D5BB00 0x2D5BB10 0x2D5BB20 0x2D5BB30 0x2D5BB40 0x2D5BB50 0x2D5BB60 0x2D5BB70
+0x2D5BB80 0x2D5BB90 0x2D5BBA0 0x2D5BBC0 0x2D5BBD0 0x2D5BBE0 0x2D5BBF0 0x2D5BC00
+0x2D5BC10 0x2D5BC30 0x2D5BC40 0x2D5BC50 0x2D5BC60 0x2D5BC70 0x2D5BC80 0x2D5BC90
+0x2D5BCA0 0x2D5BCB0 0x2D5BCC0 0x2D5BCD0 0x2D5BCE0 0x2D5BCF0 0x2D5BD00 0x2D5BD10
+0x2D5BD20 0x2D5BD30 0x2D5BD40 0x2D5BD50 0x2D5BD60 0x2D5BD70 0x2D5BD80 0x2D5BD90
+0x2D5BDA0 0x2D5BDB0 0x2D5BDC0 0x2D5BDD0 0x2D5BDE0 0x2D5BDF0 0x2D5BE00 0x2D5BE10
+0x2D5BE20 0x2D5BE30 0x2D5BE40 0x2D5BE50 0x2D5BE60 0x2D5BE70 0x2D5BE80 0x2D5BE90
+0x2D5BEA0 0x2D5BEB0 0x2D5BEC0 0x2D5BEE0 0x2D5BEF0 0x2D5BF00 0x2D5BF10 0x2D5BF20
+0x2D5BF30 0x2D5BF40 0x2D5BF50 0x2D5BF60 0x2D5BF80 0x2D5BF90 0x2D5BFB0 0x2D5BFC0
+0x2D5BFD0 0x2D5BFF0 0x2D5C000 0x2D5C010 0x2D5C020 0x2D5C030 0x2D5C040 0x2D5C050
+0x2D5C060 0x2D5C070 0x2D5C080 0x2D5C0A0 0x2D5C0B0 0x2D5C0C0 0x2D5C0D0 0x2D5C0E0
+0x2D5C100 0x2D5C110 0x2D5C120 0x2D5C130 0x2D5C140 0x2D5C150 0x2D5C168 0x2D5C170
+0x2D5C180
+
+Fix
+---
+client/RebornClient.cs seeds the 129 value slots with 0x392E0BFA0428F080 before LoadMap
+(only when the slot is 0), gated on the engine PE timestamp 0x6AA7C1F5 (slot RVAs are
+build-specific). RC_SEED_RCPISCENE=0 opts out (A/B). Log line: `lazyseed: rcpiscene
+base=0x... slots=129 seeded=121`.
+
+A/B evidence (all spawn (64293,-125,55238) or drive from (63098,242,55063) dir (0.99,0.17))
+--------------------------------------------------------------------------------------------
+- seed OFF (before): crash_seed_off_221659.txt (22:17:12 WER, no DONE);
+  crash_before_215647.txt / crash_before_220045.txt (committed earlier) — all 0x12282B3.
+- seed ON: seed_on_stand_221934.txt (standing 15 s, DONE), seed_on_drive_222125.txt
+  (drove through the basin to y=-551, DONE), seed_on_final_222651.txt (final build,
+  DONE); user runs 22:28:30/22:28:57 also clean.
+- Race variance (honest): one seed-OFF run was clean (seed_off_race_clean_222616.txt)
+  — the guard race is timing-dependent (3 of 4 seed-off attempts crashed at the basin).
+
+The earlier registered movement guard (b54b2bd) was removed as superseded by the seed
+(the crash is fixed at the engine lookup; movement into water is no longer blocked).

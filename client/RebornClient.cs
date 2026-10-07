@@ -685,6 +685,52 @@ internal static class RebornClient
         // lazy material/shader loader (missing build-machine DataStores -> AV)
         // is not raced while running through the map. Env-gated for A/B first.
         bool fullLoad = Env("RC_FULLLOAD", "0") == "1";
+        // Lazy "RCPI_Scene" name-hash seed (water-entry AV root cause, 2026-10-06).
+        // KG3DEngineDX11EX64 computes the FNV-1 of "RCPI_Scene" lazily per call
+        // site (129 value slots; the D6 seed covers one, the water/render path
+        // reads another). The guard race can leave a slot 0 when the render
+        // thread reads it -> the registry lookup misses -> NULL deref AV at
+        // +0x12282B3 (walking/standing below a map water surface, and spawn in
+        // the 龙门寻宝 basin). Seeding writes the value the engine would compute
+        // (0x392E0BFA0428F080; FNV-1 of "RCPI_Scene", verified against the D6
+        // seed). The slot RVAs are build-specific, so the seed is gated on the
+        // engine PE timestamp (KG3DEngineDX11EX64.dll ts 0x6AA7C1F5).
+        // RC_SEED_RCPISCENE=0 A/Bs the old behavior; evidence:
+        // proof/character/3x_states/seed_on_*.txt (before: crash_seed_off_*.txt).
+        if (Env("RC_SEED_RCPISCENE", "1") == "1")
+        {
+            try
+            {
+                IntPtr engBase = IntPtr.Zero;
+                foreach (ProcessModule pm in Process.GetCurrentProcess().Modules)
+                {
+                    if (pm.ModuleName.ToLowerInvariant() == "kg3denginedx11ex64.dll")
+                    { engBase = pm.BaseAddress; break; }
+                }
+                if (engBase == IntPtr.Zero) Log("lazyseed: KG3DEngineDX11EX64 not loaded");
+                else
+                {
+                    int peOff = Marshal.ReadInt32(engBase, 0x3C);
+                    int ts = Marshal.ReadInt32(engBase, peOff + 8);
+                    if (ts != unchecked((int)0x6AA7C1F5))
+                        Log("lazyseed: unexpected engine build ts=0x" + ts.ToString("X8") + " - not seeded");
+                    else
+                    {
+                        long val = unchecked((long)0x392E0BFA0428F080UL);
+                        int[] slots = new int[] { 0x257F2E0, 0x2D26770, 0x2D26798, 0x2D267A0, 0x2D267C0, 0x2D267C8, 0x2D267D0, 0x2D267F0, 0x2D5B440, 0x2D5B980, 0x2D5B990, 0x2D5B9A0, 0x2D5B9B0, 0x2D5B9C0, 0x2D5B9D0, 0x2D5B9E0, 0x2D5B9F0, 0x2D5BA00, 0x2D5BA10, 0x2D5BA20, 0x2D5BA30, 0x2D5BA50, 0x2D5BA60, 0x2D5BA70, 0x2D5BA80, 0x2D5BA90, 0x2D5BAA0, 0x2D5BAB0, 0x2D5BAC0, 0x2D5BAD0, 0x2D5BAE0, 0x2D5BAF0, 0x2D5BB00, 0x2D5BB10, 0x2D5BB20, 0x2D5BB30, 0x2D5BB40, 0x2D5BB50, 0x2D5BB60, 0x2D5BB70, 0x2D5BB80, 0x2D5BB90, 0x2D5BBA0, 0x2D5BBC0, 0x2D5BBD0, 0x2D5BBE0, 0x2D5BBF0, 0x2D5BC00, 0x2D5BC10, 0x2D5BC30, 0x2D5BC40, 0x2D5BC50, 0x2D5BC60, 0x2D5BC70, 0x2D5BC80, 0x2D5BC90, 0x2D5BCA0, 0x2D5BCB0, 0x2D5BCC0, 0x2D5BCD0, 0x2D5BCE0, 0x2D5BCF0, 0x2D5BD00, 0x2D5BD10, 0x2D5BD20, 0x2D5BD30, 0x2D5BD40, 0x2D5BD50, 0x2D5BD60, 0x2D5BD70, 0x2D5BD80, 0x2D5BD90, 0x2D5BDA0, 0x2D5BDB0, 0x2D5BDC0, 0x2D5BDD0, 0x2D5BDE0, 0x2D5BDF0, 0x2D5BE00, 0x2D5BE10, 0x2D5BE20, 0x2D5BE30, 0x2D5BE40, 0x2D5BE50, 0x2D5BE60, 0x2D5BE70, 0x2D5BE80, 0x2D5BE90, 0x2D5BEA0, 0x2D5BEB0, 0x2D5BEC0, 0x2D5BEE0, 0x2D5BEF0, 0x2D5BF00, 0x2D5BF10, 0x2D5BF20, 0x2D5BF30, 0x2D5BF40, 0x2D5BF50, 0x2D5BF60, 0x2D5BF80, 0x2D5BF90, 0x2D5BFB0, 0x2D5BFC0, 0x2D5BFD0, 0x2D5BFF0, 0x2D5C000, 0x2D5C010, 0x2D5C020, 0x2D5C030, 0x2D5C040, 0x2D5C050, 0x2D5C060, 0x2D5C070, 0x2D5C080, 0x2D5C0A0, 0x2D5C0B0, 0x2D5C0C0, 0x2D5C0D0, 0x2D5C0E0, 0x2D5C100, 0x2D5C110, 0x2D5C120, 0x2D5C130, 0x2D5C140, 0x2D5C150, 0x2D5C168, 0x2D5C170, 0x2D5C180 };
+                        int seeded = 0;
+                        foreach (int rva in slots)
+                        {
+                            IntPtr p = new IntPtr(engBase.ToInt64() + rva);
+                            if (Marshal.ReadInt64(p) == 0) { Marshal.WriteInt64(p, val); seeded++; }
+                        }
+                        Log("lazyseed: rcpiscene base=0x" + engBase.ToInt64().ToString("X") +
+                            " slots=" + slots.Length + " seeded=" + seeded);
+                    }
+                }
+            }
+            catch (Exception e) { Log("lazyseed ex: " + e.Message); }
+        }
         if (loading != null) loading.Phase("Loading map...");
         long tMap = Environment.TickCount;
         int loadResult = scene.LoadMap(mapPath, false);
@@ -716,7 +762,8 @@ internal static class RebornClient
                 int wsEn = scene.EnableFluxWaterSimulation(1);
                 scene.ResetFluxWaterSimulation();
                 scene.UpdateFluxCollisionHeightMap();
-                Log("watersim: enabled=" + wsEn + " flux water initialized after map load");
+                Log("watersim: EnableFluxWaterSimulation rc=" + wsEn +
+                    " (0=ok; 0x80004005=E_FAIL, no flux world in the editor host; engine water layer stays M2)");
             }
             catch (Exception e) { Log("watersim ex: " + e.Message); }
         }
@@ -2355,6 +2402,22 @@ internal static class RebornClient
         float curJumpGravity = -pGravity;
         Log(string.Format("jump: mode={0} school={1} scale={2:F3} (apex {3:F0}u ~ {3:F0}cm per jump)",
             djumpMode, jumpSchool, jumpScale, 0.5f * (90f * 15f * jumpScale) * (90f * 15f * jumpScale) / (11f * 225f * jumpScale)));
+        // Decoded grant attribute (KCharacter::Jump 0x313C22): an unpowered air
+        // press is accepted while jumpCount < [char+0x334] (op MAX_JUMP_COUNT,
+        // tiny setter 0x140431180; the J1+ rows are NOT reachable this way).
+        // The host models the grant as RC_MAXJUMP (default 2 = 二段跳). The J1+
+        // flight rows are the powered 轻功 move-record path - harness only.
+        int charMaxJump = 2;
+        { int mv; if (int.TryParse(Env("RC_MAXJUMP", "2"), out mv) && mv >= 1 && mv <= 15) charMaxJump = mv; }
+        if (djumpMode == "chain")
+        {
+            Log("WARNING: RC_DJUMP=chain is a TEST HARNESS - NOT GAME BEHAVIOR. The J1+ rows are the \u8f7b\u529f " +
+                "flight arcs; the client consumes them only in the powered move-record path (KCharacter::Jump " +
+                "0x313975: [char+0x1F8] != 0 plus the power pool [char+0x20194+idx*4]), and the air-jump grant " +
+                "comes from script op MAX_JUMP_COUNT (attribute [char+0x334], setter 0x140431180). The host has " +
+                "no \u8f7b\u529f grant, so chain output is labeled 'HARNESS - NOT GAME BEHAVIOR'. See " +
+                "docs/character/3_5_3_7_RAGDOLL_SWIM_FLY.md");
+        }
         // Real locomotion speeds from the shipped CommonNumber table
         // (proof/gravity/number.krl.txt): CharacterWalkSpeed=6, CharacterRunSpeed=20
         // in units per 15 Hz logic frame -> 90 / 300 u/s (exact integer per tick;
@@ -2435,13 +2498,6 @@ internal static class RebornClient
         long chainSegEndMs = 0;
         Log(string.Format("states: waterBoxes={0} swim={1:F0}u/s chainSegTicks={2:F0} suspendDemo={3}",
             waterBox.Count, pSwim, chainSegTicks, suspendDemo ? 1 : 0));
-        // Engine-water boundary guard (see the movement-loop check): only the
-        // known 龙门寻宝 lake basin is mapped so far (registered boundary).
-        bool waterGuard = Env("RC_WATERGUARD", "1") == "1";
-        bool waterGuardMap = false;
-        try { waterGuardMap = mapPath.IndexOf("\u9F99\u95E8\u5BFB\u5B9D") >= 0; } catch { }
-        int waterGuardBlocks = 0;
-        long lastWaterGuardLog = 0;
         // Character step budget (host proxy for the server-authoritative step;
         // the client's own prediction has no capsule-vs-mesh blocking at all,
         // CLIENT_COLLISION_IMPROVEMENT_PLAN 8.3). 64 u = the game-side ground/landing
@@ -3620,28 +3676,6 @@ internal static class RebornClient
                 px += sdx;
                 pz += sdz;
                 if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
-                // Engine-water boundary guard (2026-10-06): the host has no water
-                // layer and the engine AVs (KG3DEngineDX11EX64+0x12282B3, NULL
-                // registry lookup) when the actor moves below a map water surface
-                // - reproduced in the 龙门寻宝 lake basin (region 3,3, bed BCH
-                // -300..-746). Block movement into the known basin below the
-                // waterline bound. REGISTERED BOUNDARY (VOID_SPAWN_CRASH_TRIAGE
-                // §2; re-open when the M2 water layer / engine water init lands).
-                // RC_WATERGUARD=0 to A/B.
-                if (waterGuard && waterGuardMap && px >= 64000f && px <= 68500f &&
-                    pz >= 54800f && pz <= 62300f && (ground < -100f || py < -100f))
-                {
-                    px -= sdx; pz -= sdz;
-                    blocked = true; blockedEvents++; waterGuardBlocks++;
-                    if (now - lastWaterGuardLog >= 1000)
-                    {
-                        lastWaterGuardLog = now;
-                        Log(string.Format("waterguard: blocked move pos=({0:F0},{1:F0}) ground={2:F0} y={3:F0} - engine water layer not loaded (registered boundary)",
-                            px, pz, ground, py));
-                    }
-                    if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
-                    break;
-                }
 
                 // object/foliage collision (walls, buildings, rocks, trees)
                 if (col != null)
@@ -3890,7 +3924,7 @@ internal static class RebornClient
                 int nextJump = jumpCount + 1;
                 bool chainMode = djumpMode == "chain";
                 bool djumpOn = djumpMode != "0";
-                int maxJump = chainMode ? JumpTable.MaxJumpCount[jumpSchool] : 2;
+                int maxJump = chainMode ? JumpTable.MaxJumpCount[jumpSchool] : charMaxJump;
                 int[] trip = null;
                 if (nextJump <= maxJump && nextJump <= JumpTable.Triples[jumpSchool].Length &&
                     (nextJump == 1 || djumpOn))
@@ -3927,8 +3961,9 @@ internal static class RebornClient
                         "jump xy takeoff vj=({0:F0},{1:F0}) u/s dir=({2:F2},{3:F2})",
                         vjx, vjz, dirX / (len > 0.01f ? len : 1f), dirZ / (len > 0.01f ? len : 1f)));
                     if (djumpLog) Log(string.Format(
-                        "djb press n={0} mode={1} triple={2},{3},{4} vy={5:F0} g={6:F0} pos={7:F0},{8:F0},{9:F0}",
-                        jumpCount, djumpMode, trip[0], trip[1], trip[2], vy, curJumpGravity, px, py, pz));
+                        "djb press n={0} mode={1} triple={2},{3},{4} vy={5:F0} g={6:F0} pos={7:F0},{8:F0},{9:F0}{10}",
+                        jumpCount, djumpMode, trip[0], trip[1], trip[2], vy, curJumpGravity, px, py, pz,
+                        chainMode ? "  [HARNESS - NOT GAME BEHAVIOR]" : ""));
                     // 轻功 chain segment start: the ...End triple of THIS segment
                     // is applied when the segment ends (ModifySprintEndSpeed
                     // 0x1403140A0 semantics; the game's own trigger is a server
@@ -3944,7 +3979,7 @@ internal static class RebornClient
                             tf = JumpTable.TotalFrame[jumpSchool][jumpCount - 1];
                         if (tf <= 0) tf = (int)chainSegTicks;
                         chainSegEndMs = now + (long)(tf * (1000.0 / 15.0));
-                        if (chainLog) Log(string.Format("chain: seg={0} start ticks={1} endMs=+{2}",
+                        if (chainLog) Log(string.Format("chain: seg={0} start ticks={1} endMs=+{2} [HARNESS - NOT GAME BEHAVIOR]",
                             jumpCount, tf, chainSegEndMs - now));
                     }
                     if (suspendDemo && jumpCount >= 2)
@@ -4084,7 +4119,7 @@ internal static class RebornClient
                     int exy = et[0]; if (exy < 0) exy = 0; else if (exy > 127) exy = 127;
                     float esp = exy * 15f * jumpScale;
                     if (len > 0.01f) { vjx = dirX / len * esp; vjz = dirZ / len * esp; }
-                    Log(string.Format("chain: end seg={0} end={1},{2},{3} vy={4:F0} pos=({5:F0},{6:F0},{7:F0})",
+                    Log(string.Format("chain: end seg={0} end={1},{2},{3} vy={4:F0} pos=({5:F0},{6:F0},{7:F0}) [HARNESS - NOT GAME BEHAVIOR]",
                         chainSegIdx, et[0], et[1], et[2], vy, px, py, pz));
                 }
                 jumpCount = 1;   // decoded: reset to 1, not 0

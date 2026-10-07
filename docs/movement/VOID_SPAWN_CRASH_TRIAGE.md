@@ -191,23 +191,36 @@ original repro exits clean x2 (clamped (100,100) -> relocated (9316,9316) ground
 DONE), the default 龙门 spawn is unchanged, camera_smoke ALL PASS, collision 36/36.
 Direct in-extent sub-sea-level spawns remain the §2 boundary (server-owned in play).
 
-## 4. 龙门寻宝 water-area AV + guard (2026-10-06, `agent/3x-states`)
+## 4. 龙门寻宝 water-area AV — root cause + seed fix (2026-10-06, `agent/3x-states`)
 
-The same `+0x12282B3` AV reproduces on **龙门寻宝** (default map) when the actor MOVES
-below a lake surface: drive path from (63098,242,55063) toward (0.99,0.17) crashes at
-~x 65000 in the NE basin; standing at the same spots is clean. Dump confirms
-`KG3DEngineDX11EX64.dll+0x12282B3`, `rdi=0` NULL lookup. Evidence:
-`proof/character/3x_states/crash_before_*.txt`, `crash_12282b3_dump.txt`.
+The same `+0x12282B3` AV reproduces on **龙门寻宝** (default map) when the actor is
+below a lake surface: drive path from (63098,242,55063) toward (0.99,0.17) crashes in
+the NE basin; spawning/standing at the basin bed (64293,-125,55238) also crashes
+(race-dependent). Dump confirms `KG3DEngineDX11EX64.dll+0x12282B3`, `rdi=0` NULL
+lookup. Evidence: `proof/character/3x_states/crash_before_*.txt`,
+`crash_seed_off_221659.txt`, `crash_12282b3_dump.txt`.
 
 Scope check: driving on dry sub-zero lowland (121500,-1216,43500) is CLEAN - the AV
 is water-specific, not "y < 0" (consistent with §2's refined scope).
 
 Engine water init attempted: `KGSceneCLR.EnableFluxWaterSimulation(1)` returns
-E_FAIL (0x80004005) in the host (no flux world) - the native path stays M2 scope.
+E_FAIL (0x80004005) in the host (no flux world) - the engine water *layer* stays M2
+scope.
 
-**Guard (merged in `agent/3x-states`):** movement into the mapped basin
-(x 64000-68500, z 54800-62300) is blocked while the target ground < -100 u
-(`waterguard: blocked move ...` log; `RC_WATERGUARD=0` A/B). Before: crash x2;
-after: DONE x3 (`proof/character/3x_states/waterguard_after_*.txt`).
-Re-open: M2 water layer / engine water registry (same as §2); other maps' water areas
-remain unmapped and will AV until then.
+**Root cause (HIGH).** The NULL lookup is the engine's lazy name-hash for
+"RCPI_Scene": KG3DEngineDX11EX64 has 129 per-call-site value slots (magic statics);
+the D6 seed covers one (RVA 0x2D5BBD0), the water/render path reads others (crash
+site: guard 0x2D5BD08, value 0x2D5BD10). The guard gate can let a render worker read
+a slot before its init -> hash 0 -> the rbtree find at 0x18105CF50 misses -> NULL
+deref. FNV-1("RCPI_Scene") = 0x392E0BFA0428F080 (validated against the D6 seed).
+
+**Fix.** `client/RebornClient.cs` seeds all 129 slots with that value before LoadMap
+(slot==0 only), gated on the engine PE timestamp 0x6AA7C1F5 (the RVAs are
+build-specific); `RC_SEED_RCPISCENE=0` A/Bs it. Method + full slot list:
+`proof/character/3x_states/seed_rcpiscene_slots.txt`. A/B: seed off -> crash x3
+(0x12282B3); seed on -> clean standing and driving through the basin
+(`seed_on_stand_221934.txt`, `seed_on_drive_222125.txt`, `seed_on_final_222651.txt`);
+one seed-off run was clean (the race is timing-dependent,
+`seed_off_race_clean_222616.txt`). The interim movement guard (b54b2bd) was removed as
+superseded - movement into water is no longer blocked. Re-open: engine update (PE
+timestamp changes -> the seed logs `not seeded` and the crash class returns).

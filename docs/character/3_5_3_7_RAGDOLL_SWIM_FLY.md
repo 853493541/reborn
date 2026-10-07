@@ -460,52 +460,58 @@ REGISTERED PROVISIONALS (AGENTS §6, re-open criteria):
    harness (real 0x1F entry = 轻功 skill/script transition) and the 0x20 fly /
    0x21 fly-jump verticals beyond EndFlyJump stay open. Re-open: fly-state decode.
 
-## 轻功 chain — what it is and how to test it (2026-10-06)
+## 轻功 flight rows — TEST HARNESS ONLY, NOT game behavior (2026-10-06)
 
-**What it is:** the game's mid-air multi-press jump chain. First Space on the ground =
-normal jump (row J0); pressing Space again while airborne continues the chain (二段跳
-= press 2, then further presses up to `MaxJumpCount[school]`). Each press starts a new
-ballistic segment; when the segment ends the row's `...End` triple is applied and
-`jumpCount := 1` (ModifySprintEndSpeed semantics). The default host mode
-`RC_DJUMP=flip` only does a 二段跳-style second press; the real chain rows need
-`RC_DJUMP=chain`.
+**WARNING:** `RC_DJUMP=chain` is a **test harness**. It plays the raw `JumpParam.tab`
+J1..J3 rows on air presses, which the real client does **not** do: those rows are the
+轻功 flight arcs and are consumed only through the powered move-record path below.
+Plain air presses never reach them (2026-10-06 user callout: this was presented as game
+behavior and was not). Every harness log line is labeled `HARNESS - NOT GAME BEHAVIOR`
+and the startup prints the full warning.
 
-**Manual play (reachable without a harness):**
-1. `set RC_DJUMP=chain`, optionally `set RC_CHAIN_LOG=1` and `set RC_DJUMP_LOG=1`.
-2. Run the client (cwd `C:\SeasunGame\MovieEditor`), click the window, press Space on
-   the ground, then Space again while airborne (repeat up to `MaxJumpCount`).
-3. Log lines per press: `djb press n=N mode=chain triple=x,y,z`; per segment:
-   `chain: seg=N start ticks=... endMs=+...`; on segment end:
-   `chain: end seg=N end=60,90,11 vy=702`; landing: `djb land n=1`.
+### The decoded real path (grant -> rows -> segment end -> End triple)
 
-**Headless harness (scripted presses at t=2.5/3.2/4.0 s):**
-```
-set RC_CLIENT_EXE=reborn_client_3x_states.exe
-set RC_DEMO_STATES=1
-set RC_DJUMP=chain
-set RC_CHAIN_LOG=1
-set RC_CHAIN_SEG=20
-set RC_SHOTS=999999
-set RC_STARTUP=nodb
-set RC_AUTORUN=9000
-bin64\reborn_client_3x_states.exe
-```
-- `RC_CHAIN_SEG` = segment length in ticks (registered provisional; the shipped
-  `JumpFrameParam.TotalFrame` is used automatically when the school has it, 10/11).
-  The default 51 ticks (3.4 s) outlives the school-0 ballistic arc, so the End phase
-  only becomes visible with a shorter test value (e.g. 20).
-- `RC_SHOTS=999999` avoids the default proof screenshots (they stall the loop for
-  seconds and skew phase timing).
-- Expected proof: `proof/character/3x_states/run_20261006_203200.txt`
-  (`chain: end seg=3 end=60,90,11 vy=702` then `djb land n=1`).
+| Step | Mechanism | Evidence |
+|---|---|---|
+| grant | script op `MAX_JUMP_COUNT` (id 5) sets the max-jump attribute `[char+0x334]`; `SET_JUMP_COUNT` (id 6) writes `[char+0x330]` (jumpCount); `FLY_FLAG` (id 7) writes `[char+0x1FC]` | op-name table file `0x9f4d40` (VA `0x1409F6940`); tiny setters `0x140431170/0x140431180` (`mov [rcx+0x334], edx; ret`) |
+| plain air press | `KCharacter::Jump` @ `0x313C22`: accepted while `jumpCount < [char+0x334]` (hard cap `<0xF` there); applies the J0-profile (no J1+ rows) | disasm session `jump_full.txt` (this worktree) |
+| flight rows | only in the powered path `0x313975`: requires `[char+0x1F8] != 0` (a 轻功 move record) and spends the power pool `[char+0x20194+idx*4]` (max `[+0x201A4+idx*4]`); the record flag is set by the server record applier (`[+0x1F8] = record[+0x1A]==1`) | `JX3_DOUBLE_JUMP_RESEARCH.md`; `jump_full.txt` |
+| segment end | the `...End` triple is applied by `ModifySprintEndSpeed 0x1403140A0` when the record ends (guards: state ∈ {4,0x1A}, `[+0x1F8]==0`, jumpCount>=1), then `jumpCount := 1` | §verify C2 above |
+| rush anim set | the 轻功 skills' own Once/Loop clip sets per body | `proof/gravity/player_rush_skill.txt`, `skill_rush_state.txt` |
 
-## Engine-water boundary guard (crash fix, 2026-10-06)
+**Undecoded:** which buffs/skills invoke `MAX_JUMP_COUNT`/`FLY_FLAG` (the op executors'
+callers live behind a `.rdata` table with no direct xrefs), the power-pool max/cost
+values (server character data), the `[+0x134]` index in the powered path, and the
+record producer that ends a segment. **Re-open:** trace the op executors' callers and
+the power-pool sync; wire the rows to the real record path when the host gains 轻功
+skill/record support.
 
-Walking below a map water surface crashed the client with the engine AV
-`KG3DEngineDX11EX64+0x12282B3` (NULL registry lookup; the host has no water layer -
-see `docs/movement/VOID_SPAWN_CRASH_TRIAGE.md` §2). Reproduced on 龙门寻宝 by driving
-into the NE lake basin (BCH bed -300..-746, x 64500-68300, z 55000-62100). Fix = a
-registered movement boundary: inside the mapped basin box, moves are blocked when the
-target ground is below the waterline bound (-100 u), with a throttled
-`waterguard: blocked move ...` log. `RC_WATERGUARD=0` A/Bs it; the real fix stays the
-M2 water layer (re-open criteria in the triage doc §2/§4).
+### Harness recipe (test only)
+
+**Manual:** `set RC_DJUMP=chain` (optionally `RC_CHAIN_LOG=1` `RC_DJUMP_LOG=1`), press
+Space on the ground, then again while airborne. All chain output is labeled; the
+startup prints the full warning.
+
+**Headless:** `RC_DEMO_STATES=1` (presses at t=2.5/3.2/4.0 s) + `RC_DJUMP=chain` +
+`RC_CHAIN_LOG=1` + `RC_CHAIN_SEG=20` + `RC_SHOTS=999999` + `RC_STARTUP=nodb` +
+`RC_AUTORUN=9000`.
+- `RC_MAXJUMP` (default 2) = the modeled `[char+0x334]` grant for plain presses
+  (`RC_DJUMP=flip`, the J0-profile 二段跳 path).
+- `RC_CHAIN_SEG` = harness segment length in ticks (registered provisional; the
+  shipped `JumpFrameParam.TotalFrame` is used when present, schools 10/11).
+- Labeled proof: `proof/character/3x_states/chain_final_220747.txt` (pre-label) and the
+  post-label run committed with this change.
+
+## Water-entry crash — root cause + fix (2026-10-06)
+
+Walking/standing below a map water surface crashed the client with the engine AV
+`KG3DEngineDX11EX64+0x12282B3` (NULL rbtree lookup; see
+`docs/movement/VOID_SPAWN_CRASH_TRIAGE.md` §4). Root cause: the engine's lazily
+computed name-hash for "RCPI_Scene" (129 per-call-site statics in the DX11 module;
+the D6 seed covers one). A render worker can read a slot before its init (guard race)
+-> hash 0 -> registry lookup miss -> NULL deref. Fix: the client seeds all 129 slots
+with 0x392E0BFA0428F080 before LoadMap (build-timestamp gated; `RC_SEED_RCPISCENE=0`
+A/B); evidence in `proof/character/3x_states/seed_rcpiscene_slots.txt` + the
+`seed_on_*` / `crash_seed_off_*` logs. Movement into water is no longer blocked; the
+engine water *physics* layer (swim gameplay) stays M2 scope (host provisional:
+`RC_WATER` boxes).
