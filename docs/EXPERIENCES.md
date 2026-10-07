@@ -2732,3 +2732,20 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   the client survived 5+ min (vs 26-91 s early crashes) at state 7 with the bind done, entering
   the long map load. If it clears the loading completion without crashing, the id-5 payload is
   the confirmed crash trigger and must be built to the client's real OnSyncQuestData layout.
+
+### 2026-10-06 — V2 CRASH REASON CAUGHT: 0xC0000374 heap corruption at world entry
+- The crash catcher caught the real crash XML (61 KB, `C:\jx3tmp\crashes\1791354591_c67cd1d2-*.xml`;
+  the .dmp is deleted by DumpReport - the catcher now retries the copy):
+  `ExceptionCode 0xc0000374` (STATUS_HEAP_CORRUPTION), `CrashMap: 龙门寻宝`, `MapsLoadedCount: 2`,
+  `TimeToFailure: 1693` s, ProcessName JX3ClientX64.exe.
+- Stack: `ntdll+0x117eb5` (RtlReportCriticalFailure) <- `ntdll+...` <- `ucrtbase+0x12d7b` (free)
+  <- **JX3RepresentX64.dll+0x9230de** (a vector-of-pointers element-free loop: `[rbx]` ptr, call
+  free) <- `+0x920b5c` (singleton free/alloc, global 0x180f51298) <- `+0x5e15cc` (member
+  destructor at obj+0x680) <- `+0x3e3c97` (big manager teardown: obj+0x24xxx members).
+- Meaning: the client survived the confirm this run (id-5 removal worked) but died because the
+  heap was **corrupted earlier**; the corruption was only DETECTED at the world-entry teardown's
+  free(). The writer is still unknown; candidates: the map load (64 missing sub-files -> partial
+  structures) or our S2C data (remaining: id 4 343 B, id 3, id 188, 0x2FE).
+- NEXT: find the corruption writer - (a) run with a MINIMAL id-4 payload (tiny name, zero
+  appearance) to rule our data in/out; (b) or run without the server confirm path; (c) keep the
+  crash catcher armed (dmp retry) and, when a dump survives, analyze the heap block.
