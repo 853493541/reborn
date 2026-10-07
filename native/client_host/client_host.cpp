@@ -5135,16 +5135,45 @@ int main(void)
                                      tb[0], tb[1], tb[2], tb[3], tb[4]);
                                 logf("[host] frame60: rep+0xAEE2D8 live=%02X %02X %02X %02X %02X (file E8 17 79 52 FF)",
                                      cb[0], cb[1], cb[2], cb[3], cb[4]);
+                                __try
+                                {
+                                    logf("[host] frame60: namedObj singleton [rep+0xF51298]=%p",
+                                         *(void**)((BYTE*)g_repModule + 0xF51298));
+                                }
+                                __except (EXCEPTION_EXECUTE_HANDLER)
+                                { logf("[host] frame60: namedObj singleton read fault"); }
                                 char dbgFlag[8] = {0};
                                 if (GetEnvironmentVariableA("RC_HOST_DEBUGTRACE",
                                                             dbgFlag, sizeof(dbgFlag)) != 0)
                                 {
-                                    logf("[host] frame60: exec trace arm -> %d",
-                                         armExecTrace((BYTE*)g_repModule + 0xAEE2D8));
-                                    logf("[host] frame60: Aedfd0 hook -> %d",
-                                         installInlineHook((HMODULE)g_repModule, 0xAEDFD0,
-                                                           (void*)hookAedfd0, g_aedfSaved,
-                                                           &g_aedfTramp, 12));
+                                    char traceAddr[64] = {0};
+                                    if (GetEnvironmentVariableA("RC_HOST_TRACE_RVA",
+                                                                traceAddr, sizeof(traceAddr)) != 0)
+                                    {
+                                        DWORD tr = 0;
+                                        for (int ti = 0; traceAddr[ti] != 0; ti++)
+                                        {
+                                            char c = traceAddr[ti];
+                                            DWORD d;
+                                            if (c >= '0' && c <= '9') d = c - '0';
+                                            else if (c >= 'a' && c <= 'f') d = c - 'a' + 10;
+                                            else if (c >= 'A' && c <= 'F') d = c - 'A' + 10;
+                                            else continue;
+                                            tr = tr * 16 + d;
+                                        }
+                                        logf("[host] frame60: exec trace arm(0x%X) -> %d", tr,
+                                             armExecTrace((BYTE*)g_repModule + tr));
+                                    }
+                                    else
+                                        logf("[host] frame60: exec trace arm -> %d",
+                                             armExecTrace((BYTE*)g_repModule + 0xAEE2D8));
+                                    char hookFlag[8] = {0};
+                                    if (GetEnvironmentVariableA("RC_HOST_AEDFHOOK",
+                                                                hookFlag, sizeof(hookFlag)) != 0)
+                                        logf("[host] frame60: Aedfd0 hook -> %d",
+                                             installInlineHook((HMODULE)g_repModule, 0xAEDFD0,
+                                                               (void*)hookAedfd0, g_aedfSaved,
+                                                               &g_aedfTramp, 12));
                                 }
                             }
                             __try
