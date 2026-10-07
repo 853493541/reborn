@@ -95,3 +95,14 @@
 #      10 -> 0x18010873f  bottom
 #      11 -> 0x1801086eb  bottom-right
 #      12 -> 0x18010872c  x += (W-w)*0.5; y += (H-h) (bottom-center)
+
+# 7) Per-item PosType flow (fn 0x180108600, jump table 0x180108998): each item is
+#    placed relative to the previous item's rect (px/py/pw/ph) by its own PosType
+#    (item config PosType -> config+0x508, runtime item +0x220):
+#      0  new line at container origin + item offsets
+#      1  left, bottom-aligned      2  left            3  left, v-centered
+#      4  above                     5  right, bottom   6  above, h-centered
+#      7/11 right                   8  right, bottom   9/12 below, h-centered
+#      10 below
+#    Implemented in UiLayout.TryFlowAfterPrevious (used when the parent has
+#    FirstItemPosType != 0).

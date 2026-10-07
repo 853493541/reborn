@@ -29,21 +29,27 @@ LEAF_TYPES = {
     "WndPage", "WndPageSet", "WndList", "WndListNode", "WndTreeList",
     "WndTreeNode", "TreeLeaf", "FlexHandle",
 }
-# WndPage/WndPageSet/list/tree are handled as generic containers today (the
-# subtree renders, but page-set tab flow / item layout is approximate); they
-# are listed here so the census can flag them separately.
+# Page-set tab flow is approximated; scene/movie/web are native-only (the static
+# viewer cannot render them). Flex containers/list handles are exact now.
 APPROXIMATE_TYPES = {
-    "WndPage", "WndPageSet", "WndList", "WndListNode", "WndTreeList",
-    "WndTreeNode", "TreeLeaf", "FlexHandle", "WndScene", "Scene", "WndMovie",
-    "WndWebCef",
+    "WndPage", "WndPageSet",
+    "WndScene", "Scene", "WndMovie", "WndWebCef",
 }
-POS_TYPES = {0, 1, 2, 6, 7, 8, 9, 10, 11, 12}
+# PosType 3/4/5/9/12 are flow-relative (engine fn 0x180108600, jump table
+# 0x180108998): each item is placed relative to the previous item's rect when the
+# parent lays out items (FirstItemPosType != 0); outside a flow handle they keep
+# the authored position. 0/1/2/6/7/8/10/11 are the absolute cases.
+POS_TYPES = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
 # Engine dispatch (client KGUIX64.dll 0x180117D7C) dices 10/11/12/17/18/19;
 # every other ImageType is a plain draw in the engine.
 DICED_IMAGE_TYPES = {10, 11, 12, 17, 18, 19}
 IMAGE_TYPES_PLAIN_ENGINE = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 13, 14, 15, 16, 20}
-HANDLE_TYPES = {0, 3, 6}
-FIRST_ITEM_POS_TYPES = {0}
+# HandleType 1/2/3/5/6 flow as lists (engine dispatcher 0x1801064f5 + post pass
+# 0x180106cc0); type 4 is the AppendString row (LayoutPlanBuilder.Build).
+HANDLE_TYPES = {0, 1, 2, 3, 4, 5, 6}
+# FirstItemPosType 0-12 decoded from the engine jump table 0x180108964 (first-item
+# alignment sets the flow origin; the viewer implements all 13 cases).
+FIRST_ITEM_POS_TYPES = set(range(0, 13))
 ANCHOR_DST_SPECIAL = {"root", "client"}
 
 

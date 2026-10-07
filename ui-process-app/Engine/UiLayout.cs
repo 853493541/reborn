@@ -1384,22 +1384,18 @@ namespace MapUiApp.Engine
                 case 10: // engine item-flow when the parent lays out items
                          // (FirstItemPosType != 0): below the previous item; otherwise
                          // right-center aligned in the parent (Map window art rows).
-                    if (parentSection != null && parentSection.GetInt("FirstItemPosType") != 0)
-                    {
-                        if (prevSibling != null && prevSibling.TryGetValue(section.Name, out var prevName10) &&
-                            build != null && build.Elements.TryGetValue(prevName10, out var prevEl10) &&
-                            prevEl10 is FrameworkElement pe10 && pe10.Visibility == Visibility.Visible &&
-                            build.Sections.TryGetValue(prevName10, out var prevSec10))
-                        {
-                            double px10 = Canvas.GetLeft(pe10); if (double.IsNaN(px10)) px10 = 0;
-                            double py10 = Canvas.GetTop(pe10); if (double.IsNaN(py10)) py10 = 0;
-                            left = px10;
-                            top = py10 + ElementHeight(pe10, prevSec10, sizeOf);
-                        }
+                    if (parentSection != null && parentSection.GetInt("FirstItemPosType") != 0 &&
+                        TryFlowAfterPrevious(parent, section, prevSibling, build, sizeOf, ref left, ref top))
                         break;
-                    }
                     if (parentWidth > 0) left += parentWidth - elementWidth;
                     if (parentHeight > 0) top += (parentHeight - elementHeight) / 2;
+                    break;
+                case 3: // engine item-flow variants (left, v-centered); outside an item-flow
+                case 4: // handle (FirstItemPosType != 0) they keep the authored position
+                case 5: // (jump table 0x180108998 cases 3/4/5).
+                    if (parentSection != null && parentSection.GetInt("FirstItemPosType") != 0 &&
+                        TryFlowAfterPrevious(parent, section, prevSibling, build, sizeOf, ref left, ref top))
+                        break;
                     break;
                 case 6: // centered on the given point (player markers)
                     left -= elementWidth / 2;
@@ -1430,7 +1426,11 @@ namespace MapUiApp.Engine
                     if (left == 0 && top == 0 && rootWidth > 0) left = rootWidth - elementWidth - parentAbs.X;
                     if (top == 0 && rootHeight > 0) top = rootHeight - elementHeight - parentAbs.Y;
                     break;
-                case 12: // centered horizontally, bottom-aligned
+                case 12: // in an item-flow handle: below, h-centered (jump table case 12);
+                    // otherwise centered horizontally, bottom-aligned in the window.
+                    if (parentSection != null && parentSection.GetInt("FirstItemPosType") != 0 &&
+                        TryFlowAfterPrevious(parent, section, prevSibling, build, sizeOf, ref left, ref top))
+                        break;
                     if (parentWidth > 0) left = (parentWidth - elementWidth) / 2;
                     if (parentHeight > 0) top = parentHeight - elementHeight;
                     break;
@@ -1520,7 +1520,16 @@ namespace MapUiApp.Engine
         }
 
         /// <summary>Places an element right after its previous sibling (PosType 7/9).</summary>
-        private static bool TryFlowAfterPrevious(Canvas parent, IniSection section, Dictionary<string, string> prevSibling, UiBuildResult build, Func<IniSection, (double W, double H)> sizeOf, ref double left, ref double top)
+        /// <summary>
+        /// The engine's per-item flow (fn 0x180108600, PosType jump table 0x180108998):
+        /// each item is placed relative to the previous item's rect using its own PosType
+        /// (px/py/pw/ph = the previous item's rect):
+        ///   1 left-bottom, 2 left, 3 left-vcenter, 4 above, 5 right-bottom,
+        ///   6 above-hcenter, 7/11 right, 8 right-bottom, 9/12 below-hcenter,
+        ///   10 below.
+        /// </summary>
+        private static bool TryFlowAfterPrevious(Canvas parent, IniSection section, Dictionary<string, string> prevSibling,
+            UiBuildResult build, Func<IniSection, (double W, double H)> sizeOf, ref double left, ref double top)
         {
             if (prevSibling == null || build == null) return false;
             if (!prevSibling.TryGetValue(section.Name, out var prevName)) return false;
@@ -1529,11 +1538,25 @@ namespace MapUiApp.Engine
             if (!build.Sections.TryGetValue(prevName, out var prevSection)) return false;
             double px = Canvas.GetLeft(previous); if (double.IsNaN(px)) px = 0;
             double py = Canvas.GetTop(previous); if (double.IsNaN(py)) py = 0;
-            left = px + ElementWidth(previous, prevSection, sizeOf);
-            top = py;
-            return true;
+            double pw = ElementWidth(previous, prevSection, sizeOf);
+            double ph = ElementHeight(previous, prevSection, sizeOf);
+            var size = sizeOf(section);
+            double w = size.W, h = size.H;
+            switch (section.GetInt("PosType"))
+            {
+                case 1: left = px - w; top = py + ph - h; return true;
+                case 2: left = px - w; top = py; return true;
+                case 3: left = px - w; top = py + ph / 2 - h / 2; return true;
+                case 4: left = px; top = py - h; return true;
+                case 5: left = px + pw - w; top = py + ph - h; return true;
+                case 6: left = px + pw / 2 - w / 2; top = py - h; return true;
+                case 8: left = px + pw; top = py + ph - h; return true;
+                case 9:
+                case 12: left = px + pw / 2 - w / 2; top = py + ph; return true;
+                case 10: left = px; top = py + ph; return true;
+                default: left = px + pw; top = py; return true;
+            }
         }
-
         private static void ApplyAlphaAndVisibility(FrameworkElement element, IniSection section)
         {
             var alpha = section.GetInt("Alpha", 255);
