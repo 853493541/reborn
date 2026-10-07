@@ -75,11 +75,22 @@ manager (`[singleton+0x1A0+0x260]` = MapConverter via `CreateRLFile` + rep file-
 the 3D-scene `vt[0x70]` bind (GBK map path), and the holder table loader
 (`rep+0x82C3C0`, 18 entries) are solved. Remaining gates, in order:
 
-- **Gate 1 — real `CreateRLScene` completes.** It now runs deep into the map load
-  (`rep+0x58D800`) and ends in a C++ throw (VEH at `VCRUNTIME140+0x17B0`). Probe:
-  log the exception record + the throw site (VEH `ExceptionRecord` / stack), identify
-  the missing input, load it the game's way. **Checkpoint: `real CreateRLScene` clean +
-  `GetRLScene(2)` non-null through the game's own path (3DScene attached).**
+- **Gate 1 — real `CreateRLScene` completes.** Decoded (2026-10-06, static): the
+  destination-name scheme and the shadow-scene branch. `KRLScene::Init` = `rep+0x58D800`
+  (the map load; logs "KRLScene::Init"); its shadow step (lines 1848/1849) forwards the
+  name field `[rlScene+0xF2890]` to the movie engine (`movie+0x2A00` -> adapter ctx
+  `vt[7]` = `KG3DEngineAdapterX64.dll+0x111DE0`), which branches on the name's extension:
+  no dot -> no-op S_OK; `.map` -> window `vt[0x198]` = the compiled-map path
+  (`eng+0x9ACBF0`); `.jsonmap` -> window `vt[0x1A8]`/`vt[0x1B0]` = the source path
+  (`eng+0x9ACE80`). `CreateRLScene`'s 9th arg gates the destination block that builds
+  `buf1 = data\source\maps\<sceneName>` and `buf2 = ...\<sceneName>_Setting.ini`
+  (`rep+0xB0C7B0`) and calls the 3D scene `vt[0x5F8]`; the later Init steps need `buf2`
+  (the `rep+0x46BC50` call, error line 0xB5). **Host gap: our call passes arg9=0 and a
+  UTF-8 sceneName, so `buf2` stays empty and Init fails -> the cleanup AV at
+  `rep+0x58CCCD` (consequence).** Next run: pass arg8 = the GBK sceneName and arg9 = 1;
+  keep the name hook; log the destination block, the `0x46BC50` result and the Init
+  outcome. **Checkpoint: `real CreateRLScene` clean + `GetRLScene(2)` non-null through
+  the game's own path (3DScene attached).**
 - **Gate 2 — char chain on the real scene.** `0x58CE20` (scene -> `0x924B(sceneId)` ->
   `[world+0xF29E8]` -> `0x1B9D7` -> `[x+0x20]+0x70`). Currently faults on the manual
   scene. **Checkpoint: the chain returns a non-null world/char on the real scene.**

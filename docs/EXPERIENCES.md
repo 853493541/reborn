@@ -1097,7 +1097,7 @@ all tags should fire. Editor config to adopt when initializing the host
 - Re-open: SFX-model attach context (or runtime assets from a full client update) ->
   engine-driven playback A/B in the app.
 
-## 2026-10-02 ¡ª Phase 3 client host: loose-map bridge + source landscape loader (deviation)
+## 2026-10-02 ï¿½ï¿½ Phase 3 client host: loose-map bridge + source landscape loader (deviation)
 
 - Built 
 ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
@@ -1107,7 +1107,7 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   -> 240-frame loop -> engine screenshot API.
 - **Provisional deviations (host file layer, in-memory, no install writes):**
   1. file-mode wrapper (KG3D_StdFileSystem, engine+0x2D22598) existence predicates
-     (vt[8]/vt[9]) are patched to also accept loose files under the engine root ¡ª
+     (vt[8]/vt[9]) are patched to also accept loose files under the engine root ï¿½ï¿½
      otherwise the landscape loaders reject every loose sandbox-map file
      (Landscape System lost file). Original predicates are tried first.
   2. heightmap_bc hidden from KG3D_LoadFile so the engine selects its own
@@ -1122,7 +1122,7 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Remaining: black render (no camera pose) -> KG3D_Engine::CreateCamera (0x8AF8E0)
   with the spawn/camera data, then the app port.
 
-## 2026-10-02 ¡ª Phase 3 render breakthrough: SceneViewEx paint pair
+## 2026-10-02 ï¿½ï¿½ Phase 3 render breakthrough: SceneViewEx paint pair
 
 - The client host's window paint crashed at frame 14 in a lazy shadow update
   ( x70FDE9, helper 0x70E700 reading [r8+0x10] from a bad object) when using
@@ -1131,19 +1131,19 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   EndPaintSceneViewEx (0xA6C480). 240 frames paint cleanly and the engine
   screenshot shows the real sandbox map (terrain/ruins/sky; host_shot24.png).
 - Also fixed before it: sandbox data gaps (d/env_probe/*.dds from the pak;
-  d/shadowparam.json from the engine's global rcdata default) ¡ª builder updated.
+  d/shadowparam.json from the engine's global rcdata default) ï¿½ï¿½ builder updated.
 - Camera pose: KG3D_CAMERA_POSE = {eye[3], target[3], up[3]} (0x24 bytes) via
   KG3D_Camera::SetPose (0xB36540); the view re-derives its camera from the map's
   systemCamera.json, so host pose control is the next item.
 - Evidence: %TEMP%\opencode\skillv2\host24.out, host_shot24/25.png; commits
   cda0b6c, 94f2955, ec50b37.
 
-## 2026-10-02 ¡ª Phase 3: ability casting works; actor render registration still open
+## 2026-10-02 ï¿½ï¿½ Phase 3: ability casting works; actor render registration still open
 
 - The client host now reads the staged ability list (skill_data.json -> 24 entries) and
   casts on keys 1..9 (auto-cast once at boot): _InitAttachTani resolves the skill tani
   (anim non-null; rc E_FAIL is the post-load attach step), StartAnimation=0x0, and a
-  real .Sfx is created per cast (exc=0). Verified host_cast.out (ÁÙÊ±·É×¦).
+  real .Sfx is created per cast (exc=0). Verified host_cast.out (ï¿½ï¿½Ê±ï¿½ï¿½×¦).
 - Actor visibility attempts: (a) passing the scene as CreateActorFromFile's 3rd arg -
   no change; (b) injecting a player worldObject entity into the map's
   entities/sceneinfo_full/000_000.json (	ools/sandbox/add_player_entity.py, cloned
@@ -1156,11 +1156,11 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   AcqureRenderActorProxy 0x9BB730) or integrate the represent module for actors.
 - Evidence: %TEMP%\opencode\skillv2\host_cast.out, host_entity.out; commit 9a8f1a0.
 
-## 2026-10-02 ¡ª Phase 3: injected map entity IS processed (model path resolved), still not drawn
+## 2026-10-02 ï¿½ï¿½ Phase 3: injected map entity IS processed (model path resolved), still not drawn
 
 - Decisive probe: set the injected player worldObject's comRender.actorModel to a
   nonexistent path -> the engine logged
-  missing model file data\source\player\f1\²¿¼þ\zz_entity_probe.mesh.
+  missing model file data\source\player\f1\ï¿½ï¿½ï¿½ï¿½\zz_entity_probe.mesh.
   So the map's entities/sceneinfo_full IS read by the client engine and the entity's
   model path is resolved (restored to the real f1 mesh afterwards).
 - The entity's actor still does not appear in the render (frames identical with/without
@@ -1171,7 +1171,7 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Evidence: %TEMP%\opencode\skillv2\host_probe.out (missing-model line),
   host_char.out/png.
 
-## 2026-10-02 ¡ª Phase 3: AcqureRenderActorProxy never called by the engine (render path is elsewhere)
+## 2026-10-02 ï¿½ï¿½ Phase 3: AcqureRenderActorProxy never called by the engine (render path is elsewhere)
 
 - Hooked KG3D_SceneObject::AcqureRenderActorProxy (0x9BB730) with GUID logging
   (GetGUIDString 0x9BBC60) and ran the full host: **zero calls** for the whole run
@@ -1181,7 +1181,7 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Evidence: %TEMP%\opencode\skillv2\host_proxy.out; host keeps the proxy hook
   (harmless, logs any future calls).
 
-## 2026-10-02 ¡ª Phase 3: entity spawn diagnostics (SceneObject Init/Fetch/Update hooks)
+## 2026-10-02 ï¿½ï¿½ Phase 3: entity spawn diagnostics (SceneObject Init/Fetch/Update hooks)
 
 - Hooked KG3D_SceneObject::Init(type,...) (0x9B9440), FetchModelFromActor (0x9B9D50),
   UpdateFromActor (0x9B9AD0) with GUID logging: **zero calls** in the full run - the
@@ -1193,7 +1193,7 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   injected entity and compare (persist => standalone actor re-fetch; stop => entity).
 - Evidence: %TEMP%\opencode\skillv2\host_spawn.out.
 
-## 2026-10-02 ¡ª Phase 3: entity on/off comparison (decisive)
+## 2026-10-02 ï¿½ï¿½ Phase 3: entity on/off comparison (decisive)
 
 - With the injected player entity: the f1 mesh + JsonInspack load **repeatedly during
   the frame loop** (3+ times, no error lines). Without the entity: exactly **1** load
@@ -1205,7 +1205,7 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
 - Next: trace the repeated-load caller (entity spawn internal path) or accept the game
   represent layer as the actor driver; then actor render + terrain, then the app port.
 
-## 2026-10-02 ¡ª Phase 3: SFX play/registration path mapped (effect not standalone)
+## 2026-10-02 ï¿½ï¿½ Phase 3: SFX play/registration path mapped (effect not standalone)
 
 - The engine's own play sequence after KG3D_CreateSFXFromFile (caller at 0x44FEE9,
   inside the animation-controller SFX-tag playback block 0x44FExx):
@@ -1222,7 +1222,7 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   LoadFile, AcqureRenderActorProxy).
 - Evidence: disasm above; commit c73072 (stable host).
 
-## 2026-10-03 ¡ª A1 ANSWERED: scene object created; actor draw is the game layer's job
+## 2026-10-03 ï¿½ï¿½ A1 ANSWERED: scene object created; actor draw is the game layer's job
 
 - Hooked KG3D_SceneObject::Init(SOURCE_MAP_SCENE_ENTITY_INFO*) (0x9B9030): it fires for
   **every** world object (724) with rc=0, including our injected player entity
@@ -1242,7 +1242,7 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   SceneViewEx paint pair already fixed the shadow crash).
 - Evidence: %TEMP%\opencode\skillv2\host_a3.out (Init trace), host_a6.out (backtrace).
 
-## 2026-10-03 ¡ª Represent module: booted; lifecycle init blocks (game env needed)
+## 2026-10-03 ï¿½ï¿½ Represent module: booted; lifecycle init blocks (game env needed)
 
 - Host now loads JX3RepresentX64.dll and calls CreateSO3Represent (non-null) +
   GetRepresentECSRootEntity (null until the module's lifecycle init runs).
@@ -1258,7 +1258,7 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   singleton holder) the game builds before activation.
 - Evidence: %TEMP%\opencode\skillv2\host_rep2.out; commit pending.
 
-## 2026-10-03 ¡ª Represent init: message pump required; ECS hierarchy still not created
+## 2026-10-03 ï¿½ï¿½ Represent init: message pump required; ECS hierarchy still not created
 
 - CreateSO3Represent singleton lifecycle init (vt[1]) **completes in 50-200 ms when the
   main thread pumps messages** during the wait (PeekMessage loop) - without the pump it
@@ -1276,7 +1276,7 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   registration for our actor.
 - Evidence: %TEMP%\opencode\skillv2\host_rep4/6.out; commit pending.
 
-## 2026-10-03 ¡ª TERRAIN RENDERS: OnSceneActorLoadedCallBack unlocks the scene draw
+## 2026-10-03 ï¿½ï¿½ TERRAIN RENDERS: OnSceneActorLoadedCallBack unlocks the scene draw
 
 - After the actor is created, sending the engine's own OnSceneActorLoadedCallBack
   (0x8CA470: engine, actor, loaded=1, 0, model=actor+0x358, path, matrix, zeroed
@@ -2599,3 +2599,54 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   ucrtbase abort). So the live-window mode must be treated as short-lived for now.
 - Reliable visual evidence stays the engine-API screenshot (skillv4.png).
 - Evidence: host_live2.out, screen captures (screen_full.png, screen_topmost.png).
+
+## 2026-10-06 - KRLScene destination-name scheme + shadow branch decoded; host arg9/sceneName gap found (research only)
+
+Static analysis only (no runs - user directive "research only until I say so"). New
+HIGH-confidence findings:
+
+- **Destination-name builder** `rep+0xB0C7B0` (called from `CreateRLScene` only when its
+  9th arg != 0): strncpy the mapFile, truncate at the last path separator TWICE, then
+  `buf1 = sprintf("%s\\%s", "data\source\maps", sceneName)` =
+  `data\source\maps\<sceneName>` and `buf2 = sprintf("%s\\%s_Setting.ini", buf1,
+  sceneName)` = `data\source\maps\<sceneName>\<sceneName>_Setting.ini` (fmt strings at
+  rep+0xD0DF34 and rep+0xCA5D40). The block then calls the 3D scene `vt[0x5F8](buf1,
+  sceneName)` (destination setter) and `KRLScene::Init` receives `buf2` as its name arg.
+- **KRLScene::Init = `rep+0x58D800`** (the map load; its error exit logs "KRLScene::Init",
+  string rep+0xCBA7D0). The line-1848/1849 shadow step inside it is an inlined copy of
+  **KRLScene::InitShadowScene = `rep+0x58EB30`** (reached via thunk `rep+0x1B2BB`, an
+  interface-vtable slot).
+- **Adapter shadow fn** = `KG3DEngineAdapterX64.dll+0x111DE0` = the adapter ctx `vt[7]`
+  (ctx = adapter+0x2F5050; vtable = adapter+0x2B0DF8, slot 7 = 0x111DE0): `strrchr(name,
+  '.')` -> NULL (no dot) -> **early return S_OK (no-op)**; ext == `.map` (`_stricmp`) ->
+  window `vt[0x198]` = the compiled/destination path (`eng+0x9ACBF0` x2); ext ==
+  `.jsonmap` -> window `vt[0x1A8]` (flag 0) / `vt[0x1B0]` (flag != 0) = the SOURCE path
+  (`eng+0x9ACE80`). The window methods write the created scene to their arg8 (`*out`).
+  The movie call (`movie+0x2A00` = movie vtable 0x13E3D8 slot 5) forwards to ctx `vt[7]`
+  with rdx = &[rlScene+0xF2890] and r8 = a stack ptr (low dword != 0) -> the `vt[0x1B0]`
+  source variant. On success the name is copied to the created scene's component +0xB4
+  (strcpy_s 0x104) and the component gets the device-created shadow at +0x18 / flag +0x80.
+- **Field `[rlScene+0xF2890]` = a name buffer** (~8 bytes; a longer name corrupts the
+  container at +0xF2898 - earlier empirical result). All rep writers are ZEROING only:
+  ctor 0x58915D, reset 0x58CA6A, cleanup 0x58CCE8. The name's real source is still open;
+  prime suspect = the movie-side wrapper (the real `[movie+0x38]`, which the host skips
+  by linking the adapter ctx directly).
+- **Host gap found (the concrete blocker):** the host's `CreateRLScene` call passes
+  arg8 = a UTF-8 sceneName literal and **arg9 = 0** -> the destination block is skipped ->
+  `buf2` stays empty -> the later Init steps (`rep+0x46BC50` map-base-info call with
+  buf2, error line 0xB5) get an empty name -> Init fails -> the cleanup (`rep+0x58CCA0`)
+  derefs the name field as an object -> the AV at `rep+0x58CCCD` (a consequence, not the
+  root). The movieNameFix hook only covered the line-1849 check.
+- Note: the current hook name `"a\a.map"` forces the `.map` branch = the compiled-map
+  dead end; a no-dot name gives the no-op S_OK; a `.jsonmap` name gives the source path
+  (no compiled map needed).
+- Corrections to earlier notes: movie singleton global = `KG_MovieEngineX64+0x19F8E8`
+  (KG_GetMovieEngine 0x37E0 / KG_CreateMovieEngine 0x360B); movie vtable = 0x13E3D8
+  (slot 5 = 0x2A00) verified; rep main object global = `rep+0xEDDFE0`; CreateRLScene's
+  registry global = `rep+0xE3DFE0`.
+- Next run (pending the user's go): CreateRLScene with arg8 = the GBK sceneName
+  (`é¾™é—¨å¯»å®_s`) and arg9 = 1 -> buf1/buf2 built (both exist in the sandbox) -> the
+  `vt[0x5F8]` destination setter runs -> Init gets buf2 -> observe the later steps; keep
+  the name hook as a fallback and log which shadow branch is taken.
+- Reproduce: capstone disassembly of the cited RVAs (session scripts; rep+0x58D800,
+  rep+0xB0C7B0, adapter+0x111DE0, adapter+0x2B0DF8, eng+0x8AFC40/0x8AFF10/0x8B0180).
