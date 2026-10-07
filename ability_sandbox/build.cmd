@@ -5,9 +5,10 @@ set BIN=C:\SeasunGame\MovieEditor\bin64
 "%CSC%" /nologo /unsafe /platform:x64 /target:winexe /codepage:65001 /out:"%BIN%\Skill.exe" ^
   /r:"%BIN%\MovieEngineCLR.dll" /r:"%BIN%\MovieEditorHD.exe" ^
   /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.Web.Extensions.dll ^
+  /resource:proof\camera_tracks\skill_move_camera.txt,skill_move_camera.txt ^
   ability_sandbox\rb\RebornClient.cs ability_sandbox\rb\TerrainSampler.cs ability_sandbox\rb\FoliageCollision.cs ^
   ability_sandbox\rb\CameraSystem.cs ability_sandbox\rb\CameraSettings.cs ability_sandbox\rb\EngineRay.cs ^
-  ability_sandbox\rb\CameraShim.cs ability_sandbox\rb\VideoSettings.cs
+  ability_sandbox\rb\CameraShim.cs ability_sandbox\rb\VideoSettings.cs ability_sandbox\rb\SkillMoveCamera.cs
 if errorlevel 1 goto :fail
 rem isolated runtime dir: never overwrite the shared bin64 root files the
 rem other processes (reborn_client etc.) use

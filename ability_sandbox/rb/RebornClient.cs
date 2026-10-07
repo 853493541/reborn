@@ -190,6 +190,14 @@ internal static class RebornClient
         var datasetAbilityNames = new List<string>();   // panel: abilities with a process
         var taniAbilityNames = new List<string>();      // abilities whose anim plays a tani
         var sfxTagNames = new HashSet<string>();        // panel: process has kind "sfx"
+        // P2 skill-move camera state (client SkillMoveCamera port); the table
+        // loads after Log is assigned (below)
+        SkillMoveCamera.Effect skillMoveFx = new SkillMoveCamera.Effect();
+        SkillMoveCamera.Row skillMoveRow = null;
+        double skillMoveFireMs = -1.0;
+        float baseViewAngle = 1.25f;   // sandbox default factor (aim fov)
+        long lastSkillMoveLog = 0;
+        string castSkillId = "";
         System.Drawing.Point lastMousePt = new System.Drawing.Point(0, 0);
         bool feiAiming = false, feiConfirm = false, feiCancel = false;
         bool autoSkillConfirmDone = false;
@@ -218,6 +226,8 @@ internal static class RebornClient
                     if (!hasMatched && !hasProc) continue;
                     object mv;
                     if (d.TryGetValue("matched", out mv) && mv != null) abMatched[0] = mv.ToString();
+                    object sv0;
+                    if (d.TryGetValue("skillId", out sv0) && sv0 != null) castSkillId = sv0.ToString();
                     object tv;
                     if (d.TryGetValue("tanis", out tv) && tv is object[])
                         foreach (object t in (object[])tv) if (t != null) abTanis.Add(t.ToString());
@@ -437,6 +447,33 @@ internal static class RebornClient
         Log("start map=" + mapPath);
         Log("skill data: " + skillData.Count + " abilities"
             + (skillDataError != "" ? " (load ex: " + skillDataError + ")" : ""));
+        // P2 skill-move camera (client SkillMoveCamera port): per-skill FOV rows
+        // (proof\camera_tracks\skill_move_camera.txt, embedded resource)
+        SkillMoveCamera.LoadEmbedded(Log);
+        {
+            string smcTable = Env("RC_SKILL_MOVE_TABLE", "");
+            if (smcTable.Length > 0) SkillMoveCamera.LoadFile(smcTable, Log);
+            string smc = Env("RC_SKILL_MOVE_CAM", "");
+            if (smc.Length > 0)
+            {
+                string[] parts = smc.Split(',');
+                int sid;
+                if (int.TryParse(parts[0].Trim(), out sid))
+                {
+                    SkillMoveCamera.Row row = SkillMoveCamera.Get(sid);
+                    if (row == null) Log("skillmove: no table row for skill " + sid);
+                    else
+                    {
+                        skillMoveFireMs = 1000.0;
+                        double fm;
+                        if (parts.Length > 1 && double.TryParse(parts[1].Trim(), out fm)) skillMoveFireMs = fm;
+                        skillMoveRow = row;
+                        Log("skillmove armed skill=" + sid + " fire=" + skillMoveFireMs.ToString("F0") + "ms enter=" + row.EnterMs.ToString("F0"));
+                    }
+                }
+                else Log("skillmove: bad RC_SKILL_MOVE_CAM=" + smc);
+            }
+        }
         {
             string exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             string fp = "brand=Skill exe=" + Path.GetFileName(exePath)
@@ -2195,6 +2232,39 @@ internal static class RebornClient
                 skillPressed = true;
             }
 
+            // P2 skill-move camera FOV update (client SkillMoveCamera port;
+            // linear ramp provisional - see SkillMoveCamera.cs)
+            if (skillMoveRow != null)
+            {
+                if (!skillMoveFx.Active && skillMoveFireMs >= 0 && now >= skillMoveFireMs)
+                {
+                    try { baseViewAngle = (float)scene.GetViewAngleFactor(); } catch (Exception) { }
+                    skillMoveFx.Start(skillMoveRow, now);
+                    Log("skillmove start skill=" + skillMoveRow.SkillId + " t=" + now + "ms enter=" + skillMoveRow.EnterMs.ToString("F0") + " base=" + baseViewAngle.ToString("F3"));
+                }
+                if (skillMoveFx.Active)
+                {
+                    double smPhase; int smStage;
+                    double smAngle = skillMoveFx.AngleAt(now, baseViewAngle * VideoSettings.DefaultAngle, out smPhase, out smStage);
+                    if (smAngle > 0.0)
+                    {
+                        float smFactor = (float)(smAngle / VideoSettings.DefaultAngle);
+                        try { scene.SetViewAngleFactor(smFactor); } catch (Exception) { }
+                        if (now - lastSkillMoveLog >= 500)
+                        {
+                            lastSkillMoveLog = now;
+                            Log("skillmove stage=" + smStage + " phase=" + smPhase.ToString("F2") + " angle=" + (smAngle * 180.0 / Math.PI).ToString("F1") + "deg factor=" + smFactor.ToString("F3"));
+                        }
+                    }
+                    else
+                    {
+                        try { scene.SetViewAngleFactor(baseViewAngle); } catch (Exception) { }
+                        Log("skillmove end t=" + now + "ms -> base factor " + baseViewAngle.ToString("F3"));
+                        skillMoveRow = null;
+                    }
+                }
+            }
+
             // RC_CAST_CYCLE=<ms>: sweep - select + cast the next tani-playing
             // ability every <ms> (verification pass: effects + AV detection)
             {
@@ -2272,6 +2342,21 @@ internal static class RebornClient
                     // Timing from the authored data (anim length, effect life);
                     // the animation plays ONCE.
                     loadCastAbility(abilitySel);
+                    // P2 skill-move camera: arm the per-skill FOV row when the
+                    // table has one for this ability's real skill id
+                    {
+                        int csid = 0;
+                        if (castSkillId != "" && int.TryParse(castSkillId, out csid))
+                        {
+                            SkillMoveCamera.Row srow = SkillMoveCamera.Get(csid);
+                            if (srow != null)
+                            {
+                                skillMoveRow = srow;
+                                skillMoveFireMs = now + 200;
+                                Log("skillmove armed by cast skill=" + csid);
+                            }
+                        }
+                    }
                     long animMs = 1000, pssMs = 3000;
                     foreach (ProcStep s in castSteps)
                     {

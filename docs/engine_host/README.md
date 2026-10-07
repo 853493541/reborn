@@ -30,3 +30,4 @@ MovieEditor engine-hosting research and the M1 milestone docs.
 | `tools/render/preset_census.py` | Parse the 15 shipped graphics presets + editor config → `proof/render/option_matrix.tsv` / `varying.tsv`; deterministic census |
 | `tools/render/key_offsets.py` | Extract config-key → engine-struct offset candidates from the annotated disasm captures → `proof/render/key_offsets.tsv` (290 keys, self-checked) |
 | `SFX_RE_TEST.md` | `.Sfx` per-file re-test on the synced sandbox: 5/8 create+play through the engine, 0 AV, 3 graceful NULL (2026-10-06) |
+| `ABILITY_SYSTEM_CLIENT_HANDOFF.md` | Ability system in the client sandbox — state, files, verified facts, open work, user directives, commands (2026-10-07) |
