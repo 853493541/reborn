@@ -91,6 +91,11 @@ the runtime mutations as data the viewer consumes:
   non-string element of `table.concat` concatenates as `""` instead of erroring ("invalid value
   (table) at index N in table for 'concat'" - the scripts concat stub values). Rebuild recipe is in
   the Reproduce section (cl /c ..\src\*.c + link without luac.obj/print.obj).
+- **Nil-coercion build patch (2026-10-05):** the same build patches `lvm.c` so stub nils are
+  neutral: `#nil` -> 0 (OP_LEN), `nil` in arithmetic -> 0 (`luaV_tonumber`), `nil` in `..` -> ""
+  (`luaV_concat`). These fire where a real engine table field the client fills at startup (video
+  settings, server data) is absent in the replay; all are test-rig patches with the same
+  re-open criterion (drop when the field has real data).
 - **Engine base data layer (2026-10-05):** the window scripts consume engine globals
   (`g_tTable`/`Table_*`, `g_tStrings`, `VideoBase`, `g_tExpression`, ...) that the engine builds
   from its own UI library. `ui/module_info.xml` (extracted from PakV4) lists 1,016 modules; the

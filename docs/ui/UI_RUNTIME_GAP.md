@@ -19,8 +19,8 @@ This report measures what is **still dropped** — the remaining calls per windo
 | render | 21 | DROPPED — runtime image source/mode/animation |
 | state | 0 | DROPPED — control state (enable/check/expand/page) |
 | interaction | 10 | DROPPED — drag/interaction registration (not static layout) |
-| consumed | 6670 | applied by the viewer today |
-| noise | 11000 | engine plumbing, no visual state (lookup/events/getters) |
+| consumed | 6767 | applied by the viewer today |
+| noise | 11128 | engine plumbing, no visual state (lookup/events/getters) |
 
 State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21 + state 0).
 
@@ -74,10 +74,10 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | ACC_WinOrDefect | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | AIChatPanel | other-ui | 6 | 0 | 0 | 0 | 0 | 4 | 0 | 4 |
 | AIChat_Statement | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
-| AccelerateBall | liked | 2 | 0 | 0 | 0 | 0 | 2 | 0 | 13 |
+| AccelerateBall | liked | 13 | 0 | 0 | 0 | 0 | 2 | 0 | 13 |
 | AccountException | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | AccountFriendTip | panels-ui | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 1 |
-| AchievementPanel | liked | 18 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| AchievementPanel | liked | 21 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | AchievementTip | menus-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | ActionBar | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | ActionBarBind | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
@@ -90,6 +90,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | ActivityPlotPanel | menus-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | ActivityRewardCollection | menus-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | ActivitySignIn | recommended | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 6 |
+| ActivityTipPanel | menus-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 20 |
 | AddAccountFriend | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | AddFriendPanel | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | AddPartnerExterior | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -97,7 +98,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | AddonChangeLog | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | AddonPanel | modes-ui | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 17 |
 | Aim | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| Album | recommended | 0 | 0 | 0 | 0 | 0 | 4 | 0 | 2 |
+| Album | recommended | 2 | 0 | 0 | 0 | 0 | 4 | 0 | 2 |
 | AllKBAccounts | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | AnimationMgr | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | AnniversaryWishPop | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
@@ -196,7 +197,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | ChangeVoice | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | ChannelPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | Chapters | other-ui | 6 | 0 | 0 | 0 | 0 | 1 | 0 | 9 |
-| CharInfo | liked | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| CharInfo | liked | 13 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | CharInfoMore | recommended | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
 | CharacterPanel | liked | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 21 |
 | CharacterPanelAwardTip | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -635,6 +636,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | IdentityPanel | other-ui | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 82 |
 | IdentityUpGrade | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | IllusionPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| InstanceInfo | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | InstrumentStatement | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | Instrument_File | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | Instrument_Main | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
@@ -642,6 +644,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | Instrument_Play | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | InterludeHSLHPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | InterludePanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| InternetExplorer | modes-ui | 0 | 0 | 0 | 0 | 0 | 8 | 0 | 0 |
 | InviteFriends | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | ItemBox | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | ItemBuySure | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -863,6 +866,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | PQprogressbar | hud-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | PQwarning | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | PVPInput | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
+| PVPMessageBoard | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | PVPQiXueList | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | PVPRandomForce | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | PVPReplayAnnouncement | other-ui | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
@@ -997,7 +1001,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | RoadChivalrousPopup | other-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 10 |
 | RoadChivalrousTips | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | RoleRename | other-ui | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
-| RoomLinkTip | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
+| RoomLinkTip | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
 | RoomPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | RoomRaidReset | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | RoommateDragPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -1200,7 +1204,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | VampireCountPanel | other-ui | 38 | 0 | 0 | 0 | 0 | 0 | 0 | 88 |
 | VampireInfoPanel | other-ui | 39 | 0 | 0 | 0 | 0 | 0 | 0 | 26 |
 | VideoCustomPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| VideoSettingDetails | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 |
+| VideoSettingDetails | other-ui | 75 | 0 | 0 | 0 | 0 | 0 | 0 | 16 |
 | VideoSettingPanel | liked | 20 | 0 | 0 | 0 | 0 | 1 | 0 | 45 |
 | ViewEquip | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | VkActionBar | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 18 |
@@ -1224,6 +1228,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | WhoSeeMe | recommended | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | WinterFestivalNpcInfo | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
 | WinterFestivalSkillMsg | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| WishPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | WishingBar | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | WishingTemplePanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
 | WithdrawGold | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |

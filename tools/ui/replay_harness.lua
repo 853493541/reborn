@@ -409,6 +409,7 @@ do
     end
   end
   wrap("sub"); wrap("find"); wrap("gmatch"); wrap("gsub"); wrap("len"); wrap("byte")
+  wrap("match"); wrap("format"); wrap("rep"); wrap("upper"); wrap("lower")
 end
 
 -- A stubbed engine-data field read as nil and then iterated (pairs/ipairs/sort)
@@ -677,6 +678,11 @@ for _, name in ipairs({ "OnFrameCreate", "OnLoad", "OnCreate", "Init", "OnOpen" 
     entry = name
     break
   end
+end
+if entry == nil and type(mod.Open) == "function" then
+  -- Class-style scripts (WishPanel, Cyclopaedia_*, ...) define no On* entry; the
+  -- engine opens the window through the module's own Open, which is their init.
+  entry = "Open"
 end
 if entry == nil then
   print("RESULT ERR no-entry")
