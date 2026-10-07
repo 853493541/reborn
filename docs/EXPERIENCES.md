@@ -3412,5 +3412,23 @@ HIGH-confidence findings:
 - Gate 4 next probe: obtain the RLActorMgrNT instance, call
   `CreateRLActorNT(mgr, type, ?)` + `RLActorNT::Init` + `LoadModel`/`LoadPart` with the
   F1 model, then numeric-proof via `tools/proof/image_stats.py`. Evidence: static disasm.
+
+## 2026-10-07 - Gate 4: RLActorMgrNT is NOT created in the current host state
+
+- Added a host hook on the event-register function `rep+0x39D560` (the target of the
+  `rep+0x1C08` thunk that `RLActorMgrNT::Init` uses) to capture handler functors
+  `{vtable, this}`. Hook length must be 23 (the prologue's `sub rsp,0x80` at 0x39D570
+  is 7 bytes; len=20 cut it mid-instruction -> `0xC000001D` illegal instruction, run 237).
+- Run 239 (len=23, hook -> 1): exactly **one** event registration fired in the whole run
+  (`ev=0 vt=rep+0xC8E628 this=…`). `rep+0xC90848` (the RLActorMgrNT handler vtable -
+  its slots are the `0x36Exx` region, next to `CreateRLActorNT` 0x36D3E5) **never
+  fired**. So `RLActorMgrNT::Init` does not run in the host -> the actor manager does
+  not exist -> the RL-actor path is unavailable in the current (Gate-3) host state.
+- Implication: Gate 4 needs the represent init stage that creates the actor/dummy
+  managers (the plan's Phase B is nominally done, but these managers are absent), or a
+  direct construction of RLActorMgrNT. Hook infrastructure is in place
+  (`hookEventRegister`, `g_rlActorMgr`) for when that stage runs.
+- Evidence: host_exe237.out (0xC000001D), host_exe238.out (no capture), host_exe239.out
+  (1 ev-reg, wrong vtable); static vtable dump.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.

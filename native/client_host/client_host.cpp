@@ -602,6 +602,38 @@ static int __fastcall hookInitScene(void* self, unsigned id)
     return r;
 }
 
+// Gate 4: capture the RLActorMgrNT instance. RLActorMgrNT::Init (rep+0x36D3E5
+// region) registers event functors {vtable=rep+0xC90848/0xC90890, this=mgr} via
+// the event-register function rep+0x39D560 (hookable: 20-byte prologue, no
+// RIP-relative). The functor's 2nd field is the manager.
+static BYTE g_ramSaved[32];
+static BYTE* g_ramTramp = NULL;
+static void* g_rlActorMgr = NULL;
+static volatile LONG g_ramLog = 0;
+static void __fastcall hookEventRegister(void* self, unsigned evId, void* hs)
+{
+    ((void (__fastcall *)(void*, unsigned, void*))g_ramTramp)(self, evId, hs);
+    if (hs != NULL && g_repModule != NULL)
+    {
+        DWORD64 vt = *(DWORD64*)hs;
+        void* obj = *(void**)((BYTE*)hs + 8);
+        DWORD64 base = (DWORD64)g_repModule;
+        if (g_ramLog < 60)
+        {
+            g_ramLog++;
+            logf("[host] ev-reg: ev=%u vt=rep+0x%llX this=%p self=%p",
+                 evId, (unsigned long long)(vt - base), obj, self);
+        }
+        if (vt == base + 0xC90848 || vt == base + 0xC90890 ||
+            vt == base + 0xC90110 || vt == base + 0xC90178)
+        {
+            g_rlActorMgr = obj;
+            logf("[host] RLActorMgr capture: ev=%u vt=0x%llX this=%p",
+                 evId, (unsigned long long)vt, obj);
+        }
+    }
+}
+
 static int armExecTrace(void* addr)
 {
     CONTEXT ctx;
@@ -2724,6 +2756,9 @@ int main(void)
             logf("[host] InitializeScene hook -> %d",
                  installInlineHook(rep, 0xADFFE0, (void*)hookInitScene,
                                    g_isSaved, &g_isTramp, 15));
+            logf("[host] RLActorMgr event-register hook -> %d",
+                 installInlineHook(rep, 0x39D560, (void*)hookEventRegister,
+                                   g_ramSaved, &g_ramTramp, 23));
             {
                 char rpFlag[8];
                 if (GetEnvironmentVariableA("RC_HOST_REPINIT", rpFlag, sizeof(rpFlag)) != 0)
@@ -5333,6 +5368,7 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] frame60: char scene get fault"); }
+                        logf("[host] frame60: g_rlActorMgr = %p", g_rlActorMgr);
                         if (scene60 == NULL)
                         {
                         __try
