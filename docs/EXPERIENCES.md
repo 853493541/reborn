@@ -4757,3 +4757,25 @@ if the cache/host frames appear.
   `docs/README.md` and AGENTS §10). Split plan for 3.x workstreams W1-W7 is in the area README.
 - Outcome: 3.x research complete to the client's limit; remaining items are host wiring or
   registered provisional/boundary items.
+
+### 2026-10-06 - Agent D (3x-motion, W5): .tani container proven + authored vector applied on skill cast
+
+- Did: W5 in worktree `reborn-iso-3x-motion` (`agent/3x-motion`, base `research/character-animation`
+  @ `2cd1d22`). Container hunt closed (`e0399f5`): `.tani` = GATA `KG3DAnimationTagDataContainer`
+  (`_Load` 0x180291490), 12-byte block table, factory/RTTI mapping (0 SFX / 1 Sound / 2 Motion),
+  motion v1 record 0x188; parser `tools/character/motion_tag.py` (selftest 11/11). Then W5.5 host
+  integration: `client/SkillMotion.cs` (GATA check + signature scan of the SFX-entry float runs)
+  + skill-cast dash in `RebornClient.cs` (env `RC_SKILL_TANI`, `RC_SKILL_DASH_MS`, `RC_SKILL_AT`).
+- Verified: driven run `reborn_20261006_211409.log` — authored `(15.000,-156.315)` mag 157.033
+  selected from the 太阴指 tani (candidates logged: 313.13 / 0 / 0 / 157.03), host dash
+  `moved=157.0 maxdev=157.0` (0.02 % vs authored; 0.18 % vs measured `.ani` max deviation 156.72).
+  Gates: build exit 0, `camera_smoke_3x_motion` ALL PASS, `collision_selftest_reborn_client_3x_motion`
+  36/36. Numbers trail: un-clamped dash 162.9 u (7 full ticks), then per-tick-round 155.4 u —
+  fixed by position-tracked dash (target = start + unit×progress).
+- Boundaries: selector = last non-zero signature run and direction = facing-locked magnitude are
+  stopgaps until W5.2 sub-tag semantics / SFX loader (`KG3DSFXTagData::LoadFromFile`, vt slot 2
+  0x18029E0B0) attribute the floats; re-open criteria in `docs/character/3_2_3_3_LOCOMOTION_MOTION.md`.
+  Game data stayed out of git (tani kept in `%TEMP%` scratch; a copy under `samples/player/moves/`
+  was moved out — note `samples/player/moves` has 81 tracked legacy files from player-era commits).
+- Outcome: W5 complete for the workstream (container + tool + host integration); residual is the
+  documented W5.2 naming/attribution.

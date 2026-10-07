@@ -343,6 +343,44 @@ holds only for `小跳b` (Y = 0 on every frame).
 
 ---
 
+## Host integration (W5.5, 2026-10-06)
+
+The client now applies the authored `.tani` motion vector to host displacement on
+skill cast: `client/SkillMotion.cs` (GATA check + signature scan) + the
+`RebornClient.cs` skill-cast/tick hook; env `RC_SKILL_TANI=<os path>`,
+`RC_SKILL_DASH_MS=450` (dash duration), `RC_SKILL_AT=ms` (deterministic cast).
+
+- **Selector (provisional).** Last non-zero signature run `(0,1,0 | dx,dz | w,w,w)`
+  in file order; all candidates are logged. The SFX sub-tag semantics are still
+  undecoded (W5.2), so the selection is a stopgap — re-open with the SFX loader
+  decode (`KG3DSFXTagData::LoadFromFile`, vt slot 2 = 0x18029E0B0), which also
+  attributes the floats' entry frame.
+- **Direction.** The authored **magnitude** is applied along the character facing;
+  the vector's entry-frame axes are not mapped yet (same W5.2 re-open). The
+  magnitude is the verified quantity (see below).
+- **Motion.** Position-tracked dash (target = start + unit×progress) so the
+  engine's integer-per-tick position round cannot eat the fractional tail; runs
+  through the same collision path as input movement (substeps < capsule radius),
+  so walls block it (observed: demo-wander into a wall → dash moved 0.4 u).
+
+**Driven verification (log `reborn_20261006_211409.log`).** Run:
+`RC_STARTUP=nodb RC_SKILL_AT=3000 RC_SKILL_TANI=…\w55_taiyin_wu.tani`
+(standing at spawn, open ground, no demo movement):
+
+```
+skillmotion cast: authored=(15.000,-156.315) mag=157.033 dur=450ms
+  dir=(0.000,1.000) start=(18991,33853) info=sel@0x6e8 (15.000,-156.315)
+  mag=157.033 candidates: [0x358:130.82,284.49|313.13] [0x488:0.00,0.00|0.00]
+  [0x5b8:0.00,0.00|0.00] [0x6e8:15.00,-156.32|157.03]
+skillmotion done: end=(18991,34010) moved=157.0 maxdev=157.0 authored=157.033
+```
+
+moved **157.0 u** vs authored 157.033 (0.02 %) and vs the measured `.ani` root
+max deviation 156.72 u (0.18 %) — the authored vector is applied to host
+displacement (HIGH for the applied magnitude; MED for direction/selector, W5.2).
+
+---
+
 ## Corrections to existing docs
 
 1. **`docs/controls/CONTROL_MODES_P5_ANIM.md` §2.1** — "the 84-byte entry is
@@ -395,16 +433,16 @@ holds only for `小跳b` (Y = 0 on every frame).
    always runs and whether `[this+0x54]`/`[this+0xBC]` gate it. Probe: static
    read of 0x180020383 + a `camera_smoke`-style offline check of the row
    selection for a synthetic (role, school, weapon, speed) vector.
-3. **MotionTag container file.** Trace the runtime class vtable 0x1806B31D8
-   usage: find the animation file-load path in `KG3DEngineX64.dll` /
-   `KG3DEngineAdapterX64.dll` that instantiates `KG3DMotionTagData` and names
-   the chunk/extension; then grep the extracted `.ani`/`.tani` bytes for the
-   0x188-record pattern (`time` increasing at +0x100, small count at +0x104,
-   ascending sizes at +0x108).
+3. ~~**MotionTag container file.**~~ **DONE** — container PROVEN (`.tani` GATA,
+   `KG3DAnimationTagDataContainer::_Load` 0x180291490; see the section above).
+   Remaining sub-item: the SFX-block float-run attribution
+   (`KG3DSFXTagData::LoadFromFile`, vt slot 2 = 0x18029E0B0) — decides the
+   selector/direction stopgap in W5.5.
 4. **Sub-tag type → semantic names.** Decode the switch in
    `KG3DAnimationMotionTag::Helper_Apply` (0x180287320) and the event-manager
    handlers; map 0..11 to `ForceField/IK/SFX/KeepFollowPositionSound/
-   WeaponMotion/...`.
+   WeaponMotion/...`. (Delete jump table located @0x180003AE0, 12 entries;
+   naming via RTTI still unresolved.)
 5. **Version-0 0x970 block interior** (0x180003B10): the only remaining
    un-decoded MotionTag path; likely the pre-BinText editor format.
 6. **`PlayerRush` mounted rows**: rows with 门派=999 — confirm they are the

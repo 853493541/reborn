@@ -13,6 +13,10 @@
 //   RC_SHOTS=2000,5000,...        screenshot times (ms)
 //   RC_CLIP_IDLE/WALK/RUN/JUMP/FALL/SKILL=<vfs .ani/.tani path>
 //   RC_SKILL_MS=8000              skill clip duration before returning to state clip
+//   RC_SKILL_TANI=<os path>       W5.5: apply the .tani authored motion vector as a
+//                                 dash on skill cast (magnitude, facing-locked)
+//   RC_SKILL_DASH_MS=450          W5.5 dash duration for the authored vector
+//   RC_SKILL_AT=ms                cast the skill at this time (no demo needed)
 //   RC_YAW_OFFSET=0               model facing calibration (radians)
 //   RC_SCALE=1                    player model scale
 //   RC_PHYS_DLL=<path>            terrain sampler physics DLL (default: client copy)
@@ -186,6 +190,14 @@ internal static class RebornClient
         float.TryParse(Env("RC_SCALE", "1"), out scale);
         long skillMs = 8000;
         long.TryParse(Env("RC_SKILL_MS", "8000"), out skillMs);
+        // W5.5: .tani authored motion vector -> host dash on skill cast
+        // (docs/character/3_2_3_3_LOCOMOTION_MOTION.md)
+        int skillDashMs = 450;
+        int.TryParse(Env("RC_SKILL_DASH_MS", "450"), out skillDashMs);
+        if (skillDashMs < 50) skillDashMs = 50;
+        long skillAtMs = 0;
+        long.TryParse(Env("RC_SKILL_AT", "0"), out skillAtMs);
+        SkillMotion.Load(Env("RC_SKILL_TANI", ""));
         long autoRunMs = 0;
         long.TryParse(Env("RC_AUTORUN", "0"), out autoRunMs);
         var tabAt = new System.Collections.Generic.List<long>();
@@ -2118,6 +2130,11 @@ internal static class RebornClient
         bool propSolid = Env("RC_PROP_SOLID", "0") == "1";
         int propFixEvents = 0;
         long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0, lastPostLog = 0, lastMouseDragMs = 0;
+        // W5.5 authored-motion dash state (SkillMotion; RC_SKILL_TANI)
+        bool smotionActive = false;
+        float smotionUx = 0f, smotionUz = 0f;
+        float smotionStartX = 0f, smotionStartZ = 0f, smotionMaxDev = 0f, smotionRemain = 0f, smotionDist = 0f;
+        double smotionDurMs = 0.0, smotionElapsed = 0.0;
         long hitchMaxMs = 0;   // max unclamped frame delta since the last status line
         long hudHitchMs = 0;   // max unclamped frame delta since the last HUD update (D7)
         // camera anchor-Y smooth-follow (B14): the engine smooths the followed
@@ -2709,6 +2726,9 @@ internal static class RebornClient
                 if (now >= 13000 && demoJumped && !demoJumped2) { demoJumped2 = true; jumpPressed = true; }
                 if (now >= 18500 && !demoSkilled) { demoSkilled = true; skillPressed = true; }
             }
+            // deterministic W5.5 skill-motion probe: cast at RC_SKILL_AT ms
+            // without the demo movement phases (stands at the spawn).
+            if (skillAtMs > 0 && now >= skillAtMs && !demoSkilled) { demoSkilled = true; skillPressed = true; }
             if (demoCollide)
             {
                 if (demoTeleport && now >= 2000 && !demoTeleported) { demoTeleported = true; teleportToStructure = true; }
@@ -3010,6 +3030,25 @@ internal static class RebornClient
                     Log("sound: skill wav play rc=" + played);
                 }
                 Log("skill cast");
+                if (SkillMotion.Ok)
+                {
+                    smotionActive = true;
+                    smotionElapsed = 0.0;
+                    smotionDurMs = skillDashMs;
+                    smotionStartX = px; smotionStartZ = pz;
+                    smotionMaxDev = 0f;
+                    smotionRemain = SkillMotion.Mag;
+                    smotionDist = 0f;
+                    // authored magnitude along the character facing; the vector's
+                    // own entry-frame axes are not mapped yet (W5.2 open)
+                    smotionUx = (float)Math.Sin(curYaw);
+                    smotionUz = (float)Math.Cos(curYaw);
+                    Log(string.Format(
+                        "skillmotion cast: authored=({0:F3},{1:F3}) mag={2:F3} dur={3}ms dir=({4:F3},{5:F3}) start=({6:F0},{7:F0}) info={8}",
+                        SkillMotion.Dx, SkillMotion.Dz, SkillMotion.Mag, skillDashMs,
+                        smotionUx, smotionUz, px, pz, SkillMotion.Info));
+                }
+                else Log("skillmotion: inactive (" + SkillMotion.Info + ")");
             }
 
             // input -> direction (camera controls in both modes; the body faces
@@ -3241,6 +3280,54 @@ internal static class RebornClient
                                 col.LastProbeTriTop, col.LastProbeInst, col.StepRejectCount, col.LastStepRejectTop));
                         }
                     }
+                }
+            }
+            if (smotionActive)
+            {
+                // W5.5 authored motion vector: dash toward start + unit*progress
+                // (the per-tick integer position round then cannot eat the
+                // fractional tail), through the same collision path as input
+                // movement (substeps below the capsule radius).
+                float dsp = (float)(SkillMotion.Mag / (smotionDurMs / 1000.0)) * pdt;
+                if (dsp > smotionRemain) dsp = smotionRemain;   // exact authored total
+                smotionRemain -= dsp;
+                smotionDist += dsp;
+                float tgtX = smotionStartX + smotionUx * smotionDist;
+                float tgtZ = smotionStartZ + smotionUz * smotionDist;
+                float dsdx = tgtX - px, dsdz = tgtZ - pz;
+                float dlen = (float)Math.Sqrt(dsdx * dsdx + dsdz * dsdz);
+                int dsc = 1;
+                float dSubCap = Math.Min(20f, playerRadius * 0.9f);
+                if (dSubCap < 1f) dSubCap = 1f;
+                if (dlen > dSubCap) dsc = (int)Math.Ceiling(dlen / dSubCap);
+                if (dsc > 64) dsc = 64;
+                for (int dsi = 0; dsi < dsc; dsi++)
+                {
+                    px += dsdx / dsc;
+                    pz += dsdz / dsc;
+                    if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
+                    if (col != null)
+                    {
+                        colCalls++;
+                        float gBeforeD = ground;
+                        bool dBlocked = col.Resolve(ref px, ref py, ref pz,
+                            playerRadius, playerHeight, ref ground, ref grounded, stepHeight,
+                            0f, smotionUx, smotionUz);
+                        if (dBlocked) { blocked = true; blockedEvents++; colBlockedCalls++; }
+                        if (ground > gBeforeD + 0.01f) groundOk = true;
+                    }
+                }
+                smotionElapsed += pdt * 1000.0;
+                float dev = (float)Math.Sqrt(
+                    (px - smotionStartX) * (px - smotionStartX) +
+                    (pz - smotionStartZ) * (pz - smotionStartZ));
+                if (dev > smotionMaxDev) smotionMaxDev = dev;
+                if (smotionElapsed >= smotionDurMs || smotionRemain <= 0.01f)
+                {
+                    smotionActive = false;
+                    Log(string.Format(
+                        "skillmotion done: end=({0:F0},{1:F0}) moved={2:F1} maxdev={3:F1} authored={4:F3}",
+                        px, pz, dev, smotionMaxDev, SkillMotion.Mag));
                 }
             }
             if (col != null && propSolid)
