@@ -2656,3 +2656,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Input probes tried and ruled out: SendInput (focused, topmost, WM_ACTIVATE posted),
   PostMessage keys, mouse clicks/drag, 187->188 ordering, repeated 188 - all produce zero client
   packets and no position change; the client renders (1.2 cores) but ignores input entirely.
+- **The raw client writes its own engine log**: `zhcn_hd\logs\KG3D_Engine\<date>\KG3D_Engine_*.log`
+  (per-run; huge diagnostic asset). Current run shows: map `data\source\maps\龙门寻宝\龙门寻宝.jsonmap`
+  loaded OK (the account's UGC map, served from `data\UGC\binkp1\龙门寻宝`, 975 MB), but **64
+  sub-file loads fail** (`_LoadFileData` ERROR_BREAK -> `SceneFileLoader_Jsonmap::OnSyncLoad`
+  CHECK_ERROR line 6184; e.g. `foliage/blendmap/clusterinfo.json`) and
+  `KG3D_Scene::RayIntersection` asserts 1135x (`pRetMinDistanceRet` line 1701) -> the terrain
+  ground data is incomplete -> the game-logic cells stay empty (scene has only the 9 stub cells
+  from ValidateRegions) -> the bind validator fails -> no SetMainPlayer -> no world UI/input.
+- Distance to movable: the protocol/UI chain is done; the remaining gate is **map data
+  completeness** (the 64 missing files / the ground data), not protocol work.
