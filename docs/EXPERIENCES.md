@@ -2410,3 +2410,16 @@ solved it, and what is still open. **Newest at the bottom.**
   3/4/5/9/10/12 through it for item-flow handles. Evidence appended to kgui_handle_layout.txt.
 - Gates: selftest 1240/0/0; audit ph=539 unresolved=50 oob=9499 (list content overflow, legitimate);
   commits 2dd611d, e766aa0.
+
+### 2026-10-06 ? UI ? plan phases 3-4: page-set semantics + animation wiring
+- Page-sets: the mapping is authored on the WndPageSet (Page_i=<page> + CheckBox_i=<tab>, PageCount);
+  the viewer now shows exactly one page per set - the viewer's selection wins for its own set, every
+  other (nested) set shows its authored default (the tab with CheckedWhenCreate=1, else Page_0).
+  The combo lists the top set's pages and prefers the engine default (LayoutPlanBuilder.DefaultPage).
+  Effect: audit placeholders 539 -> **504**, unresolved 50 -> **49**, oob 9499 -> **7484** (the
+  all-pages overhang is gone; nested page content now renders).
+- Animation: SetAnimateGroupNormal applies the resting group frame (UiLayout NormalFrame), the
+  MouseOver/MouseDown groups are recorded for the interaction layer; SetAnimation/SetLoopCount/
+  SetTextAutoTipEnabled are consumed as static no-ops. Gap report: animation + tooltip calls
+  consumed; visual drops stay **1** (FromIconID, data-blocked), interaction 10 (drag).
+- Gates: selftest 1240/0/0; commits e539313, a4084aa, 9de9e20.
