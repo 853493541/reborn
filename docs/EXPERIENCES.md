@@ -3679,5 +3679,19 @@ HIGH-confidence findings:
   bug class (after hookTableBuilder/hookTableWrapper) - audit all `void` hooks.
 - Evidence: host_exe258.out (ev-reg2 ->1 but line-86 fired), host_exe259.out (Init -> 1);
   static disasm.
+
+## 2026-10-07 - CreateRLActorNT runs the engine actor path (loads behavior + model actors) but loops
+
+- After Init succeeds, `CreateRLActorNT(mgr, representID, type)` executes the engine's
+  actor creation: it opens `represent/scripts/dummy/behavior_base.lua`, fires
+  `ModelHandleCb`/`OnSceneActorLoaded` (model actors reaching the scene), and hits the
+  host's `shadowDescFix` allocations (callers `rep+0x36D440`, `rep+0x3CFC62`).
+- But the run then loops/crashes (128k log lines, repeated engine `param[..]` output,
+  exit 0xC0000404). The host's other `CreateHangPet` call sites were gated off
+  (`RC_HOST_NOHOANGPET`) to isolate - the loop is in the actor path itself.
+- So Gate 4 is very close: the actor is being created and reaching the scene; the
+  remaining issue is the loop/crash in that path (possibly the representID/type or the
+  host's shadowDescFix hook interacting with the actor's texture allocations).
+- Evidence: host_exe262/263.out; static disasm.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.

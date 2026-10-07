@@ -3545,7 +3545,8 @@ int main(void)
                                 __except (EXCEPTION_EXECUTE_HANDLER)
                                 { logf("[host] char chain probe fault"); }
                             }
-                            if (scene != NULL && character != NULL)
+                            if (scene != NULL && character != NULL &&
+                                GetEnvironmentVariableA("RC_HOST_NOHANGPET", NULL, 0) == 0)
                             {
                                 void* world = *(void**)((BYTE*)scene + 0xF2988);
                                 int sceneField = *(int*)((BYTE*)scene + 0xF1970);
@@ -3894,7 +3895,8 @@ int main(void)
                         // existing core. The Lua binding's call:
                         // CreateHangPet(world, sceneId, representID, 0, character, nType,
                         // &cfg) then LoadPlayerParts(core, partsA[13], partsB[13], count).
-                        if (g_rlCtx != NULL)
+                        if (g_rlCtx != NULL &&
+                            GetEnvironmentVariableA("RC_HOST_NOHANGPET", NULL, 0) == 0)
                         {
                             unsigned sceneId = (scene != NULL)
                                 ? *(unsigned*)((BYTE*)scene + 0xF1970) : 0;
@@ -5532,6 +5534,8 @@ int main(void)
                                     {
                                     unsigned rid = 0, atype = 0;
                                     sscanf_s(af, "%u,%u", &rid, &atype);
+                                    logf("[host] frame60: CreateRLActorNT(mgr,%u,%u) calling...",
+                                         rid, atype);
                                     void* actor = ((void* (__fastcall *)(void*, unsigned,
                                                           unsigned))
                                                    ((BYTE*)g_repModule + 0x36D3E5))(
@@ -5658,6 +5662,9 @@ int main(void)
                             { logf("[host] frame60: manual char chain fault"); }
                             if (g_rlCtx != NULL)
                             {
+                                char nhFlag[8] = {0};
+                                if (GetEnvironmentVariableA("RC_HOST_NOHANGPET",
+                                                            nhFlag, sizeof(nhFlag)) == 0)
                                 __try
                                 {
                                     static unsigned char fm2[0x8000];
