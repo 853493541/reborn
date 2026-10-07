@@ -89,27 +89,34 @@ it; the game must do it in a step the host has not run.
   `g_registerFunctor`.
 - The host invokes it at frame60 AFTER the run task, with rdx = stepCtrl
   (param+0xC8): `registerTasks enter` FIRES for the first time, then the
-  process dies with 0xC0000005 and **no VEH line** (log buffering loses the
-  last lines on abrupt exit - add `fflush` in the VEH to see it). Likely cause:
-  the register functor's payload (functor+8..+0x28) holds values captured from
-  the builder's stack temporaries; by frame60 they may be stale, or the step
-  must run BEFORE the run step / with a different arg2 (the builder's out
-  container).
+  process dies with 0xC0000005. Root cause (runs 202-204): registerTasks
+  enqueues its created tasks through `0x80CED0(queue, task)`, which dereferences
+  a sync object at `[queue+8]` and an allocator at `[queue+0x10]`. The
+  builder-created containers (class vtable `rep+0xCCE548`, captured as
+  `g_taskQueue`) and the fabricated stepCtrl both have `+8 = NULL` -> AV at
+  `[rcx+0x12]` inside `0x3E7830`. The **game's real async-task queue** (the exe
+  dispatcher creates a task group at exe+0xBC6D2) is what provides a live
+  sync object; the host never builds it.
+- The register invoke is now **gated behind `RC_HOST_REGINVOKE=1`** so normal
+  runs stay usable (run 204 baseline verified: `runTasks -> 1`, register
+  skipped, weather line 27 still fails).
 
 Next probes (in order):
 
-1. Invoke the register functor **immediately after the builder returns** (inside
-   `hookTableBuilder`, while its stack temporaries are alive), with rdx = the
-   builder's arg4 (out container) and/or the stepCtrl; log the functor payload
-   (`[functor+8..+0x28]`) first.
-2. Make the VEH output robust: `fflush` the log in the VEH handler before
-   anything else, so an abrupt registerTasks crash is not silent.
-3. Compare against the game order: the step controller likely runs the register
-   step before the run step; the host currently runs the run task first.
-4. After registerTasks succeeds, walk the tasks it queued (the host already
-   walks `sc+0x70/0x78/0x80` after the register call) and re-check
-   `[singleton+0x210]`.
-5. Then re-check `real CreateRLScene` (should pass line 212) and
+1. **Reconstruct/drive the game's async-task queue**: the queue class has a
+   sync object at `+8`, an allocator at `+0x10`, flags `+0x60`/`+0x61`, a
+   refcount `+0x64`; its vtable is `rep+0xCCE548` (slot0 = deleting dtor
+   `rep+0x80CA40`, slot1 = method `rep+0x80E440` via the 0x9E3F thunk).
+   The exe dispatcher (`exe+0xBC6A0` state 3) creates a task group
+   (`exe+0x79AEE0` alloc, list init, passed to `exe+0xA01A0`); capture that
+   group and give it a valid sync object, or use the game's own group so
+   `registerTasks` runs legitimately.
+2. Alternatively capture the real source object's `+8` sync (the builder does
+   `r15+8 = [source+8]`); if the host's param+0xA8/source is missing it, fix
+   the source wiring.
+3. Re-run with `RC_HOST_REGINVOKE=1`, walk the tasks registerTasks queued into
+   the queue, and re-check `[singleton+0x210]`.
+4. Then re-check `real CreateRLScene` (should pass line 212) and
    `GetRLScene(2)`.
 
 ## 1. Where the work lives — worktree + branch (READ FIRST)

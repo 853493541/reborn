@@ -2977,5 +2977,17 @@ HIGH-confidence findings:
     different arg2 (the builder's out container).
   - Evidence: host_exe195-201.out; commits 78a13a9 + this one; the handoff
     guide section 0 carries the ordered next probes.
+- Runs 202-204 addendum: the crash cause is pinned. `registerTasks` enqueues
+  each created task via `0x80CED0(queue, task)`, which dereferences a sync
+  object at `[queue+8]` (AV at `[rcx+0x12]` in `0x3E7830`) and an allocator at
+  `[queue+0x10]`. Both the builder-created containers (class vtable
+  `rep+0xCCE548`, captured as `g_taskQueue` via the push hook) and the
+  fabricated stepCtrl have `+8 = NULL`; the game's real async-task queue (the
+  exe dispatcher creates a task group at exe+0xBC6D2) is what supplies a live
+  sync object. The register invoke is now gated behind `RC_HOST_REGINVOKE=1`;
+  the run-204 baseline is restored (exit 0, `runTasks -> 1`, register skipped,
+  weather line 27 still fails). Next unit of work: reconstruct/drive the exe's
+  KGAsyncTask group so registerTasks runs legitimately (handoff section 0).
+  Evidence: host_exe202-204.out; commits 57cac00 + docs.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
