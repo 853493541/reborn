@@ -4734,3 +4734,26 @@ if the cache/host frames appear.
   Registered boundaries remain: FOV ramp provisional, spawn test-guard, underwater/slope
   AV (server-owned), option read-back D2 partial.
 
+### 2026-10-06 - Character 3.x deep research: five parallel dives + doc corrections
+
+- Did: full research pass over map §3 before splitting workstreams. New area `docs/character/`
+  (README + 5 deep dives): rig/sockets (3.1), locomotion + motion tags (3.2/3.3), facial (3.4),
+  ragdoll + swim/fly/轻功 (3.5/3.7), mounts/vehicles/glider/parachute (3.6). Five parallel
+  agents, all read-only against the installs; extracted game tables stayed in scratch (not committed).
+- Key closes: locomotion "84-byte table" = `CommonCharacterSFX`; real table `PlayerRush` ->
+  `Represent/player/player_rush.txt` (0x170 B rows, 73 fields; thresholds 35/40/50, tier rule
+  decoded). MotionTag v1 = 0x188 keyframe record + 12 typed payloads; originroot whitelist
+  `player_animation_use_originroot_trans.txt` (F1 swim-only). Facial = three systems (simple
+  presets / CNDK new-face 187 params + 39 bones / server FaceLift 373 B); FaceLiftDataConverter
+  `KMETAFACE` run produced valid JSON. Ragdoll verified in `PhysicsEngineX64.dll` (corrected
+  AddPhysicsBone RVA); swim integrator = `ProcessVerticalMove 0x140318C50` (G-15's 0x14031B640 is
+  inside RunTo); parachute = `KCharacter+0x214` with six consumers (old "no xref" wrong);
+  glider = AUTOFLY + nav-fly ride 1152 (no glide equation); horse mount fully specified
+  (RideHorse/DownHorse, jump triple 60/180/11, ride tables extracted).
+- Corrected: 13 older docs got dated correction lines (P5 anim, traceability A3/A10, double-jump
+  root motion, collision G-15/G-16/AddPhysicsBone, REBORN spec rows 11/21/29 + 192-unit label,
+  gravity +0x2FC = nRunSpeed, CNDK header, camera C1 head-bone vs s_face, juejing 滑翔翼 naming).
+- Docs: `docs/character/README.md` (+ map §3 statuses -> [DONE]; area registered in
+  `docs/README.md` and AGENTS §10). Split plan for 3.x workstreams W1-W7 is in the area README.
+- Outcome: 3.x research complete to the client's limit; remaining items are host wiring or
+  registered provisional/boundary items.

@@ -165,6 +165,8 @@ is sufficient for a host reimplementation.
 | `+0x48` | **turn rate** (per-frame step) | set from server sync byte |
 | `+0x1F4` | **move state** | 2=walk, 3=run, 4=jump, 7=swim, 0x17=sprint dash, … |
 | `+0x2FC` | character height | waterline + default speed base |
+
+> **Correction (2026-10-06):** `+0x2FC` is proven `nRunSpeed` (getter 0x140412CA0, computed at 0x14018297F); do not cite it as height/waterline. See `docs/character/3_6_MOUNTS_GLIDER.md`.
 | `+0x320` | gravity, units/frame² | see gravity research |
 | `+0x340` | synced movement param | included in move packets |
 | `+0xC08` | scripted-move frame counter | jump/parkour/skill moves |

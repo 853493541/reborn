@@ -23,6 +23,8 @@ run server-side (verified: skill `ScriptFile` Lua files are not shipped in the c
 | Mode abilities | 回风扫叶 (37687), 渊 (37717), 雾暗迷云 (39483), 截阳 (39492), 引窍 (39493), 风流云散 (39494), 雷霆震怒 (65156); sub/damage: 截阳伤害 (39526), 引窍伤害 (39527), 绝脉爆炸 (39528) |
 | Class skills adapted to mode | 春泥护花_绝境战场 (33285), 林海绝境进战/脱战 (41291/41292), 吃鸡专用霸刀切大刀无武器 (41293) |
 | Map mechanics — 天原绝境 | 滑翔伞 (29021), 照明火把释放/实际效果 (29043/29044), 燧石单体 (29051), 冰雹aoe (29055), 剑宗深寒 (29056), 武家炽血 (29061), 橙色下装被击降攻击 (29068), 极寒掉血 (29342), 战象践踏 (29146), 战象冲锋 (29264), 战象下车 (29267), 战象践踏母 (29283), 战象推人母 (29476), 天玄冰 (29637), 冰封复活 (31507) |
+
+> **Correction (2026-10-06):** skill 29021 is `天原绝境_滑翔翼` (client table `mode_kit_report.txt`); see `docs/character/3_6_MOUNTS_GLIDER.md`.
 | Map mechanics — 洱海绝境 | 脱战附近aoe (35149); 飞爪 exists as cooldown id 2617 |
 | Items | 道具_楚河汉界 (27902) |
 

@@ -119,5 +119,7 @@ measurements and tools are committed.
 | engine units → meters | OPEN | needs one calibration reference (known range in 尺, or in-game measurement) |
 | MotionTag structure (keyframes, sub-tag types) | IN PROGRESS | loader disassembled: `proof/netcode/disasm/motion_tag.txt`, `KG3D_AnimationMotionTag_Group_Data::LoadFromFile` @ `0x180003000` |
 
+> **Correction (2026-10-06):** MotionTag structure decoded (v0/1/2 dispatch, 0x188 keyframe record, 12 type-prefixed payloads + sizes); remaining = container file + type semantics. See `docs/character/3_2_3_3_LOCOMOTION_MOTION.md` ("MotionTag format").
+
 Effects (particles/SFX) use the same tani: `tani.py` yields `.pss` paths that
 `pss.py` + `pss_assets.py` already parse (emitters, materials, meshes, textures).

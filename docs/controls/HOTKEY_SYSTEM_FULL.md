@@ -113,6 +113,8 @@ return {dwSaveID=1, tSaveDate={
 ```
 
 The container is `CNDK` + 12 header bytes (two `0x11E` = 286 dwords) + the Lua
+
+> **Correction (2026-10-06):** CNDK header = magic + uint32 crc32(payload) + uint32 size + uint32 size + payload; `0x11E` is the byte size repeated (crc verified on 17k `.jx3dat` + userdata). See `docs/character/3_4_FACIAL.md`.
 text above.
 
 ## 3. Key encoding (exact)

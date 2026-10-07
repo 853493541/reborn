@@ -41,13 +41,13 @@ Count: **17 major systems, ~110 tracked areas**; the priority backlog is §18.
 
 | Area | Status | Artifacts / next questions |
 |---|---|---|
-| Rig/body parts/head attach | [PART] | `_head_attach.jsfrag`, actor presets |
-| Locomotion blend/kind map | [DONE] | `docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md` §4 |
-| Motion tags / root motion | [PART] | `docs/netcode/SKILL_MOTION_METHOD.md` |
-| Facial/morph (FaceLift) | [OPEN] | `FaceLiftDataConverter.exe`, face bone probes |
-| Ragdoll/physics bodies | [PART] | `physic_character_param.krl.txt` |
-| Mounts/vehicles/glider/parachute | [PART] | `number.krl`, JumpParam wall/horse rows |
-| Swim/fly/轻功 states | [PART] | `docs/movement/REBORN_JUMP_FALL_SPEC.md` §3–§9 |
+| Rig/body parts/head attach | [DONE] | `docs/character/3_1_RIG_SOCKETS.md` — actor parts, 182/191 bones, `Socket.tab` + `SocketToParentBone.ini`, engine getters (managed getter missing) |
+| Locomotion blend/kind map | [DONE] | `docs/character/3_2_3_3_LOCOMOTION_MOTION.md` — `PlayerRush` = `player_rush.txt`, tier rule; `JX3_CHARACTER_MOVEMENT_RESEARCH.md` §4 |
+| Motion tags / root motion | [DONE] | `docs/character/3_2_3_3_LOCOMOTION_MOTION.md` — MotionTag 0x188 record + 12 payload types; originroot whitelist |
+| Facial/morph (FaceLift) | [DONE] | `docs/character/3_4_FACIAL.md` — CNDK new-face, MetaFace converter (JSON verified), FaceLift 易容; apply shim pending |
+| Ragdoll/physics bodies | [DONE] | `docs/character/3_5_3_7_RAGDOLL_SWIM_FLY.md` — PhysicsEngineX64 symbols, articulation, lifecycle; host wiring open |
+| Mounts/vehicles/glider/parachute | [DONE] | `docs/character/3_6_MOUNTS_GLIDER.md` — ride tables extracted, state machines; glider = AUTOFLY + ride 1152 |
+| Swim/fly/轻功 states | [DONE] | `docs/character/3_5_3_7_RAGDOLL_SWIM_FLY.md` — `ProcessVerticalMove`; 轻功 End phase = server move-record flag; host wiring open |
 
 ## 4. Controls & UI (this branch)
 

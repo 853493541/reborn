@@ -208,6 +208,7 @@ Keep for reference; do not edit, fix, import, or cite as current without checkin
 | Controls | `client/` (input), `tools/controls/` | `docs/controls/README.md` | `proof/controls` |
 | Camera | `client/CameraSystem.cs`, `native/camera_shim.cpp` | `docs/camera/README.md` | `proof/*` camera sets |
 | Movement / gravity / collision | `client/TerrainSampler.cs`, `client/FoliageCollision.cs`, `tools/gravity/`, `tools/movement/`, `tools/collision/` | `docs/movement/REBORN_JUMP_FALL_SPEC.md`, `docs/movement/JX3_GRAVITY_RESEARCH.md`, `docs/movement/FULL_MAP_COLLISION.md` | `proof/gravity`, `proof/collision` |
+| Character & animation | `client/` (actor + clip wiring), `samples/` (ignored) | `docs/character/README.md` | `proof/gravity`, `proof/netcode/skill_motion` |
 | PVP / combat | `client/` (target dummy + in-world indicator) | `docs/pvp/README.md` | `proof/pvp` |
 
 ## 11. Stack & toolchain

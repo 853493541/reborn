@@ -72,6 +72,8 @@ deviates from the engine · **[SERVER]** server-owned, out of client scope.
 | Knockback / move sync | **[SERVER]** | client arrays unused |
 | Ragdoll | **[MISSING]** | `bAddPlayerPhysicsActor=0`; no player physics actor |
 
+> **Correction (2026-10-06):** `bAddPlayerPhysicsActor` is an adapter config key (default 1, `config.ini [KG3DENGINE]`); the host's missing player physics actor is a wiring fact, not a config value. Ragdoll symbols/activation verified in `docs/character/3_5_3_7_RAGDOLL_SWIM_FLY.md`.
+
 ## 6. Dynamic world
 
 | Item | Status | Notes |

@@ -32,6 +32,8 @@ ignored (unlike most MMOs of its era) — it advances a per-character **jump cha
   underlying `f1b02yd二段跳a.ani` plays cleanly and is what the client uses.
   (HIGH, `proof/gravity/double_jump_reborn_run.txt` runs B/D vs E)
 - The jump clips are **in-place** (no root motion): `f1b02yd小跳b.ani` bip01 Y = 0
+
+> **Correction (2026-10-06):** only `f1b02yd小跳b.ani` is fully in-place; `小跳a`/`二段跳a` carry net root translation 35.0/57.2 u (z-ranges 72.1/85.9 u). See `docs/character/3_2_3_3_LOCOMOTION_MOTION.md` ("Root motion usage").
   on every frame — the arc is pure movement physics. (HIGH, MIN2 read of the
   staged clip, 2026-09-29)
 - Landing resets the chain: `ProcessVerticalMove` zeroes `[char+0x330]`/`[+0x338]`

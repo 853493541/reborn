@@ -89,6 +89,8 @@ sub_180812D70(table, mode, index, ?):
 array of **0x54-byte entries** at `[container+0x1E2B8]` (count from
 `[container+0x1E2C0]`, magic-division by 0x54), key compare `entry+0 == mode`,
 `entry+4 == index`; returns the entry or 0. The 84-byte entry is exactly the
+
+> **Correction (2026-10-06):** the 0x54-stride entry belongs to `CommonCharacterSFX`; the locomotion table is `PlayerRush` -> `Represent/player/player_rush.txt` (0x170 B rows, 73 fields, lookup 0x1806252A0). See `docs/character/3_2_3_3_LOCOMOTION_MOTION.md`.
 param struct `UpdateMoveAnimation` reads (`+0x30…+0x88`).
 
 **Data provenance:** the table is loaded with `KTableList::LoadBinTextTab`
@@ -112,6 +114,8 @@ option lookup (`0x1803185E0`: option query at `0x180318607` → byte).
   ShadowFile, 是否禁止自动转头, IsLookAtCamera, PoseState, 锁定朝向;
   `player_serial_animation_table.txt` = phased A/B/C animation sets, unrelated).
 - The 84-byte locomotion param entry (two speed thresholds, three clip pairs)
+
+> **Correction (2026-10-06):** closed - file identified (`player_rush.txt`, GBK BinText TSV, 263 rows); tier rule/thresholds 35/40/50 decoded; the P5 animation-id/playback-speed reads are actually 武器是否在背上/姿态 fields. See `docs/character/3_2_3_3_LOCOMOTION_MOTION.md`.
   is a **separate BinText table**; its rows are loaded by
   `KTableList::LoadBinTextTab`. Next probes, in order:
   1. In the **game client** binary, xref the `KTableList::LoadBinTextTab`

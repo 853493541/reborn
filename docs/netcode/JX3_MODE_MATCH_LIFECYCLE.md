@@ -69,6 +69,8 @@ an omitted row or a UI-side grouping label; re-check the table extract before re
 | 2 | Transfer + load | `OnSwitchMap` field map, proto **2** ready, proto **3** enter scene, loader/progress | `CODE`, semantics partly MED |
 | 3 | Arrival / staging / countdown | server-assigned placement, mode stance set, countdown UI asset, side/camp/relation flags, phase APIs | partly `CODE`/`DATA`, **staging trigger `UNPROVEN`** |
 | 4 | Start / drop | glide/parachute symbols + GliderCamera + carrier refs, 天原 滑翔翼 skill, airdrop/storm map markers | `CODE`/`DATA`, **descent law `UNPROVEN`** |
+
+> **Correction (2026-10-06):** downgraded - the descent is AUTOFLY (state 0xF) path-following + nav-fly vehicle ride 1152 + GliderCamera; no client glide equation. See `docs/character/3_6_MOUNTS_GLIDER.md`.
 | 5 | Loot & progression | 423 containers / 97 tables / probe layouts / take 0x4D, money 0x51 | `DOC` HIGH, anchors/rates SERVER |
 | 6 | Combat replication | 182 mode skills, kits, map mechanics; self/competitor wire layouts not yet recovered | content `DATA` HIGH, layouts **STATIC-pending** |
 | 7 | Phases / storm | StormLine assets, battlefield map overlays; **server→circle data source missing** | `DATA` partial, gate open |

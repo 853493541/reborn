@@ -108,6 +108,8 @@ P7 data · P8 verification · P9 publish.
 | A8 | Jump/double/fall/land transitions | kinds 16-19; gravity model | takeoff/air/land phases | OPEN(P5) |
 | A9 | Swim/fly/float states | REP state names; jump/fall spec §3–§9 | per-state clips | OPEN(P5) |
 | A10 | blend params `pnForward/pnStrafeRight/pnRotationRight` | table ~0xCD8800 | semantics/weights | OPEN(P5/P6) |
+
+> **Correction (2026-10-06):** A10 - `pnForward/pnStrafeRight/pnRotationRight` are `GetMoveInfo` out-parameters reading controller fields +0x50/+0x4C/+0x3C (written by the Move/SetRotation enqueuers); 0x180CD8800 holds no weights. A3 - thresholds + source file decoded (`player_rush.txt`, tiers 35/40/50). See `docs/character/3_2_3_3_LOCOMOTION_MOTION.md`.
 | A11 | two animation slots `+0x1B8/+0x1C0` | `UpdateMoveAnimation` | base vs overlay semantics | OPEN(P6) |
 | A12 | playback rate/speed sync | `+0x30/+0x34` writes | rate vs move speed | OPEN(P6) |
 | A13 | start/stop transitions | — | idle↔walk↔run edges | OPEN(P6) |

@@ -148,6 +148,8 @@ different subsystem (not jump/fall physics).
 | 9 | `JumpFrameParam.tab` per-frame curves application | **[OK]** | storage + consumer `0x14031AFD6` decoded: fields, stride 160, DirectionXY as heading delta |
 | 10 | Wall jump trigger / wall hang / wall costs | **[PARTIAL]** | trigger `[char+0x200] != 0`, Wall triple idx `4*school+jumpCount` decoded (§3.5); hang/drag logic still open (`bHangFlag`) |
 | 11 | Swim physics (`SwimTo`, water line, `GetWaterHeight`, `ValidWaterHeightDiff`, `EnableNewWaterHeight`, `SWIM_JUMP`/`SWIM_DOUBLE_JUMP`) | **[PARTIAL]** | `SwimTo` 0x14031D770 + `GetWaterline` 0x140312400 + submersion 0x140312440 decoded (§3.7); per-frame swim step 0x140327A80 open |
+
+> **Correction (2026-10-06):** 0x140327A80 = `KQuestList::UpdateNpcQuestMark`; the swim/water integrator is `ProcessVerticalMove 0x140318C50`. See `docs/character/3_5_3_7_RAGDOLL_SWIM_FLY.md`.
 | 12 | Knockback chain (`KNOCK_DOWN/BACK/OFF`, `KnockedBackFrame/Speed`, `KickRange`) | **[SERVER]** | `KnockedBackFrame/Speed` have no client readers (server-driven); `KickRange` read at `0x1403157C8` |
 | 13 | Parkour / wall run (`ParkourMove.tab`) | **[PARTIAL]** | `OnParkour` 0x140314510 decoded: state 4, counter `[+0xC08]`, per-frame Vz from settings, clamps |
 | 14 | Skill moves / dashes (`SkillMove.tab`, 918 rows) | **[OK]** | start `0x14031C4A0` (state 26/27, counter, fields) + per-frame update `0x140315390` (XY/Z/Direction keyframes, clamps) decoded (§3.10); same pattern as jump curves |
@@ -158,6 +160,8 @@ different subsystem (not jump/fall physics).
 | 19 | AutoFly (`AUTOFLY`, `ProcessAutoFly`, `PauseAutoFly`) | **[PARTIAL]** | `ProcessAutoFly` 0x140316990: nav path/track (`pTrack`/`pCurrentNode`/`pEndNode`), counter per node, then shared drop processing (§3.11) |
 | 20 | Bird (`BIRD_FLY/FLOAT/JUMP`), Summit, MannedSpace (载体), Pull/Repulsed | **[PARTIAL]** | bird states 0x24/0x23 decoded (§3.11); Summit = Represent/script; Pull/Repulsed = script ops `CALL_REPULSED`/`REPULSED_RATE` + states + animation sets, moving via shared velocity fields |
 | 21 | Parachute (`bOnParachuteFlag`, `ON_PARACHUTE_FLAG`) | **[PARTIAL]** | `bOnParachuteFlag` has no code xref → data/script/server-driven; Represent glider/animation side (`GliderCamera` config extracted) |
+
+> **Correction (2026-10-06):** `bOnParachuteFlag` = `KCharacter+0x214`, set by script-op `ON_PARACHUTE_FLAG` id 9; six consumer sites traced (jump reject, drop-speed Vz keep, bird-fly gate, landing, skill-move, swim). See `docs/character/3_6_MOUNTS_GLIDER.md`.
 | 22 | Mounted / horse movement + conveyor belts | **[PARTIAL]** | horse jump triple + `Vz += [char+0x34C]`, `jumpCount < 1` decoded (§3.5) |
 | 23 | Buff/skill speed & gravity modifiers (`GRAVITY_PERCENT`, `JUMP_SPEED_PERCENT`, …) | **[OK]** | source decoded (§3.12): server character data bytes → `[+0x138]`/`[+0x16C]`/`[+0x170]`; applied as `[+0x16C]/[+0x170] × [+0x40]/100` in `ProcessVerticalMove` |
 | 24 | Character collision capsule (slope limit / step offset / skin) | **[PARTIAL]** | scene gravity `(0,−9.81,0)` + controller manager + scale-derived controller params + 20 ms world step decoded (§3.9); exact per-field CCT values still not individually labelled |
@@ -166,6 +170,8 @@ different subsystem (not jump/fall physics).
 | 27 | Fall damage / revive thresholds | **[SERVER]** | client plays death move only |
 | 28 | Camera coupling, SFX/VFX, animation blending details | **[NA]** | camera in its own spec; blend keys known (`AnimationBlendTime=190`, `KeepTurningFrame=30`) |
 | 29 | Ragdoll (`physic_character_param.krl.txt`, RagdollTime/BlendWeight) | **[PARTIAL]** | config offsets + activation `0x1802F9540` (component flag, time record, `RagdollTime`) decoded (§3.11); blend update not traced |
+
+> **Correction (2026-10-06):** symbols/activation/presets verified (PhysicsEngineX64); blend consumer still untraced. See `docs/character/3_5_3_7_RAGDOLL_SWIM_FLY.md`.
 
 ### Gravity by situation (coverage snapshot)
 

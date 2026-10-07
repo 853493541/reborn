@@ -1183,6 +1183,8 @@ flags control blending with the integrator.
 ### 14.1 Ragdoll [DISASM/DATA]
 
 * Engine entry `PhysicsEngine::KPhysicsRagdoll::AddPhysicsBone` `0x180002AE0`
+
+> **Correction (2026-10-06):** `AddPhysicsBone` assert xref is 0x18000325D in fn 0x180003070; 0x180002AE0 is a destructor-like routine. See `docs/character/3_5_3_7_RAGDOLL_SWIM_FLY.md`.
   (`engine_host_spike/recon_physics_funcs.txt:7`).
 * Activation from skill-move config: ID bit 30 gate, component flag `[+0x30] & 0x2000000`,
   timestamp `[+0x74B8]`, call with `0x40`, `RagdollTime [rsi+0x22C]`
@@ -2241,7 +2243,11 @@ shipped data allow. Closure types:
 | G-13 | step-up / slope limits | **[SOLVED — documented limitation]** | CCT desc fields known (`stepOffset +0x3c`, `slopeLimit +0x2c`); the gameplay SIMWorld solver exposes only semantic keys (`footContactGroundDis=10`, `footAlignToSurfaceMaxSlopeAngle`); host uses the calibrated 70 u climb rule; the engine's own controller defaults (**stepOffset 0.5 m, slopeLimit 45°, contactOffset 0.1 m**) are now recovered from the shipped DLL — `JX3_STEP_FORGIVENESS_RESEARCH.md` (2026-09-29) |
 | G-14 | exact 15 Hz movement port | **[BACKLOG]** | research complete (`docs/movement/REBORN_JUMP_FALL_SPEC.md`, tables + discrete integrator); porting the integer model into the host is implementation work |
 | G-15 | swim per-frame step | **[SOLVED]** | per-frame state handler at `0x14031B640`: `GetWaterline` sampled twice per frame, waterline scaled `<<4`, velocity clamps (127), terrain-cell slope packed `(cell>>1)&7`; swim/dive states flow through the same integrator |
+
+> **Correction (2026-10-06):** 0x14031B640 is inside `KCharacter::RunTo`; the real per-frame water/swim handler is `ProcessVerticalMove 0x140318C50`. See `docs/character/3_5_3_7_RAGDOLL_SWIM_FLY.md`.
 | G-16 | ragdoll update | **[SOLVED]** | `KPhysicsRagdoll::{Init, AddPhysicsBone, AddPhysicsJoint, SetPhysicsBoneFilterGroup}`; activation, 11-body presets, time/blend config documented; solving is PhysX articulation inside the physics scene (no separate update symbol) |
+
+> **Correction (2026-10-06):** lifecycle = Represent deadline (0x180542440) + expiry predicate 0x180540BD0 + manager 0x180547130; `RagdollBlendWeight` consumer still untraced. See `docs/character/3_5_3_7_RAGDOLL_SWIM_FLY.md`.
 | G-17 | camera ray mask bits | **[SOLVED]** | option→mask builder decoded (`0x180446920`): bit0→`0x301`, bit1→`|0x101`, bit2→bit8, bit3→bit0, bit4→bit1; filters option1=FilterCamera, option2=FilterLogic; dispatcher keeps nearest hit (§15.2) |
 | G-18 | cursor scene-pos internals | **[SOLVED — sufficient]** | conversion path documented: `GetViewMgr` + view struct at `global+0x24AE8` passed into the helper; no collision decision depends on its internals |
 | G-19 | target.lua/skill.lua selection | **[SOLVED]** | decompiled scripts committed; TARGET enum, candidate source, per-skill flags/modes recovered (§16.3); ordering of `GetSearchTargetPlayer` is UI-side and does not gate casts (server validates) |

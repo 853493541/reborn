@@ -89,6 +89,8 @@ by a type table — i.e. the motion vectors above are typed motion keyframes.
 - The motion-block field roles are inferred from correlation (MED-HIGH); a complete
   MotionTag payload parser would settle field names.
 
+> **Update (2026-10-06):** payload structure decoded (0x188 record; 12 type-prefixed payloads with sizes); runtime twin `KG3DMotionTagData` (`KG3DEngineX64.dll` 0x180299AC0, apply `Helper_Apply` 0x180287320). See `docs/character/3_2_3_3_LOCOMOTION_MOTION.md`.
+
 ## 7. Reproduce
 
 ```powershell

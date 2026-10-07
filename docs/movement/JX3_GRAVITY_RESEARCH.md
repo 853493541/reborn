@@ -340,6 +340,8 @@ All three store the same fields (`+0x268 = XY<<4`, `+0x2F8 = XY`, `+0x270 = Z`,
   `KCharacter::EndFlyJump` (`0x140310960`) requires state **0x21**, writes Vz
   `[+0x270]` (`0x140310AD6`) and transitions to **4 (JUMP)** or **0xE**
   (`0x1403109D8` / `0x140310A75`), then back to 0x21 (`0x140310B06`). Swim =
+
+> **Correction (2026-10-06):** the 0x140310B06 site belongs to the separate begin-fly-jump function 0x140310AB0; `FlyTo` valid states are 0x1F/0x20. See `docs/character/3_5_3_7_RAGDOLL_SWIM_FLY.md`.
   6/7, sprint dash = 0x17, jump = 4.
 - **Parkour (`ParkourMove.tab`)**: `KCharacter::OnParkour` (`0x140314510`)
   asserts `m_dwSkillMoveID <= MAX_PARKOUR_MOVE_ID`, fetches the settings via
@@ -632,6 +634,8 @@ per-character fields `nGravity`, `nGravityBase`, `nGravityPercent`,
 `nJumpSpeedBase`, `nJumpSpeedPercent`, `bIgnoreGravity` (`0x0084B428`…).
 `KCharacter::ProcessAutoFly` / `ProcessNavAutoFly` / `PauseAutoFly` and the
 parachute flag (`bOnParachuteFlag` `0x0084B508`, `ON_PARACHUTE_FLAG`
+
+> **Correction (2026-10-06):** the flag is `KCharacter+0x214`, set by script-op `ON_PARACHUTE_FLAG` id 9, with six consumer sites - the "no code xref" claim treated a string file-offset as an address. See `docs/character/3_6_MOUNTS_GLIDER.md`.
 `0x007D52B8`) drive the 轻功 glide/auto-fly fall behaviour.
 
 ## 7. Evidence files

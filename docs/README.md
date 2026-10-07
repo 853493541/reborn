@@ -7,6 +7,7 @@ must be registered in that area's README (root `AGENTS.md` §13).
 |---|---|---|
 | Camera | `camera/README.md` | camera model, native rules, host deviations, penetration plan |
 | Movement / gravity / collision | `movement/README.md` | terrain, gravity, jump/fall, collision bake |
+| Character & animation | `character/README.md` | system 3: rig/sockets, locomotion, motion tags, facial, ragdoll, mounts/glider, swim/fly/轻功 |
 | Engine host / game client | `engine_host/README.md` | MovieEditor hosting research, M1 milestone docs |
 | Mode UI | `ui/README.md` + `netcode/JX3_MODE_UI_*.md` | UI inventory/flow, map + minimap research, `ui-process-app/` |
 | Netcode / protocol / server | `netcode/README.md` | protocol spec, server contract, skills, loot, modes |
