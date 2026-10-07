@@ -591,6 +591,23 @@ static int g_execTraceCount = 0;
 static int g_execTraceHits = 0;
 static void* g_execTraceAddr = NULL;
 
+// Probe: hook the jmp target rep+0xAEDFD0 (len 12 = through `test rcx,rcx`;
+// target+12 is the `je`, so the replay is boundary-safe) to confirm whether the
+// CreateRLScene wild transfer reaches it.
+static BYTE g_aedfSaved[32];
+static BYTE* g_aedfTramp = NULL;
+
+static void* __fastcall hookAedfd0(void* a1, void* a2)
+{
+    static int n = 0;
+    if (n < 12)
+    {
+        n++;
+        logf("[host] Aedfd0 enter a1=%p a2=%p", a1, a2);
+    }
+    return ((void* (__fastcall *)(void*, void*))g_aedfTramp)(a1, a2);
+}
+
 static int armExecTrace(void* addr)
 {
     CONTEXT ctx;
@@ -4171,8 +4188,18 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] frame60: Semantic SetFileIOFunctions fault"); }
-                        if (armWriteWatch((BYTE*)g_repSingleton + 0x210))
-                            logf("[host] frame60: write watch armed on [main+0x210] (m_tabCommon)");
+                        // Debug-register diagnostics are opt-in: arming Dr0/Dr1
+                        // can change exception dispatch and prevent the SEH from
+                        // catching the (non-fatal) CreateRLScene wild call.
+                        {
+                            char dbgFlag[8] = {0};
+                            if (GetEnvironmentVariableA("RC_HOST_DEBUGTRACE",
+                                                        dbgFlag, sizeof(dbgFlag)) != 0)
+                            {
+                                if (armWriteWatch((BYTE*)g_repSingleton + 0x210))
+                                    logf("[host] frame60: write watch armed on [main+0x210] (m_tabCommon)");
+                            }
+                        }
                         {
                             void* sc60 = *(void**)(param + 0xC8);
                             void* sa60 = (sc60 != NULL) ? *(void**)sc60 : NULL;
@@ -5098,12 +5125,8 @@ int main(void)
                                 unsigned long long a5, const char* mapFile,
                                 unsigned long long a7, const char* sceneName,
                                 unsigned long long a9);
-                            // trace the indirect transfer in the CreateRLScene
-                            // wild-call path: 0xAEE2D8 is the call whose return
-                            // address (0xAEE2DD) is on the faulting stack.
-                            if (g_repModule != NULL)
-                                logf("[host] frame60: exec trace arm -> %d",
-                                     armExecTrace((BYTE*)g_repModule + 0xAEE2D8));
+                            // debug-only: exec tracer / 0xAEDFD0 hook (opt-in via
+                            // RC_HOST_DEBUGTRACE; they alter exception dispatch)
                             if (g_repModule != NULL)
                             {
                                 BYTE* tb = (BYTE*)g_repModule + 0x15BF4;
@@ -5112,6 +5135,17 @@ int main(void)
                                      tb[0], tb[1], tb[2], tb[3], tb[4]);
                                 logf("[host] frame60: rep+0xAEE2D8 live=%02X %02X %02X %02X %02X (file E8 17 79 52 FF)",
                                      cb[0], cb[1], cb[2], cb[3], cb[4]);
+                                char dbgFlag[8] = {0};
+                                if (GetEnvironmentVariableA("RC_HOST_DEBUGTRACE",
+                                                            dbgFlag, sizeof(dbgFlag)) != 0)
+                                {
+                                    logf("[host] frame60: exec trace arm -> %d",
+                                         armExecTrace((BYTE*)g_repModule + 0xAEE2D8));
+                                    logf("[host] frame60: Aedfd0 hook -> %d",
+                                         installInlineHook((HMODULE)g_repModule, 0xAEDFD0,
+                                                           (void*)hookAedfd0, g_aedfSaved,
+                                                           &g_aedfTramp, 12));
+                                }
                             }
                             __try
                             {
