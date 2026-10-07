@@ -4757,3 +4757,31 @@ if the cache/host frames appear.
   `docs/README.md` and AGENTS §10). Split plan for 3.x workstreams W1-W7 is in the area README.
 - Outcome: 3.x research complete to the client's limit; remaining items are host wiring or
   registered provisional/boundary items.
+
+### 2026-10-06 - Character 3x-rig W1: engine head-bone camera anchor (C1)
+
+- Did: identified the `KGSceneCLR.AddDummyModel` handle by RTTI: it is a
+  `KG3DModelProxy` (vt in `KG_EngineEditorX64.dll`); `proxy+0x18` is the live
+  `KG3D_Actor` (`.?AVKG3D_Actor@@`). The dummy actor's socket list is NOT
+  initialized (`s_face`/`bip01 head` unresolved via FindSocket) and its own
+  `+0x358` model pointer is null - the models live on 8 child actors (type `+0x2A0==4`,
+  walked from `[actor+0x7E0]`), each with its model at `+0x358`. Bone path works:
+  `KGCommonX64!KG3D_ConvertToStandardHashString` -> helper `0x82F0A0(child,hash,out16)`
+  (bone idx at +8) -> `KG3D_Actor::GetBoneMatrixLocal` (`0x81F090`) on the child.
+  Head bind pose `t=(1.9,96.7,1.0)` u (花萝 head joint ~96.7 cm).
+- Wired: camera anchor C1 now uses the head-bone world position
+  `world = placement(rpx,rpy,rpz,yaw+yawOffset,scale) + bone_local` each frame;
+  `RC_ANCHOR_BONE=0` falls back to the old chest+90. Verified log:
+  `anchorbone t=(1.9,96.7,1.0) yRaw=1058.7 chest=1052.0` (py=962), stable.
+- Shim exports added (SEH-guarded, read-only): `RC_ActorProbe`, `RC_ProxyInfo`,
+  `RC_ProxyFind`, `RC_ProxyMatrix`, `RC_ProxyActor`, `RC_ActorFindSocket`,
+  `RC_ActorSocketMatrix`, `RC_ActorBoneMatrix`, `RC_HashName`, `RC_ActorFindBoneHash`.
+  Locators in `KG_EngineEditorX64.dll`: FindBone 0x49160, FindSocket 0x4BA80,
+  GetBoneMatrix 0x45760, GetBoneMatrixLocal 0x459A0, GetSocketMatrix 0x45A40.
+- Gates: `reborn_client_3x_rig` build exit 0; `camera_smoke_3x_rig` ALL PASS;
+  `collision_selftest_reborn_client_3x_rig` 36/36; fallback run (RC_ANCHOR_BONE=0)
+  clean DONE. Evidence: `reborn_out/reborn_20261006_1939*.log`, 1940*.log.
+- Boundary: s_face socket unavailable on the dummy path (sockets not initialized
+  by the CLR dummy route) -> anchor uses the head bone for both anchor and aim;
+  re-open when a socket-free/InitSocketNode route or the real game actor path exists.
+- Outcome: W1 done - camera C1 anchor is engine-sourced; shell ready for W2.
