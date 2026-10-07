@@ -218,9 +218,22 @@ static int __fastcall hookRegisterTasks(void* a1, void* a2)
 
 static char __fastcall hookRunTasks(void* a1)
 {
-    logf("[host] runTasks enter (this=%p)", a1);
+    void* kt = NULL;
+    __try { kt = (a1 != NULL) ? *(void**)a1 : NULL; } __except (EXCEPTION_EXECUTE_HANDLER) { kt = NULL; }
+    logf("[host] runTasks enter (this=%p kt=%p)", a1, kt);
     char r = ((char (__fastcall *)(void*))g_runTramp)(a1);
-    logf("[host] runTasks exit -> %d", (int)r);
+    __try
+    {
+        if (kt != NULL)
+            logf("[host] runTasks exit -> %d kt+0x0=%p +0x8=%p +0x68=%p +0x70=%p +0x78=%p",
+                 (int)r, *(void**)kt, *(void**)((BYTE*)kt + 8),
+                 *(void**)((BYTE*)kt + 0x68), *(void**)((BYTE*)kt + 0x70),
+                 *(void**)((BYTE*)kt + 0x78));
+        else
+            logf("[host] runTasks exit -> %d kt=NULL", (int)r);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    { logf("[host] runTasks exit -> %d kt probe fault", (int)r); }
     return r;
 }
 
@@ -408,6 +421,28 @@ static BYTE* allocNear(BYTE* target, size_t size)
     return NULL;
 }
 
+static volatile LONG g_flagWatchArmed = 0;
+static volatile LONG g_flagWatchHit = 0;
+
+// Arm a 4-byte write watch on addr for the current thread; the VEH handler
+// logs the writer's RIP (debug-register single-step). Used to find what
+// publishes [SO3Represent+0x210] (m_tabCommon).
+static int armWriteWatch(void* addr)
+{
+    CONTEXT ctx;
+    memset(&ctx, 0, sizeof(ctx));
+    ctx.ContextFlags = CONTEXT_DEBUG_REGISTERS;
+    if (!GetThreadContext(GetCurrentThread(), &ctx))
+        return 0;
+    ctx.Dr0 = (DWORD64)addr;
+    ctx.Dr7 = (ctx.Dr7 & ~0x000F0001ULL) | 0x000D0001ULL;
+    if (!SetThreadContext(GetCurrentThread(), &ctx))
+        return 0;
+    g_flagWatchArmed = 1;
+    g_flagWatchHit = 0;
+    return 1;
+}
+
 static BYTE* g_tableHookStub = NULL;
 
 static int installTableLoadHook(HMODULE rep)
@@ -591,13 +626,11 @@ static int installInlineHook(HMODULE mod, DWORD rva, void* hook, BYTE* saved,
 }
 
 static HWND g_hostHwnd = NULL;
-static volatile LONG g_flagWatchArmed = 0;
 static volatile LONG g_movieWatchArmed = 0;
 static void* g_engineInstance = NULL;
 static void* g_engIface = NULL;
 static BYTE* g_taskInvokeStub = NULL;
 static HMODULE g_luaModule = NULL;
-static volatile LONG g_flagWatchHit = 0;
 static BYTE g_ctwSaved[32];
 static BYTE* g_ctwTramp = NULL;
 static int g_castRequest = -1;
@@ -3838,6 +3871,8 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] frame60: Semantic SetFileIOFunctions fault"); }
+                        if (armWriteWatch((BYTE*)g_repSingleton + 0x210))
+                            logf("[host] frame60: write watch armed on [main+0x210] (m_tabCommon)");
                         {
                             void* sc60 = *(void**)(param + 0xC8);
                             void* sa60 = (sc60 != NULL) ? *(void**)sc60 : NULL;
@@ -4011,6 +4046,19 @@ int main(void)
                                 }
                                 logf("[host] frame60: after task run [main+0x210]=%p",
                                      *(void**)((BYTE*)g_repSingleton + 0x210));
+                                __try
+                                {
+                                    void* member = *(void**)(param + 0xA8);
+                                    logf("[host] frame60: RL member(param+0xA8)=%p [m]=%p [m+8]=%p [m+0x10]=%p",
+                                         member, (member != NULL) ? *(void**)member : NULL,
+                                         (member != NULL) ? *(void**)((BYTE*)member + 8) : NULL,
+                                         (member != NULL) ? *(void**)((BYTE*)member + 0x10) : NULL);
+                                }
+                                __except (EXCEPTION_EXECUTE_HANDLER)
+                                { logf("[host] frame60: RL member probe fault"); }
+                                for (int toff = 0x1B0; toff <= 0x248; toff += 8)
+                                    logf("[host] frame60: main+0x%03X=%p", toff,
+                                         *(void**)((BYTE*)g_repSingleton + toff));
                                 // the builder pushed its created tasks into a
                                 // container reached via the holder; walk it and
                                 // invoke them (same stub + stepCtrl).
