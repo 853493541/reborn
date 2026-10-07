@@ -2844,3 +2844,23 @@ HIGH-confidence findings:
   KG_OpenPakV4File / the lua file-system init (the host calls SetRoot 0xB5400/
   0xB5220 + InitPak 0xCC2D0; something else may need init).
 - Evidence: host_exe171-175.out; commits 478090a..2e2e63a.
+
+## 2026-10-06 - RL task chain: runTasks runner traced into the lua file open (pak-mode flag lead)
+
+- The runner path: runTasks (0x80B8C0) -> the rep fs opener('SkillCasterModel') ->
+  the lua's g_OpenIniFile (lua+0xBBA30; the rep's IAT 0x109A020 resolves to it
+  correctly) -> g_OpenFile (0xB2F50) -> KG_OpenPakV4File (0xCC670) ->
+  g_OpenAloneFile (0xB2EA0) -> the ini object's vt[0xB] + the loose open
+  (0xB1C70) whose internals make a WILD call (an address outside every loaded
+  module - 0x7FF84C910000 in the last run; GetModuleHandleEx fails on it).
+- Probed and CORRECT in-host: the lua's file-system callbacks 0x170030/0x170040/
+  0x170048 (all valid lua functions), the rep IAT for g_OpenIniFile.
+- LEAD: at lua+0xB1CB8 the code branches on the global at lua+0x1729C0 (a
+  pak-mode flag): nonzero -> the pak open (0xB4570), zero -> the loose open
+  (0xB4390/0xB1C70, the faulting path). If the host's InitPak did not set that
+  flag (or the pak manager's state is off), the loose path is taken and faults.
+- Next probes: (1) log lua+0x1729C0 in-host (set?); (2) if 0, trace what sets it
+  (the lua's InitPak 0xCC2D0 / the pak manager 0x1730B8's init); (3) the loose
+  path's wild call site (0xB1CB5's vt[0xB] or the 0xB1D17 indirect call) as the
+  fallback.
+- Evidence: host_exe171-177.out; commits 478090a..b9baebb.
