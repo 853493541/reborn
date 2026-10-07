@@ -2827,3 +2827,24 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   (`RealOnSyncSceneLoadingProcess`: if GetClientScene() is nil it logs the timeout error and
   stops polling) until the client force-confirms; the confirm is followed by the represent
   double-free crash.
+
+### 2026-10-07 🔥 V2: live map switch works (id 8, 31 B) and REPRODUCES the duplicate-vector crash signature
+- Packet size table read live from the client (`mgr = base+0xA4C4F0`, sizes at `mgr+id*4+0x17F28`):
+  id 2=15, id 3=11, id 4=343, id 5=var(-1), id 6=15, id 7=37, **id 8=31**, id 187=8, 188=7, 189=19.
+- The earlier 15-byte id-8 frame was MALFORMED (fixed-size protocols advance by the registered size
+  -> it consumed 16 bytes of the next stream). With the correct **31-byte** frame
+  (`[u16 8][u8 flags][serial][ack][map @+7][region @+0xB][zeros]`) sent via `gsend.hex`,
+  `KPlayerClient::OnSwitchMap` (0x14014CE10) ran live: map 296 -> 1 -> 296, with the full
+  transition: 0x6D role-data bursts, proto 94 machine report, loading window closed, KGWin32App
+  visible, scene reload (map 1: dims 32, loader 16/16 regions).
+- **The crash duplicate was caught FORMING live**: `watch_represent_array.py` logged
+  `[07:12:23] elems=27 dups=#8=#9(0x2395780DAB0)` during the switch back to 296, then the vector
+  cleared (elems=1) and rebuilt (10) WITHOUT a crash. The crash is therefore a RACE: the session
+  rebuild transiently inserts the same local-represent block at indices 8 and 9; if the
+  world-entry teardown free-loop runs while that duplicate is present, the LFH double-free
+  (0xC0000374) fires. This matches the caught dump exactly.
+- Input still inert after the switch: focus forced (`focus == hwnd`), window center clicked,
+  W held -> no C2S 0x1E8 and no position change. The 3D engine still never inits (no KG3D session
+  with our client's thread ids); the render module `KJX3RenderModule::Load` (0x1400B7D20 ->
+  `LoadX3DEngine`) is the gate and its caller is runtime-dispatched (module vtable at
+  0x140958ED0, no static xrefs).
