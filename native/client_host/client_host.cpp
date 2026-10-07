@@ -1252,6 +1252,23 @@ static long __fastcall wrapExistsHash(void* self, const char* path)
 
 static void describeAddr(DWORD64 a, char* out, size_t n);
 
+// PROVISIONAL host recovery (registered deviation, docs/EXPERIENCES.md): the
+// engine's CreateRLScene reaches a late, frameless wild call after it has
+// already created and attached the scene. A clean run's host __try cannot
+// unwind it, so a VEH restores the context captured just before the call
+// (a controlled longjmp) and the host continues with the scene intact.
+// RC_HOST_NORECOVER=1 disables it (for investigating the wild call).
+static CONTEXT g_rlsGuard;
+static volatile LONG g_rlsRecoverArmed = 0;
+static volatile LONG g_rlsInterrupted = 0;
+static DWORD g_mainTid = 0;
+
+static int rlsRecoverEnabled(void)
+{
+    char f[8] = {0};
+    return GetEnvironmentVariableA("RC_HOST_NORECOVER", f, sizeof(f)) == 0;
+}
+
 static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
 {
     if (ep->ExceptionRecord->ExceptionCode == 0xC0000005 ||
@@ -1260,6 +1277,25 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
         // flush first: an abrupt death right after this exception must not
         // swallow the trace in the stdio buffer (the registerTasks crash)
         fflush(stdout);
+        // provisional CreateRLScene wild-fault recovery (main thread only)
+        if (g_rlsRecoverArmed && GetCurrentThreadId() == g_mainTid)
+        {
+            HMODULE wm = NULL;
+            DWORD64 wa = (DWORD64)ep->ExceptionRecord->ExceptionAddress;
+            int wild = !(GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                                            GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                                            (LPCSTR)wa, &wm) && wm != NULL);
+            if (wild)
+            {
+                g_rlsRecoverArmed = 0;
+                g_rlsInterrupted = 1;
+                logf("[host] RAWRECOVER: wild AV at %p inside CreateRLScene - resuming guard",
+                     (void*)wa);
+                *ep->ContextRecord = g_rlsGuard;
+                ep->ContextRecord->ContextFlags = CONTEXT_FULL;
+                return EXCEPTION_CONTINUE_EXECUTION;
+            }
+        }
         HMODULE m = NULL;
         wchar_t path[MAX_PATH] = { 0 };
         const wchar_t* base = L"?";
@@ -2512,6 +2548,7 @@ int main(void)
     CreateThread(NULL, 0, hostWatchdog, NULL, 0, NULL);
     logf("[host] window=%p root=%s", g_hostHwnd, rootA);
     logf("[host] main tid=%lu", GetCurrentThreadId());
+    g_mainTid = GetCurrentThreadId();
     SetDefaultDllDirectories(LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
     AddDllDirectory(bin64);
 
@@ -5228,11 +5265,27 @@ int main(void)
                                 // ...\<sceneName>_Setting.ini); the 9th arg = 1
                                 // enables that destination block (the later Init
                                 // steps need buf2 - EXPERIENCES 2026-10-06).
-                                long cs = ((CreateRLSceneFn)
-                                           ((BYTE*)g_repModule + 0xB0B5C0))(
-                                    2, 0x10, 0, 0, 0, mapPath60,
-                                    0, "\xC1\xFA\xC3\xC5\xD1\xB0\xB1\xA6_s", 1);
-                                logf("[host] frame60: real CreateRLScene -> 0x%08X", (unsigned)cs);
+                                // provisional recovery guard (see vehHandler): a
+                                // late frameless wild call inside CreateRLScene
+                                // would otherwise kill the process; capture the
+                                // context and resume here with the scene intact.
+                                RtlCaptureContext(&g_rlsGuard);
+                                if (g_rlsInterrupted)
+                                {
+                                    g_rlsInterrupted = 0;
+                                    g_rlsRecoverArmed = 0;
+                                    logf("[host] frame60: CreateRLScene wild-fault recovered (provisional)");
+                                }
+                                else
+                                {
+                                    g_rlsRecoverArmed = rlsRecoverEnabled() ? 1 : 0;
+                                    long cs = ((CreateRLSceneFn)
+                                               ((BYTE*)g_repModule + 0xB0B5C0))(
+                                        2, 0x10, 0, 0, 0, mapPath60,
+                                        0, "\xC1\xFA\xC3\xC5\xD1\xB0\xB1\xA6_s", 1);
+                                    g_rlsRecoverArmed = 0;
+                                    logf("[host] frame60: real CreateRLScene -> 0x%08X", (unsigned)cs);
+                                }
                             }
                             __except (EXCEPTION_EXECUTE_HANDLER)
                             { logf("[host] frame60: real CreateRLScene fault"); }
