@@ -1285,6 +1285,44 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
              (void*)cr->Rbx, (void*)cr->Rcx, (void*)cr->Rdx, (void*)cr->Rsi,
              (void*)cr->Rdi);
         DWORD64 fa = (DWORD64)ep->ExceptionRecord->ExceptionAddress;
+        // proper unwind walk (dbghelp) only for a wild address (outside every
+        // module): RtlCaptureStackBackTrace fails there and the walk recovers
+        // the caller chain; for in-module faults it is skipped (it destabilized
+        // the engine's benign AVs).
+        {
+            HMODULE fmod = NULL;
+            int wild = !(GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                                            GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                                            (LPCSTR)fa, &fmod) && fmod != NULL);
+            if (wild)
+            {
+                __try
+                {
+                    STACKFRAME64 sf;
+                    memset(&sf, 0, sizeof(sf));
+                    sf.AddrPC.Offset = cr->Rip;
+                    sf.AddrPC.Mode = AddrModeFlat;
+                    sf.AddrFrame.Offset = cr->Rbp;
+                    sf.AddrFrame.Mode = AddrModeFlat;
+                    sf.AddrStack.Offset = cr->Rsp;
+                    sf.AddrStack.Mode = AddrModeFlat;
+                    char wdesc[80];
+                    for (int wi = 0; wi < 24; wi++)
+                    {
+                        if (!StackWalk64(IMAGE_FILE_MACHINE_AMD64, GetCurrentProcess(),
+                                         GetCurrentThread(), &sf, ep->ContextRecord,
+                                         NULL, NULL, NULL, NULL))
+                            break;
+                        if (sf.AddrPC.Offset == 0)
+                            break;
+                        describeAddr(sf.AddrPC.Offset, wdesc, sizeof(wdesc));
+                        logf("[VEH]   walk[%d] %s", wi, wdesc);
+                    }
+                }
+                __except (EXCEPTION_EXECUTE_HANDLER)
+                { logf("[VEH]   walk fault"); }
+            }
+        }
         int inRep = (g_repModule != NULL && fa >= (DWORD64)g_repModule &&
                      fa < (DWORD64)g_repModule + 0x2000000);
         int inExe = (g_exeModule != NULL && fa >= (DWORD64)g_exeModule &&
