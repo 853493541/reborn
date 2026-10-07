@@ -44,30 +44,37 @@
    scene (registry key **(1,0)**); the client then sends **C2S ApplyEnterScene (proto=3, 15 B)**
    ~5 s after the connect.
 6. **Our answer** (stub `tools/netcode/game_server_stub.py`): S2C id 3 (time sync) → then
-   **S2C id 189 (0xBD, min size 7) = THE WORLD-BIND MESSAGE**:
-   handler `0x14015FA70`, registered at `0x14011E973` (slot → **id 189**, size 7).
+   **S2C id 188 (0xBC, min size 7) = THE WORLD-BIND MESSAGE `OnSyncRoleDataOver`**:
+   handler `0x14015FA70`, registered at `0x14011E973` (slot at +0x16A40 = **id 188**, size 7;
+   corrected 2026-10-06 — the earlier "189" was one slot off; id 189 = OnSyncItemListInfo).
    Chain: local player lookup (`0x140174D10` by `[client+4]`) → scene lookup
-   `0x140174E50(client, [client+0x14], [client+0x18])` → **cell check `0x1401830B0(scene,
-   posX>>11, posY>>11, 1)`** → vtable `+0x8D8` notify → **guard `0x140173D90`** (writes
-   `player+0x60` via setter `0x14017BDD0`) → state machine.
+   `0x140174E50(client, [client+0x14], [client+0x18])` → **`KScene::ValidateRegions`
+   `0x1401830B0(scene, posX>>11, posY>>11, 1)`** (bootstraps the 3x3 cells, writes
+   `[scene+0x20DCC/DD0]`, returns 1 unless cell alloc/init fails) → vtable `+0x8D8` notify →
+   **guard `0x140173D90` = `KSO3World::AddPlayer`** → setter `0x14017BDD0` (stores
+   `player+0x60` at entry) → state machine.
 7. **Confirm**: the DLL state machine `ConfirmClientReady = 0x1803525F0` requires
    **`player+0x60 != 0`**, then sends **C2S proto=5 (11 B)**; we answer **S2C id 5** (sub0 =
    256-dword attribute array → `player+0x1020`) → **state 7** → LoadingComplete → world UI.
 
-## 3. THE CURRENT BLOCKER — the last gate
+## 3. THE BLOCKER — RESOLVED (2026-10-06): the bind id was 188, not 189
 
-`player+0x60` stays 0: the id-189 chain exits **before** the guard.
+Root cause: a dispatch **off-by-one**. `0x14015FA70` is registered in slot +0x16A40, which is
+**id 188 `OnSyncRoleDataOver`** (handler log: "Sync role data over !"); its neighbours' min
+sizes (8/7/19/56/59) match name-table ids 187/188/189/190/191 exactly. Our id-189 packet went
+to `OnSyncItemListInfo` (min size 19) and never touched the bind.
 
-- Live scene fields (scene map at `client+0x5673D8`, key (1,0)): `[scene+0x64]=1`,
-  **`[scene+0x20DCC]=[scene+0x20DD0]=-1` (the scene's stored cell = UNSET)**,
-  dims `[scene+0x790/0x794]=32`.
-- Cell check `0x1401830B0`: `eax=[scene+0x64]=1` → `+2` → range loop at `0x14018313B+`;
-  compares the requested cell with `[scene+0x20DCC/0x20DD0]` (-1,-1) → mismatch flag → scan.
-- Both tested positions fail: `(16,16)` → cell (0,0); the sandbox spawn
-  `(23334,24224,761)` → cell (11,11) — **the position lands correctly** (live-verified).
-- **NEXT STEP: decode the check's loop result (`0x14018313B+`) and find what SETS
-  `[scene+0x20DCC]`** (the scene cell activation — likely the engine's cell streaming / map
-  data being live). Then the guard runs → `player+0x60` → confirm → state 7.
+- `0x1401830B0` = `KScene::ValidateRegions`: with arg4=1 it touches/requests the 3x3 cells,
+  **writes** `[scene+0x20DCC/DD0]` (0x14018355A/0x140183561), ensures grid cell objects
+  (`scene+0x7a8 + (y*128+x)*8`), and returns 1 unless a cell alloc/init fails. So the old live
+  `-1` simply meant the handler never ran the call.
+- Guard `0x140173D90` = `KSO3World::AddPlayer`; the setter `0x14017BDD0` stores
+  `player+0x60 = scene` at function entry (0x14017bdec) — reaching the guard binds the player.
+- Fix: the stub sends **id 188** after the enter-scene answer. Next: live validation (stub log
+  must show the client's `proto=5` confirm → id-5 reply → state 7; reader
+  `tools/netcode/watch_world_bind.py` shows `p60 != 0` / state 7).
+- Historical live scene data (still valid): scene map at `client+0x5673D8` key (1,0),
+  `[scene+0x64]=1`, dims 32; position lands correctly (live-verified).
 
 ## 4. Decoded — do NOT re-chase (dead ends)
 

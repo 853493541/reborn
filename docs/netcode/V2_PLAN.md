@@ -125,6 +125,11 @@ the loading screen.
 - `id 10` is for OTHER entities (local id is rejected by design; state 7 for the local player
   comes from the state machine).
 
+### Corrected (2026-10-06): the world-bind is **S2C id 188 (0xBC) OnSyncRoleDataOver**, not 189
+The previous "id 189" was one dispatch slot off (registration sizes 8/7/19/56/59 = ids
+187/188/189/190/191; handler 0x14015FA70 = id 188, log "Sync role data over !"). Stub now sends
+188; live validation pending. See EXPERIENCES 2026-10-06 (root cause) + proof/netcode/disasm/.
+
 ### Remaining (next static targets)
 1. **S2C id 5** (per-player world data after the confirm; min 15 B): sub0 -> 256-dword
    attribute array -> `player+0x1020` (parser 0x140327680; type 0 = 256 dwords, types 1..3 =

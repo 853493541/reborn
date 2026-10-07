@@ -66,6 +66,7 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `mine_protocol_layouts.py` | per-handler packet field offsets from S2C handler disassembly -> `proof/netcode/protocol_layouts_s2c.tsv` |
 | `extract_field_maps.py` | packet-read -> object-field pairs per S2C handler (dataflow pairing of mov/movzx) -> `proof/netcode/game_field_maps.tsv` |
 | `enum_named_objects.py` | list session named objects (mutexes/events/sections) — launcher-handoff gate hunting |
+| V2 real-client chain: `serverlist_host.py`, `gateway_stub.py`, `game_server_stub.py`, `launcher_emulator.py`, `post_login.py`, `role_enter.py`, `watch_game_mgr.py`, `watch_world_bind.py`, `dump_va.py`, `xref_va.py` | V2 (real client): server-list host, gateway/game stubs, launch emulator, scripted drivers, external state readers, VA disasm/xref |
 | `reference/jx3_model.py` | runnable reference server+client (10/10 smoke) |
 
 ## Evidence (`proof/netcode/`)

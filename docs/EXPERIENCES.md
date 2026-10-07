@@ -2555,3 +2555,27 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   loop result (0x14018313B+) and the scene cell-activation flow (what sets [scene+0x20DCC]) -
   likely the map-data streaming/cell-load, possibly satisfied by a real map region or a
   different sandbox crop. Stub: map=1 + spawn pos + id189 wired.
+
+### 2026-10-06 — V2 ROOT CAUSE: the world-bind is S2C id 188, not 189 (off-by-one) — OnSyncRoleDataOver
+- Registration slot mapping proven from the aligned dump: consecutive id slots write sizes
+  0xc,0xf,8,7,0x13,0x38,0x3b,0xf; the name table (validated against the live layout table for
+  all 53 shared ids, 0 size mismatches) is 187=8, 188=7, 189=19, 190=56, 191=59, 192=15 ->
+  handler 0x14015FA70 (slot +0x16A40, min size 7) = **id 188 OnSyncRoleDataOver**; its first
+  log line literally reads "Sync role data over !" (0x14015FAEC). The previous "id 189" was one
+  slot off: our 11-byte id-189 packet went to OnSyncItemListInfo (min size 19) and never
+  touched the bind.
+- 0x1401830B0 is NOT a check: it is **KScene::ValidateRegions** (log string @0x140183727). With
+  arg4=1 it (a) touches/requests-loads the 3x3 cells (0x1403d8a00 = request load), (b) writes
+  the stored center cell [scene+0x20DCC/0x20DD0] unconditionally (0x14018355A/0x140183561),
+  (c) ensures cell objects in the grid [scene+0x7a8 + (y*128+x)*8] (alloc 0x5170 + init;
+  alloc/init failure is the ONLY return-0 path, logged lines 0x57c/0x57f), else `mov eax,1`
+  (0x1401836F0). A live stored cell of -1 therefore means the handler never reached the call.
+- Guard 0x140173D90 = **KSO3World::AddPlayer** (log string @0x140173E03): writes
+  player+0x10/14/18 = pos, player+0x2C/0x30 = (pos>>5)&0x3F minor cell, player+0x1FFE0 =
+  scene+0x6c, then calls the setter 0x14017BDD0, which stores **player+0x60 = scene at function
+  entry (0x14017bdec)** before its own cell/position validation -> once the guard is reached the
+  bind sets.
+- Fix (1 word): the game stub now sends S2C id 188 (no role-data sections needed by the
+  handler). Evidence: proof/netcode/disasm/id_dispatch_registrations_14011E900.txt,
+  id188_guard_setter.txt, id189_tail_lookups.txt, cell_check_1401830B0.txt; new reader
+  tools/netcode/watch_world_bind.py.

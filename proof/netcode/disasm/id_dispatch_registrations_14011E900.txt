@@ -1,0 +1,38 @@
+﻿
+==== 0x14011e900 .. 0x14011ea20 (.text)
+  0x14011e900: add      eax, dword ptr [rax]
+  0x14011e902: mov      qword ptr [rdi + 0x16a30], rax
+  0x14011e909: mov      dword ptr [rdi + 0x18210], 0xf
+  0x14011e913: lea      rax, [rip + 0x3d216]  ; 0x14015bb30
+  0x14011e91a: mov      qword ptr [rdi + 0x169e8], rax
+  0x14011e921: mov      dword ptr [rdi + 0x181ec], 0x15
+  0x14011e92b: lea      rax, [rip + 0x465ee]  ; 0x140164f20
+  0x14011e932: mov      qword ptr [rdi + 0x169f0], rax
+  0x14011e939: mov      dword ptr [rdi + 0x181f0], 0xc
+  0x14011e943: lea      rax, [rip + 0x49806]  ; 0x140168150
+  0x14011e94a: mov      qword ptr [rdi + 0x169f8], rax
+  0x14011e951: mov      dword ptr [rdi + 0x181f4], 0xf
+  0x14011e95b: lea      rax, [rip + 0x4132e]  ; 0x14015fc90
+  0x14011e962: mov      qword ptr [rdi + 0x16a38], rax
+  0x14011e969: mov      dword ptr [rdi + 0x18214], 8
+  0x14011e973: lea      rax, [rip + 0x410f6]  ; 0x14015fa70
+  0x14011e97a: mov      qword ptr [rdi + 0x16a40], rax
+  0x14011e981: mov      dword ptr [rdi + 0x18218], 7
+  0x14011e98b: lea      rax, [rip + 0x38afe]  ; 0x140157490
+  0x14011e992: mov      qword ptr [rdi + 0x16a48], rax
+  0x14011e999: mov      dword ptr [rdi + 0x1821c], 0x13
+  0x14011e9a3: lea      rax, [rip + 0x48c86]  ; 0x140167630
+  0x14011e9aa: mov      qword ptr [rdi + 0x16a50], rax
+  0x14011e9b1: mov      dword ptr [rdi + 0x18220], 0x38
+  0x14011e9bb: lea      rax, [rip + 0x397ee]  ; 0x1401581b0
+  0x14011e9c2: mov      qword ptr [rdi + 0x16a58], rax
+  0x14011e9c9: mov      dword ptr [rdi + 0x18224], 0x3b
+  0x14011e9d3: lea      rax, [rip + 0x28fd6]  ; 0x1401479b0
+  0x14011e9da: mov      qword ptr [rdi + 0x16a60], rax
+  0x14011e9e1: mov      dword ptr [rdi + 0x18228], 0xf
+  0x14011e9eb: lea      rax, [rip + 0x28f1e]  ; 0x140147910
+  0x14011e9f2: mov      qword ptr [rdi + 0x16a68], rax
+  0x14011e9f9: mov      dword ptr [rdi + 0x1822c], 0xb
+  0x14011ea03: lea      rax, [rip + 0x1acf6]  ; 0x140139700
+  0x14011ea0a: mov      qword ptr [rdi + 0x17e88], rax
+  0x14011ea11: mov      dword ptr [rdi + 0x18c3c], 0xffffffff

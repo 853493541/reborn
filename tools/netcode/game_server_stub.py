@@ -209,13 +209,14 @@ def handle(conn, addr):
                     conn.sendall(sess.encrypt(bytes(p)))
                     w("[%s] SENT id=3 time sync after client ApplyEnterScene" % time.strftime("%H:%M:%S"))
                     time.sleep(0.3)
-                    # S2C id 189 (0xBD, min 7 B) = the local-player world bind: its handler
-                    # calls the guard (0x140173D90) with the player pos + the scene -> stores
+                    # S2C id 188 (0xBC, min 7 B) = OnSyncRoleDataOver ("Sync role data over !",
+                    # handler 0x14015FA70) = the local-player world bind: ValidateRegions
+                    # (0x1401830B0) on the scene, then the guard (0x140173D90) stores
                     # player+0x60 (the ConfirmClientReady prerequisite).
-                    p189 = bytearray(11)
-                    struct.pack_into("<H", p189, 0, 189)
-                    conn.sendall(sess.encrypt(bytes(p189)))
-                    w("[%s] SYNC id=189 world-bind sent" % time.strftime("%H:%M:%S"))
+                    p188 = bytearray(11)
+                    struct.pack_into("<H", p188, 0, 188)
+                    conn.sendall(sess.encrypt(bytes(p188)))
+                    w("[%s] SYNC id=188 world-bind sent" % time.strftime("%H:%M:%S"))
                     time.sleep(0.3)
                     sync_step = 2
                     next_t = time.time() + 6.0
