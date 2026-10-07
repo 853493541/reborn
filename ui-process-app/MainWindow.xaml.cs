@@ -371,8 +371,10 @@ namespace UiProcessApp
             PageBox.Items.Add(new ComboBoxItem { Content = "(all)", Tag = null });
             foreach (var page in pages)
                 PageBox.Items.Add(new ComboBoxItem { Content = PageDisplayName(_currentIni, page), Tag = page });
+            var engineDefault = UiProcessApp.Engine.LayoutPlanBuilder.DefaultPage(_currentIni);
             var preferred = !string.IsNullOrWhiteSpace(_currentWindow?.Page) && pages.Contains(_currentWindow.Page)
                 ? _currentWindow.Page
+                : engineDefault != null && pages.Contains(engineDefault) ? engineDefault
                 : pages.Contains("Page_DesertStorm") ? "Page_DesertStorm"
                 : pages.Count > 0 ? pages[0] : null;
             ComboBoxItem selected = null;

@@ -328,26 +328,76 @@ namespace UiProcessApp.Engine
                 return result;
             }
 
-            var chain = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var cursor = selectedPage;
-            while (!string.IsNullOrWhiteSpace(cursor))
+            // Page-sets: each WndPageSet shows exactly one page. The viewer's selected
+            // page wins for its own page-set; every other page-set shows its authored
+            // default (the tab whose checkbox has CheckedWhenCreate=1, else Page_0).
+            // The mapping is authored: Page_i=<page> + CheckBox_i=<tab> on the set.
+            var pageSetPages = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
+            var shownPage = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var ps in ini.Sections)
             {
-                chain.Add(cursor);
-                cursor = ini.ByName.TryGetValue(cursor, out var section) ? section.Get("._Parent") : null;
+                if (!string.Equals(ps.Get("._WndType"), "WndPageSet", StringComparison.OrdinalIgnoreCase)) continue;
+                var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                string first = null, defaultPage = null;
+                for (int i = 0; i < 64; i++)
+                {
+                    var page = ps.Get("Page_" + i);
+                    if (string.IsNullOrWhiteSpace(page)) break;
+                    if (first == null) first = page;
+                    map[page] = page;
+                    var tab = ps.Get("CheckBox_" + i);
+                    if (defaultPage == null && !string.IsNullOrWhiteSpace(tab) &&
+                        ini.ByName.TryGetValue(tab, out var tabSec) && tabSec.GetInt("CheckedWhenCreate") == 1)
+                        defaultPage = page;
+                }
+                if (map.Count == 0) continue;
+                pageSetPages[ps.Name] = map;
+                var shown = defaultPage ?? first;
+                if (!string.IsNullOrWhiteSpace(selectedPage) && map.ContainsKey(selectedPage)) shown = selectedPage;
+                shownPage[ps.Name] = shown;
             }
 
+            // A section renders iff at every page-set ancestor it lies on the shown page.
             bool OnPage(string name)
             {
-                if (string.IsNullOrWhiteSpace(selectedPage)) return true;
-                if (chain.Contains(name)) return true;
-                var page = PageOf(name);
-                return page == null || string.Equals(page, selectedPage, StringComparison.OrdinalIgnoreCase);
+                if (pageSetPages.Count == 0) return true;
+                var cursor = name;
+                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                while (!string.IsNullOrWhiteSpace(cursor) && seen.Add(cursor))
+                {
+                    if (!ini.ByName.TryGetValue(cursor, out var sec)) break;
+                    var parent = sec.Get("._Parent");
+                    if (string.IsNullOrWhiteSpace(parent)) break;
+                    if (pageSetPages.TryGetValue(parent, out var pagesOfSet) && pagesOfSet.ContainsKey(cursor) &&
+                        shownPage.TryGetValue(parent, out var shown) &&
+                        !string.Equals(cursor, shown, StringComparison.OrdinalIgnoreCase))
+                        return false;
+                    cursor = parent;
+                }
+                return true;
             }
 
-            var pages = ini.Sections
-                .Where(s => s.Name.StartsWith("Page_", StringComparison.OrdinalIgnoreCase))
-                .Select(s => s.Name)
-                .ToList();
+            // The combo lists the top page-set's pages (the set whose parent is the root);
+            // fall back to every Page_* section for scripts without a page-set.
+            var pages = new List<string>();
+            var rootName = ini.Sections.Count > 0 ? ini.Sections[0].Name : null;
+            foreach (var ps in ini.Sections)
+            {
+                if (!string.Equals(ps.Get("._WndType"), "WndPageSet", StringComparison.OrdinalIgnoreCase)) continue;
+                if (!string.Equals(ps.Get("._Parent"), rootName, StringComparison.OrdinalIgnoreCase)) continue;
+                for (int i = 0; i < 64; i++)
+                {
+                    var page = ps.Get("Page_" + i);
+                    if (string.IsNullOrWhiteSpace(page)) break;
+                    pages.Add(page);
+                }
+                break;
+            }
+            if (pages.Count == 0)
+                pages = ini.Sections
+                    .Where(s => s.Name.StartsWith("Page_", StringComparison.OrdinalIgnoreCase))
+                    .Select(s => s.Name)
+                    .ToList();
 
             var filtered = new IniFile();
             foreach (var section in ini.Sections)
@@ -384,6 +434,32 @@ namespace UiProcessApp.Engine
                 filtered.ByName[itemName] = item;
             }
             return new LayoutPlan { Filtered = filtered, Pages = pages };
+        }
+
+        /// <summary>The engine's default page: the top page-set's tab with
+        /// CheckedWhenCreate=1, else its first page (Page_0).</summary>
+        public static string DefaultPage(IniFile ini)
+        {
+            if (ini == null || ini.Sections.Count == 0) return null;
+            var rootName = ini.Sections[0].Name;
+            foreach (var ps in ini.Sections)
+            {
+                if (!string.Equals(ps.Get("._WndType"), "WndPageSet", StringComparison.OrdinalIgnoreCase)) continue;
+                if (!string.Equals(ps.Get("._Parent"), rootName, StringComparison.OrdinalIgnoreCase)) continue;
+                string first = null;
+                for (int i = 0; i < 64; i++)
+                {
+                    var page = ps.Get("Page_" + i);
+                    if (string.IsNullOrWhiteSpace(page)) break;
+                    if (first == null) first = page;
+                    var tab = ps.Get("CheckBox_" + i);
+                    if (!string.IsNullOrWhiteSpace(tab) && ini.ByName.TryGetValue(tab, out var tabSec) &&
+                        tabSec.GetInt("CheckedWhenCreate") == 1)
+                        return page;
+                }
+                return first;
+            }
+            return null;
         }
 
         /// <summary>Keeps only the subtrees under the listed sections (plus their ancestors).</summary>

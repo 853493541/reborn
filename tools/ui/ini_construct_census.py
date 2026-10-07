@@ -29,10 +29,10 @@ LEAF_TYPES = {
     "WndPage", "WndPageSet", "WndList", "WndListNode", "WndTreeList",
     "WndTreeNode", "TreeLeaf", "FlexHandle",
 }
-# Page-set tab flow is approximated; scene/movie/web are native-only (the static
-# viewer cannot render them). Flex containers/list handles are exact now.
+# Page-sets are exact now: each WndPageSet shows one page (Page_i/CheckBox_i map +
+# the CheckedWhenCreate=1 default, nested sets show their own default). Scene/movie/
+# web are native-only (the static viewer cannot render them).
 APPROXIMATE_TYPES = {
-    "WndPage", "WndPageSet",
     "WndScene", "Scene", "WndMovie", "WndWebCef",
 }
 # PosType 3/4/5/9/12 are flow-relative (engine fn 0x180108600, jump table
