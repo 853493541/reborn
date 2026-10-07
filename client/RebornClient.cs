@@ -1347,6 +1347,13 @@ internal static class RebornClient
         setClip(clipIdle);
         Pump(engine, 500);
 
+        // Character 3.4 face pipeline (agent/3x-face): optional MetaFace JSON
+        // (tools/character/face_data.py -> FaceLiftDataConverterX64 KMETAFACE).
+        // Apply is pending the agent A shim export; see client/FaceData.cs.
+        string faceJson = Env("RC_FACE_JSON", "");
+        if (faceJson.Length > 0)
+            FaceData.Apply(faceJson, model, delegate(string m) { Log(m); });
+
         // Spawn ground settle (deferred): the engine streams terrain around the
         // player model; until the spawn region arrives the loader returns zeros
         // (observed with RC_SPAWN in a region the map-default camera had not
