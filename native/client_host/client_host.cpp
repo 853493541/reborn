@@ -362,22 +362,64 @@ static long __fastcall hookExeInit(void* a1, void* a2)
     return r;
 }
 
+// Allocate executable memory within +-1 GB of the target so a 5-byte
+// rip-relative jmp can reach it (VirtualAlloc(NULL,..) can hand back a region
+// more than 2 GB from a module at 0x7FF... - the truncated rel32 then jumps
+// wild; that was the "wild call" in the lua/RL-table traces).
+static BYTE* allocNear(BYTE* target, size_t size)
+{
+    SYSTEM_INFO si;
+    GetSystemInfo(&si);
+    DWORD64 gran = si.dwAllocationGranularity;
+    DWORD64 t = (DWORD64)target;
+    DWORD64 base = (t + gran - 1) & ~(gran - 1);
+    for (DWORD64 off = 0; off < 0x38000000ULL; off += gran)
+    {
+        if (base + off < t + 0x38000000ULL)
+        {
+            BYTE* p = (BYTE*)VirtualAlloc((void*)(base + off), size,
+                MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+            if (p != NULL)
+                return p;
+        }
+        if (base > off + gran + 0x10000)
+        {
+            BYTE* p = (BYTE*)VirtualAlloc((void*)(base - off - gran), size,
+                MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+            if (p != NULL)
+                return p;
+        }
+    }
+    return NULL;
+}
+
+static BYTE* g_tableHookStub = NULL;
+
 static int installTableLoadHook(HMODULE rep)
 {
     BYTE* site = (BYTE*)rep + 0x80B9C3;
     const int origLen = 7;
-    BYTE* stub = (BYTE*)VirtualAlloc(NULL, 0x100, MEM_COMMIT | MEM_RESERVE,
-                                     PAGE_EXECUTE_READWRITE);
+    BYTE* stub = allocNear(site, 0x100);
     if (stub == NULL)
         return 0;
+    g_tableHookStub = stub;
     int i = 0;
+    // 0x80B9C3 is a loop-head block inside the runner: it can be reached by a
+    // non-call jump, so the 16-byte stack alignment the ABI promises at a call
+    // site is not guaranteed. Save the incoming rsp in a callee-saved register
+    // (rbp - the saved value must survive the hook call), force alignment for
+    // the hook call, then restore (a misaligned call crashes the CRT movdqa).
     stub[i++] = 0x51; stub[i++] = 0x52; stub[i++] = 0x41; stub[i++] = 0x50;
     stub[i++] = 0x41; stub[i++] = 0x51;
-    stub[i++] = 0x48; stub[i++] = 0x83; stub[i++] = 0xEC; stub[i++] = 0x28;
+    stub[i++] = 0x55;                                     // push rbp
+    stub[i++] = 0x48; stub[i++] = 0x89; stub[i++] = 0xE5; // mov rbp, rsp
+    stub[i++] = 0x48; stub[i++] = 0x83; stub[i++] = 0xE4; stub[i++] = 0xF0; // and rsp,-16
+    stub[i++] = 0x48; stub[i++] = 0x83; stub[i++] = 0xEC; stub[i++] = 0x20; // sub rsp,0x20
     stub[i++] = 0x49; stub[i++] = 0xB8;
     *(void**)(stub + i) = (void*)tableLoadLog; i += 8;
     stub[i++] = 0x41; stub[i++] = 0xFF; stub[i++] = 0xD0;
-    stub[i++] = 0x48; stub[i++] = 0x83; stub[i++] = 0xC4; stub[i++] = 0x28;
+    stub[i++] = 0x48; stub[i++] = 0x89; stub[i++] = 0xEC; // mov rsp, rbp
+    stub[i++] = 0x5D;                                     // pop rbp
     stub[i++] = 0x41; stub[i++] = 0x59; stub[i++] = 0x41; stub[i++] = 0x58;
     stub[i++] = 0x5A; stub[i++] = 0x59;
     // replay the original lea rsi,[rip+0x70B126] as mov rsi, <the resolved
@@ -2170,9 +2212,13 @@ int main(void)
                 {
                     typedef int (__cdecl *InitPakFn)(const char*, const char*, const char*,
                                                      int, int, int, int, int, void*);
+                    // arg4 = the file-priority mode (the exe's [cfg+0xB94]):
+                    // 0 = pak first, 1 = loose first. The sandbox data is loose
+                    // and config.ini says PakFirst=0, so the loose files win and
+                    // the pak only supplies what is missing loose.
                     int pr = ((InitPakFn)((BYTE*)lua + 0xCC2D0))(
-                        "C:/SeasunGame/Game/JX3/Pakv4", "Trunk.Dir", "", 0, 0, 0, 0, 0, (void*)"");
-                    logf("[host] file layer InitPak=%d (RC_HOST_PAK=1)", pr);
+                        "C:/SeasunGame/Game/JX3/Pakv4", "Trunk.Dir", "", 1, 0, 0, 0, 0, (void*)"");
+                    logf("[host] file layer InitPak=%d (RC_HOST_PAK=1, loose-first)", pr);
                 }
                 else
                     logf("[host] file layer InitPak skipped (loose only)");
@@ -3155,6 +3201,27 @@ int main(void)
         }
     }
 
+    // The logic-module worker (started before the engine init) now loads its
+    // tables through the pak (slow). The game runs it concurrently with the
+    // engine pump; the host pumps the window queue here until it completes so
+    // the actor/frame phase starts from a fully initialized logic world (a
+    // frame-0 KG3D_SceneObjectContainer::Update assert without it).
+    {
+        int waited = 0;
+        while (!g_logicDone && waited < 300000)
+        {
+            MSG msg;
+            while (PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE))
+            {
+                TranslateMessage(&msg);
+                DispatchMessageA(&msg);
+            }
+            Sleep(50);
+            waited += 50;
+        }
+        logf("[host] logic wait done=%d waited=%dms", (int)g_logicDone, waited);
+    }
+
     // actor from a PakV4 model, placed at the sandbox spawn via the create
     // options (4x4 row-major XMFLOAT4X4 translation at indices 12/13/14)
     typedef long (__fastcall *CreateActorFn)(void*, const char*, void*, void**,
@@ -3812,6 +3879,21 @@ int main(void)
                                                      pakMgr, mvt, mvt2, vecB, vecE);
                                                 void* otherFs = *(void**)((BYTE*)lua60 + 0x172968);
                                                 logf("[host] frame60: lua otherFs(0x172968)=%p", otherFs);
+                                                HMODULE repNow = GetModuleHandleA("JX3RepresentX64.dll");
+                                                if (repNow != NULL)
+                                                {
+                                                    BYTE* tsite = (BYTE*)repNow + 0x80B9C3;
+                                                    MEMORY_BASIC_INFORMATION mbi;
+                                                    memset(&mbi, 0, sizeof(mbi));
+                                                    VirtualQuery(tsite, &mbi, sizeof(mbi));
+                                                    logf("[host] frame60: rep=%p tableSite=%p stub=%p bytes=%02X %02X %02X %02X %02X %02X %02X prot=0x%X",
+                                                         repNow, tsite, g_tableHookStub,
+                                                         tsite[0], tsite[1], tsite[2], tsite[3],
+                                                         tsite[4], tsite[5], tsite[6],
+                                                         (unsigned)mbi.Protect);
+                                                    describeAddr((DWORD64)tsite, rootS, sizeof(rootS));
+                                                    logf("[host] frame60: tableSite describe=%s", rootS);
+                                                }
                                             }
                                         }
                                         __except (EXCEPTION_EXECUTE_HANDLER)
