@@ -2478,3 +2478,14 @@ solved it, and what is still open. **Newest at the bottom.**
   restarts; the checklist rebuilds on window/page/hide changes.
 - Also removed the now-unused PageOf helper in LayoutPlan.Build (0 warnings).
 - Gates: build 0 errors; --selftest 1240/0/0; app relaunched.
+
+### 2026-10-06 ? UI ? checklist beside the canvas + display-based defaults
+- User: the checklist must sit next to the displayed UI and default to checked for displayed
+  items ("right now they are unchecked").
+- Moved the checklist into the 布局 tab as a right-side panel (330px + splitter, beside the
+  canvas). Defaults are now display-based: an item with a detected issue - placeholder art
+  (build.Placeholders), unresolved string (build.UnresolvedStrings), or out-of-window outside a
+  WndScroll (one-shot LayoutUpdated pass, scroll overflow excluded as legitimate) - defaults to
+  UNCHECKED with the reason (⚠ 缺图/文案缺失/超出窗口); every other rendered item defaults to
+  CHECKED. Explicit ticks are overrides in Data/item_checks.tsv (unchanged format).
+- Gates: build 0/0; --selftest 1240/0/0; commit ccc3f0e.
