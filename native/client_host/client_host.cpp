@@ -226,6 +226,18 @@ static void __fastcall hookTableBuilder(void* a1, unsigned a2, void* a3, void* a
     ((void (__fastcall *)(void*, unsigned, void*, void*))g_buildTramp)(a1, a2, a3, a4);
 }
 
+// trace the exe's KJX3RepresentModule::Initialize (the game's own param fill)
+static BYTE g_exeInitSaved[32];
+static BYTE* g_exeInitTramp = NULL;
+
+static long __fastcall hookExeInit(void* a1, void* a2)
+{
+    logf("[host] exe Represent Initialize enter (a1=%p a2=%p)", a1, a2);
+    long r = ((long (__fastcall *)(void*, void*))g_exeInitTramp)(a1, a2);
+    logf("[host] exe Represent Initialize exit -> 0x%08X", (unsigned)r);
+    return r;
+}
+
 static int installTableLoadHook(HMODULE rep)
 {
     BYTE* site = (BYTE*)rep + 0x80B9C3;
@@ -554,6 +566,26 @@ static void __fastcall exeGuardFooter(void* guard)
 {
 }
 
+static void __fastcall exeGuardNoop(void* a)
+{
+    (void)a;
+}
+
+// stub object methods for the fabricated exe system config
+static void* g_stubUIValue = NULL;
+
+static void* __fastcall stubRetZero(void* a)
+{
+    (void)a;
+    return NULL;
+}
+
+static void* __fastcall stubRetUI(void* a)
+{
+    (void)a;
+    return g_stubUIValue;
+}
+
 static int __cdecl exeAtexit(void* fn)
 {
     return 0;
@@ -818,7 +850,10 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
         DWORD64 fa = (DWORD64)ep->ExceptionRecord->ExceptionAddress;
         int inRep = (g_repModule != NULL && fa >= (DWORD64)g_repModule &&
                      fa < (DWORD64)g_repModule + 0x2000000);
+        int inExe = (g_exeModule != NULL && fa >= (DWORD64)g_exeModule &&
+                     fa < (DWORD64)g_exeModule + 0x1000000);
         int inCrt = 0;
+        int inNtdll = 0;
         {
             HMODULE m = NULL;
             if (GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
@@ -830,9 +865,11 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
                 if (strstr(mb, "VCRUNTIME") != NULL ||
                     strstr(mb, "ucrtbase") != NULL)
                     inCrt = 1;
+                if (strstr(mb, "ntdll") != NULL)
+                    inNtdll = 1;
             }
         }
-        if ((inRep || inCrt) && vehTraces < 12)
+        if ((inRep || inCrt || inExe || inNtdll) && vehTraces < 12)
         {
             vehTraces++;
             void* frames[20];
@@ -2252,7 +2289,13 @@ int main(void)
                                     { logf("[host] exe trivial getter fault"); }
                                     // lazy globals the exe module Create reads directly:
                                     // 0xA8C1F0 (a list head) is built by the lazy getter
-                                    // at 0x9DB60 - call it first.
+                                    // at 0x9DB60 - call it first. Its magic-static guard
+                                    // (0x9FA70) must be stubbed BEFORE the call; the
+                                    // other CRT guards (0x79B6E0/0x79B680/0x79B3F0) must
+                                    // NOT be stubbed yet - the module Creates' ctors
+                                    // still need their statics to initialize.
+                                    patchAbsJmp((BYTE*)g_exeModule + 0x9FA70,
+                                                (void*)exeGuardNoop);
                                     __try
                                     {
                                         void* pm = ((void* (__fastcall *)(size_t))
@@ -2265,7 +2308,14 @@ int main(void)
                                              *(void**)((BYTE*)g_exeModule + 0xA8C1F0));
                                     }
                                     __except (EXCEPTION_EXECUTE_HANDLER)
-                                    { logf("[host] exe lazy 0x9DB60 fault"); }
+                                    {
+                                        logf("[host] exe lazy 0x9DB60 fault; globals 1C8=%p 1E0=%p 1E8=%p 1F0=%p 1F8=%p",
+                                             *(void**)((BYTE*)g_exeModule + 0xA8C1C8),
+                                             *(void**)((BYTE*)g_exeModule + 0xA8C1E0),
+                                             *(void**)((BYTE*)g_exeModule + 0xA8C1E8),
+                                             *(void**)((BYTE*)g_exeModule + 0xA8C1F0),
+                                             *(void**)((BYTE*)g_exeModule + 0xA8C1F8));
+                                    }
                                     __try
                                     {
                                         void* m = ((void* (__fastcall *)(void))
@@ -2298,6 +2348,20 @@ int main(void)
                                     }
                                     __except (EXCEPTION_EXECUTE_HANDLER)
                                     { logf("[host] KJX3RepresentEventModule::Create fault"); }
+                                    // trace the game's own module Initialize
+                                    // (exe+0xBC150) - the dispatcher (exe+0xBC6A0,
+                                    // state 3) calls it with the module object and
+                                    // the event data (param+0xA8 source).
+                                    logf("[host] exe Initialize hook -> %d",
+                                         installInlineHook(g_exeModule, 0xBC150,
+                                             (void*)hookExeInit, g_exeInitSaved,
+                                             &g_exeInitTramp, 15));
+                                    // the Initialize's post-init block registers a
+                                    // callback into a caller-provided container that
+                                    // our host call cannot supply; skip it and take
+                                    // the success exit (r12d=1) instead.
+                                    patchAbsJmp((BYTE*)g_exeModule + 0xBC4DA,
+                                                (BYTE*)g_exeModule + 0xBC5F7);
                                     // OnInitialize(module, 1) initializes the static
                                     // manager object and sets [module+0x18] = manager
                                     // stub the CRT helpers used by the magic-static
@@ -3230,6 +3294,126 @@ int main(void)
                         *(void**)((BYTE*)g_repSingleton + 0x100) = g_so3World;
                     logf("[host] frame60: singleton+0x100 (SO3World) -> %p",
                          *(void**)((BYTE*)g_repSingleton + 0x100));
+                    // run the game's OWN module init path first: the dispatcher
+                    // (exe+0xBC6A0, state 3) -> KJX3RepresentModule::Initialize
+                    // (exe+0xBC150) with the module object + event data. The
+                    // Initialize hook logs the exact event data it receives.
+                    // the exe's lazy getter (0x9DB60) throws in-host (its CRT
+                    // statics); fabricate the two globals the Initialize still
+                    // reads: 0xA8C1C8 = the system config (dwords, zero = defaults)
+                    // and 0xA8C1E8 = a holder whose +0x18 the Initialize copies
+                    // into the Param.
+                    __try
+                    {
+                        static unsigned char sysCfg[0x1000];
+                        static unsigned char sysHolder[0x80];
+                        // the config's +0x18 object: the Initialize calls its
+                        // vt[0x80]() (a getter whose result becomes Param+0x38)
+                        static void* stubVt[32];
+                        static unsigned char stubObj[0x40];
+                        memset(sysCfg, 0, sizeof(sysCfg));
+                        memset(sysHolder, 0, sizeof(sysHolder));
+                        memset(stubObj, 0, sizeof(stubObj));
+                        g_stubUIValue = g_ifUI;
+                        {
+                            int si;
+                            for (si = 0; si < 32; si++)
+                                stubVt[si] = (void*)stubRetZero;
+                            stubVt[0x80 / 8] = (void*)stubRetUI;
+                            *(void**)stubObj = stubVt;
+                            *(void**)(sysCfg + 0x18) = stubObj;
+                        }
+                        *(void**)((BYTE*)sysHolder + 0x18) = g_ifXLogic;
+                        // 0xA8C1E0 = the KJX3UIShellModule; its OnInitialize does
+                        // GetProcAddress([+0x60], "CreateSO3UI") - load JX3UIX64.dll
+                        static unsigned char uiShellMod[0x100];
+                        memset(uiShellMod, 0, sizeof(uiShellMod));
+                        {
+                            wchar_t uiPath[MAX_PATH];
+                            swprintf_s(uiPath, MAX_PATH, L"%s\\JX3UIX64.dll", bin64);
+                            HMODULE uiDll = LoadLibraryExW(uiPath, NULL,
+                                LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR |
+                                LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
+                            logf("[host] frame60: JX3UIX64.dll -> %p", uiDll);
+                            *(void**)(uiShellMod + 0x60) = uiDll;
+                        }
+                        if (*(void**)((BYTE*)g_exeModule + 0xA8C1E0) == NULL)
+                            *(void**)((BYTE*)g_exeModule + 0xA8C1E0) = uiShellMod;
+                        if (*(void**)((BYTE*)g_exeModule + 0xA8C1C8) == NULL)
+                            *(void**)((BYTE*)g_exeModule + 0xA8C1C8) = sysCfg;
+                        if (*(void**)((BYTE*)g_exeModule + 0xA8C1E8) == NULL)
+                            *(void**)((BYTE*)g_exeModule + 0xA8C1E8) = sysHolder;
+                        logf("[host] frame60: fabricated 0xA8C1C8=%p 0xA8C1E8=%p",
+                             *(void**)((BYTE*)g_exeModule + 0xA8C1C8),
+                             *(void**)((BYTE*)g_exeModule + 0xA8C1E8));
+                    }
+                    __except (EXCEPTION_EXECUTE_HANDLER)
+                    { logf("[host] frame60: sys global fabrication fault"); }
+                    // create the exe subsystem singletons the game's own
+                    // Initialize reads (the exe+0xA8C1C0 registry). The host
+                    // creates only a few modules; these four Create functions
+                    // register the ones KJX3RepresentModule::Initialize needs
+                    // (0xA8C220/0xA8C250/0xA8C290/0xA8C2B0; 0xA8C1C8/0xA8C1E8
+                    // come from 0x9DB60 which is already called).
+                    __try
+                    {
+                        static const DWORD creates[] = { 0xB2910, 0xB72F0,
+                                                         0xBF440, 0xC54D0 };
+                        // the module's OnInitialize = its vtable slot 5 (verified
+                        // against the known common module pair: 0xA4700 -> 0xA42F0)
+                        static const DWORD onInits[] = { 0xB2CE0, 0xB7D20,
+                                                         0xBFA00, 0xC5DB0 };
+                        // these Creates construct the module into the caller's
+                        // storage (rcx), unlike the event modules that allocate
+                        static unsigned char modStore[4][0x800];
+                        int ci;
+                        for (ci = 0; ci < 4; ci++)
+                        {
+                            memset(modStore[ci], 0, sizeof(modStore[ci]));
+                            __try
+                            {
+                                void* cr = ((void* (*)(void*))
+                                            ((BYTE*)g_exeModule + creates[ci]))(
+                                                modStore[ci]);
+                                logf("[host] frame60: exe Create(0x%X) -> %p",
+                                     (unsigned)creates[ci], cr);
+                                long oi = ((long (__fastcall *)(void*, int))
+                                           ((BYTE*)g_exeModule + onInits[ci]))(
+                                               cr, 1);
+                                logf("[host] frame60: exe OnInitialize(0x%X) -> 0x%08X [mgr]=%p",
+                                     (unsigned)onInits[ci], (unsigned)oi,
+                                     *(void**)((BYTE*)cr + 0x18));
+                            }
+                            __except (EXCEPTION_EXECUTE_HANDLER)
+                            { logf("[host] frame60: exe Create(0x%X) fault",
+                                   (unsigned)creates[ci]); }
+                        }
+                    }
+                    __except (EXCEPTION_EXECUTE_HANDLER)
+                    { logf("[host] frame60: exe Create fault"); }
+                    __try
+                    {
+                        logf("[host] frame60: exe sys globals: 250=%p 290=%p 1C0=%p 2B0=%p",
+                             *(void**)((BYTE*)g_exeModule + 0xA8C250),
+                             *(void**)((BYTE*)g_exeModule + 0xA8C290),
+                             *(void**)((BYTE*)g_exeModule + 0xA8C1C0),
+                             *(void**)((BYTE*)g_exeModule + 0xA8C2B0));
+                    }
+                    __except (EXCEPTION_EXECUTE_HANDLER)
+                    { logf("[host] frame60: exe sys globals read fault"); }
+                    __try
+                    {
+                        void* exeMod60 = g_exeRepEvent;
+                        if (exeMod60 != NULL)
+                        {
+                            long dr60 = ((long (__fastcall *)(void*, unsigned, void*))
+                                         ((BYTE*)g_exeModule + 0xBC6A0))(exeMod60, 3, 0);
+                            logf("[host] frame60: exe dispatcher(state 3) -> 0x%08X",
+                                 (unsigned)dr60);
+                        }
+                    }
+                    __except (EXCEPTION_EXECUTE_HANDLER)
+                    { logf("[host] frame60: exe dispatcher fault"); }
                     // Phase B: full SO3Represent::Init(Param) now that the logic world
                     // exists. MessageBoxes are suppressed, so a failed Init returns
                     // (its KGLOG names the next missing object) instead of hanging.
