@@ -60,7 +60,7 @@ ones in the viewer. Native WPF (no web), reuses the existing render path.
 - Runtime-shell windows (raid/chat/social lists) get the "runtime-filled" marker instead of a fake row.
   **DONE** — `--status` flags (`shell`, `runtime-hosts=N`, `pages=n no-default`) shown in the viewer.
 
-**P4 — render sanity checks.** *(not started)*
+**P4 — render sanity checks.** *(not started; superseded in scope by `UI_OOB_FIX_PLAN.md`, 2026-10-07)*
 - Off-window parked-element detector (authored position far outside the frame and not script-placed).
 - Top-level sibling overlap detector (rendered bbox intersections).
 - Empty-render detector (content ratio below threshold) → auto-suggest "runtime-filled" marker.

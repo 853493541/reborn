@@ -2584,3 +2584,20 @@ solved it, and what is still open. **Newest at the bottom.**
   own track. Wheel behavior unchanged (it still resolves the viewport/bar content).
 - Verified: build 0 warnings; `--selftest` 1240/0/0; `--drag bigbagpanel Btn_Drag` and
   `--click bigbagpanel Btn_Bank` unchanged.
+
+### 2026-10-07 — UI — oob fix plan (measured class split, no invented clipping)
+
+- The user-reported "components outside the window" is now measured and classed instead of one
+  number: `--audit` oob 7,690 (detail capped at 40/window; 6,254 parsed). Post-filter classes:
+  container-overhang 1,548 / leaf-content 1,204 / decor-art 708, plus scroll 1,194, parked 1,347,
+  negative-pos 457, edge-PosType 149, not-in-ini 204.
+- Evidence that most overhang is authored, not viewer misplacement: MailPanel's PageSet_Total is
+  535 tall in a 512 frame (CheckBox at y=505), QuestTraceList's Image_Bg is 300x600 at (0,28) in a
+  300x550 frame, CompassPanel's Handle_Images is 255x255 in a 236x259 frame — all authored. The
+  engine has no script-facing clip API (KGUI strings) and its INI decoder
+  (KUiComponentsDecoder::DecodeItem 0x1800b86df) treats absent AutoSize as explicit size, so a
+  blanket clip-to-frame would invent behavior.
+- Plan doc `docs/ui/UI_OOB_FIX_PLAN.md` (registered): P0 classified audit (viewer bug A /
+  hidden-but-shown B / authored overhang C / clip false positive D), P1 engine clip+size truth,
+  P2 fix B, P3 fix A, P4 script/page sizing, P5 gates+proof. Only A and B are bugs.
+- No code changed this entry; the commit is docs only.
