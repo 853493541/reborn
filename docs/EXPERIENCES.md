@@ -3194,5 +3194,25 @@ HIGH-confidence findings:
   player (`LuaCreateHangPet` 0x5BE120 needs a pCharacter; logic module exposes
   `AddPlayer`/`LuaAddPlayer`).
 - Evidence: host_exe231.out; offline RE scripts.
+
+## 2026-10-07 - Gate 3 progress: named-object manager created; InitializeScene runs on the id-2 scene
+
+- Initializing the named-object manager by calling `rep+0x920D10` with a zeroed
+  0x40 context (it self-populates a 2-entry factory vector) returns 1 and sets
+  `[rep+0xF51298]` (run 232/233: `namedObjectMgr -> 1 [rep+0xF51298]=0x…`).
+  Consequence: the named-object factory now returns real objects
+  (`entityFactory('scene[000002]') -> 0x…`, previously 0).
+- Hooked `rep+0xADFFE0`: it IS `KRLScene::InitializeScene`, called with the
+  id-2 scene (`self=0x…B040 == char scene (real)`), and it now runs but returns
+  0 with `[self+0xF29E8]=0`, failing later at
+  `KGLOG_PROCESS_ERROR(pEntity) at line 54 in InitializeScene` (a further named
+  entity is NULL). So the manager init is necessary but not sufficient; the
+  manager built from a zeroed context may not register the entity factories the
+  scene node needs.
+- Next: reconstruct the manager's real factory context (what `0x920D10` is
+  normally called with - a 2-entry factory vector; find its source), so the
+  entity types used by InitializeScene resolve; then `[KRLScene+0xF29E8]` should
+  be set and the local-player chain can proceed.
+- Evidence: host_exe232/233.out; commits (manager init, InitializeScene hook).
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
