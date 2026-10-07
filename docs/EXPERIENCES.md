@@ -3287,5 +3287,27 @@ HIGH-confidence findings:
   `LuaAddPlayer`; `LuaCreateHangPet` 0x5BE120 needs a pCharacter) - that remains
   the open Gate 3/4 piece.
 - Evidence: host_exe235.out; static disasm.
+
+## 2026-10-07 - Gate 4 blocker: standalone HangPet path stack-overflows (needs a real local character)
+
+- Instrumented the standalone HangPet `__except` (helper `rcExcFilter`) to log the
+  exception record. Run 236: `CreateHangPet` faults with
+  **code=0xC0000027 (STATUS_STACK_OVERFLOW)** at `JX3RepresentX64.dll+0x815827`
+  (rep base `0x7FF832DB0000`), for every cfg combo - i.e. infinite recursion, not a
+  bad-pointer AV.
+- `rep+0x815820` is `mov rcx,[rcx+0x240]; mov rax,[rcx]; jmp [rax+0x98]` - a virtual
+  dispatch through the object at `[this+0x240]`. The recursion is inside the RL
+  resource/HangPet-core path. `CreateHangPet` entry `rep+0x42D1F0` -> `0x22FBB` ->
+  `0x42E2B0` (real body).
+- Conclusion: the MovieEditor standalone route (`CreateHangPet(world,sceneId,id,0,
+  master,1,cfg)` + `LoadPlayerParts` 0x422F50) does **not** work against a fabricated
+  master - it recurses. It requires the real local character (valid frame/parent
+  chain), which the logic world must create (`AddPlayer`; the logic module has no
+  named export and its `AddPlayer`/`LuaAddPlayer` strings at 0x766dd3/0x7dda48 are
+  referenced as data, not `lea`, so the C functions need data-table tracing).
+- This is the Gate 3/4 hard blocker. Next probe: trace the logic Lua registration
+  table (data refs to the `LuaAddPlayer` string) to find the player-creation C
+  function, or find the world's scene-enter/AddPlayer entry called on server scene
+  data. Evidence: host_exe236.out; static disasm.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.

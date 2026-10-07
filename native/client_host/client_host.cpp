@@ -1902,7 +1902,12 @@ static void* g_rlCtx = NULL;
 static void* g_lastPet = NULL;
 static void* g_entityCtrl = NULL;
 static void* g_so3World = NULL;
-static void* g_rlLoader = NULL;
+static EXCEPTION_RECORD* g_rcLastExc = NULL;
+static int rcExcFilter(EXCEPTION_POINTERS* ep)
+{
+    g_rcLastExc = ep->ExceptionRecord;
+    return EXCEPTION_EXECUTE_HANDLER;
+}static void* g_rlLoader = NULL;
 static void* g_ifMgr = NULL;
 static void* g_ifModelMgr = NULL;
 static void* g_ifXLogic = NULL;
@@ -3836,8 +3841,13 @@ int main(void)
                                            ((BYTE*)g_repModule + 0x42D1F0))(
                                         g_rlCtx, sceneId, 6, 0, fakeMaster, 1, cfg);
                                 }
-                                __except (EXCEPTION_EXECUTE_HANDLER)
-                                { pet = (void*)-1; }
+                                __except (rcExcFilter(GetExceptionInformation()))
+                                {
+                                    logf("[host] RL CreateHangPet cfg[%d] FAULT code=0x%08X at=0x%p",
+                                         ci, g_rcLastExc->ExceptionCode,
+                                         g_rcLastExc->ExceptionAddress);
+                                    pet = (void*)-1;
+                                }
                                 logf("[host] RL CreateHangPet cfg[%d] szRoot='%s' szMdl='%s' -> %p",
                                      ci, combos[ci][0], combos[ci][1], pet);
                                 if (pet != NULL && pet != (void*)-1)
