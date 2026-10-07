@@ -99,27 +99,33 @@ module) plus a filtered game-stack scan. Observed (runs 209-212):
 
 Next probes:
 
-1. **The wild transfer is located** (runs 213-215) with a new hardware
-   execute-breakpoint + single-step tracer (`armExecTrace`, Dr1 + trap flag):
+1. **The wild transfer is located** (runs 213-217) with a hardware
+   execute-breakpoint + single-step tracer (`armExecTrace`, Dr1 + trap flag;
+   opt-in via `RC_HOST_DEBUGTRACE`) and a probe hook on the jmp target:
    armed at `rep+0xAEE2D8`, the trace is `HIT rep+0xAEE2D8` ->
-   `step[0] rip=rep+0x15BF4` -> **immediate AV at the wild target** (no
-   further steps). So the `call` at `0xAEE2D8` (bytes `E8 17 79 52 FF`,
-   target `0x15BF4`) is on the faulting path and the wild transfer happens at
-   `rep+0x15BF4` or its immediate target.
-   The live bytes were verified unmodified at frame60:
-   `rep+0x15BF4 = E9 D7 83 AD 00` (`jmp rep+0xAEDFD0`) and
-   `rep+0xAEE2D8 = E8 17 79 52 FF`; so the file/runtime bytes are the direct
-   forms, yet the single-step does not reach `0xAEDFD0` — the next exception is
-   the wild AV. Investigate `rep+0x15BF4`/`0xAEDFD0` (inline-hook them, log
-   rcx/rdx/r8, and check whether `0xAEDFD0`'s `call [0x109B3D8]` IAT slot or an
-   argument object is unset). `rax=0x35B1DFE0` is constant.
-2. The scene-id wrapper/assert `"scene[%.6u]"` (rep+0xD0A2B0, fn 0xAD38B0) and
-   the `scene[000002]` string on the faulting stack are nearby context.
-3. When identified, wire the game's own registration (as done for
-   `LoadConfigureFile`); then re-check the CreateRLScene return and
-   `GetRLScene(2)`.
-- The exec tracer is always installed (only fires if `0xAEE2D8` executes,
-  i.e. the failing path); it costs nothing on normal runs.
+   `step[0] rip=rep+0x15BF4` -> `0x15BF4` jmps to `rep+0xAEDFD0` -> the
+   `0xAEDFD0` hook FIRES with `a1=<name ptr> a2=7` -> then the wild AV
+   (`at 0x...001D`, `rax=0x35B1DFE0` constant).
+   `rep+0xAEDFD0` = a "create named object" helper: it gets a singleton via
+   `rep+0xDF8A` -> `rep+0x920C40` (global `rep+0xF51298`) -> `rep+0x1687E` ->
+   `rep+0x923400` (an allocator that calls `malloc`), then `strncpy`s the name.
+   All calls in that body resolve to valid imports; the wild call is in that
+   creation path (or the caller's continuation `rep+0xAEE311 call 0xE5D4`).
+   Live bytes at frame60 are unmodified: `0xAEE2D8 = E8 17 79 52 FF`,
+   `0x15BF4 = E9 D7 83 AD 00`.
+2. **Critical observation (run 216):** when the fault is caught (that run had
+   the debug arms active, which changed exception dispatch), the host's own
+   `__try` logged `real CreateRLScene fault` and **`GetRLScene(2)` returned
+   non-null with a non-null 3DScene** (`0x...6040`, 3DScene `0x...ED8`), and the
+   run completed. So **CreateRLScene does create and attach the scene before the
+   wild call**; the fault is late in the setup. In the clean build (run 217) the
+   same wild AV is not caught and the process terminates (likely the game
+   protection module reacts to the AV, or the SEH cannot unwind). Next:
+   identify the unset registration behind the wild call (the singleton
+   `rep+0xF51298` / its factory), then either fix it or ensure the host catches
+   the late fault so Gate 1's checkpoint (scene created + attached) holds.
+3. Watch out: arming Dr0/Dr1/TF changes the outcome — keep diagnostics behind
+   `RC_HOST_DEBUGTRACE` and judge Gate 1 from a clean run.
 
 **Superseded leads (kept for context):** the register-step / async-queue theory
 for m_tabCommon was a red herring — `LoadConfigureFile` sets it directly. The

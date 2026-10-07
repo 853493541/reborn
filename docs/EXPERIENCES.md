@@ -3053,5 +3053,25 @@ HIGH-confidence findings:
 - Next: inline-hook `rep+0x15BF4`/`0xAEDFD0`, log rcx/rdx/r8 and the IAT slot;
   find the unset object/registration. Evidence: host_exe213-215.out; commit
   (exec tracer).
+
+## 2026-10-07 - CreateRLScene wild call isolated; scene IS created before it (run 216)
+
+- Added a probe hook on the jmp target `rep+0xAEDFD0` (len 12, boundary-safe).
+  Run 216 trace: `HIT rep+0xAEE2D8` -> `step[0] rip=rep+0x15BF4` ->
+  `Aedfd0 enter a1=<name ptr> a2=7` -> wild AV (`0x...001D`). So the path is
+  `0xAEE2D8 call` -> `0x15BF4 jmp` -> `0xAEDFD0` ("create named object":
+  singleton `rep+0xF51298` via `0xDF8A`/`0x920C40`/`0x1687E`, allocator
+  `0x923400` calls `malloc`, then `strncpy` the name) -> wild call.
+- KEY: in run 216 (debug arms active) the host's `__try` **caught** the fault,
+  logged `real CreateRLScene fault`, and **`GetRLScene(2)` was non-null with a
+  non-null 3DScene** (0x...6040 / 0x...ED8); the frame loop and `[host] done`
+  completed. So CreateRLScene creates+attaches the scene before the late wild
+  call. In the clean build (run 217) the same AV is uncaught and the process
+  terminates (game protection or failed SEH unwind). Debug-register
+  diagnostics are now gated behind `RC_HOST_DEBUGTRACE` because they change the
+  catchability.
+- Next: identify the unset registration behind the singleton factory, or make
+  the host catch the late fault robustly so Gate 1's scene-attached checkpoint
+  holds. Evidence: host_exe216/217.out.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
