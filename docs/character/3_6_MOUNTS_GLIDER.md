@@ -692,21 +692,47 @@ Decoded from `JX3ClientX64.exe` (image base `0x140000000`):
 | mounted, move record active (`[+0x1F8]!=0`), `jumpCount<1` | `!bit30([+8]) && [+0x1E774]!=0` | horse triple Vxy=word`[g+0x25F50+6*(school+jc)]` (=60), Vz=word`[...+2]` (=180) + `[+0x34C]`, g=word`[...+4]` (=11); `jumpCount++` -> state 4 | `0x140313A40-A88`, `0x140313BBF` |
 | mounted, `jumpCount>=1` | `[+0x1E774]!=0` | reject (bail `0x140313D5E`) | `0x140313A4F-A52` |
 | mounted, `jumpCount==1` airborne, move-record path | `[+0x1E774]!=0 && [+0x330]==1` | `KPlayer::DownHorse(this,0)` (`0x140365C60`) - the "jump off the horse"; flag clears, generic rules run | `0x140313A1A-A30` |
-| mounted, NO move record (`[+0x1F8]==0`) | state in {1..7, 0x1C} | generic land branch: `jumpCount++` (cap `[+0x334]`, <15) + state 4 - the small hop, NOT the horse triple | `0x313975` -> `0x313C22/2F/46` |
+| mounted, NO move record (`[+0x1F8]==0`) | the mounted block sits behind the move-record/sprint gate (`0x313975` -> the horse-power block `0x31398E-A13`); the input handler always calls Jump, but with no record the press is rejected | **reject** (no jump); the earlier "generic land branch" mapping was WRONG (that branch belongs to the water/state-6-8 path) | `0x313975`, `0x31398E-A13`; acceptance runs 223217/223252 |
 
 - The move-record gate `[+0x1F8]` is written from the server move-record byte
   (`0x140182814`, sibling of the 天轻功 End trigger `0x140182874`) - a live-server
   stream; the host has no move records, so `[+0x1F8]` is always 0 here.
-- **Host mapping (implemented):** mounted && `moving` (the host's move-record
-  analogue) && `jumpCount==0` -> horse triple; mounted && `!moving` -> the generic
-  jump (mount kept); mounted && `jumpCount>=1` -> reject, **mount kept** (no
-  jump-off; registered host deviation 5, re-open with a move-record layer).
-- **Facing** is derived from the model's own skeleton: `bip01_horse tail` ->
-  `bip01_horse head` = `(0.00,-1.00)` in model XZ => the authored forward is `-Z`
-  (identical to the player), placement offset = `alpha + pi/2` = **0 deg**. Logged
-  per mount: `mount facing: tail->head f=(0.00,-1.00) alpha=-90deg offset=0deg
-  (model-Z dot 1.00)`.
+- **Host mapping (implemented, re-derived against the acceptance criteria):**
+  mounted && `moving` (the host's move-record analogue) && `jumpCount==0` -> horse
+  triple; mounted && `!moving` (idle) -> **reject, no jump**; mounted &&
+  `jumpCount>=1` (airborne second press) -> reject, **mount kept** (no jump-off;
+  registered host deviation 5, re-open with a move-record layer).
+- **Facing** is derived from the model's own skeleton (`bip01_horse tail` ->
+  `bip01_horse head` = `(0.00,-1.00)` model XZ) and **verified at runtime** by the
+  head-vs-travel dot product. Correct offset = `alpha - pi/2` = **-180 deg** (the
+  rider forward at yaw r is +Z: the movement convention moves along +Z at yaw 0).
+  The first version used `alpha + pi/2` (0 deg) - the runtime check caught the horse
+  facing backward immediately (`head dot travel=-1.00`, run `223121`) and the
+  auto-flip corrected it; after the formula fix the check reads `+1.00` at every
+  heading from frame one (`riderYaw` 0 / 0.79 / -0.79, runs `223217` full and
+  `223252` mini).
 - **Proof:** `proof/character/mount/run_20261006_221647_fullsystem.txt` (idle ->
   generic jump; moving -> triple; airborne double press -> reject + mount kept;
   mounted at stop; dismount; DONE) + `fs_idle_mounted.png` / `fs_moving_jump.png` /
   `fs_after_double_press.png` + `image_stats_fullsystem_20261006.txt`.
+
+### Acceptance re-verification (2026-10-06, both maps)
+
+Against the four user acceptance criteria, proven from the client + driven runs:
+
+1. **Mounted + Space while IDLE -> no jump.** The mounted jump block is behind the
+   move-record/sprint gate (`0x313975`; the input handler `0x18B9??` always calls
+   Jump, but with no record the press bails) - host: reject (was: generic hop,
+   wrong mapping). Log: `mount jump reject: idle, no move record (0x313975 gate);
+   mount kept`.
+2. **Mounted + Space while MOVING -> jump.** Horse triple 60/180/11 applied while
+   `moving`; log `mount jump triple=(60,180,11) ...`.
+3. **Airborne second press keeps the mount.** `mount jump reject n=1 (mounted;
+   mount kept)`, `mount intact after landing`, mounted=1 at stop, dismount only on
+   the explicit `T` press.
+4. **Facing matches travel.** `mount facing check: head dot travel=1.00` at
+   riderYaw 0 / +0.79 / -0.79 on both maps (the horse's head bone leads the travel).
+
+Proof: `fs2_full_run_20261006_223217.txt`, `fs2_mini_run_20261006_223252.txt`,
+screenshots `fs2_full_*.png` / `fs2_mini_*.png` + `image_stats_fs2_20261006.txt`
+(6 fingerprints). Gates: `camera_smoke` ALL PASS, `collision_selftest` 36/36.

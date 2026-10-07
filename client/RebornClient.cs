@@ -1788,6 +1788,8 @@ internal static class RebornClient
         // base character actions (decoded handlers): sit = OnUseSkill(17 打坐) /
         // Stand(); sheath = SetSheath flag (gates: sitting blocks it; the
         // fight/bird/horse/tower/buff gates are always false in the host).
+        long mountFacingLog = 0;
+        int mountFacingWrong = 0;
         bool sitting = false, sheathOn = false;
         // mount core (client/MountSystem.cs, W4 horse phase 1): RC_MOUNT_RIDE=0..3
         // selects the horse model; RC_HORSE_* / RC_MOUNT_CLIP_* override the
@@ -1821,6 +1823,7 @@ internal static class RebornClient
         bool mountTest = Env("RC_MOUNT_TEST", "0") == "1";
         bool mtMounted = false, mtIdleJump = false, mtFwd = false, mtJump1 = false;
         bool mtJump2 = false, mtStop = false, mtDown = false, mtDone = false;
+        bool mtTurnR = false, mtTurnRDone = false, mtTurnL = false, mtTurnLDone = false;
         long mtT0 = 0;
         bool mvWA = false, mvWADone = false, mvWD = false, mvWDDone = false;
         int demoRmbWa = 0;
@@ -3157,9 +3160,13 @@ internal static class RebornClient
                 if (mt >= 5000 && !mtFwd) { mtFwd = true; pW = true; Log("mounttest t=5.0 forward (moving)"); }
                 if (mt >= 6000 && !mtJump1) { mtJump1 = true; jumpPressed = true; Log("mounttest t=6.0 MOVING jump press mounted=" + (mount.Mounted ? 1 : 0)); }
                 if (mt >= 7000 && !mtJump2) { mtJump2 = true; jumpPressed = true; Log("mounttest t=7.0 DOUBLE press airborne mounted=" + (mount.Mounted ? 1 : 0)); }
-                if (mt >= 9500 && !mtStop) { mtStop = true; pW = false; Log(string.Format("mounttest t=9.5 stop mounted={0} grounded={1} pos=({2:F0},{3:F0},{4:F0})", mount.Mounted ? 1 : 0, grounded ? 1 : 0, px, py, pz)); }
-                if (mt >= 10500 && !mtDown) { mtDown = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest t=10.5 dismount mounted=" + (mount.Mounted ? 1 : 0)); }
-                if (mt >= 11500 && !mtDone) { mtDone = true; Log(string.Format("mounttest summary mounted={0} clip={1}", mount.Mounted ? 1 : 0, curClip == null ? "-" : Path.GetFileName(curClip))); }
+                if (mt >= 9000 && !mtTurnR) { mtTurnR = true; runCommand("TURNRIGHT", true); Log("mounttest t=9.0 turn right (heading change)"); }
+                if (mt >= 10500 && !mtTurnRDone) { mtTurnRDone = true; runCommand("TURNRIGHT", false); Log(string.Format("mounttest t=10.5 turn right done yaw={0:F2}", curYaw)); }
+                if (mt >= 11000 && !mtTurnL) { mtTurnL = true; runCommand("TURNLEFT", true); Log("mounttest t=11.0 turn left"); }
+                if (mt >= 12500 && !mtTurnLDone) { mtTurnLDone = true; runCommand("TURNLEFT", false); Log(string.Format("mounttest t=12.5 turn left done yaw={0:F2}", curYaw)); }
+                if (mt >= 13000 && !mtStop) { mtStop = true; pW = false; Log(string.Format("mounttest t=13.0 stop mounted={0} grounded={1} pos=({2:F0},{3:F0},{4:F0})", mount.Mounted ? 1 : 0, grounded ? 1 : 0, px, py, pz)); }
+                if (mt >= 14000 && !mtDown) { mtDown = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest t=14.0 dismount mounted=" + (mount.Mounted ? 1 : 0)); }
+                if (mt >= 15000 && !mtDone) { mtDone = true; Log(string.Format("mounttest summary mounted={0} clip={1}", mount.Mounted ? 1 : 0, curClip == null ? "-" : Path.GetFileName(curClip))); }
             }
             if (probeControl && now >= nextProbeMs)
             {
@@ -3886,8 +3893,11 @@ internal static class RebornClient
                         }
                         else
                         {
-                            Log("mount jump idle: no move record -> generic jump (0x313C2F), mount kept");
-                            // fall through to the generic jump rules with the mount kept
+                            // No move record (idle): the mounted jump block is behind the
+                            // horse move-record/sprint gate (0x313975 -> power block 0x31398E-A13);
+                            // an idle press bails (reject) in the client - no generic hop.
+                            Log("mount jump reject: idle, no move record (0x313975 gate); mount kept");
+                            mountHandled = true;
                         }
                     }
                     if (!mountHandled)
@@ -4168,7 +4178,43 @@ internal static class RebornClient
             // mount horse follows the rider's physics position first; the seat
             // bone matrix is read after the horse's frame is placed.
             if (mount.Mounted)
+            {
                 mount.Update(scene, rpx, rpy, rpz, curYaw, grounded, moving, Log);
+                // Facing proof: the horse head bone's world position vs the
+                // actual travel direction (mesh-independent). A consistently
+                // negative dot flips the placement once and logs it.
+                if (moving)
+                {
+                    float hwx, hwy, hwz;
+                    if (mount.HeadWorld(rpx, rpy, rpz, curYaw, out hwx, out hwy, out hwz))
+                    {
+                        float fdx = hwx - rpx, fdz = hwz - rpz;
+                        float fl = (float)Math.Sqrt(fdx * fdx + fdz * fdz);
+                        float mvl = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
+                        if (fl > 1f && mvl > 0.01f)
+                        {
+                            float dotF = (fdx * dirX + fdz * dirZ) / (fl * mvl);
+                            if (Environment.TickCount - mountFacingLog > 1000)
+                            {
+                                mountFacingLog = Environment.TickCount;
+                                Log(string.Format(
+                                    "mount facing check: head dot travel={0:F2} riderYaw={1:F2} horseYaw={2:F2} head_d=({3:F0},{4:F0})",
+                                    dotF, curYaw, curYaw + mount.FacingOffset, fdx, fdz));
+                            }
+                            if (dotF < -0.3f)
+                            {
+                                mountFacingWrong++;
+                                if (mountFacingWrong == 3)
+                                {
+                                    mount.FacingOffset += (float)Math.PI;
+                                    Log("mount facing: auto-flip (+pi) - head was behind travel");
+                                }
+                            }
+                            else mountFacingWrong = 0;
+                        }
+                    }
+                }
+            }
             // model update (only when changed; keeps animation alive).
             // Y must be part of the gate: a standing jump changes py only, and
             // without it the model stays at the takeoff height (stutter/"stuck
