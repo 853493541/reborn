@@ -4981,3 +4981,23 @@ if the cache/host frames appear.
   camera_smoke ALL PASS, collision 36/36.
 - Note: the school-999 PlayerRush rows are the acceleration/afterimage set (bqg加速跑 +
   horse dismount columns) - not the mounted locomotion override (deviation text fixed).
+
+### 2026-10-06 - 3x-states: water-entry crash triage + guard; 轻功 chain recipe
+
+- Bug: integration build (`reborn_client_3x` @33edabf) AVs walking into water on
+  龙门寻宝. Triaged: dump = `KG3DEngineDX11EX64+0x12282B3` (NULL rbtree
+  lookup in the engine assert/format path) - the same signature as the §2
+  boundary; NOT the swim code (`states: waterBoxes=0`, swim paths inactive; camera
+  scene ray off still crashes; dry sub-zero motion clean).
+- Reproduced deterministically: drive from (63098,242,55063) toward (0.99,0.17)
+  crashes ~x 65000 (2 logs); standing at the spots is clean; 3 WER dumps, all the
+  same offset. BCH scan: lake bed -300..-746 at x 64500-68300, z 55000-62100.
+- Native paths probed: `KGSceneCLR.EnableFluxWaterSimulation(1)` -> E_FAIL (no flux
+  world) - M2 water layer stays the real fix.
+- Fix (registered boundary, allowed by the task): `waterguard` blocks moves inside
+  the mapped basin when target ground < -100 u, throttled log, `RC_WATERGUARD=0`
+  A/B. Before: crash x2; after: clean DONE x3 at the shoreline (y~-98, ground -106).
+- Also: 轻功 chain test recipe (manual + harness) documented in
+  `docs/character/3_5_3_7_RAGDOLL_SWIM_FLY.md`; `VOID_SPAWN_CRASH_TRIAGE.md` §4
+  added. Gates: build 0, smoke ALL PASS, collision 36/36.
+

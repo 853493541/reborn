@@ -459,3 +459,53 @@ REGISTERED PROVISIONALS (AGENTS §6, re-open criteria):
    terrain cell top + 0x100 = 256 u, PVM 0x31913C branch); the entry trigger is a
    harness (real 0x1F entry = 轻功 skill/script transition) and the 0x20 fly /
    0x21 fly-jump verticals beyond EndFlyJump stay open. Re-open: fly-state decode.
+
+## 轻功 chain — what it is and how to test it (2026-10-06)
+
+**What it is:** the game's mid-air multi-press jump chain. First Space on the ground =
+normal jump (row J0); pressing Space again while airborne continues the chain (二段跳
+= press 2, then further presses up to `MaxJumpCount[school]`). Each press starts a new
+ballistic segment; when the segment ends the row's `...End` triple is applied and
+`jumpCount := 1` (ModifySprintEndSpeed semantics). The default host mode
+`RC_DJUMP=flip` only does a 二段跳-style second press; the real chain rows need
+`RC_DJUMP=chain`.
+
+**Manual play (reachable without a harness):**
+1. `set RC_DJUMP=chain`, optionally `set RC_CHAIN_LOG=1` and `set RC_DJUMP_LOG=1`.
+2. Run the client (cwd `C:\SeasunGame\MovieEditor`), click the window, press Space on
+   the ground, then Space again while airborne (repeat up to `MaxJumpCount`).
+3. Log lines per press: `djb press n=N mode=chain triple=x,y,z`; per segment:
+   `chain: seg=N start ticks=... endMs=+...`; on segment end:
+   `chain: end seg=N end=60,90,11 vy=702`; landing: `djb land n=1`.
+
+**Headless harness (scripted presses at t=2.5/3.2/4.0 s):**
+```
+set RC_CLIENT_EXE=reborn_client_3x_states.exe
+set RC_DEMO_STATES=1
+set RC_DJUMP=chain
+set RC_CHAIN_LOG=1
+set RC_CHAIN_SEG=20
+set RC_SHOTS=999999
+set RC_STARTUP=nodb
+set RC_AUTORUN=9000
+bin64\reborn_client_3x_states.exe
+```
+- `RC_CHAIN_SEG` = segment length in ticks (registered provisional; the shipped
+  `JumpFrameParam.TotalFrame` is used automatically when the school has it, 10/11).
+  The default 51 ticks (3.4 s) outlives the school-0 ballistic arc, so the End phase
+  only becomes visible with a shorter test value (e.g. 20).
+- `RC_SHOTS=999999` avoids the default proof screenshots (they stall the loop for
+  seconds and skew phase timing).
+- Expected proof: `proof/character/3x_states/run_20261006_203200.txt`
+  (`chain: end seg=3 end=60,90,11 vy=702` then `djb land n=1`).
+
+## Engine-water boundary guard (crash fix, 2026-10-06)
+
+Walking below a map water surface crashed the client with the engine AV
+`KG3DEngineDX11EX64+0x12282B3` (NULL registry lookup; the host has no water layer -
+see `docs/movement/VOID_SPAWN_CRASH_TRIAGE.md` §2). Reproduced on 龙门寻宝 by driving
+into the NE lake basin (BCH bed -300..-746, x 64500-68300, z 55000-62100). Fix = a
+registered movement boundary: inside the mapped basin box, moves are blocked when the
+target ground is below the waterline bound (-100 u), with a throttled
+`waterguard: blocked move ...` log. `RC_WATERGUARD=0` A/Bs it; the real fix stays the
+M2 water layer (re-open criteria in the triage doc §2/§4).

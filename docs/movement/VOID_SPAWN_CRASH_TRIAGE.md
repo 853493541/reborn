@@ -191,3 +191,23 @@ original repro exits clean x2 (clamped (100,100) -> relocated (9316,9316) ground
 DONE), the default 龙门 spawn is unchanged, camera_smoke ALL PASS, collision 36/36.
 Direct in-extent sub-sea-level spawns remain the §2 boundary (server-owned in play).
 
+## 4. 龙门寻宝 water-area AV + guard (2026-10-06, `agent/3x-states`)
+
+The same `+0x12282B3` AV reproduces on **龙门寻宝** (default map) when the actor MOVES
+below a lake surface: drive path from (63098,242,55063) toward (0.99,0.17) crashes at
+~x 65000 in the NE basin; standing at the same spots is clean. Dump confirms
+`KG3DEngineDX11EX64.dll+0x12282B3`, `rdi=0` NULL lookup. Evidence:
+`proof/character/3x_states/crash_before_*.txt`, `crash_12282b3_dump.txt`.
+
+Scope check: driving on dry sub-zero lowland (121500,-1216,43500) is CLEAN - the AV
+is water-specific, not "y < 0" (consistent with §2's refined scope).
+
+Engine water init attempted: `KGSceneCLR.EnableFluxWaterSimulation(1)` returns
+E_FAIL (0x80004005) in the host (no flux world) - the native path stays M2 scope.
+
+**Guard (merged in `agent/3x-states`):** movement into the mapped basin
+(x 64000-68500, z 54800-62300) is blocked while the target ground < -100 u
+(`waterguard: blocked move ...` log; `RC_WATERGUARD=0` A/B). Before: crash x2;
+after: DONE x3 (`proof/character/3x_states/waterguard_after_*.txt`).
+Re-open: M2 water layer / engine water registry (same as §2); other maps' water areas
+remain unmapped and will AV until then.
