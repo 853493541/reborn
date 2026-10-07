@@ -4810,7 +4810,11 @@ int main(void)
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] frame60: adapter movie init fault"); }
                         // install the movie shadow-name hook (fills the empty
-                        // [rlScene+0xF2890] name at call time)
+                        // [rlScene+0xF2890] name at call time). NOTE: it is
+                        // required - without it KRLScene::InitShadowScene line
+                        // 1849 fails and no scene is created; with it the scene
+                        // is created but an engine cleanup derefs the field as an
+                        // object (caught, non-fatal). See EXPERIENCES 2026-10-06.
                         logf("[host] frame60: movie name hook -> %d", installMovieNameHook());
                         logf("[host] frame60: ctx shadow hook -> %d", installCtxShadowHook());
                         // probe the KGCommon file-system global (the engine's
