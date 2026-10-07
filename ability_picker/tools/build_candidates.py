@@ -363,11 +363,10 @@ def apply_tani_anim(steps: list, matched: str, tanis: list) -> list:
     """Play the matched tani instead of its base .ani.
 
     The tani carries the animation + its embedded tag records; the engine's own
-    tag manager spawns/renders those tags during playback (verified 2026-10-06:
-    如意法's tani renders its .Sfx tags - flames/sparks/trail - with no AV).
-    When the tani embeds .Sfx tags the PSS stand-in is dropped (the authored
-    effects are the visible layer now). A matched base-.ani resolves to its
-    same-stem .tani sibling from the candidate list when one exists."""
+    tag manager spawns/renders those tags during playback (verified 2026-10-06).
+    The PSS dummy stays: the tani's tags render only part of the effect layer
+    (e.g. 如意法 renders sparks/trail but not the flame mass - that is the PSS),
+    so dropping the stand-in removed the visible effects (2026-10-07 fix)."""
     tani = matched
     if tani and tani.lower().endswith(".ani"):
         stem = tani[:-4].lower()
@@ -379,10 +378,7 @@ def apply_tani_anim(steps: list, matched: str, tanis: list) -> list:
     if not tani or tani_blacklisted(tani):
         return steps
     out = []
-    tagged = tani in TANI_TAGS_CACHE
     for s in steps:
-        if s.get("kind") == "dummy" and tagged:
-            continue
         if s.get("kind") == "anim" and (
                 str(s.get("v", "")).lower().endswith(".ani")
                 or "." not in os.path.basename(str(s.get("v", "")).replace("\\", "/"))):
@@ -1995,6 +1991,10 @@ def attach_matched(all_entries: list, cache_path: str) -> int:
         e.setdefault("matchSource", "")
         e.setdefault("deduced", "")
         e.setdefault("deduceNote", "")
+        # real skill id (skills.tab first id by name) - used by the host for
+        # table lookups (e.g. SkillMoveCamera FOV rows keyed by SkillID)
+        ids_by_name = skill_ids_by_name.get(e["name"]) or []
+        e["skillId"] = ids_by_name[0] if ids_by_name else ""
         m, src = resolve_matched(e["name"], e["tanis"], skill_ids_by_name, tag, dash,
                                  anim, catalog, e["ids"])
         if m:
