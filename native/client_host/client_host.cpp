@@ -581,6 +581,35 @@ static int armWriteWatch(void* addr)
     return 1;
 }
 
+// Hardware execute breakpoint (Dr1) + single-step tracer: arm on a known
+// instruction on the faulting path; when it fires the VEH enables the trap flag
+// and logs the next N instruction pointers, catching an indirect jmp/tail call
+// that has no unwindable frame (the CreateRLScene wild-call blocker).
+static volatile LONG g_execTraceArmed = 0;
+static volatile LONG g_execTraceOn = 0;
+static int g_execTraceCount = 0;
+static int g_execTraceHits = 0;
+static void* g_execTraceAddr = NULL;
+
+static int armExecTrace(void* addr)
+{
+    CONTEXT ctx;
+    memset(&ctx, 0, sizeof(ctx));
+    ctx.ContextFlags = CONTEXT_DEBUG_REGISTERS;
+    if (!GetThreadContext(GetCurrentThread(), &ctx))
+        return 0;
+    ctx.Dr1 = (DWORD64)addr;
+    // L1 (bit2) = 1; RW1 (bits20-21) = 00 execute; LEN1 (bits22-23) = 00
+    ctx.Dr7 = (ctx.Dr7 & ~0x00F00004ULL) | 0x00000004ULL;
+    if (!SetThreadContext(GetCurrentThread(), &ctx))
+        return 0;
+    g_execTraceAddr = addr;
+    g_execTraceArmed = 1;
+    g_execTraceOn = 0;
+    g_execTraceHits = 0;
+    return 1;
+}
+
 static BYTE* g_tableHookStub = NULL;
 
 // Scan a memory range for register/run functor references; locates the
@@ -1319,22 +1348,70 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
             }
         }
     }
-    else if (ep->ExceptionRecord->ExceptionCode == EXCEPTION_SINGLE_STEP &&
-             (g_flagWatchArmed || g_movieWatchArmed) && g_flagWatchHit < 10)
+    else if (ep->ExceptionRecord->ExceptionCode == EXCEPTION_SINGLE_STEP)
     {
-        g_flagWatchHit++;
-        DWORD64 rip = (DWORD64)ep->ExceptionRecord->ExceptionAddress;
-        char wd[64];
-        describeAddr(rip, wd, sizeof(wd));
-        logf("[host] write watch #%d: rip=%s", g_flagWatchHit, wd);
-        ep->ContextRecord->Dr6 = 0;
-        if (g_flagWatchHit >= 10)
+        CONTEXT* cr2 = ep->ContextRecord;
+        if (g_execTraceArmed && (cr2->Dr6 & 0x2) && !g_execTraceOn &&
+            g_execTraceHits < 6)
         {
-            ep->ContextRecord->Dr0 = 0;
-            ep->ContextRecord->Dr7 = 0;
-            g_movieWatchArmed = 0;
+            g_execTraceArmed = 0;
+            g_execTraceOn = 1;
+            g_execTraceHits++;
+            g_execTraceCount = 0;
+            char wd[80];
+            describeAddr((DWORD64)cr2->Rip, wd, sizeof(wd));
+            logf("[host] exectrace[%d] HIT rip=%s", g_execTraceHits, wd);
+            cr2->Dr6 = 0;
+            // disable the execute breakpoint so the trap flag can advance
+            cr2->Dr1 = 0;
+            cr2->Dr7 &= ~0x00000004ULL;
+            cr2->EFlags |= 0x100; // trap flag
+            return EXCEPTION_CONTINUE_EXECUTION;
         }
-        return EXCEPTION_CONTINUE_EXECUTION;
+        if (g_execTraceOn)
+        {
+            char wd[80];
+            describeAddr((DWORD64)cr2->Rip, wd, sizeof(wd));
+            logf("[host] exectrace[%d] step[%d] rip=%s raw=%p",
+                 g_execTraceHits, g_execTraceCount, wd, (void*)cr2->Rip);
+            g_execTraceCount++;
+            cr2->Dr6 = 0;
+            if (g_execTraceCount >= 120 || g_execTraceHits >= 6)
+            {
+                g_execTraceOn = 0;
+                cr2->EFlags &= ~0x100u;
+                if (g_execTraceHits >= 6)
+                {
+                    cr2->Dr1 = 0;
+                    cr2->Dr7 &= ~0x00F00004ULL;
+                }
+                else
+                {
+                    // re-arm Dr1 for the next hit
+                    cr2->Dr1 = (DWORD64)g_execTraceAddr;
+                    cr2->Dr7 |= 0x00000004ULL;
+                    g_execTraceArmed = 1;
+                }
+            }
+            return EXCEPTION_CONTINUE_EXECUTION;
+        }
+        if ((g_flagWatchArmed || g_movieWatchArmed) && g_flagWatchHit < 10)
+        {
+            g_flagWatchHit++;
+            DWORD64 rip = (DWORD64)ep->ExceptionRecord->ExceptionAddress;
+            char wd[64];
+            describeAddr(rip, wd, sizeof(wd));
+            logf("[host] write watch #%d: rip=%s", g_flagWatchHit, wd);
+            ep->ContextRecord->Dr6 = 0;
+            if (g_flagWatchHit >= 10)
+            {
+                ep->ContextRecord->Dr0 = 0;
+                ep->ContextRecord->Dr7 = 0;
+                g_movieWatchArmed = 0;
+            }
+            return EXCEPTION_CONTINUE_EXECUTION;
+        }
+        return EXCEPTION_CONTINUE_SEARCH;
     }
     return EXCEPTION_CONTINUE_SEARCH;
 }
@@ -5021,6 +5098,21 @@ int main(void)
                                 unsigned long long a5, const char* mapFile,
                                 unsigned long long a7, const char* sceneName,
                                 unsigned long long a9);
+                            // trace the indirect transfer in the CreateRLScene
+                            // wild-call path: 0xAEE2D8 is the call whose return
+                            // address (0xAEE2DD) is on the faulting stack.
+                            if (g_repModule != NULL)
+                                logf("[host] frame60: exec trace arm -> %d",
+                                     armExecTrace((BYTE*)g_repModule + 0xAEE2D8));
+                            if (g_repModule != NULL)
+                            {
+                                BYTE* tb = (BYTE*)g_repModule + 0x15BF4;
+                                BYTE* cb = (BYTE*)g_repModule + 0xAEE2D8;
+                                logf("[host] frame60: rep+0x15BF4 live=%02X %02X %02X %02X %02X (file E9 D7 83 AD 00)",
+                                     tb[0], tb[1], tb[2], tb[3], tb[4]);
+                                logf("[host] frame60: rep+0xAEE2D8 live=%02X %02X %02X %02X %02X (file E8 17 79 52 FF)",
+                                     cb[0], cb[1], cb[2], cb[3], cb[4]);
+                            }
                             __try
                             {
                                 // sceneName must be GBK: it feeds the destination
