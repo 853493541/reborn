@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-06T20:30:54",
+ "generatedAt": "2026-10-06T21:10:43",
  "cache": "C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd\\SeasunDownloaderV2.4\\jx3-web-map-viewer\\cache-extraction\\pakv4-probe\\ability-matcher\\ability-tani-sound-cache.json",
  "count": 383,
  "withTanis": 307,
@@ -55,8 +55,8 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "s16lxg链技能03_释放HD",
-     "n": "投掷/释放 (孤风飒踏)"
+     "v": "data\\source\\player\\f1\\动作\\F1s16lxg链技能03_释放HD.tani",
+     "n": "投掷/释放 (孤风飒踏) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -73,8 +73,8 @@
     {
      "t": 83,
      "kind": "anim",
-     "v": "s16lxg链技能03b_hd",
-     "n": "牵引冲刺动画 (skill_dash: 28033 -> AnimationID 91076 -> 03b_hd.tani)"
+     "v": "data\\source\\player\\f1\\动作\\F1s16lxg链技能03_释放HD.tani",
+     "n": "牵引冲刺动画 (skill_dash: 28033 -> AnimationID 91076 -> 03b_hd.tani) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 83,
@@ -97,8 +97,8 @@
     {
      "t": 800,
      "kind": "anim",
-     "v": "s16lxg链技能03_缓冲HD",
-     "n": "落地缓冲 (AnimationID 91074)"
+     "v": "data\\source\\player\\f1\\动作\\F1s16lxg链技能03_释放HD.tani",
+     "n": "落地缓冲 (AnimationID 91074) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 2700,
@@ -8482,7 +8482,7 @@
      "kind": "anim",
      "v": "data\\source\\player\\f1\\动作\\F1s03cy剑技能11c.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
     },
     {
      "t": 0,

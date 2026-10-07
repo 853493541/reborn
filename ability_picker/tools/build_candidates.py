@@ -359,24 +359,35 @@ except Exception:
 APPLY_SFX_TAGS = False
 
 
-def apply_tani_anim(steps: list, matched: str) -> list:
+def apply_tani_anim(steps: list, matched: str, tanis: list) -> list:
     """Play the matched tani instead of its base .ani.
 
     The tani carries the animation + its embedded tag records; the engine's own
     tag manager spawns/renders those tags during playback (verified 2026-10-06:
     如意法's tani renders its .Sfx tags - flames/sparks/trail - with no AV).
     When the tani embeds .Sfx tags the PSS stand-in is dropped (the authored
-    effects are the visible layer now)."""
-    if not matched:
+    effects are the visible layer now). A matched base-.ani resolves to its
+    same-stem .tani sibling from the candidate list when one exists."""
+    tani = matched
+    if tani and tani.lower().endswith(".ani"):
+        stem = tani[:-4].lower()
+        tani = ""
+        for t in tanis or []:
+            if t.lower() == stem + ".tani":
+                tani = t
+                break
+    if not tani:
         return steps
     out = []
-    tagged = matched in TANI_TAGS_CACHE
+    tagged = tani in TANI_TAGS_CACHE
     for s in steps:
         if s.get("kind") == "dummy" and tagged:
             continue
-        if s.get("kind") == "anim" and str(s.get("v", "")).lower().endswith(".ani"):
+        if s.get("kind") == "anim" and (
+                str(s.get("v", "")).lower().endswith(".ani")
+                or "." not in os.path.basename(str(s.get("v", "")).replace("\\", "/"))):
             s = dict(s)
-            s["v"] = matched
+            s["v"] = tani
             note = s.get("n", "")
             s["n"] = (note + " | 播放 tani: 引擎标签系统渲染内嵌特效" if note else
                       "播放 tani: 引擎标签系统渲染内嵌特效").strip(" |")
@@ -1840,7 +1851,8 @@ def apply_overrides(all_entries: list) -> None:
         # staged process is its own authored timeline).
         steps = PROCESS.get(name, []) if name not in seen_proc else []
         if steps:
-            steps = apply_tani_anim(apply_sfx_tags(steps, name), e.get("matched", ""))
+            steps = apply_tani_anim(apply_sfx_tags(steps, name), e.get("matched", ""),
+                                    e.get("tanis", []))
         e["process"] = steps
         if e["process"]:
             seen_proc.add(name)
