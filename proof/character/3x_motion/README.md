@@ -4,7 +4,26 @@ Branch `agent/3x-motion`, build `reborn_client_3x_motion.exe` (git 70fbf88 + WIP
 engine root `C:\SeasunGame\MovieEditor`, `RC_STARTUP=nodb`, driven runs with
 `RC_SKILL_AT` + `RC_SKILL_MOVEID` (row from `settings/SkillMove.tab`). Logs are the
 verbatim run logs; the per-second `t=` lines now carry `camYaw=`/`camPitch=` (the
-camera fingerprint).
+camera fingerprint) and `camPos=` (the engine camera position read-back).
+
+## SPEC_MOTION_P2 (per-skill rebuild, 2026-10-07)
+
+Branch `agent/3x-motion` @ 94c9efa + WIP. `RC_SKILL_ID` selects the host skill
+(228 = 太阴指 dash, 1645 = 风来吴山 channel; default 1645 = the demo clip).
+
+| P2 criterion | env | expected | measured | log |
+|---|---|---|---|---|
+| 1 太阴指 dash (228) | `RC_SKILL_ID=228 RC_SKILL_AT=3000` | 16 x nSpeed(60) = 960 u along heading facing+0x80, facing unchanged | `skilldash: start/end frames=16 speed=60 heading=192`; Δz = **−960 exact**; facingYaw 0.000 unchanged; moved=960 | `p2_dash_228_082017.txt` |
+| 2 太阴指 camera | same | yaw/pitch unchanged; position follows the dash | `camYaw=-1.173 camPitch=0.219` before/at/after the dash; camPos z 33113 → 32128 (≈ −960 + spring) | `p2_dash_228_082017.txt` |
+| 3 FLWS no displacement | `RC_SKILL_ID=1645 RC_SKILL_AT=3000` | 0 scripted translation; pos delta 0 | pos (18991,962,33853) constant through the channel; `skillchannel: start ... (no displacement; spin is the clip)` | `p2_flws_stand_081504.txt` |
+| 3 FLWS walk live ×1.10 | `+ RC_HOLD_W=3500,9000` | WASD moves at ×1.10 | `spd=330u/s(RUN)`; z 34007→34667 in 2 s = 330 u/s | `p2_flws_walk_082047.txt` |
+| 3 FLWS jump rejected | `+ RC_DEMO_JUMP=1` | jump blocked (buff 1856) | `skillchannel: jump rejected (buff 1856 - no jump during the channel)` at t≈5.5 s; character stays grounded | `p2_flws_walk_082047.txt` |
+| 4 FLWS camera yaw | standing/walk | no yaw change from spin/facing/animation | `camYaw=-1.173 camPitch=0.219` constant through the channel in both runs | `p2_flws_stand_081504.txt`, `p2_flws_walk_082047.txt` |
+| 4 camera position, no input | idle baseline vs standing cast | no input -> position does not move | **idle no-cast run: camPos exactly constant (19299,1437,33113) x15 samples.** Standing cast: camPos ±26 u slow sway during the clip, settling exactly at the clip end — the C1 **head-bone anchor** follows the spin clip's head-bone sway. Registered camera-workstream boundary (re-open: anchor on the logic position + fixed offset; yaw/pitch are unaffected) | `p2_idle_baseline_081757.txt`, `p2_flws_stand_081504.txt` |
+| 5 no invented data | — | host map = primitives, not rows | `SkillMotionMap`: 228 = dash(16,60,+0x80), 1645 = channel(mul 1.10, jump blocked); SkillMove rows only via `RC_SKILL_MOVEID` | code |
+| 6 logging | — | primitive kind/frames/speed/heading/moved/camera | `skilldash: start/end ... camYaw= camPitch=`; `skillchannel: start/end/jump rejected` | all P2 logs |
+| regression §5 rows | `RC_SKILL_MOVEID=876` | standing/moving row behavior preserved | standing: moved=0, camera yaw/pitch constant; moving (W held): input gated 8 ticks then RUN resumes | `p2_reg_stand_row_082143.txt`, `p2_reg_move_row_082211.txt` |
+| gates | — | build 0 / smoke ALL PASS / collision 36/36 | all green | — |
 
 | criterion (SPEC_MOTION §5) | env | expected | measured | log |
 |---|---|---|---|---|

@@ -206,6 +206,31 @@ Data model (replaces “skill→moveID map” for these skills):
   wants byte-exact facing offsets for the family (DASH_FORWARD/LEFT/RIGHT/TO_DST_BACK), the same
   Dash semantics apply with the direction computed server-side.
 
+## Implementation status (2026-10-07, `agent/3x-motion` @ 94c9efa + WIP)
+
+Implemented as written (host: `client/SkillMotionMap` + `RebornClient.cs`):
+228 = the Dash primitive (16 × nSpeed(60) along heading byte facing+0x80; facing
+untouched; state 0x11 modelled as a 16-tick move state); 1645 = channel (no
+displacement; walk live ×1.10; jump rejected; `RC_SKILL_MOVEID` still authors
+SkillMove rows for the generic SPEC_MOTION §5 tests). The host's camera yaw-follow
+dead zone is now the shipped **0.45** (`CameraSystem.DefaultRow`; 0.26 was only the
+code default). The cast camera shake (a host-invented default) is removed
+(`RC_CAM_SHAKE=1` re-enables for A/B).
+
+Acceptance evidence: `proof/character/3x_motion/README.md` (P2 table) — dash Δz
+−960 exact + camera follows positionally; FLWS pos delta 0, walk 330 u/s, jump
+rejected, camera yaw/pitch constant through the spin.
+
+**One criterion measured with a named boundary (evidence-first):** criterion 4's
+"with no input the camera position does not move" holds exactly in the no-cast idle
+baseline (camPos constant ×15 samples), but a standing FLWS cast shows a ±26 u slow
+camPos sway during the clip (settling exactly at the clip end; camYaw/camPitch
+unaffected). Cause: the host's C1 camera anchor uses the animated head-bone matrix
+(`client/RebornClient.cs` ~4777), so the spin clip's head-bone sway feeds the camera
+position. Re-open (camera workstream): anchor on the logic position + fixed offset
+per `SetCharacterCameraPosition`, or verify the real chain's head-bone use during
+spins.
+
 ### Reproduce
 ```powershell
 $py = "C:\Users\Zhibin Ren\Desktop\reborn\.venv\Scripts\python.exe"

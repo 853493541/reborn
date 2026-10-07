@@ -111,7 +111,11 @@ public sealed class CameraSystem
         p.Set("CameraMaxDeltaPitch", 1.56);
         p.Set("TargetDistance", 1.0);
         p.Set("SmoothTime", 1.0);
-        p.Set("CameraAdjustYawWhenMoveTurnDisableAngle", 0.26);
+        // Shipped value in this build: Represent/camera/camera_common.krl.txt
+        // (SPEC_MOTION_P2 §camera; 0.26 was only the code default). The row's
+        // value is what FollowYaw/the drag read (see below); this default applies
+        // when camera.json carries no row.
+        p.Set("CameraAdjustYawWhenMoveTurnDisableAngle", 0.45);
         p.Set("InitCameraPitch", Math.PI);          // sentinel
         p.Set("InitCameraAngle", 0.0);
         p.Set("ForbidStrafe", false);

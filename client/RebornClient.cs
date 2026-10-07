@@ -259,6 +259,11 @@ internal static class RebornClient
         long.TryParse(Env("RC_SKILL_MS", "8000"), out skillMs);
         // SPEC_MOTION skill move: row select (host map or RC_SKILL_MOVEID) and
         // the server-style blend weight w (0..255; effective V = V*(255-w)/255).
+        // Host skill id (SPEC_MOTION_P2): 228 太阴指 (dash), 1645 风来吴山
+        // (channel, walk-during). The demo clip is the FLWS cast, so 1645 is the
+        // default. RC_SKILL_MOVEID authors a SkillMove.tab row for §5 tests.
+        int skillId = 1645;
+        int.TryParse(Env("RC_SKILL_ID", "1645"), out skillId);
         int skillMoveId = 0;
         int.TryParse(Env("RC_SKILL_MOVEID", "0"), out skillMoveId);
         int skillBlendW = 0;
@@ -2618,12 +2623,20 @@ internal static class RebornClient
         // SPEC_MOTION skill-move state (KCharacter::OnSkillMove semantics)
         SkillMoveRow smvRow = null;
         bool smvActive = false;
-        bool smvCastHadRow = false;   // this cast authored a move (input gate)
         int smvIdx = 0;
         int smvHeading = 0;           // client byte angle (0 = +X, 64 = +Y)
         int smvBlend = 0;
         float smvMoved = 0f;
         float smvKeepVx = 0f, smvKeepVz = 0f;   // kept momentum (u/s) until landing
+        // SPEC_MOTION_P2 per-skill state: the 228 dash primitive and the 1645
+        // channel (no displacement; walk live; jump blocked).
+        SkillMotionDef smvDef = null;
+        bool smvDashActive = false;
+        int smvDashLeft = 0;
+        float smvDashSpeed = 0f;
+        bool channelActive = false;
+        float channelMoveMul = 1f;
+        bool channelBlockJump = false;
         long hitchMaxMs = 0;   // max unclamped frame delta since the last status line
         long hudHitchMs = 0;   // max unclamped frame delta since the last HUD update (D7)
         // camera anchor-Y smooth-follow (B14): the engine smooths the followed
@@ -3551,6 +3564,16 @@ internal static class RebornClient
                 forceDiag = false;
             }
 
+            // SPEC_MOTION_P2: the channel window ends with the clip (RC_SKILL_MS);
+            // the walk multiplier / jump block clear with it.
+            if (channelActive && now >= skillUntil)
+            {
+                channelActive = false;
+                channelMoveMul = 1f;
+                channelBlockJump = false;
+                Log("skillchannel: end (channel window elapsed)");
+            }
+
             // Movement frame (decoded): the engine controls are CAMERA controls
             // (FORWARD/BACKWARD/STRAFE/TURN relative to the camera), so the input
             // frame is the camera in both modes; the BODY faces the travel
@@ -3573,9 +3596,11 @@ internal static class RebornClient
                 skillUntil = now + skillMs;
                 curClip = null;
                 setClip(clipSkill);
-                // camera shake on the cast (host default; per-skill shake rows
-                // are data-gated)
-                camShake.Start(2.0, 0.5, 0.8, 3);
+                // No cast camera shake: it was a host-invented default and it
+                // moves the camera on a standing cast (SPEC_MOTION_P2 criterion 4:
+                // a standing FLWS cast must produce ZERO camera change). Per-skill
+                // shake is data-driven in the client and stays gated on a row.
+                if (Env("RC_CAM_SHAKE", "0") == "1") camShake.Start(2.0, 0.5, 0.8, 3);
                 bool playedNative = false;
                 if (soundNative)
                 {
@@ -3599,24 +3624,63 @@ internal static class RebornClient
                     Log("sound: skill wav play rc=" + played);
                 }
                 Log("skill cast");
-                // SPEC_MOTION §2.3: author the move (host map or RC_SKILL_MOVEID).
-                int mvId = skillMoveId > 0 ? skillMoveId : SkillMoveTable.MapSkill(Path.GetFileName(clipSkill));
-                smvRow = mvId > 0 ? SkillMoveTable.Load(mvId) : null;
-                smvActive = smvRow != null;
-                smvCastHadRow = smvRow != null;
-                smvIdx = 0;
-                smvBlend = skillBlendW;
-                smvMoved = 0f;
-                if (smvRow != null)
+                // SPEC_MOTION_P2 per-skill motion: 228 = Dash primitive (16 x
+                // nSpeed, absolute heading facing+0x80); 1645 = channel, no
+                // displacement (walk stays live, jump blocked). RC_SKILL_MOVEID
+                // still authors a SkillMove.tab row for the generic tests.
+                smvRow = null;
+                smvActive = false;
+                smvDashActive = false;
+                channelActive = false;
+                channelMoveMul = 1f;
+                channelBlockJump = false;
+                smvDef = SkillMotionMap.Get(skillId);
+                if (skillMoveId > 0)
                 {
-                    // heading := facing once at start (byte angle; facing untouched)
-                    smvHeading = YawToByte(curYaw);
-                    Log(string.Format(
-                        "skillmove: start id={0} total={1} col={2} igng={3} keep={4} death={5} blend={6} heading={7} facingYaw={8:F3} pos=({9:F0},{10:F0},{11:F0})",
-                        smvRow.Id, smvRow.TotalFrame, smvRow.Column, smvRow.IgnoreGravity,
-                        smvRow.KeepVelocity, smvRow.Death, smvBlend, smvHeading, curYaw, px, py, pz));
+                    smvRow = SkillMoveTable.Load(skillMoveId);
+                    smvActive = smvRow != null;
+                    smvIdx = 0;
+                    smvBlend = skillBlendW;
+                    smvMoved = 0f;
+                    if (smvRow != null)
+                    {
+                        // heading := facing once at start (byte angle; facing untouched)
+                        smvHeading = YawToByte(curYaw);
+                        Log(string.Format(
+                            "skillmove: start id={0} total={1} col={2} igng={3} keep={4} death={5} blend={6} heading={7} facingYaw={8:F3} pos=({9:F0},{10:F0},{11:F0})",
+                            smvRow.Id, smvRow.TotalFrame, smvRow.Column, smvRow.IgnoreGravity,
+                            smvRow.KeepVelocity, smvRow.Death, smvBlend, smvHeading, curYaw, px, py, pz));
+                    }
+                    else Log("skillmove: RC_SKILL_MOVEID row missing");
                 }
-                else Log("skillmove: no row (skill unmapped; RC_SKILL_MOVEID authors it)");
+                else if (smvDef != null && smvDef.Kind == 1)
+                {
+                    // KCharacter::Dash (HD 0x14030F7C0): frames/speed/dir from the
+                    // shipped script constants; dir is an ABSOLUTE heading byte
+                    // (DASH_BACKWARD = facing + 0x80); facing is never written.
+                    smvDashActive = true;
+                    smvDashLeft = smvDef.DashFrames;
+                    smvDashSpeed = smvDef.DashSpeed;
+                    smvHeading = (YawToByte(curYaw) + smvDef.DashDirOff) & 0xFF;
+                    smvMoved = 0f;
+                    Log(string.Format(
+                        "skilldash: start skill={0} name={1} frames={2} speed={3} heading={4} facingYaw={5:F3} pos=({6:F0},{7:F0},{8:F0})",
+                        smvDef.Id, smvDef.Name, smvDashLeft, smvDashSpeed, smvHeading, curYaw, px, py, pz));
+                }
+                else
+                {
+                    // channel / no displacement: no move state; input stays live.
+                    if (smvDef != null)
+                    {
+                        channelActive = true;
+                        channelMoveMul = smvDef.ChannelMoveMul > 0f ? smvDef.ChannelMoveMul : 1f;
+                        channelBlockJump = smvDef.ChannelBlockJump;
+                    }
+                    Log(string.Format(
+                        "skillchannel: start skill={0} name={1} walk=1 mul={2:F2} jump={3} (no displacement; spin is the clip)",
+                        skillId, smvDef != null ? smvDef.Name : "unmapped", channelMoveMul,
+                        channelBlockJump ? "blocked" : "allowed"));
+                }
             }
 
             // input -> direction (camera controls in both modes; the body faces
@@ -3691,10 +3755,11 @@ internal static class RebornClient
             float dirX = inX, dirZ = inZ;
             if (demoCollide) { dirX = demoDirX; dirZ = demoDirZ; }
             float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
-            // SPEC_MOTION §4.3: input movement is gated while a skill MOVE runs
-            // (a cast with no authored row keeps the old clip-duration gate);
-            // the camera follows only this input movement (dead zone).
-            bool skillGate = smvCastHadRow ? smvActive : (skillUntil > now);
+            // SPEC_MOTION_P2: only a running DASH or SkillMove row gates input
+            // movement; channels keep movement live (FLWS walk-during-channel)
+            // and an unmapped skill freezes nothing. The camera follows only this
+            // input movement (dead zone).
+            bool skillGate = smvActive || smvDashActive;
             bool moving = len > 0.01f && !skillGate;
             // Locomotion clip by INPUT OCTANT (branch semantics; per render
             // frame - must NOT live inside the tick loop, where non-tick
@@ -3771,7 +3836,10 @@ internal static class RebornClient
                 // runs. Joystick always faces the travel -> run tier.
                 bool backPedal = !inWater && classicalMode && fwdAxis < 0f;
                 bool sideOnly = !inWater && classicalMode && fwdAxis == 0f && Math.Abs(latAxis) > 0.01f;
-                float sp = (backPedal || sideOnly ? (shiftDown ? pSpeed * 10f : mount.Mounted ? rideWalk : pSpeed) : baseSp) / len;
+                float sp = (backPedal || sideOnly ? (shiftDown ? pSpeed * 10f : mount.Mounted ? rideWalk : pSpeed) : baseSp);
+                // SPEC_MOTION_P2: FLWS channel keeps walk live at x1.10 (buff 2151)
+                if (channelActive) sp *= channelMoveMul;
+                sp /= len;
                 float ux = dirX / len, uz = dirZ / len;
                 float heading = (float)Math.Atan2(ux, uz);
                 // turn model (KCharacter::RunTo 0x14031B780; docs/movement/
@@ -3956,6 +4024,48 @@ internal static class RebornClient
                         smvRow.Id, keep ? 1 : 0, smvRow.Death, smvIdx, smvMoved, px, py, pz, smvHeading));
                 }
             }
+            if (smvDashActive)
+            {
+                // SPEC_MOTION_P2 / KCharacter::Dash (HD 0x14030F7C0): `speed` u per
+                // 15 Hz tick along the ABSOLUTE heading byte (set once at cast);
+                // facing untouched; z=0 (gravity normal); state 0x11; the client
+                // rejects while state in 9..0x16 (not modelled).
+                double rad = smvHeading * Math.PI / 128.0;
+                float ux = (float)Math.Cos(rad), uz = (float)Math.Sin(rad);
+                float v = smvDashSpeed;
+                int dsc = 1;
+                float dSubCap = Math.Min(20f, playerRadius * 0.9f);
+                if (dSubCap < 1f) dSubCap = 1f;
+                if (v > dSubCap) dsc = (int)Math.Ceiling(v / dSubCap);
+                if (dsc > 64) dsc = 64;
+                float dStep = v / dsc;
+                for (int dsi = 0; dsi < dsc; dsi++)
+                {
+                    px += ux * dStep;
+                    pz += uz * dStep;
+                    if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
+                    if (col != null)
+                    {
+                        colCalls++;
+                        float gBeforeD = ground;
+                        bool dBlocked = col.Resolve(ref px, ref py, ref pz,
+                            playerRadius, playerHeight, ref ground, ref grounded, stepHeight,
+                            0f, ux, uz);
+                        if (dBlocked) { blocked = true; blockedEvents++; colBlockedCalls++; }
+                        if (ground > gBeforeD + 0.01f) groundOk = true;
+                    }
+                }
+                smvMoved += v;
+                smvDashLeft--;
+                if (smvDashLeft <= 0)
+                {
+                    smvDashActive = false;
+                    Log(string.Format(
+                        "skilldash: end skill={0} frames={1} moved={2:F0} pos=({3:F0},{4:F0},{5:F0}) heading={6} facingYaw={7:F3} camYaw={8:F3} camPitch={9:F3}",
+                        smvDef != null ? smvDef.Id : 0, smvDef != null ? smvDef.DashFrames : 0,
+                        smvMoved, px, py, pz, smvHeading, curYaw, camSys.Yaw, camSys.Pitch));
+                }
+            }
             if (col != null && propSolid)
             {
                 int pfInst;
@@ -4060,7 +4170,14 @@ internal static class RebornClient
             // jump + 二段跳 (SPEC_STATES §2): press 1 = ground jump; an air press
             // is accepted only within the grant cap (踏云 -> 2) and uses the
             // plain profile; the J1+ rows are the powered path (harness only).
-            if (jumpPressed)
+            if (jumpPressed && channelActive && channelBlockJump)
+            {
+                jumpPressed = false;
+                // SPEC_MOTION_P2: buff 1856 (不工) blocks jump during the channel
+                // (control immunity only; walk stays live).
+                Log("skillchannel: jump rejected (buff 1856 - no jump during the channel)");
+            }
+            else if (jumpPressed)
             {
                 jumpPressed = false;
                 if (sitting) { sitting = false; Log("sit: stand (jump)"); }
@@ -5851,13 +5968,16 @@ internal static class RebornClient
                              : mount.Mounted ? (walkMode ? rideWalk : rideRun)
                              : walkMode ? pSpeed
                              : pRun;
+                if (moving && channelActive) curSpd *= channelMoveMul;   // FLWS +10%
                 string moveMode = !moving ? (mount.Mounted ? "RIDE_IDLE" : "IDLE")
                                 : swimmingLast ? "SWIM"
                                 : shiftDown ? "RUN10"
                                 : mount.Mounted ? "RIDE"
                                 : walkMode ? "WALK"
                                 : "RUN";
-                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}) auto={18} vj=({19:F0},{20:F0}) cmds_unhandled={21}({22}) gait={23} mode={24} ctx='{25}' sprint={26} hitch={27}{11} clip={12} mount={28} camYaw={29:F3} camPitch={30:F3}",
+                float tcpX = 0f, tcpY = 0f, tcpZ = 0f;
+                try { scene.GetCameraPos(ref tcpX, ref tcpY, ref tcpZ); } catch { }
+                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}) auto={18} vj=({19:F0},{20:F0}) cmds_unhandled={21}({22}) gait={23} mode={24} ctx='{25}' sprint={26} hitch={27}{11} clip={12} mount={28} camYaw={29:F3} camPitch={30:F3} camPos=({31:F0},{32:F0},{33:F0})",
                     now / 1000, fps, px, py, pz, vy, grounded, blocked, blockedEvents,
                     colCalls, colBlockedCalls, nearInfo,
                     curClip == null ? "-" : Path.GetFileName(curClip),
@@ -5866,7 +5986,7 @@ internal static class RebornClient
                     CameraOperationMode.Name(cameraSettings.OperationMode),
                     hotkeys.Context, sprintOn ? 1 : 0, hitchMaxMs,
                     mount.Mounted ? ("on" + mount.RideType) : "off",
-                    camSys.Yaw, camSys.Pitch));
+                    camSys.Yaw, camSys.Pitch, tcpX, tcpY, tcpZ));
                 hitchMaxMs = 0;
             }
             if (f9At > 0 && !f9Fired && now >= f9At)
