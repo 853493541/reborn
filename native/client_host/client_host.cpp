@@ -5252,12 +5252,22 @@ int main(void)
                             }
                             __except (EXCEPTION_EXECUTE_HANDLER) { }
                         }
-                        // Phase C: manual RL scene creation (CreateRLScene's own
-                        // registration steps; its resource-manager lookup
-                        // [mgr+0x260] is not available yet - registered deviation):
-                        // 1) scene slot in the singleton map (0x22E08),
-                        // 2) engine scene via the NewScene thunk (0x16DB5),
-                        // 3) assign the scene id (+0xF1970).
+                        // Prefer the scene the real CreateRLScene produced
+                        // (re-fetch GetRLScene(2)); only fall back to the legacy
+                        // manual "Phase C" creation if it returned NULL.
+                        void* scene60 = NULL;
+                        __try
+                        {
+                            scene60 = ((void* (__fastcall *)(unsigned))
+                                       ((BYTE*)g_repModule + 0x924B))(2);
+                            logf("[host] frame60: char scene (real) = %p (3DScene=%p)",
+                                 scene60, (scene60 != NULL)
+                                     ? *(void**)((BYTE*)scene60 + 0xF1978) : NULL);
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: char scene get fault"); }
+                        if (scene60 == NULL)
+                        {
                         __try
                         {
                             ((void (__fastcall *)(void*, unsigned))
@@ -5267,7 +5277,6 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] frame60: scene slot fault"); }
-                        void* scene60 = NULL;
                         __try
                         {
                             long ns = ((long (__fastcall *)(void*, int, void**))
@@ -5328,17 +5337,28 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] frame60: GetRLScene fault"); }
+                        } // end manual Phase C (only when the real scene was NULL)
                         if (scene60 != NULL)
                         {
                             logf("[host] frame60: scene id=%u 3DScene=%p",
                                  *(unsigned*)((BYTE*)scene60 + 0xF1970),
                                  *(void**)((BYTE*)scene60 + 0xF1978));
+                            // Gate 2: local-player chain on the real scene.
+                            // 0x58CE20(scene) is the combined getter; probe it
+                            // alone, then the documented step chain so a fault
+                            // in one step does not mask the others.
                             __try
                             {
                                 void* character = ((void* (__fastcall *)(void*))
                                                    ((BYTE*)g_repModule + 0x58CE20))(scene60);
                                 logf("[host] frame60: local character -> %p", character);
+                            }
+                            __except (EXCEPTION_EXECUTE_HANDLER)
+                            { logf("[host] frame60: local character (0x58CE20) fault"); }
+                            __try
+                            {
                                 unsigned sceneId = *(unsigned*)((BYTE*)scene60 + 0xF1970);
+                                logf("[host] frame60: scene id=%u", sceneId);
                                 void* world = ((void* (__fastcall *)(unsigned))
                                                ((BYTE*)g_repModule + 0x924B))(sceneId);
                                 logf("[host] frame60: char chain world -> %p", world);
@@ -5358,7 +5378,7 @@ int main(void)
                                 }
                             }
                             __except (EXCEPTION_EXECUTE_HANDLER)
-                            { logf("[host] frame60: char chain fault"); }
+                            { logf("[host] frame60: manual char chain fault"); }
                             if (g_rlCtx != NULL)
                             {
                                 __try
