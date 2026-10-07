@@ -187,6 +187,21 @@ static int installCtxShadowHook(void)
 static void __fastcall tableLoadLog(void* a1, void* a2)
 {
     logf("[host] tableLoad lambda enter (a1=%p a2=%p)", a1, a2);
+    HMODULE rep = GetModuleHandleA("JX3RepresentX64.dll");
+    if (rep == NULL)
+        return;
+    __try
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            const char* nm = (const char*)rep + 0xF16AF0 + i * 0x40;
+            if (nm[0] == 0)
+                continue;
+            logf("[host] tableLoad name[%d]='%s'", i, nm);
+        }
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    { logf("[host] tableLoad name probe fault"); }
 }
 
 // trace the table-task registration (rep+0x80B6A0) and runner (rep+0x80B8C0)
@@ -3798,6 +3813,31 @@ int main(void)
                              *(void**)(taskList + 0x00), *(void**)(taskList + 0x08),
                              *(void**)(taskList + 0x10), *(void**)(taskList + 0x18),
                              *(void**)(taskList + 0x20), *(void**)(taskList + 0x28));
+                        // SemanticX64's file IO must be installed BEFORE the RL
+                        // table tasks run: the table loader's CreateRLFile returns
+                        // NULL otherwise (sLoadNumberFromFile "Table" NULL). In the
+                        // game the represent Init installs it (its init region
+                        // 0x3E43B5); the host's own call currently happens later
+                        // (MapConverter setup).
+                        __try
+                        {
+                            HMODULE repM60 = GetModuleHandleA("JX3RepresentX64.dll");
+                            if (repM60 != NULL)
+                            {
+                                void* setFIO60 = *(void**)((BYTE*)repM60 + 0x109AAE8);
+                                if (setFIO60 != NULL)
+                                {
+                                    ((void (__fastcall *)(void*, void*, void*, void*))setFIO60)(
+                                        (BYTE*)repM60 + 0x788D, (BYTE*)repM60 + 0x1EB0,
+                                        (BYTE*)repM60 + 0x10DC, (BYTE*)repM60 + 0x18926);
+                                    logf("[host] frame60: Semantic SetFileIOFunctions installed (pre-RL-task)");
+                                }
+                                else
+                                    logf("[host] frame60: Semantic SetFileIOFunctions import NULL");
+                            }
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: Semantic SetFileIOFunctions fault"); }
                         {
                             void* sc60 = *(void**)(param + 0xC8);
                             void* sa60 = (sc60 != NULL) ? *(void**)sc60 : NULL;
