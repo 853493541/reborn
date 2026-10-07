@@ -5178,6 +5178,19 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] frame60: namedObjectMgr(0x920D10) fault"); }
+                        // Gate 3: the ECS root entity [rep+0xF512A8] is NULL, so
+                        // CreateComponent (line 104, pRegistry) fails ->
+                        // CreateTransformEntity -> InitializeScene. Its setter is
+                        // rep+0x924B20 (builds the root entities from a table).
+                        __try
+                        {
+                            void* er = ((void* (__fastcall *)(void))
+                                        ((BYTE*)g_repModule + 0x924B20))();
+                            logf("[host] frame60: ECS root init(0x924B20) -> %p [rep+0xF512A8]=%p",
+                                 er, *(void**)((BYTE*)g_repModule + 0xF512A8));
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: ECS root init(0x924B20) fault"); }
                         {
                             typedef long (__fastcall *CreateRLSceneFn)(
                                 unsigned id, unsigned type, unsigned a3, unsigned a4,
