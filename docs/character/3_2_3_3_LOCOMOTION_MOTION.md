@@ -245,20 +245,41 @@ u32 `[this+0x50]`, u32 `[this+0x54]`, then per keyframe `Read(0x188)`; it indexe
 payloads — i.e. it consumes exactly the layout above. `KG3DAnimationMotionTag::
 Helper_Apply` (0x180287320) is the per-tag apply path into the scene.
 
-**What blocks full naming:** the sub-tag *type → semantic* name table was not
-found in strings; the loaders are only reachable through vtables (no direct
-call sites), so the on-disk container is not yet proven. Tag semantics can be
-recovered next from `KG3DAnimationMotionTag::Helper_Apply` and the event-manager
-handlers (`_OnProcessFrameMoveForceFieldTag`, `_OnFrameMoveIKSystemTag`,
-`_OnProcessApplySFXTagAsync`, `_ProcessKeepFollowPositionSoundTag`,
-`OnApplyWeaponMotion`).
+**Container PROVEN (2026-10-06, HIGH).** The on-disk container is the **`.tani` file
+itself** (`GATA` magic), read by `KG3DAnimationTagDataContainer::_Load`
+(`KG3DEngineX64.dll` 0x180291490; strings `KG3DAnimationTagDataContainer::{Load,_Load,
+LoadFromFileMultiThread,ExportTani}`, `%s%s%s.tani`):
 
-**Candidate container (not proven):** the GATA `.tani` — the "motion vector"
-float runs found in dash `.tani` files (e.g. 太阴指 0x06E8
-`0.00 1.00 0.00 | 15.00 -156.32 | 1.00 1.00 1.00`) have the shape of a typed
-payload carrying an axis up-vector `(0,1,0)`, a 2-D vector, and weights; the
-structure above (0x188 record + type-prefixed payload) is the next thing to
-match against raw `.tani`/`.ani` bytes.
+- header (0x130 bytes): `GATA` magic (u32 0x41544147), version u32, base-`.ani` path
+  (GBK, 0x103 bytes), block count u32 @0x10C;
+- then per block a 12-byte header `{u32 type, u32 version, u32 keyCount}`; a non-zero
+  keyCount creates the class object via factory 0x180290C00 and calls its
+  `LoadFromFile` (vtable slot +0x10), which consumes the payload from the same reader;
+  keyCount == 0 = empty block (type 2 v1/2 consumes 8 bytes);
+- factory/RTTI mapping (vtable COLs verified): **type 0 = `KG3DSFXTagData`**
+  (vtable 0x1806B3718), **type 1 = `KG3DSoundTagData`** (0x1806B3A58),
+  **type 2 = `KG3DMotionTagData`** (0x1806B31C8);
+- Motion payload (version 1): u32 + u32, then per keyframe a 0x188-byte record
+  (`hash` string @+0x00, time u32 @+0x100, tag count u32 @+0x104, sizes u32[]
+  @+0x108) followed by the tag payloads sequentially (each begins with u32 type id).
+
+**Verified on real files (byte-exact).** `F1s01wh点穴19_太阴指_跳.tani` (8328 B):
+header `GATA` v1, blocks=3; the type-2 block sits at 0x1EE4 {v1, keyCount=1} and its
+payload parses to **exactly EOF 0x2088** — key time=6, hash `User Define Tag`,
+1 tag (type 0, 8 B, payload `…80 3f` = 1.0f). Full scan: 23 `.tani` samples, 15
+carry a parseable type-2 motion block (all single-key `User Define Tag` tags), 8
+none (v0 / empty motion blocks) — scan output summarized in the tool run.
+
+**Correction to the earlier float-run interpretation (MED, re-open).** The
+"authored motion vector" float runs (`(0,1,0) | (15.0, −156.32) | (1,1,1)`, e.g.
+太阴指 @0x06E8) do **not** sit in the type-2 motion block (which holds only the
+8-byte `User Define Tag`); they lie inside the earlier **type-0 SFX block payload**
+region (the same block holds the PSS path string and the `_rh` socket bind). Their
+displacement correlation with the `.ani` root arc may therefore be an SFX binder
+offset rather than MotionTag data — next probe: decode `KG3DSFXTagData::LoadFromFile`
+(vtable slot 2 = 0x18029E0B0) to attribute the floats. The tool
+`tools/character/motion_tag.py` (selftest 11/11) parses the container and dumps the
+motion stream; use `--tsv` for the flat record table.
 
 ---
 
@@ -322,6 +343,44 @@ holds only for `小跳b` (Y = 0 on every frame).
 
 ---
 
+## Host integration (W5.5, 2026-10-06)
+
+The client now applies the authored `.tani` motion vector to host displacement on
+skill cast: `client/SkillMotion.cs` (GATA check + signature scan) + the
+`RebornClient.cs` skill-cast/tick hook; env `RC_SKILL_TANI=<os path>`,
+`RC_SKILL_DASH_MS=450` (dash duration), `RC_SKILL_AT=ms` (deterministic cast).
+
+- **Selector (provisional).** Last non-zero signature run `(0,1,0 | dx,dz | w,w,w)`
+  in file order; all candidates are logged. The SFX sub-tag semantics are still
+  undecoded (W5.2), so the selection is a stopgap — re-open with the SFX loader
+  decode (`KG3DSFXTagData::LoadFromFile`, vt slot 2 = 0x18029E0B0), which also
+  attributes the floats' entry frame.
+- **Direction.** The authored **magnitude** is applied along the character facing;
+  the vector's entry-frame axes are not mapped yet (same W5.2 re-open). The
+  magnitude is the verified quantity (see below).
+- **Motion.** Position-tracked dash (target = start + unit×progress) so the
+  engine's integer-per-tick position round cannot eat the fractional tail; runs
+  through the same collision path as input movement (substeps < capsule radius),
+  so walls block it (observed: demo-wander into a wall → dash moved 0.4 u).
+
+**Driven verification (log `reborn_20261006_211409.log`).** Run:
+`RC_STARTUP=nodb RC_SKILL_AT=3000 RC_SKILL_TANI=…\w55_taiyin_wu.tani`
+(standing at spawn, open ground, no demo movement):
+
+```
+skillmotion cast: authored=(15.000,-156.315) mag=157.033 dur=450ms
+  dir=(0.000,1.000) start=(18991,33853) info=sel@0x6e8 (15.000,-156.315)
+  mag=157.033 candidates: [0x358:130.82,284.49|313.13] [0x488:0.00,0.00|0.00]
+  [0x5b8:0.00,0.00|0.00] [0x6e8:15.00,-156.32|157.03]
+skillmotion done: end=(18991,34010) moved=157.0 maxdev=157.0 authored=157.033
+```
+
+moved **157.0 u** vs authored 157.033 (0.02 %) and vs the measured `.ani` root
+max deviation 156.72 u (0.18 %) — the authored vector is applied to host
+displacement (HIGH for the applied magnitude; MED for direction/selector, W5.2).
+
+---
+
 ## Corrections to existing docs
 
 1. **`docs/controls/CONTROL_MODES_P5_ANIM.md` §2.1** — "the 84-byte entry is
@@ -374,16 +433,16 @@ holds only for `小跳b` (Y = 0 on every frame).
    always runs and whether `[this+0x54]`/`[this+0xBC]` gate it. Probe: static
    read of 0x180020383 + a `camera_smoke`-style offline check of the row
    selection for a synthetic (role, school, weapon, speed) vector.
-3. **MotionTag container file.** Trace the runtime class vtable 0x1806B31D8
-   usage: find the animation file-load path in `KG3DEngineX64.dll` /
-   `KG3DEngineAdapterX64.dll` that instantiates `KG3DMotionTagData` and names
-   the chunk/extension; then grep the extracted `.ani`/`.tani` bytes for the
-   0x188-record pattern (`time` increasing at +0x100, small count at +0x104,
-   ascending sizes at +0x108).
+3. ~~**MotionTag container file.**~~ **DONE** — container PROVEN (`.tani` GATA,
+   `KG3DAnimationTagDataContainer::_Load` 0x180291490; see the section above).
+   Remaining sub-item: the SFX-block float-run attribution
+   (`KG3DSFXTagData::LoadFromFile`, vt slot 2 = 0x18029E0B0) — decides the
+   selector/direction stopgap in W5.5.
 4. **Sub-tag type → semantic names.** Decode the switch in
    `KG3DAnimationMotionTag::Helper_Apply` (0x180287320) and the event-manager
    handlers; map 0..11 to `ForceField/IK/SFX/KeepFollowPositionSound/
-   WeaponMotion/...`.
+   WeaponMotion/...`. (Delete jump table located @0x180003AE0, 12 entries;
+   naming via RTTI still unresolved.)
 5. **Version-0 0x970 block interior** (0x180003B10): the only remaining
    un-decoded MotionTag path; likely the pre-BinText editor format.
 6. **`PlayerRush` mounted rows**: rows with 门派=999 — confirm they are the
