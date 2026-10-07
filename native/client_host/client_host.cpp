@@ -5191,6 +5191,17 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] frame60: ECS root init(0x924B20) fault"); }
+                        // Gate 3: global scene-system init (rep+0xADEFD0) - it
+                        // registers the "scene[main]" transform/component
+                        // registry that InitializeScene looks up.
+                        __try
+                        {
+                            void* ir = ((void* (__fastcall *)(void))
+                                        ((BYTE*)g_repModule + 0xADEFD0))();
+                            logf("[host] frame60: scene system init(0xADEFD0) -> %p", ir);
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: scene system init(0xADEFD0) fault"); }
                         {
                             typedef long (__fastcall *CreateRLSceneFn)(
                                 unsigned id, unsigned type, unsigned a3, unsigned a4,
