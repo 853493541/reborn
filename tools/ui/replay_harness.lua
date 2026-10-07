@@ -74,6 +74,7 @@ local function resolvePath(sec, path)
 end
 
 proxyOf = function(sec)
+  if sec == nil then return proxy("lookup.nil") end  -- missing Lookup path: permissive
   local methods = {}
   local selfProxy
   methods.Lookup = function(self, a, b)
@@ -636,6 +637,19 @@ do
       _G.JsonDecode = function(s, ...)
         if type(s) == "table" then return s end
         return jsonDecode(s, ...)
+      end
+    end
+    -- Engine table finders (Table_Find*/Table_Get*) return nil when the stub data
+    -- has no matching row and the scripts index the result directly; return a
+    -- permissive proxy row instead (FBlist's Init nil-checks its own path).
+    for k, v in pairs(_G) do
+      if type(k) == "string" and type(v) == "function" and (k:match("^Table_Find") or k:match("^Table_Get")) then
+        local fn = v
+        _G[k] = function(...)
+          local r = fn(...)
+          if r == nil then return proxy("_G." .. k .. "()") end
+          return r
+        end
       end
     end
     -- Replace file-backed descriptor entries with lazy table objects (the engine
