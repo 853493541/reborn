@@ -21,6 +21,7 @@ CLIENT_EXE = r"C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\JX3ClientX64.exe"
 
 _lock = threading.Lock()
 _logf = None
+_rawf = None
 
 
 def w(line):
@@ -28,6 +29,14 @@ def w(line):
         _logf.write(line + "\n")
         _logf.flush()
         print(line, flush=True)
+
+
+def wraw(line):
+    if _rawf is None:
+        return
+    with _lock:
+        _rawf.write(line + "\n")
+        _rawf.flush()
 
 
 def pframe(payload):
@@ -216,6 +225,9 @@ def handle(conn, addr):
                 w("[%s] RECV proto=%d len=%d raw=%s pt=%s%s"
                   % (time.strftime("%H:%M:%S"), proto, len(payload), raw4,
                      payload[:64].hex(), "..." if len(payload) > 64 else ""))
+                wraw("[%s] RECV proto=%d len=%d raw=%s pt=%s"
+                     % (time.strftime("%H:%M:%S"), proto, len(payload), raw4,
+                        payload.hex()))
                 if proto == 1 and os.environ.get("GAME_AUTORESP", "1") == "1":
                     time.sleep(0.2)
                     resp = handshake_respond()
@@ -291,16 +303,21 @@ def handle(conn, addr):
 
 
 def main():
-    global _logf
+    global _logf, _rawf
     port = 3725
     logpath = r"C:\jx3tmp\game_stub.log"
+    rawpath = None
     args = sys.argv[1:]
     for i, a in enumerate(args):
         if a == "--port" and i + 1 < len(args):
             port = int(args[i + 1])
         elif a == "--log" and i + 1 < len(args):
             logpath = args[i + 1]
+        elif a == "--rawlog" and i + 1 < len(args):
+            rawpath = args[i + 1]
     _logf = open(logpath, "a", encoding="utf-8")
+    if rawpath:
+        _rawf = open(rawpath, "a", encoding="utf-8")
     gc.load_table(CLIENT_EXE)
     srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
