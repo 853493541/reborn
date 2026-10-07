@@ -2371,3 +2371,26 @@ solved it, and what is still open. **Newest at the bottom.**
   windows); fixed by restoring them to their originalStageId stages and using the side file.
 - Full recheck: selftest 1240/0/0; audit ph=538 unresolved=49 oob=9346; status refreshed; replay
   batch reproducible OK=1180 ERR=22 NOENTRY=9; gap windows=1202, visual drops 22.
+
+### 2026-10-06 ? UI ? wire-up sweep: HandleType 4/5, render tail, flex (Yoga), WndList, interaction, art probe
+- **HandleType 4/5**: decoded the engine paths (type 5 = 0x180107410 distinct list variant; type 4 =
+  0x180107e20) and the INI semantics - type 5 handles author RowSpacing/PixelScroll/vertical masks
+  (same vertical scroll list) and now join the list flow; type 4 handles author
+  AppendStringType/$AppendString (the engine appends the string as a text item at load) - Build()
+  synthesizes the Text item (KFActionBarPanel, MobileBuffList).
+- **Render tail**: FromTextureFile consumed when the recorded arg is a real path
+  (MonopolyCardUseConfirm's TreasureChest1.UITex resolves); animation (SetAnimateGroup*/SetAnimation/
+  SetLoopCount) and interaction (drag/scroll-step/tooltip) reclassified honestly in the gap report;
+  FormatTextForDraw = engine draw hint (noise); FromIconID stays data-blocked. Visual drops 22 -> 1.
+- **Flex (Yoga)**: decoded the flex parser (0x1800bad60) - Direction/FlexDirection/Wrap/
+  JustifyContent/AlignItems/AlignContent/FlexPadding*/FlexMargin*/FlexGrow/FlexShrink map 1:1 to
+  YGNodeStyleSet*; implemented a Yoga-compatible flex pass in UiLayout (enum values = Yoga's).
+  ACC_Excellent's buttons were parked at Top=632 and now land inside their 1700x35 container;
+  WndList authors the same flex properties and joins the pass. Audit oob 9349 -> 9300.
+- **Interaction**: wheel over a WndScroll translates its ScrollHandle content (clamped, step =
+  ScrollStep or 40); WndEdit is a real TextBox with the authored placeholder and dispatches
+  OnEditChanged <text> to the script via the server. Drag stays documented (interaction category).
+- **Art tail**: scanned all INIs for art references (1,996 paths), 562 missing basenames, probed via
+  PakV4 (811 candidates: 205 HIT / 601 MISS); copied only complete UITex+Tga pairs (the pair rule) -
+  +180 files in the corpus; placeholders ~flat (537 -> 539; 7 lone copies reverted).
+- Gates: selftest 1240/0/0; audit ph=539 unresolved=50 oob=9299; commits 04171b4, bedda1f, 5dee6d9.
