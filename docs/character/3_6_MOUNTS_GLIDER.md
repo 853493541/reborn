@@ -626,3 +626,42 @@ addresses are the enclosing function of the assert string.
   `gbk_term_hits.txt`, `skill29021.txt`, `jumpparam_horse_vals.txt`
 - Scanners: `scan_ptrs.py`, `hexdump_off.py`, `decode_exe_attrs.py`,
   `decode_rep_table.py`, `multi_xref.py`, `scan_field_access.py`
+
+---
+
+## Host implementation - phase 1 horse (2026-10-06, `agent/3x-mount`)
+
+Wired in `client/MountSystem.cs` + `client/RebornClient.cs` (feature build
+`reborn_client_3x_mount.exe`, title `sandbox-3x_mount`):
+
+- **State**: `T` (`RIDEHORSE`, default hotkey 84) toggles mount/dismount with the
+  decoded guards mapped to host state (grounded + not sitting; inventory preconditions
+  are not modeled - deviation 2).
+- **Movement**: mounted walk/run = `CharacterRideWalkSpeed` 8 / `CharacterRideRunSpeed`
+  40 u/logic-frame -> **120 / 600 u/s** (`proof/gravity/number.krl.txt`).
+- **Horse jump**: the decoded triple **60/180/11** (uniform `jumpScale` with the normal
+  jump; `[+0x34C]` script bonus = 0), reject while mounted airborne with `jumpCount>=1`,
+  and the **midair second press dismounts first** (`DownHorse`) then applies the normal
+  jump rules - all observed in the proof run.
+- **Actors**: horse dummy (RideType 0 `Horse_01_01a_00.mdl`, `rides.txt`) follows the
+  player (same-name `AddDummyModel` re-place per frame; handle stays stable, logged);
+  rider plays `ride_rush` 人物骑马动作 `f1bqg_horse_run.ani` (+ `f1H小跳a.ani` airborne).
+- **Horse gait - engine's own mapping** (correction to the first pass):
+  `player_animation_adjust_rides_type_state.txt` RideType 0 -> `Idle 10030`,
+  `RunForward 10016`, `BeginJumpOnce 10204`, resolved via `rides_animation.txt` to
+  `H普通待机01.tani` / `H奔跑01.tani` / `H小跳a.ani`. The `ride_rush` columns [13]-[15]
+  are **fade-in/stop hints**, not the steady gait.
+- **AV boundary (host)**: `H加速奔跑01.tani` (the ride_rush fade class) **AVs the
+  MovieEditor host** when played on the horse dummy - reproduced stationary (runs
+  `reborn_20261006_193436/193525`); the adjust-table steady gait does not. Re-open when
+  the fade phases are implemented (crash is in the engine render path; a dump exists
+  under `%LOCALAPPDATA%\CrashDumps\`).
+- **Deviations** (registered, re-open criteria in the `MountSystem.cs` header):
+  rider not socket-bound (s_hs; re-open with Agent A's socket shim); no horse
+  inventory; 999-sentinel PlayerRush row not consumed; ride-yaw consumer unlocated.
+- **Proof**: `proof/character/mount/run_20261006_193655.txt` (mount -> run -> horse
+  jump -> midair dismount -> remount -> dismount, exit DONE) + `mounted_run.png` /
+  `mount_jump.png` / `mounted_idle.png` + `image_stats_20261006.txt` (1280x720,
+  per-region RGB; region means `#AA9178` / `#AA9076` / `#91755C`).
+- **Reproduce**: `RC_STARTUP=nodb`, `RC_MOUNT_TEST=1`, `RC_AUTORUN=12500`
+  (+ `RC_SHOTS=4200,5200,7000,9200,10400`), cwd `C:\SeasunGame\MovieEditor`.

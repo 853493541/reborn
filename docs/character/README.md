@@ -23,7 +23,7 @@ dives, all read-only against `C:\SeasunGame\Game\JX3\bin\zhcn_hd` + `C:\SeasunGa
 |---|---|---|---|---|
 | W1 | **Actor sockets + head anchor shim** | 3.1 | S | unblocks camera C1 (head bone / `s_face`), one shim export pair, proven `camera_shim` pattern |
 | W2 | **Face pipeline** | 3.4 | M | self-contained: CNDK→KMETAFACE JSON offline + native apply shim; visible payoff |
-| W3 | **Mount core (horse)** | 3.6 | M | data + state machines fully decoded; movement/speeds/jump/anims all specified |
+| W3 | **Mount core (horse)** | 3.6 | M | data + state machines fully decoded; movement/speeds/jump/anims all specified (**phase 1 done 2026-10-06, `agent/3x-mount`**) |
 | W4 | **Locomotion selection wiring** | 3.2 | S-M | table + rule decoded; host uses tier clips + thresholds |
 | W5 | **Motion tooling (MotionTag/root)** | 3.3 | M | finish container/type semantics; feeds skills (3.3 → combat) |
 | W6 | **Swim / fly / 轻功 states** | 3.7 | M-L | needs the 15 Hz integrator port (G-14); 轻功 segment length provisional |
