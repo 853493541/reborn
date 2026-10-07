@@ -382,7 +382,10 @@ namespace MapUiApp.Engine
             {
                 var flexType = flex.Get("._WndType");
                 if (!string.Equals(flexType, "WndFlexContainer", StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(flexType, "FlexHandle", StringComparison.OrdinalIgnoreCase)) continue;
+                    !string.Equals(flexType, "FlexHandle", StringComparison.OrdinalIgnoreCase) &&
+                    // WndList authors the same flex properties (JustifyContent/FlexDirection/
+                    // AlignContent/AlignItems/AutoLength/ContainerType) - a scrollable flex list.
+                    !string.Equals(flexType, "WndList", StringComparison.OrdinalIgnoreCase)) continue;
                 var kids = ini.Sections.Where(s => !ReferenceEquals(s, flex) &&
                     string.Equals(s.Get("._Parent"), flex.Name, StringComparison.OrdinalIgnoreCase) &&
                     s.GetInt("Alpha", 255) > 0).ToList();
@@ -738,36 +741,61 @@ namespace MapUiApp.Engine
                 if (type == "WndEdit")
                 {
                     var rawPlaceholder = section.Get("$Placeholder");
+                    string placeholder = null;
                     if (!string.IsNullOrWhiteSpace(rawPlaceholder))
                     {
-                        string placeholder = null;
                         if (GameData.TryResolveString(rawPlaceholder, out var resolvedPlaceholder))
                             placeholder = resolvedPlaceholder;
                         else if (!rawPlaceholder.StartsWith("STR", StringComparison.OrdinalIgnoreCase))
                             placeholder = rawPlaceholder;
-                        if (!string.IsNullOrWhiteSpace(placeholder))
-                        {
-                            double placeholderSize = 14;
-                            Brush placeholderBrush = new SolidColorBrush(Color.FromRgb(0xA8, 0xA8, 0xA8));
-                            if (UiProcessApp.Engine.Fonts.TryGet(section.GetInt("PlaceholderFontScheme", 108),
-                                                                 out var placeholderFontSize, out var placeholderColor, out _))
-                            {
-                                placeholderSize = placeholderFontSize;
-                                placeholderBrush = new SolidColorBrush(placeholderColor);
-                            }
-
-                            var placeholderBlock = new TextBlock
-                            {
-                                Text = placeholder,
-                                FontFamily = ResolveFontFamily(section, textures.Assets),
-                                FontSize = placeholderSize,
-                                Foreground = placeholderBrush,
-                            };
-                            double placeholderHeight = MeasureTextHeight(placeholderBlock, placeholder, placeholderSize);
-                            Canvas.SetTop(placeholderBlock, height > 0 ? (height - placeholderHeight) / 2 : 0);
-                            container.Children.Add(placeholderBlock);
-                        }
                     }
+                    double editSize = 14;
+                    Brush editBrush = new SolidColorBrush(Color.FromRgb(240, 240, 240));
+                    if (UiProcessApp.Engine.Fonts.TryGet(section.GetInt("FontScheme", 212),
+                                                         out var editFontSize, out var editColor, out _))
+                    {
+                        editSize = editFontSize;
+                        editBrush = new SolidColorBrush(editColor);
+                    }
+                    // A real input (the engine's WndEdit): the placeholder shows while empty
+                    // and unfocused; typing dispatches OnEditChanged through the interaction
+                    // server (MainWindow wires the TextBox to the section).
+                    var edit = new System.Windows.Controls.TextBox
+                    {
+                        Background = System.Windows.Media.Brushes.Transparent,
+                        BorderThickness = new Thickness(0),
+                        Foreground = editBrush,
+                        FontSize = editSize,
+                        FontFamily = ResolveFontFamily(section, textures.Assets),
+                        Width = section.GetInt("Width"),
+                        Height = section.GetInt("Height"),
+                        VerticalContentAlignment = System.Windows.VerticalAlignment.Center,
+                        Tag = placeholder ?? "",
+                    };
+                    if (section.GetInt("TextAlign", 0) == 1)
+                        edit.TextAlignment = System.Windows.TextAlignment.Center;
+                    if (!string.IsNullOrWhiteSpace(placeholder))
+                    {
+                        edit.Text = placeholder;
+                        edit.Foreground = new SolidColorBrush(Color.FromRgb(0xA8, 0xA8, 0xA8));
+                        edit.GotFocus += (o, args) =>
+                        {
+                            if (edit.Text == (string)edit.Tag)
+                            {
+                                edit.Text = "";
+                                edit.Foreground = editBrush;
+                            }
+                        };
+                        edit.LostFocus += (o, args) =>
+                        {
+                            if (string.IsNullOrEmpty(edit.Text))
+                            {
+                                edit.Text = (string)edit.Tag;
+                                edit.Foreground = new SolidColorBrush(Color.FromRgb(0xA8, 0xA8, 0xA8));
+                            }
+                        };
+                    }
+                    container.Children.Add(edit);
                 }
                 return container;
             }

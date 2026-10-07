@@ -74,9 +74,10 @@
                             <ScrollViewer x:Name="LayoutScroll" Background="#141414"
                                           SizeChanged="OnLayoutViewportChanged"
                                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                                <Border x:Name="LayoutHost" Padding="24"
-                    PreviewMouseLeftButtonDown="OnLayoutClick"
-                    MouseMove="OnLayoutMouseMove"
+        <Border x:Name="LayoutHost" Padding="24"
+                PreviewMouseLeftButtonDown="OnLayoutClick"
+                MouseMove="OnLayoutMouseMove"
+                PreviewMouseWheel="OnLayoutMouseWheel"
                                         HorizontalAlignment="Left" VerticalAlignment="Top"/>
                             </ScrollViewer>
                         </DockPanel>

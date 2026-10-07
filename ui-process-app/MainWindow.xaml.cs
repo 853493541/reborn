@@ -39,6 +39,9 @@ namespace UiProcessApp
         private UiBuildResult _lastBuild;
         private Dictionary<object, string> _elementToSection;
         private string _hoverSection;
+        // Wheel scroll offsets per WndScroll section (engine-native viewport scroll).
+        private readonly System.Collections.Generic.Dictionary<string, double> _scrollOffsets =
+            new System.Collections.Generic.Dictionary<string, double>(StringComparer.Ordinal);
 
         // Render speed: the resolver/texture cache is shared across renders (atlas TGAs
         // decode once per session) and built layouts are cached per window/page/hide so
@@ -615,6 +618,26 @@ namespace UiProcessApp
                 _elementToSection = buildResult == null
                     ? null
                     : buildResult.Elements.ToDictionary(kv => (object)kv.Value, kv => kv.Key);
+                _scrollOffsets.Clear();
+                // WndEdit inputs dispatch the script's own OnEditChanged with the typed text.
+                if (buildResult != null)
+                {
+                    foreach (var kv in buildResult.Elements)
+                    {
+                        if (!(kv.Value is System.Windows.Controls.TextBox editBox)) continue;
+                        if (!buildResult.Sections.TryGetValue(kv.Key, out var editSection)) continue;
+                        if (!string.Equals(editSection.Get("._WndType"), "WndEdit", StringComparison.OrdinalIgnoreCase)) continue;
+                        var editName = kv.Key;
+                        var box = editBox;
+                        box.TextChanged += (o, args) =>
+                        {
+                            if (_replayServer == null || _replayIn == null) return;
+                            var text = box.Text ?? "";
+                            if (text == (box.Tag as string ?? "")) return;
+                            SendReplayEvent(editName, "OnEditChanged", false, text);
+                        };
+                    }
+                }
                 if (_openedWindows.TryGetValue(window.Id, out var openedNow) && openedNow.Count > 0)
                     AssetNote.Text += "  opens=" + string.Join(",", openedNow.Select(Path.GetFileName));
                 SchedulePrewarm();
@@ -762,12 +785,54 @@ namespace UiProcessApp
             return null;
         }
 
-        private void SendReplayEvent(string section, string handler, bool navigate = false)
+        /// <summary>Wheel over a WndScroll scrolls its content handle (the engine's native
+        /// viewport scroll): the ScrollHandle subtree is translated by the scroll step,
+        /// clamped to the content extent. The scroll offset resets on re-render.</summary>
+        private void OnLayoutMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            if (_lastBuild == null || _elementToSection == null || _currentWindow == null) return;
+            var sectionName = HitTestSection(e.GetPosition(LayoutHost));
+            if (sectionName == null) return;
+            string scrollName = null;
+            var cursor = sectionName;
+            while (!string.IsNullOrWhiteSpace(cursor))
+            {
+                if (!_lastBuild.Sections.TryGetValue(cursor, out var sec)) break;
+                if (string.Equals(sec.Get("._WndType"), "WndScroll", StringComparison.OrdinalIgnoreCase))
+                {
+                    scrollName = cursor;
+                    break;
+                }
+                cursor = sec.Get("._Parent");
+            }
+            if (scrollName == null) return;
+            var scrollSec = _lastBuild.Sections[scrollName];
+            var handleName = scrollSec.Get("ScrollHandle");
+            FrameworkElement content = null;
+            if (!string.IsNullOrWhiteSpace(handleName) && _lastBuild.Elements.TryGetValue(handleName, out var he))
+                content = he;
+            if (content == null && _lastBuild.Elements.TryGetValue(scrollName, out var se) &&
+                se is System.Windows.Controls.Panel sp && sp.Children.Count > 0)
+                content = sp.Children[0] as FrameworkElement;
+            if (content == null) return;
+            double viewport = scrollSec.GetInt("Height");
+            double contentH = content.Height;
+            if (double.IsNaN(contentH) || contentH <= 0) contentH = content.ActualHeight;
+            double max = Math.Max(0, contentH - viewport);
+            if (max <= 0) return;
+            double step = scrollSec.GetInt("ScrollStep", 40);
+            double offset = _scrollOffsets.TryGetValue(scrollName, out var current) ? current : 0;
+            offset = Math.Max(0, Math.Min(max, offset - Math.Sign(e.Delta) * step));
+            _scrollOffsets[scrollName] = offset;
+            content.RenderTransform = new System.Windows.Media.TranslateTransform(0, -offset);
+            e.Handled = true;
+        }
+        private void SendReplayEvent(string section, string handler, bool navigate = false, string arg = null)
         {
             try
             {
                 var openedBefore = _openedWindows.TryGetValue(_currentWindow.Id, out var ob) ? ob.Count : 0;
-                _replayIn.WriteLine("EVENT " + section + " " + handler);
+                _replayIn.WriteLine("EVENT " + section + " " + handler + (arg == null ? "" : " " + arg));
                 _replayIn.Flush();
                 var lines = new List<string>();
                 for (int i = 0; i < 5000; i++)
