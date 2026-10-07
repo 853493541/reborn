@@ -287,9 +287,15 @@ dotnet run --project ui-process-app
   the orphaned real python survives holding the shell's stdout/stderr pipe, and every
   subsequent tool command is blocked until it exits (2026-10-04: a 3600 s `--observe`
   emulator stalled the session 58 min; normally-completing calls do not block). Launch them
-  via WMI wrappers instead: `Invoke-CimMethod Win32_Process Create -Arguments @{CommandLine =
-  'cmd /c C:\jx3tmp\run_<x>.cmd'}` (WMI children inherit no tool handles; proven recipe:
+  via WMI wrappers instead (WMI children inherit no tool handles; proven recipe:
   `run_stub.cmd`, `run_vspam.cmd`, `run_emul.cmd`).
+  **Always launch HIDDEN** (user, 2026-10-06: plain WMI `Create` pops console/terminal windows
+  on the desktop): use `tools\netcode\launch_hidden.ps1 "<cmd>"` (copy: `C:\jx3tmp\launch_hidden.ps1`)
+  or pass `ProcessStartupInformation` = `Win32_ProcessStartup` with `ShowWindow = 0`:
+  `$si = New-CimInstance -ClassName Win32_ProcessStartup -ClientOnly -Property @{ShowWindow=[uint16]0};
+  Invoke-CimMethod Win32_Process -MethodName Create -Arguments @{CommandLine='cmd /c ...';
+  ProcessStartupInformation=$si}`. Verified: the launched console window is `visible=False`
+  (plain WMI launches report a visible PseudoConsoleWindow).
 - **Binaries**: never open game assets/binaries with Read; use `tools/` scanners
   (`gbk_grep.py`, `extract_*`, `scan_*`); prefer indexes (`filepath.ini`, `tani.rt`).
 
