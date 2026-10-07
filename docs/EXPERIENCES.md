@@ -5074,3 +5074,16 @@ harness line is labeled `HARNESS - NOT GAME BEHAVIOR` (startup warning too), and
 with citations. The real grant source (which buffs/skills invoke the ops) and the
 power-pool values remain undecoded (re-open criteria in the doc).
 
+### 2026-10-07 - Mount re-implementation against SPEC_MOUNT (all acceptance modes)
+
+- Replaced the assumed mount behaviors with the spec: input layer (idle/backward ->
+  skill 13618 no jump; moving -> 44565 + jump control), sprint-branch jump rules
+  (bSprintFlag, power gate, exact triple, sprint press-2 DownHorse), lifecycle guards
+  (item/bIgnoreGravity/already-mounted), remote sync apply, fallback/parachute/hang,
+  mounted turn rate, scales.
+- Host-server rule (spec 3.3): bSprintFlag = mounted && forward && (grounded || sprint
+  intent); power pool authoring P1; camera adjust P2 provisional.
+- Acceptance: 22 criteria walked in 5 driven runs (modes 1-4) on full + mini maps;
+  all pass except C18 partial (unit unresolved, P2) and C21 footprint logging only.
+- Proof: proof/character/mount/spec_*.txt + 7 shots + spec_image_stats.txt; gates
+  camera_smoke ALL PASS, collision 36/36.
