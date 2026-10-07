@@ -3333,5 +3333,24 @@ HIGH-confidence findings:
 - Gate 4 next probe: reach the represent object manager (the scene's dummy/object mgr)
   and call its AddDummyModel-equivalent, matching the C# client's path. Evidence:
   host_exe236.out; static disasm; repo call sites.
+
+## 2026-10-07 - Architecture clarified: MovieEditor path vs game-represent path
+
+- Decompiled the managed bridge (`MovieEngineCLR.dll`, C++/CLI). The C# client's
+  `scene.AddDummyModel` -> `KGSceneCLR::AddDummyModel` -> P/Invokes
+  `KMovieObjectHolder::NewObject` / `GetModel` (IL tokens 0x060005E6/E7), whose native
+  side (`KMovieScene::NewObjectByModel`, `KMovieObjectHolder::NewObject`) lives **only
+  in MovieEngineCLR.dll** - the MovieEditor "movie object" system.
+- `KMovieScene`/`KMovieObjectHolder`/`NewObjectByModel` do **not** exist in
+  `KG_EngineEditorX64.dll` or `JX3RepresentX64.dll`; only the represent carries the
+  `m_pDummyModel`/`m_pObjectMgr` scene members. So the C# client path is
+  MovieEditor-engine -> KMovieObjectHolder -> represent dummy model.
+- The native `client_host` uses the **game** represent (`JX3RepresentX64.dll`) directly,
+  so its visible-player path is the game's: logic (`KSO3World::AddPlayer`) -> represent
+  mirror. That is the blocked path. The MovieEditor `AddDummyModel` shortcut would
+  require the host to host MovieEngineCLR/KG_EngineEditorX64 (a different architecture).
+- Gate 4 next probe (unchanged): runtime discovery of the represent's dummy-model /
+  object-manager API on the host's scene, or resolve `KSO3World::AddPlayer` via the
+  `g_so3World` vtable. Evidence: MovieEngineCLR IL (reflection); string scans.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
