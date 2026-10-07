@@ -3626,8 +3626,17 @@ int main(void)
                                         {
                                             HMODULE lua60 = GetModuleHandleA("Engine_Lua5X64.dll");
                                             if (lua60 != NULL)
+                                            {
                                                 logf("[host] frame60: lua=%p gOpenFile(0x170040)=%p",
                                                      lua60, *(void**)((BYTE*)lua60 + 0x170040));
+                                                logf("[host] frame60: lua+0xBBA30=%p repIAT(0x109A020)=%p",
+                                                     (BYTE*)lua60 + 0xBBA30,
+                                                     *(void**)((BYTE*)g_repModule + 0x109A020));
+                                                logf("[host] frame60: lua fs cb 170030=%p 170040=%p 170048=%p",
+                                                     *(void**)((BYTE*)lua60 + 0x170030),
+                                                     *(void**)((BYTE*)lua60 + 0x170040),
+                                                     *(void**)((BYTE*)lua60 + 0x170048));
+                                            }
                                         }
                                         __except (EXCEPTION_EXECUTE_HANDLER)
                                         { logf("[host] frame60: lua probe fault"); }
