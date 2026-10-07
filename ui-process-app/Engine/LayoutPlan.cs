@@ -1386,8 +1386,26 @@ namespace UiProcessApp.Engine
             if (pendingClear.Remove(container.Name) &&
                 addedByContainer.TryGetValue(container.Name, out var previous))
             {
-                foreach (var clone in previous) RemoveDescendants(filtered, clone.Name);
+                foreach (var clone in previous)
+                {
+                    RemoveDescendants(filtered, clone.Name);
+                    filtered.Sections.Remove(clone);
+                    filtered.ByName.Remove(clone.Name);
+                }
                 previous.Clear();
+                // The engine's Clear empties the list, and the authored prototype is an
+                // item too: remove it (and its subtree) so it does not render parked at
+                // its prototype coordinates once the runtime items exist.
+                var protoName = source.Name;
+                if (!string.Equals(protoName, container.Name, StringComparison.OrdinalIgnoreCase) &&
+                    filtered.ByName.TryGetValue(protoName, out var proto) &&
+                    string.Equals(proto.Get("._Parent"), container.Name, StringComparison.OrdinalIgnoreCase) &&
+                    proto.Get("$RuntimeItem") != "1")
+                {
+                    RemoveDescendants(filtered, protoName);
+                    filtered.Sections.Remove(proto);
+                    filtered.ByName.Remove(protoName);
+                }
             }
             var appended = AppendClone(filtered, source, container.Name, desired);
             lastCloneByContainer[container.Name] = appended;
