@@ -4716,3 +4716,21 @@ if the cache/host frames appear.
   the 250 ms hud.SetText path); HUD-open run screenshot `proof/host/hud_hitch.png`.
 - Outcome: D7 done - workstream D (D1-D7) complete on `agent/host-polish`.
 
+### 2026-10-06 - Item 1.x merge into main (finalize)
+
+- Did: merged `agent/item1-completion` @ `0ac8de1` into main `--no-ff` -> `2b01a36`;
+  zero conflicts (main `8e0352a` was an ancestor of the branch, `merge-tree` exit 0
+  preflight). 98 files: camera tracks P0-P4 (`CameraTrack.cs`, `SkillMoveCamera.cs`,
+  HUD keys, `mani_probe.py`), stability physics + spawn guard v2, host polish
+  (`LoadingOverlay.cs`, shutdown, window/device, D6/D7), audio probe, LOD/cull matrix,
+  proof + docs.
+- Verify: canonical + mini builds exit 0; `camera_smoke` ALL PASS; `collision_selftest`
+  36/36; gravity/loot/jx3_model PASS. Tag `item1-complete-20261006`.
+- Note: during the branch-merge sequence the original spawn repro AV regression (camera
+  merge flip, corner case) was caught by the per-merge checks and fixed by guard v2
+  (`5ddc628`, validated clamped spawn + relocation to solid above-sea-level ground;
+  repro clean x2, default spawn unchanged).
+- Outcome: item 1.x complete on main (pushed to origin per explicit request).
+  Registered boundaries remain: FOV ramp provisional, spawn test-guard, underwater/slope
+  AV (server-owned), option read-back D2 partial.
+
