@@ -3133,6 +3133,21 @@ HIGH-confidence findings:
   "name field" consequence, now pinpointed. Next: RE
   `KRLScene::InitShadowScene` (rep+0x58EB30) line ~1849 and create/replace the
   shadow-scene object properly instead of writing a name string.
+  - `InitShadowScene` (rep+0x58EB30) disassembly confirms the in/out contract:
+    `movie->vt[5](movie, &[rlScene+0xF2890])` then `cmp [rlScene+0xF2890],0`
+    (line 1849). The adapter's shadow fn (`KG3DEngineAdapterX64+0x111DE0`) does
+    `strrchr(name,'.')`; **no dot -> early no-op (0x112119)** that leaves the
+    field as the input name; only a `.map`/`.jsonmap` name creates a scene and
+    writes the object back. So the field is an inline short name in, object out.
+  - **Why no native path is wired yet (provisional rationale, §6):** the
+    sandbox map has no shadow-scene source/compiled asset, and the 8-byte inline
+    name field cannot hold the map's GBK `.jsonmap` path; passing a non-existent
+    short `a.map`/`a.jsonmap` makes the adapter fail and line 1849 abort with no
+    scene (verified run 228). The `movieNameFix` name write is therefore the only
+    way to satisfy line 1849 with the current assets. **Re-open when** a
+    shadow-scene asset for the sandbox map is available (then pass its real
+    short name and let the adapter create the object), or when the real movie
+    wrapper that fills the field is reconstructed.
 - Audit of all inline hooks found the same class of issue in the two diagnostic
   lua hooks `g_GetFullPath` (`lua+0xB4390`) and `g_GetPriorFullPath`
   (`lua+0xB4570`): their trampolines replay a RIP-relative `lea r9,[root]`.
