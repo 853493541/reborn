@@ -4948,3 +4948,20 @@ if the cache/host frames appear.
 - Outcome: W5 complete for the workstream (container + tool + host integration); residual is the
   documented W5.2 naming/attribution.
 
+### 2026-10-06 - Character 3.x integration: AB -> C -> E -> D merged (gates after each)
+
+- Did: merged `agent/3x-face` (A+B) `bb10b67`, `agent/3x-mount` `8b9e62d`,
+  `agent/3x-states` `14886f1` (+ `4271a68` FF fix), `agent/3x-motion` `4073938` into
+  `agent/3x-integration` (off `research/character-animation`). Conflicts: build_client.cmd
+  (union FaceData/MountSystem/WaterField/SkillMotion), EXPERIENCES (append policy),
+  character README rows; RebornClient.cs on the states merge needed a real union (swim
+  jump vs mount jump, water speed vs mount speed, swim/mount/suspend clip order) - not
+  `--ours`.
+- Found + fixed: main/origin/main carry **2 form-feed bytes (0x0C)** in a RebornClient.cs
+  comment ("of form" / "by form"); the merge resolver's splitlines turned them into real
+  newlines -> CS1002 at line 380. Fixed to plain text (`4271a68`); main fix pending.
+- Gates after every merge: build exit 0, `camera_smoke_3x_int` ALL PASS, collision 36/36;
+  final: gravity/jx3/loot PASS; combined runtime `reborn_20261006_213621` - git=4073938
+  dirty=0, `d6=seed`, LoadMap 8x8, normal spawn, DONE.
+- Outcome: 3.x integration green with all five workstreams; boundaries/provisionals
+  unchanged (tier gate, face SD mesh, ride fade AV, swim/chain provisionals, D selector).
