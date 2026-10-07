@@ -1547,6 +1547,7 @@ internal static class RebornClient
                 Env("RC_HORSE_CLIP_JUMP", ""),
                 Env("RC_MOUNT_CLIP_RIDE", ""), Env("RC_MOUNT_CLIP_JUMP", ""));
             Log("mount: data ride=" + mride + " model='" + mount.Model + "' rider='" + mount.RiderClip + "'");
+            mount.Dbg = Env("RC_MOUNT_DBG", "0") == "1";
         }
         long sheathDrawUntil = 0;   // draw transition window (拔剑 start clip)
         int unhandledCmd = 0;
@@ -1561,6 +1562,7 @@ internal static class RebornClient
         bool mountTest = Env("RC_MOUNT_TEST", "0") == "1";
         bool mtMounted = false, mtFwd = false, mtJump1 = false, mtJump2 = false, mtStop = false;
         bool mtMount2 = false, mtDown = false, mtDone = false;
+        long mtT0 = 0;
         bool mvWA = false, mvWADone = false, mvWD = false, mvWDDone = false;
         int demoRmbWa = 0;
         int.TryParse(Env("RC_DEMO_RMBWA", "0"), out demoRmbWa);   // 1 = hold RMB, 2 = + orbit drag
@@ -2827,15 +2829,18 @@ internal static class RebornClient
             {
                 // scripted mount run (W4 proof): mount -> mounted run -> horse
                 // jump -> midair second press (dismount + normal jump) -> stop ->
-                // remount -> standing dismount. Every step logs its state.
-                if (now >= 2500 && !mtMounted) { mtMounted = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest t=2.5 mount press mounted=" + (mount.Mounted ? 1 : 0)); }
-                if (now >= 3200 && !mtFwd) { mtFwd = true; pW = true; Log("mounttest t=3.2 forward (mounted run)"); }
-                if (now >= 4500 && !mtJump1) { mtJump1 = true; jumpPressed = true; Log("mounttest t=4.5 horse jump"); }
-                if (now >= 5600 && !mtJump2) { mtJump2 = true; jumpPressed = true; Log("mounttest t=5.6 second press midair"); }
-                if (now >= 7500 && !mtStop) { mtStop = true; pW = false; Log(string.Format("mounttest t=7.5 stop mounted={0} grounded={1} pos=({2:F0},{3:F0},{4:F0})", mount.Mounted ? 1 : 0, grounded ? 1 : 0, px, py, pz)); }
-                if (now >= 8500 && !mtMount2) { mtMount2 = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest t=8.5 remount mounted=" + (mount.Mounted ? 1 : 0)); }
-                if (now >= 9800 && !mtDown) { mtDown = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest t=9.8 dismount press mounted=" + (mount.Mounted ? 1 : 0)); }
-                if (now >= 10600 && !mtDone) { mtDone = true; Log(string.Format("mounttest summary mounted={0} clip={1}", mount.Mounted ? 1 : 0, curClip == null ? "-" : Path.GetFileName(curClip))); }
+                // remount -> standing dismount. Timeline is relative to the first
+                // test frame (engine init can consume the absolute clock).
+                if (mtT0 == 0) mtT0 = now;
+                long mt = now - mtT0;
+                if (mt >= 2500 && !mtMounted) { mtMounted = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest t=2.5 mount press mounted=" + (mount.Mounted ? 1 : 0)); }
+                if (mt >= 3200 && !mtFwd) { mtFwd = true; if (Env("RC_MOUNT_NOMOVE", "0") != "1") { pW = true; Log("mounttest t=3.2 forward (mounted run)"); } else Log("mounttest t=3.2 forward SKIPPED (RC_MOUNT_NOMOVE)"); }
+                if (mt >= 4500 && !mtJump1) { mtJump1 = true; jumpPressed = true; Log("mounttest t=4.5 horse jump"); }
+                if (mt >= 5600 && !mtJump2) { mtJump2 = true; jumpPressed = true; Log("mounttest t=5.6 second press midair"); }
+                if (mt >= 7500 && !mtStop) { mtStop = true; pW = false; Log(string.Format("mounttest t=7.5 stop mounted={0} grounded={1} pos=({2:F0},{3:F0},{4:F0})", mount.Mounted ? 1 : 0, grounded ? 1 : 0, px, py, pz)); }
+                if (mt >= 8500 && !mtMount2) { mtMount2 = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest t=8.5 remount mounted=" + (mount.Mounted ? 1 : 0)); }
+                if (mt >= 9800 && !mtDown) { mtDown = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest t=9.8 dismount press mounted=" + (mount.Mounted ? 1 : 0)); }
+                if (mt >= 10600 && !mtDone) { mtDone = true; Log(string.Format("mounttest summary mounted={0} clip={1}", mount.Mounted ? 1 : 0, curClip == null ? "-" : Path.GetFileName(curClip))); }
             }
             if (probeControl && now >= nextProbeMs)
             {

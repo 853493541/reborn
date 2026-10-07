@@ -4757,3 +4757,25 @@ if the cache/host frames appear.
   `docs/README.md` and AGENTS §10). Split plan for 3.x workstreams W1-W7 is in the area README.
 - Outcome: 3.x research complete to the client's limit; remaining items are host wiring or
   registered provisional/boundary items.
+
+### 2026-10-06 - Mount core W4 (horse phase 1) - T ride, ride speeds, horse triple, horse actor
+
+- Did: implemented the host mount core in `client/MountSystem.cs` + `RebornClient.cs`
+  (feature build `reborn_client_3x_mount.exe`): T (RIDEHORSE) mount/dismount with
+  grounded/sitting guards; mounted speeds 120/600 u/s (CharacterRideWalk/RunSpeed 8/40
+  u/logic-frame); horse jump triple 60/180/11 with the midair second press dismounting
+  first (DownHorse) then applying normal jump rules; horse dummy (RideType 0
+  `Horse_01_01a_00.mdl`) follows the player; rider clips from `ride_rush` (骑马
+  `f1bqg_horse_run.ani`, jump `f1H小跳a.ani`); `RC_MOUNT_TEST` scripted proof harness.
+- Crash found + isolated: playing the ride_rush fade clip `H加速奔跑01.tani` on the
+  horse dummy AVs the host (repro: stationary, run `193525`; dump exists). Fix per the
+  engine's own table: steady gait from
+  `player_animation_adjust_rides_type_state.txt` (Idle->10030 H普通待机01.tani,
+  RunForward->10016 H奔跑01.tani, BeginJumpOnce->10204) - `ride_rush` [13]-[15] are
+  fade-in/stop hints, not the steady gait. AV boundary registered (re-open when fade
+  phases exist).
+- Result: full proof run green (`reborn_20261006_193655`): mount -> run (H奔跑01) ->
+  horse jump -> midair dismount -> remount -> dismount, exit DONE; screenshots +
+  fingerprints `proof/character/mount/`; gates: camera_smoke ALL PASS, collision 36/36.
+- Deviations (in MountSystem.cs header): rider not socket-bound (s_hs; needs Agent A's
+  shim), no horse inventory, 999-sentinel row not consumed, ride-yaw consumer unlocated.

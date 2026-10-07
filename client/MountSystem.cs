@@ -22,10 +22,10 @@
 //      the host: T toggles the flag directly (KPlayer::RideHorse precondition/apply
 //      fns 0x140363AF0/0x140363C40 are inventory-side and are not modeled).
 //      Re-open when an item/inventory layer exists.
-//   3. The ride animation adjust table (player_animation_adjust_rides_type_state) and
-//      the 999-sentinel PlayerRush row are NOT consumed yet; phase 1 selects the
-//      explicit ride_rush gait columns (idle/run/jump). Re-open with the locomotion
-//      pass (W2 wiring).
+//   3. The 999-sentinel PlayerRush row (player locomotion override while mounted) is
+//      NOT consumed yet; the horse gait itself uses the engine's adjust-table mapping
+//      (RideType 0: Idle->10030, RunForward->10016, BeginJumpOnce->10204). Re-open
+//      with the locomotion pass (W2 wiring).
 //   4. Ride yaw values (0.003465 / 0.0023 1/ms) have no located consumer; turn rate
 //      stays the camera-row value. Re-open when the represent consumer is decoded.
 
@@ -34,8 +34,14 @@ using MovieEngineCLR;
 
 internal sealed class MountState
 {
-    // rides.txt horse family (RideType -> model); clips are the ride_rush RideType-0 set
-    // (ride_rush carries no rows for 1/2; the horsle family shares the authored set).
+    // rides.txt horse family (RideType -> model). Steady-state gait clips come from
+    // the engine's own mapping: player_animation_adjust_rides_type_state.txt
+    //   RideType 0: Idle -> 10030, RunForward -> 10016, BeginJumpOnce -> 10204
+    // resolved through rides_animation.txt (RepresentID 0) to the files below.
+    // NOTE: ride_rush.txt columns [13]-[15] are fade-in/stop hints (H加速奔跑01.tani
+    // etc.), NOT the steady gait; H加速奔跑01.tani AVs the MovieEditor host when
+    // played on the horse dummy (evidence: scratch runs 3x_mount 193436/193525) and
+    // is not used until the fade phases exist.
     public static readonly string[] HorseModels = new string[]
     {
         @"data\source\NPC_source\Horse\模型\Horse_01_01a_00.mdl",
@@ -43,8 +49,8 @@ internal sealed class MountState
         @"data\source\NPC_source\Horse\模型\Horse_02_01b_01.mdl",
         @"data\source\NPC_source\Horse\模型\Horse_03_01c_01.mdl"
     };
-    public const string DefaultClipIdle = @"data\source\NPC_source\Horse\动作\H普通待机01.ani";
-    public const string DefaultClipRun = @"data\source\NPC_source\Horse\动作\H加速奔跑01.tani";
+    public const string DefaultClipIdle = @"data\source\NPC_source\Horse\动作\H普通待机01.tani";
+    public const string DefaultClipRun = @"data\source\NPC_source\Horse\动作\H奔跑01.tani";
     public const string DefaultClipJump = @"data\source\NPC_source\Horse\动作\H小跳a.ani";
     public const string DefaultRiderClip = @"data\source\player\f1\动作\f1bqg_horse_run.ani";
     public const string DefaultRiderJump = @"data\source\player\f1\动作\f1H小跳a.ani";
@@ -55,6 +61,7 @@ internal sealed class MountState
 
     public long Handle;
     public long AttachedHandle = -999;
+    public bool Dbg;
     public KGModelCLR Model_;
     public string CurHorseClip;
     private float lastX = float.MaxValue, lastY = float.MaxValue, lastZ = float.MaxValue, lastYaw = float.MaxValue;
@@ -131,7 +138,10 @@ internal sealed class MountState
                 var rot = new CLRfloat4();
                 rot.x = 0f; rot.y = (float)Math.Sin(half); rot.z = 0f; rot.w = (float)Math.Cos(half);
                 var scl = new CLRfloat3(); scl.x = 1f; scl.y = 1f; scl.z = 1f;
+                long prev = Handle;
                 Handle = scene.AddDummyModel("mount_horse", Model, pos, rot, scl);
+                if (Dbg && Handle != prev)
+                    log("mount dbg: re-add handle " + prev + " -> " + Handle + " at (" + (int)x + "," + (int)y + "," + (int)z + ")");
                 lastX = x; lastY = y; lastZ = z; lastYaw = yaw;
             }
             if (Handle != AttachedHandle)
