@@ -2708,3 +2708,19 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Consequence: the input gate is NOT the missing files; the remaining lead is the world
   UI/tick activation (the loading panel's completion -> LOADING_END -> world UI; the client
   renders but its game-logic tick never runs - all-thread sampling caught zero EXE logic).
+
+### 2026-10-06 — V2 ROOT CAUSE of the dead input: the client CRASHES at loading completion
+- The map=296 runs show the client sends the C2S proto=5 confirm at the END of the (long)
+  map load and then **dies at that exact moment** (DumpReport `DumpReport_2026_10_06_22_06_42.log`:
+  `CrashType=0, DumpKey=BD677BCD8E768C0E46441E30D1B4C89E, Module=ntdll.dll`, "No solution";
+  the 22:47 run: confirm then socket close after 890.8 s). The crash reporter deletes the
+  crash XML/dmp after the upload attempt.
+- So the "no input / no world UI" was a client that had crashed (or was about to) at world
+  entry - not an input-transport problem. Suspects at that instant: our S2C id-5 reply
+  (sent 0.2 s after the confirm; `OnSyncQuestData` with a synthetic payload) or the client's
+  own world-UI init.
+- Tool: `tools/netcode/crash_catcher.py` (wrapper `C:\jx3tmp\run_crash_catcher.cmd`) copies new
+  `bin64\minidump\*.xml|*.dmp|ExceptionNotCapture*` into `C:\jx3tmp\crashes\` within ~100 ms so
+  the crash XML (exception, stack, modules) survives the reporter's cleanup. Next: catch the
+  next crash XML, read the stack, fix the trigger; stub switch `GAME_CONFIRM_REPLY=0` added to
+  test the id-5-reply suspect.

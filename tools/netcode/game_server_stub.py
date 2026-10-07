@@ -211,11 +211,15 @@ def handle(conn, addr):
                         w("[%s] SYNC armed (id4 -> await confirm -> id5 keepalive)" % time.strftime("%H:%M:%S"))
                 elif proto == 5 and os.environ.get("GAME_SYNC", "1") == "1":
                     confirmed[0] = True
-                    time.sleep(0.2)
-                    resp = id5_frame(ROLE_ID)
-                    conn.sendall(sess.encrypt(resp))
-                    w("[%s] SENT id=5 world data reply (sub=0 type=1) after client confirm"
-                      % time.strftime("%H:%M:%S"))
+                    if os.environ.get("GAME_CONFIRM_REPLY", "1") == "1":
+                        time.sleep(0.2)
+                        resp = id5_frame(ROLE_ID)
+                        conn.sendall(sess.encrypt(resp))
+                        w("[%s] SENT id=5 world data reply (sub=0 type=1) after client confirm"
+                          % time.strftime("%H:%M:%S"))
+                    else:
+                        w("[%s] confirm received; id-5 reply DISABLED (GAME_CONFIRM_REPLY=0)"
+                          % time.strftime("%H:%M:%S"))
                 elif proto == 3 and os.environ.get("GAME_SYNC", "1") == "1":
                     # Client ApplyEnterScene (DoApplyEnterScene, 15B). The loading screen is
                     # now up; answer with the S2C id 3 time sync and (re)send id 4 so the
