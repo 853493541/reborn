@@ -3645,20 +3645,96 @@ int main(void)
                                             st[si++]=0xFF; st[si++]=0xE0;
                                             g_taskInvokeStub = st;
                                         }
+                                        void* sc = *(void**)(param + 0xC8);
+                                        void* sa = (sc != NULL) ? *(void**)sc : NULL;
+                                        void* oldTail = (sa != NULL)
+                                            ? *(void**)((BYTE*)sa + 0x78) : NULL;
                                         __try
                                         {
-                                            void* sc = *(void**)(param + 0xC8);
                                             ((void (__fastcall *)(void*, void*))
                                              g_taskInvokeStub)(val, sc);
                                         }
                                         __except (EXCEPTION_EXECUTE_HANDLER)
                                         { logf("[host] RL table task fault"); }
+                                        // the builder appended its register/run
+                                        // tasks to the STEPBUF own list (its
+                                        // +0x70) - invoke them
+                                        (void)sa;
+                                        (void)oldTail;
+                                        if (sc != NULL)
+                                        {
+                                            void* nd3 = *(void**)((BYTE*)sc + 0x70);
+                                            int n3 = 0;
+                                            while (nd3 != NULL && n3 < 16)
+                                            {
+                                                void* val3 = *(void**)((BYTE*)nd3 + 8);
+                                                if (val3 != NULL)
+                                                {
+                                                    void** tv3 = *(void***)val3;
+                                                    char db4[64] = {0};
+                                                    describeAddr((DWORD64)tv3[1], db4, sizeof(db4));
+                                                    logf("[host] frame60: new task[%d] val=%p vt1=%s",
+                                                         n3, val3, db4);
+                                                    __try
+                                                    {
+                                                        ((void (__fastcall *)(void*, void*))
+                                                         g_taskInvokeStub)(val3, sc);
+                                                    }
+                                                    __except (EXCEPTION_EXECUTE_HANDLER)
+                                                    { logf("[host] new task fault"); }
+                                                }
+                                                nd3 = *(void**)nd3;
+                                                n3++;
+                                            }
+                                            logf("[host] frame60: after new tasks [main+0x210]=%p",
+                                                 *(void**)((BYTE*)g_repSingleton + 0x210));
+                                        }
                                     }
                                     nd = *(void**)((BYTE*)nd + 0);
                                     n++;
                                 }
                                 logf("[host] frame60: after task run [main+0x210]=%p",
                                      *(void**)((BYTE*)g_repSingleton + 0x210));
+                                // the builder pushed its created tasks into a
+                                // container reached via the holder; walk it and
+                                // invoke them (same stub + stepCtrl).
+                                __try
+                                {
+                                    void* h0 = *(void**)((BYTE*)g_repSingleton + 0x1A0);
+                                    logf("[host] frame60: holder[0]=%p", h0);
+                                    void* hd = (h0 != NULL) ? *(void**)h0 : NULL;
+                                    if (hd != NULL)
+                                    {
+                                        void* nd2 = *(void**)((BYTE*)hd + 0x70);
+                                        int n2 = 0;
+                                        while (nd2 != NULL && n2 < 16)
+                                        {
+                                            void* val2 = *(void**)((BYTE*)nd2 + 8);
+                                            if (val2 != NULL)
+                                            {
+                                                void** tv2 = *(void***)val2;
+                                                char db3[64] = {0};
+                                                describeAddr((DWORD64)tv2[1], db3, sizeof(db3));
+                                                logf("[host] frame60: holder task[%d] val=%p vt1=%s",
+                                                     n2, val2, db3);
+                                                __try
+                                                {
+                                                    void* sc2 = *(void**)(param + 0xC8);
+                                                    ((void (__fastcall *)(void*, void*))
+                                                     g_taskInvokeStub)(val2, sc2);
+                                                }
+                                                __except (EXCEPTION_EXECUTE_HANDLER)
+                                                { logf("[host] holder task fault"); }
+                                            }
+                                            nd2 = *(void**)((BYTE*)nd2 + 0);
+                                            n2++;
+                                        }
+                                        logf("[host] frame60: after holder run [main+0x210]=%p",
+                                             *(void**)((BYTE*)g_repSingleton + 0x210));
+                                    }
+                                }
+                                __except (EXCEPTION_EXECUTE_HANDLER)
+                                { logf("[host] frame60: holder run fault"); }
                             }
                         }
                         // the RL table tasks run through the KGAsyncTask system; the
