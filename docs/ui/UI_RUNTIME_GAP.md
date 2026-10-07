@@ -15,22 +15,23 @@ This report measures what is **still dropped** — the remaining calls per windo
 | category | calls | meaning |
 |---|---|---|
 | item-creation | 0 | DROPPED — list rows never materialize (missing items) |
-| arrangement | 11 | DROPPED — engine position/size passes (wrong placement) |
+| arrangement | 1 | DROPPED — engine position/size passes (wrong placement) |
 | render | 21 | DROPPED — runtime image source/mode/animation |
 | state | 0 | DROPPED — control state (enable/check/expand/page) |
+| interaction | 10 | DROPPED — drag/interaction registration (not static layout) |
 | consumed | 5738 | applied by the viewer today |
 | noise | 10050 | engine plumbing, no visual state (lookup/events/getters) |
 
-State-bearing dropped calls: **32** (item-creation 0 + arrangement 11 + render 21 + state 0).
+State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21 + state 0).
 
 ## Dropped methods (distinct, with the windows using them)
 
 | method | category | calls | windows |
 |---|---|---|---|
 | `FromTextureFile` | render | 7 | BattleFieldMap, LoadingPanel, MonopolyCardUseConfirm, MonopolyLandPurchaseDlg, NewPet, StoryDisplay |
-| `SetDragArea` | arrangement | 4 | BigBagPanel, DesertPreset, ShareBagPanel |
-| `EnableDrag` | arrangement | 3 | Matrix, QuestTraceList |
-| `RegisterLButtonDrag` | arrangement | 3 | BigBagPanel, NoticeBoard, VoiceRoomNotice |
+| `SetDragArea` | interaction | 4 | BigBagPanel, DesertPreset, ShareBagPanel |
+| `EnableDrag` | interaction | 3 | Matrix, QuestTraceList |
+| `RegisterLButtonDrag` | interaction | 3 | BigBagPanel, NoticeBoard, VoiceRoomNotice |
 | `SetTextAutoTipEnabled` | render | 3 | ReputationPanel |
 | `SetAnimateGroupMouseDown` | render | 2 | CompassPanel, GMPanel |
 | `SetAnimateGroupMouseOver` | render | 2 | CompassPanel, GMPanel |
@@ -45,14 +46,7 @@ State-bearing dropped calls: **32** (item-creation 0 + arrangement 11 + render 2
 
 | window | stage | consumed | item-creation | arrangement | render | state | placeholders | unresolved | oob |
 |---|---|---|---|---|---|---|---|---|---|
-| BigBagPanel | liked | 373 | 0 | 3 | 0 | 0 | 0 | 0 | 108 |
-| QuestTraceList | recommended | 9 | 0 | 2 | 0 | 0 | 0 | 0 | 7 |
-| DesertPreset | other-ui | 30 | 0 | 1 | 0 | 0 | 0 | 0 | 1 |
-| Matrix | liked | 15 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
-| NoticeBoard | other-ui | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 2 |
 | ReputationPanel | panels-ui | 84 | 0 | 1 | 3 | 0 | 2 | 0 | 4 |
-| ShareBagPanel | recommended | 24 | 0 | 1 | 0 | 0 | 0 | 0 | 4 |
-| VoiceRoomNotice | other-ui | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 2 |
 | ACC_BFInfo | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | ACC_BFShowFinal | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | ACC_DesertStormInfo | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
@@ -150,6 +144,7 @@ State-bearing dropped calls: **32** (item-creation 0 + arrangement 11 + render 2
 | BattleMapPay | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | BattlePass | modes-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 12 |
 | BattleTipPanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| BigBagPanel | liked | 373 | 0 | 0 | 0 | 0 | 0 | 0 | 108 |
 | BigBankPanel | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 17 |
 | BirthdayCelebrateCardPop | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | BlackMarketOperate | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -344,6 +339,7 @@ State-bearing dropped calls: **32** (item-creation 0 + arrangement 11 + render 2
 | DesertEquipmentChoose | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | DesertItemBuySure | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | DesertItemNumSure | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| DesertPreset | other-ui | 30 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | DesertQuickPack | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
 | DesertSell | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | DesertStormInfoPanel | other-ui | 26 | 0 | 0 | 0 | 0 | 0 | 0 | 235 |
@@ -722,6 +718,7 @@ State-bearing dropped calls: **32** (item-creation 0 + arrangement 11 + render 2
 | MasterNote | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | Match3Game | other-ui | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 2 |
 | MaterialInfoMore | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
+| Matrix | liked | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | MentorFindMessage | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | MentorMessage | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | MentorPanel | recommended | 0 | 0 | 0 | 0 | 0 | 11 | 0 | 10 |
@@ -841,6 +838,7 @@ State-bearing dropped calls: **32** (item-creation 0 + arrangement 11 + render 2
 | NewSkillPanel | liked | 8 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
 | NewTrialValley | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | NewYearPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+| NoticeBoard | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | NpcExteriorView | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | NpcMorphBar | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 68 |
 | NumericalPanel | other-ui | 163 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -965,6 +963,7 @@ State-bearing dropped calls: **32** (item-creation 0 + arrangement 11 + render 2
 | QuestGuide | recommended | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | QuestItem | menus-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | QuestRewardTip | menus-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 3 |
+| QuestTraceList | recommended | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | Questionnaire_FresherExitGame | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | Queue | modes-ui | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
 | QuickConsumePanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
@@ -1062,6 +1061,7 @@ State-bearing dropped calls: **32** (item-creation 0 + arrangement 11 + render 2
 | SetPersonalVolume | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
 | SetTeamLootMode | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | ShareBagBindingPanel | other-ui | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| ShareBagPanel | recommended | 24 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | ShareStation | other-ui | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 388 |
 | ShareStation_DyeDetails | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | ShareStation_EditInfo | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
@@ -1206,6 +1206,7 @@ State-bearing dropped calls: **32** (item-creation 0 + arrangement 11 + render 2
 | VoiceHallAgreement | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | VoiceMessage | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | VoiceRoomMessage | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| VoiceRoomNotice | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | VoiceRoomPassword | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | VoiceRoomUpGrade | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | WantedPanel | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
@@ -1242,29 +1243,6 @@ State-bearing dropped calls: **32** (item-creation 0 + arrangement 11 + render 2
 
 ## Full dropped-call detail (every window, item-creation/arrangement/render/state)
 
-### BigBagPanel
-
-- `arrangement` RegisterLButtonDrag Btn_Drag 
-- `arrangement` SetDragArea BigBagPanel 0 0 594
-- `arrangement` SetDragArea BigBagPanel 0 0 594
-
-### QuestTraceList
-
-- `arrangement` EnableDrag QuestTraceList true
-- `arrangement` EnableDrag QuestTraceList true
-
-### DesertPreset
-
-- `arrangement` SetDragArea DesertPreset 0 0 596
-
-### Matrix
-
-- `arrangement` EnableDrag Matrix true
-
-### NoticeBoard
-
-- `arrangement` RegisterLButtonDrag Btn_Drag 
-
 ### ReputationPanel
 
 - `render` SetTextAutoTipEnabled Wnd_FilterRepuLevel true
@@ -1272,17 +1250,15 @@ State-bearing dropped calls: **32** (item-creation 0 + arrangement 11 + render 2
 - `render` SetTextAutoTipEnabled Wnd_FilterMap true
 - `arrangement` SetScrollVerStepSize ReputationPanel 516
 
-### ShareBagPanel
-
-- `arrangement` SetDragArea ShareBagPanel 0 0 514
-
-### VoiceRoomNotice
-
-- `arrangement` RegisterLButtonDrag Btn_Drag 
-
 ### BattleFieldMap
 
 - `render` FromTextureFile Image_Map 
+
+### BigBagPanel
+
+- `interaction` RegisterLButtonDrag Btn_Drag 
+- `interaction` SetDragArea BigBagPanel 0 0 594
+- `interaction` SetDragArea BigBagPanel 0 0 594
 
 ### Bullet
 
@@ -1293,6 +1269,10 @@ State-bearing dropped calls: **32** (item-creation 0 + arrangement 11 + render 2
 - `render` SetAnimateGroupNormal Btn_Close 9
 - `render` SetAnimateGroupMouseOver Btn_Close 10
 - `render` SetAnimateGroupMouseDown Btn_Close 8
+
+### DesertPreset
+
+- `interaction` SetDragArea DesertPreset 0 0 596
 
 ### GMPanel
 
@@ -1307,6 +1287,10 @@ State-bearing dropped calls: **32** (item-creation 0 + arrangement 11 + render 2
 ### MainBarPanel
 
 - `render` SetAnimation CheckBox_UpDown ui/Image/UItimate/UICommon/MainBarPanel.UITex 12 8
+
+### Matrix
+
+- `interaction` EnableDrag Matrix true
 
 ### MiniMap
 
@@ -1325,14 +1309,31 @@ State-bearing dropped calls: **32** (item-creation 0 + arrangement 11 + render 2
 - `render` FromTextureFile Image_CardBorder 
 - `render` FromTextureFile Handle_CardPic 0
 
+### NoticeBoard
+
+- `interaction` RegisterLButtonDrag Btn_Drag 
+
 ### Player
 
 - `render` FormatTextForDraw Text_Player 
 - `render` FromIconID Image_Player 14659
 
+### QuestTraceList
+
+- `interaction` EnableDrag QuestTraceList true
+- `interaction` EnableDrag QuestTraceList true
+
+### ShareBagPanel
+
+- `interaction` SetDragArea ShareBagPanel 0 0 514
+
 ### StoryDisplay
 
 - `render` FromTextureFile Image_Map 
+
+### VoiceRoomNotice
+
+- `interaction` RegisterLButtonDrag Btn_Drag 
 
 ## Fix status
 

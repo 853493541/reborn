@@ -47,7 +47,12 @@ CONSUMED = {
 }
 ITEM_CREATION = set()
 ARRANGEMENT = {
-    "SetScrollVerStepSize", "SetDragArea", "RegisterLButtonDrag", "EnableDrag",
+    "SetScrollVerStepSize",
+}
+# Drag registration wires interaction, not static layout (the viewer's click/hover
+# server dispatches by control type; drag regions need the interaction layer).
+INTERACTION = {
+    "SetDragArea", "RegisterLButtonDrag", "EnableDrag",
 }
 RENDER = {
     "SetTextAutoTipEnabled", "FormatTextForDraw", "SetAnimation",
@@ -57,7 +62,7 @@ RENDER = {
 # SetAlwaysTop is a window z-order flag - no visual state in a static render.
 STATE = set()
 
-CATEGORY_ORDER = ["item-creation", "arrangement", "render", "state", "consumed", "noise"]
+CATEGORY_ORDER = ["item-creation", "arrangement", "render", "state", "interaction", "consumed", "noise"]
 
 
 def category(method: str) -> str:
@@ -67,6 +72,8 @@ def category(method: str) -> str:
         return "arrangement"
     if method in RENDER:
         return "render"
+    if method in INTERACTION:
+        return "interaction"
     if method in STATE:
         return "state"
     if method in CONSUMED:
@@ -162,6 +169,7 @@ def main(argv: list[str] | None = None) -> int:
         "arrangement": "DROPPED — engine position/size passes (wrong placement)",
         "render": "DROPPED — runtime image source/mode/animation",
         "state": "DROPPED — control state (enable/check/expand/page)",
+        "interaction": "DROPPED — drag/interaction registration (not static layout)",
         "noise": "engine plumbing, no visual state (lookup/events/getters)",
     }
     for cat in CATEGORY_ORDER:
