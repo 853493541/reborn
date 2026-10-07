@@ -223,6 +223,14 @@ static void __fastcall hookTableWrapper(void* a1, void* a2)
 static void __fastcall hookTableBuilder(void* a1, unsigned a2, void* a3, void* a4)
 {
     logf("[host] table builder enter (a1=%p a2=%u a3=%p a4=%p)", a1, a2, a3, a4);
+    __try
+    {
+        void* v1 = *(void**)a4;
+        void* v2 = (v1 != NULL) ? *(void**)((BYTE*)v1 + 0x10) : NULL;
+        logf("[host] table builder a4: [a4]=%p [a4]+0x10=%p", v1, v2);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    { logf("[host] table builder a4 probe fault"); }
     ((void (__fastcall *)(void*, unsigned, void*, void*))g_buildTramp)(a1, a2, a3, a4);
 }
 
@@ -414,6 +422,7 @@ static volatile LONG g_flagWatchArmed = 0;
 static volatile LONG g_movieWatchArmed = 0;
 static void* g_engineInstance = NULL;
 static void* g_engIface = NULL;
+static BYTE* g_taskInvokeStub = NULL;
 static volatile LONG g_flagWatchHit = 0;
 static BYTE g_ctwSaved[32];
 static BYTE* g_ctwTramp = NULL;
@@ -3294,6 +3303,18 @@ int main(void)
                         *(void**)((BYTE*)g_repSingleton + 0x100) = g_so3World;
                     logf("[host] frame60: singleton+0x100 (SO3World) -> %p",
                          *(void**)((BYTE*)g_repSingleton + 0x100));
+                    // the KJX3LogicModule (exe+0xAF4A0 creates the module +
+                    // its sub-object and stores it at exe+0xA8C208); the
+                    // Initialize reads [0xA8C208+0x18] as the table source.
+                    __try
+                    {
+                        void* lm = ((void* (*)(void))
+                                    ((BYTE*)g_exeModule + 0xAF4A0))();
+                        logf("[host] frame60: KJX3LogicModule(0xAF4A0) -> %p [0xA8C208]=%p",
+                             lm, *(void**)((BYTE*)g_exeModule + 0xA8C208));
+                    }
+                    __except (EXCEPTION_EXECUTE_HANDLER)
+                    { logf("[host] frame60: KJX3LogicModule create fault"); }
                     // run the game's OWN module init path first: the dispatcher
                     // (exe+0xBC6A0, state 3) -> KJX3RepresentModule::Initialize
                     // (exe+0xBC150) with the module object + event data. The
@@ -3500,16 +3521,24 @@ int main(void)
                             memset(stepAlloc, 0, sizeof(stepAlloc));
                             *(void**)(stepA + 0x10) = stepAlloc;
                             *(void**)stepBuf = stepA;
+                            // the builder reads the pool allocator as
+                            // [stepCtrl+0x10] directly - provide it there
+                            // as well (the rep Init reads it via the inner
+                            // object's +0x10)
+                            *(void**)(stepBuf + 0x10) = stepAlloc;
                             *(void**)(param + 0xC8) = stepBuf;
                         // param+0xA8 is captured by the RL table tasks (the V
                         // functors store it at +0x18) and read by the timed
                         // DECODED (exe Initialize 0xBC194-0xBC21C): param+0xA8 =
-                        // [exe+0xA8C208+0x18] (the logic module's manager)'s
-                        // vt[3](&out, float) result = the RL table source. The
-                        // host has that manager in g_exeLogicMgr.
+                        // [exe+0xA8C208 + 0x18] (the KJX3LogicModule's
+                        // sub-object, vtable exe+0x952B20) - its vt[3]
+                        // (exe+0x98A20) is the RL table-source getter.
                         *(void**)(param + 0xA8) = g_rlLoader;
-                        if (g_exeLogicMgr != NULL)
-                            *(void**)(param + 0xA8) = g_exeLogicMgr;
+                        {
+                            void* lm = *(void**)((BYTE*)g_exeModule + 0xA8C208);
+                            if (lm != NULL)
+                                *(void**)(param + 0xA8) = (BYTE*)lm + 0x18;
+                        }
                         
                         // NOTE: the wrapper's resource member (param+0xA8) is still
                         // unidentified; candidates tried: g_rlLoader (vt[3] =
@@ -3593,12 +3622,34 @@ int main(void)
                                     if (val != NULL &&
                                         *(void**)val == (void*)((BYTE*)g_repModule + 0xC99D30))
                                     {
-                                        void** tvt = *(void***)val;
                                         logf("[host] frame60: invoke RL table task[%d] val=%p",
                                              n, val);
+                                        // the timed wrapper reads the step
+                                        // controller from a fixed caller-stack
+                                        // slot ([rbp+0x38] = entry rsp-0x20);
+                                        // the game's task runner supplies it - our
+                                        // stub places it exactly, then jumps to
+                                        // the task's vt[1] invoke.
+                                        if (g_taskInvokeStub == NULL)
+                                        {
+                                            BYTE* st = (BYTE*)VirtualAlloc(NULL, 0x40,
+                                                MEM_COMMIT | MEM_RESERVE,
+                                                PAGE_EXECUTE_READWRITE);
+                                            int si = 0;
+                                            // rcx = the task, rdx = the step
+                                            // controller (the wrapper's arg2 ->
+                                            // its rdx-save -> [rbp+0x38] -> the
+                                            // builder's arg4)
+                                            st[si++]=0x48; st[si++]=0x8B; st[si++]=0x01;
+                                            st[si++]=0x48; st[si++]=0x8B; st[si++]=0x40; st[si++]=0x08;
+                                            st[si++]=0xFF; st[si++]=0xE0;
+                                            g_taskInvokeStub = st;
+                                        }
                                         __try
                                         {
-                                            ((void (__fastcall *)(void*))tvt[1])(val);
+                                            void* sc = *(void**)(param + 0xC8);
+                                            ((void (__fastcall *)(void*, void*))
+                                             g_taskInvokeStub)(val, sc);
                                         }
                                         __except (EXCEPTION_EXECUTE_HANDLER)
                                         { logf("[host] RL table task fault"); }
