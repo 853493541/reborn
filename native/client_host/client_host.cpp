@@ -327,6 +327,7 @@ static int g_autoCastDone = 0;
 static char g_abil[32][512];
 static char g_abilName[32][128];
 static int g_abilCount = 0;
+static volatile LONG g_hostQuit = 0;
 
 static LRESULT CALLBACK HostWndProc(HWND h, UINT m, WPARAM w, LPARAM l)
 {
@@ -335,6 +336,14 @@ static LRESULT CALLBACK HostWndProc(HWND h, UINT m, WPARAM w, LPARAM l)
         if (w >= '1' && w <= '9') g_castRequest = (int)(w - '1');
     }
     else if (m == WM_CLOSE)
+    {
+        // destroy the window (a bare PostQuitMessage leaves it on screen) and
+        // flag the frame loop to exit
+        g_hostQuit = 1;
+        DestroyWindow(h);
+        return 0;
+    }
+    else if (m == WM_DESTROY)
     {
         PostQuitMessage(0);
         return 0;
@@ -1751,14 +1760,42 @@ static HWND createHostWindow(void)
                              1280, 720, NULL, NULL, wc.hInstance, NULL);
     if (h != NULL)
     {
-        // make sure the window is visible, restored, in front and on top (a
-        // minimized window sits at -32000 and other apps cover normal windows)
-        ShowWindow(h, SW_SHOWNORMAL);
-        ShowWindow(h, SW_RESTORE);
-        SetWindowPos(h, HWND_TOPMOST, 80, 60, 1280, 760, SWP_SHOWWINDOW);
-        SetForegroundWindow(h);
+        // Default: the window stays HIDDEN - the engine renders offscreen and the
+        // engine-API screenshot captures it (a visible window during runs is
+        // disruptive). RC_HOST_SHOW=1 shows it; it is closeable (WM_CLOSE exits).
+        // The engine needs a SHOWN window (a hidden window breaks its init), but
+        // it must never bother the desktop: default = shown OFF-SCREEN (visible to
+        // the API, invisible to the user). RC_HOST_SHOW=1 puts it on screen.
+        // It is closeable (WM_CLOSE exits) and the watchdog caps the runtime.
+        char showBuf[8];
+        int show = 0;
+        if (GetEnvironmentVariableA("RC_HOST_SHOW", showBuf, sizeof(showBuf)) != 0 &&
+            showBuf[0] == '1')
+            show = 1;
+        ShowWindow(h, SW_SHOWNOACTIVATE);
+        if (show)
+            SetWindowPos(h, HWND_NOTOPMOST, 80, 60, 1280, 760, SWP_NOACTIVATE);
+        else
+            SetWindowPos(h, HWND_NOTOPMOST, -4000, -4000, 640, 480, SWP_NOACTIVATE);
+        logf("[host] host window mode=%s (RC_HOST_SHOW=1 to show on screen)",
+             show ? "on-screen" : "off-screen");
     }
     return h;
+}
+
+// Hard runtime cap: no host run may outlive its budget (a stuck engine must never
+// leave a window on screen). RC_HOST_MAXSEC overrides the 240 s default.
+static DWORD WINAPI hostWatchdog(LPVOID)
+{
+    int sec = 240;
+    char b[32];
+    if (GetEnvironmentVariableA("RC_HOST_MAXSEC", b, sizeof(b)) != 0)
+        sec = atoi(b);
+    if (sec < 20) sec = 20;
+    Sleep((DWORD)sec * 1000);
+    logf("[host] watchdog: %d s budget elapsed - force exit", sec);
+    TerminateProcess(GetCurrentProcess(), 0);
+    return 0;
 }
 
 int main(void)
@@ -1778,6 +1815,7 @@ int main(void)
     AddVectoredExceptionHandler(1, vehHandler);
     SetCurrentDirectoryW(root);
     g_hostHwnd = createHostWindow();
+    CreateThread(NULL, 0, hostWatchdog, NULL, 0, NULL);
     logf("[host] window=%p root=%s", g_hostHwnd, rootA);
     SetDefaultDllDirectories(LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
     AddDllDirectory(bin64);
@@ -2918,6 +2956,11 @@ int main(void)
                 TranslateMessage(&msg);
                 DispatchMessageA(&msg);
             }
+            if (g_hostQuit)
+            {
+                logf("[host] window closed - exiting at frame %d", f);
+                break;
+            }
             if (g_castRequest >= 0)
             {
                 castAbility(g_castRequest, actor, ctrl, eng);
@@ -3644,6 +3687,46 @@ int main(void)
                         // shadow bitmap build with the unloaded descriptor and its
                         // faulted memset corrupted the heap before the real call.
                         // The real CreateRLScene performs the whole path itself.
+                        // line-198 gate probe: rep+0x2FD130 (KRLScene::Init) needs
+                        // the RL manager ([rep_main+0xB0]) and [rep_main+0x108]
+                        // non-null, plus manager vt[0x46]() non-null.
+                        __try
+                        {
+                            void* main3 = *(void**)((BYTE*)g_repModule + 0xEDDFE0);
+                            void* mgr3 = (main3 != NULL)
+                                ? *(void**)((BYTE*)main3 + 0xB0) : NULL;
+                            void* f108 = (main3 != NULL)
+                                ? *(void**)((BYTE*)main3 + 0x108) : NULL;
+                            // The game's own init sets [SO3Represent+0x108] via the
+                            // public setter at vtable index 6 (rep+0x3E7B40:
+                            // [rcx+0x108]=rdx); the line-198 gate needs it non-null.
+                            // Feed it the world.
+                            if (f108 == NULL && g_so3World != NULL)
+                            {
+                                void** mvt5 = *(void***)main3;
+                                char db5[64] = {0};
+                                describeAddr((DWORD64)mvt5[6], db5, sizeof(db5));
+                                ((void (__fastcall *)(void*, void*))mvt5[6])(main3, g_so3World);
+                                f108 = *(void**)((BYTE*)main3 + 0x108);
+                                logf("[host] gate probe: vt[6]=%s(world=%p) -> [main+0x108]=%p",
+                                     db5, g_so3World, f108);
+                            }
+                            if (mgr3 != NULL)
+                            {
+                                void** mvt = *(void***)mgr3;
+                                char db[64] = {0};
+                                void* dev3 = NULL;
+                                describeAddr((DWORD64)mvt[0x46], db, sizeof(db));
+                                dev3 = ((void* (__fastcall *)(void*))mvt[0x46])(mgr3);
+                                logf("[host] gate probe: rep_main=%p mgr=%p [main+0x108]=%p vt[0x46]=%s -> %p",
+                                     main3, mgr3, f108, db, dev3);
+                            }
+                            else
+                                logf("[host] gate probe: rep_main=%p mgr=NULL [main+0x108]=%p",
+                                     main3, f108);
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] gate probe fault"); }
                         {
                             typedef long (__fastcall *CreateRLSceneFn)(
                                 unsigned id, unsigned type, unsigned a3, unsigned a4,
