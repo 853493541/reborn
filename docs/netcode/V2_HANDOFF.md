@@ -3,6 +3,45 @@
 **For the next agent. Read this first, then `docs/EXPERIENCES.md`'s last 3 entries and
 `docs/netcode/V2_PLAN.md`. Everything below is live-verified unless marked STATIC/DECODED.**
 
+## CURRENT STATE (2026-10-06 night) — read this first
+
+**The goal: the user wants to MOVE in the world.** The chain is solved up to "client renders
+the real map in state 7"; the remaining gate is the loading completion -> world UI -> input.
+
+- **Crash root cause FOUND + FIXED (in test):** every client death is a crash (exit code
+  `0xCFFFFFFF`; DumpReport `CrashType=0`, ntdll). The trigger was our **synthetic S2C id-5
+  `OnSyncQuestData` frames** (6 s keepalive + the post-confirm reply; parser
+  `KQuestList::LoadQuestState` 0x140327680). Fix: keepalive = benign **id-3** frame
+  (`id3_frame`), confirm reply off (`GAME_CONFIRM_REPLY=0`). Result: the client survived 20+
+  min and rendered the world (vs 26-91 s crashes before).
+- **Remaining gate:** the loading panel never completes -> **no C2S proto=5 confirm** -> no
+  world UI/tick -> no input (no 0x1E8). Suspect: the panel's progress counts the scene-load
+  tasks; the UGC map 龙门寻宝 export is missing files (loader logs 64 `_LoadFileData` failures:
+  `foliage/blendmap/clusterinfo.json`, `bd/volumetricCloud/volumetricCloud.json`,
+  `龙门寻宝_PFX_Runtime.json`, `data/public/MovieEditor/LightTagConfig.json`). The official
+  `PakV4SfxExtract.exe` says **NOT FOUND** for all of them (UGC-only map, authoring gaps).
+  NEXT: decode the loading panel's progress accounting (GetSceneLoadingProcess /
+  GetSceneLoadingTaskCount in LoadingPanel.lua strings) to confirm the missing tasks block
+  100%; if yes, author minimal valid files into `data\UGC\binkp1\龙门寻宝\...` (backup first;
+  ask the user - it writes under C:\SeasunGame) -> confirm fires -> world UI -> input.
+- **id 4 must be the loaded map:** use `GAME_ID4_MAP=296` (龙门寻宝; map=1 gives a stub scene).
+  Spawn: the map's editor camera (54991,42845,2930) from `editorContext.json`
+  (`C:\jx3tmp\run_gamestub_296b.cmd`).
+- **Loop machinery (user rule: freeze/crash -> log reason -> kill -> fix -> retry):**
+  - `tools\netcode\incident_report.py` (wrapper `C:\jx3tmp\run_incident_watch.cmd`): watches
+    the client; on freeze (hung + static screen 90 s) or process exit it collects the reason
+    (exit code, DumpReport summary, caught crash XML, client KG3D log tail, stub tail, state,
+    screenshot) into `C:\jx3tmp\incidents\incident_<stamp>\reason.txt`, kills the client, exits.
+  - `tools\netcode\crash_catcher.py` (`C:\jx3tmp\run_crash_catcher.cmd`): copies
+    `bin64\minidump\*.xml|*.dmp` to `C:\jx3tmp\crashes\` before DumpReport deletes them.
+  - `tools\netcode\watch_freeze.py`: standalone freeze watchdog (FROZEN/STUCK -> logs -> kill).
+  - **Launch hidden always**: `tools\netcode\launch_hidden.ps1 "<cmd>"` (plain WMI launches pop
+    console windows - user complaint).
+- **The client writes its own logs**: `zhcn_hd\logs\KG3D_Engine\<date>\KG3D_Engine_*.log`
+  (per-run; map load + RayIntersection asserts), `logs\DumpReport\`, `logs\Dumper\`.
+- **Live env at handoff:** services 80/3724/3725 up (stub = 296b wrapper), client alive in
+  state 7 rendering the world; incident watcher + crash catcher armed.
+
 ## 0. Where you are
 
 - Worktree: `C:\Users\Zhibin Ren\Desktop\reborn-iso-v2`, branch **`agent/v2`** (main checkout
