@@ -5497,6 +5497,21 @@ int main(void)
                                     }
                                     __except (EXCEPTION_EXECUTE_HANDLER)
                                     { logf("[host] frame60: registry probe fault"); }
+                                    // Size the async-task delegate registry: the engine's
+                                    // InitAsyncTask does Delegate::Initialize(this+0x230,
+                                    // 0x56) where this=rep_main+0x26090 -> registry at
+                                    // rep_main+0x262C0.
+                                    __try
+                                    {
+                                        void* reg = (BYTE*)g_repSingleton + 0x262C0;
+                                        long dc = ((long (__fastcall *)(void*, unsigned))
+                                                   ((BYTE*)g_repModule + 0x3733F0))(
+                                            reg, 0x56);
+                                        logf("[host] frame60: Delegate::Initialize(reg,0x56) -> %ld count=%u",
+                                             dc, *(unsigned*)reg);
+                                    }
+                                    __except (EXCEPTION_EXECUTE_HANDLER)
+                                    { logf("[host] frame60: Delegate::Initialize fault"); }
                                     void* ir = ((void* (__fastcall *)(void*, void*,
                                                       void*))
                                                ((BYTE*)g_repModule + 0x36DA50))(

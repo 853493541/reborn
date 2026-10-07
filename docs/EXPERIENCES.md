@@ -3631,5 +3631,21 @@ HIGH-confidence findings:
 - Next: call the delegate-registry `Initialize` (find the exact `Delegate::Initialize`
   address) or `InitAsyncTask`, verify count>0, then re-run `RLActorMgrNT::Init`.
 - Evidence: host_exe254.out (count=0); static disasm/strings.
+
+## 2026-10-07 - Sized the async registry (count 0x56); Init's Register still fails at the entry grow
+
+- `Delegate::Initialize` = `rep+0x3733F0` (`this=rcx, count=edx`); it allocates the bucket
+  (0x18 B) + entries (count*0x18) and sets `[this]=count`, `[this+8]=bucket`.
+- Engine's `InitAsyncTask` (`rep+0x372F20`) does `Delegate::Initialize(this+0x230, 0x56)`
+  where `this = rep_main+0x26090` -> registry at `rep_main+0x262C0`. Host now calls
+  `Initialize(rep_main+0x262C0, 0x56)` before `Init` -> run 255: `count=86` (sized).
+- BUT `RLActorMgrNT::Init` STILL fails at line 86 (`Register`). `Register` (`rep+0x36A1D0`)
+  now passes the `edx < count` check but returns false deeper: the per-entry grow path
+  (`[rdi+4]` capacity, realloc via `[0x109AF60]`) - so either the entries sub-structure
+  from `Initialize` is incomplete in-host or the entry realloc path returns null.
+- Next: verify the entries (bucket+0x10) after Initialize and the `Register` grow
+  return; or call the full `InitAsyncTask(rep_main+0x26090, ...)` instead of the bare
+  `Initialize`.
+- Evidence: host_exe255.out (count=86, line-86 still fails); static disasm.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
