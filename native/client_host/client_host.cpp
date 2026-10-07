@@ -1198,6 +1198,9 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
     if (ep->ExceptionRecord->ExceptionCode == 0xC0000005 ||
         ep->ExceptionRecord->ExceptionCode == 0xC0000409)
     {
+        // flush first: an abrupt death right after this exception must not
+        // swallow the trace in the stdio buffer (the registerTasks crash)
+        fflush(stdout);
         HMODULE m = NULL;
         wchar_t path[MAX_PATH] = { 0 };
         const wchar_t* base = L"?";
