@@ -3073,5 +3073,31 @@ HIGH-confidence findings:
 - Next: identify the unset registration behind the singleton factory, or make
   the host catch the late fault robustly so Gate 1's scene-attached checkpoint
   holds. Evidence: host_exe216/217.out.
+
+## 2026-10-07 - Gate 1 checkpoint REACHED via the game's path; provisional recovery deviation registered
+
+- **Gate 1 checkpoint (observable):** the host now calls the game's own
+  `CreateRLScene` (0xB0B5C0) and `GetRLScene(2)` (0x924B); `GetRLScene(2)`
+  returns a non-null RLScene with a **non-null 3DScene attached**
+  (`GetRLScene(2) -> 0x…B040 (3DScene=0x…9ED8)`), and the run completes
+  (`frame loop done`, `[host] done`, exit 0). `KRLScene::Init` line 27/212 pass
+  (m_tabCommon via `KTableList::LoadConfigureFile` / `"CommonKRL"`).
+- **PROVISIONAL DEVIATION (registered, §6):** the engine's `CreateRLScene`
+  reaches a late, frameless **wild call** *after* it has already created and
+  attached the scene (isolated to the named-object factory path
+  `0xAEE2D8 -> 0x15BF4 -> 0xAEDFD0`; `[rep+0xF51298]` is NULL; `rax` at the
+  fault is the low-32 bits of `rep+0xAEDFE0`). A clean run's host `__try`
+  cannot unwind it, so the host installs a VEH `setjmp`-style recovery
+  (`RtlCaptureContext` guard around the call; on a wild AV on the main thread
+  it restores the context and continues). This is a host-level recovery, not a
+  game mechanism.
+  - Why no native path is wired yet: the exact faulting `call` could not be
+    pinned with the in-host VEH/tracer (frameless transfer; the single-step
+    tracer yields only its first step; the safe inline-hook mechanism cannot
+    hook the RIP-relative-prologue callees `0x920C40`/`0x1687E`/`0x923400`).
+  - **Re-open criteria:** when the wild call is diagnosed and either the
+    missing registration is wired or the truncated-pointer source is fixed;
+    then remove the recovery (or `RC_HOST_NORECOVER=1` to reproduce the fault).
+- Evidence: host_exe223.out (recovered run); commits (recovery) + docs.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
