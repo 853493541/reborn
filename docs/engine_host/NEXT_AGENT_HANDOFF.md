@@ -77,13 +77,20 @@ CreateRLScene. Result: `[main+0x210]` becomes non-null and **KRLScene::Init
 line 27/212 now PASS** — CreateRLScene proceeds far deeper (loads the represent
 lua scripts, sets up entities).
 
-**STATUS (2026-10-07, run 226, no deviations): Gate 1's checkpoint is REACHED
-through the game's own path.** The host calls the engine's `CreateRLScene`
-(0xB0B5C0), which creates and attaches the scene; `GetRLScene(2)` (0x924B)
-returns a non-null RLScene with a **non-null 3DScene**; `KRLScene::Init` line 27
-(weather/`m_tabCommon`) and line 212 pass; the run completes (exit 0). A caught,
-non-fatal AV at `rep+0x58CA4F` (inside `KRLScene::Init`, after the scene is
-created) is handled by the host `__try`.
+**STATUS (2026-10-07, run 234): Gate 1 and Gate 2 done; Gate 3 in progress.**
+- Gate 1: `CreateRLScene` -> `GetRLScene(2)` non-null (non-null 3DScene);
+  `m_tabCommon` via `KTableList::LoadConfigureFile`. The "wild call" was a host
+  hook-length bug (entityFactory len 16->12), fixed at the root.
+- Gate 2: char chain runs fault-free on the real scene (`0x924B(2)` non-null).
+- Gate 3: `KRLScene::InitializeScene` (rep+0xADFFE0) needs the ECS stack. The
+  host now initializes the named-object manager (`rep+0x920D10`, sets
+  `[rep+0xF51298]`) and the ECS root (`rep+0x924B20`, sets `[rep+0xF512A8]`,
+  creates `root`/`reference`). Remaining blocker: `CreateComponent`
+  (`rep+0xAE5D40`) `bsearch`es a **component-factory registry table** passed
+  into `CreateTransformEntity` (`rep+0xAEE1F0`); the registry is empty in-host
+  (`CreateComponent` line 104 `pRegistry`, then `InitializeScene` line 54). Next:
+  create/populate that ECS registry (the represent ECS init) so
+  `[KRLScene+0xF29E8]` is set and the local-player chain can run.
 - `m_tabCommon` is set by the game's own `KTableList::LoadConfigureFile`
   (`"CommonKRL"`).
 - The long-running "wild call" was a **host inline-hook bug**: `hookEntityFactory`
