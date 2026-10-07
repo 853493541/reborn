@@ -96,6 +96,12 @@ the runtime mutations as data the viewer consumes:
   (`luaV_concat`). These fire where a real engine table field the client fills at startup (video
   settings, server data) is absent in the replay; all are test-rig patches with the same
   re-open criterion (drop when the field has real data).
+- **Permissive-access build patch (2026-10-06):** `lvm.c` `luaV_gettable` reads a stub nil /
+  function / boolean as nil (instead of "attempt to index"), `luaV_settable` ignores writes to nil,
+  and `ldo.c` `tryfuncTM` turns a call of a non-callable stub value into a no-op returning no
+  results (`attempt to call method 'X' (a nil value)`). These are the stub-session equivalents of
+  absent engine objects (no player logged in, no mode data); the client's own bytecode still runs
+  and the recorded mutations remain the client's calls.
 - **Engine base data layer (2026-10-05):** the window scripts consume engine globals
   (`g_tTable`/`Table_*`, `g_tStrings`, `VideoBase`, `g_tExpression`, ...) that the engine builds
   from its own UI library. `ui/module_info.xml` (extracted from PakV4) lists 1,016 modules; the

@@ -416,7 +416,9 @@ do
     if type(orig) == "function" then
       string[name] = function(s, ...)
         if type(s) ~= "string" and type(s) ~= "number" then s = tostring(s) end
-        return orig(s, ...)
+        local res = { pcall(orig, s, ...) }
+        if res[1] then return res[2], res[3], res[4] end
+        return ""
       end
     end
   end
@@ -648,6 +650,18 @@ do
         _G[k] = function(...)
           local r = fn(...)
           if r == nil then return proxy("_G." .. k .. "()") end
+          return r
+        end
+      end
+    end
+    -- Session/date getters return nil in the stub session (no player logged in) and
+    -- the scripts index the result (FriendBack's GetClientPlayer().nCreateTime).
+    for _, name in ipairs({ "GetClientPlayer", "GetPlayer", "GetTarget", "GetLocalPlayer", "TimeToDate" }) do
+      local fn = rawget(_G, name)
+      if type(fn) == "function" then
+        _G[name] = function(...)
+          local r = fn(...)
+          if r == nil then return proxy("_G." .. name .. "()") end
           return r
         end
       end
