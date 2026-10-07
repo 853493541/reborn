@@ -27,9 +27,11 @@ HandleType 1-6 + all 13 PosTypes + page-sets + wheel/edit/drag wired.
 - **Phase 6 — extraction tails: DONE/CLOSED.** 13 string libs decoded; module_info re-decoded
   (GB18030) and the 40 remaining manifest entries + 601 art paths probe MISS at their exact paths
   (not shipped in this client build).
-- **Phase 7 — GT fidelity: PENDING the capture session** (observe-only, user-driven; see
-  `UI_REAL_CLIENT_ASSESSMENT.md` §6 for the window list; fingerprints via
-  `tools/proof/image_stats.py`, proof under `proof/ui/`).
+- **Phase 7 — GT fidelity: OPTIONAL, minimal.** No screenshot set is required. The review loop
+  stays viewer-driven: when you see a window that looks wrong, one screenshot of that window (or
+  just the window name) is enough — I fingerprint it (`tools/proof/image_stats.py`, proof under
+  `proof/ui/`) and fix that window's delta. A broad capture session only pays off later, when a
+  whole-set fidelity number is wanted.
 
 Every task below ends with the standing gates: `--selftest` 1240/0/0, `--audit` delta,
 `replay_summary.tsv`, `tools/ui/runtime_gap_report.py`, `docs/EXPERIENCES.md` + area README.
