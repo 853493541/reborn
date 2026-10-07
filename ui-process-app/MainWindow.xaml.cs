@@ -1279,13 +1279,25 @@ namespace UiProcessApp
             return null;
         }
 
-        /// <summary>A press on a scroll control outside its content handle arms a thumb
-        /// drag (the wheel offset is the shared state).</summary>
+        /// <summary>A press on a scrollbar arms a thumb drag (the wheel offset is the
+        /// shared state). Only the bar control counts: a `WndNewScrollBar` (or a
+        /// viewport's `SlideBtn`) — a `WndScroll` is the viewport and its children are
+        /// the content, so a press there stays a normal item/click event (1026 shipped
+        /// scroll controls carry no ScrollHandle; arming on them would swallow clicks).</summary>
         private bool TryBeginScrollDrag(string sectionName, System.Windows.Point pos)
         {
             var scrollName = FindScrollForSection(sectionName);
             if (scrollName == null) return false;
             if (!_lastBuild.Sections.TryGetValue(scrollName, out var scrollSec)) return false;
+            var type = scrollSec.Get("._WndType") ?? "";
+            bool isBar = type.Equals("WndNewScrollBar", StringComparison.OrdinalIgnoreCase);
+            if (!isBar)
+            {
+                // A viewport can carry its own slide button; only a press on that button
+                // (not on arbitrary content) is a thumb drag.
+                var slide = scrollSec.Get("SlideBtn");
+                if (string.IsNullOrWhiteSpace(slide) || !IsUnderSection(sectionName, slide, scrollName)) return false;
+            }
             // A press on a content item (inside the target handle) is an item event,
             // not a thumb drag.
             var target = scrollSec.Get("$ScrollTarget");

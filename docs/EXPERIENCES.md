@@ -2570,3 +2570,15 @@ solved it, and what is still open. **Newest at the bottom.**
   proxy-memoization effect, not a layout regression: VampireCountPanel (99 -> 144 sections) and
   DesertStormInfoPanel now materialize their history/ranking list rows (real items extend past the
   fixed window; the audit flags non-WndScroll overflow).
+
+### 2026-10-07 — UI — scrollbar arm rule fix (avoid swallowing clicks in WndScroll viewports)
+
+- Found while re-auditing the new thumb-drag wiring: 1026 of 1458 shipped scroll controls carry
+  no resolvable `ScrollHandle` (839 `WndNewScrollBar`, 187 `WndScroll`). The first cut armed a
+  thumb drag for any press inside a scroll control whose target was empty, which would have
+  swallowed item/click events inside `WndScroll` viewports.
+- Fix (MainWindow `TryBeginScrollDrag`): arm only on the bar — `WndNewScrollBar`, or a viewport
+  whose `SlideBtn` was pressed. A `WndScroll`'s children are content, so a press there stays a
+  normal item/click event. Wheel behavior unchanged (it still resolves the viewport/bar content).
+- Verified: build 0 warnings; `--selftest` 1240/0/0; `--drag bigbagpanel Btn_Drag` and
+  `--click bigbagpanel Btn_Bank` unchanged.
