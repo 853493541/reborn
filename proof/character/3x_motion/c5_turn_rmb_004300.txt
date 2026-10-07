@@ -1,0 +1,102 @@
+00:43:00.512 build=reborn_client_3x_motion.exe 2026-10-07 00:41:28 git=70fbf88 dirty=4 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80,BACKFACE=1,HITWIN=0,OPMODE=classical)
+00:43:00.512 start map=data\source\maps\龙门寻宝\龙门寻宝.jsonmap
+00:43:00.512 asset_root=C:\SeasunGame\Game\JX3\bin\zhcn_hd phys=C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\PhysicsEngineX64.dll
+00:43:00.529 window: client=1280x720 fullscreen=0
+00:43:00.584 Startup shim: rc=0 mode=nodb applied=0 armed (waiting KG3D_MaterialSystemX64.dll)
+00:43:01.036 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_3x_motion.memory ms=(31,16,406)
+00:43:01.036 initcfg=./configHttpFile.ini
+00:43:04.142 Init3DEngine=1 err=1 ms=3110
+00:43:04.142 Startup: mode=nodb applied=1 sites=1 build=ok
+00:43:04.179 editor.Init result=0
+00:43:04.179 sound: KG3DSoundCLR.Init ok
+00:43:04.181 sound: skill wav C:\SeasunGame\MovieEditor\bin64\flws_sound.wav
+00:43:04.194 lazyseed: rcpiscene base=0x7FF8F07C0000 slots=129 seeded=121
+00:43:05.963 LoadMap result=0 ms=1782
+00:43:05.966 watersim: EnableFluxWaterSimulation rc=-2147467259 (0=ok; 0x80004005=E_FAIL, no flux world in the editor host; engine water layer stays M2)
+00:43:06.243 winId=6096870
+00:43:06.245 clr m_pScene=0x11B85FA08 unmapped exec=0
+00:43:06.245 clr scene.vt=0x7FFA1E06F278 KG_EngineEditorX64.dll+0x6F278
+00:43:06.245 clr scene: obj=000000011B85FA08 vt=00007FFA1E06F278 48=00007FFA1E03D5F0(0) 50=00007FFA1E03D710(0) 58=00007FFA1E03D7E0(0) 60=00007FFA1E03D810(0)
+00:43:06.246 clr sceneCam=0x1786C4868 unmapped exec=0
+00:43:06.246 clr cam: obj=00000001786C4868 vt=00007FFA1E071FA8 48=00007FFA1E0503A0(0) 50=00007FFA1E0503E0(0) 58=00007FFA1E050440(0) 60=00007FFA1E0504A0(0)
+00:43:06.247 clr camGet rc=0 pos=(0.0,500.0,-800.0) tgt=(0.0,0.0,0.0) managed=(0.0,500.0,-800.0)
+00:43:06.249 TerrainSampler: size=512 regions=8x8 cell=100 origin=(-102400,-102400) cache=4
+00:43:06.256 terrain load (2,2) ms=3.8 holes=0 cache=1
+00:43:06.872 FoliageCollision: instances=5107 meshes=685 camflag0=310 noObstacle=184 foliage=龙门寻宝_foliage_collision.bin structures=龙门寻宝_structure_collision.bin
+00:43:06.873 EngineRay: exports ok, waiting for engine/scene
+00:43:06.874 EngineCam bind ex: Object contains non-primitive or non-blittable data.
+00:43:06.875 CameraShim: loaded rc=0 selftest=0x53484D01 status=obj=00000001786C4868 vt=00007FFA1E071FA8 48=00007FFA1E0503A0(0) 50=00007FFA1E0503E0(0) 58=00007FFA1E050440(0) 60=00007FFA1E0504A0(0) d6=seed slot=0x00007FF8F351BBD0 value=0x392E0BFA0428F080
+00:43:06.878 camera config: C:\SeasunGame\MovieEditor\bin64\camera.json
+00:43:06.879 ad habit: strafe (RC_ADHABIT=strafe|turn)
+00:43:06.951 CameraSettings: loaded real per-role camera settings: C:\SeasunGame\Game\JX3\bin\zhcn_hd\userdata\binkp1\双线区\破阵子\测试角色\custom.dat
+00:43:06.952 CameraSettings: mapId=296 sceneInit=1 yaw=5.109930 pitch=-0.219 max=821 drag=1.00/1.00 eyeScale=1.00
+00:43:06.952 CameraSettings: operationMode=classical perModeFollow classic=0 joystick=0
+00:43:06.952 CameraSettings extra: mode=1 resetSpring=1.00 resetCam=1.00 smoothing=1 curve=0 eyeFollow=1
+00:43:06.952 opmode applied: op=classical followMode=0 springReset=1.00 cameraReset=1.00
+00:43:06.953 CameraSystem ready: mode=character dist=821u height=200u units/m=100 op=classical
+00:43:06.953 view angle factor=1
+00:43:06.954 fov source=client-max-default angle=60.00 deg (1.0472 rad) factor=1.2500 [panel 30-60, default 50]
+00:43:06.954 view angle factor applied=1.250002
+00:43:07.281 spawn=(18991,962,33853) view=(0.00,1.00)
+00:43:07.885 player handle=1952401192
+00:43:07.887 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+00:43:08.389 anchor bone: actor=0x1026549A0 idx=1
+00:43:08.669 spawn ground settle took 281ms py=962
+00:43:08.670 target ui: RC_UI_ROOT not set - target HUD art disabled
+00:43:08.676 target dummy rid=35901 model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl' ani='data\source\npc_source\练功木桩001\动作\wj_练功木桩001_st02.ani' handle=5856550568 at (18991,961,34253)
+00:43:08.676 target entity registered: 初级试炼木桩 lv131 hp=500000000 (Tab = facing cone search)
+00:43:08.677 target dummy ani -> 0
+00:43:08.677 camera yaw init=-1.571 (view dir 0.00,1.00)
+00:43:08.680 hotkeys: source=embedded (proof/movement/extracted snapshot) rows=286 commands=430 overrides=0
+00:43:08.680 hotkeys: context=''
+00:43:08.681 hotkey MOVEFORWARD = W / Up
+00:43:08.681 hotkey MOVEBACKWARD = S / Down
+00:43:08.682 hotkey STRAFELEFT = A
+00:43:08.682 hotkey STRAFERIGHT = D
+00:43:08.682 hotkey TURNLEFT =  / Left
+00:43:08.682 hotkey TURNRIGHT =  / Right
+00:43:08.682 hotkey JUMP = Space
+00:43:08.682 hotkey TOGGLERUN = Num/
+00:43:08.682 hotkey TOGGLEAUTORUN = G / NumLock
+00:43:08.683 mount: data ride=0 model='data\source\NPC_source\Horse\模型\Horse_01_01a_00.mdl' rider='data\source\player\f1\动作\f1bqg_horse_run.ani'
+00:43:08.687 jump: mode=flip school=0 scale=0.520 (apex 191u ~ 191cm per jump)
+00:43:08.688 states: waterBoxes=0 swim=300u/s chainSegTicks=51 suspendDemo=0
+00:43:08.689 skillmove table: 7 rows from <embedded>
+00:43:08.691 camera init applied mapId=296 yaw=5.110 gamePitch=-0.219 modelPitch=0.219
+00:43:08.693 clip -> data\source\player\f1\动作\f1b02yd小跳c.ani (0)
+00:43:08.694 terrain load (2,1) ms=0.2 holes=0 cache=2
+00:43:08.744 EngineRay: ready scene=0x102D3A6C0 terrain+950=0x10250C4D0 terrain+A28=0x0 vtB8=True space=0x78719FE8 spaceRay=True entity=0x11CE56488 entityRay=True entCount=10 guardCell=0x3F64BA20
+00:43:08.762 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+00:43:09.692 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+00:43:10.199 camBind rc=0 pos=(19300.2,1447.0,33279.6) cam=0000000102D3A6C0 posOff=0x9E0 bound=1
+00:43:10.199 camObjDump: obj=0000000102D3A6C0 vt=00007FF8F2985598 48=00007FF8F1133870(1) 50=00007FF8F1133A40(1) 58=00007FF8F1158810(1) 60=00007FF8F1133C70(1)
+00:43:10.199 slot50: slot50=00007FF8F1133A40: 48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 41 56
+00:43:10.201 slot58: slot58=00007FF8F1158810: 40 53 48 83 EC 30 4C 89 4C 24 20 BB 05 40 00 80 4D 8B C8 4C 8B C2 48 8B
+00:43:10.201 slot60: slot60=00007FF8F1133C70: 48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 65 48 8B 04 25 58 00 00 00
+00:43:10.201 slot68: slot68=00007FF8F1133D50: 48 89 5C 24 18 48 89 6C 24 20 56 57 41 56 48 83 EC 40 48 8B FA 48 8B F1
+00:43:10.696 t=2s fps=312 pos=(18991,963,34173) vy=0 grounded=True blocked=False hits=0 colCalls=46 colBlocked=0 spd=300u/s(RUN) yaw=0.00 dir=(0.00,1.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=classical ctx='' sprint=0 hitch=15 clip=f1b02yd奔跑.ani mount=off camYaw=-1.173 camPitch=0.219
+00:43:11.759 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_00_3000ms.png
+00:43:12.693 clip -> data\source\player\f1\动作\f1s07cj重剑技能15_风来吴山红色hd.tani (0)
+00:43:12.695 sound: skill wav play rc=True
+00:43:12.695 skill cast
+00:43:12.696 skillmove: start id=700 total=25 col=10 igng=0 keep=0 death=0 blend=0 heading=64 facingYaw=0.000 pos=(18991,948,34753)
+00:43:12.725 t=4s fps=302 pos=(18991,948,34753) vy=0 grounded=True blocked=False hits=0 colCalls=104 colBlocked=0 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,1.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=classical ctx='' sprint=0 hitch=66 clip=f1s07cj重剑技能15_风来吴山红色hd.tani mount=off camYaw=-1.173 camPitch=0.219
+00:43:12.893 orbittest: queued px=120 py=0 at=4200
+00:43:13.192 orbittest: queued px=120 py=0 at=4500
+00:43:13.495 orbittest: queued px=120 py=0 at=4800
+00:43:13.793 orbittest: queued px=120 py=0 at=5100
+00:43:14.308 skillmove: end id=700 keep=0 ticks=25 moved=77 pos=(18991,945,34812) heading=192
+00:43:14.705 t=6s fps=299 pos=(19036,942,34902) vy=0 grounded=True blocked=False hits=0 colCalls=153 colBlocked=0 spd=300u/s(RUN) yaw=0.47 dir=(0.45,0.89) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=classical ctx='' sprint=0 hitch=25 clip=f1s07cj重剑技能15_风来吴山红色hd.tani mount=off camYaw=-2.037 camPitch=0.219
+00:43:16.759 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_01_8000ms.png
+00:43:16.766 t=8s fps=272 pos=(19315,943,35460) vy=0 grounded=True blocked=False hits=0 colCalls=215 colBlocked=0 spd=300u/s(RUN) yaw=0.47 dir=(0.45,0.89) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=classical ctx='' sprint=0 hitch=68 clip=f1s07cj重剑技能15_风来吴山红色hd.tani mount=off camYaw=-2.037 camPitch=0.219
+00:43:17.494 hideNear hide camDist=103.3 (B1 host approximation)
+00:43:18.763 t=10s fps=296 pos=(19585,933,35587) vy=0 grounded=True blocked=False hits=47 colCalls=275 colBlocked=47 spd=300u/s(RUN) yaw=0.47 dir=(0.45,0.89) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=classical ctx='' sprint=0 hitch=11 clip=f1s07cj重剑技能15_风来吴山红色hd.tani mount=off camYaw=-2.037 camPitch=0.219
+00:43:20.695 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+00:43:20.765 t=12s fps=320 pos=(19656,928,35588) vy=0 grounded=True blocked=False hits=107 colCalls=335 colBlocked=107 spd=300u/s(RUN) yaw=0.47 dir=(0.45,0.89) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=classical ctx='' sprint=0 hitch=7 clip=f1b02yd奔跑.ani mount=off camYaw=-2.037 camPitch=0.219
+00:43:22.768 t=14s fps=304 pos=(19656,928,35588) vy=0 grounded=True blocked=False hits=167 colCalls=395 colBlocked=167 spd=300u/s(RUN) yaw=0.47 dir=(0.45,0.89) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=classical ctx='' sprint=0 hitch=22 clip=f1b02yd奔跑.ani mount=off camYaw=-2.037 camPitch=0.219
+00:43:23.752 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_02_15000ms.png
+00:43:23.752 terrain stats terrLoads=2 msTotal=4.0 msMax=3.8 last=0.2 cache=2 zeroRetries=0
+00:43:23.753 shutdown sound ok
+00:43:23.753 shutdown log ok
+00:43:23.753 shutdown memory ok
+00:43:23.754 DONE

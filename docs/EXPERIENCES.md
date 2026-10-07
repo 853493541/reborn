@@ -5074,3 +5074,41 @@ harness line is labeled `HARNESS - NOT GAME BEHAVIOR` (startup warning too), and
 with citations. The real grant source (which buffs/skills invoke the ops) and the
 power-pool values remain undecoded (re-open criteria in the doc).
 
+### 2026-10-07 - 3x-motion: skill displacement rebuilt from SkillMove.tab (OnSkillMove); camera spin fixed; MotionTag container walk
+
+- Rebuilt the skill dash against `SPEC_MOTION.md` (the old `.tani`-float dash was the
+  wrong source and spun the camera). New `client/SkillMoveTable.cs` (embedded authored
+  rows 876/300/700/200/55/2 + full TSV loader via `RC_SKILLMOVE_TAB` + host
+  skill->moveID map [registered data gap; `RC_SKILL_MOVEID` overrides]);
+  `RebornClient.cs` OnSkillMove applier: heading := facing once at cast, per 15 Hz
+  tick heading += DirectionXY then V = min(VXY,127)*(255-w)/255 along the byte angle
+  (0=+X, 64=+Y) with collision substeps, VZ per tick (IgnoreGravity holds it), input
+  gated while the move runs, keep-velocity carried as airborne momentum. The camera is
+  never touched by the move (follows input movement only).
+- SPEC §5 acceptance (all driven logs under `proof/character/3x_motion/`): standing
+  zero row moved=0 + camera camYaw/camPitch identical over 30 s (the spin bug is
+  gone); row 300 Σ min(VXY,127)=6289 exact; camera-yawed cast travels along the cast
+  facing (not the view); moving cast resumes input after the move; classical RMB turn
+  changes facing rate-limited while the displacement stays heading-based (end pos
+  identical to the no-turn control); row 700 F3 DIR −128 = −π exact; igng rows hold
+  VZ (vy=0) vs gravity rows (vy −2310) + ground snap; keep=1 drifts ≈1800 u/s vs
+  keep=0 none; blend 128 → moved=3132=6289×127/255, blend 255 → 0. Gates: build 0,
+  smoke ALL PASS, collision 36/36.
+- Spec correction (evidence-first): the tani factory jump table (RVA 0x1DEA4) says
+  case 2 = MotionTag (alloc 0x160, ctor 0x18000D160, vtable 0x180048AC0, loader
+  0x180003000); case 1 = the FMOD sound group (0x508). SPEC_MOTION §3.1 said type 1 =
+  MotionTag — corrected. Group walk proven: SFX payload exact
+  (`4 + n1*0x130 + count*(0x1E8 + (v3?4))`), type 2 exact, opaque types structurally
+  scanned to EOF; 太阴指_悟 walks to the type-2 group @0x1EE4 → 0x188 stream
+  byte-exact to EOF. `client/SkillMotion.cs` reworked to the container probe
+  (log-only); `tools/character/motion_tag.py` rewritten (selftest 15/15;
+  `--tsv`/`--json`).
+- Boundaries: the SkillMove.tab skill->moveID map is a host data gap (empty; no
+  invented mapping); death moves run but the host has no death state (registered);
+  opaque group loaders (types 1/3/4/5) undecoded; air momentum is carried only for
+  the skill's kept velocity (the jump takeoff vjx/vjz application stays the open
+  item).
+- Outcome: the camera spin is fixed at the root (no steering, no camera coupling);
+  displacement is the client's own SkillMove.tab curve; the MotionTag container is
+  settled and tooled.
+

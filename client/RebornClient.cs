@@ -257,14 +257,49 @@ internal static class RebornClient
         float.TryParse(Env("RC_SCALE", "1"), out scale);
         long skillMs = 8000;
         long.TryParse(Env("RC_SKILL_MS", "8000"), out skillMs);
-        // W5.5: .tani authored motion vector -> host dash on skill cast
-        // (docs/character/3_2_3_3_LOCOMOTION_MOTION.md)
-        int skillDashMs = 450;
-        int.TryParse(Env("RC_SKILL_DASH_MS", "450"), out skillDashMs);
-        if (skillDashMs < 50) skillDashMs = 50;
+        // SPEC_MOTION skill move: row select (host map or RC_SKILL_MOVEID) and
+        // the server-style blend weight w (0..255; effective V = V*(255-w)/255).
+        int skillMoveId = 0;
+        int.TryParse(Env("RC_SKILL_MOVEID", "0"), out skillMoveId);
+        int skillBlendW = 0;
+        int.TryParse(Env("RC_SKILL_BLEND", "0"), out skillBlendW);
+        if (skillBlendW < 0) skillBlendW = 0; else if (skillBlendW > 255) skillBlendW = 255;
+        // test harness: force the row's keep-velocity flag (A/B) and log every
+        // applied tick (idx, v, vz, heading).
+        int skillKeepOverride = -1;
+        int.TryParse(Env("RC_SKILL_KEEP", "-1"), out skillKeepOverride);
+        bool smvTickLog = Env("RC_SMOVE_TICK", "0") == "1";
         long skillAtMs = 0;
         long.TryParse(Env("RC_SKILL_AT", "0"), out skillAtMs);
-        SkillMotion.Load(Env("RC_SKILL_TANI", ""));
+        // (probe needs the run log; Log is assigned just below - defer to first use)
+        string skillTaniProbe = Env("RC_SKILL_TANI", "");
+        // driven-test harness: hold forward input in a window, queue one camera
+        // orbit at a time (same orbitQueue path as the demo's RMB drag).
+        long holdW0 = 0, holdW1 = 0;
+        {
+            string[] hw = Env("RC_HOLD_W", "").Split(',');
+            if (hw.Length >= 2) { long.TryParse(hw[0].Trim(), out holdW0); long.TryParse(hw[1].Trim(), out holdW1); }
+        }
+        // RC_ORBIT_AT=ms,px[,py][;ms,px[,py]...] - queued camera drag bursts
+        var orbitAt = new System.Collections.Generic.List<long[]>();
+        foreach (string s in Env("RC_ORBIT_AT", "").Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            string[] oa = s.Trim().Split(',');
+            long t0; int px0 = 0, py0 = 0;
+            if (oa.Length >= 2 && long.TryParse(oa[0].Trim(), out t0))
+            {
+                int.TryParse(oa[1].Trim(), out px0);
+                if (oa.Length >= 3) int.TryParse(oa[2].Trim(), out py0);
+                orbitAt.Add(new long[] { t0, px0, py0 });
+            }
+        }
+        // RC_RMB=start,end - hold the right mouse button in the window (the
+        // RMB-turn relation consumes it with the queued drags).
+        long rmb0 = 0, rmb1 = 0;
+        {
+            string[] rb = Env("RC_RMB", "").Split(',');
+            if (rb.Length >= 2) { long.TryParse(rb[0].Trim(), out rmb0); long.TryParse(rb[1].Trim(), out rmb1); }
+        }
         long autoRunMs = 0;
         long.TryParse(Env("RC_AUTORUN", "0"), out autoRunMs);
         var tabAt = new System.Collections.Generic.List<long>();
@@ -304,6 +339,9 @@ internal static class RebornClient
             }
         };
         for (int lm = 0; lm < locoMsgs.Count; lm++) Log(locoMsgs[lm]);
+        // SPEC_MOTION §3: .tani container probe (log-only; the old raw-signature
+        // .tani dash is gone - displacement comes from SkillMove.tab).
+        SkillMotion.Probe(skillTaniProbe, Log);
         // short visible tag from the exe name: reborn_client_collision.exe ->
         // "collision" (canonical reborn_client.exe -> "canonical"); shown in
         // the window title and the HUD's first line so parallel clients are
@@ -2523,11 +2561,15 @@ internal static class RebornClient
         bool propSolid = Env("RC_PROP_SOLID", "0") == "1";
         int propFixEvents = 0;
         long lastMs = 0, lastLog = 0, lastHud = 0, skillUntil = 0, lastCamMeasure = 0, lastCamLog = 0, lastOrbitMs = 0, lastPostLog = 0, lastMouseDragMs = 0;
-        // W5.5 authored-motion dash state (SkillMotion; RC_SKILL_TANI)
-        bool smotionActive = false;
-        float smotionUx = 0f, smotionUz = 0f;
-        float smotionStartX = 0f, smotionStartZ = 0f, smotionMaxDev = 0f, smotionRemain = 0f, smotionDist = 0f;
-        double smotionDurMs = 0.0, smotionElapsed = 0.0;
+        // SPEC_MOTION skill-move state (KCharacter::OnSkillMove semantics)
+        SkillMoveRow smvRow = null;
+        bool smvActive = false;
+        bool smvCastHadRow = false;   // this cast authored a move (input gate)
+        int smvIdx = 0;
+        int smvHeading = 0;           // client byte angle (0 = +X, 64 = +Y)
+        int smvBlend = 0;
+        float smvMoved = 0f;
+        float smvKeepVx = 0f, smvKeepVz = 0f;   // kept momentum (u/s) until landing
         long hitchMaxMs = 0;   // max unclamped frame delta since the last status line
         long hudHitchMs = 0;   // max unclamped frame delta since the last HUD update (D7)
         // camera anchor-Y smooth-follow (B14): the engine smooths the followed
@@ -3119,9 +3161,25 @@ internal static class RebornClient
                 if (now >= 13000 && demoJumped && !demoJumped2) { demoJumped2 = true; jumpPressed = true; }
                 if (now >= 18500 && !demoSkilled) { demoSkilled = true; skillPressed = true; }
             }
-            // deterministic W5.5 skill-motion probe: cast at RC_SKILL_AT ms
+            // deterministic skill-motion probe: cast at RC_SKILL_AT ms
             // without the demo movement phases (stands at the spawn).
             if (skillAtMs > 0 && now >= skillAtMs && !demoSkilled) { demoSkilled = true; skillPressed = true; }
+            // driven-test harness (SPEC_MOTION §5): hold forward input in the
+            // RC_HOLD_W=start,end window; queue one camera orbit (RC_ORBIT_AT=
+            // ms,px[,pitchPx]) through the same orbitQueue the demo RMB uses.
+            if (holdW1 > 0 && now >= holdW0 && now < holdW1) pW = true;
+            if (rmb1 > 0 && now >= rmb0 && now < rmb1) rmbDown = true;
+            for (int oi = 0; oi < orbitAt.Count; oi++)
+            {
+                if (orbitAt[oi][0] <= now)
+                {
+                    orbitQueue.Enqueue(new int[] { (int)orbitAt[oi][1], (int)orbitAt[oi][2] });
+                    Log(string.Format("orbittest: queued px={0} py={1} at={2}",
+                        orbitAt[oi][1], orbitAt[oi][2], orbitAt[oi][0]));
+                    orbitAt.RemoveAt(oi);
+                    oi--;
+                }
+            }
             if (demoCollide)
             {
                 if (demoTeleport && now >= 2000 && !demoTeleported) { demoTeleported = true; teleportToStructure = true; }
@@ -3453,25 +3511,24 @@ internal static class RebornClient
                     Log("sound: skill wav play rc=" + played);
                 }
                 Log("skill cast");
-                if (SkillMotion.Ok)
+                // SPEC_MOTION §2.3: author the move (host map or RC_SKILL_MOVEID).
+                int mvId = skillMoveId > 0 ? skillMoveId : SkillMoveTable.MapSkill(Path.GetFileName(clipSkill));
+                smvRow = mvId > 0 ? SkillMoveTable.Load(mvId) : null;
+                smvActive = smvRow != null;
+                smvCastHadRow = smvRow != null;
+                smvIdx = 0;
+                smvBlend = skillBlendW;
+                smvMoved = 0f;
+                if (smvRow != null)
                 {
-                    smotionActive = true;
-                    smotionElapsed = 0.0;
-                    smotionDurMs = skillDashMs;
-                    smotionStartX = px; smotionStartZ = pz;
-                    smotionMaxDev = 0f;
-                    smotionRemain = SkillMotion.Mag;
-                    smotionDist = 0f;
-                    // authored magnitude along the character facing; the vector's
-                    // own entry-frame axes are not mapped yet (W5.2 open)
-                    smotionUx = (float)Math.Sin(curYaw);
-                    smotionUz = (float)Math.Cos(curYaw);
+                    // heading := facing once at start (byte angle; facing untouched)
+                    smvHeading = YawToByte(curYaw);
                     Log(string.Format(
-                        "skillmotion cast: authored=({0:F3},{1:F3}) mag={2:F3} dur={3}ms dir=({4:F3},{5:F3}) start=({6:F0},{7:F0}) info={8}",
-                        SkillMotion.Dx, SkillMotion.Dz, SkillMotion.Mag, skillDashMs,
-                        smotionUx, smotionUz, px, pz, SkillMotion.Info));
+                        "skillmove: start id={0} total={1} col={2} igng={3} keep={4} death={5} blend={6} heading={7} facingYaw={8:F3} pos=({9:F0},{10:F0},{11:F0})",
+                        smvRow.Id, smvRow.TotalFrame, smvRow.Column, smvRow.IgnoreGravity,
+                        smvRow.KeepVelocity, smvRow.Death, smvBlend, smvHeading, curYaw, px, py, pz));
                 }
-                else Log("skillmotion: inactive (" + SkillMotion.Info + ")");
+                else Log("skillmove: no row (skill unmapped; RC_SKILL_MOVEID authors it)");
             }
 
             // input -> direction (camera controls in both modes; the body faces
@@ -3546,7 +3603,11 @@ internal static class RebornClient
             float dirX = inX, dirZ = inZ;
             if (demoCollide) { dirX = demoDirX; dirZ = demoDirZ; }
             float len = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
-            bool moving = len > 0.01f && skillUntil <= now;
+            // SPEC_MOTION §4.3: input movement is gated while a skill MOVE runs
+            // (a cast with no authored row keeps the old clip-duration gate);
+            // the camera follows only this input movement (dead zone).
+            bool skillGate = smvCastHadRow ? smvActive : (skillUntil > now);
+            bool moving = len > 0.01f && !skillGate;
             // Locomotion clip by INPUT OCTANT (branch semantics; per render
             // frame - must NOT live inside the tick loop, where non-tick
             // frames would reset it to 0 and flicker run<->strafe at 15 Hz):
@@ -3721,52 +3782,91 @@ internal static class RebornClient
                     }
                 }
             }
-            if (smotionActive)
+            if (smvActive)
             {
-                // W5.5 authored motion vector: dash toward start + unit*progress
-                // (the per-tick integer position round then cannot eat the
-                // fractional tail), through the same collision path as input
-                // movement (substeps below the capsule radius).
-                float dsp = (float)(SkillMotion.Mag / (smotionDurMs / 1000.0)) * pdt;
-                if (dsp > smotionRemain) dsp = smotionRemain;   // exact authored total
-                smotionRemain -= dsp;
-                smotionDist += dsp;
-                float tgtX = smotionStartX + smotionUx * smotionDist;
-                float tgtZ = smotionStartZ + smotionUz * smotionDist;
-                float dsdx = tgtX - px, dsdz = tgtZ - pz;
-                float dlen = (float)Math.Sqrt(dsdx * dsdx + dsdz * dsdz);
-                int dsc = 1;
-                float dSubCap = Math.Min(20f, playerRadius * 0.9f);
-                if (dSubCap < 1f) dSubCap = 1f;
-                if (dlen > dSubCap) dsc = (int)Math.Ceiling(dlen / dSubCap);
-                if (dsc > 64) dsc = 64;
-                for (int dsi = 0; dsi < dsc; dsi++)
+                // SPEC_MOTION §1.1/§2.3 OnSkillMove applier, per 15 Hz tick:
+                // if the frame slot is enabled, V = min(VXY,127)*(255-w)/255 along
+                // the heading byte angle (0=+X, 64=+Y), VZ feeds the vertical,
+                // then heading += DirectionXY (byte wrap). Facing is never touched.
+                int idx = smvIdx;
+                float vzRow = 0f;
+                if (idx < smvRow.TotalFrame && smvRow.Frame[idx] >= 0)
                 {
-                    px += dsdx / dsc;
-                    pz += dsdz / dsc;
-                    if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
-                    if (col != null)
+                    int vxy = smvRow.Vxy[idx];
+                    if (vxy < 0) vxy = 0; else if (vxy > 127) vxy = 127;
+                    float v = vxy * (255 - smvBlend) / 255f;
+                    vzRow = smvRow.Vz[idx];
+                    if (vzRow > 2048f) vzRow = 2048f; else if (vzRow < -2048f) vzRow = -2048f;
+                    // client order: OnSkillMove sets the velocity AND advances the
+                    // heading; the shared tick integrates afterwards with the
+                    // post-delta heading (SPEC_MOTION §1.1).
+                    int h2 = smvHeading + smvRow.Dir[idx];
+                    while (h2 < 0) h2 += 256;
+                    while (h2 >= 256) h2 -= 256;
+                    smvHeading = h2;
+                    if (v > 0f)
                     {
-                        colCalls++;
-                        float gBeforeD = ground;
-                        bool dBlocked = col.Resolve(ref px, ref py, ref pz,
-                            playerRadius, playerHeight, ref ground, ref grounded, stepHeight,
-                            0f, smotionUx, smotionUz);
-                        if (dBlocked) { blocked = true; blockedEvents++; colBlockedCalls++; }
-                        if (ground > gBeforeD + 0.01f) groundOk = true;
+                        double rad = smvHeading * Math.PI / 128.0;
+                        float ux = (float)Math.Cos(rad), uz = (float)Math.Sin(rad);
+                        int dsc = 1;
+                        float dSubCap = Math.Min(20f, playerRadius * 0.9f);
+                        if (dSubCap < 1f) dSubCap = 1f;
+                        if (v > dSubCap) dsc = (int)Math.Ceiling(v / dSubCap);
+                        if (dsc > 64) dsc = 64;
+                        float dStep = v / dsc;
+                        for (int dsi = 0; dsi < dsc; dsi++)
+                        {
+                            px += ux * dStep;
+                            pz += uz * dStep;
+                            if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
+                            if (col != null)
+                            {
+                                colCalls++;
+                                float gBeforeD = ground;
+                                bool dBlocked = col.Resolve(ref px, ref py, ref pz,
+                                    playerRadius, playerHeight, ref ground, ref grounded, stepHeight,
+                                    0f, ux, uz);
+                                if (dBlocked) { blocked = true; blockedEvents++; colBlockedCalls++; }
+                                if (ground > gBeforeD + 0.01f) groundOk = true;
+                            }
+                        }
+                        smvMoved += v;
+                        if (smvTickLog) Log(string.Format(
+                            "smvtick idx={0} v={1:F0} heading={2} pos=({3:F0},{4:F0},{5:F0})",
+                            idx, v, smvHeading, px, py, pz));
                     }
+                    else if (smvTickLog) Log(string.Format(
+                        "smvtick idx={0} v=0 heading={1} pos=({2:F0},{3:F0},{4:F0})",
+                        idx, smvHeading, px, py, pz));
                 }
-                smotionElapsed += pdt * 1000.0;
-                float dev = (float)Math.Sqrt(
-                    (px - smotionStartX) * (px - smotionStartX) +
-                    (pz - smotionStartZ) * (pz - smotionStartZ));
-                if (dev > smotionMaxDev) smotionMaxDev = dev;
-                if (smotionElapsed >= smotionDurMs || smotionRemain <= 0.01f)
+                // vertical: the row VZ is per-tick units; IgnoreGravity rows hold
+                // it without gravity (the gravity block below is skipped), others
+                // add it on top of the normal gravity integrator.
+                if (vzRow != 0f) py += vzRow;
+                smvIdx++;
+                if (smvIdx >= smvRow.TotalFrame)
                 {
-                    smotionActive = false;
+                    smvActive = false;
+                    bool keep = skillKeepOverride >= 0 ? skillKeepOverride != 0 : smvRow.KeepVelocity != 0;
+                    // SPEC_MOTION §2.3 step 4: SkillMoveEndButKeepVelocity=1 keeps
+                    // the row's per-tick velocity into the next state; the host
+                    // carries it as the airborne horizontal momentum (u/s), =0
+                    // zeroes it (the input model takes over on the ground).
+                    if (keep && !grounded)
+                    {
+                        int lastV = 0;
+                        for (int k = smvRow.TotalFrame - 1; k >= 0; k--)
+                            if (smvRow.Frame[k] >= 0) { lastV = smvRow.Vxy[k]; break; }
+                        if (lastV > 127) lastV = 127; else if (lastV < 0) lastV = 0;
+                        float kept = lastV * (255 - smvBlend) / 255f;
+                        double rad = smvHeading * Math.PI / 128.0;
+                        smvKeepVx = (float)Math.Cos(rad) * kept * 15f;
+                        smvKeepVz = (float)Math.Sin(rad) * kept * 15f;
+                    }
+                    else { smvKeepVx = 0f; smvKeepVz = 0f; }
                     Log(string.Format(
-                        "skillmotion done: end=({0:F0},{1:F0}) moved={2:F1} maxdev={3:F1} authored={4:F3}",
-                        px, pz, dev, smotionMaxDev, SkillMotion.Mag));
+                        "skillmove: end id={0} keep={1} death={2} ticks={3} moved={4:F0} pos=({5:F0},{6:F0},{7:F0}) heading={8}",
+                        smvRow.Id, keep ? 1 : 0, smvRow.Death, smvIdx, smvMoved, px, py, pz, smvHeading));
                 }
             }
             if (col != null && propSolid)
@@ -4070,8 +4170,13 @@ internal static class RebornClient
                     Log("fly: EndFlyJump state=0x21 -> 4 (harness exp)");
                 }
                 float vyBefore = vy;
-                vy -= curJumpGravity * pdt;
-                py += vy * pdt;
+                // SPEC_MOTION §2.3 step 5: IgnoreGravity rows hold the row VZ
+                // without gravity while the move is active (SkillMoveOnlyFly).
+                if (!(smvActive && smvRow.IgnoreGravity != 0))
+                {
+                    vy -= curJumpGravity * pdt;
+                    py += vy * pdt;
+                }
                 // apex sample: the model transform must have followed the physics
                 // height (modelY ~ py); a stale modelY is the standing-jump stutter
                 if (djumpLog && vyBefore > 0f && vy <= 0f) Log(string.Format(
@@ -4083,12 +4188,30 @@ internal static class RebornClient
                 if (col != null && vy > 0f)
                     col.Resolve(ref px, ref py, ref pz,
                         playerRadius, playerHeight, ref ground, ref grounded, stepHeight, vy, mvx, mvz);
+                // kept skill-move momentum (SPEC_MOTION §2.3 step 4): the row
+                // velocity carried into the airborne state, u/s along the heading.
+                if (smvKeepVx != 0f || smvKeepVz != 0f)
+                {
+                    px += smvKeepVx * pdt;
+                    pz += smvKeepVz * pdt;
+                    if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
+                    if (col != null)
+                    {
+                        float gBeforeK = ground;
+                        bool kBlocked = col.Resolve(ref px, ref py, ref pz,
+                            playerRadius, playerHeight, ref ground, ref grounded, stepHeight,
+                            0f, smvKeepVx, smvKeepVz);
+                        if (kBlocked) { blocked = true; blockedEvents++; colBlockedCalls++; }
+                        if (ground > gBeforeK + 0.01f) groundOk = true;
+                    }
+                }
                 if (py <= ground && groundOk)
                 {
                     py = ground;
                     float impact = vy;
                     if (vy < 0f) vy = 0f;
                     grounded = true;
+                    smvKeepVx = 0f; smvKeepVz = 0f;   // momentum ends on landing
                     if (mount.Mounted) Log("mount intact after landing n=" + jumpCount);
                     // landing branch: height difference vs FallDownHeightFloor
                     // (player_suspend.krl.txt F1: 500 u) -> the authored landing
@@ -5601,7 +5724,7 @@ internal static class RebornClient
                                 : mount.Mounted ? "RIDE"
                                 : walkMode ? "WALK"
                                 : "RUN";
-                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}) auto={18} vj=({19:F0},{20:F0}) cmds_unhandled={21}({22}) gait={23} mode={24} ctx='{25}' sprint={26} hitch={27}{11} clip={12} mount={28}",
+                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}) auto={18} vj=({19:F0},{20:F0}) cmds_unhandled={21}({22}) gait={23} mode={24} ctx='{25}' sprint={26} hitch={27}{11} clip={12} mount={28} camYaw={29:F3} camPitch={30:F3}",
                     now / 1000, fps, px, py, pz, vy, grounded, blocked, blockedEvents,
                     colCalls, colBlockedCalls, nearInfo,
                     curClip == null ? "-" : Path.GetFileName(curClip),
@@ -5609,7 +5732,8 @@ internal static class RebornClient
                     unhandledCmd, lastUnhandled, gait,
                     CameraOperationMode.Name(cameraSettings.OperationMode),
                     hotkeys.Context, sprintOn ? 1 : 0, hitchMaxMs,
-                    mount.Mounted ? ("on" + mount.RideType) : "off"));
+                    mount.Mounted ? ("on" + mount.RideType) : "off",
+                    camSys.Yaw, camSys.Pitch));
                 hitchMaxMs = 0;
             }
             if (f9At > 0 && !f9Fired && now >= f9At)
@@ -5805,6 +5929,15 @@ internal static class RebornClient
         while (angle > Math.PI) angle -= 2.0 * Math.PI;
         while (angle < -Math.PI) angle += 2.0 * Math.PI;
         return angle;
+    }
+
+    // host yaw (forward = (sin,cos)) -> client byte angle (0 = +X, 64 = +Y,
+    // unit pi/128; decoder 0x14020ED10 / sin table 0x140A0DEA0, SPEC_MOTION §1.5).
+    static int YawToByte(double yaw)
+    {
+        int h = (int)Math.Round(64.0 - yaw * 128.0 / Math.PI);
+        h &= 0xFF;
+        return h;
     }
 
     static long[] ParseShots(string s)

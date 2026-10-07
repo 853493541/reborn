@@ -1,6 +1,7 @@
 # D — MOTION / SKILL-DISPLACEMENT system spec (JX3 "Reborn")
 
 **Area:** character · **Branch:** agent/3x-integration · **Index:** `docs/character/README.md` · **Status:** redefined spec 2026-10-06 (client-truth, 1-5-0 + 1-6-0 deltas) — supersedes the assumed behaviors in the older docs.
+**Correction 2026-10-07 (`agent/3x-motion`):** §3.1's group-type mapping was off by one — the file's **type 2 = MotionTag** (type 1 = the FMOD sound group); the group walk is now proven and tooled. Everything else was implemented as written and passed §5.
 
 **Purpose:** settle how the JX3 client displaces a character during a skill (太阴指 / any dash), so a
 future host implementation agent can wire it exactly. Supersedes the assumptions behind the current
@@ -275,22 +276,32 @@ The host must therefore own a small skill→moveID map (data gap to fill per ski
   `+0x10C` u32 groupCount; then per group a **12-byte header `{i32 type, i32 version, i32 count}`**
   followed by the payload read by that type's class (the outer loop delegates; group[type] stored at
   `[this+0x28+8*type]`).
-- **Group type 1 = `KG3D_AnimationMotionTag_Group_Data`** — proven by the
-  `KG3D_AnimationTani_Data::_NewTagData` factory **0x18001DB60** (switch `edx<=5`): branch 1 calls
-  0x18000D160 which sets vtable **0x180048AC0**, and that vtable's slot 3 is
+- **Group type 2 = `KG3D_AnimationMotionTag_Group_Data`** — proven by the
+  `KG3D_AnimationTani_Data::_NewTagData` factory **0x18001DB60** (switch `edx<=5`, jump table
+  @RVA 0x1DEA4): case **2** allocates 0x160 and calls ctor 0x18000D160 which sets vtable
+  **0x180048AC0**, and that vtable's slot 3 is
   `KG3D_AnimationMotionTag_Group_Data::LoadFromFile` **0x180003000** (vtable contains the fn ptr at
-  VA 0x180048AD8). Type 0 = SFXTag_Group_Data (vtable 0x180048CC8, LoadFromFile 0x180004AB0).
+  VA 0x180048AD8). Case 0 = SFXTag_Group_Data (0x298, vtable 0x180048CC8, LoadFromFile 0x180004AB0);
+  case 1 = the sound group (0x508, vtable 0x1800490B0 — its payload carries the `FMOD` magic and
+  the Wwise event names); cases 3/4/5 = 0x130/0x58D8/0x1B0 (classes not decoded).
+  **Correction 2026-10-07 (evidence-first):** the earlier pass read the factory case order off by
+  one and claimed "type 1 = MotionTag"; the jump table and the file payloads both say type 2 (the
+  type-1 payload in `太阴指_悟.tani` is `u32 0` + `"FMOD"` + the event string, not a 0x188 stream).
 - **MotionTag payload** (both loaders agree, see §3.2): `LoadFromFile(reader, dwVersion, numKeyFrames)`
   with v0 = `numKeyFrames × ReadObject(0x970)`; v1 = `u32, u32` then `numKeyFrames × ReadObject(0x188)`;
   v2 = `u32 n2` + `n2 × 0x130` then v1.
 
-**Why the earlier raw 0x188 scan was negative:** the records are not a raw stream anywhere in the
-file; they are the **payload of one typed group** whose offset depends on the preceding groups
-(SFX groups carry variable-length strings). The sampled F1 skill tanis contain SFX groups
-(`太阴指_悟`: groupCount=3, group0 = SFX type 0 with 5 PSS records) and did not yield a clean type-1
-group in this pass; the float "motion blocks" found in the old proof sit inside a tag record
-(hash `0x4A8C8588`, then `0x230`, `1`, `0`, `71`, `1`, floats) — not a 0x188 MotionTag keyframe
-stream. **Container = settled; which shipped tanis carry a MotionTag group = open (next probe §9.3).**
+**Group walk (proven 2026-10-07).** The records are the payload of the type-2 group; reaching it
+requires the preceding groups' payload sizes. Type 0 (SFX) is exact:
+`u32 n1 + n1*0x130 + count*(0x164 + 8*u32 + 0x64 + (v==3 ? 4 : 0))` (loader 0x180004AB0; the
+0x1EC-per-record stride at v3 is byte-validated). Type 2 is exact per §3.2. The other types are
+opaque (their loaders are not decoded), so the walker scans forward for the next plausible group
+header such that the remaining groups walk exactly to EOF (structural scan, no raw signature).
+Validated: `太阴指_悟.tani` walks group0 SFX @0x130 → group1 (type 1, opaque) → **group2 type=2
+@0x1EE4**, whose 0x188 stream parses byte-exact to EOF 0x2088 (`key 0 time=6 hash='User Define
+Tag' tags=[(0,8)]`). 8/11 sampled F1 tanis walk cleanly this way. Tool:
+`tools/character/motion_tag.py` (selftest 15/15); client probe `client/SkillMotion.cs`.
+**Which shipped tanis carry a MotionTag group is now enumerable with the tool.**
 
 ### 3.2 The 0x188 record stream (in-memory, both loaders; HIGH)
 
@@ -409,7 +420,7 @@ travel direction:
 |---|---|---|---|
 | 1 | `SKILL_MOTION_METHOD.md` / `SKILL_DATA_EXTRACTION.md`: "`.tani` motion vectors are the dash displacement; root arc encodes the same" | **ASSUMED → WRONG for movement.** The vectors are tag-record floats; no move-path consumer. 太阴指's root arc is an in-place lunge (net 10.37 u). Displacement = `SkillMove.tab` applied along heading. | §1.4, §3.1; `proof/netcode/skill_motion/taiyin_motion.json` |
 | 2 | `3_2_3_3_LOCOMOTION_MOTION.md` V17/V18: "authored `.tani` vector == displacement intent consumed by the move layer" | **PARTIAL.** The correlation is an authoring artifact; the client consumes `SkillMove.tab`, not the tani block. | §1.1-1.2 |
-| 3 | "MotionTag loaders only reachable through vtables; on-disk container not proven" | **CLOSED (container):** `.tani` GATA v0/v1 typed groups; type 1 = MotionTag; payload is the 0x188 stream. Which tanis carry it is still open. | §3.1 |
+| 3 | "MotionTag loaders only reachable through vtables; on-disk container not proven" | **CLOSED (container):** `.tani` GATA v0/v1 typed groups; **type 2 = MotionTag** (corrected 2026-10-07 — the earlier pass read the factory case order off by one; type 1 is the FMOD sound group); payload is the 0x188 stream; the group walk + tool enumerate which tanis carry it. | §3.1 |
 | 4 | "`[+0x1F8]` is a server move-record flag driving the 轻功 End" | **VERIFIED (HD+EXP):** written by sync flag bit0 and by queue record byte+0x1A; consumed by the applier's End-phase guard. | §2.1-2.2 |
 | 5 | "SkillMove start `0x14031C4A0`, per-frame `0x140315390`" | **VERIFIED + REFINED:** per-frame applier is `KCharacter::OnSkillMove 0x140314DE0`; `0x1403153A0` is `OnSpecialSkillMove`. RVAs move in EXP (§7). | §1.1, §7 |
 | 6 | "SkillMove.tab rows hold per-frame keyframes" | **VERIFIED** incl. the blend `(255−w)/255`, `Column` end frame, clamps. | §1.2, §1.5 |
@@ -510,8 +521,9 @@ Read-only: no writes under `C:\SeasunGame`; scratch outputs only; no engine runs
    runtime set). Until then the host owns a hand-built map; register it as host data.
 3. **MotionTag type→handler table.** Decode the 12 entries of 0x1808A27D0 (handler pointers +
    this-slots) and dump each handler's first block; map type ids to
-   ForceMove/IK/SFX/WeaponMotion/Sound/Camera. Also enumerate shipped tanis with a type-1 group
-   (scan group tables, not raw 0x188).
+   ForceMove/IK/SFX/WeaponMotion/Sound/Camera. (The tanis-with-a-motion-group enumeration is
+   DONE via the group walk: `tools/character/motion_tag.py` walks type-2 groups; 8/11 sampled
+   F1 tanis clean.)
 4. **The float block in `.tani`.** Decode the record around `hash 0x4A8C8588, 0x230, 1, 0, 71, 1,
    floats` (likely a typed tag record; identify type id and consumer).
 5. **`skill_mobile/SkillMove.tab`.** A second table loaded by `KGJumpList::GetMaxSkillMoveID`; check
