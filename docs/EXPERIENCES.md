@@ -3122,6 +3122,17 @@ HIGH-confidence findings:
 - The remaining `real CreateRLScene fault` is a caught, non-fatal AV at
   `rep+0x58CA4F` (KRLScene::Init) after the scene is created - the host's
   `__try` handles it.
+  Root cause (run 227 VEH regs): `rcx = 0x776F64616873` = ASCII **"shadow"** -
+  the host's `movieNameFix` (`strcpy(nameBuf, "shadow")`) writes a string into
+  `[rlScene+0xF2890]`, but the engine treats that field as the **shadow-scene
+  object pointer** (`mov rcx,[rsi+0xF2890]; rax=[rcx]; call [rax]`). The
+  field cannot be both the name (needed by `KRLScene::InitShadowScene` line
+  1849's non-empty check) and a null/object pointer, so the host's
+  name-string hack is the wrong model: the shadow scene should be a real
+  object (or the check satisfied another way). This is the 2026-10-06
+  "name field" consequence, now pinpointed. Next: RE
+  `KRLScene::InitShadowScene` (rep+0x58EB30) line ~1849 and create/replace the
+  shadow-scene object properly instead of writing a name string.
 - Audit of all inline hooks found the same class of issue in the two diagnostic
   lua hooks `g_GetFullPath` (`lua+0xB4390`) and `g_GetPriorFullPath`
   (`lua+0xB4570`): their trampolines replay a RIP-relative `lea r9,[root]`.
