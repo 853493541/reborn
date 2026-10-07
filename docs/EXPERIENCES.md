@@ -3585,5 +3585,21 @@ HIGH-confidence findings:
   ver 1). The representID arg to `CreateRLActorNT` still needs identifying.
 - Evidence: host_exe248.out (heap-corruption VEH), host_exe249.out ([0xEDAFA8] non-null,
   unit bytes); static disasm.
+
+## 2026-10-07 - Found RLActorMgrNT::Init's caller + args; Init now runs (fails at async-task register)
+
+- Located Init's exact caller in the engine: `rep+0x3E44C1` (inside a SO3Represent::Init
+  lambda) does `RLActorMgrNT::Init(mgr=singleton+0x25150, rdx=[singleton+0xC0],
+  r8=[singleton+0xB0]->vt[0x40]())` (`rep+0x74D7` -> `rep+0x36DA50`).
+- Host now wires exactly that (behind `RC_HOST_ACTOR`). Run 252/253: Init RUNS -
+  `c0`, `emgr`, `a3` logged - but fails at
+  `KGLOG_PROCESS_ERROR(g_pRL->m_AsyncTask.Delegates.Register(eraqCharacterDisplayData,
+  this, &RLActorMgrNT::_OnRequestCharacterDisplayData)) at line 86 in RLActorMgrNT::Init`.
+  So the represent async-task delegate registry is not ready in the host.
+- `g_pRL` is the represent global (its `m_p3DEngineManager` is the +0xB0 engine mgr);
+  the async-task system (`m_AsyncTask.Delegates`) is what must be initialized first.
+- The `CreateRLActorNT` call is now guarded on Init success (avoids the heap-corruption
+  crash when Init fails).
+- Evidence: host_exe252/253.out; static disasm (`rep+0x3E44C1` caller).
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.

@@ -5469,6 +5469,35 @@ int main(void)
                                 if (GetEnvironmentVariableA("RC_HOST_ACTOR", af,
                                                             sizeof(af)) != 0)
                                 {
+                                    // From the engine's own caller (rep+0x3E44C1):
+                                    // RLActorMgrNT::Init(mgr, [singleton+0xC0],
+                                    //   [singleton+0xB0]->vt[0x40]()).
+                                    void* c0 = *(void**)((BYTE*)g_repSingleton + 0xC0);
+                                    void* emgr = *(void**)((BYTE*)g_repSingleton + 0xB0);
+                                    void* a3 = NULL;
+                                    __try
+                                    {
+                                        if (emgr != NULL)
+                                        {
+                                            void** evt = *(void***)emgr;
+                                            a3 = ((void* (__fastcall *)(void*))
+                                                  evt[8])(emgr);
+                                        }
+                                    }
+                                    __except (EXCEPTION_EXECUTE_HANDLER)
+                                    { logf("[host] frame60: emgr vt[8] fault"); }
+                                    logf("[host] frame60: Init args c0=%p emgr=%p a3=%p",
+                                         c0, emgr, a3);
+                                    void* ir = ((void* (__fastcall *)(void*, void*,
+                                                      void*))
+                                               ((BYTE*)g_repModule + 0x36DA50))(
+                                        am, c0, a3);
+                                    logf("[host] frame60: RLActorMgrNT::Init(mgr,%p,%p) -> %p",
+                                         c0, a3, ir);
+                                    if (ir == NULL)
+                                        logf("[host] frame60: Init failed; skip CreateRLActorNT");
+                                    else
+                                    {
                                     unsigned rid = 0, atype = 0;
                                     sscanf_s(af, "%u,%u", &rid, &atype);
                                     void* actor = ((void* (__fastcall *)(void*, unsigned,
@@ -5477,6 +5506,7 @@ int main(void)
                                         am, rid, atype);
                                     logf("[host] frame60: CreateRLActorNT(mgr,%u,%u) -> %p",
                                          rid, atype, actor);
+                                    }
                                 }                            }
                             __except (EXCEPTION_EXECUTE_HANDLER)
                             { logf("[host] frame60: actor mgr probe fault"); }
