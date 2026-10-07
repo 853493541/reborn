@@ -3352,5 +3352,28 @@ HIGH-confidence findings:
 - Gate 4 next probe (unchanged): runtime discovery of the represent's dummy-model /
   object-manager API on the host's scene, or resolve `KSO3World::AddPlayer` via the
   `g_so3World` vtable. Evidence: MovieEngineCLR IL (reflection); string scans.
+
+## 2026-10-07 - BREAKTHROUGH: the represent's dummy-model API is located (KRLDummy/KRLDummyMgr)
+
+- The represent (`JX3RepresentX64.dll`) has an internal dummy-model system: class
+  `KRLDummy` + manager `KRLDummyMgr` (debug-name strings, located via lea xrefs of the
+  `KGLOG` name literals). Function entries:
+  - `KRLDummyMgr::Create`  = rep+0x40D770   (this=rcx, id=edx, arg=r8)
+  - `KRLDummyMgr::Init`    = rep+0x40F050   (this=rcx, scene/objmgr=rdx -> stored [this+0x2B0]; registers handlers at 0xC9F298/0xC9F5D0/0xC9F618 with the event mgr at [rep_main+0x25BC0])
+  - `KRLDummy::Init`       = rep+0x409E40
+  - `KRLDummy::CreateDummyEntity` = rep+0x409500
+  - `KRLDummy::AddRenderer`= rep+0x409380
+  - `KRLDummyMgr::AddSceneDummies` = rep+0x40D640
+- `KRLDummyMgr::Init` also stores `[this+0x2B0]=rdx` (the RL scene / object mgr) and
+  registers event handlers - i.e. dummies are normally created on "new dummy" events.
+- These are **internal** (no exports; represent exports are only CreateRLLoader,
+  CreateSO3Represent, GetRepresentECSRootEntity). No E8 callers found, so the manager
+  is reached via a vtable/pointer, and the host must obtain the KRLDummyMgr instance
+  (from the RL scene / represent singleton) before calling `Create`.
+- This is the game-represent equivalent of the C# `AddDummyModel` and is the Gate 4
+  path to a visible F1 model. Next probe: find the KRLDummyMgr instance holder
+  (a `[RLScene+X]` field or the represent singleton) and call
+  `KRLDummyMgr::Create` + `KRLDummy::CreateDummyEntity`/`AddRenderer` with the F1 model.
+  Evidence: rep string/xref scan; static disasm.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
