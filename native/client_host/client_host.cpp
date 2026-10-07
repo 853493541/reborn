@@ -1749,11 +1749,11 @@ static HWND createHostWindow(void)
                              1280, 720, NULL, NULL, wc.hInstance, NULL);
     if (h != NULL)
     {
-        // make sure the window is visible, restored and in front (a minimized
-        // window sits at -32000 and is invisible to the user)
+        // make sure the window is visible, restored, in front and on top (a
+        // minimized window sits at -32000 and other apps cover normal windows)
         ShowWindow(h, SW_SHOWNORMAL);
         ShowWindow(h, SW_RESTORE);
-        SetWindowPos(h, HWND_TOP, 80, 60, 1280, 760, SWP_SHOWWINDOW);
+        SetWindowPos(h, HWND_TOPMOST, 80, 60, 1280, 760, SWP_SHOWWINDOW);
         SetForegroundWindow(h);
     }
     return h;
@@ -3435,6 +3435,36 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] frame60: map mgr probe fault"); }
+                        // dump the engine window's vtable (find KG3D_Window::Present)
+                        __try
+                        {
+                            void* win9 = NULL;
+                            {
+                                HMODULE e9 = GetModuleHandleA("X3DEngine.dll");
+                                if (e9 != NULL)
+                                {
+                                    typedef void* (__fastcall *GetWin2Fn)(void*);
+                                    GetWin2Fn gw = (GetWin2Fn)GetProcAddress(e9,
+                                        "?GetActiveWindow2@KG3D_Engine@@UEAAPEAVKG3D_Window@@XZ");
+                                    if (gw != NULL)
+                                        win9 = gw(g_engineInstance);
+                                }
+                            }
+                            logf("[host] frame60: engine window=%p", win9);
+                            if (win9 != NULL)
+                            {
+                                void** wvt9 = *(void***)win9;
+                                int s9;
+                                for (s9 = 0; s9 < 32; s9++)
+                                {
+                                    char d9[64] = {0};
+                                    describeAddr((DWORD64)wvt9[s9], d9, sizeof(d9));
+                                    logf("[host] frame60:   win vt[%d]=%s", s9, d9);
+                                }
+                            }
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: window vt dump fault"); }
                         // The adapter's movie context (created by the adapter movie
                         // init, stored at adapter+0x2F5050) is what the movie
                         // engine's methods expect at [movie+0x38]; the skipped game

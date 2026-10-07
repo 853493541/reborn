@@ -2581,3 +2581,21 @@ ative/client_host/client_host.cpp (Phase 3 host core): boots the client stack
   grazing angle from the low spawn camera.
 - The RL scene / player character are NOT in the frame yet (Gate 1: the shadow-scene
   init still blocks the real CreateRLScene; see the compiled-map findings).
+
+## 2026-10-06 - Live window: black on screen (present issue) + long KEEP runs hit the game protection
+
+- Window visibility: the host window is created minimized sometimes (rect at -32000);
+  the host now shows it with SW_SHOWNORMAL/SW_RESTORE + SetWindowPos(HWND_TOPMOST,
+  80,60,1280,760) + SetForegroundWindow. Verified on the live process (restored,
+  topmost, visible on the user's screen).
+- BUT the window client area renders BLACK on screen while the engine's own
+  screenshot API captures the world: the on-screen PRESENT is not reaching the host
+  window. Lead: `GetActiveWindow2` returns NULL at frame60 (the engine's active-window
+  state is not the host's substituted window at that point), so the swapchain target
+  may be the engine's original (hidden) window. `KG3D_Window::Present` exists
+  (mangled names in KG3DEngineDX11EX64) - the host frame loop does not call a Present.
+- Long KEEP runs are unstable: the run died around frame 200+ inside the game's
+  protection module (Dumper64: "UnInit was not called before destroy" ->
+  ucrtbase abort). So the live-window mode must be treated as short-lived for now.
+- Reliable visual evidence stays the engine-API screenshot (skillv4.png).
+- Evidence: host_live2.out, screen captures (screen_full.png, screen_topmost.png).
