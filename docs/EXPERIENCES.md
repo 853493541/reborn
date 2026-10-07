@@ -3391,5 +3391,26 @@ HIGH-confidence findings:
   holding the manager. `KRLDummyMgr::Init` stores `[mgr+0x2B0]=scene`.
 - Gate 4 next probe: locate the KRLDummyMgr holder (event-mgr handler list or RL scene
   field), then `KRLDummyMgr::Create(mgr, id, arg)`. Evidence: static disasm.
+
+## 2026-10-07 - Gate 4 RL-actor API mapped (the plan's intended path)
+
+- The character plan's Gate 4 names the RL actor path (`RLActorNT` create + model from
+  unit). Located it statically in the represent via debug-name xrefs:
+  - `RLActorMgrNT::CreateRLActorNT` = rep+0x36D3E5 (this=RLActorMgrNT, edx, r8d;
+    reuses the pool at `[mgr+0x5D8]` or allocates via helper 0x399F, then calls Init
+    0x1325 + 0x1F5CD)
+  - `RLActorNT::Init`        = rep+0x35C0A9
+  - `RLActorNT::LoadModel`   = rep+0x35C370
+  - `RLActorNT::LoadPart`    = rep+0x35CC22
+  - `RLActorHelper::LoadAllModel` = rep+0x353F23, `RLActorHelper::LoadSocket` = 0x354A3B
+- `KGRLLoader` (the host's `g_rlCtx`) methods: `GetUnit`/`ReleaseUnit`/
+  `LoadPlayerAllModel`/`GetRepresentIDFromPath`/`LoadUnitFromFile` (debug names at
+  rep+0xC9B9C0..) - the host already calls `GetUnit("F1")` (unit magic "RL00").
+- No static vtables/data-refs for any of these functions (all built at runtime), and no
+  E8 callers (virtual/indirect), so the **RLActorMgrNT instance** must be found at
+  runtime (represent singleton field, RL scene field, or the loader).
+- Gate 4 next probe: obtain the RLActorMgrNT instance, call
+  `CreateRLActorNT(mgr, type, ?)` + `RLActorNT::Init` + `LoadModel`/`LoadPart` with the
+  F1 model, then numeric-proof via `tools/proof/image_stats.py`. Evidence: static disasm.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
