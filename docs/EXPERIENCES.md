@@ -2269,3 +2269,17 @@ solved it, and what is still open. **Newest at the bottom.**
   AppendItemFromData row from that ini+section, through the same owning-list container logic.
 - GuildBankPanel 68 -> 359 sections (98 rows), SocialPanel 5 rows; gap report's item-creation 103 -> 0.
   Verified: --selftest 1240/0/0; --status guildbankpanel sections=359.
+
+### 2026-10-05 ? UI ? HandleType decode from KGUIX64: 1/2 are the same list path as 3/6
+- Found the Lua binding table via the 'FormatAllItemPos' string data pointers (.rdata
+  0x1805d0490/0x1805d0db0): FormatAllItemPos -> 0x1801a32e0, Clear/SetRowSpacing/
+  SetSizeByAllItemSize/... neighbors. Config parser offsets: HandleType -> config+0x5b8,
+  FirstItemPosType +0x5bc, RowSpacing +0x5e8, Min/MaxRowHeight +0x5ec/0x5f0; config -> runtime
+  copy (fn 0x180105950): runtime+0x2f4/0x2f8/0x304/0x2fc/0x300 (scaled by +0x534).
+- Arrangement dispatcher (0x1801064f5): HandleType 0-3 and 6 -> the common row/list path
+  (0x1801065c0 extent + 0x180106cc0 post pass); 4 -> 0x180107e20; 5 -> 0x180107410 (distinct).
+  Post pass (0x180106d25) routes 1/2/3/6 to the same list path. Evidence dump:
+  proof/ui/evidence/re/kgui_handle_layout.txt (cited in UI_RENDER_FIDELITY_PLAN.md).
+- Viewer: the authored list flow now accepts HandleType 1/2 too (was 3/6) - AsuraPanel's
+  Handle_MemberList (type 2) arranges its children; 4/5 remain unhandled and documented.
+  A/B stable (20 fuller / 28 fewer), selftest 1240/0/0, audit oob 8784.
