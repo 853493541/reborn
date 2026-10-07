@@ -44,6 +44,8 @@ CONSUMED = {
     "Scale", "SetScale", "SetOverText", "SetMapPath", "SetItemStartRelPos",
     "CreateItemData", "SetObject", "SetObjectIcon", "SetObjectSelected", "RemoveItem",
     "FromTextureFile",
+    "SetAnimateGroupMouseDown", "SetAnimateGroupMouseOver", "SetAnimateGroupNormal",
+    "SetAnimation", "SetLoopCount", "SetTextAutoTipEnabled",
     "Expand", "ActivePage",
 }
 ITEM_CREATION = set()
@@ -52,18 +54,12 @@ ARRANGEMENT = set()
 # server dispatches by control type; drag regions need the interaction layer).
 INTERACTION = {
     "SetDragArea", "RegisterLButtonDrag", "EnableDrag",
-    "SetScrollVerStepSize", "SetTextAutoTipEnabled",
 }
 RENDER = {
     "FromIconID",  # data-blocked: the icon id needs the server icon table
 }
 # FormatTextForDraw is an engine draw-time text hint; the viewer renders text natively.
-# Animation groups/states: a static review render has no timeline; the authored
-# frame/state stands in (not a static-visual drop).
-ANIMATION = {
-    "SetAnimateGroupMouseDown", "SetAnimateGroupMouseOver", "SetAnimateGroupNormal",
-    "SetAnimation", "SetLoopCount",
-}
+ANIMATION = set()
 # SetAlwaysTop is a window z-order flag - no visual state in a static render.
 STATE = set()
 

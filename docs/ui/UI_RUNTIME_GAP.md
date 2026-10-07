@@ -18,10 +18,10 @@ This report measures what is **still dropped** �?the remaining calls per windo
 | arrangement | 0 | DROPPED —engine position/size passes (wrong placement) |
 | render | 1 | DROPPED — runtime image source/mode (animation has its own row) |
 | state | 0 | DROPPED —control state (enable/check/expand/page) |
-| animation | 9 | DROPPED — animation group/state (static render uses the authored frame) |
-| interaction | 14 | DROPPED —drag/interaction registration (not static layout) |
-| consumed | 6811 | applied by the viewer today |
-| noise | 11161 | engine plumbing, no visual state (lookup/events/getters) |
+| animation | 0 | DROPPED — animation group/state (static render uses the authored frame) |
+| interaction | 10 | DROPPED —drag/interaction registration (not static layout) |
+| consumed | 6823 | applied by the viewer today |
+| noise | 11162 | engine plumbing, no visual state (lookup/events/getters) |
 
 State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 + state 0).
 
@@ -32,14 +32,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | `SetDragArea` | interaction | 4 | BigBagPanel, DesertPreset, ShareBagPanel |
 | `EnableDrag` | interaction | 3 | Matrix, QuestTraceList |
 | `RegisterLButtonDrag` | interaction | 3 | BigBagPanel, NoticeBoard, VoiceRoomNotice |
-| `SetTextAutoTipEnabled` | interaction | 3 | ReputationPanel |
-| `SetAnimateGroupMouseDown` | animation | 2 | CompassPanel, GMPanel |
-| `SetAnimateGroupMouseOver` | animation | 2 | CompassPanel, GMPanel |
-| `SetAnimateGroupNormal` | animation | 2 | CompassPanel, GMPanel |
-| `SetAnimation` | animation | 2 | MainBarPanel, MiniMap |
 | `FromIconID` | render | 1 | Player |
-| `SetLoopCount` | animation | 1 | Bullet |
-| `SetScrollVerStepSize` | interaction | 1 | ReputationPanel |
 
 ## Per-window gap (sorted by missing-item + wrong-placement calls)
 
@@ -161,7 +154,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | BuffMonitorGeneral | hud-ui | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
 | BuffMonitorYaoZong | hud-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
 | BugReport | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| Bullet | hud-ui | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Bullet | hud-ui | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | ButlerNpcInfo | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | BuyNumberPanel | menus-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | BuyRule | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -300,7 +293,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | CommandSignup | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 25 |
 | CommandVoteOnline | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | CommonBlankPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| CompassPanel | recommended | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| CompassPanel | recommended | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | ConfirmTime | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | ConflatePanel | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 4 |
 | ContactsList | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
@@ -496,7 +489,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | FurnitureSetCollect | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 22 |
 | GMAnnouncePanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | GMCheck | modes-ui | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 2 |
-| GMPanel | other-ui | 26 | 0 | 0 | 0 | 0 | 1 | 0 | 13 |
+| GMPanel | other-ui | 29 | 0 | 0 | 0 | 0 | 1 | 0 | 13 |
 | GameGuideCPLevelAwards | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | GameTeach | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 10 |
 | GasMonitorCY | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -711,7 +704,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | MahjongPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 27 |
 | MahjongSettlementPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | MailPanel | recommended | 50 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
-| MainBarPanel | ? | 28 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| MainBarPanel | ? | 29 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | MainMessageLine | ? | 10 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | MainPlotPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | MainStoryPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 7 |
@@ -743,7 +736,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | MiniGameSelectLevel | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 4 |
 | MiniGameStart | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | MiniGameStatusBar | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
-| MiniMap | liked | 52 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| MiniMap | liked | 53 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | MinimizeEffect | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | MoGaoKuPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 6 |
 | MobaControlPanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -992,7 +985,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | RemainingTimeNotify | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | RemoteCDProcess | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | RenewRule | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| ReputationPanel | panels-ui | 84 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| ReputationPanel | panels-ui | 87 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | ReputationPanelNew | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | Resourcebar | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | RevivePanel | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
@@ -1256,37 +1249,13 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 - `interaction` SetDragArea BigBagPanel 0 0 594
 - `interaction` SetDragArea BigBagPanel 0 0 594
 
-### Bullet
-
-- `animation` SetLoopCount Bullet 1
-
-### CompassPanel
-
-- `animation` SetAnimateGroupNormal Btn_Close 9
-- `animation` SetAnimateGroupMouseOver Btn_Close 10
-- `animation` SetAnimateGroupMouseDown Btn_Close 8
-
 ### DesertPreset
 
 - `interaction` SetDragArea DesertPreset 0 0 596
 
-### GMPanel
-
-- `animation` SetAnimateGroupNormal PageSet_Total 0
-- `animation` SetAnimateGroupMouseOver PageSet_Total 1
-- `animation` SetAnimateGroupMouseDown PageSet_Total 2
-
-### MainBarPanel
-
-- `animation` SetAnimation CheckBox_UpDown ui/Image/UItimate/UICommon/MainBarPanel.UITex 12 8
-
 ### Matrix
 
 - `interaction` EnableDrag Matrix true
-
-### MiniMap
-
-- `animation` SetAnimation CheckBox_Switch ui/Image/UItimate/Minimap/Minimap.UITex 48 52
 
 ### NoticeBoard
 
@@ -1300,13 +1269,6 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 
 - `interaction` EnableDrag QuestTraceList true
 - `interaction` EnableDrag QuestTraceList true
-
-### ReputationPanel
-
-- `interaction` SetTextAutoTipEnabled Wnd_FilterRepuLevel true
-- `interaction` SetTextAutoTipEnabled Wnd_FilterForceGroup true
-- `interaction` SetTextAutoTipEnabled Wnd_FilterMap true
-- `interaction` SetScrollVerStepSize ReputationPanel 516
 
 ### ShareBagPanel
 
