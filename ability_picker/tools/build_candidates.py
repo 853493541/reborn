@@ -352,7 +352,16 @@ except Exception:
     pass
 
 
+# OFF (2026-10-06): the engine create+play returns rc=0 but the effects do not
+# render (the tag registration/attach step is still missing - the client-stack
+# tag-system work), so replacing the PSS stand-ins removed the only visible
+# effect. Flip to True once the engine path actually renders.
+APPLY_SFX_TAGS = False
+
+
 def apply_sfx_tags(steps: list, name: str) -> list:
+    if not APPLY_SFX_TAGS:
+        return steps
     if name not in SFX_TAGS or not steps:
         return steps
     out = [s for s in steps if s.get("kind") not in ("dummy", "sfx")]
@@ -389,14 +398,9 @@ PROCESS = {
          "durMs": 939,
          "n": "免控姿态基础动画 31f@33fps=939ms, 播放一次"},
         {"t": 0, "kind": "sound", "v": "75054615", "n": "riyuejiaohui.wav"},
-        {"t": 0, "kind": "sfx", "v": "m明教元素18.sfx",
-         "n": "tani F1smj10双刀buff04_清净心01 内嵌 .Sfx 标签; 引擎创建+播放 rc=0 (SFX_RE_TEST.md 2026-10-06); 时刻: tani 标签时刻未解析, 暂取施法起点"},
-        {"t": 0, "kind": "sfx", "v": "m明教元素19.sfx",
-         "n": "tani 内嵌 .Sfx 标签; 引擎创建+播放 rc=0"},
-        {"t": 0, "kind": "sfx", "v": "释放_气场聚集03.sfx",
-         "n": "tani 内嵌 .Sfx 标签; 引擎创建+播放 rc=0"},
-        {"t": 0, "kind": "sfx", "v": "g光晕02.sfx",
-         "n": "tani 内嵌 .Sfx 标签; ME 引擎创建 NULL (rc=7 优雅失败, 无 AV) - 见 SFX_RE_TEST.md"},
+        {"t": 0, "kind": "dummy", "v": r"data\source\other\hd特效\技能\pss\发招\m_明教清净心01.pss",
+         "k": "ruyi_pss", "durMs": 12480,
+         "n": "清净心发招 PSS (可见效果; tani 标签的引擎路径创建 rc=0 但不着色渲染, 见 SFX_RE_TEST.md - 恢复 PSS)"},
     ],
     "五蕴皆空": [
         {"t": 0, "kind": "anim", "v": r"data\source\player\f1\动作\f1ssl04袈裟攻击05.ani",

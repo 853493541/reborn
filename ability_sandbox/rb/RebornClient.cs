@@ -2469,12 +2469,13 @@ internal static class RebornClient
                 }
             }
 
-            // RC_SFX_WARM (default 1): create every staged tag once at startup,
+            // RC_SFX_WARM (default 0; off while the engine effects do not
+            // render): create every staged tag once at startup,
             // far from the player. The ME engine's first-time create for ~27 of
             // the tags AVs once the scene has settled (shim-guarded -> NULL);
             // after this warm-up the resource is cached and cast-time creates
             // succeed (measured 4/4 vs 2/4, 2026-10-06).
-            if (!sfxWarmDone && Env("RC_SFX_WARM", "1") == "1")
+            if (!sfxWarmDone && Env("RC_SFX_WARM", "0") == "1")
             {
                 sfxWarmDone = true;
                 try
