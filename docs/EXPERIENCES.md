@@ -2743,3 +2743,27 @@ HIGH-confidence findings:
 - State: line 198 still cleared; line 212 still fails (tables NULL). The host
   currently invokes only the RL table task (others skipped to avoid re-init).
   Evidence: host_exe134-141.out; commits a3ec137 + this one.
+
+## 2026-10-06 - Gate 1: wrapper member (param+0xA8) requirements pinned; six candidates exhausted
+
+- The timed wrapper (rep+0x3E3D90) calls `member->vt[3](member, rdx = &out,
+  xmm2 = float)` where member = [task+0x18] = [param+0xA8]; it then does
+  `rsi = [rax]; [rax] = 0; ...; rcx = [out]; if (rcx) release(rcx)` - i.e. the
+  method must FILL the out (a smart pointer) and return &out (or an equivalent
+  smart-pointer holder). Candidates tried (all leave the out uninitialized ->
+  fault at rep+0x3E3DDD, or return garbage -> fault at rep+0x3E3DC4):
+  g_rlLoader (vt[3] = rep+0x18AB6, a map lookup), g_ifMgr (x3d+0x201D0 =
+  shutdown), g_ifConv, the rep singleton (vt[3] = rep+0x3E5ED0 = `lea rax,
+  [rcx+0x24468]`, passes the call but does not fill the out), g_ifXLogic,
+  g_engIface.
+- The wrapper's consumer: the builder (rep+0x8261F0) gets `r8 = rsi` = the
+  member vt[3]'s result = the table-definition SOURCE (the registerTasks
+  rep+0x80B6A0 reads it: [0], [8], [0x10] captured; [+0x18] object invoked via
+  vt[0]). So the member = a manager that yields the RL table source.
+- The exe's value: param+0xA8 = the module dispatcher's r8 (0xBC6A0, slot 9 of
+  the module-class vtable 0x95A328 = the callback invoke; `mov rbx, r8`). The
+  callback objects (0x10-byte, same vtable) are registered by the exe's
+  post-Init block (0xBC4DA) into the task container. Remaining probe: find the
+  event-system call site that invokes the callbacks (slot 9) and its r8
+  construction (the event data) - that object is the missing member.
+- Evidence: host_exe143-145.out; commit a7f5b0d.
