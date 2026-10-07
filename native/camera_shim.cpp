@@ -1164,6 +1164,234 @@ SHIM_EXPORT int RC_D6Dbg()
     return g_d6Veh != NULL ? 0 : 1;
 }
 
+// ---- character 3.x: actor handle probe (docs/character/3_1_RIG_SOCKETS.md) --
+// The KGSceneCLR.AddDummyModel return value is pointer-like; identify the
+// object type before wiring the socket/bone getters (research open question 1).
+// Read-only: loads pointers only, every deref SEH-guarded.
+static const char* ModulePlus(void* p, char* buf, size_t n)
+{
+    HMODULE h = NULL;
+    if (p != NULL && GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                                        GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                                        (LPCSTR)p, &h) && h != NULL)
+    {
+        char path[MAX_PATH]; path[0] = 0;
+        GetModuleFileNameA(h, path, MAX_PATH);
+        const char* base = path;
+        for (const char* q = path; *q; q++) if (*q == '\\' || *q == '/') base = q + 1;
+        sprintf_s(buf, n, "%s+0x%llX", base, (unsigned long long)((const BYTE*)p - (const BYTE*)h));
+    }
+    else
+    {
+        sprintf_s(buf, n, "unmapped exec=%d", ExecutableCode(p) ? 1 : 0);
+    }
+    return buf;
+}
+
+// MSVC x64 RTTI: vt[-1] -> CompleteObjectLocator {.., pTypeDescriptor RVA @+0xC};
+// TypeDescriptor = {vfptr, spare, char name[] @+0x10} (decorated ".?AV...@@").
+static const char* RttiName(void* vt, char* buf, size_t n)
+{
+    buf[0] = 0;
+    if (vt == NULL || !Readable((BYTE*)vt - 8, 8)) return buf;
+    void* col = NULL;
+    __try { col = *(void**)((BYTE*)vt - 8); } __except (EXCEPTION_EXECUTE_HANDLER) { return buf; }
+    if (col == NULL || !Readable((BYTE*)col, 0x14)) return buf;
+    DWORD tdRva = 0;
+    __try { tdRva = *(DWORD*)((BYTE*)col + 0x0C); } __except (EXCEPTION_EXECUTE_HANDLER) { return buf; }
+    HMODULE h = NULL;
+    if (!GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                            GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                            (LPCSTR)vt, &h) || h == NULL) return buf;
+    BYTE* td = (BYTE*)h + tdRva;
+    if (!Readable(td, 0x18)) return buf;
+    const char* name = (const char*)(td + 0x10);
+    if (Readable(name, 1)) strncpy_s(buf, n, name, _TRUNCATE);
+    return buf;
+}
+
+SHIM_EXPORT const char* RC_ActorProbe(long long handle)
+{
+    if (RC_Shim_Init() != 0) return g_status;
+    void* h = (void*)(intptr_t)handle;
+    char m1[160] = { 0 }, m2[160] = { 0 }, m3[160] = { 0 }, m4[160] = { 0 };
+    if (h == NULL || !Readable(h, 8))
+    {
+        sprintf_s(g_status, "handle=%p readable=0", h);
+        return g_status;
+    }
+    void* vt = NULL, *pm = NULL, *pmvt = NULL, *list = NULL;
+    int typeAt2A0 = -1;
+    __try { vt = *(void**)h; } __except (EXCEPTION_EXECUTE_HANDLER) { vt = NULL; }
+    __try { if (Readable((BYTE*)h + 0x358, 8)) pm = *(void**)((BYTE*)h + 0x358); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { pm = NULL; }
+    __try { if (pm != NULL && Readable(pm, 8)) pmvt = *(void**)pm; }
+    __except (EXCEPTION_EXECUTE_HANDLER) { pmvt = NULL; }
+    __try { if (Readable((BYTE*)h + 0x2A0, 4)) typeAt2A0 = *(int*)((BYTE*)h + 0x2A0); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { typeAt2A0 = -1; }
+    __try { if (Readable((BYTE*)h + 0x7E0, 8)) list = *(void**)((BYTE*)h + 0x7E0); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { list = NULL; }
+    int w = sprintf_s(g_status, "handle=%p vt=%p [%s]", 
+                      h, vt, ModulePlus(vt, m1, sizeof(m1)));
+    if (w > 0 && (size_t)w < sizeof(g_status))
+    {
+        w += sprintf_s(g_status + w, sizeof(g_status) - w, " rtti=%s",
+                       RttiName(vt, m4, sizeof(m4)));
+        if (w > 0 && (size_t)w < sizeof(g_status))
+            w += sprintf_s(g_status + w, sizeof(g_status) - w,
+                           " +0x358=%p [%s] type@0x2A0=%d +0x7E0=%p [%s]",
+                           pm, pm == NULL ? "null" : ModulePlus(pm, m2, sizeof(m2)),
+                           typeAt2A0, list, list == NULL ? "null" : ModulePlus(list, m3, sizeof(m3)));
+    }
+    return g_status;
+}
+
+// ---- KG3DModelProxy actor/bone/socket calls (character 3.x) ----------------
+// The AddDummyModel handle is a KG3DModelProxy (RTTI-verified); these call the
+// proxy's own methods in KG_EngineEditorX64.dll with SEH guards. Read-only.
+static HMODULE ProxyModule()
+{
+    return GetModuleHandleA("KG_EngineEditorX64.dll");
+}
+
+// Find bone (socket=0) or socket (socket=1): out16 = {handle, idx, flags}
+SHIM_EXPORT int RC_ProxyFind(void* proxy, const char* name, int socket, unsigned char* out16)
+{
+    if (proxy == NULL || name == NULL || out16 == NULL) return -1;
+    HMODULE m = ProxyModule();
+    if (m == NULL) { sprintf_s(g_status, "KG_EngineEditorX64 not loaded"); return -2; }
+    typedef int (*Fn)(void*, const char*, void*);
+    Fn fn = (Fn)((BYTE*)m + (socket ? 0x4BA80 : 0x49160)); // FindSocket / FindBone
+    __try { return fn(proxy, name, out16); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { return -3; }
+}
+
+// kind 0 = GetBoneMatrix, 1 = GetBoneMatrixLocal, 2 = GetSocketMatrix
+SHIM_EXPORT int RC_ProxyMatrix(void* proxy, const unsigned char* info16, int kind, float* out16)
+{
+    if (proxy == NULL || info16 == NULL || out16 == NULL) return -1;
+    HMODULE m = ProxyModule();
+    if (m == NULL) return -2;
+    typedef int (*Fn)(void*, const void*, float*);
+    DWORD rva = (kind == 0) ? 0x45760 : ((kind == 1) ? 0x459A0 : 0x45A40);
+    Fn fn = (Fn)((BYTE*)m + rva);
+    __try { return fn(proxy, info16, out16); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { return -3; }
+}
+
+SHIM_EXPORT const char* RC_ProxyInfo(void* proxy)
+{
+    if (proxy == NULL) { sprintf_s(g_status, "proxy null"); return g_status; }
+    char m1[160] = { 0 }, m3[160] = { 0 };
+    void* actor = NULL, *actorVt = NULL;
+    __try { if (Readable((BYTE*)proxy + 0x18, 8)) actor = *(void**)((BYTE*)proxy + 0x18); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { actor = NULL; }
+    __try { if (actor != NULL && Readable(actor, 8)) actorVt = *(void**)actor; }
+    __except (EXCEPTION_EXECUTE_HANDLER) { actorVt = NULL; }
+    sprintf_s(g_status, "proxy=%p +0x18(actor)=%p [%s] rtti=%s",
+              proxy, actor, actor ? ModulePlus(actor, m1, sizeof(m1)) : "null",
+              actorVt ? RttiName(actorVt, m3, sizeof(m3)) : "?");
+    return g_status;
+}
+
+// ---- KG3D_Actor socket/bone methods (docs/character/3_1_RIG_SOCKETS.md) ----
+// actor = *(proxy+0x18) (RTTI .?AVKG3D_Actor@@); methods live in the engine
+// module the shim already binds (KG3DEngineDX11EX64.dll).
+SHIM_EXPORT void* RC_ProxyActor(void* proxy)
+{
+    void* actor = NULL;
+    if (proxy == NULL) return NULL;
+    __try { if (Readable((BYTE*)proxy + 0x18, 8)) actor = *(void**)((BYTE*)proxy + 0x18); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { actor = NULL; }
+    return actor;
+}
+
+// out = BindExtraInfo {pActor, int socketIndex @+8, int fromBaseModel @+0xC}
+SHIM_EXPORT int RC_ActorFindSocket(void* actor, const char* name, void* out, int flags)
+{
+    if (actor == NULL || name == NULL || out == NULL) return -1;
+    if (RC_Shim_Init() != 0) return -4;
+    typedef int (*Fn)(void*, const char*, void*, int);
+    Fn fn = (Fn)(g_base + 0x81E5D0);            // KG3D_Actor::FindSocket
+    __try { return fn(actor, name, out, flags); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { return -3; }
+}
+
+SHIM_EXPORT int RC_ActorSocketMatrix(void* actor, int idx, float* out16)
+{
+    if (actor == NULL || out16 == NULL) return -1;
+    if (RC_Shim_Init() != 0) return -4;
+    typedef int (*Fn)(void*, int, float*);
+    Fn fn = (Fn)(g_base + 0x8204D0);            // KG3D_Actor::GetSocketMatrixLocal
+    __try { return fn(actor, idx, out16); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { return -3; }
+}
+
+SHIM_EXPORT int RC_ActorBoneMatrix(void* actor, int idx, float* out16)
+{
+    if (actor == NULL || out16 == NULL) return -1;
+    if (RC_Shim_Init() != 0) return -4;
+    typedef int (*Fn)(void*, int, float*);
+    Fn fn = (Fn)(g_base + 0x81F090);            // KG3D_Actor::GetBoneMatrixLocal
+    __try { return fn(actor, idx, out16); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { return -3; }
+}
+
+// name -> KG3D standard hash (KGCommonX64.dll export, used by FindBones)
+SHIM_EXPORT int RC_HashName(const char* name, unsigned long long* out64)
+{
+    if (name == NULL || out64 == NULL) return -1;
+    HMODULE m = GetModuleHandleA("KGCommonX64.dll");
+    if (m == NULL) return -2;
+    typedef unsigned long long (*Fn)(const char*);
+    Fn fn = (Fn)GetProcAddress(m, "KG3D_ConvertToStandardHashString");
+    if (fn == NULL) return -3;
+    __try { *out64 = fn(name); return 0; }
+    __except (EXCEPTION_EXECUTE_HANDLER) { return -4; }
+}
+
+// resolve a bone name-hash on the actor's current model: the internal helper
+// KG3D_Actor::FindBones calls at 0x81E498; out16 = {?, int boneIdx @+8}
+SHIM_EXPORT int RC_ActorFindBoneHash(void* actor, unsigned long long hash, void* out16)
+{
+    if (actor == NULL || out16 == NULL) return -1;
+    if (RC_Shim_Init() != 0) return -4;
+    void* model = NULL;
+    __try { if (Readable((BYTE*)actor + 0x358, 8)) model = *(void**)((BYTE*)actor + 0x358); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { model = NULL; }
+    if (model == NULL) return -5;
+    typedef int (*Fn)(void*, unsigned long long, void*);
+    Fn fn = (Fn)(g_base + 0x82F0A0);
+    __try { return fn(actor, hash, out16); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { return -3; }
+}
+
+// ---- face apply exports (for the 3x-face workstream) -----------------------
+// KG3DModelProxy::LoadMetaFaceDefinitionJson (fn 0x46FB0) forwards the JSON
+// string to the actor's model; SetFaceLiftParams (fn 0x47710) forwards three
+// args to the actor's vt[+0x538] (signature not decoded - passthrough).
+SHIM_EXPORT int RC_ModelLoadMetaFaceJson(void* proxy, const char* jsonUtf8)
+{
+    if (proxy == NULL || jsonUtf8 == NULL) return -1;
+    HMODULE m = ProxyModule();
+    if (m == NULL) return -2;
+    typedef int (*Fn)(void*, const char*);
+    Fn fn = (Fn)((BYTE*)m + 0x46FB0);
+    __try { return fn(proxy, jsonUtf8); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { return -3; }
+}
+
+SHIM_EXPORT int RC_ProxySetFaceLiftParams(void* proxy, void* a1, void* a2, void* a3)
+{
+    if (proxy == NULL) return -1;
+    HMODULE m = ProxyModule();
+    if (m == NULL) return -2;
+    typedef int (*Fn)(void*, void*, void*, void*);
+    Fn fn = (Fn)((BYTE*)m + 0x47710);
+    __try { return fn(proxy, a1, a2, a3); }
+    __except (EXCEPTION_EXECUTE_HANDLER) { return -3; }
+}
+
 BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved)
 {
     if (reason == DLL_PROCESS_ATTACH)

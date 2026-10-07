@@ -4780,3 +4780,57 @@ if the cache/host frames appear.
   DONE). Gates: build exit 0; `camera_smoke_3x_face` ALL PASS; collision 36/36.
 - Outcome: pipeline offline+load complete; visual apply + fingerprint deferred to the
   `agent/3x-rig` rebase (agent A owns camera_shim). Branch `agent/3x-face` @ 28180fb.
+
+### 2026-10-06 - Character 3x-rig W1: engine head-bone camera anchor (C1)
+
+- Did: identified the `KGSceneCLR.AddDummyModel` handle by RTTI: it is a
+  `KG3DModelProxy` (vt in `KG_EngineEditorX64.dll`); `proxy+0x18` is the live
+  `KG3D_Actor` (`.?AVKG3D_Actor@@`). The dummy actor's socket list is NOT
+  initialized (`s_face`/`bip01 head` unresolved via FindSocket) and its own
+  `+0x358` model pointer is null - the models live on 8 child actors (type `+0x2A0==4`,
+  walked from `[actor+0x7E0]`), each with its model at `+0x358`. Bone path works:
+  `KGCommonX64!KG3D_ConvertToStandardHashString` -> helper `0x82F0A0(child,hash,out16)`
+  (bone idx at +8) -> `KG3D_Actor::GetBoneMatrixLocal` (`0x81F090`) on the child.
+  Head bind pose `t=(1.9,96.7,1.0)` u (花萝 head joint ~96.7 cm).
+- Wired: camera anchor C1 now uses the head-bone world position
+  `world = placement(rpx,rpy,rpz,yaw+yawOffset,scale) + bone_local` each frame;
+  `RC_ANCHOR_BONE=0` falls back to the old chest+90. Verified log:
+  `anchorbone t=(1.9,96.7,1.0) yRaw=1058.7 chest=1052.0` (py=962), stable.
+- Shim exports added (SEH-guarded, read-only): `RC_ActorProbe`, `RC_ProxyInfo`,
+  `RC_ProxyFind`, `RC_ProxyMatrix`, `RC_ProxyActor`, `RC_ActorFindSocket`,
+  `RC_ActorSocketMatrix`, `RC_ActorBoneMatrix`, `RC_HashName`, `RC_ActorFindBoneHash`.
+  Locators in `KG_EngineEditorX64.dll`: FindBone 0x49160, FindSocket 0x4BA80,
+  GetBoneMatrix 0x45760, GetBoneMatrixLocal 0x459A0, GetSocketMatrix 0x45A40.
+- Gates: `reborn_client_3x_rig` build exit 0; `camera_smoke_3x_rig` ALL PASS;
+  `collision_selftest_reborn_client_3x_rig` 36/36; fallback run (RC_ANCHOR_BONE=0)
+  clean DONE. Evidence: `reborn_out/reborn_20261006_1939*.log`, 1940*.log.
+- Boundary: s_face socket unavailable on the dummy path (sockets not initialized
+  by the CLR dummy route) -> anchor uses the head bone for both anchor and aim;
+  re-open when a socket-free/InitSocketNode route or the real game actor path exists.
+- Outcome: W1 done - camera C1 anchor is engine-sourced; shell ready for W2.
+
+
+### 2026-10-06 - Character 3x-rig W2: PlayerRush locomotion selection wired
+
+- Did: extracted `Represent/player/player_rush.txt` from the client PakV4 with the
+  official tool (213,439 B; scratch, not committed) and wired the table-driven
+  ground-move selection into the client: `RC_LOCO_TABLE=<path>` loads the GBK TSV
+  (header-matched columns), row = (role, school, weapon) with `RC_LOCO_ROLE/SCHOOL/WEAPON`
+  (default 6/0/0); 移动（floor） is the forward ground clip.
+- Verified: with the table, running uses the authored `F1bqg加速跑02b_陆.tani`
+  (`clip=` in reborn_20261006_194543.log, rc=0, run completed); without the table the
+  previous `f1b02yd奔跑.ani` behaviour is unchanged (reborn_20261006_194655.log).
+- Tier rule implemented (t2 -> 二阶高速跑, t1 -> 高速跑, else 移动) but **gated OFF**:
+  enabling it played `F1bqg丐帮疾轻功烟尘.tani` and the engine AV'd right after
+  `PlayAnimation` rc=0 (reborn_20261006_194627.log tail; exit 0xC0000005). Each tier
+  clip must be individually verified in-engine before enabling (RC_LOCO_TIERS=1).
+- PROVISIONAL (registered): comparator scalar = 默认移动速度 for normal movement, x2
+  under the 10x sprint (RC_LOCO_SCALAR test override); the engine's [this+0xD0]
+  writer/unit is untraced - re-open when decoded.
+- Also fixed en route: the loader's early Log() calls NRE'd before logger init
+  (deferred via locoMsgs) and Encoding.GetEncoding(18030) is invalid on this runtime
+  (GBK = 936).
+- Gates: build exit 0; camera_smoke_3x_rig ALL PASS; collision_selftest 36/36.
+- Outcome: W2 done (base clip data-driven + verified; tiers gated pending per-clip
+  verification). W1+W2 complete on agent/3x-rig.
+

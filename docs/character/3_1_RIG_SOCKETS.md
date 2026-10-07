@@ -385,6 +385,28 @@ dummy, compared against the known chest+90 anchor; then the camera C1 exits its
 
 ---
 
+## Host wiring update (2026-10-06, agent/3x-rig)
+
+- **Open question 1 resolved:** the `KGSceneCLR.AddDummyModel` handle is a
+  **`KG3DModelProxy`** (vtable in `KG_EngineEditorX64.dll`); `proxy+0x18` is the live
+  `KG3D_Actor` (RTTI `.?AVKG3D_Actor@@`).
+- **Sockets are NOT initialized on the dummy path** (FindSocket misses `s_face`/
+  `bip01 head`; the actor's own `+0x358` model pointer is null). The models live on
+  8 child actors (type `[+0x2A0]==4`, linked from `[actor+0x7E0]`, node = child+0x7F0),
+  each with its model at `+0x358`.
+- **Bone route works:** `KGCommonX64!KG3D_ConvertToStandardHashString` (export 0x50230)
+  -> helper `KG3D_Actor` 0x82F0A0(child, hash, out16) (bone idx at +8, model bone list
+  at model->vt[+0x408]: count @+0, hash array @+0x48, index array @+0x50)
+  -> `GetBoneMatrixLocal` 0x81F090(child, idx, m16). Head bind `t=(1.9,96.7,1.0)` u.
+- **Camera C1 wired:** anchor = model placement (rpx,rpy,rpz,yaw+yawOffset,scale) x
+  bone-local translation, per frame; `RC_ANCHOR_BONE=0` -> chest+90 fallback.
+  Verified `anchorbone t=(1.9,96.7,1.0) yRaw=1058.7 chest=1052.0` (py=962).
+- **Proxy method RVAs** (`KG_EngineEditorX64.dll`): FindBone 0x49160, FindSocket
+  0x4BA80, GetBoneMatrix 0x45760, GetBoneMatrixLocal 0x459A0, GetSocketMatrix 0x45A40.
+- **Boundary:** `s_face` look-at is unavailable on the dummy path until sockets are
+  initialized (no `InitSocketNode` on the CLR dummy route) - anchor uses the head bone
+  for both anchor and aim; re-open when a socket init route exists.
+
 ## Reproduce (commands used)
 
 ```powershell
