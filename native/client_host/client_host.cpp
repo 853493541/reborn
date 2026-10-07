@@ -1233,7 +1233,8 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
         // always trace, the caller chain identifies the faulting call site).
         static int vehTraces = 0;
         CONTEXT* cr = ep->ContextRecord;
-        logf("[VEH]   regs rip=%p rsp=%p rbp=%p rax=%p rbx=%p rcx=%p rdx=%p rsi=%p rdi=%p",
+        logf("[VEH]   regs tid=%lu rip=%p rsp=%p rbp=%p rax=%p rbx=%p rcx=%p rdx=%p rsi=%p rdi=%p",
+             GetCurrentThreadId(),
              (void*)cr->Rip, (void*)cr->Rsp, (void*)cr->Rbp, (void*)cr->Rax,
              (void*)cr->Rbx, (void*)cr->Rcx, (void*)cr->Rdx, (void*)cr->Rsi,
              (void*)cr->Rdi);
@@ -2372,6 +2373,7 @@ int main(void)
     g_hostHwnd = createHostWindow();
     CreateThread(NULL, 0, hostWatchdog, NULL, 0, NULL);
     logf("[host] window=%p root=%s", g_hostHwnd, rootA);
+    logf("[host] main tid=%lu", GetCurrentThreadId());
     SetDefaultDllDirectories(LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
     AddDllDirectory(bin64);
 
