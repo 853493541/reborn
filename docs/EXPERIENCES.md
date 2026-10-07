@@ -3309,5 +3309,29 @@ HIGH-confidence findings:
   table (data refs to the `LuaAddPlayer` string) to find the player-creation C
   function, or find the world's scene-enter/AddPlayer entry called on server scene
   data. Evidence: host_exe236.out; static disasm.
+
+## 2026-10-07 - Gate 4 lead: the working model path is `scene.AddDummyModel`, not HangPet
+
+- The C# client and every sandbox render the player/mesh with
+  `scene.AddDummyModel(key, modelPath, pos, rot, scale)` (+ `RemoveDummyModel`),
+  e.g. `client/RebornClient.cs:731`, `asset_sandbox/AssetSandbox.cs:803`,
+  `ability_picker/AbilityPicker.cs:1055`. This is the proven, non-recursing path -
+  the native host's `CreateHangPet` route (which stack-overflows) is the wrong route.
+- Bridge: `MovieEngineCLR.dll` (C++/CLI) exposes
+  `MovieEngineCLR::KGSceneCLR::AddDummyModel`; its native side lives in
+  `JX3RepresentX64.dll`, which carries the debug assertions
+  `m_pDummyModel && m_pObjectMgr` / `m_pObjetMgr` (rep+0xCD97D3/0xCD98DB/0xCDABD3) -
+  i.e. the represent scene has `m_pDummyModel` + `m_pObjectMgr` members and an
+  AddDummyModel that creates a dummy object in the object manager.
+- Static resolution failed: no engine DLL contains the literal `AddDummyModel`, and
+  the assertion strings have **0 u64 and 0 RIP-relative (lea) xrefs** - so the native
+  function needs runtime discovery (the represent scene's object manager /
+  `m_pDummyModel` field, or the `KGSceneCLR` managed call).
+- Also enumerated the logic Lua-binding table (0x20-byte `{name,0,fn,8}` entries at
+  ~0x9961f0): it exposes `GetPlayer`/`GetPlayerData`/`GetScene` but **no**
+  AddPlayer/NewPlayer/CreatePlayer - so the local player is not Lua-reachable either.
+- Gate 4 next probe: reach the represent object manager (the scene's dummy/object mgr)
+  and call its AddDummyModel-equivalent, matching the C# client's path. Evidence:
+  host_exe236.out; static disasm; repo call sites.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
