@@ -174,6 +174,8 @@ def handle(conn, addr):
     next_bind_t = [0.0]
     id7_sent = ID7_DONE
     id7_at = [0.0]
+    bind_at = [0.0]
+    bind_stage = [0]
     port_used = PORT
     try:
         time.sleep(0.2)
@@ -214,6 +216,24 @@ def handle(conn, addr):
                 bind_left[0] -= 1
                 next_bind_t[0] = now + 10.0
                 w("[%s] SYNC id=188 repeat bind (left=%d)" % (time.strftime("%H:%M:%S"), bind_left[0]))
+            if bind_at[0] and now >= bind_at[0]:
+                if bind_stage[0] == 0:
+                    bind_stage[0] = 1
+                    bind_at[0] = now + 1.5
+                    if os.environ.get("GAME_SEND187", "1") == "1":
+                        p187 = bytearray(8)
+                        struct.pack_into("<H", p187, 0, 187)
+                        conn.sendall(sess.encrypt(bytes(p187)))
+                        w("[%s] SYNC id=187 sent (delayed bind stage 1)" % time.strftime("%H:%M:%S"))
+                else:
+                    bind_stage[0] = 0
+                    bind_at[0] = 0.0
+                    p188 = bytearray(7)
+                    struct.pack_into("<H", p188, 0, 188)
+                    conn.sendall(sess.encrypt(bytes(p188)))
+                    w("[%s] SYNC id=188 delayed world-bind sent" % time.strftime("%H:%M:%S"))
+                    bind_left[0] = int(os.environ.get("GAME_BIND_REPEATS", "4"))
+                    next_bind_t[0] = now + 8.0
             if id7_at[0] and now >= id7_at[0] and not id7_sent[0]:
                 id7_sent[0] = True
                 conn.sendall(sess.encrypt(id7_frame(
@@ -300,27 +320,31 @@ def handle(conn, addr):
                     # data sections (C2S 0x6D); then 188 OnSyncRoleDataOver ends it
                     # (SYNC_ROLE_DATA_END). Our old order (188 only) may leave the UI's role-data
                     # flow stuck -> world UI/input never activates.
-                    if os.environ.get("GAME_SEND187", "1") == "1":
-                        p187 = bytearray(8)
-                        struct.pack_into("<H", p187, 0, 187)
-                        conn.sendall(sess.encrypt(bytes(p187)))
-                        w("[%s] SYNC id=187 role-data section check sent" % time.strftime("%H:%M:%S"))
-                        time.sleep(1.5)
-                    if os.environ.get("GAME_SEND188", "1") == "1":
-                        # id 188 table size = 7 (fixed): must be exactly 7 bytes.
-                        # The bind's position validator (0x1403D5220) reads the scene cell's
-                        # terrain sub-region data, which the bind itself only *requests*
-                        # asynchronously (0x1403d8a00). A one-shot bind runs before the cell data
-                        # is ready -> the setter's success path (which fires SetMainPlayer / the
-                        # world UI) is skipped. Repeat the bind a few times.
-                        p188 = bytearray(7)
-                        struct.pack_into("<H", p188, 0, 188)
-                        conn.sendall(sess.encrypt(bytes(p188)))
-                        w("[%s] SYNC id=188 world-bind sent" % time.strftime("%H:%M:%S"))
-                        bind_left[0] = int(os.environ.get("GAME_BIND_REPEATS", "4"))
-                        next_bind_t[0] = time.time() + 8.0
+                    bdelay = float(os.environ.get("GAME_BIND_DELAY", "0"))
+                    if bdelay > 0 and os.environ.get("GAME_SEND188", "1") == "1":
+                        # Key experiment: the bind's position validator (0x1403D5220) needs the
+                        # scene cell terrain data; an early bind fails it and SetMainPlayer (the
+                        # world input layer) never fires. Delay the bind past the region load.
+                        bind_at[0] = time.time() + bdelay
+                        w("[%s] SYNC bind scheduled in %.0fs (delayed world bind)" % (
+                            time.strftime("%H:%M:%S"), bdelay))
                     else:
-                        w("[%s] SYNC id=188 SKIPPED (GAME_SEND188=0)" % time.strftime("%H:%M:%S"))
+                        if os.environ.get("GAME_SEND187", "1") == "1":
+                            p187 = bytearray(8)
+                            struct.pack_into("<H", p187, 0, 187)
+                            conn.sendall(sess.encrypt(bytes(p187)))
+                            w("[%s] SYNC id=187 role-data section check sent" % time.strftime("%H:%M:%S"))
+                            time.sleep(1.5)
+                        if os.environ.get("GAME_SEND188", "1") == "1":
+                            # id 188 table size = 7 (fixed): must be exactly 7 bytes.
+                            p188 = bytearray(7)
+                            struct.pack_into("<H", p188, 0, 188)
+                            conn.sendall(sess.encrypt(bytes(p188)))
+                            w("[%s] SYNC id=188 world-bind sent" % time.strftime("%H:%M:%S"))
+                            bind_left[0] = int(os.environ.get("GAME_BIND_REPEATS", "4"))
+                            next_bind_t[0] = time.time() + 8.0
+                        else:
+                            w("[%s] SYNC id=188 SKIPPED (GAME_SEND188=0)" % time.strftime("%H:%M:%S"))
                     time.sleep(0.3)
                     if os.environ.get("GAME_SEND_ID7", "1") == "1" and not id7_sent[0]:
                         # Real login -> world-GS handoff: the client tears down and reconnects
