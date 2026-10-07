@@ -5503,15 +5503,20 @@ int main(void)
                                     // rep_main+0x262C0.
                                     __try
                                     {
+                                        // full engine init of the async-task object at
+                                        // rep_main+0x26090 (InitAsyncTask: sets up the
+                                        // registry at +0x230 and the task system at +0x240)
+                                        long ia = ((long (__fastcall *)(void*, void*,
+                                                    unsigned))
+                                                   ((BYTE*)g_repModule + 0x372F20))(
+                                            (BYTE*)g_repSingleton + 0x26090, NULL, 0);
+                                        logf("[host] frame60: InitAsyncTask(rep_main+0x26090,0,0) -> %ld",
+                                             ia);
                                         void* reg = (BYTE*)g_repSingleton + 0x262C0;
-                                        long dc = ((long (__fastcall *)(void*, unsigned))
-                                                   ((BYTE*)g_repModule + 0x3733F0))(
-                                            reg, 0x56);
-                                        logf("[host] frame60: Delegate::Initialize(reg,0x56) -> %ld count=%u",
-                                             dc, *(unsigned*)reg);
+                                        logf("[host] frame60: registry count=%u", *(unsigned*)reg);
                                     }
                                     __except (EXCEPTION_EXECUTE_HANDLER)
-                                    { logf("[host] frame60: Delegate::Initialize fault"); }
+                                    { logf("[host] frame60: InitAsyncTask fault"); }
                                     void* ir = ((void* (__fastcall *)(void*, void*,
                                                       void*))
                                                ((BYTE*)g_repModule + 0x36DA50))(

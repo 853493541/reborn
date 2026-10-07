@@ -3647,5 +3647,21 @@ HIGH-confidence findings:
   return; or call the full `InitAsyncTask(rep_main+0x26090, ...)` instead of the bare
   `Initialize`.
 - Evidence: host_exe255.out (count=86, line-86 still fails); static disasm.
+
+## 2026-10-07 - InitAsyncTask wired; registry sized but Init's line-86 Register still fails
+
+- Host now calls the engine's `InitAsyncTask(rep_main+0x26090, NULL, 0)` (`rep+0x372F20`)
+  instead of the bare `Initialize`. Run 257: `InitAsyncTask -> 1`, registry `count=86`,
+  and the process no longer heap-corrupts (exit 0).
+- BUT `RLActorMgrNT::Init` still logs `KGLOG_PROCESS_ERROR(...Delegates.Register(eraqCharacterDisplayData,...)) at line 86`.
+- Probe (run 256) showed the target entry `entry[0x32] cnt=0 cap=12 f8=0x800000 data=<valid>`,
+  so `Register` (`rep+0x36A1D0`) should take the add path and return 1 - yet it reports
+  failure. Also, the host's hook on `rep+0x36A1D0` never fires, so the failing Register
+  call may not be `rep+0x1B97D`/`0x36A1D0` (address mis-identification), or the hook is
+  on the wrong entry.
+- Next: re-verify the failing call site (0x36DCBF `mov edx,0x32; call 0x1B97D`) vs the
+  hook, and whether `0x1B97D` really targets `0x36A1D0`; log `edx/rcx/result` at the real
+  Register to see which condition returns false.
+- Evidence: host_exe256/257.out; static disasm.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
