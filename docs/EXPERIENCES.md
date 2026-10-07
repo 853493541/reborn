@@ -2489,3 +2489,22 @@ solved it, and what is still open. **Newest at the bottom.**
   UNCHECKED with the reason (⚠ 缺图/文案缺失/超出窗口); every other rendered item defaults to
   CHECKED. Explicit ticks are overrides in Data/item_checks.tsv (unchanged format).
 - Gates: build 0/0; --selftest 1240/0/0; commit ccc3f0e.
+
+### 2026-10-06 ? UI ? issue check: WHY the checklist flags items (and three fixes)
+- Ran the diagnostic: 504 placeholder lines = **259 intentional `TextureName=no`** (runtime-assigned
+  art - the checklist no longer flags them) + **195 instances / 134 files absent from the pak**
+  (re-probed at their exact paths: all MISS - not shipped) + **24 frame-beyond-atlas** (the INI
+  references frames the shipped atlas lacks - the engine also has no art there) + misc.
+- Fixed three real defects behind some of them:
+  1. **GBK texture-name decode**: the atlas's 64-byte texture-name field is GBK; `Help—Bg.Tga`
+     (0xA1AA em dash) decoded as ASCII became two junk chars so the sibling texture was never
+     found. `TextFile.DecodeGameText` + UiTex now decode it (4 placeholders fixed).
+  2. **Size-aware texture pick**: Cangjian ships a stale 128x128 tga beside the real 868x428 dds;
+     the resolver took the tga first and the frame crop (y=258) fell outside the image. The atlas
+     loader now picks the candidate that covers the frame extent (2 placeholders fixed; the missing
+     Help—Bg.dds was extracted from the pak).
+  3. The checklist skips `TextureName=no`/`0` placeholders (intentional runtime art).
+- Audit placeholders 504 -> **498**; selftest 1240/0/0; commit 3c663fa.
+- Unresolved strings: 43 ids, all in unreachable/dev tables (probed MISS). Raw oob (6,188
+  lines/921 windows) is dominated by scroll overflow (legit) + parked prototypes; the checklist
+  excludes scroll overflow.
