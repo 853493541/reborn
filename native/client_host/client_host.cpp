@@ -36,6 +36,7 @@ static void gbk(const wchar_t* src, char* out, int cap)
 }
 
 static void describeAddr(DWORD64 a, char* out, size_t n);
+static int isCodeAddr(DWORD64 a, char* out, size_t n);
 
 // Host adaptation: the map's whole-scene shadow mask is missing from the sandbox;
 // the engine falls back to data/public/defaultWhite.dds (64x64 DXT1) but the
@@ -1255,8 +1256,7 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
                     inNtdll = 1;
             }
         }
-        if ((inRep || inCrt || inExe || inNtdll || inLua || vehTraces < 6) &&
-            vehTraces < 24)
+        if (vehTraces < 60)
         {
             vehTraces++;
             void* frames[20];
@@ -1266,6 +1266,23 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
             {
                 describeAddr((DWORD64)frames[i], d, sizeof(d));
                 logf("[VEH]   bt[%u] = %s", i, d);
+            }
+            // raw stack scan: a wild indirect call has no unwindable frame, so
+            // the return address only shows as a code pointer on the stack
+            {
+                DWORD64* sp = (DWORD64*)ep->ContextRecord->Rsp;
+                int shown = 0;
+                for (int i = 0; i < 400 && shown < 24; i++)
+                {
+                    DWORD64 v = 0;
+                    __try { v = sp[i]; }
+                    __except (EXCEPTION_EXECUTE_HANDLER) { break; }
+                    if (isCodeAddr(v, d, sizeof(d)))
+                    {
+                        logf("[VEH]   stk[%d] %s", i, d);
+                        shown++;
+                    }
+                }
             }
         }
     }
@@ -4941,6 +4958,29 @@ int main(void)
                         }
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] gate probe fault"); }
+                        // Gate 1: m_tabCommon. KRLWeatherController::Init needs
+                        // [main+0x210] non-null (g_pRL->m_TableList.m_tabCommon).
+                        // The writer is KTableList::LoadConfigureFile
+                        // (rep+0x833260): it opens "CommonKRL", CreateRLFile() ->
+                        // [kt+0x23A68] = m_pCommon, then m_pCommon->vt[2](file,1,1)
+                        // -> [kt+0x70] = m_tabCommon. The runTasks chain only runs
+                        // the misc-file loader, so the host calls the game's own
+                        // configure loader here (same object the builder uses).
+                        __try
+                        {
+                            void* kt60b = (BYTE*)g_repSingleton + 0x1A0;
+                            logf("[host] frame60: before LoadConfigureFile [main+0x210]=%p kt+0x23A68=%p",
+                                 *(void**)((BYTE*)g_repSingleton + 0x210),
+                                 *(void**)((BYTE*)kt60b + 0x23A68));
+                            ((int (__fastcall *)(void*, void*))
+                             ((BYTE*)g_repModule + 0x833260))(kt60b, NULL);
+                            logf("[host] frame60: after LoadConfigureFile [main+0x210]=%p m_pCommon=%p",
+                                 *(void**)((BYTE*)g_repSingleton + 0x210),
+                                 *(void**)((BYTE*)kt60b + 0x23A68));
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: LoadConfigureFile fault; [main+0x210]=%p",
+                               *(void**)((BYTE*)g_repSingleton + 0x210)); }
                         {
                             typedef long (__fastcall *CreateRLSceneFn)(
                                 unsigned id, unsigned type, unsigned a3, unsigned a4,
