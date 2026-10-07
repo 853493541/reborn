@@ -76,3 +76,22 @@
   0x180106d2b: jbe 0x180106e68
   0x180106d31: cmp ecx, 6
   0x180106d34: je 0x180106e68
+
+# 6) FirstItemPosType consumer (fn 0x180108600): jump table at 0x180108964
+#    (13 entries, value -> case VA), dispatch @ 0x18010867c (read [rcx+0x2f8],
+#    cmp 0xc, ja skip). Case bodies align the first item inside the container
+#    ([rdi+0x2c]/[rdi+0x30] = handle W/H, [rdx+0x2c]/[rdx+0x30] = item W/H,
+#    xmm10 = 0.5):
+#      0  -> 0x1801086a3  origin + item's own offsets ([rdx+0x1c]/[rdx+0x20])
+#      1  -> 0x18010873f  y += (H-h)              (bottom)
+#      2  -> 0x18010874d  origin
+#      3  -> 0x1801086b2  y += (H-h)*0.5          (v-center)
+#      4  -> 0x18010874d  origin
+#      5  -> 0x1801086c6  x += (W-w)              (right)
+#      6  -> 0x1801086d6  x += (W-w)*0.5          (h-center)
+#      7  -> 0x1801086c6  right
+#      8  -> 0x1801086eb  x += (W-w); y += (H-h)  (bottom-right)
+#      9  -> 0x180108709  x += (W-w); y += (H-h)*0.5 (right-center)
+#      10 -> 0x18010873f  bottom
+#      11 -> 0x1801086eb  bottom-right
+#      12 -> 0x18010872c  x += (W-w)*0.5; y += (H-h) (bottom-center)

@@ -248,6 +248,52 @@ namespace MapUiApp.Engine
                 // digit items; without this they wrapped into two rows).
                 bool autoSizeList = list.GetBool("AutoSize");
 
+                // FirstItemPosType (engine jump table 0x180108964, cases 0x1801086a3..
+                // 0x18010874d) aligns the first item inside the container and sets where
+                // the flow starts: 0 = the item's own authored offset, 1/10 bottom,
+                // 3 v-center, 5/7 right, 6 h-center, 8/11 bottom-right, 9 right-center,
+                // 12 bottom-center, 2/4 origin.
+                double originX = 0, originY = 0;
+                var firstItem = items[0];
+                var firstSize = SizeOf(firstItem);
+                double listH = list.GetInt("Height");
+                if (listH <= 0) listH = SizeOf(list).H;
+                bool listWValid = listW > 0 && listW < 1e9;
+                switch (list.GetInt("FirstItemPosType", -1))
+                {
+                    case 0:
+                        originX = firstItem.GetInt("Left");
+                        originY = firstItem.GetInt("Top");
+                        break;
+                    case 1:
+                    case 10:
+                        originY = listH - firstSize.H;
+                        break;
+                    case 3:
+                        originY = (listH - firstSize.H) / 2;
+                        break;
+                    case 5:
+                    case 7:
+                        if (listWValid) originX = listW - firstSize.W;
+                        break;
+                    case 6:
+                        if (listWValid) originX = (listW - firstSize.W) / 2;
+                        break;
+                    case 8:
+                    case 11:
+                        if (listWValid) originX = listW - firstSize.W;
+                        originY = listH - firstSize.H;
+                        break;
+                    case 9:
+                        if (listWValid) originX = listW - firstSize.W;
+                        originY = (listH - firstSize.H) / 2;
+                        break;
+                    case 12:
+                        if (listWValid) originX = (listW - firstSize.W) / 2;
+                        originY = listH - firstSize.H;
+                        break;
+                }
+
                 var rows = new List<List<IniSection>>();
                 var rowWidths = new List<double>();
                 var rowHeights = new List<double>();
@@ -267,15 +313,15 @@ namespace MapUiApp.Engine
                 }
                 rows.Add(currentRow); rowWidths.Add(cursor); rowHeights.Add(rowHeight);
 
-                double y = 0;
+                double y = originY;
                 for (int r = 0; r < rows.Count; r++)
                 {
-                    double start = hAlign switch
+                    double start = (r == 0 ? originX : 0) + (hAlign switch
                     {
-                        1 => (listW - rowWidths[r]) / 2,
-                        2 => listW - rowWidths[r],
+                        1 => (listWValid ? (listW - rowWidths[r]) / 2 : 0),
+                        2 => listWValid ? listW - rowWidths[r] : 0,
                         _ => 0,
-                    };
+                    });
                     double x = start;
                     foreach (var item in rows[r])
                     {
