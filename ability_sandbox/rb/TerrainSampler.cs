@@ -317,6 +317,15 @@ internal sealed class TerrainSampler : IDisposable
     public int HoleRegionZ { get { return _cur == null ? -1 : _cur.Iz; } }
     public int RegionSize { get { return _size; } }
 
+    // Map extent from the terrain descriptor. Used to validate spawn/test
+    // coordinates: the engine AVs (KG3DEngineDX11EX64+0x12282B3) when the
+    // actor is outside the map extent on the 4x4 海岛绝境 map
+    // (docs/movement/VOID_SPAWN_CRASH_TRIAGE.md).
+    public float ExtentMinX { get { return _originX; } }
+    public float ExtentMinZ { get { return _originZ; } }
+    public float ExtentMaxX { get { return _originX + _nrx * _size * _cell; } }
+    public float ExtentMaxZ { get { return _originZ + _nrz * _size * _cell; } }
+
     // streaming telemetry summary (exit log / A-B runs)
     public string StatsLine()
     {
