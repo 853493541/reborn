@@ -1,26 +1,36 @@
 #!/usr/bin/env python3
 """Parse the JX3 animation-tag container (.tani, GATA magic) and dump MotionTag streams.
 
-Container (proven 2026-10-06, KG3DEngineX64.dll):
-  KG3DAnimationTagDataContainer::_Load @0x180291490 reads a 0x130-byte header:
-    +0x00 magic "GATA" (u32 0x41544147)   +0x04 version
-    +0x08 base .ani path (GBK, 0x103 bytes)
-    +0x10C block count
-  then per block a 12-byte header {u32 type, u32 version, u32 flag}:
-    flag != 0  -> class object created by type, LoadFromFile reads the payload:
-      type 0 = KG3DSFXTagData (vtable 0x1806B3718)
-      type 1 = KG3DSoundTagData (vtable 0x1806B3A58)
-      type 2 = KG3DMotionTagData (vtable 0x1806B31C8)   <- this tool
-    flag == 0  -> type 0/1: no payload; type 2: 8 extra bytes.
-  KG3DMotionTagData::LoadFromFile @0x180299AC0 version 1:
-    u32, u32 (two header values), then per keyframe a 0x188-byte record:
-      +0x00: hash string (ASCII, e.g. "User Define Tag")
-      +0x100 u32 time/frame
-      +0x104 u32 tag count n
-      +0x108 u32[n] per-tag payload byte sizes
-    then n tag payloads sequentially; each begins with u32 type (0..11).
-    Fixed tag struct sizes (clamp table): 8,0x118,0x19C,0x14,0x10,0xC,0x2C,
-    0x30,0x34,0x68,0x4C,0x58.
+Settled container model (SPEC_MOTION.md §3, corrected 2026-10-07; supersedes the
+raw 0x188 signature scan and the earlier type-1=MotionTag claim):
+
+  .tani = ANI_TAG_FILE, loaded by KG3D_AnimationTani_Data::LoadFromFile
+  (KG3D_AnimationTagX64.dll 0x18001D260; magic GATA @0x18001D38F, header
+  ReadObject(0x130) @0x18001D33D, factory _NewTagData 0x18001DB60).
+
+  Header (0x130 bytes):
+    +0x00 char[4] "GATA"    +0x04 u32 version (0/1; >=2 rejected)
+    +0x08 NUL base .ani path (GBK)    +0x10C u32 group count
+  Then per group a 12-byte header {i32 type, i32 version, i32 count} + payload.
+
+  Group classes (tani factory jump table @RVA 0x1DEA4, cases 0..5):
+    0 = SFXTag_Group_Data    (alloc 0x298, vtable 0x180048CC8, loader 0x180004AB0)
+    1 = sound group          (alloc 0x508, vtable 0x1800490B0; payload carries
+                              the "FMOD" magic + Wwise event names)
+    2 = MotionTag_Group_Data (alloc 0x160, vtable 0x180048AC0, LoadFromFile =
+                              vtable slot 3 = 0x180003000)
+    3 = 0x130 / 4 = 0x58D8 / 5 = 0x1B0  (classes not decoded)
+
+  Payload sizes (from the loaders):
+    type 0 SFX: u32 n1 + n1*0x130 + count*(0x164 + 8*4 + 0x64 + (v==3 ? 4 : 0))
+    type 2 MotionTag: v0 = count*0x970; v1 = u32,u32 + count*(0x188 + tag
+      payloads); v2 = u32 n2 + n2*0x130 then v1.
+      0x188 record: +0x00 hash string; +0x100 u32 time; +0x104 u32 tag count n;
+      +0x108 u32[n] sizes; then n payloads, each beginning u32 type (0..11).
+      Fixed tag struct sizes (clamp table @0x180047C60): 8,0x118,0x19C,0x14,0x10,
+      0xC,0x2C,0x30,0x34,0x68,0x4C,0x58.
+    Other types: opaque - the walker scans forward for the next plausible group
+    header such that the remaining groups walk exactly to EOF (structural).
 
 Usage:
   python tools/character/motion_tag.py selftest
@@ -35,7 +45,8 @@ import sys
 
 GATA = 0x41544147
 TAG_SIZES = [0x8, 0x118, 0x19C, 0x14, 0x10, 0xC, 0x2C, 0x30, 0x34, 0x68, 0x4C, 0x58]
-BLOCK_NAMES = {0: "SFX", 1: "Sound", 2: "Motion"}
+GROUP_NAMES = {0: "SFX", 1: "Sound(opaque)", 2: "MotionTag", 3: "type3",
+               4: "type4", 5: "type5"}
 
 
 def _u32(d: bytes, o: int) -> int:
@@ -45,9 +56,8 @@ def _u32(d: bytes, o: int) -> int:
 def parse_header(d: bytes) -> dict:
     if len(d) < 0x130:
         raise ValueError("file shorter than 0x130-byte header")
-    magic = _u32(d, 0)
-    if magic != GATA:
-        raise ValueError("bad magic %#x (expected GATA)" % magic)
+    if _u32(d, 0) != GATA:
+        raise ValueError("bad magic %#x (expected GATA)" % _u32(d, 0))
     path_end = d.find(b"\0", 8, 8 + 0x103)
     if path_end < 0:
         path_end = 8 + 0x103
@@ -55,146 +65,196 @@ def parse_header(d: bytes) -> dict:
         "magic": "GATA",
         "version": _u32(d, 4),
         "base_ani": d[8:path_end].decode("gb18030", "replace"),
-        "block_count": _u32(d, 0x10C),
+        "group_count": _u32(d, 0x10C),
     }
 
 
-def _parse_motion_chain(d: bytes, off: int, key_count: int):
-    """Parse key_count motion records starting at off. Returns (records, end)."""
-    if off + 8 > len(d):
-        raise ValueError("truncated motion payload header")
-    head0, head1 = _u32(d, off), _u32(d, off + 4)
-    off += 8
+def _header_ok(d: bytes, off: int) -> bool:
+    if off < 0 or off + 12 > len(d):
+        return False
+    t, v, c = _u32(d, off), _u32(d, off + 4), _u32(d, off + 8)
+    return 0 <= t <= 5 and 0 <= v <= 3 and 0 <= c <= 4096
+
+
+def sfx_payload_size(d: bytes, off: int, v: int, c: int):
+    p = off + 12
+    if p + 4 > len(d):
+        return None
+    n1 = _u32(d, p)
+    if n1 > 4096:
+        return None
+    return 4 + n1 * 0x130 + c * (0x1E8 + (4 if v == 3 else 0))
+
+
+def motion_chain(d: bytes, off: int, v: int, c: int):
+    """Parse the MotionTag payload at off (after the 12-byte group header).
+
+    Returns (payload_size, chain) or (None, None) when the payload does not
+    parse cleanly.
+    """
+    p = off + 12
+    if v == 0:
+        return c * 0x970, {"version": 0, "records": []}
+    if v not in (1, 2):
+        return None, None
+    q = p
+    n2 = 0
+    if v == 2:
+        if q + 4 > len(d):
+            return None, None
+        n2 = _u32(d, q)
+        if n2 > 4096:
+            return None, None
+        q += 4 + n2 * 0x130
+    if q + 8 > len(d):
+        return None, None
+    head0, head1 = _u32(d, q), _u32(d, q + 4)
+    q += 8
     records = []
-    for _ in range(key_count):
-        if off + 0x188 > len(d):
-            raise ValueError("truncated 0x188 record")
-        rec_end = off + 0x188
-        h = d[off:off + 0x100]
-        h = h.split(b"\0")[0]
-        time = _u32(d, off + 0x100)
-        n = _u32(d, off + 0x104)
-        if n > 16:
-            raise ValueError("tag count %d too large" % n)
-        sizes = [_u32(d, off + 0x108 + 4 * i) for i in range(n)]
+    for _ in range(c):
+        if q + 0x188 > len(d):
+            return None, None
+        h = d[q:q + 0x100].split(b"\0")[0]
+        time = _u32(d, q + 0x100)
+        n = _u32(d, q + 0x104)
+        if n > 64:
+            return None, None
+        sizes = [_u32(d, q + 0x108 + 4 * i) for i in range(n)]
+        p2 = q + 0x188
         tags = []
-        p = rec_end
         for s in sizes:
-            if s <= 0 or p + s > len(d):
-                raise ValueError("bad tag payload size %d" % s)
-            ty = _u32(d, p)
-            tags.append({"type": ty, "size": s, "data": d[p:p + s].hex()})
-            p += s
-        records.append({
-            "offset": off,
-            "hash": h.decode("ascii", "replace"),
-            "time": time,
-            "tags": tags,
-        })
-        off = p
-    return {"head0": head0, "head1": head1, "records": records}, off
+            if s <= 0 or p2 + s > len(d):
+                return None, None
+            tags.append({"type": _u32(d, p2), "size": s, "data": d[p2:p2 + s].hex()})
+            p2 += s
+        records.append({"offset": q, "hash": h.decode("ascii", "replace"),
+                        "time": time, "tags": tags})
+        q = p2
+    return q - p, {"version": v, "n2": n2, "head0": head0, "head1": head1,
+                   "records": records}
 
 
-def find_motion_blocks(d: bytes):
-    """Locate blocks whose motion payload parses fully; pick the longest chain."""
-    best = None
-    for o in range(0x130, len(d) - 12):
-        t, v, flag = _u32(d, o), _u32(d, o + 4), _u32(d, o + 8)
-        if t != 2 or v > 3:
+def known_payload_size(d: bytes, off: int, t: int, v: int, c: int):
+    if t == 0:
+        return sfx_payload_size(d, off, v, c)
+    if t == 2:
+        size, _ = motion_chain(d, off, v, c)
+        return size
+    return None
+
+
+def _walk_ok(d: bytes, off: int, groups_left: int) -> bool:
+    if groups_left == 0:
+        return off == len(d)
+    if not _header_ok(d, off):
+        return False
+    t, v, c = _u32(d, off), _u32(d, off + 4), _u32(d, off + 8)
+    size = known_payload_size(d, off, t, v, c)
+    if size is not None:
+        return _walk_ok(d, off + 12 + size, groups_left - 1)
+    for cand in range(off + 16, len(d) - 11, 4):
+        if _walk_ok(d, cand, groups_left - 1):
+            return True
+    return False
+
+
+def _scan_next(d: bytes, start: int, groups_left: int) -> int:
+    for cand in range(start, len(d) - 11, 4):
+        if _walk_ok(d, cand, groups_left):
+            return cand
+    return -1
+
+
+def walk_groups(d: bytes, limit: int = 16):
+    """Walk the group table. Returns (groups, motion_group, ok_to_eof)."""
+    hdr = parse_header(d)
+    groups = []
+    motion = None
+    off = 0x130
+    for gi in range(min(hdr["group_count"], limit)):
+        if not _header_ok(d, off):
+            groups.append({"index": gi, "offset": off, "error": "bad header"})
+            return groups, motion, False
+        t, v, c = _u32(d, off), _u32(d, off + 4), _u32(d, off + 8)
+        g = {"index": gi, "offset": off, "type": t, "type_name": GROUP_NAMES.get(t, "?"),
+             "version": v, "count": c}
+        size = known_payload_size(d, off, t, v, c)
+        if size is None:
+            cand = _scan_next(d, off + 16, hdr["group_count"] - gi - 1)
+            if cand < 0:
+                g["payload"] = "opaque"
+                groups.append(g)
+                return groups, motion, False
+            g["payload"] = "opaque"
+            g["next_scanned"] = cand
+            groups.append(g)
+            off = cand
             continue
-        if flag != 0:
-            nkeys = flag
-        else:
-            # empty motion block: 2 header u32 + 8 bytes
-            nkeys = 0
-        if nkeys == 0:
-            continue
-        if nkeys > 4096:
-            continue
-        try:
-            chain, end = _parse_motion_chain(d, o + 12, nkeys)
-        except ValueError:
-            continue
-        cand = {
-            "offset": o,
-            "version": v,
-            "key_count": nkeys,
-            "chain": chain,
-            "end": end,
-        }
-        # score: full-parse chains that reach EOF or a plausible next block
-        if best is None or (end > best["end"]):
-            best = cand
-    return best
+        g["payload_size"] = size
+        g["end"] = off + 12 + size
+        if t == 2:
+            _, chain = motion_chain(d, off, v, c)
+            motion = {"offset": off, "version": v, "key_count": c, "chain": chain,
+                      "end": g["end"]}
+        groups.append(g)
+        off = g["end"]
+    return groups, motion, off == len(d)
 
 
 def parse(path: str) -> dict:
     with open(path, "rb") as f:
         d = f.read()
-    out = {"file": path, "size": len(d)}
-    out["header"] = parse_header(d)
-    # best-effort block list (SFX/Sound payload sizes are not modelled here)
-    blocks = []
-    off = 0x130
-    while off + 12 <= len(d) and len(blocks) < 64:
-        t, v, flag = _u32(d, off), _u32(d, off + 4), _u32(d, off + 8)
-        if t not in BLOCK_NAMES:
-            break
-        e = {"offset": off, "type": t, "type_name": BLOCK_NAMES[t],
-             "version": v, "flag": flag}
-        if t == 2 and flag:
-            try:
-                chain, end = _parse_motion_chain(d, off + 12, flag)
-                e["keys"] = len(chain["records"])
-                e["end"] = end
-                off = end
-            except ValueError:
-                e["parse_error"] = True
-                blocks.append(e)
-                break
-        else:
-            e["payload_unknown"] = True
-            blocks.append(e)
-            break
-        blocks.append(e)
-    out["blocks_walked"] = blocks
-    mb = find_motion_blocks(d)
-    out["motion"] = mb
-    return out
+    groups, motion, ok = walk_groups(d)
+    return {"file": path, "size": len(d), "header": parse_header(d),
+            "groups": groups, "motion": motion, "walk_to_eof": ok}
 
 
 def dump_tsv(res: dict, fh) -> None:
-    fh.write("block\tkey\toffset\ttime\thash\tntags\ttag_index\ttag_type\ttag_size\ttag_data\n")
+    fh.write("key\toffset\ttime\thash\tntags\ttag_index\ttag_type\ttag_size\ttag_data\n")
     mb = res.get("motion")
     if not mb:
         return
     for ki, rec in enumerate(mb["chain"]["records"]):
         if not rec["tags"]:
-            fh.write("motion\t%d\t%#x\t%d\t%s\t0\t\t\t\t\n"
+            fh.write("%d\t%#x\t%d\t%s\t0\t\t\t\t\n"
                      % (ki, rec["offset"], rec["time"], rec["hash"]))
         for ti, tag in enumerate(rec["tags"]):
-            fh.write("motion\t%d\t%#x\t%d\t%s\t%d\t%d\t%d\t%d\t%s\n"
+            fh.write("%d\t%#x\t%d\t%s\t%d\t%d\t%d\t%d\t%s\n"
                      % (ki, rec["offset"], rec["time"], rec["hash"],
                         len(rec["tags"]), ti, tag["type"], tag["size"], tag["data"]))
 
 
-def _build_synthetic() -> bytes:
-    """Synthetic GATA container with one motion block: 2 keys, 1 tag each."""
-    path = b"data\\source\\player\\f1\\test.ani"
-    hdr = struct.pack("<I", GATA) + struct.pack("<I", 1)
-    hdr += path + b"\0"
-    hdr = hdr.ljust(0x10C, b"\0")
-    hdr += struct.pack("<I", 1)          # block count
-    hdr = hdr.ljust(0x130, b"\0")
-    block = struct.pack("<III", 2, 1, 2)  # motion, version 1, 2 keys
+def _motion_group(v: int, keys):
+    """keys = [(time, hash, [(tag_type, payload)])] -> type-2 group bytes."""
+    body = struct.pack("<III", 2, v, len(keys))
     payload = struct.pack("<II", 0, 0)
-    rec1 = b"TestTag\0".ljust(0x100, b"\0") + struct.pack("<II", 3, 1) + struct.pack("<I", 8)
-    rec1 = rec1.ljust(0x188, b"\0")
-    rec1 += struct.pack("<II", 0, 0x3F800000)  # type 0, float 1.0
-    rec2 = b"OtherTag\0".ljust(0x100, b"\0") + struct.pack("<II", 9, 1) + struct.pack("<I", 8)
-    rec2 = rec2.ljust(0x188, b"\0")
-    rec2 += struct.pack("<II", 0, 0x3F800000)
-    return hdr + block + payload + rec1 + rec2
+    for time, h, tags in keys:
+        rec = h.encode("ascii") + b"\0"
+        rec = rec.ljust(0x100, b"\0")
+        rec += struct.pack("<II", time, len(tags))
+        rec += b"".join(struct.pack("<I", len(p)) for _, p in tags)
+        rec = rec.ljust(0x188, b"\0")
+        rec += b"".join(p for _, p in tags)
+        payload += rec
+    return body + payload
+
+
+def _build_synthetic() -> bytes:
+    """GATA container: SFX group + opaque type-1 group + MotionTag group (v1)."""
+    hdr = struct.pack("<I", GATA) + struct.pack("<I", 1)
+    hdr += b"data\\source\\player\\f1\\test.ani\0"
+    hdr = hdr.ljust(0x10C, b"\0")
+    hdr += struct.pack("<I", 3)
+    hdr = hdr.ljust(0x130, b"\0")
+    # group 0: SFX v1 count 2 -> u32 n1=1 + 1*0x130 + 2*(0x164+8*4+0x64)
+    sfx = struct.pack("<III", 0, 1, 2)
+    sfx += struct.pack("<I", 1) + b"\x11" * 0x130 + b"\x22" * (2 * 0x1E8)
+    # group 1: opaque sound (type 1) - 0x40 bytes of fill
+    snd = struct.pack("<III", 1, 2, 1) + b"\xAA" * 0x40
+    # group 2: MotionTag v1, 2 keys, one type-0 tag (float 1.0) each
+    mot = _motion_group(1, [(3, "TestTag", [(0, struct.pack("<If", 0, 1.0))]),
+                            (9, "OtherTag", [(0, struct.pack("<If", 0, 1.0))])])
+    return hdr + sfx + snd + mot
 
 
 def selftest() -> int:
@@ -203,26 +263,29 @@ def selftest() -> int:
     h = parse_header(d)
     checks.append(("magic/version", h["magic"] == "GATA" and h["version"] == 1))
     checks.append(("base_ani", h["base_ani"] == "data\\source\\player\\f1\\test.ani"))
-    checks.append(("block_count", h["block_count"] == 1))
-    mb = find_motion_blocks(d)
-    checks.append(("motion found", mb is not None and mb["offset"] == 0x130))
-    checks.append(("key count", mb and mb["key_count"] == 2))
-    checks.append(("key times", mb and [r["time"] for r in mb["chain"]["records"]] == [3, 9]))
-    checks.append(("hashes", mb and [r["hash"] for r in mb["chain"]["records"]] == ["TestTag", "OtherTag"]))
-    checks.append(("tags", mb and all(len(r["tags"]) == 1 and r["tags"][0]["type"] == 0
-                                      and r["tags"][0]["size"] == 8 for r in mb["chain"]["records"])))
-    checks.append(("full consume", mb and mb["end"] == len(d)))
-    # negatives
+    checks.append(("group_count", h["group_count"] == 3))
+    groups, motion, ok = walk_groups(d)
+    checks.append(("groups walked", len(groups) == 3))
+    checks.append(("group types", [g.get("type") for g in groups] == [0, 1, 2]))
+    checks.append(("sfx exact", groups[0].get("payload_size") == 4 + 0x130 + 2 * 0x1E8))
+    checks.append(("opaque scanned", groups[1].get("payload") == "opaque"
+                   and groups[1].get("next_scanned") == groups[2]["offset"]))
+    checks.append(("motion found", motion is not None and motion["key_count"] == 2))
+    checks.append(("motion version", motion and motion["chain"]["version"] == 1))
+    checks.append(("key times", motion and [r["time"] for r in motion["chain"]["records"]] == [3, 9]))
+    checks.append(("hashes", motion and [r["hash"] for r in motion["chain"]["records"]] == ["TestTag", "OtherTag"]))
+    checks.append(("tags", motion and all(len(r["tags"]) == 1 and r["tags"][0]["type"] == 0
+                                          and r["tags"][0]["size"] == 8
+                                          for r in motion["chain"]["records"])))
+    checks.append(("walk to EOF", ok))
     try:
         parse_header(b"\0" * 0x130)
         checks.append(("bad magic rejected", False))
     except ValueError:
         checks.append(("bad magic rejected", True))
-    try:
-        _parse_motion_chain(d, 0x130 + 12, 1)  # 1 key on 2-key block: ends before EOF, but parses
-        checks.append(("partial chain parses", True))
-    except ValueError:
-        checks.append(("partial chain parses", False))
+    bad = d[:-4]  # truncate the last motion tag payload
+    _, m2, ok2 = walk_groups(bad)
+    checks.append(("truncated motion rejected", m2 is None or not ok2))
     ok = 0
     for name, res in checks:
         print("%s %s" % ("PASS" if res else "FAIL", name))
@@ -246,18 +309,23 @@ def main(argv=None) -> int:
     res = parse(args.file)
     print("file=%s size=%d" % (res["file"], res["size"]))
     print("header=%s" % json.dumps(res["header"], ensure_ascii=False))
-    for b in res["blocks_walked"]:
-        print("block %s" % json.dumps(b, ensure_ascii=False))
+    for g in res["groups"]:
+        print("group[%d] off=%#x type=%d %s ver=%d count=%d %s"
+              % (g["index"], g["offset"], g.get("type", -1), g.get("type_name", "?"),
+                 g.get("version", -1), g.get("count", -1),
+                 ("payload=%#x" % g["payload_size"]) if "payload_size" in g
+                 else g.get("payload", "error")))
     mb = res["motion"]
     if mb:
-        print("motion block @%#x version=%d keys=%d end=%#x"
+        print("motion @%#x version=%d keys=%d end=%#x"
               % (mb["offset"], mb["version"], mb["key_count"], mb["end"]))
         for i, r in enumerate(mb["chain"]["records"]):
             print("  key %d time=%d hash=%r tags=%s"
                   % (i, r["time"], r["hash"],
                      [(t["type"], t["size"]) for t in r["tags"]]))
     else:
-        print("no motion block found")
+        print("no MotionTag group found (or walk incomplete)")
+    print("walk_to_eof=%s" % res["walk_to_eof"])
     if args.json:
         with open(args.json, "w", encoding="utf-8") as f:
             json.dump(res, f, indent=1, ensure_ascii=False)
