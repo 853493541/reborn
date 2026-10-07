@@ -173,6 +173,7 @@ def handle(conn, addr):
     bind_left = [0]
     next_bind_t = [0.0]
     id7_sent = ID7_DONE
+    id7_at = [0.0]
     port_used = PORT
     try:
         time.sleep(0.2)
@@ -213,6 +214,16 @@ def handle(conn, addr):
                 bind_left[0] -= 1
                 next_bind_t[0] = now + 10.0
                 w("[%s] SYNC id=188 repeat bind (left=%d)" % (time.strftime("%H:%M:%S"), bind_left[0]))
+            if id7_at[0] and now >= id7_at[0] and not id7_sent[0]:
+                id7_sent[0] = True
+                conn.sendall(sess.encrypt(id7_frame(
+                    ip=os.environ.get("GAME_ID7_IP", "127.0.0.1"),
+                    port=int(os.environ.get("GAME_ID7_PORT", str(port_used))),
+                    map_id=int(os.environ.get("GAME_ID4_MAP", "296")),
+                    gs_id=int(os.environ.get("GAME_ID7_GSID", "1")))))
+                w("[%s] SENT id=7 OnSwitchGS (delayed) -> %s:%s (client should reconnect)"
+                  % (time.strftime("%H:%M:%S"), os.environ.get("GAME_ID7_IP", "127.0.0.1"),
+                     os.environ.get("GAME_ID7_PORT", str(port_used))))
             if os.path.exists(CMD_FILE):
                 try:
                     hx = open(CMD_FILE).read().strip()
@@ -313,16 +324,23 @@ def handle(conn, addr):
                     time.sleep(0.3)
                     if os.environ.get("GAME_SEND_ID7", "1") == "1" and not id7_sent[0]:
                         # Real login -> world-GS handoff: the client tears down and reconnects
-                        # to the GS (live-verified 2026-10-07: new GAME CONNECT + clean vector).
-                        id7_sent[0] = True
-                        conn.sendall(sess.encrypt(id7_frame(
-                            ip=os.environ.get("GAME_ID7_IP", "127.0.0.1"),
-                            port=int(os.environ.get("GAME_ID7_PORT", str(port_used))),
-                            map_id=int(os.environ.get("GAME_ID4_MAP", "296")),
-                            gs_id=int(os.environ.get("GAME_ID7_GSID", "1")))))
-                        w("[%s] SENT id=7 OnSwitchGS -> %s:%s (client should reconnect)"
-                          % (time.strftime("%H:%M:%S"), os.environ.get("GAME_ID7_IP", "127.0.0.1"),
-                             os.environ.get("GAME_ID7_PORT", str(port_used))))
+                        # to the GS (live-verified 2026-10-07). GAME_ID7_DELAY warms the first
+                        # session before the switch (a warm switch confirmed at 216 s vs cold
+                        # 300-1657 s), so subsequent sessions iterate fast.
+                        delay = float(os.environ.get("GAME_ID7_DELAY", "0"))
+                        if delay > 0:
+                            id7_at[0] = time.time() + delay
+                            w("[%s] SYNC id=7 scheduled in %.0fs" % (time.strftime("%H:%M:%S"), delay))
+                        else:
+                            id7_sent[0] = True
+                            conn.sendall(sess.encrypt(id7_frame(
+                                ip=os.environ.get("GAME_ID7_IP", "127.0.0.1"),
+                                port=int(os.environ.get("GAME_ID7_PORT", str(port_used))),
+                                map_id=int(os.environ.get("GAME_ID4_MAP", "296")),
+                                gs_id=int(os.environ.get("GAME_ID7_GSID", "1")))))
+                            w("[%s] SENT id=7 OnSwitchGS -> %s:%s (client should reconnect)"
+                              % (time.strftime("%H:%M:%S"), os.environ.get("GAME_ID7_IP", "127.0.0.1"),
+                                 os.environ.get("GAME_ID7_PORT", str(port_used))))
                     sync_step = 2
                     next_t = time.time() + 6.0
     except Exception as e:
