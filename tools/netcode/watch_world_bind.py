@@ -154,15 +154,20 @@ def tree_walk(r, head, limit=4096):
 
 
 def player_lookup(r, head, pid):
-    """Replica of 0x140174D10: lower_bound on key @+0x20, return value @+0x28."""
+    """Replica of 0x140174D10: lower_bound on key @+0x20, return value @+0x28.
+
+    Torn reads during the id-4 reset can make the sentinel color test unreliable, so also
+    stop on revisits and on returning to the head sentinel."""
     if not head:
         return None
     root = r.u64(head + 8)
     cand = head
     node = root
+    seen = set()
     for _ in range(64):
-        if not is_node(r, node):
+        if node == head or node in seen or not is_node(r, node):
             break
+        seen.add(node)
         k = r.u32(node + 0x20) or 0
         if k < pid:
             node = r.u64(node + 0x10)
@@ -171,7 +176,7 @@ def player_lookup(r, head, pid):
             node = r.u64(node)
     else:
         return None
-    if not is_node(r, cand):
+    if cand == head or not is_node(r, cand):
         return None
     k = r.u32(cand + 0x20) or 0
     if pid < k:
@@ -199,7 +204,7 @@ def snapshot(r, base):
     player = None
     scene = None
     if reg:
-        player = player_lookup(r, reg + 0x20, info["local_id"] or 0)
+        player = player_lookup(r, r.u64(reg + 0x20), info["local_id"] or 0)
         for k, v, node in tree_walk(r, reg + 8):
             if not v:
                 continue

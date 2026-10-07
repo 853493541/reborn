@@ -4,6 +4,35 @@
 movable (walk around). This doc is the static-first map for the remaining chain; each question gets
 a decode target + evidence path. One live validation per conclusion (V2_PLAN rules).
 
+## UPDATE 2026-10-06 (late session, live) — world renders; movement still gated
+
+### Root cause of the "stuck at state 7" stall (FIXED)
+`KPlayerClient::ProcessPackage` (0x140168740) walks a receive buffer packet by packet:
+- fixed-size protocols: advances by the **registration-table size** (`[mgr+id*4+0x17F28]`);
+- var-size protocols (table = -1): advances by the **u16 packet length at +7**
+  (`movzx edi, word ptr [r14+7]`).
+Our frames were malformed: id 3 sent 19 B (table 11), id 188 sent 11 B (table 7), id-5 keepalives
+had length word 0 → the loop never advanced → infinite reprocessing + KGLogPrintf spam → the main
+thread never pumped messages ("ghost window", input dead, variable lifetime, exit 0xCFFFFFFF).
+**Fix (stub): exact frame sizes + the +7 length word for var-size ids.** After the fix the client
+is responsive in state 7 and the **world renders** (proof: `proof/netcode/v2_state7_fixed_sizes.png`,
+fingerprint mean #71847D, terrain regions).
+
+### World registration fix
+id-4 packet `+0xDF` (qword) → `player+0xEC8` = the global role id. Zero makes
+`KSO3World::AddPlayer`'s 0x140178730 log "Player GlobalID Error" and skip the world-map
+registration. Stub now sends `GAME_GLOBAL_ID` (default 1001 = the gateway role global id);
+live: `player+0xEC8 = 0x3E9`, world gid map present.
+
+### Movement still gated (open)
+With the world rendering and the client responsive: SendInput W/A/D/S (game foreground, verified
+fg == hwnd), PostMessage WM_KEYDOWN, ESC/C keys, mouse right-drag — **no C2S 0x1E8, no position
+change, no UI reaction**. The gate is inside the client's gameplay/UI initialization, not the input
+transport. Next suspects (in order): (1) the world-entry data exchange (the burst) must be answered
+before the HUD/gameplay layer activates; (2) a specific S2C world-entry message still missing
+(candidates: id 8 OnSwitchMap well-formed, id 10/5 data); (3) the local character/represent not
+created (no avatar to control).
+
 ## 0. Confirmed facts (2026-10-06)
 
 ### Wire / protocol

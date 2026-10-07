@@ -1,0 +1,43 @@
+﻿
+==== 0x14015fbe0 .. 0x14015fc80 (.text)
+  0x14015fbe0: pop      rcx
+  0x14015fbe1: xchg     ecx, eax
+  0x14015fbe2: add      al, ch
+  0x14015fbe4: test     al, 0x41
+  0x14015fbe6: add      dword ptr [rax], eax
+  0x14015fbe8: test     eax, eax
+  0x14015fbea: jne      0x14015fbfe
+  0x14015fbec: mov      r9d, 0x55da
+  0x14015fbf2: lea      r8, [rip + 0x7f189f]  ; "bRetCode"
+  0x14015fbf9: jmp      0x14015fb22
+  0x14015fbfe: mov      rcx, qword ptr [rip + 0x9159bb]  ; 0x140a755c0
+  0x14015fc05: test     rcx, rcx
+  0x14015fc08: je       0x14015fc14
+  0x14015fc0a: mov      rax, qword ptr [rcx]
+  0x14015fc0d: call     qword ptr [rax + 0x2f0]
+  0x14015fc13: nop      
+  0x14015fc14: call     qword ptr [rip + 0x6593a6]  ; PerfAnalyzerX64.dll!GetRunState
+  0x14015fc1a: test     al, al
+  0x14015fc1c: je       0x14015fc2f
+  0x14015fc1e: xor      r9d, r9d
+  0x14015fc21: xor      r8d, r8d
+  0x14015fc24: mov      rdx, rsi
+  0x14015fc27: mov      ecx, edi
+  0x14015fc29: call     qword ptr [rip + 0x6593a9]  ; PerfAnalyzerX64.dll!EndSample
+  0x14015fc2f: mov      rbx, qword ptr [rsp + 0x50]
+  0x14015fc34: mov      rbp, qword ptr [rsp + 0x58]
+  0x14015fc39: mov      rsi, qword ptr [rsp + 0x60]
+  0x14015fc3e: mov      rdi, qword ptr [rsp + 0x68]
+  0x14015fc43: add      rsp, 0x40
+  0x14015fc47: pop      r14
+  0x14015fc49: ret      
+  0x14015fc4a: lea      rcx, [rip + 0x9158c7]  ; 0x140a75518
+  0x14015fc51: call     0x14079b6e0
+  0x14015fc56: cmp      dword ptr [rip + 0x9158bb], -1  ; 0x140a75518
+  0x14015fc5d: jne      0x14015faba
+  0x14015fc63: xor      r9d, r9d
+  0x14015fc66: lea      r8, [r9 - 1]
+  0x14015fc6a: mov      rdx, r14
+  0x14015fc6d: xor      ecx, ecx
+  0x14015fc6f: call     qword ptr [rip + 0x65935b]  ; PerfAnalyzerX64.dll!AcquireFunctionId
+  0x14015fc75: mov      qword ptr [rip + 0x8945cc], rax  ; 0x1409f4248

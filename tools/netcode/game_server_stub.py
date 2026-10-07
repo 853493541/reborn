@@ -57,6 +57,9 @@ def id_frame(frame_id, size, role_id):
         struct.pack_into("<I", p, 0x34, int(os.environ.get("GAME_POS_X", "100")))
         struct.pack_into("<I", p, 0x38, int(os.environ.get("GAME_POS_Y", "100")))
         struct.pack_into("<I", p, 0x3C, int(os.environ.get("GAME_POS_Z", "0")))
+        # +0xDF qword -> player+0xEC8 = global role id (KSO3World::AddPlayer registers it;
+        # zero makes 0x140178730 log "Player GlobalID Error" and skip the world registration).
+        struct.pack_into("<Q", p, 0xDF, int(os.environ.get("GAME_GLOBAL_ID", "1001")))
     if frame_id == 10:
         pack = int(os.environ.get("GAME_ID10_PACK", "0"), 16)
         flags = int(os.environ.get("GAME_ID10_FLAGS", "0"), 16)
@@ -72,15 +75,18 @@ def id_frame(frame_id, size, role_id):
 
 
 def id5_frame(role_id, sub=0, dtype=0, data=None):
-    """S2C id 5 (per-player world data; handler 0x14015EB70, min size 15):
+    """S2C id 5 (per-player world data; handler 0x14015EB70, var size):
+    [u16 id @+0][u8 flags @+2][u16 serial @+3][u16 ack @+5][u16 SIZE @+7]
     [player id dword @+9][sub-code byte @+0xD][type byte @+0xE][data @+0xF].
-    sub0 -> parse 0x140327680 into player+0x1020: type 0 = 256 dwords (1024 B),
-    type 1..3 = [count dword][count dwords]."""
+    Var-size protocols: KPlayerClient::ProcessPackage reads the packet length from the
+    word at +7 and advances by it - a zero there makes the packet loop spin forever
+    (live-proven 2026-10-06)."""
     if data is None:
         data = b"\x00" * 1024 if dtype == 0 else struct.pack("<I", 0)
     payload = struct.pack("<I", role_id) + bytes([sub & 0xFF, dtype & 0xFF]) + data
     p = bytearray(9 + len(payload))
     struct.pack_into("<H", p, 0, 5)
+    struct.pack_into("<H", p, 7, len(p))
     p[9:9 + len(payload)] = payload
     return bytes(p)
 
@@ -149,8 +155,11 @@ def handle(conn, addr):
                     next_t = 0.0
                 elif sync_step == 2:
                     # Keepalive after the enter-scene id 4: id 5 only (id 4 must not repeat).
-                    conn.sendall(sess.encrypt(id5_frame(ROLE_ID)))
-                    w("[%s] SYNC keepalive id=5" % time.strftime("%H:%M:%S"))
+                    # GAME_KEEPALIVE=0 disables it (test whether the id-5 payload is what jams
+                    # the client's packet pump / logging loop).
+                    if os.environ.get("GAME_KEEPALIVE", "1") == "1":
+                        conn.sendall(sess.encrypt(id5_frame(ROLE_ID)))
+                        w("[%s] SYNC keepalive id=5" % time.strftime("%H:%M:%S"))
                     next_t = now + 6.0
             if os.path.exists(CMD_FILE):
                 try:
@@ -202,8 +211,10 @@ def handle(conn, addr):
                     # Client ApplyEnterScene (DoApplyEnterScene, 15B). The loading screen is
                     # now up; answer with the S2C id 3 time sync and (re)send id 4 so the
                     # scene bind runs while the sandbox scene exists.
+                    # S2C id 3 table size = 11 (fixed): the client's packet loop advances by
+                    # the table size, so the frame must be exactly 11 bytes.
                     ts = int(time.time() * 1000) & 0xFFFFFFFF
-                    p = bytearray(19)
+                    p = bytearray(11)
                     struct.pack_into("<H", p, 0, 3)
                     struct.pack_into("<I", p, 7, ts)
                     conn.sendall(sess.encrypt(bytes(p)))
@@ -213,10 +224,15 @@ def handle(conn, addr):
                     # handler 0x14015FA70) = the local-player world bind: ValidateRegions
                     # (0x1401830B0) on the scene, then the guard (0x140173D90) stores
                     # player+0x60 (the ConfirmClientReady prerequisite).
-                    p188 = bytearray(11)
-                    struct.pack_into("<H", p188, 0, 188)
-                    conn.sendall(sess.encrypt(bytes(p188)))
-                    w("[%s] SYNC id=188 world-bind sent" % time.strftime("%H:%M:%S"))
+                    # GAME_SEND188=0 skips it (baseline: does the loading itself block the pump?)
+                    if os.environ.get("GAME_SEND188", "1") == "1":
+                        # id 188 table size = 7 (fixed): must be exactly 7 bytes.
+                        p188 = bytearray(7)
+                        struct.pack_into("<H", p188, 0, 188)
+                        conn.sendall(sess.encrypt(bytes(p188)))
+                        w("[%s] SYNC id=188 world-bind sent" % time.strftime("%H:%M:%S"))
+                    else:
+                        w("[%s] SYNC id=188 SKIPPED (GAME_SEND188=0)" % time.strftime("%H:%M:%S"))
                     time.sleep(0.3)
                     sync_step = 2
                     next_t = time.time() + 6.0

@@ -2620,3 +2620,23 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   can hang on torn tree reads during the id-4 mutation (one-shot reads are reliable).
 - Evidence: proof/netcode/disasm/postbind_addplayer_scene.txt, represent_keyxrefs.txt,
   move_sender_callers.txt, move_senders_c2s.txt; tools/netcode/drive_move.py.
+
+### 2026-10-06 — V2 CRITICAL FIX: malformed S2C frame sizes jammed the client's packet loop
+- KPlayerClient::ProcessPackage (0x140168740) advances through a recv buffer by the per-id
+  registration-table size (fixed ids) or by the u16 length at +7 (var ids). Our stub sent
+  oversized frames (id 3: 19 vs 11; id 188: 11 vs 7) and an id-5 keepalive with length word 0 ->
+  the loop never advanced -> infinite reprocess + KGLogPrintf spam -> the main thread stopped
+  pumping (ghost window, no input, variable session death). Live-proven: with the keepalive off
+  the stall persisted on the id-188 frame; with the no-188 stub the client stayed responsive at
+  state 4. **Fix: exact frame sizes + the +7 length word for var-size ids.** After the fix the
+  client stays responsive at state 7 and the world renders (proof:
+  proof/netcode/v2_state7_fixed_sizes.png, mean #71847D terrain).
+- Also fixed: id-4 +0xDF qword -> player+0xEC8 (global role id); zero made
+  KSO3World::AddPlayer's 0x140178730 log "Player GlobalID Error" and skip the world registration.
+  Stub now sends GAME_GLOBAL_ID=1001; live player+0xEC8=0x3E9, world gid map present.
+- Movement still gated: with the world rendered + client responsive, SendInput (focused),
+  PostMessage, ESC/C, mouse drag produce no C2S 0x1E8 and no position change - the gate is the
+  client's gameplay/UI initialization (next: answer the world-entry data burst; see
+  docs/netcode/V2_WORLD_MOVEMENT_CHAIN.md UPDATE section).
+- Tools: watch_world_bind.py player_lookup head-pointer bug fixed (snapshot passed the head
+  field address, not the head pointer) - the reader had always shown player=None.
