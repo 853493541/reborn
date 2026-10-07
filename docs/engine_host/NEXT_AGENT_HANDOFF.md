@@ -77,21 +77,24 @@ CreateRLScene. Result: `[main+0x210]` becomes non-null and **KRLScene::Init
 line 27/212 now PASS** — CreateRLScene proceeds far deeper (loads the represent
 lua scripts, sets up entities).
 
-**STATUS (2026-10-07, run 223): Gate 1's observable checkpoint is REACHED
-through the game's own path** — the host calls the engine's `CreateRLScene`
-(0xB0B5C0), which creates and attaches the scene, and `GetRLScene(2)` (0x924B)
-returns a non-null RLScene with a **non-null 3DScene**; `KRLScene::Init` line
-27 (weather/m_tabCommon) and line 212 pass; the run completes (exit 0).
+**STATUS (2026-10-07, run 226, no deviations): Gate 1's checkpoint is REACHED
+through the game's own path.** The host calls the engine's `CreateRLScene`
+(0xB0B5C0), which creates and attaches the scene; `GetRLScene(2)` (0x924B)
+returns a non-null RLScene with a **non-null 3DScene**; `KRLScene::Init` line 27
+(weather/`m_tabCommon`) and line 212 pass; the run completes (exit 0). A caught,
+non-fatal AV at `rep+0x58CA4F` (inside `KRLScene::Init`, after the scene is
+created) is handled by the host `__try`.
 - `m_tabCommon` is set by the game's own `KTableList::LoadConfigureFile`
   (`"CommonKRL"`).
-- The engine reaches a **late, frameless wild call inside CreateRLScene after
-  the scene is created**; the host currently survives it via a **registered
-  provisional deviation** (a VEH `RtlCaptureContext` recovery around the
-  CreateRLScene call; `RC_HOST_NORECOVER=1` disables it). See
-  `docs/EXPERIENCES.md` ("provisional recovery deviation", with re-open
-  criteria). The native diagnosis below remains open for clean-up.
+- The long-running "wild call" was a **host inline-hook bug**: `hookEntityFactory`
+  was installed at `rep+0xAEDFD0` with `len=16`, so its trampoline replayed a
+  RIP-relative `je` and a truncated instruction -> garbage execution when the
+  engine created the scene entity. Fixed to `len=12`. (Audit note: the two
+  diagnostic lua hooks `g_GetFullPath`/`g_GetPriorFullPath` replay a
+  RIP-relative `lea r9`; benign here but latent - see EXPERIENCES 2026-10-07.)
+- The provisional VEH recovery added during diagnosis has been removed.
 
-**New blocker (a wild call inside CreateRLScene):** after LoadConfigureFile,
+Historical diagnosis (kept for reference) — the since-fixed wild call:
 CreateRLScene faults with `exc 0xC0000005 at 0x...001D (module?)`. The VEH now
 logs AV registers (with `tid=`) and dumps the first 24 raw stack qwords (any
 module) plus a filtered game-stack scan. Observed (runs 209-212):

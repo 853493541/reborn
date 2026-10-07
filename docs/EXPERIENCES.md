@@ -3099,5 +3099,36 @@ HIGH-confidence findings:
     missing registration is wired or the truncated-pointer source is fixed;
     then remove the recovery (or `RC_HOST_NORECOVER=1` to reproduce the fault).
 - Evidence: host_exe223.out (recovered run); commits (recovery) + docs.
+
+## 2026-10-07 - Gate 1 ROOT CAUSE: the "wild call" was a bad inline-hook trampoline (entityFactory, len 16)
+
+- The whole 2026-10-06/07 "wild call" turned out to be a **host instrumentation
+  bug**, not an engine fault. `installInlineHook` replays `len` original bytes
+  verbatim in a VirtualAlloc'd trampoline; the **`hookEntityFactory` hook was
+  installed at `rep+0xAEDFD0` with `len=16`**, which (a) included a
+  RIP-relative `je` whose replayed displacement pointed wrong, and (b) ended
+  mid-instruction. So when the engine first reached `0xAEDFD0` (creating the
+  scene entity `"scene[000002]"`), the trampoline executed garbage and jumped
+  into the heap -> the frameless wild AV. The hardware single-step trace
+  (fixed to re-arm TF each step) showed exactly this: `0xAEE2D8 -> 0x15BF4 ->
+  0xAEDFD0` -> host `hookEntityFactory` -> trampoline @0x29D53880000 -> fault
+  at +0x1D.
+- Fix: `len=12` (replays exactly through `test rcx,rcx`, lands on the real
+  `je`). Verified natively with the provisional recovery DISABLED
+  (`RC_HOST_NORECOVER=1`, run 225) and after removing the recovery (run 226):
+  `entityFactory('scene[000002]') -> 0`, `GetRLScene(2) -> non-null with a
+  non-null 3DScene`, `frame loop done`, `[host] done`, exit 0. The provisional
+  VEH recovery was therefore **removed** (no longer a deviation).
+- The remaining `real CreateRLScene fault` is a caught, non-fatal AV at
+  `rep+0x58CA4F` (KRLScene::Init) after the scene is created - the host's
+  `__try` handles it.
+- Audit of all inline hooks found the same class of issue in the two diagnostic
+  lua hooks `g_GetFullPath` (`lua+0xB4390`) and `g_GetPriorFullPath`
+  (`lua+0xB4570`): their trampolines replay a RIP-relative `lea r9,[root]`.
+  It is benign in this configuration (the filepath is drive-prefixed and the
+  prior root is empty, so `r9` is unused), but it is a latent bug - fix by
+  handling RIP-relative prologues (as installTableLoadHook does) if those hooks
+  are kept.
+- Evidence: host_exe224-226.out; commit 1110bd9.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
