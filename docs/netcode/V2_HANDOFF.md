@@ -3,44 +3,56 @@
 **For the next agent. Read this first, then `docs/EXPERIENCES.md`'s last 3 entries and
 `docs/netcode/V2_PLAN.md`. Everything below is live-verified unless marked STATIC/DECODED.**
 
-## CURRENT STATE (2026-10-06 night) — read this first
+## CURRENT STATE (corrected 2026-10-07) — read this first
 
-**The goal: the user wants to MOVE in the world.** The chain is solved up to "client renders
-the real map in state 7"; the remaining gate is the loading completion -> world UI -> input.
+**The goal: the user wants to MOVE in the world.** The chain reaches state 7 and (after a long
+game-logic loading phase) the C2S proto=5 confirm; the client then crashes at world entry.
 
-- **Crash root cause FOUND + FIXED (in test):** every client death is a crash (exit code
-  `0xCFFFFFFF`; DumpReport `CrashType=0`, ntdll). The trigger was our **synthetic S2C id-5
-  `OnSyncQuestData` frames** (6 s keepalive + the post-confirm reply; parser
-  `KQuestList::LoadQuestState` 0x140327680). Fix: keepalive = benign **id-3** frame
-  (`id3_frame`), confirm reply off (`GAME_CONFIRM_REPLY=0`). Result: the client survived 20+
-  min and rendered the world (vs 26-91 s crashes before).
-- **Remaining gate:** the loading panel never completes -> **no C2S proto=5 confirm** -> no
-  world UI/tick -> no input (no 0x1E8). Suspect: the panel's progress counts the scene-load
-  tasks; the UGC map 龙门寻宝 export is missing files (loader logs 64 `_LoadFileData` failures:
+- **Crash root cause PROVEN from the caught dump (2026-10-07):** every run that reaches the
+  C2S proto=5 confirm dies `0xC0000374` at the world-entry teardown — the represent singleton
+  (`JX3RepresentX64+0xF51298`) record vector holds the local avatar record **twice** (dump
+  `C:\jx3tmp\crashes\1791356323_*.dmp`: `heap_failure_lfh_bitmap_corruption`, block
+  0x1E3E9D06E00 = vector indices 8 and 9 share pointer 0x1E3E9D06E10; teardown chain
+  `~SO3Represent -> ~KGameWorldHandler -> 0x920B00 -> free loop` -> double free). The earlier
+  id-5 keepalive removal only removed the EARLY 26-91 s crashes; the confirm crash is unchanged
+  (same DumpKey `BD677BCD...`). The duplicate is intermittent; `tools/netcode/watch_represent_array.py`
+  polls the vector live (elems/dups on change).
+- **Gate A (crash):** find what registers the local avatar record twice. Candidates: our
+  remaining S2C data (id 4 / 187 / repeated 188 / id 3 keepalive) vs the client's own
+  world-entry path. One variable per run, watcher armed: `GAME_BIND_REPEATS=0`, `GAME_SEND187=0`.
+- **Gate B (loading, 5-28 min):** the panel polls the game-logic scene load
+  (`GetSceneLoadingProcess(dwId)`, LoadingPanel.lua) and the client does this phase with **NO
+  KG3D engine session**. The UGC map copy `data\UGC\binkp1\龙门寻宝` (4117 files, 975 MB) misses
   `foliage/blendmap/clusterinfo.json`, `bd/volumetricCloud/volumetricCloud.json`,
-  `龙门寻宝_PFX_Runtime.json`, `data/public/MovieEditor/LightTagConfig.json`). The official
-  `PakV4SfxExtract.exe` says **NOT FOUND** for all of them (UGC-only map, authoring gaps).
-  NEXT: decode the loading panel's progress accounting (GetSceneLoadingProcess /
-  GetSceneLoadingTaskCount in LoadingPanel.lua strings) to confirm the missing tasks block
-  100%; if yes, author minimal valid files into `data\UGC\binkp1\龙门寻宝\...` (backup first;
-  ask the user - it writes under C:\SeasunGame) -> confirm fires -> world UI -> input.
-- **id 4 must be the loaded map:** use `GAME_ID4_MAP=296` (龙门寻宝; map=1 gives a stub scene).
-  Spawn: the map's editor camera (54991,42845,2930) from `editorContext.json`
-  (`C:\jx3tmp\run_gamestub_296b.cmd`).
+  `龙门寻宝_PFX_Runtime.json` (PakV4SfxExtract: NOT FOUND — authoring-only) and has 200/248
+  zero-byte `.foliage` cell files. Authoring anything under `C:\SeasunGame` needs the user's OK.
+- **KG3D log attribution hazard (2026-10-07):** `zhcn_hd\logs\KG3D_Engine` is SHARED with the
+  user's `reborn_client_*` builds (their `reborn_out` logs show `asset_root=zhcn_hd`); every
+  23:33+ KG3D session matched a `reborn_<date>_<time>.log` start. The sandbox/RayIntersection/
+  missing-file logs there are the reborn clients' — do NOT attribute them to the V2 client.
+  Verify by matching the KG3D log timestamp against `MovieEditor\bin64\reborn_out\reborn_*.log`.
+- **id 4 map:** `GAME_ID4_MAP=296` (龙门寻宝); spawn: in-map coords (23334,24224,761). The old
+  editor-camera spawn (54991,42845,2930) only matters for the reborn clients' sandbox crop.
 - **Loop machinery (user rule: freeze/crash -> log reason -> kill -> fix -> retry):**
   - `tools\netcode\incident_report.py` (wrapper `C:\jx3tmp\run_incident_watch.cmd`): watches
     the client; on freeze (hung + static screen 90 s) or process exit it collects the reason
     (exit code, DumpReport summary, caught crash XML, client KG3D log tail, stub tail, state,
     screenshot) into `C:\jx3tmp\incidents\incident_<stamp>\reason.txt`, kills the client, exits.
   - `tools\netcode\crash_catcher.py` (`C:\jx3tmp\run_crash_catcher.cmd`): copies
-    `bin64\minidump\*.xml|*.dmp` to `C:\jx3tmp\crashes\` before DumpReport deletes them.
+    `bin64\minidump\*.xml|*.dmp` to `C:\jx3tmp\crashes\` before DumpReport deletes them
+    (retries the locked .dmp; the 2026-10-07 dump proves it works).
   - `tools\netcode\watch_freeze.py`: standalone freeze watchdog (FROZEN/STUCK -> logs -> kill).
+  - `tools\netcode\watch_represent_array.py` (wrapper `C:\jx3tmp\run_rep_watch.cmd`): live
+    duplicate watcher for the crash vector.
+  - `tools\netcode\game_server_stub.py` (`--rawlog` = full plaintext of every C2S packet).
   - **Launch hidden always**: `tools\netcode\launch_hidden.ps1 "<cmd>"` (plain WMI launches pop
     console windows - user complaint).
-- **The client writes its own logs**: `zhcn_hd\logs\KG3D_Engine\<date>\KG3D_Engine_*.log`
-  (per-run; map load + RayIntersection asserts), `logs\DumpReport\`, `logs\Dumper\`.
-- **Live env at handoff:** services 80/3724/3725 up (stub = 296b wrapper), client alive in
-  state 7 rendering the world; incident watcher + crash catcher armed.
+- **The V2 client's own logs**: `logs\DumpReport\`, `logs\Dumper\`, the crash XML/dmp; its KG3D
+  engine logs land in the SHARED `zhcn_hd\logs\KG3D_Engine\<date>\` (see attribution hazard).
+- **Live env (2026-10-07 00:3x):** services 80/3724/3725 up (stub wrapper
+  `C:\jx3tmp\run_gamestub_v221b.cmd`, map=296, in-map spawn); V2 client cycling the loading
+  phase; incident/crash/rep-array watchers armed. The user's reborn clients run concurrently
+  (shared asset_root + disk contention) — expect variable V2 loading times.
 
 ## 0. Where you are
 

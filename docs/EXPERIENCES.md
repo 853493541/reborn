@@ -2781,3 +2781,19 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Also: `incident_report.py` now GBK-safe (a report with U+FFFD used to kill the watcher before
   it could write/print), and `game_server_stub.py --rawlog` captures full C2S payloads (the
   confirm burst: proto 109/234/254x3/94 then 5).
+
+### 2026-10-07 ⚠️ CORRECTION: the zhcn_hd KG3D logs are the USER's reborn clients, not the V2 client
+- `MovieEditor\bin64\reborn_out\reborn_<date>_<time>.log` shows the reborn feature builds use
+  `asset_root=C:\SeasunGame\Game\JX3\bin\zhcn_hd`, so THEIR KG3D engine writes into the same
+  `zhcn_hd\logs\KG3D_Engine\<date>\` as the raw V2 client. Every KG3D log from 23:33 onward
+  matched a reborn_*.log start time exactly (23:33:38/23:35:12/23:36:51 mini, 23:47:54/23:49:11
+  mini, 23:57:54 skillv5); the "sandbox map path / RayIntersection storm / 64 missing files"
+  observations from that dir belong to the reborn clients' sandbox sessions, NOT the V2 client.
+  The V2 raw client runs its stuck loading phase with NO KG3D engine session (its map load is
+  game-logic side). Earlier conclusions that used those logs (spawn-outside-crop, loading retry
+  cycles) are superseded; the dump-based double-free finding is unaffected (own crash XML/dmp).
+- Attribution recipe: match KG3D log timestamp to `MovieEditor\bin64\reborn_out\reborn_*.log`
+  first lines (build + start map) before using any zhcn_hd KG3D log for V2 claims.
+- V2 client state (00:23 run): loading phase 10+ min, represent vector cycles 0 -> 18 -> 0 -> 9
+  before the game connect (login/role transitions), no dup yet; watches:
+  `tools/netcode/watch_represent_array.py`.
