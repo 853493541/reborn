@@ -2614,15 +2614,16 @@ int main(void)
                                   g_soiSaved, &g_soiTramp, 16);
     int sfpOk = installInlineHook(eng, 0xE6690, (void*)hookSetSfxOrPss,
                                   g_sfpSaved, &g_sfpTramp, 16);
-    int alcOk = installInlineHook(eng, 0x8CA470, (void*)hookActorLoaded,
+    int diagOff = (GetEnvironmentVariableA("RC_HOST_NODIAG", NULL, 0) != 0);
+    int alcOk = diagOff ? -1 : installInlineHook(eng, 0x8CA470, (void*)hookActorLoaded,
                                   g_alcSaved, &g_alcTramp, 30);
-    int facOk = installInlineHook(eng, 0xC4D7F0, (void*)hookMeshFactory,
+    int facOk = diagOff ? -1 : installInlineHook(eng, 0xC4D7F0, (void*)hookMeshFactory,
                                   g_facSaved, &g_facTramp, 15);
-    int chkOk = installInlineHook(eng, 0xC4D430, (void*)hookKeepCheck,
+    int chkOk = diagOff ? -1 : installInlineHook(eng, 0xC4D430, (void*)hookKeepCheck,
                                   g_chkSaved, &g_chkTramp, 18);
-    int bldOk = installInlineHook(eng, 0xC4DE80, (void*)hookBuildData,
+    int bldOk = diagOff ? -1 : installInlineHook(eng, 0xC4DE80, (void*)hookBuildData,
                                   g_bldSaved, &g_bldTramp, 15);
-    int ispOk = installInlineHook(eng, 0x852E00, (void*)hookIsPlayer,
+    int ispOk = diagOff ? -1 : installInlineHook(eng, 0x852E00, (void*)hookIsPlayer,
                                   g_ispSaved, &g_ispTramp, 15);
     logf("[host] keepCheck hook=%d buildData hook=%d isPlayer hook=%d", chkOk, bldOk, ispOk);
     logf("[host] hooks: window=%d loadfile=%d acquireProxy=%d soCtor=%d soInit=%d setSfx=%d actorLoaded=%d meshFactory=%d",
