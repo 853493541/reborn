@@ -74,10 +74,15 @@ def main():
     w("watching pid=%d JX3Represent base=0x%X singleton=0x%X interval=%.1fs" % (
         pid, base, base + SINGLETON_RVA, interval))
     last = None
+    misses = 0
     while True:
         if W.find_client_pid() != pid:
-            w("[%s] client exited" % time.strftime("%H:%M:%S"))
-            return 0
+            misses += 1
+            if misses >= 5:
+                w("[%s] client exited" % time.strftime("%H:%M:%S"))
+                return 0
+        else:
+            misses = 0
         reader.clear()
         try:
             snap = snapshot(reader, base)
