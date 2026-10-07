@@ -19,8 +19,8 @@ This report measures what is **still dropped** — the remaining calls per windo
 | render | 21 | DROPPED — runtime image source/mode/animation |
 | state | 0 | DROPPED — control state (enable/check/expand/page) |
 | interaction | 10 | DROPPED — drag/interaction registration (not static layout) |
-| consumed | 6796 | applied by the viewer today |
-| noise | 11150 | engine plumbing, no visual state (lookup/events/getters) |
+| consumed | 6804 | applied by the viewer today |
+| noise | 11160 | engine plumbing, no visual state (lookup/events/getters) |
 
 State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21 + state 0).
 
@@ -1042,7 +1042,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | SelectEnchantment | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | SelectGround | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | SelectMacroIconPanel | other-ui | 258 | 0 | 0 | 0 | 0 | 0 | 0 | 56 |
-| Selfie | other-ui | 37 | 0 | 0 | 0 | 0 | 2 | 1 | 17 |
+| Selfie | other-ui | 45 | 0 | 0 | 0 | 0 | 2 | 1 | 17 |
 | SelfieEmotion | other-ui | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | SelfieExportDetails | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
 | SelfieMovieRecordLogo | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |

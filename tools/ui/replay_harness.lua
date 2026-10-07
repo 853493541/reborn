@@ -441,6 +441,19 @@ do
     if type(t) ~= "table" then return end
     return realSort(t, cmp)
   end
+  -- table.insert(t, Table_GetPath(...)): a stub multi-return can produce 0, 1 or
+  -- several values, which Lua 5.1 rejects ("wrong number of arguments"). Keep the
+  -- first value (append), or (pos, value) when the first is a number.
+  local realInsert = table.insert
+  table.insert = function(t, ...)
+    if type(t) ~= "table" then return end
+    local n = select("#", ...)
+    if n == 0 then return end
+    if n == 1 then return realInsert(t, (select(1, ...))) end
+    local p, v = ...
+    if type(p) == "number" then return realInsert(t, p, v) end
+    return realInsert(t, v)
+  end
 end
 
 -- Lua 5.1 resolves comparison/arith metamethods on the LEFT operand only; give the
@@ -615,6 +628,14 @@ do
       jsonLib.decode = function(s, ...)
         if type(s) == "table" then return s end
         return realDecode(s, ...)
+      end
+    end
+    -- The base lib's JsonDecode wrapper (Selfie passes an already-decoded table).
+    local jsonDecode = rawget(_G, "JsonDecode")
+    if type(jsonDecode) == "function" then
+      _G.JsonDecode = function(s, ...)
+        if type(s) == "table" then return s end
+        return jsonDecode(s, ...)
       end
     end
     -- Replace file-backed descriptor entries with lazy table objects (the engine
