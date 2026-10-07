@@ -4960,3 +4960,24 @@ if the cache/host frames appear.
   shared clips named after other skills. The "wrong-looking moves" are mostly
   the missing effect layer; the 70-match diff vs the v2-era dataset is the
   Phase-1 authoritative pass (documented).
+
+### 2026-10-06 — v5 — BREAKTHROUGH: playing the tani makes the engine render the authored .Sfx tags
+
+- Chain: the shim's bare create+play never rendered -> disasm of ME
+  KG3DEngineDX11EX64.dll found the animation-tag manager spawning tags from the
+  PLAYED ANIMATION's tag-data (`[manager+0x128]` table -> tag objects appended
+  to `[manager+0x1a8]` -> tag init @0xE33E40 creates/plays/positions the
+  effect). The manager only manages tags of the animation it plays.
+- Fix: play the matched `.tani` (the authored animation + its tag records)
+  instead of the base `.ani`. Tested first by hand (如意法 tani as the clip):
+  flames/sparks/energy trail render, no AV (the v2-era "tani AVs the host"
+  claim is obsolete with the synced host).
+- Wiring: `apply_tani_anim()` in build_candidates.py converts anim steps to the
+  matched tani (79 of 151 anim steps) and drops the PSS stand-in for abilities
+  whose tani embeds .Sfx tags. Verified 如意法/百足/五蕴皆空 casts: effect-layer
+  frame deltas (1.3-1.6% wide-frame, cast+0.2s) + screenshots show flames.
+- Caveat: some tag positions sit off the character (socket/bone binding still
+  approximate); tag play times are the engine's own (correct now - the tani
+  carries them).
+- Commits: (this change) + the earlier revert/probe commits. Docs:
+  `docs/engine_host/SFX_RE_TEST.md` top section updated.

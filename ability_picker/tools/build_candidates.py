@@ -359,6 +359,43 @@ except Exception:
 APPLY_SFX_TAGS = False
 
 
+def apply_tani_anim(steps: list, matched: str) -> list:
+    """Play the matched tani instead of its base .ani.
+
+    The tani carries the animation + its embedded tag records; the engine's own
+    tag manager spawns/renders those tags during playback (verified 2026-10-06:
+    如意法's tani renders its .Sfx tags - flames/sparks/trail - with no AV).
+    When the tani embeds .Sfx tags the PSS stand-in is dropped (the authored
+    effects are the visible layer now)."""
+    if not matched:
+        return steps
+    out = []
+    tagged = matched in TANI_TAGS_CACHE
+    for s in steps:
+        if s.get("kind") == "dummy" and tagged:
+            continue
+        if s.get("kind") == "anim" and str(s.get("v", "")).lower().endswith(".ani"):
+            s = dict(s)
+            s["v"] = matched
+            note = s.get("n", "")
+            s["n"] = (note + " | 播放 tani: 引擎标签系统渲染内嵌特效" if note else
+                      "播放 tani: 引擎标签系统渲染内嵌特效").strip(" |")
+        out.append(s)
+    return out
+
+
+# tanis known to embed .Sfx tags (ability_picker/data/sfx_tags.json keys ->
+# matched tanis; used to decide whether the PSS stand-in can be dropped)
+TANI_TAGS_CACHE = set()
+
+
+def refresh_tani_tags_cache(all_entries: list) -> None:
+    TANI_TAGS_CACHE.clear()
+    for e in all_entries:
+        if e.get("name") in SFX_TAGS and e.get("matched"):
+            TANI_TAGS_CACHE.add(e["matched"])
+
+
 def apply_sfx_tags(steps: list, name: str) -> list:
     if not APPLY_SFX_TAGS:
         return steps
@@ -394,9 +431,9 @@ PROCESS = {
         {"t": 2700, "kind": "chain", "v": "remove device", "n": "装置消失 (160帧寿命, 隐藏物)"},
     ],
     "如意法": [
-        {"t": 0, "kind": "anim", "v": r"data\source\player\f1\动作\f1smj10双刀buff04.ani",
+        {"t": 0, "kind": "anim", "v": r"data\source\player\f1\动作\F1smj10双刀buff04_清净心01.tani",
          "durMs": 939,
-         "n": "免控姿态基础动画 31f@33fps=939ms, 播放一次"},
+         "n": "TEST: play the tani itself - the engine's tag manager spawns the embedded .Sfx tags (engine-own path)"},
         {"t": 0, "kind": "sound", "v": "75054615", "n": "riyuejiaohui.wav"},
         {"t": 0, "kind": "dummy", "v": r"data\source\other\hd特效\技能\pss\发招\m_明教清净心01.pss",
          "k": "ruyi_pss", "durMs": 12480,
@@ -1767,6 +1804,7 @@ def apply_overrides(all_entries: list) -> None:
     """IP marks, no-anim flags, extra phase matches, candidate/wem hygiene."""
     catalog = load_catalog_f1()
     seen_proc: set = set()
+    refresh_tani_tags_cache(all_entries)
     for e in all_entries:
         name = e["name"]
         for frag in EXCLUDE.get(name, []):
@@ -1800,7 +1838,10 @@ def apply_overrides(all_entries: list) -> None:
         # duplicate rows per name and the host reads the first row it sees
         # (RebornClient.loadFeiZhua). Decoupled from the animation match (the
         # staged process is its own authored timeline).
-        e["process"] = apply_sfx_tags(PROCESS.get(name, []), name) if name not in seen_proc else []
+        steps = PROCESS.get(name, []) if name not in seen_proc else []
+        if steps:
+            steps = apply_tani_anim(apply_sfx_tags(steps, name), e.get("matched", ""))
+        e["process"] = steps
         if e["process"]:
             seen_proc.add(name)
 

@@ -1,8 +1,20 @@
 # .Sfx per-file re-test on the MovieEditor host (v5, 2026-10-06)
 
-Re-test of the claim "the MovieEditor engine cannot play `.Sfx`" with the
-**synced sandbox** (`ability_sandbox` on main's client sources + the
-owner-chain `sfx_shim.dll`), scripted through `Skill.exe`.
+## BREAKTHROUGH (2026-10-06): play the tani - the engine renders the tags
+
+The engine draws only effects spawned by its animation-tag manager. That
+manager takes the tag records from the **animation being played** - so playing
+the ability's own `.tani` (instead of its base `.ani`) makes the engine spawn,
+position and render the embedded `.Sfx` tags itself. Verified: 如意法/百足/
+五蕴皆空 tani casts render flames/sparks/energy trails with **no AV**
+(`rc_01_3200ms.png`, wide-frame effect deltas; logs `Skill_20261006_2025*`).
+The dataset now plays the matched tani for **79 anim steps** (build pass
+`apply_tani_anim`); the PSS stand-in is dropped for abilities whose tani embeds
+`.Sfx` tags (the authored effects are the visible layer). Caveat: some tag
+positions sit off the character (socket/bone binding still approximate).
+
+The sections below (shim create/play, warm-up, per-file rc table) are the
+earlier research that led here; the shim path creates but never rendered.
 
 ## Method
 

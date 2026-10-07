@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-06T17:54:31",
+ "generatedAt": "2026-10-06T20:30:54",
  "cache": "C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd\\SeasunDownloaderV2.4\\jx3-web-map-viewer\\cache-extraction\\pakv4-probe\\ability-matcher\\ability-tani-sound-cache.json",
  "count": 383,
  "withTanis": 307,
@@ -187,9 +187,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1scy03气攻击01.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1scy03气攻击01_九转HD.tani",
      "durMs": 816,
-     "n": "基础动画 816ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 816ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -246,9 +246,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1h唐门弩车001b_技能02a.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1h唐门弩车001b_技能02a_HD.tani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -307,9 +307,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s07cj内功重剑18.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1s07cj内功重剑18_云栖松hd.tani",
      "durMs": 1606,
-     "n": "基础动画 1606ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1606ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -492,9 +492,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s18yz凌然天风01.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1s18yz凌然天风01.tani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -552,9 +552,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能13.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能13_剑破虚空hd.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -679,9 +679,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s16lxg技能02a.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s16lxg技能02a_hd.tani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -738,9 +738,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s01wh针灸16.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s01wh针灸16_听风HD.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -837,9 +837,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1stm09机关攻击03.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1stm09机关攻击03七煞毒.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -987,23 +987,15 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1smj10双刀buff04.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1smj10双刀buff04_清净心01.tani",
      "durMs": 939,
-     "n": "免控姿态基础动画 31f@33fps=939ms, 播放一次"
+     "n": "TEST: play the tani itself - the engine's tag manager spawns the embedded .Sfx tags (engine-own path)"
     },
     {
      "t": 0,
      "kind": "sound",
      "v": "75054615",
      "n": "riyuejiaohui.wav"
-    },
-    {
-     "t": 0,
-     "kind": "dummy",
-     "v": "data\\source\\other\\hd特效\\技能\\pss\\发招\\m_明教清净心01.pss",
-     "k": "ruyi_pss",
-     "durMs": 12480,
-     "n": "清净心发招 PSS (可见效果; tani 标签的引擎路径创建 rc=0 但不着色渲染, 见 SFX_RE_TEST.md - 恢复 PSS)"
     }
    ]
   },
@@ -1521,9 +1513,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1stc04技能01.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1stc04技能01-02.tani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -1573,9 +1565,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04sl棍技能18a.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s04sl棍技能18a_扫击蓄力01.tani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -1628,9 +1620,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1smj10双刀攻击07a.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1smj10双刀攻击07a.tani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -1735,9 +1727,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04sl爪技能12.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s04sl爪技能12_hd01.tani",
      "durMs": 1091,
-     "n": "基础动画 1091ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1091ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -2017,9 +2009,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s14bd双刀技能08.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s14bd双刀技能08_01.tani",
      "durMs": 697,
-     "n": "基础动画 697ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 697ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -2072,9 +2064,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s17ytz星相技01.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s17ytz星相技01_斗转星_悟.tani",
      "durMs": 1364,
-     "n": "基础动画 1364ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1364ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -2195,9 +2187,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s16lxg链技能08.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s16lxg链技能08_hd.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -2367,9 +2359,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1smj10圣火诀buff02.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1smj10圣火诀buff02.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -2917,9 +2909,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1sqg08wd蛊攻击01.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1swd08蛊攻击01_万蛊蚀心.tani",
      "durMs": 348,
-     "n": "基础动画 348ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 348ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -3176,9 +3168,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s03cy气技能15a.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s03cy气技能15a_穹窿化生01_悟.tani",
      "durMs": 1545,
-     "n": "基础动画 1545ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1545ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -3483,9 +3475,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s15pl伞技能空04c.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s15pl伞技能空04c_人雕合一HD.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -3617,9 +3609,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04sl技能11.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s04sl技能11_hd01.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -3672,9 +3664,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1swh01辅助技能03.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1swh01辅助技能03.tani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -3822,9 +3814,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s05qx扇技能18.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1s05qx扇技能18_蝶弄足hd.tani",
      "durMs": 1000,
-     "n": "基础动画 1000ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1000ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -3887,9 +3879,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s15pl掌技能空03a.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s15PL掌技能空03a_掌法HD.tani",
      "durMs": 636,
-     "n": "基础动画 636ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 636ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -3950,9 +3942,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s17ytz乘灯01.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s17ytz乘灯01.tani",
      "durMs": 1848,
-     "n": "基础动画 1848ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1848ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -4175,9 +4167,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04sl技能16.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s04sl技能16_hd01.tani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -4333,9 +4325,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能15.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能15_风来吴山hd.tani",
      "durMs": 576,
-     "n": "基础动画 576ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 576ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -4890,9 +4882,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s03cy剑技能13.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s03cy剑技能13_万剑HD.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -5011,9 +5003,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s03cy气技能18.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s03cy气技能18_三才hd.tani",
      "durMs": 818,
-     "n": "基础动画 818ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 818ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -5110,9 +5102,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s03cy剑技能11b.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s03cy剑技能11b_三环HD.tani",
      "durMs": 1606,
-     "n": "基础动画 1606ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1606ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -5396,9 +5388,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能11a.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s07cj重剑技能11a_云飞HD.tani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -5544,9 +5536,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s03cy气技能13.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s03cy气技能13_五方HD.tani",
      "durMs": 1242,
-     "n": "基础动画 1242ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1242ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -5637,9 +5629,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1ssl04袈裟攻击05.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1ssl04袈裟攻击05.tani",
      "durMs": 576,
-     "n": "基础动画 576ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 576ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -5933,9 +5925,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s03cy剑技能15.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1s03cy剑技能15_人剑合一hd.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -6146,9 +6138,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s01wh点穴13a.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s01wh点穴13a_兰摧玉折hd.tani",
      "durMs": 1697,
-     "n": "基础动画 1697ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1697ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -6476,9 +6468,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1smj10双刀攻击06b.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1smj10双刀攻击06b_净世破魔击_月_悟.tani",
      "durMs": 1091,
-     "n": "基础动画 1091ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1091ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -6572,9 +6564,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1scy03技能05.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1scy03技能05-05.tani",
      "durMs": 620,
-     "n": "基础动画 620ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 620ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -6677,9 +6669,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1sqx05双剑攻击04.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1sqx05双剑攻击04.tani",
      "durMs": 3588,
-     "n": "基础动画 3588ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 3588ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -7165,9 +7157,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1swd08治疗03.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1swd08飞行01.tani",
      "durMs": 900,
-     "n": "基础动画 900ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 900ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -7471,9 +7463,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s07cj内功轻剑12.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1s07cj内功轻剑12_听雷hd.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -7910,9 +7902,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1smj10乾坤大法buff01.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1smj10乾坤大法buff01_01.tani",
      "durMs": 1061,
-     "n": "基础动画 1061ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1061ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -8176,9 +8168,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1ssl04技能06.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1ssl04技能06_hd01.tani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -8398,9 +8390,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能20.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能20_天地低昂hd.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -8490,7 +8482,7 @@
      "kind": "anim",
      "v": "data\\source\\player\\f1\\动作\\F1s03cy剑技能11c.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -8686,9 +8678,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s01wh点穴19.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s01wh点穴19_太阴HD.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -9294,9 +9286,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1stm09针攻击02.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1stm09针攻击02_孔雀翎_悟.tani",
      "durMs": 394,
-     "n": "基础动画 394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -9683,9 +9675,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04sl爪技能15a.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s04sl爪技能15a_hd01.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -9914,9 +9906,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能23.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能23_帝骖龙翔hd.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -10466,9 +10458,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1ssl04爪攻击02.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1ssl04爪攻击02.tani",
      "durMs": 848,
-     "n": "基础动画 848ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 848ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -10571,9 +10563,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04sl爪技能13.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s04sl爪技能13_hd01.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -10732,9 +10724,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04sl爪技能14a.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s04sl爪技能14a_hd01.tani",
      "durMs": 636,
-     "n": "基础动画 636ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 636ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -11066,9 +11058,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04sl爪技能11.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s04sl爪技能11_hd01.tani",
      "durMs": 1758,
-     "n": "基础动画 1758ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1758ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -11225,9 +11217,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04sl棍技能14.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s04sl棍技能14_hd03.tani",
      "durMs": 1061,
-     "n": "基础动画 1061ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1061ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -11313,9 +11305,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能22.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s04tc技能22_撼HD.tani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -11617,9 +11609,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04sl技能12.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s04sl技能12_hd01.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -11734,9 +11726,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s01wh技能12.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1s01wh技能12_星楼月影hd.tani",
      "durMs": 1303,
-     "n": "基础动画 1303ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1303ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -11865,9 +11857,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s01wh技能15.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s01wh技能15_春泥HD.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -12795,9 +12787,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04sl棍技能13.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s04sl棍技能13_hd01.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -13167,9 +13159,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能18a.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能18a_渊hd.tani",
      "durMs": 485,
-     "n": "基础动画 485ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 485ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -13435,9 +13427,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能17.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能17_灭hd.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -13586,9 +13578,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1smj10组合刀攻击04.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1smj10组合刀攻击04_日斩.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -14145,9 +14137,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能16.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s04tc技能16_疾HD.tani",
      "durMs": 1121,
-     "n": "基础动画 1121ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1121ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -14439,9 +14431,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1swd08毒攻击03.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1swd08毒攻击03_百足.tani",
      "durMs": 348,
-     "n": "基础动画 348ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 348ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -14953,9 +14945,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能11b.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s04tc技能11b_穿云hd.tani",
      "durMs": 1545,
-     "n": "基础动画 1545ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1545ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -15232,9 +15224,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能11a.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能11a_穿云hd.tani",
      "durMs": 1515,
-     "n": "基础动画 1515ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1515ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -15643,9 +15635,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能26.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s05qx剑技能26_绛唇珠袖hd.tani",
      "durMs": 1545,
-     "n": "基础动画 1545ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1545ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -16028,9 +16020,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1swd08毒攻击02.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1swd08毒攻击02_蛇影.tani",
      "durMs": 348,
-     "n": "基础动画 348ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 348ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -16140,9 +16132,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1sqg08wd牺牲01.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1swd08牺牲01_粉身碎骨.tani",
      "durMs": 364,
-     "n": "基础动画 364ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 364ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -16990,9 +16982,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1stm09弩攻击03.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1stm09弩攻击03夺命01_追命箭_悟.tani",
      "durMs": 848,
-     "n": "基础动画 848ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 848ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -17278,9 +17270,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1smj10双刀攻击04.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1smj10双刀攻击04_月斩.tani",
      "durMs": 1000,
-     "n": "基础动画 1000ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1000ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -17481,9 +17473,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s01wh针灸13b.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s01wh针灸13b长针hd.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -17636,9 +17628,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能25.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能25_雷霆震怒hd.tani",
      "durMs": 1242,
-     "n": "基础动画 1242ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1242ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -17730,9 +17722,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1stm09控制03.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1stm09控制03雷震子.tani",
      "durMs": 394,
-     "n": "基础动画 394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -17812,9 +17804,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s21ds技能04b.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s21ds技能04b.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -17926,9 +17918,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04sl棍技能12.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1s04sl棍技能12_hd02.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -18205,9 +18197,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1smj10双刀攻击10.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1smj10双刀攻击10连杀.tani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -18523,9 +18515,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能14.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能14_鹤归孤山hd.tani",
      "durMs": 1727,
-     "n": "基础动画 1727ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1727ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -18624,9 +18616,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能12.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能12_龙吟hd.tani",
      "durMs": 1485,
-     "n": "基础动画 1485ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1485ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -18744,9 +18736,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1sgb11掌法攻击05b.ani",
+     "v": "data\\source\\player\\f1\\动作\\F1sgb11掌法攻击05b.tani",
      "durMs": 1273,
-     "n": "基础动画 1273ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1273ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
@@ -18862,9 +18854,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能13.ani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能13_龙牙hd_狼皮肤.tani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
     },
     {
      "t": 0,
