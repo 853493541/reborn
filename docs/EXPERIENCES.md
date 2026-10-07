@@ -3515,5 +3515,23 @@ HIGH-confidence findings:
   but with host-fabricated globals (`sysCfg`/`sysHolder`), so its manager-creation steps
   are likely skipped. Gate 4 needs that module-init flow completed (or a debugger trace).
 - Evidence: host_exe244.out; static disasm.
+
+## 2026-10-07 - Built an INT3 tracer; the working C# client uses MovieEngineCLR KMovieObject, not the represent dummy/actor managers
+
+- No debugger was installed, so I built a minimal self-contained INT3 tracer
+  (`%TEMP%\opencode\skillv2\trace_bp.cpp` -> `trace_bp.exe`; Windows Debug API:
+  CreateProcess DEBUG_ONLY_THIS_PROCESS, patch target bytes to 0xCC on DLL load, log
+  the return-address stack on hit, restore+single-step+re-patch). No new dependency.
+- Ran it on the working `reborn_client.exe` (MovieEditor engine). Result: it breaks
+  cleanly on `MovieEngineCLR!KMovieObjectHolder::NewObject` (`clr+0x1188B0`) - the
+  function allocates a **0x37C8-byte KMovieObject** and calls its `vt[0xf8]`. The
+  represent's `KRLDummyMgr::Create` (`rep+0x41D150`) / `RLActorMgrNT::CreateRLActorNT`
+  (`rep+0x377C60`) / `KRLDummyMgr::Init` (`rep+0x41EA30`) breakpoints **never hit**.
+- Implication: the working client renders the F1 model through **MovieEngineCLR's own
+  KMovieObject** path, not through the game represent's `KRLDummyMgr`/`RLActorMgrNT`.
+  So the C# client's path is architecturally distinct from the game-client host's; it
+  does not directly reveal how the game represent constructs its managers.
+- The tracer is a reusable tool (RVAs are MovieEditor-rep specific; the host's game rep
+  differs - 16872888 vs 17049528 bytes). Evidence: trace_out2.txt; static disasm.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
