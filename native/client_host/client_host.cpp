@@ -209,6 +209,44 @@ static BYTE g_rtSaved[32];
 static BYTE* g_rtTramp = NULL;
 static BYTE g_runSaved[32];
 static BYTE* g_runTramp = NULL;
+static void* g_registerFunctor = NULL;
+
+// The RL code's list-push helper (rep+0x3E52A0, reached via the 0x2363C jmp
+// thunk): appends {node->next=?, node+8=value} at container+0x78/0x80. Logging
+// it reveals which functor (register vs run) is queued where.
+static BYTE g_pushSaved[32];
+static BYTE* g_pushTramp = NULL;
+
+static void __fastcall hookTaskPush(void* container, void* value)
+{
+    static int npush = 0;
+    if (npush < 80)
+    {
+        npush++;
+        char vd[64] = {0};
+        __try
+        {
+            if (value != NULL)
+                describeAddr((DWORD64)(*(void***)value)[0], vd, sizeof(vd));
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER) { }
+        logf("[host] taskPush #%d container=%p value=%p vt0=%s",
+             npush, container, value, vd);
+        if (g_repModule != NULL && value != NULL)
+        {
+            DWORD64 v0 = 0;
+            __try { v0 = *(DWORD64*)value; }
+            __except (EXCEPTION_EXECUTE_HANDLER) { }
+            if (v0 == (DWORD64)((BYTE*)g_repModule + 0xCD80C0))
+            {
+                g_registerFunctor = value;
+                logf("[host] taskPush: register functor %p captured (container %p)",
+                     value, container);
+            }
+        }
+    }
+    ((void (__fastcall *)(void*, void*))g_pushTramp)(container, value);
+}
 
 static int __fastcall hookRegisterTasks(void* a1, void* a2)
 {
@@ -243,16 +281,20 @@ static BYTE g_wrapSaved[32];
 static BYTE* g_wrapTramp = NULL;
 static BYTE g_buildSaved[32];
 static BYTE* g_buildTramp = NULL;
+static void* g_builderOut = NULL;
+static void* g_wrapperThis = NULL;
 
 static void __fastcall hookTableWrapper(void* a1, void* a2)
 {
     logf("[host] table wrapper enter (this=%p a2=%p)", a1, a2);
+    g_wrapperThis = a1;
     ((void (__fastcall *)(void*, void*))g_wrapTramp)(a1, a2);
 }
 
 static void __fastcall hookTableBuilder(void* a1, unsigned a2, void* a3, void* a4)
 {
     logf("[host] table builder enter (a1=%p a2=%u a3=%p a4=%p)", a1, a2, a3, a4);
+    g_builderOut = a4;
     __try
     {
         void* v1 = *(void**)a4;
@@ -262,6 +304,93 @@ static void __fastcall hookTableBuilder(void* a1, unsigned a2, void* a3, void* a
     __except (EXCEPTION_EXECUTE_HANDLER)
     { logf("[host] table builder a4 probe fault"); }
     ((void (__fastcall *)(void*, unsigned, void*, void*))g_buildTramp)(a1, a2, a3, a4);
+    // After the builder: the register functor (vtable rep+0xCD80C0,
+    // operator() 0x80E340) is inside a 0x88-byte container object (vtable
+    // rep+0xCCE548) referenced from the KTableList (a1). Locate and remember it
+    // so it can be invoked after the run task (the step controller runs both;
+    // the host currently only runs the run task).
+    __try
+    {
+        BYTE* rep = (BYTE*)g_repModule;
+        if (rep != NULL)
+        {
+            DWORD64 cv = (DWORD64)(rep + 0xCCE548);
+            DWORD64 rf = (DWORD64)(rep + 0xCD80C0);
+            logf("[host] builder post: kt=%p [kt]=%p [kt+8]=%p [kt+0x10]=%p [kt+0x18]=%p [kt+0x20]=%p",
+                 a1, *(void**)a1, *(void**)((BYTE*)a1 + 8), *(void**)((BYTE*)a1 + 0x10),
+                 *(void**)((BYTE*)a1 + 0x18), *(void**)((BYTE*)a1 + 0x20));
+            __try
+            {
+                logf("[host] builder post: out=%p [out]=%p [out+8]=%p [out+0x10]=%p [out+0x18]=%p [out+0x20]=%p",
+                     a4, *(void**)a4, *(void**)((BYTE*)a4 + 8), *(void**)((BYTE*)a4 + 0x10),
+                     *(void**)((BYTE*)a4 + 0x18), *(void**)((BYTE*)a4 + 0x20));
+            }
+            __except (EXCEPTION_EXECUTE_HANDLER)
+            { logf("[host] builder post: out probe fault"); }
+            void* roots[12];
+            for (int i = 0; i < 6; i++)
+                roots[i] = *(void**)((BYTE*)a1 + i * 8);
+            for (int i = 0; i < 6; i++)
+            {
+                roots[6 + i] = NULL;
+                __try { roots[6 + i] = *(void**)((BYTE*)a4 + i * 8); }
+                __except (EXCEPTION_EXECUTE_HANDLER) { }
+            }
+            for (int i = 0; i < 12; i++)
+            {
+                void* r = roots[i];
+                if (r == NULL || (DWORD64)r < 0x10000)
+                    continue;
+                DWORD64 rv = 0;
+                __try { rv = *(DWORD64*)r; }
+                __except (EXCEPTION_EXECUTE_HANDLER) { continue; }
+                if (rv == rf)
+                {
+                    g_registerFunctor = r;
+                    logf("[host] builder post: FUNCTOR %p (kt+0x%X)", r, i * 8);
+                }
+                if (rv != cv)
+                    continue;
+                logf("[host] builder post: container %p (kt+0x%X)", r, i * 8);
+                for (int o = 0; o < 0x200; o += 8)
+                {
+                    void* f = *(void**)((BYTE*)r + o);
+                    if (f == NULL || (DWORD64)f < 0x10000)
+                        continue;
+                    DWORD64 fv = 0;
+                    __try { fv = *(DWORD64*)f; }
+                    __except (EXCEPTION_EXECUTE_HANDLER) { continue; }
+                    if (fv == rf)
+                    {
+                        g_registerFunctor = f;
+                        logf("[host] builder post: FUNCTOR %p (container %p+0x%X)",
+                             f, r, o);
+                    }
+                    else if (fv == cv)
+                    {
+                        logf("[host] builder post: container2 %p (container+0x%X)", f, o);
+                        for (int o2 = 0; o2 < 0x100; o2 += 8)
+                        {
+                            void* g2 = *(void**)((BYTE*)f + o2);
+                            if (g2 == NULL || (DWORD64)g2 < 0x10000)
+                                continue;
+                            DWORD64 gv = 0;
+                            __try { gv = *(DWORD64*)g2; }
+                            __except (EXCEPTION_EXECUTE_HANDLER) { continue; }
+                            if (gv == rf)
+                            {
+                                g_registerFunctor = g2;
+                                logf("[host] builder post: FUNCTOR %p (container2 %p+0x%X)",
+                                     g2, f, o2);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    { logf("[host] builder: register functor scan fault"); }
 }
 
 // --- lua file-layer trace hooks (Gate 1: RL table load) ---------------------
@@ -423,12 +552,12 @@ static BYTE* allocNear(BYTE* target, size_t size)
     return NULL;
 }
 
-static volatile LONG g_flagWatchArmed = 0;
-static volatile LONG g_flagWatchHit = 0;
-
 // Arm a 4-byte write watch on addr for the current thread; the VEH handler
 // logs the writer's RIP (debug-register single-step). Used to find what
 // publishes [SO3Represent+0x210] (m_tabCommon).
+static volatile LONG g_flagWatchArmed = 0;
+static volatile LONG g_flagWatchHit = 0;
+
 static int armWriteWatch(void* addr)
 {
     CONTEXT ctx;
@@ -446,6 +575,34 @@ static int armWriteWatch(void* addr)
 }
 
 static BYTE* g_tableHookStub = NULL;
+
+// Scan a memory range for register/run functor references; locates the
+// builder-created register task (vtable rep+0xCD80C0, operator() rep+0x80E340)
+// so it can be invoked after the run task.
+static void scanFunctorRefs(void* base, int size, const char* tag)
+{
+    if (base == NULL || g_repModule == NULL)
+        return;
+    BYTE* rep = (BYTE*)g_repModule;
+    DWORD64 want[6] = {
+        (DWORD64)(rep + 0xCD80C0), (DWORD64)(rep + 0xCD8000),
+        (DWORD64)(rep + 0x80E340), (DWORD64)(rep + 0x80E360),
+        (DWORD64)(rep + 0x80B6A0), (DWORD64)(rep + 0x80B8C0),
+    };
+    __try
+    {
+        for (int off = 0; off + 8 <= size; off += 8)
+        {
+            DWORD64 v = *(DWORD64*)((BYTE*)base + off);
+            for (int k = 0; k < 6; k++)
+                if (v == want[k])
+                    logf("[host] frame60: %s+0x%X functor ref +0x%X",
+                         tag, off, (unsigned)(v - (DWORD64)rep));
+        }
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    { logf("[host] frame60: %s scan fault", tag); }
+}
 
 static int installTableLoadHook(HMODULE rep)
 {
@@ -2346,6 +2503,10 @@ int main(void)
                  installInlineHook(rep, 0x80B8C0, (void*)hookRunTasks,
                                    g_runSaved, &g_runTramp, 15));
         if (rep != NULL)
+            logf("[host] task push hook -> %d",
+                 installInlineHook(rep, 0x3E52A0, (void*)hookTaskPush,
+                                   g_pushSaved, &g_pushTramp, 16));
+        if (rep != NULL)
             logf("[host] table chain hooks -> %d %d",
                  installInlineHook(rep, 0x3E3D90, (void*)hookTableWrapper,
                                    g_wrapSaved, &g_wrapTramp, 15),
@@ -4026,8 +4187,9 @@ int main(void)
                                                     void** tv3 = *(void***)val3;
                                                     char db4[64] = {0};
                                                     describeAddr((DWORD64)tv3[1], db4, sizeof(db4));
-                                                    logf("[host] frame60: new task[%d] val=%p vt1=%s",
-                                                         n3, val3, db4);
+                                                    logf("[host] frame60: new task[%d] val=%p vt1=%s raw vt0=%p vt1=%p vt2=%p vt3=%p",
+                                                         n3, val3, db4,
+                                                         tv3[0], tv3[1], tv3[2], tv3[3]);
                                                     __try
                                                     {
                                                         ((void (__fastcall *)(void*, void*))
@@ -4048,6 +4210,75 @@ int main(void)
                                 }
                                 logf("[host] frame60: after task run [main+0x210]=%p",
                                      *(void**)((BYTE*)g_repSingleton + 0x210));
+                                // the builder's register step (registerTasks
+                                // 0x80B6A0): the game's step controller runs it
+                                // with the run step; the host skipped it. Its
+                                // operator() forwards arg2 (rdx = the step
+                                // controller) to registerTasks, which creates
+                                // more tasks into it.
+                                if (g_registerFunctor != NULL)
+                                {
+                                    char rdb[64] = {0};
+                                    describeAddr((DWORD64)(*(void***)g_registerFunctor)[0],
+                                                 rdb, sizeof(rdb));
+                                    void* scR = *(void**)(param + 0xC8);
+                                    void* oldTailR = NULL;
+                                    if (scR != NULL)
+                                        oldTailR = *(void**)((BYTE*)scR + 0x80);
+                                    logf("[host] frame60: invoking register functor %p vt0=%s stepCtrl=%p",
+                                         g_registerFunctor, rdb, scR);
+                                    __try
+                                    {
+                                        ((void (__fastcall *)(void*, void*))
+                                         ((BYTE*)g_repModule + 0x80E340))(g_registerFunctor, scR);
+                                        logf("[host] frame60: register functor done; [main+0x210]=%p",
+                                             *(void**)((BYTE*)g_repSingleton + 0x210));
+                                    }
+                                    __except (EXCEPTION_EXECUTE_HANDLER)
+                                    { logf("[host] frame60: register functor fault"); }
+                                    // run the tasks registerTasks just queued
+                                    __try
+                                    {
+                                        if (scR != NULL)
+                                        {
+                                            void* ndR = (oldTailR != NULL)
+                                                ? *(void**)oldTailR
+                                                : *(void**)((BYTE*)scR + 0x70);
+                                            int nR = 0;
+                                            while (ndR != NULL && nR < 16)
+                                            {
+                                                void* valR = *(void**)((BYTE*)ndR + 8);
+                                                if (valR != NULL)
+                                                {
+                                                    char dbR[64] = {0};
+                                                    __try
+                                                    {
+                                                        describeAddr((DWORD64)(*(void***)valR)[1],
+                                                                     dbR, sizeof(dbR));
+                                                    }
+                                                    __except (EXCEPTION_EXECUTE_HANDLER) { }
+                                                    logf("[host] frame60: register task[%d] val=%p vt1=%s",
+                                                         nR, valR, dbR);
+                                                    __try
+                                                    {
+                                                        ((void (__fastcall *)(void*, void*))
+                                                         g_taskInvokeStub)(valR, scR);
+                                                    }
+                                                    __except (EXCEPTION_EXECUTE_HANDLER)
+                                                    { logf("[host] register task fault"); }
+                                                }
+                                                ndR = *(void**)ndR;
+                                                nR++;
+                                            }
+                                            logf("[host] frame60: after register tasks [main+0x210]=%p",
+                                                 *(void**)((BYTE*)g_repSingleton + 0x210));
+                                        }
+                                    }
+                                    __except (EXCEPTION_EXECUTE_HANDLER)
+                                    { logf("[host] frame60: register task walk fault"); }
+                                }
+                                else
+                                    logf("[host] frame60: register functor not captured");
                                 __try
                                 {
                                     void* member = *(void**)(param + 0xA8);
@@ -4058,6 +4289,32 @@ int main(void)
                                 }
                                 __except (EXCEPTION_EXECUTE_HANDLER)
                                 { logf("[host] frame60: RL member probe fault"); }
+                                __try
+                                {
+                                    if (g_builderOut != NULL)
+                                        logf("[host] frame60: builderOut=%p [0]=%p [8]=%p [+0x10]=%p [+0x18]=%p",
+                                             g_builderOut, *(void**)g_builderOut,
+                                             *(void**)((BYTE*)g_builderOut + 8),
+                                             *(void**)((BYTE*)g_builderOut + 0x10),
+                                             *(void**)((BYTE*)g_builderOut + 0x18));
+                                }
+                                __except (EXCEPTION_EXECUTE_HANDLER)
+                                { logf("[host] frame60: builderOut probe fault"); }
+                                // locate the builder-created register functor
+                                scanFunctorRefs((BYTE*)g_repSingleton + 0x1A0, 0x400, "kt");
+                                scanFunctorRefs(g_builderOut, 0x100, "builderOut");
+                                scanFunctorRefs(g_wrapperThis, 0x200, "wrapper");
+                                {
+                                    void* sc9 = *(void**)(param + 0xC8);
+                                    scanFunctorRefs(sc9, 0x200, "stepBuf");
+                                    if (sc9 != NULL)
+                                        scanFunctorRefs(*(void**)sc9, 0x200, "stepA");
+                                    scanFunctorRefs(*(void**)(param + 0x98), 0x200, "taskList");
+                                    void* m9 = *(void**)(param + 0xA8);
+                                    scanFunctorRefs(m9, 0x200, "member");
+                                    if (m9 != NULL)
+                                        scanFunctorRefs(*(void**)((BYTE*)m9 + 0x10), 0x200, "member+0x10");
+                                }
                                 for (int toff = 0x1B0; toff <= 0x248; toff += 8)
                                     logf("[host] frame60: main+0x%03X=%p", toff,
                                          *(void**)((BYTE*)g_repSingleton + toff));
