@@ -14,20 +14,19 @@ This report measures what is **still dropped** — the remaining calls per windo
 
 | category | calls | meaning |
 |---|---|---|
-| item-creation | 103 | DROPPED — list rows never materialize (missing items) |
+| item-creation | 0 | DROPPED — list rows never materialize (missing items) |
 | arrangement | 11 | DROPPED — engine position/size passes (wrong placement) |
 | render | 21 | DROPPED — runtime image source/mode/animation |
 | state | 0 | DROPPED — control state (enable/check/expand/page) |
-| consumed | 5442 | applied by the viewer today |
+| consumed | 5545 | applied by the viewer today |
 | noise | 9865 | engine plumbing, no visual state (lookup/events/getters) |
 
-State-bearing dropped calls: **135** (item-creation 103 + arrangement 11 + render 21 + state 0).
+State-bearing dropped calls: **32** (item-creation 0 + arrangement 11 + render 21 + state 0).
 
 ## Dropped methods (distinct, with the windows using them)
 
 | method | category | calls | windows |
 |---|---|---|---|
-| `AppendItemFromData` | item-creation | 103 | GuildBankPanel, SocialPanel |
 | `FromTextureFile` | render | 7 | BattleFieldMap, LoadingPanel, MonopolyCardUseConfirm, MonopolyLandPurchaseDlg, NewPet, StoryDisplay |
 | `SetDragArea` | arrangement | 4 | BigBagPanel, DesertPreset, ShareBagPanel |
 | `EnableDrag` | arrangement | 3 | Matrix, QuestTraceList |
@@ -46,8 +45,6 @@ State-bearing dropped calls: **135** (item-creation 103 + arrangement 11 + rende
 
 | window | stage | consumed | item-creation | arrangement | render | state | placeholders | unresolved | oob |
 |---|---|---|---|---|---|---|---|---|---|
-| GuildBankPanel | liked | 205 | 98 | 0 | 0 | 0 | 0 | 1 | 8 |
-| SocialPanel | liked | 38 | 5 | 0 | 0 | 0 | 2 | 0 | 51 |
 | BigBagPanel | liked | 373 | 0 | 3 | 0 | 0 | 0 | 0 | 108 |
 | QuestTraceList | recommended | 9 | 0 | 2 | 0 | 0 | 0 | 0 | 7 |
 | DesertPreset | other-ui | 42 | 0 | 1 | 0 | 0 | 0 | 0 | 1 |
@@ -537,6 +534,7 @@ State-bearing dropped calls: **135** (item-creation 103 + arrangement 11 + rende
 | GuardPanelSureInfo | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | GuidePerson_MengXin | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | GuildAddMember | recommended | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 15 |
+| GuildBankPanel | liked | 303 | 0 | 0 | 0 | 0 | 0 | 1 | 8 |
 | GuildCampReverse | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | GuildCastleWarPoints | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | GuildCastleWarRule | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -1103,6 +1101,7 @@ State-bearing dropped calls: **135** (item-creation 103 + arrangement 11 + rende
 | SmallCalender | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | SniperPanel | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | SnsPanel | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| SocialPanel | liked | 43 | 0 | 0 | 0 | 0 | 2 | 0 | 51 |
 | SoundSettingPanel | liked | 52 | 0 | 0 | 0 | 0 | 0 | 1 | 2 |
 | SpeedEffect | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | SpeedRankPanel | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
@@ -1242,115 +1241,6 @@ State-bearing dropped calls: **135** (item-creation 103 + arrangement 11 + rende
 | regionPQreward | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
 ## Full dropped-call detail (every window, item-creation/arrangement/render/state)
-
-### GuildBankPanel
-
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
-
-### SocialPanel
-
-- `item-creation` AppendItemFromData PageSet_Company function: 021A7FA0
-- `item-creation` AppendItemFromData PageSet_Company function: 021A8270
-- `item-creation` AppendItemFromData PageSet_Company function: 021A89F0
-- `item-creation` AppendItemFromData PageSet_Company [SocialPanel]
-- `item-creation` AppendItemFromData PageSet_Company [SocialPanel]
 
 ### BigBagPanel
 

@@ -36,6 +36,7 @@ CONSUMED = {
     "SetFrame", "SetText", "SetFontScheme", "SetAlpha", "Show", "Hide", "SetVisible",
     # 2026-10-05: executed by ApplyRuntimeMutations (the item/layout/state pass).
     "Clear", "AppendItemFromIni", "AppendContentFromIni", "AppendItemFromString",
+    "AppendItemFromData",
     "FormatAllItemPos", "FormatAllContentPos", "SetSizeByAllItemSize", "SetPoint",
     "SetOverTextPosition", "SetOverTextFontScheme", "FromUITex", "SetImageType",
     "SetPercentage", "SetFontColor", "Enable", "Check",
@@ -44,9 +45,7 @@ CONSUMED = {
     "CreateItemData", "SetObject", "SetObjectIcon", "SetObjectSelected", "RemoveItem",
     "Expand", "ActivePage",
 }
-ITEM_CREATION = {
-    "AppendItemFromData",
-}
+ITEM_CREATION = set()
 ARRANGEMENT = {
     "SetScrollVerStepSize", "SetDragArea", "RegisterLButtonDrag", "EnableDrag",
 }
