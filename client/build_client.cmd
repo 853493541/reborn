@@ -28,7 +28,7 @@ if not "%RC_CLIENT_EXE%"=="" set BINFO=build_info_%EXE%.txt
   /resource:proof\camera_tracks\skill_move_camera.txt,skill_move_camera.txt ^
   client\RebornClient.cs client\JumpTable.cs client\HotkeyTable.cs client\TerrainSampler.cs client\FoliageCollision.cs ^
   client\CameraSystem.cs client\CameraSettings.cs client\CameraTrack.cs client\SkillMoveCamera.cs client\EngineRay.cs ^
-  client\CameraShim.cs client\StartupShim.cs client\VideoSettings.cs client\VideoOptions.cs client\Targeting.cs client\UiClient.cs client\HudOverlay.cs client\LoadingOverlay.cs client\FaceData.cs client\MountSystem.cs client\WaterField.cs ^
+  client\CameraShim.cs client\StartupShim.cs client\VideoSettings.cs client\VideoOptions.cs client\Targeting.cs client\UiClient.cs client\HudOverlay.cs client\LoadingOverlay.cs client\FaceData.cs client\MountSystem.cs client\WaterField.cs client\WaterSurfaces.cs ^
   client\PhysicsProbe.cs client\SkillMotion.cs client\SkillMoveTable.cs
 if errorlevel 1 goto :eof
 rem Shared bin64 configs are only written by the canonical build; feature builds

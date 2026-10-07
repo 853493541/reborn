@@ -38,6 +38,7 @@ dives, all read-only against `C:\SeasunGame\Game\JX3\bin\zhcn_hd` + `C:\SeasunGa
 | `3_4_FACIAL.md` | CNDK/new-face/MetaFace/FaceLift pipeline, converter run, face mesh/bones, engine + CLR surface |
 | `3_5_3_7_RAGDOLL_SWIM_FLY.md` | claim-by-claim verification of ragdoll/swim/轻功/fly docs + true gaps + host wiring notes |
 | `3_6_MOUNTS_GLIDER.md` | mount/vehicle/glider/parachute state machines, 15 extracted ride tables, symbols/RVAs |
+| `tools/character/water_surfaces.py` | extract the 5 maps' `watersurfacelist.json` + generate `client/WaterSurfaces.cs` (SPEC_STATES P1) |
 | `SPEC_MOUNT.md` | **redefined mount spec** (C re-task): lifecycle + record interface, jump rules (idle skill 13618 / moving 44565 / sprint-branch triple), facing/seat, animations, acceptance criteria |
 | `SPEC_MOTION.md` | **redefined motion spec** (D re-task): `SkillMove.tab` displacement chain (`OnSkillMove`), heading-at-start rule, MotionTag container settled, camera rule, acceptance criteria |
 | `SPEC_STATES.md` | **redefined states spec** (E re-task): 轻功 grant (passive skill 18 踏云 `MAX_JUMP_COUNT+1`), per-map water surfaces, waterline correction, water AV root cause, fly/bird triggers, acceptance criteria |

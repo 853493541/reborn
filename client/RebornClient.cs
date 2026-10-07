@@ -403,6 +403,8 @@ internal static class RebornClient
                     appTitle = "sandbox-" + myProcName.Substring("reborn_client_".Length);
                 else appTitle = myProcName;
             }
+            // spec §4 #13: a kept chain harness must be labeled in the title too.
+            if (Env("RC_DJUMP", "flip") == "chain") appTitle += " [HARNESS - NOT GAME BEHAVIOR]";
             form.Text = appTitle;
         }
         form.StartPosition = FormStartPosition.CenterScreen;
@@ -2470,21 +2472,25 @@ internal static class RebornClient
         float curJumpGravity = -pGravity;
         Log(string.Format("jump: mode={0} school={1} scale={2:F3} (apex {3:F0}u ~ {3:F0}cm per jump)",
             djumpMode, jumpSchool, jumpScale, 0.5f * (90f * 15f * jumpScale) * (90f * 15f * jumpScale) / (11f * 225f * jumpScale)));
-        // Decoded grant attribute (KCharacter::Jump 0x313C22): an unpowered air
-        // press is accepted while jumpCount < [char+0x334] (op MAX_JUMP_COUNT,
-        // tiny setter 0x140431180; the J1+ rows are NOT reachable this way).
-        // The host models the grant as RC_MAXJUMP (default 2 = 二段跳). The J1+
-        // flight rows are the powered 轻功 move-record path - harness only.
-        int charMaxJump = 2;
-        { int mv; if (int.TryParse(Env("RC_MAXJUMP", "2"), out mv) && mv >= 1 && mv <= 15) charMaxJump = mv; }
+        // Jump grant (SPEC_STATES §2.1/§2.2): Init writes nMaxJumpCount=1 and a
+        // character with no grant REJECTS every air press. The standard player's
+        // passive skill 18 「踏云」 applies MAX_JUMP_COUNT +1 (applier 0x1403ADE70)
+        // -> cap 2 -> exactly ONE extra air jump with the plain profile (NOT the
+        // J1+ rows). RC_GRANT=0 models no grant; RC_CAP overrides for buff
+        // research (additive deltas, §2.2); RC_PARACHUTE models [+0x214]
+        // (blocks jumps, §3.6).
+        int charMaxJump = 1 + (Env("RC_GRANT", "1") == "1" ? 1 : 0);
+        { int cv; if (int.TryParse(Env("RC_CAP", ""), out cv) && cv >= 1 && cv <= 15) charMaxJump = cv; }
+        bool parachute = Env("RC_PARACHUTE", "0") == "1";
+        Log(string.Format("jump grant: cap={0} ({1}) parachute={2}", charMaxJump,
+            charMaxJump == 2 ? "base 1 + \u8E0F\u4E91 MAX_JUMP_COUNT+1" : (charMaxJump > 2 ? "explicit RC_CAP" : "no grant (base 1)"),
+            parachute ? 1 : 0));
         if (djumpMode == "chain")
         {
             Log("WARNING: RC_DJUMP=chain is a TEST HARNESS - NOT GAME BEHAVIOR. The J1+ rows are the \u8f7b\u529f " +
                 "flight arcs; the client consumes them only in the powered move-record path (KCharacter::Jump " +
-                "0x313975: [char+0x1F8] != 0 plus the power pool [char+0x20194+idx*4]), and the air-jump grant " +
-                "comes from script op MAX_JUMP_COUNT (attribute [char+0x334], setter 0x140431180). The host has " +
-                "no \u8f7b\u529f grant, so chain output is labeled 'HARNESS - NOT GAME BEHAVIOR'. See " +
-                "docs/character/3_5_3_7_RAGDOLL_SWIM_FLY.md");
+                "0x313975: [char+0x1F8] != 0 plus the power pool [char+0x20194+idx*4], SPEC_STATES §2.4). The " +
+                "plain grant (cap) never reads them (SPEC §2.1). See docs/character/SPEC_STATES.md");
         }
         // Real locomotion speeds from the shipped CommonNumber table
         // (proof/gravity/number.krl.txt): CharacterWalkSpeed=6, CharacterRunSpeed=20
@@ -2530,17 +2536,38 @@ internal static class RebornClient
         if (radEnv.Length > 0) float.TryParse(radEnv, out playerRadius);
         string hgtEnv = Env("RC_HEIGHT", "");
         if (hgtEnv.Length > 0) float.TryParse(hgtEnv, out playerHeight);
-        // ---------------- W6 water / swim / 轻功 chain / fly harness ----------------
-        // Water source: REGISTERED PROVISIONAL (WaterField, RC_WATER boxes) - the
-        // game's logic cell stream (m_pCell / GetWaterline 0x140312440) is not
-        // host-reachable (no managed water query; water/regiondata extraction is
-        // a MISS). Swim behavior on top uses the decoded values: waterline depth
-        // = 6h*11/112 (players, 0.589), float height = max(base, surface-depth),
-        // CharacterSwimSpeed = 20 u/frame -> 300 u/s, state 6 moving / 7 in
-        // place, swim jump = logic state 8.
-        WaterField waterBox = WaterField.FromEnv(Env("RC_WATER", ""));
-        float pSwim = 300f;
-        float.TryParse(Env("RC_SWIM_SPEED", "300"), out pSwim);
+        // ---------------- 3x STATES: water / swim / 轻功 grant / fly harness ----------------
+        // Contract: docs/character/SPEC_STATES.md (supersedes the old W6 model).
+        // Water = the authored per-map surface list (client/WaterSurfaces.cs,
+        // generated from watersurfacelist.json; SPEC §1.1) mapped to cells with
+        // the registered P1 heuristic in WaterField; the logic cell stream
+        // (m_pCell / 0x140312440) is not host-reachable yet. RC_WATER boxes are
+        // a TEST-ONLY override. The swim float floor is the cell-top surface
+        // (spec §1.3: y = max(y, cellTop - scaled[+0x170]); 0.589 is a
+        // run-speed factor, NOT a waterline - spec §5 #1/#6).
+        string waterMapName = null;
+        try
+        {
+            string mp = mapPath.Replace('/', '\\');
+            int mi = mp.IndexOf("\\maps\\", StringComparison.OrdinalIgnoreCase);
+            if (mi >= 0)
+            {
+                string rest = mp.Substring(mi + 6);
+                int slash = rest.IndexOf('\\');
+                waterMapName = slash > 0 ? rest.Substring(0, slash) : rest;
+            }
+        }
+        catch (Exception) { }
+        WaterField waterBox = WaterField.Create(waterMapName, Env("RC_WATER", ""));
+        // spec §1.4: player water-surface speed = 0.589 * nRunSpeed (the
+        // character run speed, NOT height); NPCs 0.30.
+        float pSwim = 0.589f * pRun;
+        { float sv; if (float.TryParse(Env("RC_SWIM_SPEED", ""), out sv) && sv > 0f) pSwim = sv; }
+        // spec §1.3 float clamp: y = max(y, cellTop - scaled[+0x170]); the scaled
+        // gravity modifier is 0 in the normal case -> the character floats AT
+        // the surface. RC_FLOATMOD models a non-zero modifier for research.
+        float wFloatMod = 0f;
+        float.TryParse(Env("RC_FLOATMOD", "0"), out wFloatMod);
         string clipSwimIdle = Env("RC_CLIP_SWIM_IDLE", f1 + "F1b02yd\u6E38\u6CF3\u6C34\u4E2D\u5F85\u673A.tani");
         string clipSwimFwd  = Env("RC_CLIP_SWIM_FWD",  f1 + "F1b02yd\u6E38\u6CF3\u5411\u524D\u6E38\u6CF3.tani");
         string clipSwimBack = Env("RC_CLIP_SWIM_BACK", f1 + "F1b02yd\u6E38\u6CF3\u5411\u540E\u6E38\u6CF3.tani");
@@ -2564,8 +2591,8 @@ internal static class RebornClient
         bool chainActive = false;
         int chainSegIdx = 0;
         long chainSegEndMs = 0;
-        Log(string.Format("states: waterBoxes={0} swim={1:F0}u/s chainSegTicks={2:F0} suspendDemo={3}",
-            waterBox.Count, pSwim, chainSegTicks, suspendDemo ? 1 : 0));
+        Log(string.Format("states: map='{0}' {1} swim={2:F0}u/s floatMod={3:F0} chainSegTicks={4:F0} suspendDemo={5}",
+            waterMapName == null ? "?" : waterMapName, waterBox.Describe(), pSwim, wFloatMod, chainSegTicks, suspendDemo ? 1 : 0));
         // Character step budget (host proxy for the server-authoritative step;
         // the client's own prediction has no capsule-vs-mesh blocking at all,
         // CLIENT_COLLISION_IMPROVEMENT_PLAN 8.3). 64 u = the game-side ground/landing
@@ -3715,17 +3742,15 @@ internal static class RebornClient
             float ground = py;
             bool groundOk = true;
             if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
-            // W6 water sample (registered provisional source): float height per
-            // the decoded GetWaterline semantics (base/surface cell words << 6;
-            // player submersion factor 0.589 = 6h*11/112). The box's authored
-            // base falls back to the terrain ground.
+            // States spec §1.3: water = authored surface (per-map list, P1 cell
+            // mapping in WaterField). The float floor is the cell-top surface
+            // minus the scaled gravity modifier (0 by default -> at the surface).
             bool inWater = false;
-            float wSurf = 0f, wBase = 0f, wFloat = 0f;
-            if (waterBox.Count > 0 && waterBox.Sample(px, pz, out wSurf, out wBase))
+            float wSurf = 0f, wFloat = 0f;
+            float wGround = ground;
+            if (waterBox.Count > 0 && waterBox.Sample(px, pz, wGround, out wSurf))
             {
-                if (!waterBox.HasBase(px, pz)) wBase = ground;
-                float wsub = playerHeight * WaterField.PlayerSubmersionFactor;
-                wFloat = Math.Max(wBase, wSurf - wsub);
+                wFloat = wSurf - wFloatMod;    // y = max(y, cellTop - scaled[+0x170])
                 inWater = py <= wSurf && vy <= 0f && wFloat > ground + 1f;
             }
             swimmingLast = inWater;
@@ -4032,29 +4057,42 @@ internal static class RebornClient
             // SPEC_MOUNT 3.3 host-server rule: bSprintFlag while mounted and moving
             // forward on the ground, or while the deliberate sprint intent is held.
             mount.SprintFlag = mount.Mounted && fwdAxis > 0f && (grounded || mount.SprintIntent);
-            // jump + 二段跳: press 1 = J0; in the air press 2 = flip mode (one
-            // extra normal-strength jump) or chain mode (raw J1.. table rows)
+            // jump + 二段跳 (SPEC_STATES §2): press 1 = ground jump; an air press
+            // is accepted only within the grant cap (踏云 -> 2) and uses the
+            // plain profile; the J1+ rows are the powered path (harness only).
             if (jumpPressed)
             {
                 jumpPressed = false;
                 if (sitting) { sitting = false; Log("sit: stand (jump)"); }
-                if (inWater)
+                if (parachute)
                 {
-                    // SWIM_JUMP: logic state 8 (setter 0x14031C400; guards:
-                    // tower/parachute/hold flags clear). The vertical impulse
-                    // source is not decoded -> REGISTERED PROVISIONAL: reuse the
-                    // school J0 takeoff triple (the generic jump), not an
-                    // invented value. Re-open: trace the state-8 velocity writer.
-                    int[] t0 = JumpTable.Triples[jumpSchool][0];
-                    int jg = t0[2]; if (jg < 0) jg = 0; else if (jg > 31) jg = 31;
-                    vy = t0[1] * 15f * jumpScale;
-                    curJumpGravity = jg * 225f * jumpScale;
-                    grounded = false;
-                    airStartY = py;
-                    jumpCount = 1;
-                    swimState = 8;
-                    Log(string.Format("swim: jump state=8 (prov J0 impulse) triple={0},{1},{2} vy={3:F0} pos=({4:F0},{5:F0},{6:F0})",
-                        t0[0], t0[1], t0[2], vy, px, py, pz));
+                    // spec §3.6/§21: bOnParachuteFlag ([+0x214]) rejects jumps
+                    // (consumer 0x14031377D).
+                    Log("jump reject: parachute flag set (bOnParachuteFlag [+0x214], spec §3.6)");
+                }
+                else if (inWater)
+                {
+                    if (moving)
+                    {
+                        if (swimLog) Log("swim: jump ignored while moving (state 8 starts from standing in water, spec §1.3/§1.5)");
+                    }
+                    else
+                    {
+                        // SWIM_JUMP: logic state 8 (setter 0x14031C400: state 1 +
+                        // tower/parachute/hold flags clear) - carries NO velocity.
+                        // REGISTERED PROVISIONAL P2: reuse the calibrated plain
+                        // profile impulse. Re-open: trace the state-8 velocity writer.
+                        int[] t0 = JumpTable.Triples[jumpSchool][0];
+                        int jg = t0[2]; if (jg < 0) jg = 0; else if (jg > 31) jg = 31;
+                        vy = t0[1] * 15f * jumpScale;
+                        curJumpGravity = jg * 225f * jumpScale;
+                        grounded = false;
+                        airStartY = py;
+                        jumpCount = 1;
+                        swimState = 8;
+                        Log(string.Format("swim: jump state=8 [P2 REGISTERED PROVISIONAL - impulse not decoded, using plain profile] triple={0},{1},{2} vy={3:F0} pos=({4:F0},{5:F0},{6:F0})",
+                            t0[0], t0[1], t0[2], vy, px, py, pz));
+                    }
                 }
                 else
                 {
@@ -4198,7 +4236,7 @@ internal static class RebornClient
                         if (!suspendLogged)
                         {
                             suspendLogged = true;
-                            Log("fly: FlyTo state=0x1F (harness) - real trigger is skill/script driven");
+                            Log("fly: FlyTo state=0x1F [HARNESS - NOT GAME BEHAVIOR] - real trigger is skill/script driven (spec P5)");
                         }
                     }
                 }
@@ -4209,24 +4247,24 @@ internal static class RebornClient
                 }
             }
 
-            // W6 swim float: hold at the waterline. The game's PVM clamps
-            // y = min(y, float height) for water cells; the below-waterline
-            // buoyancy is not decoded, so the host holds the float height
-            // (registered; re-open with the buoyancy decode).
+            // Swim float (SPEC §1.3): PVM clamps y = max(y, cellTop - scaled
+            // [+0x170]) in states 6/7 (clamp-up only; 0x31A285). With modifier
+            // 0 the character floats AT the surface. Below-surface push is P3
+            // (not decoded -> not invented; the clamp is the decoded behavior).
             // Fly/suspend harness (RC_SUSPEND_DEMO): game states 0x1F/0x21 are
-            // skill/script driven; the harness hovers for 1.2 s and logs the
-            // decoded state codes. Real triggers are a named host gap.
+            // skill/script driven; the harness hovers and logs the decoded
+            // state codes - labeled HARNESS, never game behavior (P5).
             if (!grounded && inWater && vy <= 0f)
             {
                 swimState = moving ? 6 : 7;
                 vy = 0f;
-                py = wFloat;
+                if (py < wFloat) py = wFloat;
                 jumpCount = 0;
                 if (swimLog && now - lastSwimLog >= 1000)
                 {
                     lastSwimLog = now;
-                    Log(string.Format("swim: state={0} surface={1:F0} base={2:F0} float={3:F0} y={4:F0} depth={5:F0} pos=({6:F0},{7:F0})",
-                        swimState, wSurf, wBase, wFloat, py, wSurf - py, px, pz));
+                    Log(string.Format("swim: state={0} surface={1:F0} float={2:F0} y={3:F0} depth={4:F0} pos=({5:F0},{6:F0})",
+                        swimState, wSurf, wFloat, py, wSurf - py, px, pz));
                 }
             }
             else if (!grounded && suspendDemo && now < suspendUntil)
@@ -4245,7 +4283,7 @@ internal static class RebornClient
                     if (!floatLogged)
                     {
                         floatLogged = true;
-                        Log(string.Format("fly: float floor y={0:F0} (terrain+0x100, PVM 0x31913C state 0x1F)", py));
+                        Log(string.Format("fly: float floor y={0:F0} (terrain+0x100, PVM 0x31913C state 0x1F) [HARNESS - NOT GAME BEHAVIOR]", py));
                     }
                 }
                 else
@@ -4259,7 +4297,7 @@ internal static class RebornClient
                 if (suspendDemo && !suspendEnded && suspendLogged && now >= suspendUntil)
                 {
                     suspendEnded = true;
-                    Log("fly: EndFlyJump state=0x21 -> 4 (harness exp)");
+                    Log("fly: EndFlyJump state=0x21 -> 4 [HARNESS - NOT GAME BEHAVIOR]");
                 }
                 float vyBefore = vy;
                 // SPEC_MOTION §2.3 step 5: IgnoreGravity rows hold the row VZ
@@ -5808,11 +5846,13 @@ internal static class RebornClient
                     }
                 }
                 float curSpd = !moving ? 0f
+                             : swimmingLast ? pSwim
                              : shiftDown ? pRun * 10f
                              : mount.Mounted ? (walkMode ? rideWalk : rideRun)
                              : walkMode ? pSpeed
                              : pRun;
                 string moveMode = !moving ? (mount.Mounted ? "RIDE_IDLE" : "IDLE")
+                                : swimmingLast ? "SWIM"
                                 : shiftDown ? "RUN10"
                                 : mount.Mounted ? "RIDE"
                                 : walkMode ? "WALK"
