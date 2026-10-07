@@ -210,6 +210,7 @@ static BYTE* g_rtTramp = NULL;
 static BYTE g_runSaved[32];
 static BYTE* g_runTramp = NULL;
 static void* g_registerFunctor = NULL;
+static void* g_taskQueue = NULL;
 
 // The RL code's list-push helper (rep+0x3E52A0, reached via the 0x2363C jmp
 // thunk): appends {node->next=?, node+8=value} at container+0x78/0x80. Logging
@@ -242,6 +243,11 @@ static void __fastcall hookTaskPush(void* container, void* value)
                 g_registerFunctor = value;
                 logf("[host] taskPush: register functor %p captured (container %p)",
                      value, container);
+            }
+            if (v0 == (DWORD64)((BYTE*)g_repModule + 0xCCE548))
+            {
+                g_taskQueue = value;
+                logf("[host] taskPush: task queue %p captured (container %p)", value, container);
             }
         }
     }
@@ -4219,21 +4225,55 @@ int main(void)
                                 // operator() forwards arg2 (rdx = the step
                                 // controller) to registerTasks, which creates
                                 // more tasks into it.
-                                if (g_registerFunctor != NULL)
+                                // EXPERIMENTAL: registerTasks enqueues via
+                                // 0x80CED0(queue, task), which dereferences a sync
+                                // object at [queue+8]; the game's real async-task
+                                // queue is not reconstructed in-host, so this
+                                // currently AVs. Gate it behind RC_HOST_REGINVOKE=1.
+                                char regFlag[8] = {0};
+                                int regInvoke = (GetEnvironmentVariableA(
+                                    "RC_HOST_REGINVOKE", regFlag, sizeof(regFlag)) != 0);
+                                if (regInvoke && g_registerFunctor != NULL)
                                 {
                                     char rdb[64] = {0};
                                     describeAddr((DWORD64)(*(void***)g_registerFunctor)[0],
                                                  rdb, sizeof(rdb));
                                     void* scR = *(void**)(param + 0xC8);
+                                    void* arg2R = (g_taskQueue != NULL) ? g_taskQueue : scR;
                                     void* oldTailR = NULL;
                                     if (scR != NULL)
+                                    {
                                         oldTailR = *(void**)((BYTE*)scR + 0x80);
-                                    logf("[host] frame60: invoking register functor %p vt0=%s stepCtrl=%p",
-                                         g_registerFunctor, rdb, scR);
+                                        if (g_taskQueue != NULL)
+                                        {
+                                            logf("[host] frame60: regQueue(real)=%p +8=%p +0x10=%p fl60=%u fl61=%u ref=%d",
+                                                 g_taskQueue, *(void**)((BYTE*)g_taskQueue + 8),
+                                                 *(void**)((BYTE*)g_taskQueue + 0x10),
+                                                 *(unsigned char*)((BYTE*)g_taskQueue + 0x60),
+                                                 *(unsigned char*)((BYTE*)g_taskQueue + 0x61),
+                                                 *(int*)((BYTE*)g_taskQueue + 0x64));
+                                        }
+                                        else
+                                        {
+                                            // fake queue: force the direct-execution
+                                            // path (+0x60/+0x61) to avoid the NULL
+                                            // mutex at +8 in the enqueue helper.
+                                            logf("[host] frame60: regQueue(fake)=%p +8=%p +0x10=%p fl60=%u fl61=%u ref=%d",
+                                                 scR, *(void**)((BYTE*)scR + 8),
+                                                 *(void**)((BYTE*)scR + 0x10),
+                                                 *(unsigned char*)((BYTE*)scR + 0x60),
+                                                 *(unsigned char*)((BYTE*)scR + 0x61),
+                                                 *(int*)((BYTE*)scR + 0x64));
+                                            *(unsigned char*)((BYTE*)scR + 0x60) = 1;
+                                            *(unsigned char*)((BYTE*)scR + 0x61) = 1;
+                                        }
+                                    }
+                                    logf("[host] frame60: invoking register functor %p vt0=%s arg2=%p (queue=%p stepCtrl=%p)",
+                                         g_registerFunctor, rdb, arg2R, g_taskQueue, scR);
                                     __try
                                     {
                                         ((void (__fastcall *)(void*, void*))
-                                         ((BYTE*)g_repModule + 0x80E340))(g_registerFunctor, scR);
+                                         ((BYTE*)g_repModule + 0x80E340))(g_registerFunctor, arg2R);
                                         logf("[host] frame60: register functor done; [main+0x210]=%p",
                                              *(void**)((BYTE*)g_repSingleton + 0x210));
                                     }
@@ -4281,7 +4321,8 @@ int main(void)
                                     { logf("[host] frame60: register task walk fault"); }
                                 }
                                 else
-                                    logf("[host] frame60: register functor not captured");
+                                    logf("[host] frame60: register invoke skipped (captured=%d RC_HOST_REGINVOKE=%d)",
+                                         (g_registerFunctor != NULL), regInvoke);
                                 __try
                                 {
                                     void* member = *(void**)(param + 0xA8);
