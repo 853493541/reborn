@@ -401,6 +401,7 @@ static HWND g_hostHwnd = NULL;
 static volatile LONG g_flagWatchArmed = 0;
 static volatile LONG g_movieWatchArmed = 0;
 static void* g_engineInstance = NULL;
+static void* g_engIface = NULL;
 static volatile LONG g_flagWatchHit = 0;
 static BYTE g_ctwSaved[32];
 static BYTE* g_ctwTramp = NULL;
@@ -1922,6 +1923,7 @@ int main(void)
         fn_out get3d = (fn_out)GetProcAddress(adapter, "Get3DEngineInterface");
         if (get3d) get3d(&engIface);
     }
+    g_engIface = engIface;
 
     wchar_t engPath[MAX_PATH];
     swprintf_s(engPath, MAX_PATH, L"%s\\KG3DEngineDX11EX64.dll", bin64);
@@ -3321,6 +3323,12 @@ int main(void)
                         // table resource. The exe fills it from the dispatcher
                         // arg; the host uses the RL resource loader.
                         *(void**)(param + 0xA8) = g_rlLoader;
+                        // the wrapper's member vt[3](member, out, float) must fill
+                        // `out` (a smart pointer) and return &out; candidates tried
+                        // (rlLoader, engine mgr, conv, rep singleton, xlogic, facade)
+                        // either return garbage or do not fill the out. The exe passes
+                        // the module dispatcher's r8 (the event data) here - see
+                        // EXPERIENCES 2026-10-06 for the remaining probe.
                         // NOTE: the wrapper's resource member (param+0xA8) is still
                         // unidentified; candidates tried: g_rlLoader (vt[3] =
                         // rep+0x18AB6), g_ifMgr (x3d+0x201D0), g_ifConv - all return
