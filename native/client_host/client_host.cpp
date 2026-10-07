@@ -5145,6 +5145,22 @@ int main(void)
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] frame60: LoadConfigureFile fault; [main+0x210]=%p",
                                *(void**)((BYTE*)g_repSingleton + 0x210)); }
+                        // Gate 3: the named-object manager [rep+0xF51298] is 0
+                        // in-host, so KRLScene::InitializeScene's factory
+                        // (0xAEDFD0 -> getter 0x920C40) returns 0 and
+                        // [KRLScene+0xF29E8] stays 0. Its creator is rep+0x920D10
+                        // (a 2-entry factory vector context). Try to create it.
+                        __try
+                        {
+                            static unsigned char noma[0x40];
+                            memset(noma, 0, sizeof(noma));
+                            void* nr = ((void* (__fastcall *)(void*))
+                                        ((BYTE*)g_repModule + 0x920D10))(noma);
+                            logf("[host] frame60: namedObjectMgr(0x920D10) -> %p [rep+0xF51298]=%p",
+                                 nr, *(void**)((BYTE*)g_repModule + 0xF51298));
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: namedObjectMgr(0x920D10) fault"); }
                         {
                             typedef long (__fastcall *CreateRLSceneFn)(
                                 unsigned id, unsigned type, unsigned a3, unsigned a4,
