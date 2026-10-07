@@ -17,10 +17,15 @@ window's real content and placement; fix rendering gaps from the engine's own co
 | gate | command | value |
 |---|---|---|
 | render | `UiProcessApp.exe --selftest` | **1240/0/0** |
-| audit | `UiProcessApp.exe --audit` | placeholders=482, unresolved=49, oob=7610 |
+| audit | `UiProcessApp.exe --audit` | placeholders=482, unresolved=49, oob=7690 |
 | replay | `.venv\Scripts\python.exe tools\ui\replay_all.py` | **OK=1201 / ERR=1 / NOENTRY=9** of 1211 scripted |
 | census | `.venv\Scripts\python.exe tools\ui\ini_construct_census.py` | **0 unhandled constructs** |
 | runtime gap | `.venv\Scripts\python.exe tools\ui\runtime_gap_report.py` | visual drops **1** (FromIconID, data-blocked) |
+
+oob 7610 → 7690 (2026-10-07): the replay shim now memoizes section proxies (engine controls are
+stable objects), so control state persists across calls; VampireCountPanel (99 → 144 sections) and
+DesertStormInfoPanel materialize their list rows — real items, flagged outside the fixed window by
+the audit heuristic (not a collapse).
 
 A/B (runtime vs authored/static, `Data/render_status.tsv` vs a static baseline): 31 windows
 fuller, 113 fewer (state-driven hides), no collapse.
@@ -45,21 +50,30 @@ fuller, 113 fewer (state-driven hides), no collapse.
   defaults (checked unless ⚠ 缺图/文案缺失/超出窗口), overrides in `Data/item_checks.tsv`.
 - **Issue-check fixes**: atlas texture-name decoded as **GBK**; size-aware texture pick
   (stale small tga vs real dds); intentional `TextureName=no` no longer flagged.
+- **Interaction extras (2026-10-07)**: the engine's item drag sequence
+  (`OnItemLButtonDown` → `OnItemLButtonDrag` → `OnItemLButtonUp`/`OnItemLButtonDragEnd`, click on
+  release), the drag-handle family (`OnDragButtonBegin/Drag/End` on the `RegisterLButtonDrag`
+  control), scrollbar thumb dragging (shared with the wheel; `RegisterScrollControl` consumed), and
+  popup chains (`Data/ui_window_aliases.tsv` + cross-module `OpenWindow` recording). Shim: memoized
+  section proxies, `arg0..` engine convention, `MOUSE`/`CLIENT` → `Station.GetMessagePos/
+  GetClientSize`. New headless `--drag` check; `tools/ui/scan_window_aliases.py`. See
+  `UI_INTERACTION_REPLAY.md` §6.
 
 ## 4. Open items (priority order)
 
-1. **WulinShenghuiDuizhen** — the only ERR: `assert` on absent server data. A tolerant assert
-   was tried and **rejected** (it changes pcall-guarded branches; broke EmotionPanel). Re-open
-   only with the real data source or a caller-aware approach.
+1. **WulinShenghuiDuizhen** — the only ERR; **verified server-supplied phase** (2026-10-07): the
+   engine's only caller is RemoteCommand's `OpenWulinShenghuiDuizhen` RemoteFunction (`<?:4104>`)
+   → `OpenWindow(phase)` → `Init(frame, phase)` → `assert(1 <= phase <= TOTAL_PHASE)`; the include
+   table (`UIscript_GetWulinShenghuiDuizhenInfoByPhase`) has the per-phase NPC lists, the current
+   phase arrives with the server command. No offline source; tolerant assert still rejected.
 2. **FromIconID** (Player) — needs the server icon table (data-blocked); the last visual drop.
 3. **Art tail** (482 placeholders): 259 intentional `no`, ~195 files absent from the pak
    (probed MISS), ~24 authored frames beyond the atlas. Only fix if a new source appears.
 4. **Text tail** (49 ids): all in tables not shipped (probed MISS) — dev/unreleased.
-5. **Interaction extras**: item drag (`OnDragButton`/`OnItemLButtonDown/Move/Up`), scrollbar
-   thumb dragging, window chains to popups.
-6. **Fidelity (Phase 7)**: unmeasured; user declined a screenshot set — one screenshot only
+5. **Fidelity (Phase 7)**: unmeasured; user declined a screenshot set — one screenshot only
    when a specific window looks wrong (`tools/proof/image_stats.py`; proof under `proof/ui/`).
-7. 9 NOENTRY popups: verified-authored (no init to replay).
+6. 9 NOENTRY popups: verified-authored (no init to replay).
+7. ~~Interaction extras~~ done (2026-10-07, §3); remaining: WndEdit Enter/focus-kill commit.
 
 ## 5. Provisional items (registered, re-open criteria)
 
@@ -75,7 +89,9 @@ debug print — diagnostic only). Rebuild recipe: `cl /c ..\src\*.c` then link w
 
 - **The app reads its inventory from `bin\Release\net5.0-windows\Data\ui_inventory.json`**
   (a build copy). After editing `ui-process-app\Data\ui_inventory.json`, copy it there or rebuild,
-  or the viewer shows the old catalog.
+  or the viewer shows the old catalog. Other Data files (`ui_window_aliases.tsv`,
+  `runtime_state\*`, `render_status.tsv`) are read from the project dir (`Paths.AppRoot`), not the
+  bin copy.
 - **Concurrent runs**: this is not `#iso`; the canonical exe is fine, but kill stale
   `UiProcessApp`/`lua32` before rebuilds. `lua32` children hold the temp build; relink fails if
   a process is running.
@@ -96,9 +112,12 @@ debug print — diagnostic only). Rebuild recipe: `cl /c ..\src\*.c` then link w
 dotnet build ui-process-app -c Release
 ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --selftest   # 1240/0/0
 ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --audit      # ph/unresolved/oob
+ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --drag bigbagpanel Btn_Drag --out drag.png
+ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --click bigbagpanel Btn_Bank OnLButtonClick
 .venv\Scripts\python.exe tools\ui\replay_all.py                         # OK/ERR/NOENTRY
 .venv\Scripts\python.exe tools\ui\ini_construct_census.py               # unhandled constructs
 .venv\Scripts\python.exe tools\ui\runtime_gap_report.py                 # visual drops
+.venv\Scripts\python.exe tools\ui\scan_window_aliases.py                # opener alias index
 ```
 
 Docs index: `docs/ui/README.md` (`UI_WIREUP_PLAN.md` has the phase ledger; `UI_RUNTIME_REPLAY.md`

@@ -1021,6 +1021,19 @@ namespace UiProcessApp.Engine
                         section.Values["$DragRegistered"] = "1";
                         applied++;
                         break;
+                    case "RegisterScrollControl":
+                        // scroll.lua binds a bar to its content handle list (tList =
+                        // { framePath, handle, step }); the viewer maps the wheel/thumb
+                        // offset onto that handle. The first non-empty entry is the handle.
+                        if (parts.Length > 5)
+                            foreach (var target in parts[5].Split(','))
+                            {
+                                if (string.IsNullOrWhiteSpace(target)) continue;
+                                section.Values["$ScrollTarget"] = target;
+                                break;
+                            }
+                        applied++;
+                        break;
                     case "SetAnimateGroupNormal":
                     case "SetAnimateGroupMouseOver":
                     case "SetAnimateGroupMouseDown":

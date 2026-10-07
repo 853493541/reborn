@@ -46,7 +46,7 @@ CONSUMED = {
     "FromTextureFile",
     "SetAnimateGroupMouseDown", "SetAnimateGroupMouseOver", "SetAnimateGroupNormal",
     "SetAnimation", "SetLoopCount", "SetTextAutoTipEnabled",
-    "SetDragArea", "RegisterLButtonDrag", "EnableDrag",
+    "SetDragArea", "RegisterLButtonDrag", "EnableDrag", "RegisterScrollControl",
     "Expand", "ActivePage",
 }
 ITEM_CREATION = set()
@@ -231,13 +231,14 @@ def main(argv: list[str] | None = None) -> int:
     lines.append("  `SetScrollPos` content shift, `SetStepCount`/`EnableScroll`), render (`FromUITex`,")
     lines.append("  `SetImageType`, `SetPercentage`, `SetFontColor`, `SetOverText`), state (`Enable`")
     lines.append("  disabled frame, `Check` checked frame, `Expand`, `ActivePage`).")
-    lines.append("- **Remaining (26 calls):** `AppendItemFromData` (5, SocialPanel �?the arg is a")
-    lines.append("  function returning item data; needs the function's own row shape), the drag")
-    lines.append("  registrations (`SetDragArea`/`RegisterLButtonDrag`/`EnableDrag`/`SetScrollVerStepSize`,")
-    lines.append("  8 �?interaction config, no visual), and the animation/icon render calls")
+    lines.append("- **Interaction wired (2026-10-07):** `SetDragArea`/`RegisterLButtonDrag`/`EnableDrag`")
+    lines.append("  feed the viewer's item drag / drag-handle sequence and `RegisterScrollControl` feeds the")
+    lines.append("  wheel + scrollbar-thumb offset (see `UI_INTERACTION_REPLAY.md` §6).")
+    lines.append("- **Remaining:** `AppendItemFromData` (the arg is a function returning item data; needs")
+    lines.append("  the function's own row shape) and the animation/icon render calls")
     lines.append("  (`SetAnimation`/`SetAnimateGroup*`/`SetLoopCount`/`FromIconID`/`FromTextureFile`/")
-    lines.append("  `SetAlwaysTop`/`FormatTextForDraw`/`SetTextAutoTipEnabled`, 13 �?frame animation")
-    lines.append("  and item-icon sources).")
+    lines.append("  `SetAlwaysTop`/`FormatTextForDraw`/`SetTextAutoTipEnabled` — frame animation")
+    lines.append("  and item-icon sources; `FromIconID` is data-blocked, animations keep the authored frame).")
     lines.append("- The recorded calls are the client's own; the fix is execution, not approximation.")
     lines.append("")
     lines.append("## Viewer guard policies (2026-10-05)")

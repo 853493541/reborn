@@ -19,6 +19,9 @@ namespace UiProcessApp
         private Canvas _layoutCanvas;
         private WindowInfo _currentWindow;
         private Dictionary<string, string> _rejected;
+        /// <summary>Window-opener globals scanned from the window scripts' own SETGLOBAL
+        /// definitions (OpenBankPanel -> BigBankPanel); resolves recorded popup chains.</summary>
+        private Dictionary<string, string> _windowAliases = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         /// <summary>Per-window render status from Data/render_status.tsv (P1 badge:
         /// placeholders/unresolved/outOfBounds + shell/runtime-host flags).</summary>
         private Dictionary<string, string> _status;
@@ -47,6 +50,22 @@ namespace UiProcessApp
         private bool _windowDragActive;
         private System.Windows.Point _windowDragStart;
         private double _windowDragOffX, _windowDragOffY;
+        // Pointer state for the client's own item events (KGUIX64 KItemEventMgr
+        // 0x180153590/0x180153850: OnItemLButtonDown on press, OnItemLButtonDrag while
+        // held past the ~3px threshold, OnItemLButtonUp + OnItemLButtonDragEnd on
+        // release, OnItemLButtonClick on a release without drag) and the drag-handle
+        // family (OnDragButtonBegin/Drag/End, fired with `this` = the control the
+        // script registered via RegisterLButtonDrag).
+        private string _pointerDownSection;
+        private System.Windows.Point _pointerDownPoint;
+        private bool _pointerDragging;
+        private bool _handleDragActive;
+        private string _handleDragSection;
+        private DateTime _lastDragDispatchUtc = DateTime.MinValue;
+        // Scrollbar thumb drag (WndScroll/WndNewScrollBar): shares the wheel's offset.
+        private string _scrollDragName;
+        private double _scrollDragStartY;
+        private double _scrollDragStartOffset;
         // Per-item review checklist (Data/item_checks.tsv) + the rendered-item list
         // per layout cache key + the canvas highlight overlay.
         private readonly System.Collections.Generic.Dictionary<string, bool> _itemChecks =
@@ -97,6 +116,7 @@ namespace UiProcessApp
             _inventory = LoadInventory();
             _rejected = RejectionStore.Load(Paths.AppRoot);
             RejectionStore.Apply(_inventory, _rejected);
+            _windowAliases = LoadWindowAliases();
             foreach (var pair in ItemCheckStore.Load(Paths.AppRoot)) _itemChecks[pair.Key] = pair.Value;
             _status = LoadStatus();
             LayoutHost.LayoutUpdated += OnLayoutUpdated;
@@ -986,34 +1006,70 @@ namespace UiProcessApp
             _replayServer = null;
         }
 
-        /// <summary>Click → hit-test the built element tree → dispatch the section's own
-        /// handler through the interaction server and re-render with the delta applied.</summary>
+        /// <summary>Press → hit-test the built element tree → arm the engine's own
+        /// pointer sequence: scrollbar thumb drag, the drag-handle family
+        /// (OnDragButtonBegin) or the item sequence (OnItemLButtonDown). The click
+        /// handler itself fires on release, as in the engine.</summary>
         private void OnLayoutClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (TryBeginWindowDrag(e)) return;
             if (_replayServer == null || _replayIn == null || _replayOut == null) return;
             if (_lastBuild == null || _elementToSection == null || _currentWindow == null) return;
             if (!string.Equals(_currentWindow.Id, _replayWindowId, StringComparison.OrdinalIgnoreCase)) return;
-            var sectionName = HitTestSection(e.GetPosition(LayoutHost));
+            var pos = e.GetPosition(LayoutHost);
+            var sectionName = HitTestSection(pos);
             if (sectionName == null) return;
-            var handler = PickHandler(sectionName);
-            if (handler == null) return;
-            SendReplayEvent(sectionName, handler, true);
+            _pointerDownSection = sectionName;
+            _pointerDownPoint = pos;
+            _pointerDragging = false;
+            _handleDragActive = false;
+            _handleDragSection = null;
+            // Scrollbar: a press on the bar (not inside its content handle) starts a
+            // native thumb drag bound to the wheel's offset.
+            if (TryBeginScrollDrag(sectionName, pos)) { e.Handled = true; return; }
+            // Drag handle (the control the script registered via RegisterLButtonDrag,
+            // e.g. Btn_Drag): the engine's OnDragButton family with `this` = the handle.
+            if (IsDragHandle(sectionName) && _replayHandlers.Contains("OnDragButtonBegin"))
+            {
+                _handleDragActive = true;
+                _handleDragSection = sectionName;
+                SendReplayEvent(sectionName, "OnDragButtonBegin", false, null, pos);
+                e.Handled = true;
+                return;
+            }
+            // Items: OnItemLButtonDown fires on press (the click fires on release).
+            if (IsItemSection(sectionName) && _replayHandlers.Contains("OnItemLButtonDown"))
+                SendReplayEvent(sectionName, "OnItemLButtonDown", false, null, pos);
+        }
+
+        private static bool IsItemSection(string section)
+        {
+            return section.StartsWith("Box_", StringComparison.OrdinalIgnoreCase) ||
+                   section.StartsWith("__lt_", StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>The control the window script registered for left-button drag
+        /// (`RegisterLButtonDrag` -> $DragRegistered, e.g. BigBagPanel's Btn_Drag);
+        /// the engine fires the OnDragButton family with `this` = that control.</summary>
+        private bool IsDragHandle(string section)
+        {
+            if (_lastBuild == null || string.IsNullOrWhiteSpace(section)) return false;
+            if (!_lastBuild.Sections.TryGetValue(section, out var sec)) return false;
+            return sec.Get("$DragRegistered") == "1" || sec.Get("$DragEnabled") == "1";
         }
 
         private string PickHandler(string section)
         {
             if (section.StartsWith("CheckBox_", StringComparison.OrdinalIgnoreCase) &&
                 _replayHandlers.Contains("OnCheckBoxCheck")) return "OnCheckBoxCheck";
-            if ((section.StartsWith("Box_", StringComparison.OrdinalIgnoreCase) ||
-                 section.StartsWith("__lt_", StringComparison.OrdinalIgnoreCase)) &&
-                _replayHandlers.Contains("OnItemLButtonClick")) return "OnItemLButtonClick";
+            if (IsItemSection(section) && _replayHandlers.Contains("OnItemLButtonClick")) return "OnItemLButtonClick";
             if (_replayHandlers.Contains("OnLButtonClick")) return "OnLButtonClick";
             return null;
         }
 
-        /// <summary>Hover: dispatch OnMouseLeave/OnMouseEnter when the section under
-        /// the cursor changes (the scripts' own state handlers, same server).</summary>
+        /// <summary>Hover dispatches OnMouseLeave/OnMouseEnter when the section under
+        /// the cursor changes; while a press is armed the engine's drag events replace
+        /// hover (item drag, drag handle, scrollbar thumb).</summary>
         private void OnLayoutMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (_windowDragActive)
@@ -1031,7 +1087,36 @@ namespace UiProcessApp
             if (_replayServer == null || _replayIn == null || _replayOut == null) return;
             if (_lastBuild == null || _elementToSection == null || _currentWindow == null) return;
             if (!string.Equals(_currentWindow.Id, _replayWindowId, StringComparison.OrdinalIgnoreCase)) return;
-            var section = HitTestSection(e.GetPosition(LayoutHost));
+            var point = e.GetPosition(LayoutHost);
+            bool leftDown = e.LeftButton == System.Windows.Input.MouseButtonState.Pressed;
+            if (_scrollDragName != null && leftDown)
+            {
+                DragScrollThumb(point);
+                e.Handled = true;
+                return;
+            }
+            if (_handleDragActive && leftDown && _handleDragSection != null)
+            {
+                if (ShouldDispatchDrag())
+                    SendReplayEvent(_handleDragSection, "OnDragButton", false, null, point);
+                e.Handled = true;
+                return;
+            }
+            if (_pointerDownSection != null && leftDown && IsItemSection(_pointerDownSection) &&
+                _replayHandlers.Contains("OnItemLButtonDrag"))
+            {
+                var dx = point.X - _pointerDownPoint.X;
+                var dy = point.Y - _pointerDownPoint.Y;
+                if (_pointerDragging || (dx * dx + dy * dy) >= 16)
+                {
+                    _pointerDragging = true;
+                    if (ShouldDispatchDrag())
+                        SendReplayEvent(_pointerDownSection, "OnItemLButtonDrag", false, null, point);
+                }
+                e.Handled = true;
+                return;
+            }
+            var section = HitTestSection(point);
             if (string.Equals(section, _hoverSection, StringComparison.Ordinal)) return;
             var previous = _hoverSection;
             _hoverSection = section;
@@ -1039,6 +1124,16 @@ namespace UiProcessApp
                 SendReplayEvent(previous, "OnMouseLeave");
             if (section != null && _replayHandlers.Contains("OnMouseEnter"))
                 SendReplayEvent(section, "OnMouseEnter");
+        }
+
+        /// <summary>Engine drag events fire per mouse-move message; the viewer's
+        /// round trip + re-render is heavier, so throttle repeated drag dispatches.</summary>
+        private bool ShouldDispatchDrag()
+        {
+            var now = DateTime.UtcNow;
+            if ((now - _lastDragDispatchUtc).TotalMilliseconds < 40) return false;
+            _lastDragDispatchUtc = now;
+            return true;
         }
 
         private string HitTestSection(Point point)
@@ -1105,37 +1200,50 @@ namespace UiProcessApp
             return true;
         }
 
+        /// <summary>Release: finish the engine's pointer sequence — the item drag
+        /// (OnItemLButtonUp then OnItemLButtonDragEnd, the engine's up order) or the
+        /// click handler when no drag happened; the drag handle ends its own family.</summary>
         private void OnLayoutMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             _windowDragActive = false;
+            if (_scrollDragName != null)
+            {
+                _scrollDragName = null;
+                return;
+            }
+            if (_handleDragActive)
+            {
+                if (_handleDragSection != null && _replayHandlers.Contains("OnDragButtonEnd"))
+                    SendReplayEvent(_handleDragSection, "OnDragButtonEnd", false, null, e.GetPosition(LayoutHost));
+                _handleDragActive = false;
+                _handleDragSection = null;
+                _pointerDownSection = null;
+                return;
+            }
+            if (_pointerDownSection != null && _pointerDragging && IsItemSection(_pointerDownSection))
+            {
+                if (_replayHandlers.Contains("OnItemLButtonUp"))
+                    SendReplayEvent(_pointerDownSection, "OnItemLButtonUp", false, null, e.GetPosition(LayoutHost));
+                if (_replayHandlers.Contains("OnItemLButtonDragEnd"))
+                    SendReplayEvent(_pointerDownSection, "OnItemLButtonDragEnd", false, null, e.GetPosition(LayoutHost));
+            }
+            else if (_pointerDownSection != null)
+            {
+                var handler = PickHandler(_pointerDownSection);
+                if (handler != null) SendReplayEvent(_pointerDownSection, handler, true, null, e.GetPosition(LayoutHost));
+            }
+            _pointerDownSection = null;
+            _pointerDragging = false;
         }
+
         private void OnLayoutMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
             if (_lastBuild == null || _elementToSection == null || _currentWindow == null) return;
             var sectionName = HitTestSection(e.GetPosition(LayoutHost));
             if (sectionName == null) return;
-            string scrollName = null;
-            var cursor = sectionName;
-            while (!string.IsNullOrWhiteSpace(cursor))
-            {
-                if (!_lastBuild.Sections.TryGetValue(cursor, out var sec)) break;
-                if (string.Equals(sec.Get("._WndType"), "WndScroll", StringComparison.OrdinalIgnoreCase))
-                {
-                    scrollName = cursor;
-                    break;
-                }
-                cursor = sec.Get("._Parent");
-            }
+            var scrollName = FindScrollForSection(sectionName);
             if (scrollName == null) return;
-            var scrollSec = _lastBuild.Sections[scrollName];
-            var handleName = scrollSec.Get("ScrollHandle");
-            FrameworkElement content = null;
-            if (!string.IsNullOrWhiteSpace(handleName) && _lastBuild.Elements.TryGetValue(handleName, out var he))
-                content = he;
-            if (content == null && _lastBuild.Elements.TryGetValue(scrollName, out var se) &&
-                se is System.Windows.Controls.Panel sp && sp.Children.Count > 0)
-                content = sp.Children[0] as FrameworkElement;
-            if (content == null) return;
+            if (!TryGetScrollContent(scrollName, out var scrollSec, out var content)) return;
             double viewport = scrollSec.GetInt("Height");
             double contentH = content.Height;
             if (double.IsNaN(contentH) || contentH <= 0) contentH = content.ActualHeight;
@@ -1143,16 +1251,125 @@ namespace UiProcessApp
             if (max <= 0) return;
             double step = scrollSec.GetInt("ScrollStep", 40);
             double offset = _scrollOffsets.TryGetValue(scrollName, out var current) ? current : 0;
-            offset = Math.Max(0, Math.Min(max, offset - Math.Sign(e.Delta) * step));
-            _scrollOffsets[scrollName] = offset;
-            content.RenderTransform = new System.Windows.Media.TranslateTransform(0, -offset);
+            ApplyScrollOffset(scrollName, offset - Math.Sign(e.Delta) * step);
             e.Handled = true;
         }
-        private void SendReplayEvent(string section, string handler, bool navigate = false, string arg = null)
+
+        /// <summary>Finds the scroll control a section scrolls with: a WndScroll /
+        /// WndNewScrollBar ancestor, else the bar whose RegisterScrollControl binding
+        /// (tList content handle) contains the section.</summary>
+        private string FindScrollForSection(string sectionName)
+        {
+            var cursor = sectionName;
+            var guard = 0;
+            while (!string.IsNullOrWhiteSpace(cursor) && guard++ < 64)
+            {
+                if (!_lastBuild.Sections.TryGetValue(cursor, out var sec)) break;
+                var type = sec.Get("._WndType") ?? "";
+                if (type.Equals("WndScroll", StringComparison.OrdinalIgnoreCase) ||
+                    type.Equals("WndNewScrollBar", StringComparison.OrdinalIgnoreCase)) return cursor;
+                cursor = sec.Get("._Parent");
+            }
+            foreach (var kv in _lastBuild.Sections)
+            {
+                var target = kv.Value.Get("$ScrollTarget");
+                if (string.IsNullOrWhiteSpace(target)) continue;
+                if (IsUnderSection(sectionName, target, null)) return kv.Key;
+            }
+            return null;
+        }
+
+        /// <summary>A press on a scroll control outside its content handle arms a thumb
+        /// drag (the wheel offset is the shared state).</summary>
+        private bool TryBeginScrollDrag(string sectionName, System.Windows.Point pos)
+        {
+            var scrollName = FindScrollForSection(sectionName);
+            if (scrollName == null) return false;
+            if (!_lastBuild.Sections.TryGetValue(scrollName, out var scrollSec)) return false;
+            // A press on a content item (inside the target handle) is an item event,
+            // not a thumb drag.
+            var target = scrollSec.Get("$ScrollTarget");
+            if (string.IsNullOrWhiteSpace(target)) target = scrollSec.Get("ScrollHandle");
+            if (!string.IsNullOrWhiteSpace(target) && IsUnderSection(sectionName, target, scrollName)) return false;
+            if (!TryGetScrollContent(scrollName, out _, out _)) return false;
+            _scrollDragName = scrollName;
+            _scrollDragStartY = pos.Y;
+            _scrollDragStartOffset = _scrollOffsets.TryGetValue(scrollName, out var current) ? current : 0;
+            return true;
+        }
+
+        private void DragScrollThumb(System.Windows.Point point)
+        {
+            if (!TryGetScrollContent(_scrollDragName, out var scrollSec, out var content)) return;
+            double viewport = scrollSec.GetInt("Height");
+            double contentH = content.Height;
+            if (double.IsNaN(contentH) || contentH <= 0) contentH = content.ActualHeight;
+            double max = Math.Max(0, contentH - viewport);
+            double ratio = viewport > 0 ? max / Math.Max(1.0, viewport) : 1.0;
+            ApplyScrollOffset(_scrollDragName, _scrollDragStartOffset + (_scrollDragStartY - point.Y) * Math.Max(1.0, ratio));
+        }
+
+        /// <summary>Resolves a scroll control's content element: the RegisterScrollControl
+        /// target handle (or the authored ScrollHandle), else its first child panel.</summary>
+        private bool TryGetScrollContent(string scrollName, out IniSection scrollSec, out FrameworkElement content)
+        {
+            scrollSec = null;
+            content = null;
+            if (_lastBuild == null || string.IsNullOrWhiteSpace(scrollName)) return false;
+            if (!_lastBuild.Sections.TryGetValue(scrollName, out scrollSec)) return false;
+            var handleName = scrollSec.Get("$ScrollTarget");
+            if (string.IsNullOrWhiteSpace(handleName)) handleName = scrollSec.Get("ScrollHandle");
+            if (!string.IsNullOrWhiteSpace(handleName) && _lastBuild.Elements.TryGetValue(handleName, out var he))
+                content = he;
+            if (content == null && _lastBuild.Elements.TryGetValue(scrollName, out var se) &&
+                se is System.Windows.Controls.Panel sp && sp.Children.Count > 0)
+                content = sp.Children[0] as FrameworkElement;
+            return content != null;
+        }
+
+        private bool ApplyScrollOffset(string scrollName, double offset)
+        {
+            if (!TryGetScrollContent(scrollName, out var scrollSec, out var content)) return false;
+            double viewport = scrollSec.GetInt("Height");
+            double contentH = content.Height;
+            if (double.IsNaN(contentH) || contentH <= 0) contentH = content.ActualHeight;
+            double max = Math.Max(0, contentH - viewport);
+            offset = Math.Max(0, Math.Min(max, offset));
+            _scrollOffsets[scrollName] = offset;
+            content.RenderTransform = new System.Windows.Media.TranslateTransform(0, -offset);
+            return true;
+        }
+
+        /// <summary>True when `sectionName` is `ancestorName` or below it (walking the
+        /// INI parent chain; stops at `stopAt` when given).</summary>
+        private bool IsUnderSection(string sectionName, string ancestorName, string stopAt)
+        {
+            var cursor = sectionName;
+            var guard = 0;
+            while (!string.IsNullOrWhiteSpace(cursor) && guard++ < 128)
+            {
+                if (string.Equals(cursor, ancestorName, StringComparison.OrdinalIgnoreCase)) return true;
+                if (stopAt != null && string.Equals(cursor, stopAt, StringComparison.OrdinalIgnoreCase)) return false;
+                if (!_lastBuild.Sections.TryGetValue(cursor, out var sec)) return false;
+                cursor = sec.Get("._Parent");
+            }
+            return false;
+        }
+        private void SendReplayEvent(string section, string handler, bool navigate = false, string arg = null,
+                                     System.Windows.Point? pos = null)
         {
             try
             {
                 var openedBefore = _openedWindows.TryGetValue(_currentWindow.Id, out var ob) ? ob.Count : 0;
+                if (pos.HasValue)
+                {
+                    // The engine's Station.GetClientSize/GetMessagePos environment: the
+                    // scripts clamp positions and delta script-driven drags with these.
+                    var hostW = LayoutHost.ActualWidth > 0 ? LayoutHost.ActualWidth : 1920;
+                    var hostH = LayoutHost.ActualHeight > 0 ? LayoutHost.ActualHeight : 1080;
+                    _replayIn.WriteLine("CLIENT " + (int)hostW + " " + (int)hostH);
+                    _replayIn.WriteLine("MOUSE " + (int)pos.Value.X + " " + (int)pos.Value.Y);
+                }
                 _replayIn.WriteLine("EVENT " + section + " " + handler + (arg == null ? "" : " " + arg));
                 _replayIn.Flush();
                 var lines = new List<string>();
@@ -1217,17 +1434,47 @@ namespace UiProcessApp
             }
         }
 
+        /// <summary>Maps a recorded window-open intent to the catalog: the shim records
+        /// ini paths (Wnd.OpenWindow), module names (SomePanel.OpenWindow) and opener
+        /// globals (OpenBankPanel -> BigBankPanel via Data/ui_window_aliases.tsv).</summary>
         private WindowInfo FindWindowByIniPath(string path)
         {
-            var name = Path.GetFileName(path.Replace('\\', '/')).ToLowerInvariant();
-            if (string.IsNullOrEmpty(name)) return null;
+            if (string.IsNullOrWhiteSpace(path)) return null;
+            var stem = Path.GetFileNameWithoutExtension(Path.GetFileName(path.Replace('\\', '/'))).ToLowerInvariant();
+            if (string.IsNullOrEmpty(stem)) return null;
+            var candidates = new List<string> { stem };
+            if (_windowAliases.TryGetValue(stem, out var aliased)) candidates.Add(aliased.ToLowerInvariant());
+            if (stem.StartsWith("open", StringComparison.Ordinal) && stem.Length > 4) candidates.Add(stem.Substring(4));
+            if (stem.StartsWith("close", StringComparison.Ordinal) && stem.Length > 5) candidates.Add(stem.Substring(5));
             foreach (var stage in _inventory.Stages)
                 foreach (var w in stage.Windows ?? new List<WindowInfo>())
                 {
-                    var wn = Path.GetFileName((w.Path ?? "").Replace('\\', '/')).ToLowerInvariant();
-                    if (wn == name) return w;
+                    var wn = Path.GetFileNameWithoutExtension((w.Path ?? "").Replace('\\', '/')).ToLowerInvariant();
+                    var wid = (w.Id ?? "").ToLowerInvariant();
+                    foreach (var c in candidates)
+                        if (c == wn || c == wid) return w;
                 }
             return null;
+        }
+
+        /// <summary>Loads the opener-alias index scanned from the window scripts'
+        /// SETGLOBAL definitions (tools/ui/scan_window_aliases.py).</summary>
+        private static Dictionary<string, string> LoadWindowAliases()
+        {
+            var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            try
+            {
+                var path = Path.Combine(Paths.AppRoot, "Data", "ui_window_aliases.tsv");
+                if (!File.Exists(path)) return map;
+                foreach (var line in File.ReadAllLines(path))
+                {
+                    var parts = line.Split('\t');
+                    if (parts.Length >= 2 && !string.IsNullOrWhiteSpace(parts[0]) && !string.IsNullOrWhiteSpace(parts[1]))
+                        map[parts[0].Trim()] = parts[1].Trim();
+                }
+            }
+            catch { }
+            return map;
         }
 
         private void NavigateToWindow(string id)

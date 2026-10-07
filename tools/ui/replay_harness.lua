@@ -73,8 +73,13 @@ local function resolvePath(sec, path)
   return sec
 end
 
+-- Engine controls are stable objects: scripts store state on `this`/child handles
+-- across handler calls. Recreating the proxy per call dropped that state; memoize
+-- one proxy per section.
+local proxyCache = {}
 proxyOf = function(sec)
   if sec == nil then return proxy("lookup.nil") end  -- missing Lookup path: permissive
+  if proxyCache[sec] then return proxyCache[sec] end
   local methods = {}
   local selfProxy
   methods.Lookup = function(self, a, b)
@@ -210,6 +215,7 @@ proxyOf = function(sec)
       end
     end,
   })
+  proxyCache[sec] = selfProxy
   return selfProxy
 end
 
@@ -623,6 +629,22 @@ do
     end
     mf:close()
     module = savedModule
+    -- scroll.lua's RegisterScrollControl binds a scrollbar to its content handle list
+    -- (tList = { framePath, handle, step }); record it so the viewer can map the
+    -- wheel/thumb offset to the right content (the bar section carries the target).
+    local regScroll = rawget(_G, "RegisterScrollControl")
+    if type(regScroll) == "function" then
+      _G.RegisterScrollControl = function(owner, up, down, bar, targets)
+        local names = {}
+        if type(targets) == "table" then
+          for i = 1, #targets do names[#names + 1] = tostring(targets[i]) end
+        end
+        log[#log + 1] = { sec = tostring(bar or "?"), method = "RegisterScrollControl",
+                          args = { tostring(owner or ""), tostring(up or ""), tostring(down or ""),
+                                   table.concat(names, ",") } }
+        return regScroll(owner, up, down, bar, targets)
+      end
+    end
     -- Selfie passes an already-decoded table to JSON.decode; the engine's real
     -- json lib raises "expected string argument". Accept tables as pass-through.
     local jsonLib = rawget(_G, "JSON")

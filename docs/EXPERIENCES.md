@@ -2527,3 +2527,46 @@ solved it, and what is still open. **Newest at the bottom.**
 - Audit: placeholders 504 -> 482, oob 7770 -> 7610, unresolved 49; selftest 1240/0/0.
 - The remaining oob bulk is scroll-content overflow (legit, clipped) + authored off-window
   decorations; clones (runtime items) are only 199 of 6,165 raw oob lines.
+
+### 2026-10-07 — UI — interaction extras: item drag, drag-handle family, scrollbar thumb, popup chains
+
+- Task 1/2 findings (data-blocked, documented not patched):
+  - **WulinShenghuiDuizhen** ERR is a server-supplied phase, not a missing client table: the only
+    engine caller is RemoteCommand's `OpenWulinShenghuiDuizhen` RemoteFunction (`<?:4104>`) ->
+    `OpenWindow(phase)` -> `Init(frame, phase)` -> internal `Init(phase)` with
+    `assert(1 <= phase <= TOTAL_PHASE)`; the include table
+    `UIscript_GetWulinShenghuiDuizhenInfoByPhase` supplies the per-phase NPC lists but the current
+    phase arrives with the server command - no offline source, so the ERR stays (tolerant assert
+    still rejected).
+  - **FromIconID** stays data-blocked (the player icon id comes from the session; the texture is
+    the engine's KItemImage lookup).
+- Engine contract read from KGUIX64.dll (read-only): KItemEventMgr press fires OnItemLButtonDown
+  (0x180153590), move past ~3px fires OnItemLButtonDrag (0x180158920), release fires
+  OnItemLButtonUp then OnItemLButtonDragEnd and click only without a drag (0x180153850); the
+  OnDragButton family fires on the RegisterLButtonDrag control; event payload is the arg0..argN
+  globals with `this` = sender (0x1801b2690 stores arg0).
+- Shim fixes (tools/ui/replay_harness.lua + replay_server.lua): section proxies are memoized per
+  section (engine controls are stable objects; OnDragButtonBegin's fDragX/fDragY/fFrameW now
+  survive to OnDragButton - before this the resize delta was 0 and only the TeachingTip hide was
+  recorded); `this` + arg0/arg1 convention (was arg1=target); MOUSE/CLIENT commands feed
+  Station.GetMessagePos/GetClientSize (the scripts' drag clamp); RegisterScrollControl (scroll.lua)
+  is recorded; cross-module `SomePanel.OpenWindow` proxy calls are recorded as window intents.
+- Viewer (MainWindow.xaml.cs): a press arms the sequence by role - scrollbar thumb (WndScroll/
+  WndNewScrollBar outside its content handle), drag handle ($DragRegistered/$DragEnabled ->
+  OnDragButtonBegin), item (Box_*/__lt_* -> OnItemLButtonDown); release finishes it (item:
+  OnItemLButtonUp then OnItemLButtonDragEnd; no drag: the click handler, now on release like the
+  engine). Scrollbar thumb drag shares _scrollOffsets with the wheel; the wheel now also works via
+  the RegisterScrollControl binding (BigBagPanel Scroll_List -> Handle_Bag_Normal), not only a
+  WndScroll ancestor. Popup chains resolve through Data/ui_window_aliases.tsv (new
+  tools/ui/scan_window_aliases.py: the scripts' own SETGLOBAL openers, 541 entries;
+  OpenBankPanel -> BigBankPanel).
+- Headless checks: new `UiProcessApp.exe --drag <windowId> <section>` (engine sequence; picks the
+  handle family for a $DragRegistered section, else the item family). Verified:
+  `--drag bigbagpanel Btn_Drag` -> 205 mutations (script's own resize: BigBagPanel SetSize 654 634,
+  SetDragArea 0 0 654 40, full relayout); `--drag bigbagpanel Box_1` -> item sequence dispatches;
+  `--click bigbagpanel Btn_Bank OnLButtonClick` -> opens=OpenBankPanel.
+- Gates: selftest 1240/0/0; replay 1201 OK / 1 ERR / 9 NOENTRY (unchanged); census 0; gap drops 1
+  (FromIconID); audit placeholders 482, unresolved 49, oob 7610 -> **7690**. The +80 oob is the
+  proxy-memoization effect, not a layout regression: VampireCountPanel (99 -> 144 sections) and
+  DesertStormInfoPanel now materialize their history/ranking list rows (real items extend past the
+  fixed window; the audit flags non-WndScroll overflow).

@@ -66,6 +66,12 @@ namespace UiProcessApp
                 Shutdown(exit);
                 return;
             }
+            if (e.Args.Contains("--drag"))
+            {
+                var exit = RunDrag(e.Args);
+                Shutdown(exit);
+                return;
+            }
             if (e.Args.Contains("--reject"))
             {
                 var exit = RunReject(e.Args);
@@ -902,27 +908,33 @@ namespace UiProcessApp
         }
 
         /// <summary>
-        /// Headless interaction check: dispatch one script event through
-        /// tools/ui/replay_server.lua, apply the returned mutation delta on top of the
-        /// window's runtime state and render the result (docs/ui/UI_INTERACTION_REPLAY.md).
+        /// Headless interaction checks through tools/ui/replay_server.lua, applying the
+        /// returned mutation delta on top of the window's runtime state and rendering the
+        /// result (docs/ui/UI_INTERACTION_REPLAY.md).
         ///   UiProcessApp.exe --click &lt;windowId&gt; &lt;section&gt; [handler] [--out file.png]
+        ///   UiProcessApp.exe --drag &lt;windowId&gt; &lt;section&gt; [--out file.png]
         /// </summary>
-        private static int RunClick(string[] args)
+        private static int RunClick(string[] args) { return RunEvent(args, false); }
+
+        private static int RunDrag(string[] args) { return RunEvent(args, true); }
+
+        private static int RunEvent(string[] args, bool drag)
         {
             try
             {
                 string windowId = null, section = null, handler = null, outPath = null;
-                int ci = Array.IndexOf(args, "--click");
+                int ci = Array.IndexOf(args, drag ? "--drag" : "--click");
                 if (ci >= 0)
                 {
                     if (ci + 1 < args.Length) windowId = args[ci + 1];
                     if (ci + 2 < args.Length) section = args[ci + 2];
-                    if (ci + 3 < args.Length && !args[ci + 3].StartsWith("--")) handler = args[ci + 3];
+                    if (!drag && ci + 3 < args.Length && !args[ci + 3].StartsWith("--")) handler = args[ci + 3];
                 }
                 for (int i = 0; i < args.Length - 1; i++)
                     if (args[i] == "--out") outPath = args[i + 1];
                 if (windowId == null || section == null)
-                    throw new ArgumentException("--click needs <windowId> <section> [handler]");
+                    throw new ArgumentException((drag ? "--drag" : "--click") + " needs <windowId> <section>" +
+                                                (drag ? "" : " [handler]"));
                 handler ??= "OnLButtonClick";
 
                 Paths.Locate();
@@ -942,8 +954,47 @@ namespace UiProcessApp
                 var luaPath = Path.Combine(Paths.AppRoot, "assets", "ui", "Config", "Default", stem + ".lua");
                 if (!File.Exists(luaPath)) throw new ArgumentException("no script for " + stem);
 
-                var delta = DispatchReplayEvent(luaPath, iniPath, section, handler, out var opened);
-                Console.WriteLine($"click {windowId} {section} {handler} -> mutations={delta.Count}" +
+                var commands = new List<string>();
+                if (drag)
+                {
+                    // A section the script registered for drag (RegisterLButtonDrag ->
+                    // $DragRegistered, e.g. Btn_Drag) drives the engine's OnDragButton
+                    // family; any other section drives the item sequence
+                    // (KItemEventMgr 0x180153590/0x180153850: Down on press, Drag while
+                    // held, Up then DragEnd on release). The MOUSE lines feed
+                    // Station.GetMessagePos for script-driven drags.
+                    bool handleDrag = false;
+                    var probe = BuildWindowPlan(window, out _);
+                    if (probe != null && probe.ByName.TryGetValue(section, out var probeSec))
+                        handleDrag = probeSec.Get("$DragRegistered") == "1" || probeSec.Get("$DragEnabled") == "1";
+                    commands.Add("CLIENT 1920 1080");
+                    commands.Add("MOUSE 500 300");
+                    if (handleDrag)
+                    {
+                        commands.Add("EVENT " + section + " OnDragButtonBegin");
+                        commands.Add("MOUSE 560 310");
+                        commands.Add("EVENT " + section + " OnDragButton");
+                        commands.Add("MOUSE 560 310");
+                        commands.Add("EVENT " + section + " OnDragButtonEnd");
+                    }
+                    else
+                    {
+                        commands.Add("EVENT " + section + " OnItemLButtonDown");
+                        commands.Add("MOUSE 560 310");
+                        commands.Add("EVENT " + section + " OnItemLButtonDrag");
+                        commands.Add("MOUSE 560 310");
+                        commands.Add("EVENT " + section + " OnItemLButtonUp");
+                        commands.Add("EVENT " + section + " OnItemLButtonDragEnd");
+                    }
+                }
+                else
+                {
+                    commands.Add("EVENT " + section + " " + handler);
+                }
+
+                var delta = DispatchReplayCommands(luaPath, iniPath, commands, out var opened);
+                Console.WriteLine((drag ? "drag " : "click ") + windowId + " " + section +
+                                  (drag ? "" : " " + handler) + " -> mutations=" + delta.Count +
                                   (opened.Count > 0 ? " opens=" + string.Join(",", opened) : ""));
 
                 var filtered = BuildWindowPlan(window, out _);
@@ -985,7 +1036,8 @@ namespace UiProcessApp
                     host.Arrange(new Rect(0, 0, expanded.Width, expanded.Height));
                     host.UpdateLayout();
                 }
-                outPath ??= Path.Combine(AppContext.BaseDirectory, $"click_{windowId}_{section}.png");
+                outPath ??= Path.Combine(AppContext.BaseDirectory,
+                    (drag ? "drag_" : "click_") + windowId + "_" + section + ".png");
                 var bitmap = new RenderTargetBitmap((int)host.Width, (int)host.Height, 96, 96, PixelFormats.Pbgra32);
                 bitmap.Render(host);
                 using (var stream = File.Create(outPath))
@@ -1004,9 +1056,12 @@ namespace UiProcessApp
             }
         }
 
-        /// <summary>Spawns replay_server.lua, dispatches one EVENT and returns the delta lines.</summary>
-        private static List<string> DispatchReplayEvent(string luaPath, string iniPath, string section, string handler,
-                                                        out List<string> opened)
+        /// <summary>Spawns replay_server.lua, sends the command script (EVENT / MOUSE /
+        /// CLIENT) and returns the accumulated mutation delta lines. Each EVENT is
+        /// followed by its mutation block and an END line; the other commands are
+        /// silent (consumed with the next EVENT's output).</summary>
+        private static List<string> DispatchReplayCommands(string luaPath, string iniPath, List<string> commands,
+                                                           out List<string> opened)
         {
             opened = new List<string>();
             var lua32 = Environment.GetEnvironmentVariable("LUA32");
@@ -1026,20 +1081,24 @@ namespace UiProcessApp
             using (var proc = Process.Start(psi))
             {
                 proc.StandardOutput.ReadLine(); // READY
-                proc.StandardInput.WriteLine("EVENT " + section + " " + handler);
-                proc.StandardInput.Flush();
                 var lines = new List<string>();
-                for (int i = 0; i < 5000; i++)
+                foreach (var command in commands)
                 {
-                    var line = proc.StandardOutput.ReadLine();
-                    if (line == null || line == "END") break;
-                    if (line.StartsWith("RESULT ", StringComparison.Ordinal)) continue;
-                    if (line.StartsWith("WINDOW ", StringComparison.Ordinal))
+                    proc.StandardInput.WriteLine(command);
+                    proc.StandardInput.Flush();
+                    if (!command.StartsWith("EVENT ", StringComparison.Ordinal)) continue;
+                    for (int i = 0; i < 5000; i++)
                     {
-                        opened.Add(line.Substring("WINDOW ".Length).Trim());
-                        continue;
+                        var line = proc.StandardOutput.ReadLine();
+                        if (line == null || line == "END") break;
+                        if (line.StartsWith("RESULT ", StringComparison.Ordinal)) continue;
+                        if (line.StartsWith("WINDOW ", StringComparison.Ordinal))
+                        {
+                            opened.Add(line.Substring("WINDOW ".Length).Trim());
+                            continue;
+                        }
+                        if (line.IndexOf('\t') >= 0) lines.Add(line);
                     }
-                    if (line.IndexOf('\t') >= 0) lines.Add(line);
                 }
                 try { proc.Kill(); } catch { }
                 return lines;

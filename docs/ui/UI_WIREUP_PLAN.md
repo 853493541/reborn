@@ -1,11 +1,12 @@
 # UI wire-up plan — the full remaining scope
 
-**Status:** phases 0-6 EXECUTED (2026-10-06); phase 1 complete (replay **1,201 OK / 1 ERR /
-9 NOENTRY** of 1,211 scripted); phase 2 closed as verified-authored; phase 7 pending the capture
-session. Owner area: `docs/ui/`; viewer `ui-process-app/`.
+**Status:** phases 0-6 EXECUTED; phase 5 interaction extras done (2026-10-07: item drag, drag-handle
+family, scrollbar thumb, popup chains); phase 1 complete (replay **1,201 OK / 1 ERR / 9 NOENTRY**
+of 1,211 scripted); phase 2 closed as verified-authored; phase 7 pending the capture session.
+Owner area: `docs/ui/`; viewer `ui-process-app/`.
 **Baseline it starts from** (all measured, this session): selftest 1240/0/0; replay
 **1,201 OK / 1 ERR / 9 NOENTRY**; gap report visual drops **1** (FromIconID, data-blocked);
-audit placeholders 504, unresolved 49, oob 7,484; census **0 unhandled constructs**; flex +
+audit placeholders 482, unresolved 49, oob 7,690; census **0 unhandled constructs**; flex +
 HandleType 1-6 + all 13 PosTypes + page-sets + wheel/edit/drag wired.
 
 ## Phase status (2026-10-06)
@@ -23,7 +24,13 @@ HandleType 1-6 + all 13 PosTypes + page-sets + wheel/edit/drag wired.
   nested sets show their own default; audit ph 539->504, oob 9499->7484.
 - **Phase 4 — animation: DONE.** Normal group applied; hover/pressed recorded; animation/tooltip
   calls consumed.
-- **Phase 5 — interaction: DONE.** Click/hover/wheel/typing/drag (moveable windows) wired.
+- **Phase 5 — interaction: DONE.** Click/hover/wheel/typing/drag (moveable windows) wired; 2026-10-07
+  extras: the engine's item sequence (`OnItemLButtonDown` → `OnItemLButtonDrag` →
+  `OnItemLButtonUp`/`OnItemLButtonDragEnd`, click on release), the drag-handle family
+  (`OnDragButtonBegin/Drag/End` on the `RegisterLButtonDrag` control), scrollbar thumb dragging
+  (shared with the wheel offset; `RegisterScrollControl` binding consumed), and popup chains
+  (`Data/ui_window_aliases.tsv` + cross-module `OpenWindow` recording). See
+  `UI_INTERACTION_REPLAY.md` §6.
 - **Phase 6 — extraction tails: DONE/CLOSED.** 13 string libs decoded; module_info re-decoded
   (GB18030) and the 40 remaining manifest entries + 601 art paths probe MISS at their exact paths
   (not shipped in this client build).
@@ -56,7 +63,7 @@ extend the stub for that object class — never a per-window hack.
 | nil-field on script/real-lib tables | AchievementPanel, Album, BattleMapPay, CraftIntroduce, CraftReadComparePanel, FriendBack, HomelandInvitation, InternetExplorer, LuckyMeetingInfo, MiddleMapSimple, NewOperationActivity, PhotoShop, RaidPanel, ReputationPanel, Selfie, SingleFStatistic, SkillTipPanel, VideoSettingDetails | trace each field's origin; many are `ui/Scheme` tables the client fills at startup (extract them like the 848 table files) |
 | nil upvalue | SmallCalender, SpeedRankPanel | the upvalue is a script local initialized from a stub call; find the initializer |
 | class upvalue capture | PLActionBar (`tAnchor` on the class members table) | verify how `class()` upvalues resolve to the members table; possibly instantiate before entry (as done for BubblePanel) |
-| assert in Init | WulinShenghuiDuizhen | the assert is a precondition on server data; locate the data source (client table) or keep ERR with the reason recorded |
+| assert in Init | WulinShenghuiDuizhen | **verified server-supplied phase** (2026-10-07): the engine's only caller is the RemoteFunction `OpenWulinShenghuiDuizhen` (RemoteCommand.lua `<?:4104>`) → `WulinShenghuiDuizhen.OpenWindow(phase)` → `Init(frame, phase)` → internal `Init(phase)` asserts `1 <= phase <= TOTAL_PHASE`; the include table `UIscript_GetWulinShenghuiDuizhenInfoByPhase` supplies the per-phase NPC lists but the *current phase* arrives with the server command — no offline source. Keep ERR (tolerant assert rejected). |
 
 Acceptance: replay OK rises window by window; each fixed window's state applies in the viewer
 (completed-replay rule).
@@ -85,14 +92,20 @@ SetAnimateGroupNormal/MouseOver/MouseDown (CompassPanel, GMPanel), SetAnimation/
 Optional wiring: hover applies MouseOverGroup/AnimateGroup frames; the Normal group on render.
 Acceptance: hover shows the scripted group frames where the INI authors them.
 
-## Phase 5 — interaction completion (2-3 sessions)
+## Phase 5 — interaction completion — DONE (2026-10-07)
 
-1. Drag: `SetDragArea`/`EnableDrag`/`RegisterLButtonDrag` (BigBagPanel, ShareBagPanel, Matrix,
-   QuestTraceList, NoticeBoard, VoiceRoomNotice) — item drag with `OnDragButton`/
-   `OnItemLButtonDown/Move/Up` dispatch through the existing server.
-2. Scrollbar thumb dragging (Scroll_* sliders) bound to the wheel offset.
-3. Window chains: extend click-through navigation to the popup windows (`OpenXxx` helpers).
-4. WndEdit: Enter/focus-kill (`OnEditKillFocus`) and text commit.
+1. ~~Drag~~: the engine's item sequence (`OnItemLButtonDown` on press, `OnItemLButtonDrag` past
+   ~3px, `OnItemLButtonUp` + `OnItemLButtonDragEnd` on release, click on release) and the
+   drag-handle family (`OnDragButtonBegin/Drag/End` on the `RegisterLButtonDrag` control, e.g.
+   BigBagPanel `Btn_Drag` — the script's own resize). Server keeps control state across events
+   (memoized proxies) and feeds `Station.GetMessagePos/GetClientSize` (`MOUSE`/`CLIENT`).
+2. ~~Scrollbar thumb dragging~~: `Scroll_*` sliders drag the content through the same
+   `_scrollOffsets` as the wheel; `RegisterScrollControl` (scroll.lua) bindings are recorded and
+   consumed as `$ScrollTarget` (BigBagPanel `Scroll_List` → `Handle_Bag_Normal`).
+3. ~~Window chains~~: recorded opens (`Wnd/Station.OpenWindow`, bare `OpenXxx`, cross-module
+   `SomePanel.OpenWindow`) resolve through `Data/ui_window_aliases.tsv`
+   (`tools/ui/scan_window_aliases.py`, the scripts' own `SETGLOBAL` openers).
+4. WndEdit: Enter/focus-kill (`OnEditKillFocus`) and text commit — still open.
 
 ## Phase 6 — extraction tails (2 sessions)
 

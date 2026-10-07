@@ -48,6 +48,9 @@ local proxyOf
 -- forward declaration: the permissive data proxy is defined below but is needed
 -- by the UI section proxies (property sub-objects).
 local proxy
+-- forward declaration: the window-chain recorder is defined below but the permissive
+-- proxy records cross-module OpenWindow/CloseWindow calls through it.
+local recordWindow
 local function record(sec, method, args)
   local flat = {}
   for i = 1, math.min(#args, 8) do
@@ -73,7 +76,12 @@ local function resolvePath(sec, path)
   return sec
 end
 
+-- Engine controls are stable objects: the scripts store state on `this`/child
+-- handles across events (OnDragButtonBegin's fDragX/fDragY read by OnDragButton).
+-- Recreating the proxy per call dropped that state; memoize one proxy per section.
+local proxyCache = {}
 proxyOf = function(sec)
+  if proxyCache[sec] then return proxyCache[sec] end
   local methods = {}
   local selfProxy
   methods.Lookup = function(self, a, b)
@@ -191,6 +199,7 @@ proxyOf = function(sec)
       end
     end,
   })
+  proxyCache[sec] = selfProxy
   return selfProxy
 end
 
@@ -233,6 +242,17 @@ proxy = function(name)
           -- session is not on a limited/MOBA map, has no extended package, ...).
           if k:match("Is%u") or k:match("^Has") or k:match("^Can") then
             return function() return false end
+          end
+          -- Cross-module window chains: the scripts open other windows through their
+          -- module tables (SomePanel.OpenWindow(...)); here that module is an
+          -- unresolved global proxy. Record the intent like the Wnd/Station/OpenXxx
+          -- forms so the viewer can follow it (single-segment _G globals only).
+          if (k == "OpenWindow" or k == "CloseWindow") and name:match("^_G%.[%w_]+$") then
+            local closing = k == "CloseWindow"
+            local modName = name:sub(4)
+            local f = function() recordWindow(modName, closing) end
+            rawset(t, k, f)
+            return f
           end
           if k == "GetSize" then return function() return 0, 0 end end
           if k == "GetW" or k == "GetH" then return function() return 0 end end
@@ -303,7 +323,7 @@ end
 -- Wnd/Station (Wnd.OpenWindow("BigBankPanel")) or the bare globals/helpers
 -- (OpenBankPanel); record all forms so the viewer can surface/navigate "opens X".
 local openedWindows = {}
-local recordWindow = function(name, closing)
+recordWindow = function(name, closing)
   if type(name) == "string" and name ~= "" then
     openedWindows[#openedWindows + 1] = (closing and "-" or "") .. name
   end
@@ -373,6 +393,14 @@ _G.Wnd.CloseWindow = function(a, b) windowCall(a, b, true) end
 _G.Station = _G.Station or {}
 _G.Station.OpenWindow = function(a, b) windowCall(a, b, false) end
 _G.Station.CloseWindow = function(a, b) windowCall(a, b, true) end
+-- Station.GetMessagePos returns the current cursor position (the scripts read it for
+-- script-driven drags/resizes); the viewer sends it before each EVENT as MOUSE x y.
+_G.__mouseX, _G.__mouseY = 0, 0
+_G.Station.GetMessagePos = function() return _G.__mouseX, _G.__mouseY end
+-- Station.GetClientSize returns the client (viewport) size; the viewer sets it with
+-- CLIENT w h (the scripts clamp drag/resize positions against it).
+_G.__clientW, _G.__clientH = 1920, 1080
+_G.Station.GetClientSize = function() return _G.__clientW, _G.__clientH end
 _G.OpenWindow = function(path, ...) recordWindow(path, false) end
 _G.CloseWindow = function(path, ...) recordWindow(path, true) end
 -- String helpers: the engine's wide-string utilities return the transformed string
@@ -422,7 +450,10 @@ end)
 --
 -- Usage: lua32.exe replay_server.lua <window.lua> <ModuleName|auto> <window.ini>
 -- Commands:
---   EVENT <section> <handler> [arg1] [arg2]   dispatch a script handler
+--   EVENT <section> <handler> [arg1] [arg2]   dispatch a script handler (args become
+--                                             the engine's arg0/arg1 globals)
+--   MOUSE <x> <y>                             set Station.GetMessagePos (cursor)
+--   CLIENT <w> <h>                            set Station.GetClientSize (viewport)
 --   STATE                                     dump the full mutation log
 --   QUIT
 -- Output: "READY handlers=..." then per command "RESULT <ok> <err>", MUT lines, "END".
@@ -561,6 +592,23 @@ do
     end
     mf:close()
     module = savedModule
+    -- scroll.lua's RegisterScrollControl binds a scrollbar (up/down buttons, bar) to
+    -- its content handle list (tList = { framePath, handle, step }). The viewer needs
+    -- that binding for wheel/thumb scrolling; record it in the mutation log (the bar
+    -- section then carries the target handle).
+    local regScroll = rawget(_G, "RegisterScrollControl")
+    if type(regScroll) == "function" then
+      _G.RegisterScrollControl = function(owner, up, down, bar, targets)
+        local names = {}
+        if type(targets) == "table" then
+          for i = 1, #targets do names[#names + 1] = tostring(targets[i]) end
+        end
+        log[#log + 1] = { sec = tostring(bar or "?"), method = "RegisterScrollControl",
+                          args = { tostring(owner or ""), tostring(up or ""), tostring(down or ""),
+                                   table.concat(names, ",") } }
+        return regScroll(owner, up, down, bar, targets)
+      end
+    end
     -- Replace file-backed descriptor entries with lazy table objects (the engine
     -- loads all of g_tTableFile at startup; here each table parses on first use).
     local gtf, gt = rawget(_G, "g_tTableFile"), rawget(_G, "g_tTable")
@@ -653,9 +701,19 @@ for line in io.lines() do
     -- the engine sets `this` to the CONTROL that fired the event (scripts read
     -- this:GetName() to branch); the window root is `this` only for frame events.
     _G.this = target
-    _G.arg1 = target
-    _G.arg2 = (a1 ~= "" and a1 ~= nil) and a1 or nil
-    _G.arg3 = (a2 ~= "" and a2 ~= nil) and a2 or nil
+    -- The engine sets `this` to the control that fired the event and arg0..argN to
+    -- the event payload (KGUIX64 0x1801b2690 stores the `arg0` global; 0x5A7760 is
+    -- the arg0..arg8 name array). Payload tokens arrive as strings, so numeric
+    -- tokens become numbers (scripts compare arg0 against numeric states).
+    local function eventArg(v)
+      if v == nil or v == "" then return nil end
+      local n = tonumber(v)
+      return n ~= nil and n or v
+    end
+    _G.arg0 = eventArg(a1)
+    _G.arg1 = eventArg(a2)
+    _G.arg2 = nil
+    _G.arg3 = nil
     local fn = mod[handler]
     if type(fn) ~= "function" then
       print("RESULT ERR no-handler " .. tostring(handler))
@@ -675,6 +733,16 @@ for line in io.lines() do
     end
     dumpFrom(before)
     print("END")
+  elseif cmd == "MOUSE" then
+    local mx, my = rest:match("^(%-?%d+)%s+(%-?%d+)")
+    if mx then
+      _G.__mouseX, _G.__mouseY = tonumber(mx), tonumber(my)
+    end
+  elseif cmd == "CLIENT" then
+    local cw, ch = rest:match("^(%-?%d+)%s+(%-?%d+)")
+    if cw then
+      _G.__clientW, _G.__clientH = tonumber(cw), tonumber(ch)
+    end
   elseif cmd == "STATE" then
     dumpFrom(0)
     print("END")

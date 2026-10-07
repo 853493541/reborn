@@ -20,8 +20,8 @@ This report measures what is **still dropped** �?the remaining calls per windo
 | state | 0 | DROPPED —control state (enable/check/expand/page) |
 | animation | 0 | DROPPED — animation group/state (static render uses the authored frame) |
 | interaction | 0 | DROPPED —drag/interaction registration (not static layout) |
-| consumed | 7851 | applied by the viewer today |
-| noise | 12155 | engine plumbing, no visual state (lookup/events/getters) |
+| consumed | 7946 | applied by the viewer today |
+| noise | 12197 | engine plumbing, no visual state (lookup/events/getters) |
 
 State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 + state 0).
 
@@ -65,7 +65,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | AccelerateBall | liked | 13 | 0 | 0 | 0 | 0 | 2 | 0 | 3 |
 | AccountException | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | AccountFriendTip | panels-ui | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
-| AchievementPanel | liked | 101 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| AchievementPanel | liked | 101 | 0 | 0 | 0 | 0 | 0 | 0 | 96 |
 | AchievementTip | menus-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | ActionBar | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | ActionBarBind | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
@@ -73,7 +73,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | ActiveMessage0 | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | ActivityDetail | menus-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | ActivityGift | menus-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| ActivityList | recommended | 64 | 0 | 0 | 0 | 0 | 0 | 0 | 59 |
+| ActivityList | recommended | 64 | 0 | 0 | 0 | 0 | 0 | 0 | 48 |
 | ActivityPanel | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | ActivityPlotPanel | menus-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | ActivityRewardCollection | menus-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -86,7 +86,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | AddonChangeLog | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | AddonPanel | modes-ui | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | Aim | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| Album | recommended | 9 | 0 | 0 | 0 | 0 | 4 | 0 | 2 |
+| Album | recommended | 9 | 0 | 0 | 0 | 0 | 4 | 0 | 15 |
 | AllKBAccounts | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | AnimationMgr | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | AnniversaryWishPop | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
@@ -133,7 +133,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | BattleMapPay | modes-ui | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | BattlePass | modes-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 12 |
 | BattleTipPanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
-| BigBagPanel | liked | 376 | 0 | 0 | 0 | 0 | 0 | 0 | 108 |
+| BigBagPanel | liked | 352 | 0 | 0 | 0 | 0 | 0 | 0 | 67 |
 | BigBankPanel | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 17 |
 | BirthdayCelebrateCardPop | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | BlackMarketOperate | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -157,7 +157,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | BuyRule | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | BuyTime | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | CDProcess | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| CGSelectPanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| CGSelectPanel | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | CJPosture | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | CMDOB | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | CMD_Add | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
@@ -165,7 +165,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | CallGuildMemberPannel | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | CampActiveTime | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | CampBigThings | modes-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
-| CampBossPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| CampBossPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | CampFireworks | other-ui | 48 | 0 | 0 | 0 | 0 | 0 | 0 | 23 |
 | CampMaps | modes-ui | 1 | 0 | 0 | 0 | 0 | 33 | 0 | 6 |
 | CampMapsTips | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 1 |
@@ -188,7 +188,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | Chapters | other-ui | 6 | 0 | 0 | 0 | 0 | 1 | 0 | 9 |
 | CharInfo | liked | 13 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | CharInfoMore | recommended | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
-| CharacterPanel | liked | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 25 |
+| CharacterPanel | liked | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 25 |
 | CharacterPanelAwardTip | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | CharacterPanelExplainTip | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | CharacterPanel_Homeland | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
@@ -297,7 +297,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | CraftIntroduce | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | CraftManagePanelnew | panels-ui | 3 | 0 | 0 | 0 | 0 | 1 | 0 | 7 |
 | CraftPanel | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| CraftReadComparePanel | panels-ui | 26 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| CraftReadComparePanel | panels-ui | 26 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
 | CraftReadManagePanel | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | CraftReaderPanel | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | CraftStuffPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
@@ -305,14 +305,14 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | CreditsPanel | modes-ui | 71 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | CrossMap | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
 | Crosshair | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| CrossingChoosePanel | modes-ui | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
-| CrossingFinishPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| CrossingChoosePanel | modes-ui | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| CrossingFinishPanel | other-ui | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | CrossingProcessPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | CurrencyBagPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 25 |
 | CustomEffects | menus-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | CustomMessage | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | CustomTrackList | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| Cyclopaedia | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 6 |
+| Cyclopaedia | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | DBMPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | DLCPanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | DaTangJiaYuan | other-ui | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 15 |
@@ -330,10 +330,10 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | DesertEquipmentChoose | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | DesertItemBuySure | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | DesertItemNumSure | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| DesertPreset | other-ui | 325 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| DesertPreset | other-ui | 325 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | DesertQuickPack | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
 | DesertSell | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| DesertStormInfoPanel | other-ui | 26 | 0 | 0 | 0 | 0 | 0 | 0 | 139 |
+| DesertStormInfoPanel | other-ui | 58 | 0 | 0 | 0 | 0 | 0 | 0 | 174 |
 | DesertStormOB | other-ui | 18 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | DesertStormOBList | other-ui | 3 | 0 | 0 | 0 | 0 | 2 | 0 | 1 |
 | DesertStormSkillPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
@@ -402,7 +402,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | EYaShaQuickMsgPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | EYaShaReport | other-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 3 |
 | EYaShaSetting | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| EYaShaShowFinal | other-ui | 25 | 0 | 0 | 0 | 0 | 14 | 0 | 61 |
+| EYaShaShowFinal | other-ui | 25 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | EYaShaTopMenu | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | EditBox | menus-ui | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | EmergencyChoose | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
@@ -411,7 +411,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | EndOfBattle | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | EnterAreaTip | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | EquipCopy | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 4 |
-| EquipInquire | other-ui | 111 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| EquipInquire | other-ui | 120 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | EquipRecommend | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 6 |
 | Equip_Distance | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | EquipmentDIY | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 13 |
@@ -434,10 +434,10 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | FBBossPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | FBCountDown | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | FBCountNum | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| FBShowPanel | other-ui | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| FBShowPanel | other-ui | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | FBShowTeam | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | FBTimeRank | other-ui | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
-| FBlist | other-ui | 14 | 0 | 0 | 0 | 0 | 1 | 1 | 260 |
+| FBlist | other-ui | 15 | 0 | 0 | 0 | 0 | 1 | 1 | 260 |
 | FBlistBossKillTip | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | FEActivationPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | FEEquipExtractPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -451,7 +451,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | FellowshipQuest | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | FightProgress | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | FightingNum | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
-| FightingStatistic | ? | 12 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| FightingStatistic | ? | 13 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | FightingWarning | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | FilterInviteMsg | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | FilterMask | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -486,7 +486,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | FurnitureSetCollect | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 22 |
 | GMAnnouncePanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | GMCheck | modes-ui | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 2 |
-| GMPanel | other-ui | 29 | 0 | 0 | 0 | 0 | 1 | 0 | 13 |
+| GMPanel | other-ui | 30 | 0 | 0 | 0 | 0 | 1 | 0 | 13 |
 | GameGuideCPLevelAwards | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | GameTeach | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 10 |
 | GasMonitorCY | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -533,7 +533,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | GuildLeagueShowPanelTips | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | GuildLeagueSignHint | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | GuildListPanel | recommended | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| GuildMainPanel | recommended | 3 | 0 | 0 | 0 | 0 | 0 | 8 | 4 |
+| GuildMainPanel | recommended | 18 | 0 | 0 | 0 | 0 | 0 | 8 | 4 |
 | GuildMemberDragPanel | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | GuildRename | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | GuildRenameEX | panels-ui | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
@@ -600,7 +600,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | HomelandStorageArea | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | HomelandTeamSure | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | HomelandUnlockArea | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
-| HonorChallengePanel | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
+| HonorChallengePanel | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | HonorChallengeReward | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 5 |
 | HorseEquip | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | HorseExterior | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
@@ -674,7 +674,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | LoginDeleteRole | modes-ui | 3 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
 | LoginLogo | modes-ui | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | LoginMessage | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
-| LoginPassword | modes-ui | 11 | 0 | 0 | 0 | 0 | 1 | 0 | 7 |
+| LoginPassword | modes-ui | 11 | 0 | 0 | 0 | 0 | 1 | 0 | 6 |
 | LoginPayFor | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | LoginQuestPanel | modes-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 3 |
 | LoginRename | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -719,7 +719,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | MentorTask | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | MentorTransform | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | MessageBoard | other-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 2 |
-| MiddleMap | liked | 24 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| MiddleMap | liked | 26 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | MiddleMapFlagEditor | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | MiddleMapSimple | other-ui | 3 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
 | MilitaryRanking | recommended | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 8 |
@@ -748,8 +748,8 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | MobileSkillGrandPanelTip | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | MobileSkillIntroduce | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | MobileSkillTip | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
-| MoneyBuy | other-ui | 0 | 0 | 0 | 0 | 0 | 4 | 1 | 7 |
-| MoneySell | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| MoneyBuy | other-ui | 1 | 0 | 0 | 0 | 0 | 4 | 1 | 7 |
+| MoneySell | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | MonopolyAuctionInfoPanel | modes-ui | 13 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | MonopolyBg | modes-ui | 3 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
 | MonopolyCardCast | modes-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
@@ -772,7 +772,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | MonopolyMoneyNotify | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | MonopolyNotify | modes-ui | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 20 |
 | MonopolyOutShow | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 13 |
-| MonopolyPlayerList | modes-ui | 12 | 0 | 0 | 0 | 0 | 0 | 0 | 21 |
+| MonopolyPlayerList | modes-ui | 12 | 0 | 0 | 0 | 0 | 0 | 0 | 20 |
 | MonopolyQueue | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | MonopolyReadyArea | modes-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
 | MonopolyRemoveObstacles | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 16 |
@@ -781,8 +781,8 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | MonopolyShowFinal | modes-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 10 |
 | MonopolyStep | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
 | MonopolyTargetSelectPanel | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| MonopolyTip | modes-ui | 26 | 0 | 0 | 0 | 0 | 0 | 0 | 18 |
-| MonopolyWarning | modes-ui | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| MonopolyTip | modes-ui | 26 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| MonopolyWarning | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | MonsterBuffChoose | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | MonsterBuffPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | MonsterDistribute | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
@@ -817,9 +817,9 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | NewHomelandChangeSkin | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | NewHorse | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | NewJYPlayReward | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| NewOperationActivity | other-ui | 184 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| NewOperationActivity | other-ui | 184 | 0 | 0 | 0 | 0 | 0 | 0 | 48 |
 | NewPartnerEquipment | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| NewPet | recommended | 33 | 0 | 0 | 0 | 0 | 2 | 0 | 3 |
+| NewPet | recommended | 33 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | NewPetInfo | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | NewPetSkill | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | NewPlayerBF | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -828,7 +828,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | NewSafePanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | NewSkillBar | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | NewSkillGuidePanel | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
-| NewSkillPanel | liked | 8 | 0 | 0 | 0 | 0 | 2 | 0 | 4 |
+| NewSkillPanel | liked | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | NewTrialValley | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | NewYearPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | NoticeBoard | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
@@ -901,7 +901,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | PartnerTip | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | PartnerUpGrade | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | PartnerVoiceAndStory | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| PartyRecruitPanel | other-ui | 16 | 0 | 0 | 0 | 0 | 2 | 0 | 5 |
+| PartyRecruitPanel | other-ui | 18 | 0 | 0 | 0 | 0 | 2 | 0 | 5 |
 | PayPathPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | PendantBase | other-ui | 3 | 0 | 0 | 0 | 0 | 1 | 0 | 21 |
 | PendantChoiceColor | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
@@ -964,7 +964,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | QuickConsumeShare | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | QuitCohabitMessage | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
 | RaidDragPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| RaidPanel | liked | 17 | 0 | 0 | 0 | 0 | 0 | 0 | 15 |
+| RaidPanel | liked | 17 | 0 | 0 | 0 | 0 | 0 | 0 | 18 |
 | RandomReward | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | RankingPanel | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 13 |
 | ReadMailPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -974,7 +974,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | RechargeRemind | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | RecipeOpenSure | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | RecordClientData | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| RecoverEquipment | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| RecoverEquipment | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | RedEnvelope | other-ui | 10 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
 | RedEnvelopeInfo | other-ui | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 22 |
 | RefinePanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
@@ -982,7 +982,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | RemainingTimeNotify | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | RemoteCDProcess | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | RenewRule | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| ReputationPanel | panels-ui | 81 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| ReputationPanel | panels-ui | 78 | 0 | 0 | 0 | 0 | 0 | 0 | 115 |
 | ReputationPanelNew | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | Resourcebar | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | RevivePanel | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
@@ -1031,7 +1031,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | SelectEnchantment | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | SelectGround | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | SelectMacroIconPanel | other-ui | 258 | 0 | 0 | 0 | 0 | 0 | 0 | 56 |
-| Selfie | other-ui | 523 | 0 | 0 | 0 | 0 | 1 | 0 | 3 |
+| Selfie | other-ui | 523 | 0 | 0 | 0 | 0 | 1 | 0 | 67 |
 | SelfieEmotion | other-ui | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | SelfieExportDetails | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | SelfieMovieRecordLogo | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -1078,7 +1078,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | SidePanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | SignIn | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 1 |
 | SimpleDLCPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
-| SingleFStatistic | modes-ui | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| SingleFStatistic | modes-ui | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | SituationMap | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | SkillBanEdit | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 44 |
 | SkillCDJingYuJue | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
@@ -1097,7 +1097,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | SmallCalender | other-ui | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | SniperPanel | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | SnsPanel | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| SocialPanel | liked | 45 | 0 | 0 | 0 | 0 | 2 | 0 | 51 |
+| SocialPanel | liked | 45 | 0 | 0 | 0 | 0 | 2 | 0 | 48 |
 | SoundSettingPanel | liked | 52 | 0 | 0 | 0 | 0 | 0 | 1 | 2 |
 | SpeedEffect | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | SpeedRankPanel | other-ui | 50 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
@@ -1149,11 +1149,11 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | TeamTagPlayers | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | Teammate | spare | 3 | 0 | 0 | 0 | 0 | 10 | 0 | 46 |
 | TestGuild | modes-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 10 |
-| TheFlopPanel | other-ui | 20 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| TheFlopPanel | other-ui | 25 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | ThermometerPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | TimeBuff | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | TitleRankReward | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
-| TongArena | other-ui | 165 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| TongArena | other-ui | 174 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | TongBaoGift | other-ui | 397 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | TongBaoPanel | other-ui | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
 | TongBattleTips | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -1161,7 +1161,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | TongFarmPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | TopBuff | liked | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | TopBuffSet | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
-| TopMenu | recommended | 43 | 0 | 0 | 0 | 0 | 0 | 0 | 73 |
+| TopMenu | recommended | 43 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | TopMenuOther | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | TopMenuSaleList | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | ToyBox | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
@@ -1191,10 +1191,10 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | VagabondCrossMap | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | VagabondPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | VagabondReward | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
-| VampireCountPanel | other-ui | 38 | 0 | 0 | 0 | 0 | 0 | 0 | 88 |
+| VampireCountPanel | other-ui | 78 | 0 | 0 | 0 | 0 | 0 | 0 | 133 |
 | VampireInfoPanel | other-ui | 39 | 0 | 0 | 0 | 0 | 0 | 0 | 26 |
 | VideoCustomPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| VideoSettingDetails | other-ui | 124 | 0 | 0 | 0 | 0 | 0 | 0 | 16 |
+| VideoSettingDetails | other-ui | 118 | 0 | 0 | 0 | 0 | 0 | 0 | 16 |
 | VideoSettingPanel | liked | 20 | 0 | 0 | 0 | 0 | 1 | 0 | 45 |
 | ViewEquip | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | VkActionBar | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 18 |
@@ -1257,13 +1257,14 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
   `SetScrollPos` content shift, `SetStepCount`/`EnableScroll`), render (`FromUITex`,
   `SetImageType`, `SetPercentage`, `SetFontColor`, `SetOverText`), state (`Enable`
   disabled frame, `Check` checked frame, `Expand`, `ActivePage`).
-- **Remaining (26 calls):** `AppendItemFromData` (5, SocialPanel �?the arg is a
-  function returning item data; needs the function's own row shape), the drag
-  registrations (`SetDragArea`/`RegisterLButtonDrag`/`EnableDrag`/`SetScrollVerStepSize`,
-  8 �?interaction config, no visual), and the animation/icon render calls
+- **Interaction wired (2026-10-07):** `SetDragArea`/`RegisterLButtonDrag`/`EnableDrag`
+  feed the viewer's item drag / drag-handle sequence and `RegisterScrollControl` feeds the
+  wheel + scrollbar-thumb offset (see `UI_INTERACTION_REPLAY.md` §6).
+- **Remaining:** `AppendItemFromData` (the arg is a function returning item data; needs
+  the function's own row shape) and the animation/icon render calls
   (`SetAnimation`/`SetAnimateGroup*`/`SetLoopCount`/`FromIconID`/`FromTextureFile`/
-  `SetAlwaysTop`/`FormatTextForDraw`/`SetTextAutoTipEnabled`, 13 �?frame animation
-  and item-icon sources).
+  `SetAlwaysTop`/`FormatTextForDraw`/`SetTextAutoTipEnabled` — frame animation
+  and item-icon sources; `FromIconID` is data-blocked, animations keep the authored frame).
 - The recorded calls are the client's own; the fix is execution, not approximation.
 
 ## Viewer guard policies (2026-10-05)
