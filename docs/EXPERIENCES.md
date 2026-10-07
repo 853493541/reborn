@@ -2603,3 +2603,20 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - Watcher caveat: a torn read of the client's red-black tree while the id-4 handler mutates it
   can hang a naive in-order walk (the run4 background watcher hung at the id-4 transition);
   watch_world_bind.py now caps lookup iterations and tracks visited nodes.
+
+### 2026-10-06 — V2 PIVOT: static-first sweep for "visible + movable" (research map)
+- The remaining chain (self character load, movement preconditions, render activation, session
+  exit, world-data set) is a SYSTEM, not a sequence of gates; live step-by-step poking is
+  replaced by the Q1..Q5 decode plan in docs/netcode/V2_WORLD_MOVEMENT_CHAIN.md (registered in
+  the netcode README).
+- Confirmed statically: world input is GetAsyncKeyState-based (JX3RepresentX64 + KG3D engine
+  DLLs) -> SendInput required, posted WM_KEYDOWN cannot move the character; the movement
+  senders' callers are runtime-dispatched (no static call/data refs in the logic DLL) -> decode
+  the command layer, not the sender callers; post-bind `KSO3World::AddPlayer` -> 0x140178730 =
+  world global-id registration ("Duplicate GlobalRoleID").
+- Live lessons recorded in the doc: auto-login is variable (check the gateway log before
+  posting); never post input once the game window is up (26 s session kill); verify focus before
+  SendInput; session exit is variable 26..476 s (not a fixed watchdog); the background watcher
+  can hang on torn tree reads during the id-4 mutation (one-shot reads are reliable).
+- Evidence: proof/netcode/disasm/postbind_addplayer_scene.txt, represent_keyxrefs.txt,
+  move_sender_callers.txt, move_senders_c2s.txt; tools/netcode/drive_move.py.

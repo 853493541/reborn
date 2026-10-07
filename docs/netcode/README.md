@@ -46,6 +46,7 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `JX3_DROPS_RESEARCH.md` | **drops session record (audited)**: containers, tables, wire formats, dead ends, confidence |
 | `JX3_MODE_LOOT_SYSTEM.md`, `JX3_MODE_SPAWN_RULES_SEARCH.md` | loot container schema / spawn-rule hunt + dead-end log |
 | `JX3_CLIENT_LAUNCH_AND_SESSION.md` | **client launch + session handoff reality check** (launcher chain, no-arg launch, live endpoints, offline verdict) |
+| `V2_WORLD_MOVEMENT_CHAIN.md` | **V2 remaining chain (world visibility + movement)**: confirmed wire/code facts, open research questions Q1–Q5 (self character load, move preconditions, render activation, session exit, world-data set), static-first method |
 
 ## Tools (`tools/netcode/`)
 
@@ -66,7 +67,7 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `mine_protocol_layouts.py` | per-handler packet field offsets from S2C handler disassembly -> `proof/netcode/protocol_layouts_s2c.tsv` |
 | `extract_field_maps.py` | packet-read -> object-field pairs per S2C handler (dataflow pairing of mov/movzx) -> `proof/netcode/game_field_maps.tsv` |
 | `enum_named_objects.py` | list session named objects (mutexes/events/sections) — launcher-handoff gate hunting |
-| V2 real-client chain: `serverlist_host.py`, `gateway_stub.py`, `game_server_stub.py`, `launcher_emulator.py`, `post_login.py`, `role_enter.py`, `watch_game_mgr.py`, `watch_world_bind.py`, `dump_va.py`, `xref_va.py` | V2 (real client): server-list host, gateway/game stubs, launch emulator, scripted drivers, external state readers, VA disasm/xref |
+| V2 real-client chain: `serverlist_host.py`, `gateway_stub.py`, `game_server_stub.py`, `launcher_emulator.py`, `post_login.py`, `role_enter.py`, `drive_move.py`, `watch_game_mgr.py`, `watch_world_bind.py`, `dump_va.py`, `xref_va.py` | V2 (real client): server-list host, gateway/game stubs, launch emulator, scripted drivers (login/role/movement input), external state readers, VA disasm/xref |
 | `reference/jx3_model.py` | runnable reference server+client (10/10 smoke) |
 
 ## Evidence (`proof/netcode/`)

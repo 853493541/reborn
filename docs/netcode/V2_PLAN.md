@@ -25,7 +25,7 @@ playable in-world session. Personal use only (AGENTS §1: never commercial, neve
 | P0 | Recon + probe harness | reproducible direct launch; single blocker identified | **DONE** |
 | P1 | Startup gate (critical path) | client survives past the ~2.3 s WinMain timeout; module Initialize runs; `state_sub+0x18 != NULL` | **DONE (provisional: `config+0xe10=0`)** |
 | P2 | Login + gateway stub | client passes login against our gateway | **DONE (live-verified 2026-10-05)** |
-| P3 | Game server stub (enter world) | client loads the world and holds the session | **BIND MET LIVE 2026-10-06 (id 188 -> state 7); world-data set + session hold next** |
+| P3 | Game server stub (enter world) | client loads the world and holds the session | **BIND MET LIVE 2026-10-06 (id 188 -> state 7); world-data set + session hold next (P3.5)** |
 | P4 | Playable loop | walk around 5 min, no desync/disconnect | pending (movement ops identified) |
 | P5 | Packaging / ops | one-command cold start to in-world | pending |
 
@@ -148,12 +148,49 @@ The previous "id 189" was one dispatch slot off (registration sizes 8/7/19/56/59
   — IN PROGRESS (stub: hello, handshake 0x2FE, id 4, id 5 reply; pending: the world data set).
 - **Exit**: client loads the world and holds the session (no disconnect) against our server.
 
-## P4 — Playable loop
+## P3.5 — World live + session hold (gate for P4)
 
-- **P4.1** Movement: client input -> server state -> echo/authority (mirror the M2 shared
-  rules where the real client's behaviour matches).
+Goal: the client renders the world and holds the session past the ~220 s watchdog.
+
+1. **220 s exit root cause** (client exits `0xCFFFFFFF`; the stub sees the socket close).
+   Suspects, in order: (a) our S2C id-5 keepalive spam — name table says id 5 =
+   `OnSyncQuestData` and we inject a 1 KB zero array every 6 s; (b) a game-transport watchdog
+   needing a specific S2C id/serial/ack pattern; (c) a missing world-entry reply.
+   Test (a) first with a stub switch, then trace the exit path statically.
+2. **Answer the world-entry burst** (all observed in `game_stub_out.txt` after the bind):
+   C2S 0xB8 `DoRemoteLuaCall` carrying `On_QiYu_*` / `On_Recharge_*` /
+   `OnClientAddAchievement*` strings, plus UI data pulls (0x1C0, 2, 254x2, 229, 60, 90, 109
+   role-data x11, ...). Decode the Lua remote-call REPLY format from the client's Lua handler
+   before answering (no invented payloads).
+3. **World render**: the bind created the scene cells, but the frame is black. Find what
+   activates the render side (active scene/camera selection, cell `[+0x44]` loaded flags,
+   id 8 `OnSwitchMap`?) and serve whatever data it needs.
+4. Verify: session >= 5 min; screenshots + `image_stats.py` fingerprints show HUD/terrain.
+
+## P4 — Movement (goal: movable in the world)
+
+Wire facts (decoded 2026-10-06):
+- C2S **0x1E8 `DoMoveExteriorRequest`** (wire word; DLL 0x1801756F0): `[u16 0x1E8]`
+  `[word seq @+0xB]` `[byte mode @+0xD]` `[payload from +0xE, filled by 0x1807417F0]`,
+  sender 0x1801ACDA0. In the stub log this appears as `proto=232` (low byte).
+- C2S jump ops (`DoCharacterJump`, 0x1801708A0 family) carry `[player+0x2FC]`
+  `[player+0x340]` + self pos X/Y/Z (`player+0x10/14/18`).
+- C2S **0xBF `DoMoveViewPointRequest`** (0x1801759E1).
+- S2C **id 13 `OnMoveCharacter`** (33 B, entity id @+7) = broadcast for OTHER entities.
+
+Steps:
+1. **Input path test**: at state 7, focus the game window and drive W/A/S/D + space with the
+   scripted `tools/netcode/drive_move.py` (PostMessage first, SendInput fallback). Watch the
+   stub log for `proto=232` / jump ids / 0xBF and read `player+0x10/14` live for a position
+   change. If no C2S move appears, find the input gate statically (input module, world-UI
+   focus, loading-panel end).
+2. **Server side**: accept + log move ops; the client predicts locally, so no reply is needed
+   for the local player — just do not disconnect. (Echo/authority stays for M2.)
+3. **Broadcast (later)**: S2C id 13 once other entities exist.
+4. Verify: a scripted walk changes `player+0x10/14` and the client keeps sending 0x1E8; then a
+   5-minute moving session with no disconnect.
 - **P4.2** Minimal interaction (target/chat) and UI sanity.
-- **Exit**: user walks around in the real client for 5 min with no desync/disconnect.
+- **Exit**: walk around in the real client for 5 min with no desync/disconnect.
 
 ## P5 — Packaging / ops
 

@@ -1,0 +1,26 @@
+# JX3LogicEditOperationX64.dll xrefs to 0x1801708a0, 0x1801756f0, 0x1801759e1
+
+## ref @ 0x1801756b1 -> 0x1801756f0
+  0x180175675: lea      r8, [rip + 0x5f9b44]
+  0x18017567c: mov      ecx, 3
+  0x180175681: lea      rdx, [rip + 0x778e20]
+  0x180175688: call     qword ptr [rip + 0x5efbd2]
+  0x18017568e: xor      eax, eax
+  0x180175690: mov      rbx, qword ptr [rsp + 0x48]
+  0x180175695: add      rsp, 0x30
+  0x180175699: pop      rsi
+  0x18017569a: ret      
+  0x18017569b: movsxd   rax, r8d
+  0x18017569e: add      rax, rax
+  0x1801756a1: mov      qword ptr [rsp + 0x40], rdi
+  0x1801756a6: lea      rdi, [rax + 0xe]
+  0x1801756aa: cmp      rdi, 0x8000
+  0x1801756b1: jbe      0x1801756f0
+  0x1801756b3: lea      rcx, [rip + 0x5f9aa6]
+  0x1801756ba: mov      r9d, 0x1d42
+  0x1801756c0: mov      qword ptr [rsp + 0x20], rcx
+  0x1801756c5: lea      r8, [rip + 0x5f9b14]
+  0x1801756cc: lea      rdx, [rip + 0x778dd5]
+  0x1801756d3: mov      ecx, 3
+  0x1801756d8: call     qword ptr [rip + 0x5efb82]
+  0x1801756de: mov      rdi, qword ptr [rsp + 0x40]

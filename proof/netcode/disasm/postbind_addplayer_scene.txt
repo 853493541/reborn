@@ -1,0 +1,204 @@
+﻿
+==== 0x140178730 .. 0x140178a00 (.text)
+  0x140178730: push     rbx
+  0x140178732: sub      rsp, 0x40
+  0x140178736: mov      rax, qword ptr [rip + 0x8bbcbb]  ; 0x140a343f8
+  0x14017873d: xor      rax, rsp
+  0x140178740: mov      qword ptr [rsp + 0x38], rax
+  0x140178745: mov      qword ptr [rsp + 0x30], rdx
+  0x14017874a: mov      ebx, r8d
+  0x14017874d: mov      r9, rdx
+  0x140178750: mov      r10, rcx
+  0x140178753: test     rdx, rdx
+  0x140178756: jne      0x14017877c
+  0x140178758: lea      rdx, [rip + 0x653c69]  ; "Player GlobalID Error, PlayerID: %u"
+  0x14017875f: lea      ecx, [r9 + 3]
+  0x140178763: call     qword ptr [rip + 0x63fcdf]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x140178769: mov      rcx, qword ptr [rsp + 0x38]
+  0x14017876e: xor      rcx, rsp
+  0x140178771: call     0x14079ae80
+  0x140178776: add      rsp, 0x40
+  0x14017877a: pop      rbx
+  0x14017877b: ret      
+  0x14017877c: mov      rax, qword ptr [rcx + 0x5673c8]
+  0x140178783: mov      rdx, rax
+  0x140178786: mov      rcx, qword ptr [rax + 8]
+  0x14017878a: cmp      byte ptr [rcx + 0x19], 0
+  0x14017878e: jne      0x1401787a8
+  0x140178790: cmp      qword ptr [rcx + 0x20], r9
+  0x140178794: jae      0x14017879c
+  0x140178796: mov      rcx, qword ptr [rcx + 0x10]
+  0x14017879a: jmp      0x1401787a2
+  0x14017879c: mov      rdx, rcx
+  0x14017879f: mov      rcx, qword ptr [rcx]
+  0x1401787a2: cmp      byte ptr [rcx + 0x19], 0
+  0x1401787a6: je       0x140178790
+  0x1401787a8: cmp      byte ptr [rdx + 0x19], 0
+  0x1401787ac: jne      0x1401787b4
+  0x1401787ae: cmp      r9, qword ptr [rdx + 0x20]
+  0x1401787b2: jae      0x1401787b7
+  0x1401787b4: mov      rdx, rax
+  0x1401787b7: cmp      rdx, rax
+  0x1401787ba: lea      rcx, [r10 + 0x5673c8]
+  0x1401787c1: lea      rdx, [rsp + 0x30]
+  0x1401787c6: je       0x140178800
+  0x1401787c8: call     0x140172fc0
+  0x1401787cd: mov      r8, qword ptr [rsp + 0x30]
+  0x1401787d2: lea      rdx, [rip + 0x653c17]  ; "Duplicate GlobalRoleID gid:%llu playerid:%u, another playerid:%u"
+  0x1401787d9: mov      r9d, ebx
+  0x1401787dc: mov      ecx, dword ptr [rax]
+  0x1401787de: mov      dword ptr [rsp + 0x20], ecx
+  0x1401787e2: mov      ecx, 3
+  0x1401787e7: call     qword ptr [rip + 0x63fc5b]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1401787ed: mov      rcx, qword ptr [rsp + 0x38]
+  0x1401787f2: xor      rcx, rsp
+  0x1401787f5: call     0x14079ae80
+  0x1401787fa: add      rsp, 0x40
+  0x1401787fe: pop      rbx
+  0x1401787ff: ret      
+  0x140178800: call     0x140172fc0
+  0x140178805: mov      dword ptr [rax], ebx
+  0x140178807: mov      rcx, qword ptr [rsp + 0x38]
+  0x14017880c: xor      rcx, rsp
+  0x14017880f: call     0x14079ae80
+  0x140178814: add      rsp, 0x40
+  0x140178818: pop      rbx
+  0x140178819: ret      
+  0x14017881a: int3     
+  0x14017881b: int3     
+  0x14017881c: int3     
+  0x14017881d: int3     
+  0x14017881e: int3     
+  0x14017881f: int3     
+  0x140178820: mov      qword ptr [rsp + 0x10], rbx
+  0x140178825: mov      qword ptr [rsp + 0x18], rsi
+  0x14017882a: push     rdi
+  0x14017882b: sub      rsp, 0x70
+  0x14017882f: mov      r10d, edx
+  0x140178832: shl      r10, 0x20
+  0x140178836: movsxd   rax, r8d
+  0x140178839: add      r10, rax
+  0x14017883c: mov      esi, dword ptr [rsp + 0xb8]
+  0x140178843: mov      edx, dword ptr [rsp + 0xb0]
+  0x14017884a: test     edx, edx
+  0x14017884c: jne      0x14017886d
+  0x14017884e: test     esi, esi
+  0x140178850: jne      0x14017886d
+  0x140178852: mov      qword ptr [rsp + 0x20], r10
+  0x140178857: add      rcx, 0x1b718
+  0x14017885e: lea      rdx, [rsp + 0x20]
+  0x140178863: call     0x140179900
+  0x140178868: jmp      0x140178959
+  0x14017886d: mov      dword ptr [rsp + 0x40], r9d
+  0x140178872: mov      eax, dword ptr [rsp + 0xa0]
+  0x140178879: mov      dword ptr [rsp + 0x44], eax
+  0x14017887d: mov      eax, dword ptr [rsp + 0xa8]
+  0x140178884: mov      dword ptr [rsp + 0x48], eax
+  0x140178888: mov      dword ptr [rsp + 0x4c], edx
+  0x14017888c: mov      qword ptr [rsp + 0x20], r10
+  0x140178891: lea      rbx, [rcx + 0x1b718]
+  0x140178898: mov      rdi, qword ptr [rbx]
+  0x14017889b: mov      rax, qword ptr [rdi + 8]
+  0x14017889f: mov      qword ptr [rsp + 0x58], rax
+  0x1401788a4: xor      edx, edx
+  0x1401788a6: mov      dword ptr [rsp + 0x60], edx
+  0x1401788aa: mov      rcx, rdi
+  0x1401788ad: cmp      byte ptr [rax + 0x19], dl
+  0x1401788b0: jne      0x1401788da
+  0x1401788b2: mov      qword ptr [rsp + 0x58], rax
+  0x1401788b7: cmp      qword ptr [rax + 0x20], r10
+  0x1401788bb: jge      0x1401788c7
+  0x1401788bd: mov      dword ptr [rsp + 0x60], edx
+  0x1401788c1: mov      rax, qword ptr [rax + 0x10]
+  0x1401788c5: jmp      0x1401788d5
+  0x1401788c7: mov      dword ptr [rsp + 0x60], 1
+  0x1401788cf: mov      rcx, rax
+  0x1401788d2: mov      rax, qword ptr [rax]
+  0x1401788d5: cmp      byte ptr [rax + 0x19], dl
+  0x1401788d8: je       0x1401788b2
+  0x1401788da: cmp      byte ptr [rcx + 0x19], dl
+  0x1401788dd: jne      0x1401788e5
+  0x1401788df: cmp      r10, qword ptr [rcx + 0x20]
+  0x1401788e3: jge      0x14017894d
+  0x1401788e5: movabs   rax, 0x3ffffffffffffff
+  0x1401788ef: cmp      qword ptr [rbx + 8], rax
+  0x1401788f3: je       0x140178970
+  0x1401788f5: mov      qword ptr [rsp + 0x30], rbx
+  0x1401788fa: mov      qword ptr [rsp + 0x38], rdx
+  0x1401788ff: mov      ecx, 0x40
+  0x140178904: call     0x14079aee0
+  0x140178909: mov      r8, rax
+  0x14017890c: mov      rax, qword ptr [rsp + 0x20]
+  0x140178911: mov      qword ptr [r8 + 0x20], rax
+  0x140178915: xorps    xmm0, xmm0
+  0x140178918: xor      eax, eax
+  0x14017891a: movups   xmmword ptr [r8 + 0x28], xmm0
+  0x14017891f: mov      dword ptr [r8 + 0x38], eax
+  0x140178923: mov      qword ptr [r8], rdi
+  0x140178926: mov      qword ptr [r8 + 8], rdi
+  0x14017892a: mov      qword ptr [r8 + 0x10], rdi
+  0x14017892e: mov      word ptr [r8 + 0x18], ax
+  0x140178933: movups   xmm0, xmmword ptr [rsp + 0x58]
+  0x140178938: movaps   xmmword ptr [rsp + 0x30], xmm0
+  0x14017893d: lea      rdx, [rsp + 0x30]
+  0x140178942: mov      rcx, rbx
+  0x140178945: call     0x14008bf80
+  0x14017894a: mov      rcx, rax
+  0x14017894d: movups   xmm0, xmmword ptr [rsp + 0x40]
+  0x140178952: movups   xmmword ptr [rcx + 0x28], xmm0
+  0x140178956: mov      dword ptr [rcx + 0x38], esi
+  0x140178959: mov      eax, 1
+  0x14017895e: lea      r11, [rsp + 0x70]
+  0x140178963: mov      rbx, qword ptr [r11 + 0x18]
+  0x140178967: mov      rsi, qword ptr [r11 + 0x20]
+  0x14017896b: mov      rsp, r11
+  0x14017896e: pop      rdi
+  0x14017896f: ret      
+  0x140178970: call     0x14008c710
+  0x140178975: int3     
+  0x140178976: int3     
+  0x140178977: int3     
+  0x140178978: int3     
+  0x140178979: int3     
+  0x14017897a: int3     
+  0x14017897b: int3     
+  0x14017897c: int3     
+  0x14017897d: int3     
+  0x14017897e: int3     
+  0x14017897f: int3     
+  0x140178980: mov      qword ptr [rsp + 8], rbx
+  0x140178985: mov      qword ptr [rsp + 0x10], rsi
+  0x14017898a: push     rdi
+  0x14017898b: sub      rsp, 0x30
+  0x14017898f: mov      rax, qword ptr [rip + 0x8bba62]  ; 0x140a343f8
+  0x140178996: xor      rax, rsp
+  0x140178999: mov      qword ptr [rsp + 0x28], rax
+  0x14017899e: mov      rsi, rcx
+  0x1401789a1: call     0x140139560
+  0x1401789a6: test     rax, rax
+  0x1401789a9: je       0x1401789b1
+  0x1401789ab: lea      rdx, [rax + 8]
+  0x1401789af: jmp      0x1401789b3
+  0x1401789b1: xor      edx, edx
+  0x1401789b3: lea      rcx, [rsp + 0x20]
+  0x1401789b8: call     0x140375980
+  0x1401789bd: mov      rdi, qword ptr [rsi + 0x5673d8]
+  0x1401789c4: mov      rax, qword ptr [rdi + 0x20]
+  0x1401789c8: mov      rbx, qword ptr [rax]
+  0x1401789cb: cmp      rbx, rax
+  0x1401789ce: je       0x140178a3a
+  0x1401789d0: mov      rcx, qword ptr [rbx + 0x10]
+  0x1401789d4: mov      rax, rbx
+  0x1401789d7: cmp      byte ptr [rcx + 0x19], 0
+  0x1401789db: je       0x1401789ff
+  0x1401789dd: mov      rcx, qword ptr [rbx + 8]
+  0x1401789e1: cmp      byte ptr [rcx + 0x19], 0
+  0x1401789e5: jne      0x1401789fa
+  0x1401789e7: cmp      rbx, qword ptr [rcx + 0x10]
+  0x1401789eb: jne      0x1401789fa
+  0x1401789ed: mov      rbx, rcx
+  0x1401789f0: mov      rcx, qword ptr [rcx + 8]
+  0x1401789f4: cmp      byte ptr [rcx + 0x19], 0
+  0x1401789f8: je       0x1401789e7
+  0x1401789fa: mov      rbx, rcx
+  0x1401789fd: jmp      0x140178a1f
