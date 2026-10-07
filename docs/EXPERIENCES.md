@@ -4431,3 +4431,13 @@ if the cache/host frames appear.
 - Open: tag play time = cast start (tani tag frame times unparsed); 幻蛊 needs
   a staged process; the remaining staged abilities' tanis embed no tags (PSS
   stands). Docs: `docs/engine_host/SFX_RE_TEST.md` rewritten for the broad pass.
+
+### 2026-10-06 — v5 — P panel: grouped by .Sfx-tag wiring, 6 per row, taller (user request)
+
+- `ability_sandbox/rb/RebornClient.cs`: the P picker now groups abilities into
+  `sfx tags (n)` (dataset process carries a `kind:"sfx"` step) and `none (n)`
+  sections with labels + flow breaks; grid 248x378 inside a 260x420 panel
+  (6 icons per row incl. the scrollbar), sound checkbox moved below.
+- Verified live: window `skill v5`, panel open via posted P key ->
+  `sfx tags (19)` / `none (63)`, 6 per row, scrollable; proof
+  `proof/netcode/capture_p_panel_1_3000ms.png`.
