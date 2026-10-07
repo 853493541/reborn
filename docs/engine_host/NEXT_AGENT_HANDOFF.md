@@ -1,8 +1,28 @@
 # Next-agent handoff — Gate 1 (real `CreateRLScene`) / RL table list
 
+**You are reading `docs/engine_host/NEXT_AGENT_HANDOFF.md`** — this file is the
+handoff guide. Find it at:
+
+- Worktree: `C:\Users\Zhibin Ren\Desktop\reborn-iso-skillv2-sandbox`
+- Path: `docs\engine_host\NEXT_AGENT_HANDOFF.md`
+- Branch: `agent/skillv2-sandbox`
+- Registered in the area index: `docs\engine_host\README.md` (row
+  `NEXT_AGENT_HANDOFF.md`).
+
+If a prompt points you here, read in this order:
+
+1. **This file** (the working map: state, chain, blocker, next probes).
+2. `docs\engine_host\CLIENT_CHARACTER_PLAN.md` — the Gate 1..5 plan
+   (Gate 1 = the real `CreateRLScene` completing).
+3. `docs\EXPERIENCES.md` — the 2026-10-06 entries (8 of them) are the
+   blow-by-blow narrative of how the current state was reached.
+4. `AGENTS.md` §2 (isolation/worktree rules) and §15 (response protocol:
+   Verified line + game-design check + EXPERIENCES entry).
+5. Session logs: `%TEMP%\opencode\skillv2\host_exe146-178.out` (the current
+   chain) and `host_exe119-145.out` (window fix + earlier Gate 1 steps).
+
 Last updated: 2026-10-06 (end of a very long session). Read this top to bottom
-before touching anything. `docs/EXPERIENCES.md` (2026-10-06 entries) has the
-blow-by-blow; this file is the working map.
+before touching anything.
 
 ## 0. TL;DR — what to do next
 
