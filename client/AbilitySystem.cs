@@ -56,6 +56,9 @@ internal static class AbilitySystem
     static readonly List<PictureBox> icons = new List<PictureBox>();
     static Panel panel;
     static Control panelHost;
+    static FlowLayoutPanel grid;
+    static CheckBox soundBox;
+    static float uiScale = 1f;
     static string sel = "";
     static bool castReq = false;
     static bool active = false;
@@ -192,6 +195,29 @@ internal static class AbilitySystem
         return img;
     }
 
+    // the panel scales with the window height (design size = 720p); fullscreen
+    // / a resized window gets a proportionally bigger panel + icons
+    static void ScaleUi()
+    {
+        if (panel == null || panelHost == null || grid == null || soundBox == null) return;
+        float s = panelHost.ClientSize.Height / 720f;
+        if (s < 1f) s = 1f;
+        if (s > 2.2f) s = 2.2f;
+        if (Math.Abs(s - uiScale) < 0.01f) return;
+        uiScale = s;
+        int iconPx = (int)(32 * s);
+        int pad = (int)Math.Max(1, 1 * s);
+        panel.Size = new Size((int)(260 * s), (int)(420 * s));
+        grid.Size = new Size(panel.Width - 12, panel.Height - 42);
+        foreach (Control c in grid.Controls)
+        {
+            c.Size = new Size(iconPx, iconPx);
+            c.Margin = new Padding(pad);
+        }
+        soundBox.Location = new Point(6, panel.Height - 28);
+        soundBox.Font = new Font("Microsoft YaHei", 9f * s);
+    }
+
     static void BuildPanel()
     {
         // host: the client's render panel (Dock.Fill) - the panel must live in
@@ -207,7 +233,7 @@ internal static class AbilitySystem
         panel.Size = new Size(260, 420);
         panel.BackColor = Color.FromArgb(210, 0, 0, 0);
         panel.Visible = true;   // visible by default; P toggles
-        var grid = new FlowLayoutPanel();
+        grid = new FlowLayoutPanel();
         grid.Location = new Point(6, 6);
         grid.Size = new Size(248, 378);
         grid.AutoScroll = true;
@@ -240,7 +266,7 @@ internal static class AbilitySystem
             icons.Add(pb);
         }
         panel.Controls.Add(grid);
-        var soundBox = new CheckBox();
+        soundBox = new CheckBox();
         soundBox.Text = "sound";
         soundBox.ForeColor = Color.White;
         soundBox.Checked = true;
@@ -251,7 +277,8 @@ internal static class AbilitySystem
         panelHost.Controls.Add(panel);
         Action place = delegate
         {
-            panel.Location = new Point(Math.Max(0, panelHost.ClientSize.Width - 272), 36);
+            ScaleUi();
+            panel.Location = new Point(Math.Max(0, panelHost.ClientSize.Width - panel.Width - 12), 36);
         };
         panelHost.Resize += delegate { place(); };
         place();
@@ -335,7 +362,8 @@ internal static class AbilitySystem
             (panelHost.ClientSize.Width != lastFormW || panelHost.ClientSize.Height != lastFormH))
         {
             lastFormW = panelHost.ClientSize.Width; lastFormH = panelHost.ClientSize.Height;
-            panel.Location = new Point(Math.Max(0, lastFormW - 272), 36);
+            ScaleUi();
+            panel.Location = new Point(Math.Max(0, lastFormW - panel.Width - 12), 36);
             if (panel.Visible) panel.BringToFront();
         }
         if (castReq)
