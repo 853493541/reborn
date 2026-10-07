@@ -2867,3 +2867,27 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   expanded to bits, parser 0x140327680) — NOT the world attribute array as previously noted.
 - Note: with the world rendered and focused, ESC produces zero reaction until the world UI is
   active — the user's ESC→character-screen→re-enter shortcut needs a completed entry first.
+
+### 2026-10-07 — V3: frozen isolated install JX3ZHENCHUAN created (copy + root-parameterized tooling)
+- New track V3 = the V2 stack (real client + launcher emulator + local stubs) running against a
+  frozen copy of the stock install instead of the live `C:\SeasunGame`. Purpose: version pin,
+  clean log attribution, no dependence on the player's updating install.
+- Copy (robocopy, read-only on the source): `C:\JX3ZHENCHUAN\Game\JX3\bin\zhcn_hd` (46,344 files /
+  8.72 GiB) + `C:\JX3ZHENCHUAN\Game\JX3\Pakv4` (2,264 files / 192.88 GiB, byte-size exact vs the
+  source store). Client build 1-5-0-9975 (exe TimeDateStamp 1790430791). Excluded (research/logs/
+  runtime/addon data): `SeasunDownloaderV2.4*`, `logs`, `CachedShaders`/`zsCache`/`minidump`/
+  WebView2 profile/dxvk cache, `interface\{JX#DATA,MY#DATA,SG#data}` (MY#DATA alone = 6.12 GiB),
+  root `*.memory` + runtime ini files. Marker/provenance: `C:\JX3ZHENCHUAN\ZHENCHUAN_BUILD.json`.
+- Tooling: new `tools/netcode/client_root.py` resolves the client root from `RC_CLIENT_ROOT`/
+  `RC_V3_ROOT` with the live install as fallback; parameterized `gateway_stub`, `game_server_stub`
+  (**cipher table now read from the resolved exe** — server constants must match the exact build),
+  `launcher_emulator`, `probe_state_timeline`, `probe_logpatch`, `probe_queue`, `probe_wait_trace`,
+  `probe_unwind`, `incident_report`, `crash_catcher`, `watch_freeze`. Commit `e529861` on branch
+  `agent/v3` (worktree `reborn-iso-v3`, off `agent/v2` @ `4a099a8`). Wrappers:
+  `C:\jx3tmp\run_{gateway,gamestub,emul,incident_watch}_zhenchuan.cmd`.
+- HAZARD reconfirmed: another raw V2 client session was live on the live install during setup
+  (PID 54644/59476, connected to a map1 stub) — share `Ports 3724/3725`; the raw client has no
+  namespace isolation (`MovieEditor.memory` fixed), so V3 validation must wait for the namespace
+  to be free. The V2 gateway (3724) was briefly stopped during the stub swap and restored.
+- Docs: `docs/netcode/V3_PLAN.md` (layout, run/bump procedure, reproduce) registered in
+  `docs/netcode/README.md`; tools table updated.

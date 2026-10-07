@@ -26,6 +26,7 @@ machine), used to recreate the runtime model for reborn. Branch:
 |---|---|
 | `V2_PLAN.md` | **V2 phased plan** — run the real JX3 client (P0 done, P1 startup gate next) |
 | `V2_HANDOFF.md` | **V2 handoff report for the next agent** — chain status, the current blocker (id-189 cell check), dead ends, hazards, live env, reproduce steps |
+| `V3_PLAN.md` | **V3 plan** — real client on the frozen isolated install `C:\JX3ZHENCHUAN`: layout, `RC_CLIENT_ROOT` tooling, run/bump procedure, status |
 | `UNIT_SCALE_AND_CHARACTER_SIZE.md` | **canonical unit system**: 1 u = 1 cm, 尺 = 0.64 m, character vs map sizes |
 | `JX3_NETCODE_RESEARCH.md` | static map of client/server netcode (CoreNet, KPlayerClient, sync/reconnect) |
 | `JX3_PROTOCOL_SPEC.md` | frame layout, serial/ack reliability, handshake, ping, protocol IDs |
@@ -67,7 +68,7 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `mine_protocol_layouts.py` | per-handler packet field offsets from S2C handler disassembly -> `proof/netcode/protocol_layouts_s2c.tsv` |
 | `extract_field_maps.py` | packet-read -> object-field pairs per S2C handler (dataflow pairing of mov/movzx) -> `proof/netcode/game_field_maps.tsv` |
 | `enum_named_objects.py` | list session named objects (mutexes/events/sections) — launcher-handoff gate hunting |
-| V2 real-client chain: `serverlist_host.py`, `gateway_stub.py`, `game_server_stub.py`, `launcher_emulator.py`, `post_login.py`, `role_enter.py`, `drive_move.py`, `watch_game_mgr.py`, `watch_world_bind.py`, `watch_freeze.py`, `read_bind_state.py`, `incident_report.py`, `crash_catcher.py`, `watch_represent_array.py`, `launch_hidden.ps1`, `dump_va.py`, `xref_va.py` | V2 (real client): server-list host, gateway/game stubs, launch emulator, scripted drivers (login/role/movement input), external state readers, **freeze watchdog (detect hung+static -> grab logs -> kill)**, incident loop (freeze/exit -> reason -> kill), crash-catcher (dmp/XML before DumpReport deletes), represent-array duplicate watcher (double-free repro), VA disasm/xref, hidden WMI launcher |
+| V2 real-client chain: `client_root.py`, `serverlist_host.py`, `gateway_stub.py`, `game_server_stub.py`, `launcher_emulator.py`, `post_login.py`, `role_enter.py`, `drive_move.py`, `watch_game_mgr.py`, `watch_world_bind.py`, `watch_freeze.py`, `read_bind_state.py`, `incident_report.py`, `crash_catcher.py`, `watch_represent_array.py`, `launch_hidden.ps1`, `dump_va.py`, `xref_va.py` | V2/V3 (real client): `client_root.py` resolves the install root from `RC_CLIENT_ROOT`/`RC_V3_ROOT` (frozen `C:\JX3ZHENCHUAN`) with the live install as fallback; server-list host, gateway/game stubs (cipher table from the resolved client exe), launch emulator, scripted drivers (login/role/movement input), external state readers, **freeze watchdog (detect hung+static -> grab logs -> kill)**, incident loop (freeze/exit -> reason -> kill), crash-catcher (dmp/XML before DumpReport deletes), represent-array duplicate watcher (double-free repro), VA disasm/xref, hidden WMI launcher |
 | `reference/jx3_model.py` | runnable reference server+client (10/10 smoke) |
 
 ## Evidence (`proof/netcode/`)
