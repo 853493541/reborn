@@ -4785,3 +4785,27 @@ if the cache/host frames appear.
   by the CLR dummy route) -> anchor uses the head bone for both anchor and aim;
   re-open when a socket-free/InitSocketNode route or the real game actor path exists.
 - Outcome: W1 done - camera C1 anchor is engine-sourced; shell ready for W2.
+
+### 2026-10-06 - Character 3x-rig W2: PlayerRush locomotion selection wired
+
+- Did: extracted `Represent/player/player_rush.txt` from the client PakV4 with the
+  official tool (213,439 B; scratch, not committed) and wired the table-driven
+  ground-move selection into the client: `RC_LOCO_TABLE=<path>` loads the GBK TSV
+  (header-matched columns), row = (role, school, weapon) with `RC_LOCO_ROLE/SCHOOL/WEAPON`
+  (default 6/0/0); 移动（floor） is the forward ground clip.
+- Verified: with the table, running uses the authored `F1bqg加速跑02b_陆.tani`
+  (`clip=` in reborn_20261006_194543.log, rc=0, run completed); without the table the
+  previous `f1b02yd奔跑.ani` behaviour is unchanged (reborn_20261006_194655.log).
+- Tier rule implemented (t2 -> 二阶高速跑, t1 -> 高速跑, else 移动) but **gated OFF**:
+  enabling it played `F1bqg丐帮疾轻功烟尘.tani` and the engine AV'd right after
+  `PlayAnimation` rc=0 (reborn_20261006_194627.log tail; exit 0xC0000005). Each tier
+  clip must be individually verified in-engine before enabling (RC_LOCO_TIERS=1).
+- PROVISIONAL (registered): comparator scalar = 默认移动速度 for normal movement, x2
+  under the 10x sprint (RC_LOCO_SCALAR test override); the engine's [this+0xD0]
+  writer/unit is untraced - re-open when decoded.
+- Also fixed en route: the loader's early Log() calls NRE'd before logger init
+  (deferred via locoMsgs) and Encoding.GetEncoding(18030) is invalid on this runtime
+  (GBK = 936).
+- Gates: build exit 0; camera_smoke_3x_rig ALL PASS; collision_selftest 36/36.
+- Outcome: W2 done (base clip data-driven + verified; tiers gated pending per-clip
+  verification). W1+W2 complete on agent/3x-rig.

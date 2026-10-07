@@ -174,6 +174,72 @@ internal static class RebornClient
         // momentum (u/s); airStartY = height when the character left the ground.
         float vjx = 0f, vjz = 0f, airStartY = 0f;
         string clipSkill = Env("RC_CLIP_SKILL", flws);
+        // ---- PlayerRush locomotion table (character 3.x W2) --------------------
+        // Represent/player/player_rush.txt, extracted from the client PakV4 with
+        // the official tool (docs/character/3_2_3_3_LOCOMOTION_MOTION.md).
+        // RC_LOCO_TABLE=<path> enables the data-driven tier selection; when not
+        // loaded the RC_CLIP_* defaults above keep the previous behaviour.
+        bool locoLoaded = false;
+        string locoMove = "", locoHi1 = "", locoHi2 = "";
+        float locoT1 = -1f, locoT2 = -1f, locoDefault = 35f;
+        bool locoDbg = Env("RC_LOCO_DBG", "0") == "1";
+        string locoClipLast = "";
+        var locoMsgs = new System.Collections.Generic.List<string>();
+        string locoTable = Env("RC_LOCO_TABLE", "");
+        if (locoTable.Length > 0 && File.Exists(locoTable))
+        {
+            try
+            {
+                string[] llines = File.ReadAllLines(locoTable, System.Text.Encoding.GetEncoding(936));
+                string[] lh = llines[0].Split('\t');
+                int iRole = 0, iSchool = 1, iWeapon = 2, iDef = 3, iMove = 11, iT1 = 15, iHi1 = 17, iT2 = 19, iHi2 = 21;
+                for (int i = 0; i < lh.Length; i++)
+                {
+                    if (lh[i] == "\u89D2\u8272\u7C7B\u578B") iRole = i;
+                    else if (lh[i] == "\u95E8\u6D3E") iSchool = i;
+                    else if (lh[i] == "\u6B66\u5668\u7C7B\u578B") iWeapon = i;
+                    else if (lh[i] == "\u9ED8\u8BA4\u79FB\u52A8\u901F\u5EA6") iDef = i;
+                    else if (lh[i] == "\u79FB\u52A8\uFF08floor\uFF09") iMove = i;
+                    else if (lh[i] == "\u901F\u5EA6\u4FEE\u6B63\u503C") iT1 = i;
+                    else if (lh[i] == "\u9AD8\u901F\u8DD1\uFF08\u5730\u9762\uFF09") iHi1 = i;
+                    else if (lh[i] == "\u4E8C\u9636\u901F\u5EA6\u4FEE\u6B63\u503C") iT2 = i;
+                    else if (lh[i] == "\u4E8C\u9636\u9AD8\u901F\u8DD1\uFF08\u5730\u9762\uFF09") iHi2 = i;
+                }
+                int wRole = 6, wSchool = 0, wWeapon = 0;
+                int.TryParse(Env("RC_LOCO_ROLE", "6"), out wRole);
+                int.TryParse(Env("RC_LOCO_SCHOOL", "0"), out wSchool);
+                int.TryParse(Env("RC_LOCO_WEAPON", "0"), out wWeapon);
+                string[] pick = null, zero = null;
+                for (int li = 1; li < llines.Length; li++)
+                {
+                    if (llines[li].Length == 0) continue;
+                    string[] f = llines[li].Split('\t');
+                    if (f.Length <= iHi2) continue;
+                    int fr, fs, fw;
+                    if (!int.TryParse(f[iRole], out fr) || !int.TryParse(f[iSchool], out fs) ||
+                        !int.TryParse(f[iWeapon], out fw)) continue;
+                    if (fr == 0 && fs == 0 && fw == 0) zero = f;
+                    if (fr == wRole && fs == wSchool && fw == wWeapon) { pick = f; break; }
+                }
+                if (pick == null) pick = zero;
+                if (pick != null)
+                {
+                    locoMove = pick[iMove].TrimStart('\\');
+                    locoHi1 = pick[iHi1].TrimStart('\\');
+                    locoHi2 = pick[iHi2].TrimStart('\\');
+                    float.TryParse(pick[iT1], out locoT1);
+                    float.TryParse(pick[iT2], out locoT2);
+                    float.TryParse(pick[iDef], out locoDefault);
+                    if (locoDefault <= 0f) locoDefault = 35f;
+                    locoLoaded = locoMove.Length > 0;
+                    locoMsgs.Add("loco table: row=(" + wRole + "," + wSchool + "," + wWeapon + ") default=" + locoDefault +
+                        " t1=" + locoT1 + " t2=" + locoT2);
+                    locoMsgs.Add("loco table: move=" + locoMove + " hi1=" + locoHi1 + " hi2=" + locoHi2);
+                }
+                else locoMsgs.Add("loco table: no row for (" + wRole + "," + wSchool + "," + wWeapon + ")");
+            }
+            catch (Exception le) { locoMsgs.Add("loco table ex: " + le.Message); }
+        }
         // RC_ROT_TEST close-ups show the actor faces -Z at identity, so the yaw
         // that points it along the movement direction needs a pi offset.
         // (note: TryParse sets the out param to 0 on failure, so parse into a temp)
@@ -224,6 +290,7 @@ internal static class RebornClient
                 if (logLines.Count > 400) logLines.RemoveRange(0, logLines.Count - 400);
             }
         };
+        for (int lm = 0; lm < locoMsgs.Count; lm++) Log(locoMsgs[lm]);
         // short visible tag from the exe name: reborn_client_collision.exe ->
         // "collision" (canonical reborn_client.exe -> "canonical"); shown in
         // the window title and the HUD's first line so parallel clients are
@@ -3600,11 +3667,43 @@ internal static class RebornClient
             else if (!grounded) setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
             else if (now < landClipUntil) setClip(clipLand);
             else if (sitting) setClip(clipSit);
-            else if (moving) setClip(
-                gait == 1 ? clipStrafeL :
-                gait == 2 ? clipStrafeR :
-                gait == 3 ? clipBack :
-                walkMode ? clipWalk : clipRun);
+            else if (moving)
+            {
+                string fwdClip = walkMode ? clipWalk : clipRun;
+                if (locoLoaded)
+                {
+                    // PlayerRush tier rule (docs/character/3_2_3_3_LOCOMOTION_MOTION.md):
+                    // scalar = 默认移动速度 for normal movement, x2 for the host's 10x
+                    // sprint. PROVISIONAL: the engine's [this+0xD0] writer is untraced;
+                    // re-open when the writer/unit is resolved. Tier clips are gated
+                    // OFF (RC_LOCO_TIERS=1) because the F1 tier variant
+                    // (F1bqg丐帮疾轻功烟尘.tani) AVs the host engine right after
+                    // PlayAnimation rc=0 (reborn_20261006_194627.log) - each tier clip
+                    // must be verified in-engine before it is enabled.
+                    bool tiersOn = Env("RC_LOCO_TIERS", "0") == "1";
+                    float scalar = locoDefault * (shiftDown ? 2f : 1f);
+                    float scalarOv;
+                    if (float.TryParse(Env("RC_LOCO_SCALAR", ""), out scalarOv) && scalarOv > 0f) scalar = scalarOv;
+                    string tier = null;
+                    if (tiersOn)
+                    {
+                        if (locoT2 > 0f && scalar >= locoT2) tier = locoHi2;
+                        else if (locoT1 > 0f && scalar >= locoT1) tier = locoHi1;
+                    }
+                    fwdClip = string.IsNullOrEmpty(tier) ? locoMove : tier;
+                    if (locoDbg && locoClipLast != fwdClip)
+                    {
+                        locoClipLast = fwdClip;
+                        Log("loco clip: scalar=" + scalar + " t1=" + locoT1 + " t2=" + locoT2 +
+                            " tiers=" + (tiersOn ? "on" : "off") + " -> " + fwdClip);
+                    }
+                }
+                setClip(
+                    gait == 1 ? clipStrafeL :
+                    gait == 2 ? clipStrafeR :
+                    gait == 3 ? clipBack :
+                    fwdClip);
+            }
             else if (sheathOn && (long)Environment.TickCount < sheathDrawUntil) setClip(clipSheathDraw);
             else setClip(sheathOn ? clipSheathHold : clipIdle);
 

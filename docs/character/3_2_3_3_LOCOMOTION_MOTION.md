@@ -393,6 +393,23 @@ holds only for `小跳b` (Y = 0 on every frame).
 
 ---
 
+## Host wiring update (2026-10-06, agent/3x-rig)
+
+- **Loader:** the client reads the extracted table via `RC_LOCO_TABLE` (GBK TSV,
+  header-matched columns), selects the row by (role, school, weapon)
+  (`RC_LOCO_ROLE/SCHOOL/WEAPON`, default 6/0/0), and uses 移动（floor） as the
+  ground-move clip. Verified in-engine: `clip=F1bqg加速跑02b_陆.tani` while running
+  (`reborn_20261006_194543.log`), no AV; fallback (no table) keeps the previous
+  `f1b02yd奔跑.ani` behaviour (`reborn_20261006_194655.log`).
+- **Tier rule implemented but gated OFF** (`RC_LOCO_TIERS=1` enables): the F1 tier
+  clip `F1bqg丐帮疾轻功烟尘.tani` AVs the host engine right after `PlayAnimation`
+  rc=0 (`reborn_20261006_194627.log` tail) - each tier clip must be individually
+  verified in-engine before it is enabled (the base move clip is verified).
+- **PROVISIONAL (registered):** the comparator scalar = 默认移动速度 for normal
+  movement, x2 under the host's 10x sprint (`RC_LOCO_SCALAR` test override); the
+  engine's `[this+0xD0]` writer/unit is still untraced (open question 1). Re-open
+  when the writer is decoded.
+
 ## Reproduce
 
 Scratch scripts (all under `C:\Users\ZHIBIN~1\AppData\Local\Temp\opencode\char3x\`):
