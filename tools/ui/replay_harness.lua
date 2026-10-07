@@ -684,22 +684,70 @@ local handler = function(e)
 end
 local ok2, err2 = true, nil
 local entry = nil
-for _, name in ipairs({ "OnFrameCreate", "OnLoad", "OnCreate", "Init", "OnOpen" }) do
-  if type(mod[name]) == "function" then
-    entry = name
-    break
+local entryTable = nil
+local ENTRY_NAMES = { "OnFrameCreate", "OnLoad", "OnCreate", "Init", "OnOpen" }
+local function findEntry(m)
+  if type(m) ~= "table" then return nil end
+  for _, name in ipairs(ENTRY_NAMES) do
+    if type(m[name]) == "function" then return name end
+  end
+  return nil
+end
+entry = findEntry(mod)
+entryTable = mod
+if entry == nil then
+  -- Class-style scripts (BubblePanel) keep the handlers on the sibling
+  -- <Stem>_Base class the chunk built; the engine instantiates that class
+  -- (class() stores method assignments in an internal members table, so the
+  -- entry is visible on the instance, not the class table).
+  local stem = tostring(scriptPath):match("([^/\\]+)%.lua$") or ""
+  local base = rawget(_G, stem .. "_Base")
+  local baseEntry = findEntry(base)
+  local baseObj = base
+  if baseEntry == nil and type(base) == "table" and type(base.new) == "function" then
+    local okI, inst = pcall(function() return base:new() end)
+    if okI and type(inst) == "table" then
+      local instEntry = findEntry(inst)
+      if instEntry then baseEntry, baseObj = instEntry, inst end
+    end
+  end
+  if baseEntry then
+    entryTable, entry = baseObj, baseEntry
+  else
+    for k, v in pairs(_G) do
+      if type(k) == "string" and type(v) == "table" and k:sub(1, #stem) == stem then
+        local e = findEntry(v)
+        if e then entryTable, entry = v, e break end
+      end
+    end
   end
 end
 if entry == nil and type(mod.Open) == "function" then
   -- Class-style scripts (WishPanel, Cyclopaedia_*, ...) define no On* entry; the
   -- engine opens the window through the module's own Open, which is their init.
   entry = "Open"
+  entryTable = mod
 end
 if entry == nil then
-  print("RESULT ERR no-entry")
+  if os.getenv("RC_ENGINE_BASE_DEBUG") == "1" then
+    local stem0 = tostring(scriptPath):match("([^/\\]+)%.lua$") or ""
+    local base0 = rawget(_G, stem0 .. "_Base")
+    local keys = {}
+    if type(base0) == "table" then for k in pairs(base0) do keys[#keys + 1] = tostring(k) end end
+    local mt = getmetatable(base0)
+    local ikeys = {}
+    if type(mt) == "table" and type(mt.__index) == "table" then
+      for k in pairs(mt.__index) do ikeys[#ikeys + 1] = tostring(k) end
+    end
+    io.stderr:write("no-entry stem=" .. stem0 .. " base=" .. tostring(base0)
+      .. " mt=" .. tostring(mt) .. " keys=" .. table.concat(keys, ",")
+      .. " idx=" .. table.concat(ikeys, ",")
+      .. " new=" .. type(base0) .. ":" .. tostring(type(base0) == "table" and base0.new) .. "\n")
+  end
+  print("RESULT NOENTRY")
   os.exit(5)
 end
-ok2, err2 = xpcall(function() return mod[entry](root) end, handler)
+ok2, err2 = xpcall(function() return entryTable[entry](root) end, handler)
 -- The engine also opens the window after creating it (the module's Open sets its
 -- open flag and runs the state refresh); some inits gate that refresh on the flag
 -- (LuckyMeeting.IsOpened) and stay fully hidden without it. Open is best-effort:

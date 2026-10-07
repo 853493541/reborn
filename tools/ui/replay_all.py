@@ -48,7 +48,7 @@ def main():
 
     print("scripted windows: %d" % len(stems))
     summary = []
-    ok_count = err_count = 0
+    ok_count = err_count = noentry_count = 0
     for stem in stems:
         ini = os.path.join(args.ini_dir, stem + ".ini")
         lua = os.path.join(args.ini_dir, stem + ".lua")
@@ -67,6 +67,8 @@ def main():
             result = "ERR no-result"
         if result.startswith("OK"):
             ok_count += 1
+        elif result.startswith("NOENTRY"):
+            noentry_count += 1
         else:
             err_count += 1
         mutations = 0
@@ -81,7 +83,7 @@ def main():
         f.write("window\tresult\tmutations\n")
         for stem, result, mutations in summary:
             f.write("%s\t%s\t%d\n" % (stem, result, mutations))
-    print("\nOK=%d ERR=%d -> %s" % (ok_count, err_count, summary_path))
+    print("\nOK=%d ERR=%d NOENTRY=%d -> %s" % (ok_count, err_count, noentry_count, summary_path))
     return 0
 
 

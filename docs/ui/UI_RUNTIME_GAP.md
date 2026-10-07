@@ -19,8 +19,8 @@ This report measures what is **still dropped** — the remaining calls per windo
 | render | 21 | DROPPED — runtime image source/mode/animation |
 | state | 0 | DROPPED — control state (enable/check/expand/page) |
 | interaction | 10 | DROPPED — drag/interaction registration (not static layout) |
-| consumed | 6794 | applied by the viewer today |
-| noise | 11142 | engine plumbing, no visual state (lookup/events/getters) |
+| consumed | 6796 | applied by the viewer today |
+| noise | 11150 | engine plumbing, no visual state (lookup/events/getters) |
 
 State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21 + state 0).
 
@@ -90,7 +90,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | ActivityPlotPanel | menus-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | ActivityRewardCollection | menus-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | ActivitySignIn | recommended | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 6 |
-| ActivityTipPanel | menus-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 20 |
+| ActivityTipPanel | menus-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 20 |
 | AddAccountFriend | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | AddFriendPanel | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | AddPartnerExterior | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -155,6 +155,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | BookExchangePanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | BookInfoPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | BreatheBar | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| BubblePanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | BuffFold | liked | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | BuffList | ? | 6 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | BuffMonitor | recommended | 16 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
