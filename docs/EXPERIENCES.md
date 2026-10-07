@@ -2698,3 +2698,13 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   90 s) or STUCK (responsive + static + no client packets 180 s), copies the client's own KG3D
   log + stub/gateway tails + state + screenshot to C:\jx3tmp\freeze_<stamp>\, then kills;
   background wrapper C:\jx3tmp\run_freeze_watch.cmd; rule in AGENTS.md §13.
+- Map-data route closed (user-approved pak check): the official `PakV4SfxExtract.exe`
+  (`<pathlist.gbk> <outdir>`, cwd = zhcn_hd) reports **NOT FOUND** for all four missing map
+  files (foliage/blendmap/clusterinfo.json, bd/volumetricCloud/volumetricCloud.json,
+  龙门寻宝_PFX_Runtime.json, data/public/MovieEditor/LightTagConfig.json). 龙门寻宝 is a
+  UGC-only map whose runtime export never shipped -> the 64 load failures are authoring gaps
+  (warnings), not missing shipped data; the three UGC account copies (admin/binkp1/binkp4) are
+  identical (4117 files each).
+- Consequence: the input gate is NOT the missing files; the remaining lead is the world
+  UI/tick activation (the loading panel's completion -> LOADING_END -> world UI; the client
+  renders but its game-logic tick never runs - all-thread sampling caught zero EXE logic).
