@@ -3430,5 +3430,23 @@ HIGH-confidence findings:
   (`hookEventRegister`, `g_rlActorMgr`) for when that stage runs.
 - Evidence: host_exe237.out (0xC000001D), host_exe238.out (no capture), host_exe239.out
   (1 ev-reg, wrong vtable); static vtable dump.
+
+## 2026-10-07 - Gate 4 root cause: managers are created by the logic scene-enter, not the represent scene
+
+- `RLActorMgrNT::Init` real entry = rep+0x36DA50 (initializes subobjects at +0xb8/+8/+0x4c0/
+  +0x508/+0x478/+0x550, the pool at +0x610, then the +0x708 buffer and the event
+  registrations). It has **no E8 caller and no data-ref** (runtime dispatch, like every
+  other manager method) - so it is reached only from the engine's own lifecycle.
+- Run 239: `SO3Represent::Init(Param) -> 1`, `exe Represent Initialize -> 1`, the real
+  `CreateRLScene` runs with the correct GBK sceneName + arg9=1, `InitializeScene -> 1` -
+  yet **no RLActorMgrNT/KRLDummyMgr registration fires** (only one ev-reg, a different
+  class). So the represent is up but its actor/dummy managers are not constructed.
+- Conclusion (blocker chain): these managers are created on the game's scene-enter flow
+  driven by the **logic world** (KSO3World), which our host never drives - the same root
+  as Gate 3's local player (`KSO3World::AddPlayer`). Represent-only scene creation is
+  not sufficient; the logic must process a scene-enter.
+- Gate 4 next probe: drive the logic scene-enter (or construct RLActorMgrNT directly) so
+  its Init runs and the hook captures the manager; then `CreateRLActorNT` + `LoadModel`
+  with F1. Evidence: host_exe239.out; static disasm.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
