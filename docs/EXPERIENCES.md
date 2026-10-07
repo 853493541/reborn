@@ -3250,5 +3250,26 @@ HIGH-confidence findings:
   `[KRLScene+0xF29E8]` is set. `RegisterComponent` = `rep+0xAE5FF0` (writes a
   0x18-byte entry into a `{base,count,cap}` struct).
 - Evidence: host_exe234.out; offline RE.
+
+## 2026-10-07 - Gate 3 checkpoint REACHED: ECS scene init completes, [KRLScene+0xF29E8] set
+
+- Root fix: the host now calls the global scene-system init `rep+0xADEFD0`
+  (no args) before `CreateRLScene`. It registers the `"scene[main]"` + component
+  registry (via the named-object manager), so `CreateComponent`'s `bsearch`
+  succeeds.
+- Result (run 235): `scene system init(0xADEFD0) -> 1`;
+  `entityFactory('scene[main]')`; during `InitializeScene` the component types
+  are created (`unknown`,`avatar`,`player`,`npc`,`doodad`,`rides`,`vehicle`,
+  `missile`,`sfx`,`furniture`,`dummy`,`mercenary`,`playback`,`tageffect`);
+  `InitializeScene(0xADFFE0) self=<id-2 scene> -> 1 [self+0xF29E8]=0x…CA0`
+  (previously 0); `[world+0xF29E8] -> 0x…CA0` (non-null). **Gate 3 checkpoint
+  met.**
+- Still 0: `0x58CE20(scene)` (`local character`) and `0x1B9D7(world)` - the
+  local player is not created yet (the logic world creates it; `AddPlayer`/
+  `LuaAddPlayer` in the logic module; `LuaCreateHangPet` 0x5BE120 needs a
+  pCharacter). That is the remaining Gate 3 half / Gate 4.
+- Full ECS prerequisites now wired in-host: named-object manager
+  (0x920D10), ECS root (0x924B20), scene-system init (0xADEFD0).
+- Evidence: host_exe235.out; commit (scene-system init).
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
