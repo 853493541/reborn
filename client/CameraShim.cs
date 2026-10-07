@@ -403,6 +403,148 @@ internal static class CameraShim
         try { return Str(RC_Probe_SnapDiff()); } catch { return "snapdiff ex"; }
     }
 
+    [DllImport("camera_shim.dll", CallingConvention = CallingConvention.Cdecl)]
+    static extern IntPtr RC_ActorProbe(long handle);
+
+    // Character 3.x: identify the AddDummyModel handle object type (probe only).
+    public static string ActorProbe(long handle)
+    {
+        try { return Str(RC_ActorProbe(handle)); }
+        catch (Exception e) { return "actor probe ex: " + e.Message; }
+    }
+
+    [DllImport("camera_shim.dll", CallingConvention = CallingConvention.Cdecl)]
+    static extern int RC_ProxyFind(IntPtr proxy, string name, int socket, byte[] out16);
+
+    [DllImport("camera_shim.dll", CallingConvention = CallingConvention.Cdecl)]
+    static extern int RC_ProxyMatrix(IntPtr proxy, byte[] info16, int kind, float[] out16);
+
+    [DllImport("camera_shim.dll", CallingConvention = CallingConvention.Cdecl)]
+    static extern IntPtr RC_ProxyInfo(IntPtr proxy);
+
+    public static string ProxyInfo(IntPtr proxy)
+    {
+        try { return Str(RC_ProxyInfo(proxy)); } catch { return "proxy info ex"; }
+    }
+
+    public static int ProxyFind(IntPtr proxy, string name, bool socket, byte[] out16)
+    {
+        try { return RC_ProxyFind(proxy, name, socket ? 1 : 0, out16); }
+        catch { return -99; }
+    }
+
+    public static int ProxyMatrix(IntPtr proxy, byte[] info16, int kind, float[] out16)
+    {
+        try { return RC_ProxyMatrix(proxy, info16, kind, out16); }
+        catch { return -99; }
+    }
+
+    [DllImport("camera_shim.dll", CallingConvention = CallingConvention.Cdecl)]
+    static extern IntPtr RC_ProxyActor(IntPtr proxy);
+
+    [DllImport("camera_shim.dll", CallingConvention = CallingConvention.Cdecl)]
+    static extern int RC_ActorFindSocket(IntPtr actor, string name, byte[] out16, int flags);
+
+    [DllImport("camera_shim.dll", CallingConvention = CallingConvention.Cdecl)]
+    static extern int RC_ActorSocketMatrix(IntPtr actor, int idx, float[] out16);
+
+    [DllImport("camera_shim.dll", CallingConvention = CallingConvention.Cdecl)]
+    static extern int RC_ActorBoneMatrix(IntPtr actor, int idx, float[] out16);
+
+    public static IntPtr ProxyActor(IntPtr proxy)
+    {
+        try { return RC_ProxyActor(proxy); } catch { return IntPtr.Zero; }
+    }
+
+    public static int ActorFindSocket(IntPtr actor, string name, byte[] out16, int flags)
+    {
+        try { return RC_ActorFindSocket(actor, name, out16, flags); } catch { return -99; }
+    }
+
+    public static int ActorSocketMatrix(IntPtr actor, int idx, float[] out16)
+    {
+        try { return RC_ActorSocketMatrix(actor, idx, out16); } catch { return -99; }
+    }
+
+    public static int ActorBoneMatrix(IntPtr actor, int idx, float[] out16)
+    {
+        try { return RC_ActorBoneMatrix(actor, idx, out16); } catch { return -99; }
+    }
+
+    [DllImport("camera_shim.dll", CallingConvention = CallingConvention.Cdecl)]
+    static extern int RC_HashName(string name, out ulong hash);
+
+    [DllImport("camera_shim.dll", CallingConvention = CallingConvention.Cdecl)]
+    static extern int RC_ActorFindBoneHash(IntPtr actor, ulong hash, byte[] out16);
+
+    public static bool HashName(string name, out ulong hash)
+    {
+        hash = 0;
+        try { return RC_HashName(name, out hash) == 0; } catch { return false; }
+    }
+
+    public static int ActorFindBoneHash(IntPtr actor, ulong hash, byte[] out16)
+    {
+        try { return RC_ActorFindBoneHash(actor, hash, out16); } catch { return -99; }
+    }
+
+    // Character 3.x: resolve a bone on the dummy actor's full-skeleton child
+    // part (sockets stay uninitialized on the KGSceneCLR dummy path; bone
+    // matrices work). Returns the child actor pointer or IntPtr.Zero.
+    public static IntPtr FindBoneActor(IntPtr proxy, string boneName, out int boneIdx)
+    {
+        boneIdx = -1;
+        try
+        {
+            IntPtr actor = ProxyActor(proxy);
+            if (actor == IntPtr.Zero) return IntPtr.Zero;
+            ulong h;
+            if (!HashName(boneName, out h)) return IntPtr.Zero;
+            long listAddr = actor.ToInt64() + 0x7E0;
+            IntPtr node = ReadP(new IntPtr(listAddr));
+            for (int i = 0; i < 16 && node != IntPtr.Zero && node.ToInt64() != listAddr; i++)
+            {
+                IntPtr child = new IntPtr(node.ToInt64() - 0x7F0);
+                byte[] info = new byte[16];
+                BitConverter.GetBytes(-1).CopyTo(info, 8);
+                if (ActorFindBoneHash(child, h, info) == 0)
+                {
+                    int idx = BitConverter.ToInt32(info, 8);
+                    if (idx != -1) { boneIdx = idx; return child; }
+                }
+                node = ReadP(new IntPtr(node.ToInt64()));
+            }
+        }
+        catch { }
+        return IntPtr.Zero;
+    }
+
+    // Face apply (3x-face workstream): KG3DModelProxy methods in
+    // KG_EngineEditorX64.dll (fn 0x46FB0 / 0x47710; see 3_4_FACIAL.md).
+    [DllImport("camera_shim.dll", CallingConvention = CallingConvention.Cdecl)]
+    static extern int RC_ModelLoadMetaFaceJson(IntPtr proxy, string jsonUtf8);
+
+    [DllImport("camera_shim.dll", CallingConvention = CallingConvention.Cdecl)]
+    static extern int RC_ProxySetFaceLiftParams(IntPtr proxy, IntPtr a1, IntPtr a2, IntPtr a3);
+
+    public static int ModelLoadMetaFaceJson(IntPtr proxy, string json)
+    {
+        try { return RC_ModelLoadMetaFaceJson(proxy, json); } catch { return -99; }
+    }
+
+    public static int ProxySetFaceLiftParams(IntPtr proxy, IntPtr a1, IntPtr a2, IntPtr a3)
+    {
+        try { return RC_ProxySetFaceLiftParams(proxy, a1, a2, a3); } catch { return -99; }
+    }
+
+    public static string Mat16(float[] m)
+    {
+        string s = "";
+        for (int k = 0; k < m.Length; k++)
+            s += m[k].ToString("F1") + (k == m.Length - 1 ? "" : ",");
+        return s;
+    }
+
     public static bool Available;
     public static string Status = "not loaded";
 

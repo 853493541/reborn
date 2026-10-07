@@ -1,0 +1,2 @@
+data/source/player/f1/部件/f1_new_face.mesh
+data/source/player/f1/部件/f1_new_face_hd.mesh

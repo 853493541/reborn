@@ -136,7 +136,8 @@ internal static class RebornClient
             @"C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\PhysicsEngineX64.dll");
         string mapPath = Env("RC_MAP",
             "data\\source\\maps\\\u9F99\u95E8\u5BFB\u5B9D\\\u9F99\u95E8\u5BFB\u5B9D.jsonmap");
-        string actorPath = Path.Combine(editorRoot, "source", "\u82B1\u841D\u65E0\u52A8\u4F5C.actor");
+        string actorPath = Env("RC_ACTOR",
+            Path.Combine(editorRoot, "source", "\u82B1\u841D\u65E0\u52A8\u4F5C.actor"));
         string flws =
             "data\\source\\player\\f1\\\u52A8\u4F5C\\f1s07cj\u91CD\u5251\u6280\u80FD15_\u98CE\u6765\u5434\u5C71\u7EA2\u8272hd.tani";
         string f1 = "data\\source\\player\\f1\\\u52A8\u4F5C\\";
@@ -174,6 +175,72 @@ internal static class RebornClient
         // momentum (u/s); airStartY = height when the character left the ground.
         float vjx = 0f, vjz = 0f, airStartY = 0f;
         string clipSkill = Env("RC_CLIP_SKILL", flws);
+        // ---- PlayerRush locomotion table (character 3.x W2) --------------------
+        // Represent/player/player_rush.txt, extracted from the client PakV4 with
+        // the official tool (docs/character/3_2_3_3_LOCOMOTION_MOTION.md).
+        // RC_LOCO_TABLE=<path> enables the data-driven tier selection; when not
+        // loaded the RC_CLIP_* defaults above keep the previous behaviour.
+        bool locoLoaded = false;
+        string locoMove = "", locoHi1 = "", locoHi2 = "";
+        float locoT1 = -1f, locoT2 = -1f, locoDefault = 35f;
+        bool locoDbg = Env("RC_LOCO_DBG", "0") == "1";
+        string locoClipLast = "";
+        var locoMsgs = new System.Collections.Generic.List<string>();
+        string locoTable = Env("RC_LOCO_TABLE", "");
+        if (locoTable.Length > 0 && File.Exists(locoTable))
+        {
+            try
+            {
+                string[] llines = File.ReadAllLines(locoTable, System.Text.Encoding.GetEncoding(936));
+                string[] lh = llines[0].Split('\t');
+                int iRole = 0, iSchool = 1, iWeapon = 2, iDef = 3, iMove = 11, iT1 = 15, iHi1 = 17, iT2 = 19, iHi2 = 21;
+                for (int i = 0; i < lh.Length; i++)
+                {
+                    if (lh[i] == "\u89D2\u8272\u7C7B\u578B") iRole = i;
+                    else if (lh[i] == "\u95E8\u6D3E") iSchool = i;
+                    else if (lh[i] == "\u6B66\u5668\u7C7B\u578B") iWeapon = i;
+                    else if (lh[i] == "\u9ED8\u8BA4\u79FB\u52A8\u901F\u5EA6") iDef = i;
+                    else if (lh[i] == "\u79FB\u52A8\uFF08floor\uFF09") iMove = i;
+                    else if (lh[i] == "\u901F\u5EA6\u4FEE\u6B63\u503C") iT1 = i;
+                    else if (lh[i] == "\u9AD8\u901F\u8DD1\uFF08\u5730\u9762\uFF09") iHi1 = i;
+                    else if (lh[i] == "\u4E8C\u9636\u901F\u5EA6\u4FEE\u6B63\u503C") iT2 = i;
+                    else if (lh[i] == "\u4E8C\u9636\u9AD8\u901F\u8DD1\uFF08\u5730\u9762\uFF09") iHi2 = i;
+                }
+                int wRole = 6, wSchool = 0, wWeapon = 0;
+                int.TryParse(Env("RC_LOCO_ROLE", "6"), out wRole);
+                int.TryParse(Env("RC_LOCO_SCHOOL", "0"), out wSchool);
+                int.TryParse(Env("RC_LOCO_WEAPON", "0"), out wWeapon);
+                string[] pick = null, zero = null;
+                for (int li = 1; li < llines.Length; li++)
+                {
+                    if (llines[li].Length == 0) continue;
+                    string[] f = llines[li].Split('\t');
+                    if (f.Length <= iHi2) continue;
+                    int fr, fs, fw;
+                    if (!int.TryParse(f[iRole], out fr) || !int.TryParse(f[iSchool], out fs) ||
+                        !int.TryParse(f[iWeapon], out fw)) continue;
+                    if (fr == 0 && fs == 0 && fw == 0) zero = f;
+                    if (fr == wRole && fs == wSchool && fw == wWeapon) { pick = f; break; }
+                }
+                if (pick == null) pick = zero;
+                if (pick != null)
+                {
+                    locoMove = pick[iMove].TrimStart('\\');
+                    locoHi1 = pick[iHi1].TrimStart('\\');
+                    locoHi2 = pick[iHi2].TrimStart('\\');
+                    float.TryParse(pick[iT1], out locoT1);
+                    float.TryParse(pick[iT2], out locoT2);
+                    float.TryParse(pick[iDef], out locoDefault);
+                    if (locoDefault <= 0f) locoDefault = 35f;
+                    locoLoaded = locoMove.Length > 0;
+                    locoMsgs.Add("loco table: row=(" + wRole + "," + wSchool + "," + wWeapon + ") default=" + locoDefault +
+                        " t1=" + locoT1 + " t2=" + locoT2);
+                    locoMsgs.Add("loco table: move=" + locoMove + " hi1=" + locoHi1 + " hi2=" + locoHi2);
+                }
+                else locoMsgs.Add("loco table: no row for (" + wRole + "," + wSchool + "," + wWeapon + ")");
+            }
+            catch (Exception le) { locoMsgs.Add("loco table ex: " + le.Message); }
+        }
         // RC_ROT_TEST close-ups show the actor faces -Z at identity, so the yaw
         // that points it along the movement direction needs a pi offset.
         // (note: TryParse sets the out param to 0 on failure, so parse into a temp)
@@ -224,6 +291,7 @@ internal static class RebornClient
                 if (logLines.Count > 400) logLines.RemoveRange(0, logLines.Count - 400);
             }
         };
+        for (int lm = 0; lm < locoMsgs.Count; lm++) Log(locoMsgs[lm]);
         // short visible tag from the exe name: reborn_client_collision.exe ->
         // "collision" (canonical reborn_client.exe -> "canonical"); shown in
         // the window title and the HUD's first line so parallel clients are
@@ -1011,6 +1079,13 @@ internal static class RebornClient
         bool grounded = false;
         // JX3-modeled camera (engine_host_spike/CameraSystem.cs, ported)
         CameraSystem camSys = new CameraSystem();
+        // Character 3.x camera anchor C1: head bone from the engine actor
+        // (docs/character/3_1_RIG_SOCKETS.md); RC_ANCHOR_BONE=0 -> chest+90 fallback.
+        bool boneAnchorOn = Env("RC_ANCHOR_BONE", "1") != "0";
+        IntPtr boneActor = IntPtr.Zero;
+        int boneHeadIdx = -1;
+        int boneLogLast = 0;
+        bool anchorDbg = Env("RC_ANCHOR_DBG", "0") == "1";
         CameraObstruction camObst = new CameraObstruction();
         double.TryParse(Env("RC_CAM_HITWIN", Env("RC_CAM_HITWINDOW", "0.4")), out camObst.HitWindow);
         CameraShake camShake = new CameraShake();
@@ -1342,10 +1417,156 @@ internal static class RebornClient
         };
         placePlayer(px, py, pz, curYaw);
         Log("player handle=" + handle);
+        if (handle <= 0)
+        {
+            // AddDummyModel can return E_FAIL (0x80004005 sign-extended) for an
+            // actor whose parts do not resolve - historically the negative handle
+            // went straight into AttachModel and AV'd the client. Bail out with
+            // evidence instead (2026-10-06, RC_ACTOR probe).
+            Log("player model FAILED: handle=" + handle + " actor=" + actorPath
+                + " - exiting before attach");
+            return;
+        }
         model.AttachModel(handle);
         attachedHandle = handle;
         setClip(clipIdle);
         Pump(engine, 500);
+        if (Env("RC_PROBE_ACTOR", "0") == "1")
+        {
+            Log("actor probe attach: " + CameraShim.ActorProbe(handle));
+            Log("actor probe post-pump: " + CameraShim.ActorProbe(handle));
+            IntPtr proxy = new IntPtr(handle);
+            Log("actor proxy info: " + CameraShim.ProxyInfo(proxy));
+            string[] qn = new string[] { "bip01 head", "s_face", "bip01 pelvis" };
+            for (int qi = 0; qi < qn.Length; qi++)
+            {
+                byte[] binfo = new byte[32];
+                int brc = CameraShim.ProxyFind(proxy, qn[qi], false, binfo);
+                if (brc == 0)
+                {
+                    float[] mw = new float[16];
+                    int mrc = CameraShim.ProxyMatrix(proxy, binfo, 0, mw);
+                    Log("proxy bone " + qn[qi] + " world rc=" + mrc + " m=" + CameraShim.Mat16(mw));
+                    float[] ml = new float[16];
+                    int mlrc = CameraShim.ProxyMatrix(proxy, binfo, 1, ml);
+                    Log("proxy bone " + qn[qi] + " local rc=" + mlrc + " m=" + CameraShim.Mat16(ml));
+                }
+                else Log("proxy bone " + qn[qi] + " find rc=" + brc);
+                byte[] sinfo = new byte[32];
+                int src = CameraShim.ProxyFind(proxy, qn[qi], true, sinfo);
+                if (src == 0)
+                {
+                    float[] sm = new float[16];
+                    int smrc = CameraShim.ProxyMatrix(proxy, sinfo, 2, sm);
+                    Log("proxy socket " + qn[qi] + " mat rc=" + smrc + " m=" + CameraShim.Mat16(sm));
+                }
+                else Log("proxy socket " + qn[qi] + " find rc=" + src);
+            }
+            IntPtr actor = CameraShim.ProxyActor(proxy);
+            IntPtr mpEarly = CameraShim.ReadP(new IntPtr(actor.ToInt64() + 0x358));
+            Log("actor model ptr(early)=0x" + mpEarly.ToInt64().ToString("X"));
+            Pump(engine, 1500);
+            IntPtr mpLate = CameraShim.ReadP(new IntPtr(actor.ToInt64() + 0x358));
+            Log("actor model ptr(late)=0x" + mpLate.ToInt64().ToString("X"));
+            Log("actor f358=" + CameraShim.DumpQ(actor, 0x358) + " f2a0=" + CameraShim.DumpQ(actor, 0x2A0) +
+                " f3c4=" + CameraShim.DumpQ(actor, 0x3C4) + " f408=" + CameraShim.DumpQ(actor, 0x408) +
+                " f410=" + CameraShim.DumpQ(actor, 0x410) + " f418=" + CameraShim.DumpQ(actor, 0x418));
+            long listAddr = actor.ToInt64() + 0x7E0;
+            IntPtr node = CameraShim.ReadP(new IntPtr(listAddr));
+            for (int ci = 0; ci < 8 && node != IntPtr.Zero && node.ToInt64() != listAddr; ci++)
+            {
+                long n = node.ToInt64();
+                IntPtr child = new IntPtr(n - 0x7F0);
+                IntPtr cvt = CameraShim.ReadP(child);
+                Log("actor child[" + ci + "] @0x" + child.ToInt64().ToString("X") +
+                    " vt=" + CameraShim.ModuleOf(cvt) +
+                    " type=" + CameraShim.DumpQ(child, 0x2A0) +
+                    " model=" + CameraShim.DumpQ(child, 0x358));
+                node = CameraShim.ReadP(new IntPtr(n));
+            }
+            string[] an = new string[] { "s_face", "bip01 head", "Bip01 Head" };
+            for (int ai2 = 0; ai2 < an.Length; ai2++)
+            {
+                byte[] aout = new byte[32];
+                int arc = CameraShim.ActorFindSocket(actor, an[ai2], aout, 0);
+                if (arc == 0)
+                {
+                    int sidx = BitConverter.ToInt32(aout, 8);
+                    float[] am = new float[16];
+                    int amrc = CameraShim.ActorSocketMatrix(actor, sidx, am);
+                    Log("actor findsocket " + an[ai2] + " idx=" + sidx + " matrc=" + amrc +
+                        " m=" + CameraShim.Mat16(am));
+                }
+                else Log("actor findsocket " + an[ai2] + " rc=" + arc);
+            }
+            ulong hHead = 0;
+            bool hokH = CameraShim.HashName("bip01 head", out hHead);
+            ulong hPelv = 0;
+            bool hokP = CameraShim.HashName("bip01 pelvis", out hPelv);
+            IntPtr[] kids = new IntPtr[8];
+            int kn = 0;
+            IntPtr knode = CameraShim.ReadP(new IntPtr(listAddr));
+            for (int ci2 = 0; ci2 < 8 && knode != IntPtr.Zero && knode.ToInt64() != listAddr; ci2++)
+            {
+                kids[kn++] = new IntPtr(knode.ToInt64() - 0x7F0);
+                knode = CameraShim.ReadP(new IntPtr(knode.ToInt64()));
+            }
+            for (int kj = 0; kj < kn; kj++)
+            {
+                byte[] bi2 = new byte[16];
+                BitConverter.GetBytes(-1).CopyTo(bi2, 8);
+                int frc2 = CameraShim.ActorFindBoneHash(kids[kj], hHead, bi2);
+                int idx2 = BitConverter.ToInt32(bi2, 8);
+                byte[] bp = new byte[16];
+                BitConverter.GetBytes(-1).CopyTo(bp, 8);
+                CameraShim.ActorFindBoneHash(kids[kj], hPelv, bp);
+                int pidx = BitConverter.ToInt32(bp, 8);
+                string sm = "";
+                if (hokH && idx2 != -1)
+                {
+                    float[] mm2 = new float[16];
+                    int mrc2 = CameraShim.ActorBoneMatrix(kids[kj], idx2, mm2);
+                    sm = " headidx=" + idx2 + " rc=" + mrc2 + " t=(" +
+                         mm2[12].ToString("F1") + "," + mm2[13].ToString("F1") + "," +
+                         mm2[14].ToString("F1") + ") s=(" + mm2[0].ToString("F2") + "," +
+                         mm2[5].ToString("F2") + "," + mm2[10].ToString("F2") + ")";
+                }
+                Log("child[" + kj + "] headfrc=" + frc2 + " pelvisidx=" + pidx + sm);
+            }
+            try
+            {
+                Type mt = model.GetType();
+                System.Reflection.FieldInfo[] mf = mt.GetFields(
+                    System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic |
+                    System.Reflection.BindingFlags.Public);
+                for (int mi2 = 0; mi2 < mf.Length; mi2++)
+                {
+                    if (mf[mi2].Name != "m_pModel" && mf[mi2].Name != "m_pMovieObjectHolder") continue;
+                    object fv = mf[mi2].GetValue(model);
+                    long fp = 0;
+                    if (fv is IntPtr) fp = ((IntPtr)fv).ToInt64();
+                    Log("actor probe " + mf[mi2].Name + "=0x" + fp.ToString("X"));
+                }
+            }
+            catch (Exception pex) { Log("actor probe refl ex: " + pex.Message); }
+        }
+
+        // Camera anchor C1 (character 3.x): resolve the head bone on the actor's
+        // full-skeleton child part; the dummy path keeps sockets uninitialized
+        // but bone matrices resolve (docs/character/3_1_RIG_SOCKETS.md).
+        if (boneAnchorOn)
+        {
+            boneActor = CameraShim.FindBoneActor(new IntPtr(handle), "bip01 head", out boneHeadIdx);
+            Log("anchor bone: actor=0x" + boneActor.ToInt64().ToString("X") + " idx=" + boneHeadIdx);
+        }
+
+        // Character 3.4 face pipeline (agent/3x-face): optional MetaFace JSON
+        // (tools/character/face_data.py -> FaceLiftDataConverterX64 KMETAFACE).
+        // Apply is pending the agent A shim export; see client/FaceData.cs.
+        string faceJson = Env("RC_FACE_JSON", "");
+        if (faceJson.Length > 0)
+            FaceData.Apply(faceJson, handle, model, delegate(string m) { Log(m); });
 
         // Spawn ground settle (deferred): the engine streams terrain around the
         // player model; until the spawn region arrives the loader returns zeros
@@ -3464,11 +3685,43 @@ internal static class RebornClient
             else if (!grounded) setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
             else if (now < landClipUntil) setClip(clipLand);
             else if (sitting) setClip(clipSit);
-            else if (moving) setClip(
-                gait == 1 ? clipStrafeL :
-                gait == 2 ? clipStrafeR :
-                gait == 3 ? clipBack :
-                walkMode ? clipWalk : clipRun);
+            else if (moving)
+            {
+                string fwdClip = walkMode ? clipWalk : clipRun;
+                if (locoLoaded)
+                {
+                    // PlayerRush tier rule (docs/character/3_2_3_3_LOCOMOTION_MOTION.md):
+                    // scalar = 默认移动速度 for normal movement, x2 for the host's 10x
+                    // sprint. PROVISIONAL: the engine's [this+0xD0] writer is untraced;
+                    // re-open when the writer/unit is resolved. Tier clips are gated
+                    // OFF (RC_LOCO_TIERS=1) because the F1 tier variant
+                    // (F1bqg丐帮疾轻功烟尘.tani) AVs the host engine right after
+                    // PlayAnimation rc=0 (reborn_20261006_194627.log) - each tier clip
+                    // must be verified in-engine before it is enabled.
+                    bool tiersOn = Env("RC_LOCO_TIERS", "0") == "1";
+                    float scalar = locoDefault * (shiftDown ? 2f : 1f);
+                    float scalarOv;
+                    if (float.TryParse(Env("RC_LOCO_SCALAR", ""), out scalarOv) && scalarOv > 0f) scalar = scalarOv;
+                    string tier = null;
+                    if (tiersOn)
+                    {
+                        if (locoT2 > 0f && scalar >= locoT2) tier = locoHi2;
+                        else if (locoT1 > 0f && scalar >= locoT1) tier = locoHi1;
+                    }
+                    fwdClip = string.IsNullOrEmpty(tier) ? locoMove : tier;
+                    if (locoDbg && locoClipLast != fwdClip)
+                    {
+                        locoClipLast = fwdClip;
+                        Log("loco clip: scalar=" + scalar + " t1=" + locoT1 + " t2=" + locoT2 +
+                            " tiers=" + (tiersOn ? "on" : "off") + " -> " + fwdClip);
+                    }
+                }
+                setClip(
+                    gait == 1 ? clipStrafeL :
+                    gait == 2 ? clipStrafeR :
+                    gait == 3 ? clipBack :
+                    fwdClip);
+            }
             else if (sheathOn && (long)Environment.TickCount < sheathDrawUntil) setClip(clipSheathDraw);
             else setClip(sheathOn ? clipSheathHold : clipIdle);
 
@@ -3491,6 +3744,12 @@ internal static class RebornClient
             {
                 model.AttachModel(handle);
                 attachedHandle = handle;
+                if (boneAnchorOn)
+                {
+                    boneActor = CameraShim.FindBoneActor(new IntPtr(handle), "bip01 head", out boneHeadIdx);
+                    Log("anchor bone re-resolve: actor=0x" + boneActor.ToInt64().ToString("X") +
+                        " idx=" + boneHeadIdx);
+                }
             }
 
             if (!string.IsNullOrEmpty(fixedCam))
@@ -3612,7 +3871,31 @@ internal static class RebornClient
                 // teleported the camera. Only one-frame snaps (|dy| > 5 u while
                 // grounded) are eased over SmoothTime; continuous slope motion and
                 // airborne frames pass through. Kill switch RC_CAM_YFOLLOW=0.
+                // Camera anchor C1: query the engine's head-bone matrix (world =
+                // model placement x bone local); chest+90 stays the fallback.
                 double ay2Raw = py + 90.0;
+                double ax2Raw = rpx, az2Raw = rpz;
+                bool boneResolvedFrame = false;
+                if (boneAnchorOn && boneActor != IntPtr.Zero && boneHeadIdx != -1)
+                {
+                    float[] bmC1 = new float[16];
+                    if (CameraShim.ActorBoneMatrix(boneActor, boneHeadIdx, bmC1) == 0)
+                    {
+                        double aC1 = curYaw + yawOffset;
+                        double txC1 = bmC1[12] * scale, tyC1 = bmC1[13] * scale, tzC1 = bmC1[14] * scale;
+                        double caC1 = Math.Cos(aC1), saC1 = Math.Sin(aC1);
+                        ax2Raw = rpx + txC1 * caC1 + tzC1 * saC1;
+                        ay2Raw = rpy + tyC1;
+                        az2Raw = rpz - txC1 * saC1 + tzC1 * caC1;
+                        boneResolvedFrame = true;
+                        if (anchorDbg && Environment.TickCount - boneLogLast > 2000)
+                        {
+                            boneLogLast = Environment.TickCount;
+                            Log(string.Format("anchorbone t=({0:F1},{1:F1},{2:F1}) yRaw={3:F1} chest={4:F1}",
+                                txC1, tyC1, tzC1, ay2Raw, rpy + 90.0));
+                        }
+                    }
+                }
                 if (!camYInit)
                 {
                     camYSmooth = ay2Raw; camYPrevRaw = ay2Raw; camYInit = true;
@@ -3645,7 +3928,9 @@ internal static class RebornClient
                     camYSmooth = ay2Raw;
                     camYEasing = false;
                 }
-                double ax2 = rpx, ay2 = camYFollow ? camYSmooth : (rpy + 90.0), az2 = rpz;
+                double ax2 = boneResolvedFrame ? ax2Raw : rpx;
+                double ay2 = camYFollow ? camYSmooth : (boneResolvedFrame ? ay2Raw : (rpy + 90.0));
+                double az2 = boneResolvedFrame ? az2Raw : rpz;
                 if (camYDbg)
                 {
                     double aStep = camYAnchorInit ? ay2 - camYAnchorPrev : 0.0;

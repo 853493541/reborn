@@ -84,3 +84,10 @@ log/
 
 # regenerable full Lua proto index (11MB; command in docs/controls/CONTROL_MODES_LUA_ANNEX.md)
 proof/controls/lua_index_all.txt
+
+# Raw extracted face clamp tables + converter scratch (agent/3x-face, kept local)
+proof/character/face_tab/v1/
+proof/character/face_tab/v2/
+proof/character/fltool/
+proof/character/face_out/
+proof/character/face_tab/mesh_probe/

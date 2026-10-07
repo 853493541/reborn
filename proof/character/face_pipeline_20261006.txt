@@ -1,0 +1,34 @@
+Face pipeline proof (agent/3x-face) - 2026-10-06
+================================================
+
+Build: reborn_client_3x_face.exe (git 4fbb6ec + client hook, dirty build)
+Run:   C:\SeasunGame\MovieEditor\bin64\reborn_out\reborn_20261006_192307.log
+Env:   RC_STARTUP=nodb RC_FACE_JSON=proof\character\face_out\metaface_01.json RC_AUTORUN=8000
+
+[1] Offline tool selftest (tools/character/face_data.py selftest)
+    [1] synthetic CNDK round-trip: PASS (bones=187 decals=29 deco=2 role=6)
+    [2] New_Face_LittleGirl_20260203-095121_Create.ini:
+        bones=187 decals=29 role=LittleGirl(6) crc=0x5A067DE9 v2-clamp-violations=0
+    [2] New_Face_LittleGirl_20260223-104015_Create.ini:
+        bones=187 decals=29 role=LittleGirl(6) crc=0xEEBF146D v2-clamp-violations=0
+    [3] V1 clamp table rows=49: PASS
+    [4] converter KMETAFACE: PASS (keys=['BodyType','Bone','Decal','FacePart']
+        bone=187 decal=29)
+    SELFTEST PASS (0 failures)
+
+[2] Engine run excerpt (frame path)
+    19:23:11.778 Startup: mode=nodb applied=1 sites=1 build=ok
+    19:23:15.990 face: metaface json=metaface_01.json bytes=9329 model=0x15CE92BF8
+    19:23:15.993 face: apply pending agent A shim export RC_ModelLoadMetaFaceJson
+    19:23:24.367 DONE
+
+[3] Status
+    - CNDK parse / clamp validation / converter: done (offline, 4/4 selftest).
+    - Client loads the MetaFace JSON and resolves KGModelCLR.m_pModel
+      (IKG3DModelProxy* via DynamicMethod ldfld); the engine apply call is
+      guarded and reports pending until agent A's shared camera_shim export
+      `RC_ModelLoadMetaFaceJson` lands (rebase step).
+    - Visual before/after fingerprint is deferred to that rebase (no visible
+      change can occur before the apply exists).
+
+Reference converter output size: 9329 bytes (matches the 3.4 research session).

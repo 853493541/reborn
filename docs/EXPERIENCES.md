@@ -4757,3 +4757,106 @@ if the cache/host frames appear.
   `docs/README.md` and AGENTS §10). Split plan for 3.x workstreams W1-W7 is in the area README.
 - Outcome: 3.x research complete to the client's limit; remaining items are host wiring or
   registered provisional/boundary items.
+
+### 2026-10-06 - Character 3.4 face pipeline (agent/3x-face): offline + client load done, apply pending A
+
+- Did: new `tools/character/face_data.py` (CNDK container parse with crc32 check; tBone
+  187 int8 with `[0]` written last; tDecal 29; tDecoration 2; clamp validation vs the
+  extracted `settings/FaceLiftV2/Bone/LittleGirl.tab`; FaceLiftDataConverterX64
+  KMETAFACE wrapper). Extracted both clamp tables (v2 2075 B / v1 558 B) and the
+  converter copy via `tools/netcode/extract_pak_paths.py` into ignored
+  `proof/character/face_tab/**` + `proof/character/fltool/`; `.gitignore` updated.
+- Verify: `face_data.py selftest` 4/4 PASS - synthetic CNDK round-trip; both real saves
+  crc-parse (0x5A067DE9 / 0xEEBF146D) with **0 V2-clamp violations**; V1 49 rows;
+  converter emits valid MetaFace JSON (Bone=187, Decal=29), output 9329 B.
+- Client: `client/FaceData.cs` + `RC_FACE_JSON` hook after `model.AttachModel`.
+  `KGModelCLR.m_pModel` is an `IKG3DModelProxy*` raw pointer and the CLR object cannot
+  be pinned (holds `List<long>`): `GCHandle.Alloc(Pinned)` fails with "non-primitive or
+  non-blittable data" and `FieldInfo.GetValue` rejects pointer fields - resolved with a
+  tiny DynamicMethod (`ldfld; ret`). Guarded P/Invoke `RC_ModelLoadMetaFaceJson` logs
+  "apply pending agent A shim export" until the shared shim lands.
+- Evidence: `proof/character/face_pipeline_20261006.txt`; run
+  `reborn_20261006_192307.log` (`metaface ... bytes=9329 model=0x15CE92BF8`, `d6=seed`,
+  DONE). Gates: build exit 0; `camera_smoke_3x_face` ALL PASS; collision 36/36.
+- Outcome: pipeline offline+load complete; visual apply + fingerprint deferred to the
+  `agent/3x-rig` rebase (agent A owns camera_shim). Branch `agent/3x-face` @ 28180fb.
+
+### 2026-10-06 - Character 3x-rig W1: engine head-bone camera anchor (C1)
+
+- Did: identified the `KGSceneCLR.AddDummyModel` handle by RTTI: it is a
+  `KG3DModelProxy` (vt in `KG_EngineEditorX64.dll`); `proxy+0x18` is the live
+  `KG3D_Actor` (`.?AVKG3D_Actor@@`). The dummy actor's socket list is NOT
+  initialized (`s_face`/`bip01 head` unresolved via FindSocket) and its own
+  `+0x358` model pointer is null - the models live on 8 child actors (type `+0x2A0==4`,
+  walked from `[actor+0x7E0]`), each with its model at `+0x358`. Bone path works:
+  `KGCommonX64!KG3D_ConvertToStandardHashString` -> helper `0x82F0A0(child,hash,out16)`
+  (bone idx at +8) -> `KG3D_Actor::GetBoneMatrixLocal` (`0x81F090`) on the child.
+  Head bind pose `t=(1.9,96.7,1.0)` u (花萝 head joint ~96.7 cm).
+- Wired: camera anchor C1 now uses the head-bone world position
+  `world = placement(rpx,rpy,rpz,yaw+yawOffset,scale) + bone_local` each frame;
+  `RC_ANCHOR_BONE=0` falls back to the old chest+90. Verified log:
+  `anchorbone t=(1.9,96.7,1.0) yRaw=1058.7 chest=1052.0` (py=962), stable.
+- Shim exports added (SEH-guarded, read-only): `RC_ActorProbe`, `RC_ProxyInfo`,
+  `RC_ProxyFind`, `RC_ProxyMatrix`, `RC_ProxyActor`, `RC_ActorFindSocket`,
+  `RC_ActorSocketMatrix`, `RC_ActorBoneMatrix`, `RC_HashName`, `RC_ActorFindBoneHash`.
+  Locators in `KG_EngineEditorX64.dll`: FindBone 0x49160, FindSocket 0x4BA80,
+  GetBoneMatrix 0x45760, GetBoneMatrixLocal 0x459A0, GetSocketMatrix 0x45A40.
+- Gates: `reborn_client_3x_rig` build exit 0; `camera_smoke_3x_rig` ALL PASS;
+  `collision_selftest_reborn_client_3x_rig` 36/36; fallback run (RC_ANCHOR_BONE=0)
+  clean DONE. Evidence: `reborn_out/reborn_20261006_1939*.log`, 1940*.log.
+- Boundary: s_face socket unavailable on the dummy path (sockets not initialized
+  by the CLR dummy route) -> anchor uses the head bone for both anchor and aim;
+  re-open when a socket-free/InitSocketNode route or the real game actor path exists.
+- Outcome: W1 done - camera C1 anchor is engine-sourced; shell ready for W2.
+
+
+### 2026-10-06 - Character 3x-rig W2: PlayerRush locomotion selection wired
+
+- Did: extracted `Represent/player/player_rush.txt` from the client PakV4 with the
+  official tool (213,439 B; scratch, not committed) and wired the table-driven
+  ground-move selection into the client: `RC_LOCO_TABLE=<path>` loads the GBK TSV
+  (header-matched columns), row = (role, school, weapon) with `RC_LOCO_ROLE/SCHOOL/WEAPON`
+  (default 6/0/0); 移动（floor） is the forward ground clip.
+- Verified: with the table, running uses the authored `F1bqg加速跑02b_陆.tani`
+  (`clip=` in reborn_20261006_194543.log, rc=0, run completed); without the table the
+  previous `f1b02yd奔跑.ani` behaviour is unchanged (reborn_20261006_194655.log).
+- Tier rule implemented (t2 -> 二阶高速跑, t1 -> 高速跑, else 移动) but **gated OFF**:
+  enabling it played `F1bqg丐帮疾轻功烟尘.tani` and the engine AV'd right after
+  `PlayAnimation` rc=0 (reborn_20261006_194627.log tail; exit 0xC0000005). Each tier
+  clip must be individually verified in-engine before enabling (RC_LOCO_TIERS=1).
+- PROVISIONAL (registered): comparator scalar = 默认移动速度 for normal movement, x2
+  under the 10x sprint (RC_LOCO_SCALAR test override); the engine's [this+0xD0]
+  writer/unit is untraced - re-open when decoded.
+- Also fixed en route: the loader's early Log() calls NRE'd before logger init
+  (deferred via locoMsgs) and Encoding.GetEncoding(18030) is invalid on this runtime
+  (GBK = 936).
+- Gates: build exit 0; camera_smoke_3x_rig ALL PASS; collision_selftest 36/36.
+- Outcome: W2 done (base clip data-driven + verified; tiers gated pending per-clip
+  verification). W1+W2 complete on agent/3x-rig.
+
+### 2026-10-06 - Character 3.4 face apply (agent/3x-face + merged 3x-rig): shim JSON entry fixed, apply blocked at the face subsystem
+
+- Did: merged `agent/3x-rig` (02e1709), then chased the face apply to a verdict.
+  - Real fix 1: A's `RC_ModelLoadMetaFaceJson` called `KG_EngineEditorX64.dll`
+    0x46FB0 = **`KG3DModelProxy::LoadFaceDefinitionINI`** (KGLOG name string
+    @0x6FBF0, line 0x4d6); the JSON wrapper is **0x47010**
+    (`LoadMetaFaceDefinitionJson`, @0x6FC18, inner vt[+0x640]). Shim switched to
+    0x47010 and rebuilt (shared dll; d6=seed verified after).
+  - Real fix 2: `AddDummyModel` E_FAIL (0x80004005 sign-extended, e.g.
+    `F1主角模型.actor` parts unresolved) flowed into `AttachModel` -> AV
+    (0xC0000005). Client now rejects `handle <= 0` before attach (clean exit +
+    log); `FaceData` accepts only `handle > 0`.
+  - Apply still E_FAIL with both proxies (`m_pModel`, AddDummyModel handle) and
+    both MetaFace-capable actors (`source\主角替换模型\*Meta脸.actor`).
+    Precondition evidence: `KG3D_FaceLiftMeshData::Init` requests the **SD** mesh
+    `data/source/player/<role>/部件/<role>_new_face.mesh` (startup WARN proof),
+    which exists nowhere (extraction probe: only `_hd` ships) -> face-lift data
+    never initializes. Default 花萝 actor has empty FaceDefIni/MetaFaceDefJson
+    and no face part; MetaFace actors live only in `source\主角替换模型\`.
+  - Added `RC_ACTOR=<path>` test hook (default unchanged).
+- Verify: build exit 0; `camera_smoke_3x_face` ALL PASS; collision 36/36;
+  runs `reborn_20261006_202929/203115/203208(AV before fix)/203318(clean bail)`.
+  Evidence: `proof/character/face_apply_investigation_20261006.txt`.
+- Outcome: offline pipeline + client load done; engine apply is a registered
+  boundary (re-open: editor-app IL sequence, INI->JSON order probe, HD suffix
+  mapping for the face-lift mesh init). Branch `agent/3x-face` @ 1250816.

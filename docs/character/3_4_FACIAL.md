@@ -457,6 +457,37 @@ asserts are the only server coupling in this area; the face data itself is produ
 
 ---
 
+## Implementation status (2026-10-06, agent/3x-face)
+
+- **Offline pipeline: DONE.** `tools/character/face_data.py` parses the CNDK save
+  (crc32 verified on both real saves), validates all 187 `tBone` values against the
+  extracted `settings/FaceLiftV2/Bone/LittleGirl.tab` (0 violations), and wraps
+  `FaceLiftDataConverterX64.exe KMETAFACE` (valid JSON: BodyType/Bone=187/Decal=29/
+  FacePart, 9329 B). `selftest` = 4-stage gate, PASS.
+- **Client load path: DONE.** `client/FaceData.cs` + `RC_FACE_JSON=<json>` after
+  `model.AttachModel`; resolves `KGModelCLR.m_pModel` (`IKG3DModelProxy*`) via a
+  DynamicMethod `ldfld` (the CLR object cannot be pinned - it holds `List<long>`;
+  `FieldInfo.GetValue` rejects pointer fields). Verified in-engine:
+  `face: metaface json=metaface_01.json bytes=9329 model=0x15CE92BF8` +
+  `face: apply pending agent A shim export RC_ModelLoadMetaFaceJson`.
+- **Engine apply: BLOCKED (boundary registered 2026-10-06).** After merging
+  `agent/3x-rig` the shim export existed but called the wrong wrapper
+  (0x46FB0 = `LoadFaceDefinitionINI`); fixed to 0x47010
+  (`LoadMetaFaceDefinitionJson`) and the shim rebuilt. With the correct entry,
+  both candidate proxies (`m_pModel`, the RTTI-verified AddDummyModel handle) and
+  both MetaFace-capable actors (`source\主角替换模型\*Meta脸.actor`) return
+  E_FAIL from the engine's face subsystem. Strong precondition evidence:
+  `KG3D_FaceLiftMeshData::Init` requests the SD mesh
+  `data/source/player/<role>/部件/<role>_new_face.mesh`, which ships nowhere
+  (only `_hd` exists) -> face-lift data never initializes. Fixed en route:
+  negative `AddDummyModel` handles no longer AV at `AttachModel` (crash guard).
+  Re-open criteria: editor app (`MovieEditorHD.exe` MetaFaceLiftForm) IL call
+  sequence; INI->JSON order probe; HD suffix mapping for the face mesh init.
+  Full chain: `proof/character/face_apply_investigation_20261006.txt`.
+- Evidence: `proof/character/face_pipeline_20261006.txt` +
+  `proof/character/face_apply_investigation_20261006.txt`; gates: build exit 0,
+  `camera_smoke_3x_face` ALL PASS, collision 36/36, `d6=seed`.
+
 ## Reproduce (commands used)
 
 ```
