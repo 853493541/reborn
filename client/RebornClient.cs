@@ -1538,6 +1538,10 @@ internal static class RebornClient
         int unhandledCmd = 0;
         string lastUnhandled = "";
         bool demoMove = Env("RC_DEMO_MOVE", "0") == "1";
+        // W6 state test harness (RC_DEMO_STATES=1): scripted 轻功 chain presses
+        // (+ optional suspend hover / water run via the RC_WATER box).
+        bool demoStates = Env("RC_DEMO_STATES", "0") == "1";
+        bool stJump1 = false, stJump2 = false, stJump3 = false;
         probeControl = Env("RC_PROBE_CONTROL", "0") == "1";
         bool sprintTest = Env("RC_SPRINT_TEST", "0") == "1";
         bool sprintT1 = false, sprintT2 = false, sprintT3 = false, sprintT4 = false;
@@ -2778,6 +2782,15 @@ internal static class RebornClient
             {
                 demoJumped = true;
                 jumpPressed = true;
+            }
+            // W6 state tests (RC_DEMO_STATES=1): 轻功 chain presses at 2.5/4.0/6.0 s
+            // (with RC_DJUMP=chain; End phase per segment), optional suspend
+            // hover (RC_SUSPEND_DEMO=1), optional water (RC_WATER box).
+            if (demoStates)
+            {
+                if (now >= 2500 && !stJump1) { stJump1 = true; jumpPressed = true; }
+                if (now >= 4000 && !stJump2) { stJump2 = true; jumpPressed = true; }
+                if (now >= 6000 && !stJump3) { stJump3 = true; jumpPressed = true; }
             }
             if (demoMove)
             {
