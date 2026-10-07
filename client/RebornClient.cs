@@ -1852,6 +1852,18 @@ internal static class RebornClient
                 Env("RC_MOUNT_CLIP_RIDE", ""), Env("RC_MOUNT_CLIP_JUMP", ""));
             Log("mount: data ride=" + mride + " model='" + mount.Model + "' rider='" + mount.RiderClip + "'");
             mount.Dbg = Env("RC_MOUNT_DBG", "0") == "1";
+            mount.ItemEquipped = Env("RC_HORSE_ITEM", "1") != "0";
+            mount.Parachute = Env("RC_MOUNT_PARACHUTE", "0") == "1";
+            mount.Hang = Env("RC_MOUNT_HANG", "0") == "1";
+            mount.SprintIntent = Env("RC_MOUNT_SPRINT", "0") == "1";
+            {
+                float pv;
+                if (float.TryParse(Env("RC_RIDE_POWER_MAX", ""), out pv) && pv > 0f) mount.PowerMax = pv;
+                if (float.TryParse(Env("RC_RIDE_POWER_COST", ""), out pv) && pv > 0f) mount.PowerCost = pv;
+                Log(string.Format("mount host-server rules: item={0} power={1:F0}/{2:F0} sprintIntent={3} hang={4} para={5}",
+                    mount.ItemEquipped ? 1 : 0, mount.PowerMax, mount.PowerCost,
+                    mount.SprintIntent ? 1 : 0, mount.Hang ? 1 : 0, mount.Parachute ? 1 : 0));
+            }
         }
         long sheathDrawUntil = 0;   // draw transition window (拔剑 start clip)
         int unhandledCmd = 0;
@@ -1867,10 +1879,16 @@ internal static class RebornClient
         bool mvAuth = false, mvAuthOff = false, mvJumped = false, mvTurn = false, mvTurnDone = false;
         bool mvStrafe = false, mvStrafeDone = false, mvBack = false, mvBackDone = false, mvDrop = false, mvDone = false;
         bool mvSit = false, mvSitDone = false, mvSheath = false, mvSheathDone = false;
-        bool mountTest = Env("RC_MOUNT_TEST", "0") == "1";
-        bool mtMounted = false, mtIdleJump = false, mtFwd = false, mtJump1 = false;
+        int mountMode = 0;
+        int.TryParse(Env("RC_MOUNT_TEST", "0"), out mountMode);
+        bool mountTest = mountMode > 0;
+        bool mtMounted = false, mtIdleJump = false, mtIdleCheck = false, mtFwd = false, mtJump1 = false;
         bool mtJump2 = false, mtStop = false, mtDown = false, mtDone = false;
-        bool mtTurnR = false, mtTurnRDone = false, mtTurnL = false, mtTurnLDone = false;
+        bool mtBack = false, mtBackJump = false, mtBackCheck = false, mtLandCheck = false;
+        bool mtSprintOn = false, mtSprintJump = false, mtSprintJump2 = false, mtSprintOff = false;
+        bool mtPowerTest = false, mtPowerRestore = false, mtRemount = false, mtFwd2 = false;
+        bool mtAirJump = false, mtAirDown = false, mtItemOn = false, mtAirMount = false;
+        bool mtGrounded = false, mtSync = false, mtSyncOff = false, mtFallback = false;
         long mtT0 = 0;
         bool mvWA = false, mvWADone = false, mvWD = false, mvWDDone = false;
         int demoRmbWa = 0;
@@ -1962,20 +1980,29 @@ internal static class RebornClient
                     }
                     break;
                 case "RIDEHORSE":
-                    // decoded action RideHorse();/DownHorse(); (default hotkey T=84).
-                    // Guards: mount needs ground + not sitting (the decoded
-                    // [+0x208]/[+0x160] guards map to host state; inventory-side
-                    // preconditions are deviation 2 in MountSystem.cs).
+                    // SPEC_MOUNT 1.4/1.5 (T = ProcessRideHorse(char, !bOnHorse)): guards
+                    // bIgnoreGravity (!grounded), [+0x160] (host 0), horse item (host item
+                    // model), already-mounted reject; DownHorse has NO airborne guard. Equip
+                    // steps are the modeled host item actions (D2).
                     if (down)
                     {
-                        if (!mount.Mounted)
+                        if (mount.Mounted)
                         {
-                            if (!grounded) Log("mount rejected: airborne (RideHorse guard)");
-                            else if (sitting) Log("mount rejected: sitting");
-                            else mount.Mount(scene, px, py, pz, curYaw, Log);
+                            mount.Dismount(scene, Log);
                         }
-                        else mount.Dismount(scene, Log);
+                        else
+                        {
+                            if (!grounded) Log("mount rejected: bIgnoreGravity (RideHorse guard 1)");
+                            else if (sitting) Log("mount rejected: sitting (host guard)");
+                            else if (!mount.ItemEquipped) Log("mount rejected: no equipped horse item (ApplyAttribHorse precondition)");
+                            else
+                            {
+                                mount.Mount(scene, px, py, pz, curYaw, Log);
+                                if (mount.Mounted) Log("mount: ApplyAttribHorseEquip model - boxes 0x18..0x1B (4) equip steps (D2)");
+                            }
+                        }
                     }
+                    break;
                     break;
                 default:
                     unhandledCmd++;
@@ -3205,24 +3232,58 @@ internal static class RebornClient
             }
             if (mountTest)
             {
-                // scripted mount run (W4 proof): mount -> mounted run -> horse
-                // jump -> midair second press (dismount + normal jump) -> stop ->
-                // remount -> standing dismount. Timeline is relative to the first
-                // test frame (engine init can consume the absolute clock).
+                // SPEC_MOUNT 7 acceptance harness. Modes: 1 main, 2 lifecycle guards,
+                // 3 sync+fallback, 4 hang/parachute rejects.
                 if (mtT0 == 0) mtT0 = now;
                 long mt = now - mtT0;
-                if (mt >= 2000 && !mtMounted) { mtMounted = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest t=2.0 mount mounted=" + (mount.Mounted ? 1 : 0)); }
-                if (mt >= 3000 && !mtIdleJump) { mtIdleJump = true; jumpPressed = true; Log("mounttest t=3.0 IDLE jump press mounted=" + (mount.Mounted ? 1 : 0)); }
-                if (mt >= 5000 && !mtFwd) { mtFwd = true; pW = true; Log("mounttest t=5.0 forward (moving)"); }
-                if (mt >= 6000 && !mtJump1) { mtJump1 = true; jumpPressed = true; Log("mounttest t=6.0 MOVING jump press mounted=" + (mount.Mounted ? 1 : 0)); }
-                if (mt >= 7000 && !mtJump2) { mtJump2 = true; jumpPressed = true; Log("mounttest t=7.0 DOUBLE press airborne mounted=" + (mount.Mounted ? 1 : 0)); }
-                if (mt >= 9000 && !mtTurnR) { mtTurnR = true; runCommand("TURNRIGHT", true); Log("mounttest t=9.0 turn right (heading change)"); }
-                if (mt >= 10500 && !mtTurnRDone) { mtTurnRDone = true; runCommand("TURNRIGHT", false); Log(string.Format("mounttest t=10.5 turn right done yaw={0:F2}", curYaw)); }
-                if (mt >= 11000 && !mtTurnL) { mtTurnL = true; runCommand("TURNLEFT", true); Log("mounttest t=11.0 turn left"); }
-                if (mt >= 12500 && !mtTurnLDone) { mtTurnLDone = true; runCommand("TURNLEFT", false); Log(string.Format("mounttest t=12.5 turn left done yaw={0:F2}", curYaw)); }
-                if (mt >= 13000 && !mtStop) { mtStop = true; pW = false; Log(string.Format("mounttest t=13.0 stop mounted={0} grounded={1} pos=({2:F0},{3:F0},{4:F0})", mount.Mounted ? 1 : 0, grounded ? 1 : 0, px, py, pz)); }
-                if (mt >= 14000 && !mtDown) { mtDown = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest t=14.0 dismount mounted=" + (mount.Mounted ? 1 : 0)); }
-                if (mt >= 15000 && !mtDone) { mtDone = true; Log(string.Format("mounttest summary mounted={0} clip={1}", mount.Mounted ? 1 : 0, curClip == null ? "-" : Path.GetFileName(curClip))); }
+                if (mountMode == 1)
+                {
+                    if (mt >= 2000 && !mtMounted) { mtMounted = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest C2 mount mounted=" + (mount.Mounted ? 1 : 0)); }
+                    if (mt >= 3000 && !mtIdleJump) { mtIdleJump = true; jumpPressed = true; Log("mounttest C6 idle press (expect no jump)"); }
+                    if (mt >= 3400 && !mtIdleCheck) { mtIdleCheck = true; Log("mounttest C6 idle result grounded=" + (grounded ? 1 : 0)); }
+                    if (mt >= 4000 && !mtBack) { mtBack = true; pS = true; Log("mounttest C8 backward hold"); }
+                    if (mt >= 4400 && !mtBackJump) { mtBackJump = true; jumpPressed = true; Log("mounttest C8 backward press (expect no jump)"); }
+                    if (mt >= 4800 && !mtBackCheck) { mtBackCheck = true; pS = false; Log("mounttest C8 backward result grounded=" + (grounded ? 1 : 0)); }
+                    if (mt >= 5000 && !mtFwd) { mtFwd = true; pW = true; Log("mounttest C7 forward (moving)"); }
+                    if (mt >= 6000 && !mtJump1) { mtJump1 = true; jumpPressed = true; Log("mounttest C7 moving press (expect horse triple)"); }
+                    if (mt >= 7000 && !mtJump2) { mtJump2 = true; jumpPressed = true; Log("mounttest C9 double press airborne (expect reject + mount kept)"); }
+                    if (mt >= 10500 && !mtLandCheck) { mtLandCheck = true; Log(string.Format("mounttest C9/C12 landed mounted={0} grounded={1}", mount.Mounted ? 1 : 0, grounded ? 1 : 0)); }
+                    if (mt >= 11000 && !mtSprintOn) { mtSprintOn = true; mount.SprintIntent = true; Log(string.Format("mounttest C10/C15/C16 sprint intent ON turnRate={0:F3}", mount.TurnRate)); }
+                    if (mt >= 11500 && !mtSprintJump) { mtSprintJump = true; jumpPressed = true; Log("mounttest C15 sprint press (expect triple)"); }
+                    if (mt >= 12000 && !mtSprintJump2) { mtSprintJump2 = true; jumpPressed = true; Log("mounttest C10 sprint press 2 airborne (expect DownHorse + normal jump)"); }
+                    if (mt >= 12500 && !mtSprintOff) { mtSprintOff = true; mount.SprintIntent = false; Log("mounttest sprint intent OFF mounted=" + (mount.Mounted ? 1 : 0)); }
+                    if (mt >= 14000 && !mtRemount) { mtRemount = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest remount (expect mounted=1 after C10 dismount) mounted=" + (mount.Mounted ? 1 : 0)); }
+                    if (mt >= 14500 && !mtPowerTest) { mtPowerTest = true; mount.Power = 0f; jumpPressed = true; Log("mounttest C11 power-drain press (expect reject)"); }
+                    if (mt >= 14900 && !mtPowerRestore) { mtPowerRestore = true; mount.Power = mount.PowerMax; Log("mounttest power restored"); }
+                    if (mt >= 15500 && !mtStop) { mtStop = true; pW = false; Log(string.Format("mounttest stop mounted={0} grounded={1} pos=({2:F0},{3:F0},{4:F0})", mount.Mounted ? 1 : 0, grounded ? 1 : 0, px, py, pz)); }
+                    if (mt >= 16000 && !mtDown) { mtDown = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest C3 T dismount mounted=" + (mount.Mounted ? 1 : 0) + " (expect 0)"); }
+                    if (mt >= 16500 && !mtFwd2) { mtFwd2 = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); pW = true; Log("mounttest remount for C19 mounted=" + (mount.Mounted ? 1 : 0) + " (expect 1)"); }
+                    if (mt >= 17000 && !mtAirJump) { mtAirJump = true; jumpPressed = true; Log("mounttest C19 press (expect triple)"); }
+                    if (mt >= 17600 && !mtAirDown) { mtAirDown = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest C19 midair T mounted=" + (mount.Mounted ? 1 : 0) + " (expect 0)"); }
+                    if (mt >= 18500 && !mtDone) { mtDone = true; pW = false; Log(string.Format("mounttest summary mounted={0} clip={1}", mount.Mounted ? 1 : 0, curClip == null ? "-" : Path.GetFileName(curClip))); }
+                }
+                else if (mountMode == 2)
+                {
+                    if (mt >= 2000 && !mtMounted) { mtMounted = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest C1 T no-item mounted=" + (mount.Mounted ? 1 : 0) + " (expect 0 + reject log)"); }
+                    if (mt >= 3000 && !mtItemOn) { mtItemOn = true; mount.ItemEquipped = true; Log("mounttest horse item restored (host item model)"); }
+                    if (mt >= 3500 && !mtJump1) { mtJump1 = true; jumpPressed = true; Log("mounttest C4 unmounted jump (airborne)"); }
+                    if (mt >= 3800 && !mtAirMount) { mtAirMount = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest C4 airborne T mounted=" + (mount.Mounted ? 1 : 0) + " (expect 0 + bIgnoreGravity reject)"); }
+                    if (mt >= 5500 && !mtGrounded) { mtGrounded = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest C4 grounded T mounted=" + (mount.Mounted ? 1 : 0) + " (expect 1)"); }
+                    if (mt >= 6500 && !mtDone) { mtDone = true; Log("mounttest summary mounted=" + (mount.Mounted ? 1 : 0)); }
+                }
+                else if (mountMode == 3)
+                {
+                    if (mt >= 2000 && !mtSync) { mtSync = true; mount.ApplySyncRecord(true, false, 10000, Log); Log("mounttest C5 sync applied mounted=" + (mount.Mounted ? 1 : 0)); }
+                    if (mt >= 3000 && !mtSyncOff) { mtSyncOff = true; mount.ApplySyncRecord(false, false, 0, Log); Log("mounttest C5 sync cleared mounted=" + (mount.Mounted ? 1 : 0)); }
+                    if (mt >= 4000 && !mtFallback) { mtFallback = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest C20 fallback ride mounted=" + (mount.Mounted ? 1 : 0)); }
+                    if (mt >= 5500 && !mtDone) { mtDone = true; Log("mounttest summary mounted=" + (mount.Mounted ? 1 : 0)); }
+                }
+                else if (mountMode == 4)
+                {
+                    if (mt >= 2000 && !mtMounted) { mtMounted = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest mount mounted=" + (mount.Mounted ? 1 : 0)); }
+                    if (mt >= 3000 && !mtIdleJump) { mtIdleJump = true; jumpPressed = true; Log("mounttest C13/C14 press with flag (expect reject)"); }
+                    if (mt >= 4000 && !mtDone) { mtDone = true; Log("mounttest summary mounted=" + (mount.Mounted ? 1 : 0) + " grounded=" + (grounded ? 1 : 0)); }
+                }
             }
             if (probeControl && now >= nextProbeMs)
             {
@@ -3567,6 +3628,7 @@ internal static class RebornClient
             // the missing-row fallback.
             float charTurnRate = (float)(camSys.Row.F("RotationSpeed", 0.0) * 1000.0);
             if (charTurnRate < 0.1f) charTurnRate = (float)Math.PI;
+            if (mount.Mounted) charTurnRate = mount.TurnRate;   // SPEC_MOUNT 2.1 (criterion 16)
 
             // P2-T1: whole logic ticks only (66.7 ms); remaining time is the
             // render interpolation fraction (P2-T3).
@@ -3867,6 +3929,9 @@ internal static class RebornClient
                 else { grounded = false; vy = 0f; }
             }
 
+            // SPEC_MOUNT 3.3 host-server rule: bSprintFlag while mounted and moving
+            // forward on the ground, or while the deliberate sprint intent is held.
+            mount.SprintFlag = mount.Mounted && fwdAxis > 0f && (grounded || mount.SprintIntent);
             // jump + 二段跳: press 1 = J0; in the air press 2 = flip mode (one
             // extra normal-strength jump) or chain mode (raw J1.. table rows)
             if (jumpPressed)
@@ -3896,42 +3961,69 @@ internal static class RebornClient
                     bool mountHandled = false;
                     if (mount.Mounted)
                     {
-                        // Decoded mounted jump (KCharacter::Jump 0x140313A40-A88 +
-                        // the move-record gate 0x313975): the horse triple applies
-                        // while a move record is active - mapped to `moving` in the
-                        // host. Without it the generic land branch runs (0x313C2F):
-                        // a normal jump, horse state kept. jumpCount>=1 while mounted
-                        // rejects (bail 0x313D5E). The client's press-2 DownHorse
-                        // (0x313A30) exists only on the server move-record path (the
-                        // host has no move records) - the host keeps the mount per
-                        // the user directive (registered host deviation).
-                        if (jumpCount >= 1)
+                        // SPEC_MOUNT 3.1 input layer (shipped Lua Space handler): idle/backward
+                        // -> skill 13618 (ground action, jump control NOT enabled); moving
+                        // forward -> skill 44565 + CONTROL_JUMP enabled. Guards 3 first.
+                        if (mount.Parachute) { Log("mount jump reject: bOnParachuteFlag (guard 3)"); mountHandled = true; }
+                        else if (mount.Hang) { Log("mount jump reject: bHangFlag (guard 3)"); mountHandled = true; }
+                        else if (fwdAxis <= 0f)
                         {
-                            Log("mount jump reject n=" + jumpCount + " (mounted; mount kept)");
-                            mountHandled = true;
-                        }
-                        else if (moving)
-                        {
-                            jumpCount = 1;
-                            vy = 180f * 15f * jumpScale;
-                            curJumpGravity = 11f * 225f * jumpScale;
-                            grounded = false;
-                            airStartY = py;
-                            float xySpd = 60f * 15f * jumpScale;
-                            if (len > 0.01f) { vjx = dirX / len * xySpd; vjz = dirZ / len * xySpd; }
-                            else { vjx = 0f; vjz = 0f; }
-                            Log(string.Format(
-                                "mount jump triple=(60,180,11) vy={0:F0} g={1:F0} bonus=0 ([+0x34C] script) pos=({2:F0},{3:F0},{4:F0})",
-                                vy, curJumpGravity, px, py, pz));
+                            Log("mount: Space -> skill 13618 (ON_STAND/float/backward; jump control NOT enabled) - no jump");
                             mountHandled = true;
                         }
                         else
                         {
-                            // No move record (idle): the mounted jump block is behind the
-                            // horse move-record/sprint gate (0x313975 -> power block 0x31398E-A13);
-                            // an idle press bails (reject) in the client - no generic hop.
-                            Log("mount jump reject: idle, no move record (0x313975 gate); mount kept");
-                            mountHandled = true;
+                            Log("mount: Space -> skill 44565 + Camera_EnableControl(CONTROL_JUMP) (moving)");
+                            // SPEC 3.2: bSprintFlag selects the branch (host rule, 3.3).
+                            bool sprint = mount.SprintFlag;
+                            if (sprint)
+                            {
+                                if (mount.Power <= mount.PowerCost)
+                                {
+                                    Log(string.Format("mount sprint jump reject: nHorseSprintPower {0:F0} <= cost {1:F0} (criterion 11)", mount.Power, mount.PowerCost));
+                                    mountHandled = true;
+                                }
+                                else if (jumpCount == 1 && mount.SprintIntent)
+                                {
+                                    // sprint branch: press 2 airborne in deliberate sprint ->
+                                    // DownHorse first, then the normal jump rules continue.
+                                    mount.Dismount(scene, Log);
+                                }
+                                else if (jumpCount >= 1)
+                                {
+                                    Log("mount jump reject n=" + jumpCount + " (sprint branch, mount kept)");
+                                    mountHandled = true;
+                                }
+                                else
+                                {
+                                    jumpCount = 1;
+                                    vy = 180f * 15f * jumpScale;
+                                    curJumpGravity = 11f * 225f * jumpScale;
+                                    grounded = false;
+                                    airStartY = py;
+                                    float xySpd = 60f * 15f * jumpScale;
+                                    if (len > 0.01f) { vjx = dirX / len * xySpd; vjz = dirZ / len * xySpd; }
+                                    else { vjx = 0f; vjz = 0f; }
+                                    mount.Power -= mount.PowerCost;
+                                    Log(string.Format(
+                                        "mount sprint jump: horse triple=(60,180+bonus,11) vy={0:F0} g={1:F0} bonus=0 power {2:F0}/{3:F0} pos=({4:F0},{5:F0},{6:F0})",
+                                        vy, curJumpGravity, mount.Power, mount.PowerMax, px, py, pz));
+                                    mountHandled = true;
+                                }
+                            }
+                            else
+                            {
+                                // SPEC 3.2 B: bSprintFlag == 0 -> no horse triple.
+                                if (jumpCount >= 1)
+                                {
+                                    Log("mount jump reject n=" + jumpCount + " (branch B, mount kept)");
+                                    mountHandled = true;
+                                }
+                                else
+                                {
+                                    Log("mount jump: branch B (no sprint record) - host authored arc, mount kept");
+                                }
+                            }
                         }
                     }
                     if (!mountHandled)
@@ -4090,6 +4182,7 @@ internal static class RebornClient
                     if (vy < 0f) vy = 0f;
                     grounded = true;
                     if (mount.Mounted) Log("mount intact after landing n=" + jumpCount);
+                    if (mount.Mounted && mount.Parachute) { mount.Parachute = false; Log("mount: parachute flag cleared on landing (SPEC 6)"); }
                     // landing branch: height difference vs FallDownHeightFloor
                     // (player_suspend.krl.txt F1: 500 u) -> the authored landing
                     // animation; otherwise the normal resume.

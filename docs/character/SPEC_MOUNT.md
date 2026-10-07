@@ -557,3 +557,47 @@ mirror + NTFS junction for the PakV4 store, outputs under `%LOCALAPPDATA%\Temp\o
 4. Whether the server's jump move record for an ordinary (non-sprint) mounted jump uses
    `KCharacter::Jump` with the velocity branch or a skill-move track.
 5. `OnSyncMoveParam` EXP RVA (bSprint bit packet unchanged assumed).
+
+---
+
+## Acceptance verification (2026-10-07, agent/3x-mount re-implementation)
+
+Implemented in `client/MountSystem.cs` + `client/RebornClient.cs` (feature build
+`reborn_client_3x_mount.exe`). Driven runs (logs under `proof/character/mount/`,
+shots + `spec_image_stats.txt`), full map + 1x1 mini sandbox, all `DONE`:
+
+| # | Criterion | Result | Evidence |
+|---|---|---|---|
+| 1 | T no horse item -> stays false + reject | **PASS** (`RC_HORSE_ITEM=0`: `mount rejected: no equipped horse item`) | mode-2 run `002025` |
+| 2 | T with item -> mounted, flags, ride actor, attr id | **PASS** (`mount: on ride=0 item=1 attrId=10000 ...`) | all runs |
+| 3 | T while mounted -> dismount + unequip steps, flags cleared | **PASS** (`C3 T dismount mounted=0`) | mode-1 `001917` |
+| 4 | Mount while bIgnoreGravity / [+0x160] -> reject | **PASS** (airborne T: `bIgnoreGravity (RideHorse guard 1)`; grounded T mounts) | mode-2 `002025` |
+| 5 | Remote sync applies flags/attr directly, no guard | **PASS** (`ApplySyncRecord` log, both directions) | mode-3 `002025` |
+| 6 | Mounted idle Space -> no jump (skill 13618) | **PASS** (`Space -> skill 13618 ... no jump`, grounded stays 1) | mode-1 `001917` |
+| 7 | Mounted moving forward Space -> jump (sprint branch) | **PASS** (skill 44565 + `horse triple=(60,180+bonus,11)`, lands mounted) | mode-1 `001917` |
+| 8 | Mounted backward Space -> no jump | **PASS** (13618, grounded stays 1) | mode-1 `001917` |
+| 9 | Double press airborne -> reject, still mounted | **PASS** (`branch B reject`, `mount intact after landing`, landed mounted=1) | mode-1 `001917` |
+| 10 | Sprint state + jumpCount==1 -> DownHorse first, then normal jump | **PASS** (`mount: off` on press 2 under sprint intent) | mode-1 `001917` |
+| 11 | Sprint jump with power <= cost -> reject | **PASS** (`nHorseSprintPower 0 <= cost 25`) | mode-1 `001917` |
+| 12 | Landing resets jumpCount, mount untouched | **PASS** (`mount intact after landing n=1`; landed mounted=1) | mode-1 `001917` |
+| 13 | Parachute flag -> Space rejected (+ landing clears) | **PASS** (`bOnParachuteFlag (guard 3)`) | mode-4 `002130` |
+| 14 | Hang flag -> Space rejected | **PASS** (`bHangFlag (guard 3)`) | mode-4 `002043` |
+| 15 | Sprint jumpCount==0 -> exact triple | **PASS** (`(60,180+bonus,11)`, power 75/100) | mode-1 `001917` |
+| 16 | Mounted turn rate 0.003465 (*1000=3.465) not unmounted | **PASS** (applied + logged `sprint intent ON turnRate=3.465`) | mode-1 `001917` |
+| 17 | Mounted walk/run 8/40 + mounted anim set | **PASS** (120/600 u/s bridge + adjust-table clips, existing proof) | earlier runs |
+| 18 | CameraAdjust applied on mount | **PARTIAL/PROVISIONAL (P2)**: value read per ride (80 for 1-6) + logged, scale 0.01 deg/unit pending the unit probe | mode-1 log |
+| 19 | Midair dismount via T -> flags cleared, unmounted fall | **PASS** (`C19 midair T mounted=0`, fall continues unmounted) | mode-1 `001917` |
+| 20 | Ride absent from adjust table -> AdjustAniID 0 fallback | **PASS** (`RC_MOUNT_RIDE=1152`: `ride absent -> AdjustAniID 0 fallback`) | mode-3 `002025` |
+| 21 | Scales from rides.txt; footprint fields | **PASS (scale) / logged (footprints)**: ModelScale/SocketScale 1.0 applied; footprint SFX fields logged | mode-1 |
+| 22 | ride_rush fade values observed | **PASS (logged)**: in 1000/3000/1100, out 15000/10000/15deg, speed 0.3, ratio 0.1; the fade-in clip AVs the host (D3) | mode-1 log |
+
+**Host-server rules (spec 3.3 recipe), registered provisional:**
+- P1 sprint power pool: max 100 / cost 25 / regen 25/s grounded (`RC_RIDE_POWER_*`);
+  criterion 11 proven by draining the pool.
+- P3 deliberate sprint intent: `RC_MOUNT_SPRINT` (the client receives `bSprintFlag`
+  from the server record; the host defines the rule). `bSprintFlag = mounted &&
+  forward-moving && (grounded || sprint intent)` — this makes the moving press the
+  sprint branch (criteria 7/15) while the ordinary airborne double press stays branch B
+  (criterion 9) and the deliberate sprint press-2 dismounts (criterion 10).
+- P2 CameraAdjust unit unresolved -> logged + 0.01 deg/unit scale (criterion 18 partial).
+- D3 the `H加速奔跑01.tani` fade clip remains an AV boundary (not played).
