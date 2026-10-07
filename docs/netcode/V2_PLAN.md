@@ -25,7 +25,7 @@ playable in-world session. Personal use only (AGENTS §1: never commercial, neve
 | P0 | Recon + probe harness | reproducible direct launch; single blocker identified | **DONE** |
 | P1 | Startup gate (critical path) | client survives past the ~2.3 s WinMain timeout; module Initialize runs; `state_sub+0x18 != NULL` | **DONE (provisional: `config+0xe10=0`)** |
 | P2 | Login + gateway stub | client passes login against our gateway | **DONE (live-verified 2026-10-05)** |
-| P3 | Game server stub (enter world) | client loads the world and holds the session | **IN PROGRESS — login sync + loading + confirm decoded; world-data set next** |
+| P3 | Game server stub (enter world) | client loads the world and holds the session | **BIND MET LIVE 2026-10-06 (id 188 -> state 7); world-data set + session hold next** |
 | P4 | Playable loop | walk around 5 min, no desync/disconnect | pending (movement ops identified) |
 | P5 | Packaging / ops | one-command cold start to in-world | pending |
 

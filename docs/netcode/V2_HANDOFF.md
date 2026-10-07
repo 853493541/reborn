@@ -75,6 +75,14 @@ to `OnSyncItemListInfo` (min size 19) and never touched the bind.
   `tools/netcode/watch_world_bind.py` shows `p60 != 0` / state 7).
 - Historical live scene data (still valid): scene map at `client+0x5673D8` key (1,0),
   `[scene+0x64]=1`, dims 32; position lands correctly (live-verified).
+- **Live proof (2026-10-06 run4)**: id 188 after ApplyEnterScene -> external read shows
+  `player+0x60` = scene ptr, `player+0xFDC` = 7, pos (23334,24224) —
+  `proof/netcode/bind_state7_run4.txt`, screenshot `proof/netcode/v2_world_state7_run4.png`
+  (render still black: world data not served). Next: answer the world-data burst (C2S 0x1C0, 2,
+  254x2, 229, 60, 90, 184, 109, ...) within the client's fixed ~220 s watchdog (exit code
+  0xCFFFFFFF).
+- **Driver lesson**: do NOT post_login/role_enter once the game window is up (keystrokes into
+  the world window killed run3 in 26.6 s); check the gateway log for the login first.
 
 ## 4. Decoded — do NOT re-chase (dead ends)
 
@@ -101,11 +109,12 @@ to `OnSyncItemListInfo` (min size 19) and never touched the bind.
 
 ## 6. Live environment state (as of this handoff)
 
-- Client PID **36056** at the loading (Responding=False = busy-normal), session up.
-- Services: **80** (serverlist watchdog), **3724** (gateway), **3725** (game stub).
+- Client: none running (run4 exited at 18:11:41 via the ~220 s watchdog). Services still up:
+  **80** (serverlist watchdog), **3724** (gateway), **3725** (game stub).
 - Game-stub wrapper `C:\jx3tmp\run_gamestub_1.cmd` = `GAME_ID4_MAP=1`,
-  `GAME_POS_X=23334`, `GAME_POS_Y=24224`, `GAME_POS_Z=761`; id 189 wired after the
-  enter-scene answer.
+  `GAME_POS_X=23334`, `GAME_POS_Y=24224`, `GAME_POS_Z=761`; **id 188** wired after the
+  enter-scene answer. Bind watcher: `C:\jx3tmp\run_bindwatch.cmd` +
+  `tools/netcode/watch_world_bind.py` (external reader, hardened vs torn tree reads).
 - hosts: `jx3comm.xoyocdn.com`, `infoc.xoyo.com`, `dumpinfo.xoyo.com` → `127.0.0.1`;
   the serverlist **cache** (`%TEMP%\Jx3\serverlist\zhcn.hd.2909632076.tab`) overwritten
   all-local.
@@ -144,6 +153,8 @@ Invoke-CimMethod Win32_Process Create -Arguments @{CommandLine='cmd /c C:\jx3tmp
 
 ## 9. Definition of done for the immediate milestone
 
-`player+0x60 != 0` live → the client sends `proto=5` (seen in `game_stub_out.txt`) → our id-5
-reply → `player+0xFDC == 7` → the loading screen ends → the world UI. Then commit + an
-EXPERIENCES entry (`docs/EXPERIENCES.md`, append at the bottom).
+**MET (2026-10-06):** `player+0x60 != 0` and `player+0xFDC == 7` live (run4). Note: the
+observed post-bind client packet is C2S id 2 (11 B), not "proto=5"; the stub's id-5 reply was
+never required for state 7. Next milestone: serve the world-data burst (C2S 0x1C0, 2, 254x2,
+229, 60, 90, 184, 109, ...) so the world renders and the session holds past the ~220 s
+watchdog. Then commit + an EXPERIENCES entry (`docs/EXPERIENCES.md`, append at the bottom).

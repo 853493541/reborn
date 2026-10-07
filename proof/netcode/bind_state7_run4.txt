@@ -1,0 +1,13 @@
+﻿pid=35192 base=0x7FF7EE0F0000 client=0x234989BF040
+client+4 id=1001 map=1 reg=0 skip=0
+registry=0x234954870C0
+player head=0x234EDA65DE8 root=0x237C0E9B460 headcolor=1
+  node=0x237C0E9B460 color=0 key=1001 left=0x234EDA65DE8 right=0x234EDA65DE8 parent=0x234EDA65DE8 val=0x23897C56C18
+  tree_walk nodes=1
+    key=1001 val=0x23897C56C18 node=0x237C0E9B460
+scene head=0x234EDA65E20 root=0x237C0E9B428 headcolor=1
+  node=0x237C0E9B428 color=0 key=1 left=0x234EDA65E20 right=0x234EDA65E20 parent=0x234EDA65E20 val=0x23897D41D28
+  tree_walk nodes=1
+    key=1 val=0x23897D41D28 node=0x237C0E9B428
+player_lookup -> 0x23897C56C18
+  p60=0x23897D41D28 state=7 pos=(23334,24224,1046144)

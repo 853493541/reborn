@@ -123,23 +123,33 @@ def is_node(r, p):
 
 
 def tree_walk(r, head, limit=4096):
-    """Yield (key, value, node) for real nodes of an MSVC std::map (left@0, right@0x10)."""
+    """Yield (key, value, node) for real nodes of an MSVC std::map (left@0, right@0x10).
+
+    The client mutates these trees concurrently (id-4 reset), so a torn pointer read can
+    create a cycle; guard with a visited set and hard iteration caps."""
     out = []
     if not head:
         return out
     root = r.u64(head + 8)
     stack = []
     node = root
-    while (node or stack) and len(out) < limit:
+    seen = set()
+    guard = 0
+    while (is_node(r, node) or stack) and len(out) < limit:
+        guard += 1
+        if guard > limit * 4:
+            break
         while is_node(r, node):
+            if node in seen:
+                return out
+            seen.add(node)
             stack.append(node)
             node = r.u64(node)
-        if stack:
-            node = stack.pop()
-            out.append((r.u32(node + 0x20), r.u64(node + 0x28), node))
-            node = r.u64(node + 0x10)
-        else:
+        if not stack:
             break
+        node = stack.pop()
+        out.append((r.u32(node + 0x20), r.u64(node + 0x28), node))
+        node = r.u64(node + 0x10)
     return out
 
 
@@ -150,13 +160,17 @@ def player_lookup(r, head, pid):
     root = r.u64(head + 8)
     cand = head
     node = root
-    while is_node(r, node):
+    for _ in range(64):
+        if not is_node(r, node):
+            break
         k = r.u32(node + 0x20) or 0
         if k < pid:
             node = r.u64(node + 0x10)
         else:
             cand = node
             node = r.u64(node)
+    else:
+        return None
     if not is_node(r, cand):
         return None
     k = r.u32(cand + 0x20) or 0

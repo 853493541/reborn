@@ -2579,3 +2579,27 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   handler). Evidence: proof/netcode/disasm/id_dispatch_registrations_14011E900.txt,
   id188_guard_setter.txt, id189_tail_lookups.txt, cell_check_1401830B0.txt; new reader
   tools/netcode/watch_world_bind.py.
+
+### 2026-10-06 — V2 P3 MILESTONE MET LIVE: id-188 bind -> state 7 (in-world)
+- Run4 (services 80/3724/3725 verified listening before launch; WMI launches only): emulator ->
+  post_login (the client sat at the login screen this run; no auto-login) -> gateway op10/op14
+  at 18:08:01 -> game session: hello, S2C id 4 (map=1) at +1s, client ApplyEnterScene (C2S 3)
+  at +10s, stub answers id 3 + **id 188** -> client C2S 0x1C0 then the world-data burst
+  (2/254x2/229/60/90/184.../109...) -> external read at ~+100s:
+  `player+0x60 = 0x23897D41D28` (the scene), `player+0xFDC = 7`, pos (23334,24224). **The bind
+  chain (ValidateRegions -> KSO3World::AddPlayer -> setter) works when id 188 is sent.**
+  Evidence: `proof/netcode/bind_state7_run4.txt` (reader output with pid/base/pointers).
+- Visual: `proof/netcode/v2_world_state7_run4.png` (3840x2160, captured 2026-10-06 ~18:10,
+  state 7 up) - `image_stats.py`: mean #171616; per-region 141313/292929/181818/070707
+  0D0D0D/2B2B2B/181818/070707 0D0D0D/282828/171717/070707 18171A/1F1B1E/1F1818/181312 ->
+  the world render is still (nearly) black: state 7 is reached, world CONTENT needs the
+  world-data set served (next milestone).
+- Client watchdog: the client self-exits ~220 s after the game connect in every run (exit code
+  0xCFFFFFFF; the stub sees the socket close). The next milestone must answer the world-data
+  burst inside that window.
+- Driver lesson: do NOT post_login/role_enter once the game window is up - posting WM_CHAR +
+  clicks into the world window killed run3 in 26.6 s; run4 (no drivers after the login screen)
+  lasted the full ~220 s. Check the gateway log for the login before posting.
+- Watcher caveat: a torn read of the client's red-black tree while the id-4 handler mutates it
+  can hang a naive in-order walk (the run4 background watcher hung at the id-4 transition);
+  watch_world_bind.py now caps lookup iterations and tracks visited nodes.
