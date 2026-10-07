@@ -3306,6 +3306,25 @@ int main(void)
                                 *(void**)(param + 0x30) = movie;
                                 *(void**)(param + 0x38) = ui;
                                 *(void**)(param + 0xC8) = stepCtrl;
+                                // The exe's KJX3RepresentModule::Initialize fills the
+                                // event managers at Param+0x90/0x98/0xA0 from its globals
+                                // [exe+0xA8C1C0/+0xA8C210/+0xA8C260] (+0x18). Without
+                                // these the represent never receives logic events, so its
+                                // actor/dummy managers are never created.
+                                if (g_exeModule != NULL)
+                                {
+                                    DWORD eoffs[3] = { 0xA8C1C0, 0xA8C210, 0xA8C260 };
+                                    DWORD poffs[3] = { 0x90, 0x98, 0xA0 };
+                                    for (int ei = 0; ei < 3; ei++)
+                                    {
+                                        void* g = *(void**)((BYTE*)g_exeModule + eoffs[ei]);
+                                        void* em = (g != NULL)
+                                            ? *(void**)((BYTE*)g + 0x18) : NULL;
+                                        *(void**)(param + poffs[ei]) = em;
+                                        logf("[host] param event mgr +0x%X = %p (global %p)",
+                                             poffs[ei], em, g);
+                                    }
+                                }
                                 // SO3Represent::Init also requires pSO3World(+0x70) /
                                 // pSO3WorldClient(+0x78) - the logic module's worlds -
                                 // and hangs in its failure path here. The RL scene path

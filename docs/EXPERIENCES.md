@@ -3488,5 +3488,19 @@ HIGH-confidence findings:
 - So `movieNameFix` is not the cause of the missing actor/dummy managers.
 - Gate 4 remains blocked on the logic->represent dispatcher scene-enter (Phase B).
 - Evidence: host_exe242.out.
+
+## 2026-10-07 - Filled the Param event managers (Phase B); managers still not created
+
+- Decoded the exe's `KJX3RepresentModule::Initialize` (exe+0xBC150) Param fill: the host
+  was missing the event managers at Param+0x90/0x98/0xA0 (from exe globals
+  `[exe+0xA8C1C0/+0xA8C210/+0xA8C260]` +0x18). Added them (run 243: all non-null,
+  e.g. +0xA0 = 0x7FF743D6FFD0). `SO3Represent::Init(Param) -> 1` still.
+- Still no `RLActorMgrNT` registration (`rep+0xC90848` never; `g_rlActorMgr=0`). So the
+  represent's event managers being present is necessary but not sufficient - the logic
+  must actively **send** the scene-enter event to them.
+- Gate 4 remaining blocker (narrowed): the logic->represent scene-enter event send. The
+  host now creates the logic scene/player (`NewClientScene`/`NewPlayer`) and has the
+  represent event managers wired; the missing link is the event emission/dispatch.
+- Evidence: host_exe243.out; static disasm (exe+0xBC150 Param fill).
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
