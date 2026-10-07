@@ -2,8 +2,409 @@
   "title": "JX3 绝境战场 — UI process explorer",
   "generated": "2026-09-24",
   "source": "docs/netcode/JX3_MODE_UI_INVENTORY.md (evidence: PakV4 ui/ config, string tables, protocol layouts)",
-  "defaultWindow": "bigbagpanel",
+  "defaultWindow": "achievementpanel",
   "stages": [
+    {
+      "id": "hardship",
+      "title": "C1.X",
+      "summary": "Hardship set (2026-10-05): scripted windows whose replay is still partial (ERR) or has no init entry (NOENTRY). Review whether each is really needed; a rejected window returns here (originalStageId kept). Promote back to its originalStageId once its replay is complete.",
+      "windows": [
+        {
+          "id": "achievementpanel",
+          "title": "AchievementPanel",
+          "cn": "隐元秘鉴",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/AchievementPanel.ini",
+          "backdrop": "#33393E",
+          "summary": "AchievementPanel (ui/Config/Default/AchievementPanel.ini, 462 sections; root WndFrame 1141x641 @384,198 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: world/quest/interaction) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/AchievementPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "liked"
+        },
+        {
+          "id": "album",
+          "title": "Album",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Album.ini",
+          "backdrop": "#33393E",
+          "summary": "Album (ui/Config/Default/Album.ini, 18 sections; root WndFrame 800x630 @0,0 under Topmost). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Album.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "recommended"
+        },
+        {
+          "id": "battlemappay",
+          "title": "BattleMapPay",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/BattleMapPay.ini",
+          "backdrop": "#33393E",
+          "summary": "BattleMapPay (ui/Config/Default/BattleMapPay.ini, 28 sections; root WndFrame 400x179 @200,400 under Normal1). Authored-state render (INI only - no Lua replay, no GT capture yet; group: modes/entry) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/BattleMapPay.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "modes-ui"
+        },
+        {
+          "id": "craftintroduce",
+          "title": "CraftIntroduce",
+          "cn": "战阶",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/CraftIntroduce.ini",
+          "backdrop": "#33393E",
+          "summary": "CraftIntroduce (ui/Config/Default/CraftIntroduce.ini, 57 sections; root WndFrame 859x558 @500,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/CraftIntroduce.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "other-ui"
+        },
+        {
+          "id": "craftreadcomparepanel",
+          "title": "CraftReadComparePanel",
+          "cn": "阅读",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/CraftReadComparePanel.ini",
+          "backdrop": "#33393E",
+          "summary": "CraftReadComparePanel (ui/Config/Default/CraftReadComparePanel.ini, 85 sections; root WndFrame 600x524 @100,100 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/CraftReadComparePanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "panels-ui"
+        },
+        {
+          "id": "friendback",
+          "title": "FriendBack",
+          "cn": "奖励介绍",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/FriendBack.ini",
+          "backdrop": "#33393E",
+          "summary": "FriendBack (ui/Config/Default/FriendBack.ini, 46 sections; root WndFrame 660x385 @539,62 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/FriendBack.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "other-ui"
+        },
+        {
+          "id": "homelandinvitation",
+          "title": "HomelandInvitation",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/HomelandInvitation.ini",
+          "backdrop": "#33393E",
+          "summary": "HomelandInvitation (ui/Config/Default/HomelandInvitation.ini, 48 sections; root WndFrame 844x310 @764,238 under Normal1). Authored-state render (INI only - no Lua replay, no GT capture yet; group: modes/entry) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/HomelandInvitation.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "modes-ui"
+        },
+        {
+          "id": "internetexplorer",
+          "title": "InternetExplorer",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/InternetExplorer.ini",
+          "backdrop": "#33393E",
+          "summary": "InternetExplorer (ui/Config/Default/InternetExplorer.ini, 39 sections; root WndFrame 1065x735 @100,100 under Topmost). Authored-state render (INI only - no Lua replay, no GT capture yet; group: modes/entry) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/InternetExplorer.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "modes-ui"
+        },
+        {
+          "id": "luckymeetinginfo",
+          "title": "LuckyMeetingInfo",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/LuckyMeetingInfo.ini",
+          "backdrop": "#33393E",
+          "summary": "LuckyMeetingInfo (ui/Config/Default/LuckyMeetingInfo.ini, 7 sections; root WndFrame 500x522 @740,182 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: modes/entry) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/LuckyMeetingInfo.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "modes-ui"
+        },
+        {
+          "id": "middlemapsimple",
+          "title": "MiddleMapSimple",
+          "cn": "常规任务",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/MiddleMapSimple.ini",
+          "backdrop": "#33393E",
+          "summary": "MiddleMapSimple (ui/Config/Default/MiddleMapSimple.ini, 69 sections; root WndFrame 1000x850 @220,100 under Normal1). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/MiddleMapSimple.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "other-ui"
+        },
+        {
+          "id": "newoperationactivity",
+          "title": "NewOperationActivity",
+          "cn": "花萼楼",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/NewOperationActivity.ini",
+          "backdrop": "#33393E",
+          "summary": "NewOperationActivity (ui/Config/Default/NewOperationActivity.ini, 58 sections; root WndFrame 1221x686 @348,106 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/NewOperationActivity.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "other-ui"
+        },
+        {
+          "id": "plactionbar",
+          "title": "PLActionBar",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/PLActionBar.ini",
+          "backdrop": "#33393E",
+          "summary": "PLActionBar (ui/Config/Default/PLActionBar.ini, 26 sections; root WndFrame 409x53 @500,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/PLActionBar.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "hud-ui"
+        },
+        {
+          "id": "photoshop",
+          "title": "PhotoShop",
+          "cn": "图片编辑",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/PhotoShop.ini",
+          "backdrop": "#33393E",
+          "summary": "PhotoShop (ui/Config/Default/PhotoShop.ini, 97 sections; root WndFrame 1290x920 @0,0 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/PhotoShop.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "other-ui"
+        },
+        {
+          "id": "raidpanel",
+          "title": "RaidPanel",
+          "cn": "团队",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/RaidPanel.ini",
+          "show": [
+            "CheckBox_Team1",
+            "CheckBox_Team2",
+            "CheckBox_Team3",
+            "CheckBox_Team4",
+            "CheckBox_Team5",
+            "Image_Member1",
+            "Image_Member2",
+            "Image_Member3",
+            "Image_Member4",
+            "Image_Member5",
+            "Text_Title",
+            "CheckBox_Minimize"
+          ],
+          "backdrop": "#33393E",
+          "summary": "RaidPanel (ui/Config/Default/RaidPanel.ini, 77 sections; root WndFrame 550x273 @40,270 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: social/team/guild) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/RaidPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "liked"
+        },
+        {
+          "id": "reputationpanel",
+          "title": "ReputationPanel",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/ReputationPanel.ini",
+          "backdrop": "#33393E",
+          "summary": "ReputationPanel (ui/Config/Default/ReputationPanel.ini, 261 sections; root WndFrame 1118x648 @28,20 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: social/team/guild) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/ReputationPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "panels-ui"
+        },
+        {
+          "id": "selfie",
+          "title": "Selfie",
+          "cn": "基本规则",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Selfie.ini",
+          "backdrop": "#33393E",
+          "summary": "Selfie (ui/Config/Default/Selfie.ini, 1242 sections; root WndFrame 1290x970 @0,0 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Selfie.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "other-ui"
+        },
+        {
+          "id": "singlefstatistic",
+          "title": "SingleFStatistic",
+          "cn": "祁非",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/SingleFStatistic.ini",
+          "backdrop": "#33393E",
+          "summary": "SingleFStatistic (ui/Config/Default/SingleFStatistic.ini, 43 sections; root WndFrame 440x348 @550,250 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: modes/entry) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/SingleFStatistic.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "modes-ui"
+        },
+        {
+          "id": "skilltippanel",
+          "title": "SkillTipPanel",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/SkillTipPanel.ini",
+          "backdrop": "#33393E",
+          "summary": "SkillTipPanel (ui/Config/Default/SkillTipPanel.ini, 19 sections; root WndFrame 230x105 @500,730 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/SkillTipPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "other-ui"
+        },
+        {
+          "id": "smallcalender",
+          "title": "SmallCalender",
+          "cn": "抽奖日历",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/SmallCalender.ini",
+          "backdrop": "#33393E",
+          "summary": "SmallCalender (ui/Config/Default/SmallCalender.ini, 32 sections; root WndFrame 1030x548 @733,200 under Topmost). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/SmallCalender.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "other-ui"
+        },
+        {
+          "id": "speedrankpanel",
+          "title": "SpeedRankPanel",
+          "cn": "竞速排行",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/SpeedRankPanel.ini",
+          "backdrop": "#33393E",
+          "summary": "SpeedRankPanel (ui/Config/Default/SpeedRankPanel.ini, 120 sections; root WndFrame 773x499 @170,124 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/SpeedRankPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "other-ui"
+        },
+        {
+          "id": "videosettingdetails",
+          "title": "VideoSettingDetails",
+          "cn": "坐骑同模",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/VideoSettingDetails.ini",
+          "backdrop": "#33393E",
+          "summary": "VideoSettingDetails (ui/Config/Default/VideoSettingDetails.ini, 414 sections; root WndFrame 360x884 @1294,0 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/VideoSettingDetails.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "other-ui"
+        },
+        {
+          "id": "wulinshenghuiduizhen",
+          "title": "WulinShenghuiDuizhen",
+          "cn": "十六强英雄榜",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/WulinShenghuiDuizhen.ini",
+          "backdrop": "#33393E",
+          "summary": "WulinShenghuiDuizhen (ui/Config/Default/WulinShenghuiDuizhen.ini, 225 sections; root WndFrame 836x512 @486,130 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/WulinShenghuiDuizhen.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "other-ui"
+        },
+        {
+          "id": "debug",
+          "title": "Debug",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/Debug.ini",
+          "backdrop": "#33393E",
+          "summary": "Debug (ui/Config/Default/Debug.ini, 3 sections; root WndFrame 640x480 @400,0 under Topmost). Authored-state render (INI only - no Lua replay, no GT capture yet; group: modes/entry) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/Debug.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "modes-ui"
+        },
+        {
+          "id": "fieldpqpanel",
+          "title": "FieldPQPanel",
+          "cn": "排名",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/FieldPQPanel.ini",
+          "backdrop": "#33393E",
+          "summary": "FieldPQPanel (ui/Config/Default/FieldPQPanel.ini, 25 sections; root WndFrame 290x260 @170,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/FieldPQPanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "other-ui"
+        },
+        {
+          "id": "goldteamsetsubsidy",
+          "title": "GoldTeamSetSubsidy",
+          "cn": "设置补贴",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/GoldTeamSetSubsidy.ini",
+          "backdrop": "#33393E",
+          "summary": "GoldTeamSetSubsidy (ui/Config/Default/GoldTeamSetSubsidy.ini, 28 sections; root WndFrame 296x188 @200,200 under Normal1). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: social/team/guild) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/GoldTeamSetSubsidy.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "panels-ui"
+        },
+        {
+          "id": "irrigatepanel",
+          "title": "IrrigatePanel",
+          "status": "PARTIAL",
+          "root": "ui",
+          "path": "Config/Default/IrrigatePanel.ini",
+          "backdrop": "#33393E",
+          "summary": "IrrigatePanel (ui/Config/Default/IrrigatePanel.ini, 24 sections; root WndFrame 400x200 @100,300 under Topmost). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
+          "evidence": [
+            "ui/Config/Default/IrrigatePanel.ini",
+            "docs/ui/BASIC_UI_INVENTORY.md"
+          ],
+          "originalStageId": "other-ui"
+        }
+      ]
+    },
     {
       "id": "recommended",
       "title": "推荐",
@@ -475,19 +876,6 @@
           ]
         },
         {
-          "id": "album",
-          "title": "Album",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/Album.ini",
-          "backdrop": "#33393E",
-          "summary": "Album (ui/Config/Default/Album.ini, 18 sections; root WndFrame 800x630 @0,0 under Topmost). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/Album.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "whoseeme",
           "title": "WhoSeeMe",
           "status": "PARTIAL",
@@ -675,12 +1063,23 @@
           "root": "ui",
           "path": "Config/Default/MainBarPanel.ini",
           "backdrop": "#33393E",
-          "show": [ "Handle_BG1" ],
+          "show": [
+            "Handle_BG1"
+          ],
           "hide": "Handle_BG2,Handle_BgS2",
           "adjust": [
-            { "section": "Image_Bg1", "left": 0 },
-            { "section": "Image_Bg2", "left": 157 },
-            { "section": "Image_Bg3", "left": 203 }
+            {
+              "section": "Image_Bg1",
+              "left": 0
+            },
+            {
+              "section": "Image_Bg2",
+              "left": 157
+            },
+            {
+              "section": "Image_Bg3",
+              "left": 203
+            }
           ],
           "summary": "Main skill bar (MainBarPanel.ini, 93 sections; WndFrame 914x116 at 477,357 under Lowest1; ShowModeID=27, script MainBarPanel.lua). Authored frame: Handle_BG1 with 16 slot backgrounds (Image_Bg1..16), Handle_BG2 dynamic backgrounds, kungfu box (Animate_KfAni/Image_KFBright/Box_Kungfu/Image_CD/Text_Kungfu/Text_Page), five pose buttons (Handle_PoZhaos/Handle_PoZhao_1..5), page up/down (Btn_PageUp/Down), lock/updown checkboxes, settings + custom-mode (Wnd_CustomMode/CheckBox_Assisant), shell/gear animates. The slot ICONS, cooldown sweeps and page contents are runtime-filled by MainBarPanel.lua (skill data), so the viewer renders the authored bar (empty slots). INI/authored state only - no GT capture yet.",
           "evidence": [
@@ -723,7 +1122,14 @@
           "root": "ui",
           "path": "Config/Default/TargetPlayer10.ini",
           "appendIni": [
-            { "container": "Handle_Energy", "path": "Config/Default/TargetCommon.ini", "item": "Handle_TM", "show": ["Handle_TM"] }
+            {
+              "container": "Handle_Energy",
+              "path": "Config/Default/TargetCommon.ini",
+              "item": "Handle_TM",
+              "show": [
+                "Handle_TM"
+              ]
+            }
           ],
           "backdrop": "#33393E",
           "summary": "Target frame, player base (TargetPlayer10.ini, 77 sections; script Target.lua). Target.lua opens ui/config/default/<base>.ini (TargetPlayer10/11 for players, Target<Intensity><Relation> for NPCs, +S in standard mode) and APPENDS TargetCommon.ini sections (Handle_TM/MJ/CJ/CangYun by kungfu) into the window's Handle_Energy (AppendItemFromIni, Target.decompiled.lua:967-989). Authored art: Handle_TarBg (Image_TarBgL/C/CR), Handle_FBg, avatar/school, health/mana/sub-health bars, NPC mark, name (Text_Target), cure shield. TargetCommon overlay append replayed (sample kungfu 唐门 Handle_TM, inventory appendIni; other kungfu handles selectable the same way). INI/authored state only - no GT capture yet.",
@@ -805,12 +1211,28 @@
           "root": "ui",
           "path": "Config/Default/BigBagPanel.ini",
           "hide": "Handle_Bag_Compact,Wnd_Dismantling",
-          "show": ["Text_Bag2", "Text_Bag3", "Text_Bag4"],
+          "show": [
+            "Text_Bag2",
+            "Text_Bag3",
+            "Text_Bag4"
+          ],
           "adjust": [
-            {"section": "CheckBox_FilterMain", "top": 0},
-            {"section": "CheckBox_FilterSub", "top": 0},
-            {"section": "Handle_Total", "posType": 0},
-            {"section": "Handle_Bag_Normal", "clip": true}
+            {
+              "section": "CheckBox_FilterMain",
+              "top": 0
+            },
+            {
+              "section": "CheckBox_FilterSub",
+              "top": 0
+            },
+            {
+              "section": "Handle_Total",
+              "posType": 0
+            },
+            {
+              "section": "Handle_Bag_Normal",
+              "clip": true
+            }
           ],
           "backdrop": "#33393E",
           "summary": "BigBagPanel (ui/Config/Default/BigBagPanel.ini, 229 sections; root WndFrame 410x410 @500,273 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
@@ -860,21 +1282,6 @@
           "summary": "BigBankPanel (ui/Config/Default/BigBankPanel.ini, 126 sections; root WndFrame 750x884 @200,56 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: mail/auction/bank) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/BigBankPanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "raidpanel",
-          "title": "RaidPanel",
-          "cn": "团队",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/RaidPanel.ini",
-          "show": [ "CheckBox_Team1", "CheckBox_Team2", "CheckBox_Team3", "CheckBox_Team4", "CheckBox_Team5", "Image_Member1", "Image_Member2", "Image_Member3", "Image_Member4", "Image_Member5", "Text_Title", "CheckBox_Minimize" ],
-          "backdrop": "#33393E",
-          "summary": "RaidPanel (ui/Config/Default/RaidPanel.ini, 77 sections; root WndFrame 550x273 @40,270 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: social/team/guild) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/RaidPanel.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -1115,7 +1522,9 @@
           "status": "PARTIAL",
           "root": "ui",
           "path": "Config/Default/AccelerateBall.ini",
-          "show": [ "AccelerateBall" ],
+          "show": [
+            "AccelerateBall"
+          ],
           "backdrop": "#33393E",
           "summary": "AccelerateBall (ui/Config/Default/AccelerateBall.ini, 57 sections; root WndFrame 366x108 @500,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
@@ -1182,20 +1591,118 @@
           "status": "PROVEN",
           "root": "ui",
           "path": "Config/Default/MiniMap.ini",
-          "show": [ "Wnd_Over" ],
+          "show": [
+            "Wnd_Over"
+          ],
           "hide": "Text_ct,Text_Fresher,WndContainer_Emergency,Image_AIGenerate,Btn_Questionnaire,Image_Coner,CheckBox_Switch,Handle_warning,Handle_num,Handle_Tuisong,Image_hotPoint,Image_HotPointSelfie,Image_HotPointCalender",
           "adjust": [
-            { "section": "Wnd_Corner", "left": 27, "top": 0 },
-            { "section": "Wnd_Minimap", "left": 0, "top": 32 },
-            { "section": "CheckBox_Switch", "left": 205, "top": -2 },
-            { "section": "Image_Coner", "left": 153, "top": 0 }
+            {
+              "section": "Wnd_Corner",
+              "left": 27,
+              "top": 0
+            },
+            {
+              "section": "Wnd_Minimap",
+              "left": 0,
+              "top": 32
+            },
+            {
+              "section": "CheckBox_Switch",
+              "left": 205,
+              "top": -2
+            },
+            {
+              "section": "Image_Coner",
+              "left": 153,
+              "top": 0
+            }
           ],
           "pages": [
-            { "id": "296", "label": "龙门绝境", "texts": [ { "section": "Text_Name", "text": "龙门绝境" } ], "images": [ { "section": "Minimap_Map", "image": "data/source/maps/龙门寻宝minimap_mb/middlemap.png", "zoom": 3.41 } ] },
-            { "id": "297", "label": "龙门绝境·夜", "texts": [ { "section": "Text_Name", "text": "龙门绝境·夜" } ], "images": [ { "section": "Minimap_Map", "image": "data/source/maps/龙门寻宝_夜晚minimap_mb/middlemap.png", "zoom": 3.41 } ] },
-            { "id": "410", "label": "沧溟绝境", "texts": [ { "section": "Text_Name", "text": "沧溟绝境" } ], "images": [ { "section": "Minimap_Map", "image": "data/source/maps/海岛绝境minimap_mb/middlemap.png", "zoom": 3.41 } ] },
-            { "id": "512", "label": "白龙绝境", "texts": [ { "section": "Text_Name", "text": "白龙绝境" } ], "images": [ { "section": "Minimap_Map", "image": "data/source/maps/白龙绝境minimap_mb/middlemap.png", "zoom": 3.41 } ] },
-            { "id": "532", "label": "天原绝境", "texts": [ { "section": "Text_Name", "text": "天原绝境" } ], "images": [ { "section": "Minimap_Map", "image": "data/source/maps/天原绝境minimap_mb/middlemap.png", "zoom": 3.41 } ] }
+            {
+              "id": "296",
+              "label": "龙门绝境",
+              "texts": [
+                {
+                  "section": "Text_Name",
+                  "text": "龙门绝境"
+                }
+              ],
+              "images": [
+                {
+                  "section": "Minimap_Map",
+                  "image": "data/source/maps/龙门寻宝minimap_mb/middlemap.png",
+                  "zoom": 3.41
+                }
+              ]
+            },
+            {
+              "id": "297",
+              "label": "龙门绝境·夜",
+              "texts": [
+                {
+                  "section": "Text_Name",
+                  "text": "龙门绝境·夜"
+                }
+              ],
+              "images": [
+                {
+                  "section": "Minimap_Map",
+                  "image": "data/source/maps/龙门寻宝_夜晚minimap_mb/middlemap.png",
+                  "zoom": 3.41
+                }
+              ]
+            },
+            {
+              "id": "410",
+              "label": "沧溟绝境",
+              "texts": [
+                {
+                  "section": "Text_Name",
+                  "text": "沧溟绝境"
+                }
+              ],
+              "images": [
+                {
+                  "section": "Minimap_Map",
+                  "image": "data/source/maps/海岛绝境minimap_mb/middlemap.png",
+                  "zoom": 3.41
+                }
+              ]
+            },
+            {
+              "id": "512",
+              "label": "白龙绝境",
+              "texts": [
+                {
+                  "section": "Text_Name",
+                  "text": "白龙绝境"
+                }
+              ],
+              "images": [
+                {
+                  "section": "Minimap_Map",
+                  "image": "data/source/maps/白龙绝境minimap_mb/middlemap.png",
+                  "zoom": 3.41
+                }
+              ]
+            },
+            {
+              "id": "532",
+              "label": "天原绝境",
+              "texts": [
+                {
+                  "section": "Text_Name",
+                  "text": "天原绝境"
+                }
+              ],
+              "images": [
+                {
+                  "section": "Minimap_Map",
+                  "image": "data/source/maps/天原绝境minimap_mb/middlemap.png",
+                  "zoom": 3.41
+                }
+              ]
+            }
           ],
           "summary": "Top-right lens with the battlefield button, observer button, storm circle range hint and outside-safe-zone warning options. The INI parks the lens at Left=-200 (the slide-in start); the module's UpdateAnchorCorner (Minimap.decompiled.lua:1542-1770) sets the TOPRIGHT corner layout: Wnd_Corner (27,0), Wnd_Minimap (0,32), CheckBox_Switch (205,-2), Image_Coner (153,0) — replayed in `adjust`. The Wnd_Over sub-window (WndWindow, LockShowAndHide=1) is VISIBLE: it carries the whole control set - Text_Name (runtime = MiddleMap.GetMapAreaName on UPDATE_REGION_INFO; authored sample 稻香村), Text_Fresher 分线, Text_ct timer, Btn_BigMap 全图, ZoomIn/Out, Mail, RMain/RFlower/RCraft/RSearch/RCopy, NpcSearch, BattleField(+Forbid)/Arena(+Forbid)/FindTeam, WBLou, Trade(+Tuisong/Storage/Point), WarMaps, Sns, PayPath, Help, Selfie(+AI), Calender, ArenaLive, LeavePVP/LeaveFB/LeaveStudio/LeaveJJCRouge - the module shows/hides them per mode (ShowBtnCmd/UpdateBattleFieldButton/UpdateArenaButton/...); the parked side panels animate in from negative X. The EYS overlay (Wnd_EYSOver, LSH=0) supplies the vision lens art (Image_EYSBg = Minimap.UITex frame 0) and the emergency container (Pellet 鹤翼/LightOff/Emergency). The lens (Minimap_Map, WndMinimap 202x202, AlphaShap=1 + sharptexture MinimapSharp.tga) paints the map texture; with no live map the viewer uses the map pack art per page (the same middlemap.png as MiddleMap) and pins the self marker (`image` frame `selfframe`) at the lens centre, falling back to the shipped defualtminimap texture when a page has none.",
           "evidence": [
@@ -1223,8 +1730,14 @@
           "root": "ui",
           "path": "Config/Default/MiddleMap.ini",
           "images": [
-            { "section": "Image_Map", "image": "data/source/maps/龙门寻宝minimap_mb/middlemap.png" },
-            { "section": "CheckBox_MapPage", "checked": true }
+            {
+              "section": "Image_Map",
+              "image": "data/source/maps/龙门寻宝minimap_mb/middlemap.png"
+            },
+            {
+              "section": "CheckBox_MapPage",
+              "checked": true
+            }
           ],
           "summary": "Full-screen map window (M) showing the battlefield map — pages 296/297/410/512/532 (MapList.tab BATTLE_FIELD rows 龙门绝境, 龙门绝境·夜, 沧溟绝境, 白龙绝境, 天原绝境), each page taking its art from that map's minimap pack (龙门寻宝/龙门寻宝_夜晚/海岛绝境/白龙绝境/天原绝境 minimap_mb middlemap.png, 2048x1792; the pack's minimap/config.ini [middlemap0] image=middlemap.png, width/height 1024x896) drawn into Image_Map at the authored 928x812 rect (928/2048 = 0.453 — MiddleMap.UpdateMapPos :9263-9320 fits the art preserving the config aspect; the inset art matches the packs at corr 0.98+); shared by every scene type: Wnd_NormalMap (world map: region list/quest/NPC search), Wnd_CommandMap (war-sandbox command map), explore panels and the battlefield layers under Handle_Total (storm line, camp counts, events) plus WndContainer_GFInfo/HeatMapDetail. The viewer state is a composite of the two windows the client shows: WorldMap drawn behind (WorldMap_ShowBehindMiddleMap(false, true) — MiddleMap.decompiled.lua:22298, WorldMap.decompiled.lua:8314-8356 — hides the WorldMap map scroll/list and keeps its band/chrome) and MiddleMap on top. The overlay replays the WorldMap glass top band (the capture shows no HousePVP band-gradient art — those images stay script-locked), Text_Title 地图, the Handle_TipsTitle zone legend (停战区/保护区/争夺区/战争区/秘境区), CheckBox_Footprint 神行足迹, Wnd_SearchASetting (WndEdit $Placeholder 城镇或秘境) and Btn_Close; MiddleMap replays the translucent MapWindow3/4 bg tiles (Handle_Bg_0!/Handle_Mbg) + Handle_Map/Image_Map (the map area masked by Handle_Border's ShapTexture ui/Image/UItimate/UIMask/MapMask.tga, AlphaShap=1 — a soft 100x80 rounded-rect alpha stretched over the 936x764 border, applied by the viewer as a container OpacityMask so the art feathers into the glass like the capture), the 地图/探索 tabs, the list rows (Text_WM 世界 = STRING_TITLE_WORLDMAP; Text_SmallMap = Table_GetMiddleMap(id).MiddleMap0 per page = 龙门绝境/龙门绝境·夜/沧溟绝境/白龙绝境/天原绝境; Wnd_Region hidden — every battlefield row has Region=0 and UpateRegionBtn :11989-11995 returns, so the capture's 陇右 row is world-map state; Wnd_SmallMaps adjusted to (left 0, top 0) — with the region row hidden the list stacks at the container top right under the 世界 row (authored 53/161 is the parked prototype; left 6 left the map crest/text ~6 px right; the engine's FormatAllContentPos re-format is not reproduced); Image_MapLogo adjusted to top 4 because the authored top -6 draws the crest ~10 px above the capture, which centers it on Text_SmallMap (box correlation +11 px before, +0 after; capture 5.1 Example.png, measured 2026-09-30); the selected 龙门荒漠 row shows Image_BgSelect (MapWindow6 frame 7 — ink RGB (93,131,103) matches the capture's bar (91,118,100), not frame 33's (50,95,88)), so the viewer hides Image_BgNormal/Image_BgOn and places Image_BgSelect at top 5 (authored -5 puts the bar's bottom edge 10 px above the capture's; same runtime row-placement fit as the crest), the bar now aligning at +3/+1 px like the rest of the list), no NPC filter rows: all five packs ship an empty minimap/npc.tab (0 bytes) and no doodad.tab, so UpdateNpcDoodad :5978-6043 appends nothing (the capture's ten rows 地图内交通…碑铭 and its 跨地图交通/其他商人 checks are the world map 龙门荒漠's 33-row npc.tab and the player's saved StorageServer MiddleMap_SelectNpc filter — world state; Image_NpcOption frame 0 checked / 4 unchecked, :501-504, when a page ever carries rows). The trunk rows (Handle_NpcTrunk/Handle_CraftTrunk, cloned from Handle_Mode by UpdateAreaOrNpcList :5660-5705) are hidden on the battlefield pages — an empty list shows no title and the packs carry no rows (the capture's world state shows them because its 龙门荒漠 pack has rows); when a page carries rows the trunk art is the Image_ListBg1/Bg2 eye (MapWindow6 frame 32 open / 35 closed; UpdateAreaOrNpcTruckState :4501-4592 swaps them with the expand state), with the authored-visible Image_ListCover (frame 30 magnifier) and Image_Minimize hidden (list-template hide). The NPC list scrollbar (Scroll_List) is hidden as well — the capture shows no scrollbar (its list fits; ours is empty). Image_Search is diced (adjust imageType 10): the client draws the 20x20 Common frame 0 box art with 1 px borders although the INI omits ImageType — the stretched render showed a 13 px left/right band (the extra-dusted area), the capture 1 px. Also replayed: the 标记设置 button and the scale/alpha sliders. The window is placed 27 px below the WorldMap band (inventory `offsetY`; the WorldMap stays at the client top) — the capture shows the 地图 tab underline at y=113 and the list/bottom bar/art ~+27 vs the authored positions; the runtime NPC title row is 43 px tall (inventory `adjust Handle_Mode`; the authored 54 is the editor height — with it the panel rows land at the capture's 228.6/266.9), and the tab state is the script's: `CheckBox_MapPage` checked (inventory `images.checked`; the capture paints the selected frame, the script calls `Check(true)` :20817/20942) and `CheckBox_ExplorePage` hidden (the script hides it when `GetMapExploreInfo(mapID)` is empty :3920-3958; the capture shows no 探索 tab). WndContainer_GFInfo is hidden (UpdateHeatMapState :25045-25081 hides it when CanShowHeatMap() is false), and only the parked data-marker layers (person/teammate, born/treasure/event marks, draw/storm lines, area name, traffic, quest/NPC marks), the command-mode/quest-filter subtrees and the script-locked widgets (Wnd_CommandMap, CheckBox_QuestPage, Btn_Close, WndContainer_HeatMapDetail) stay hidden.",
           "evidence": [
@@ -1248,36 +1761,173 @@
             "path": "Config/Default/WorldMap.ini",
             "hide": "Wnd_WordMapScroll,Wnd_AllTowns,Wnd_Guide_List,Wnd_EasyTraffic,Wnd_FuncBox,Wnd_Activity_Guide,Wnd_Map,Text_WM",
             "show": [],
-            "adjust": [ { "section": "WorldMap", "left": 0, "top": 0 } ]
+            "adjust": [
+              {
+                "section": "WorldMap",
+                "left": 0,
+                "top": 0
+              }
+            ]
           },
           "adjust": [
-            { "section": "Handle_Mode", "height": 43 },
-            { "section": "Handle_NpcAreaList", "height": 380 },
-            { "section": "Wnd_SmallMaps", "left": 0, "top": 0 },
-            { "section": "Image_MapLogo", "top": 4 },
-            { "section": "Image_BgSelect", "top": 5 },
-            { "section": "Image_Search", "imageType": 10 }
+            {
+              "section": "Handle_Mode",
+              "height": 43
+            },
+            {
+              "section": "Handle_NpcAreaList",
+              "height": 380
+            },
+            {
+              "section": "Wnd_SmallMaps",
+              "left": 0,
+              "top": 0
+            },
+            {
+              "section": "Image_MapLogo",
+              "top": 4
+            },
+            {
+              "section": "Image_BgSelect",
+              "top": 5
+            },
+            {
+              "section": "Image_Search",
+              "imageType": 10
+            }
           ],
           "offsetY": 27,
           "texts": [
-            { "section": "Text_WM", "text": "STRING_TITLE_WORLDMAP" },
-            { "section": "Text_SmallMap", "table": "ui/MapList.tab", "tableKey": "296", "tableKeyColumn": "ID", "tableColumn": "MiddleMap0" },
-            { "section": "Text_ListTitle", "text": "MIDDLEMAP_COMMON_NPC" }
+            {
+              "section": "Text_WM",
+              "text": "STRING_TITLE_WORLDMAP"
+            },
+            {
+              "section": "Text_SmallMap",
+              "table": "ui/MapList.tab",
+              "tableKey": "296",
+              "tableKeyColumn": "ID",
+              "tableColumn": "MiddleMap0"
+            },
+            {
+              "section": "Text_ListTitle",
+              "text": "MIDDLEMAP_COMMON_NPC"
+            }
           ],
           "lists": [
-            { "container": "Handle_NpcOrAreaList", "ini": "MiddleMap.ini", "item": "Handle_Mode", "count": 1, "textSection": "Text_ListTitle", "rowTexts": ["MIDDLEMAP_CRAFT"], "hide": ["Handle_Mode", "Image_ListBg1", "Image_ListCover", "Image_Minimize"] }
+            {
+              "container": "Handle_NpcOrAreaList",
+              "ini": "MiddleMap.ini",
+              "item": "Handle_Mode",
+              "count": 1,
+              "textSection": "Text_ListTitle",
+              "rowTexts": [
+                "MIDDLEMAP_CRAFT"
+              ],
+              "hide": [
+                "Handle_Mode",
+                "Image_ListBg1",
+                "Image_ListCover",
+                "Image_Minimize"
+              ]
+            }
           ],
           "pages": [
-            { "id": "296", "label": "龙门绝境", "images": [ { "section": "Image_Map", "image": "data/source/maps/龙门寻宝minimap_mb/middlemap.png" } ],
-              "texts": [ { "section": "Text_SmallMap", "table": "ui/MapList.tab", "tableKey": "296", "tableKeyColumn": "ID", "tableColumn": "MiddleMap0" } ] },
-            { "id": "297", "label": "龙门绝境·夜", "images": [ { "section": "Image_Map", "image": "data/source/maps/龙门寻宝_夜晚minimap_mb/middlemap.png" } ],
-              "texts": [ { "section": "Text_SmallMap", "table": "ui/MapList.tab", "tableKey": "297", "tableKeyColumn": "ID", "tableColumn": "MiddleMap0" } ] },
-            { "id": "410", "label": "沧溟绝境", "images": [ { "section": "Image_Map", "image": "data/source/maps/海岛绝境minimap_mb/middlemap.png" } ],
-              "texts": [ { "section": "Text_SmallMap", "table": "ui/MapList.tab", "tableKey": "410", "tableKeyColumn": "ID", "tableColumn": "MiddleMap0" } ] },
-            { "id": "512", "label": "白龙绝境", "images": [ { "section": "Image_Map", "image": "data/source/maps/白龙绝境minimap_mb/middlemap.png" } ],
-              "texts": [ { "section": "Text_SmallMap", "table": "ui/MapList.tab", "tableKey": "512", "tableKeyColumn": "ID", "tableColumn": "MiddleMap0" } ] },
-            { "id": "532", "label": "天原绝境", "images": [ { "section": "Image_Map", "image": "data/source/maps/天原绝境minimap_mb/middlemap.png" } ],
-              "texts": [ { "section": "Text_SmallMap", "table": "ui/MapList.tab", "tableKey": "532", "tableKeyColumn": "ID", "tableColumn": "MiddleMap0" } ] }
+            {
+              "id": "296",
+              "label": "龙门绝境",
+              "images": [
+                {
+                  "section": "Image_Map",
+                  "image": "data/source/maps/龙门寻宝minimap_mb/middlemap.png"
+                }
+              ],
+              "texts": [
+                {
+                  "section": "Text_SmallMap",
+                  "table": "ui/MapList.tab",
+                  "tableKey": "296",
+                  "tableKeyColumn": "ID",
+                  "tableColumn": "MiddleMap0"
+                }
+              ]
+            },
+            {
+              "id": "297",
+              "label": "龙门绝境·夜",
+              "images": [
+                {
+                  "section": "Image_Map",
+                  "image": "data/source/maps/龙门寻宝_夜晚minimap_mb/middlemap.png"
+                }
+              ],
+              "texts": [
+                {
+                  "section": "Text_SmallMap",
+                  "table": "ui/MapList.tab",
+                  "tableKey": "297",
+                  "tableKeyColumn": "ID",
+                  "tableColumn": "MiddleMap0"
+                }
+              ]
+            },
+            {
+              "id": "410",
+              "label": "沧溟绝境",
+              "images": [
+                {
+                  "section": "Image_Map",
+                  "image": "data/source/maps/海岛绝境minimap_mb/middlemap.png"
+                }
+              ],
+              "texts": [
+                {
+                  "section": "Text_SmallMap",
+                  "table": "ui/MapList.tab",
+                  "tableKey": "410",
+                  "tableKeyColumn": "ID",
+                  "tableColumn": "MiddleMap0"
+                }
+              ]
+            },
+            {
+              "id": "512",
+              "label": "白龙绝境",
+              "images": [
+                {
+                  "section": "Image_Map",
+                  "image": "data/source/maps/白龙绝境minimap_mb/middlemap.png"
+                }
+              ],
+              "texts": [
+                {
+                  "section": "Text_SmallMap",
+                  "table": "ui/MapList.tab",
+                  "tableKey": "512",
+                  "tableKeyColumn": "ID",
+                  "tableColumn": "MiddleMap0"
+                }
+              ]
+            },
+            {
+              "id": "532",
+              "label": "天原绝境",
+              "images": [
+                {
+                  "section": "Image_Map",
+                  "image": "data/source/maps/天原绝境minimap_mb/middlemap.png"
+                }
+              ],
+              "texts": [
+                {
+                  "section": "Text_SmallMap",
+                  "table": "ui/MapList.tab",
+                  "tableKey": "532",
+                  "tableKeyColumn": "ID",
+                  "tableColumn": "MiddleMap0"
+                }
+              ]
+            }
           ]
         },
         {
@@ -1500,20 +2150,6 @@
             "ui/Config/Default/ActivityPanel.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
-        },
-        {
-          "id": "achievementpanel",
-          "title": "AchievementPanel",
-          "cn": "隐元秘鉴",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/AchievementPanel.ini",
-          "backdrop": "#33393E",
-          "summary": "AchievementPanel (ui/Config/Default/AchievementPanel.ini, 462 sections; root WndFrame 1141x641 @384,198 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: world/quest/interaction) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/AchievementPanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
         }
       ]
     },
@@ -1540,18 +2176,48 @@
           },
           "hide": "Image_Rule_4,Btn_Rull_DS,Image_BuffRule,WndContainer_Buff",
           "adjust": [
-            { "section": "Text_MyScore", "left": -11 }
+            {
+              "section": "Text_MyScore",
+              "left": -11
+            }
           ],
           "texts": [
-            { "section": "Text_DesertStorm", "text": "经典模式" },
-            { "section": "Text_BtnQuickTeam_D", "text": "绝境武学" },
-            { "section": "Text_SkillTitle", "text": "STR_DESERTSTORM_TITLE" },
-            { "section": "Text_PersonalScore", "text": "1873" },
-            { "section": "Text_FeiShaLing", "text": "10000/10000" },
-            { "section": "Text_FeiShaLingAvailable", "text": "(本周还可获得：1010)" },
-            { "section": "Text_FeiShaLingAvailable_K", "text": "(本周还可获得：1010)" },
-            { "section": "Text_FeiShaLingAvailable_S", "text": "(本周还可获得：1010)" },
-            { "section": "Text_FeiShaLingAvailable_T", "text": "(本周还可获得：1010)" }
+            {
+              "section": "Text_DesertStorm",
+              "text": "经典模式"
+            },
+            {
+              "section": "Text_BtnQuickTeam_D",
+              "text": "绝境武学"
+            },
+            {
+              "section": "Text_SkillTitle",
+              "text": "STR_DESERTSTORM_TITLE"
+            },
+            {
+              "section": "Text_PersonalScore",
+              "text": "1873"
+            },
+            {
+              "section": "Text_FeiShaLing",
+              "text": "10000/10000"
+            },
+            {
+              "section": "Text_FeiShaLingAvailable",
+              "text": "(本周还可获得：1010)"
+            },
+            {
+              "section": "Text_FeiShaLingAvailable_K",
+              "text": "(本周还可获得：1010)"
+            },
+            {
+              "section": "Text_FeiShaLingAvailable_S",
+              "text": "(本周还可获得：1010)"
+            },
+            {
+              "section": "Text_FeiShaLingAvailable_T",
+              "text": "(本周还可获得：1010)"
+            }
           ],
           "summary": "PROJECT DESIGN VARIANT (not a game-authored state; user request 2026-10-02; displayed as 排队界面 since the rename pass) - the page is a queue variant built on the current 五人模式 layout: same INI (NewBattleFieldQueue.ini, page Page_DesertStorm) and the same sample state as the 五人模式 panel (个人评分 1873, 飞沙令 10000/10000, 单场奖励/crest art). Four designed differences, all viewer-side (entry hide/texts/tabs/adjust - no INI or asset edits): (1) the mode strip is reduced to a single tab, Text_DesertStorm renamed 经典模式 (the other CheckBox_DesertStorm_* tabs stay hidden); (2) the three tooltip ? icons are removed (Image_Rule_4 个人评分, Btn_Rull_DS 随机地图, Image_BuffRule 技能平衡); (3) the 技能平衡 row (WndContainer_Buff) is removed; (4) the bottom-right button 快捷组队 reads 绝境武学 (Text_BtnQuickTeam_D). The base window data stays the game's own (INI + lua); this entry is a deliberately designed variant for the Reborn project, not client truth - do not cite it as the shipped queue window.",
           "evidence": [
@@ -1582,31 +2248,137 @@
           "path": "Config/Default/MessageBox/MessageBox.ini",
           "hide": "CheckBox_Msg,Btn_Option3,Btn_Close",
           "appends": [
-            { "container": "Handle_Message", "text": "TEST", "font": 18, "top": 20, "height": 17, "width": 226 }
+            {
+              "container": "Handle_Message",
+              "text": "TEST",
+              "font": 18,
+              "top": 20,
+              "height": 17,
+              "width": 226
+            }
           ],
           "texts": [
-            { "section": "Text_Option1", "text": "确定(30)", "fontScheme": 18 },
-            { "section": "Text_Option2", "text": "取消", "fontScheme": 18 }
+            {
+              "section": "Text_Option1",
+              "text": "确定(30)",
+              "fontScheme": 18
+            },
+            {
+              "section": "Text_Option2",
+              "text": "取消",
+              "fontScheme": 18
+            }
           ],
           "pages": [
-            { "id": "296", "label": "龙门绝境", "texts": [ { "section": "__append_Handle_Message_1", "text": "需要前往的\"龙门绝境\"地图吗？" } ] },
-            { "id": "297", "label": "龙门绝境·夜", "texts": [ { "section": "__append_Handle_Message_1", "text": "需要前往的\"龙门绝境·夜\"地图吗？" } ] },
-            { "id": "410", "label": "沧溟绝境", "texts": [ { "section": "__append_Handle_Message_1", "text": "需要前往的\"沧溟绝境\"地图吗？" } ] },
-            { "id": "512", "label": "白龙绝境", "texts": [ { "section": "__append_Handle_Message_1", "text": "需要前往的\"白龙绝境\"地图吗？" } ] },
-            { "id": "532", "label": "天原绝境", "texts": [ { "section": "__append_Handle_Message_1", "text": "需要前往的\"天原绝境\"地图吗？" } ] }
+            {
+              "id": "296",
+              "label": "龙门绝境",
+              "texts": [
+                {
+                  "section": "__append_Handle_Message_1",
+                  "text": "需要前往的\"龙门绝境\"地图吗？"
+                }
+              ]
+            },
+            {
+              "id": "297",
+              "label": "龙门绝境·夜",
+              "texts": [
+                {
+                  "section": "__append_Handle_Message_1",
+                  "text": "需要前往的\"龙门绝境·夜\"地图吗？"
+                }
+              ]
+            },
+            {
+              "id": "410",
+              "label": "沧溟绝境",
+              "texts": [
+                {
+                  "section": "__append_Handle_Message_1",
+                  "text": "需要前往的\"沧溟绝境\"地图吗？"
+                }
+              ]
+            },
+            {
+              "id": "512",
+              "label": "白龙绝境",
+              "texts": [
+                {
+                  "section": "__append_Handle_Message_1",
+                  "text": "需要前往的\"白龙绝境\"地图吗？"
+                }
+              ]
+            },
+            {
+              "id": "532",
+              "label": "天原绝境",
+              "texts": [
+                {
+                  "section": "__append_Handle_Message_1",
+                  "text": "需要前往的\"天原绝境\"地图吗？"
+                }
+              ]
+            }
           ],
           "adjust": [
-            { "section": "MessageBox", "width": 226, "height": 103 },
-            { "section": "Wnd_All", "width": 226, "height": 103 },
-            { "section": "Handle_Total", "width": 400, "height": 103 },
-            { "section": "Image_Bg", "width": 282, "height": 103 },
-            { "section": "Image_BgPopUp_Glassmorphism", "width": 282, "height": 103 },
-            { "section": "WndFlexContainer_Msg", "width": 226, "height": 83 },
-            { "section": "Wnd_Msg", "width": 226, "height": 37 },
-            { "section": "Handle_Message", "width": 226, "height": 37 },
-            { "section": "WndFlexContainer_Opt", "width": 226, "height": 28, "left": 0, "top": 55 },
-            { "section": "Btn_Option1", "left": 20, "top": 0 },
-            { "section": "Btn_Option2", "left": 118, "top": 0 }
+            {
+              "section": "MessageBox",
+              "width": 226,
+              "height": 103
+            },
+            {
+              "section": "Wnd_All",
+              "width": 226,
+              "height": 103
+            },
+            {
+              "section": "Handle_Total",
+              "width": 400,
+              "height": 103
+            },
+            {
+              "section": "Image_Bg",
+              "width": 282,
+              "height": 103
+            },
+            {
+              "section": "Image_BgPopUp_Glassmorphism",
+              "width": 282,
+              "height": 103
+            },
+            {
+              "section": "WndFlexContainer_Msg",
+              "width": 226,
+              "height": 83
+            },
+            {
+              "section": "Wnd_Msg",
+              "width": 226,
+              "height": 37
+            },
+            {
+              "section": "Handle_Message",
+              "width": 226,
+              "height": 37
+            },
+            {
+              "section": "WndFlexContainer_Opt",
+              "width": 226,
+              "height": 28,
+              "left": 0,
+              "top": 55
+            },
+            {
+              "section": "Btn_Option1",
+              "left": 20,
+              "top": 0
+            },
+            {
+              "section": "Btn_Option2",
+              "left": 118,
+              "top": 0
+            }
           ],
           "summary": "The queue match-found prompt is the engine's generic KGUI MessageBox (ui/Config/Default/MessageBox/MessageBox.ini), opened as MB_entermap by the compiled ui/script/module.lua ComfirmEnterQueuedMap handler. Body = FormatString(STR_SWITCHMAP_GFZ_TIP, map) = 需要前往的\"<map>\"地图吗？; option 1 = STR_HOTKEY_SURE (确定) with nCountDownTime=30 rendered through MSG_BRACKET <D0>(<D1>) = 确定(30); option 2 = STR_HOTKEY_CANCEL (取消). The script appends the body to Handle_Message (AppendItemFromString, font 18), fills Text_Option1/2, hides the 不再提示 checkbox (no tCheckBoxConfig) and Btn_Close (no bShowClose), and fnAutoClose auto-confirms when the 30 s run out. Layout replays MessageBox.lua:829-842 for this state: body 205px -> content 226x83, window 226x103, panel (Image_Bg/Glassmorphism) 282x103, option row at y=55 with buttons at x=20/118 (10px gap), ornaments anchored to Image_Bg. Viewer pages 296/297/410/512/532 replay each map's body (the page texts override the appended body); the option labels use the button's NormalFont scheme 18 (the authored Text_Option FontScheme=1 black is a stale default — the ExitPanel sure/cancel pairs carry 18); the ids come from the global g_tStrings lib ui/String/string.lua (extracted by tools/ui/extract_lua_string_table.py).",
           "evidence": [
@@ -1640,26 +2412,125 @@
           "path": "Config/Default/LoadingPanel.ini",
           "page": "296",
           "pages": [
-    { "id": "296", "label": "龙门绝境", "images": [ { "section": "Image_Bg", "image": "data/source/maps/龙门寻宝minimap_mb/loadinglmxb.png" } ] },
-    { "id": "297", "label": "龙门绝境·夜", "images": [ { "section": "Image_Bg", "image": "data/source/maps/龙门寻宝_夜晚minimap_mb/loadinglmjj2.png" } ] },
-    { "id": "410", "label": "沧溟绝境", "images": [ { "section": "Image_Bg", "image": "data/source/maps/海岛绝境minimap_mb/loading.png" } ] },
-    { "id": "512", "label": "白龙绝境", "images": [ { "section": "Image_Bg", "image": "data/source/maps/白龙绝境minimap_mb/bgblk.png" } ] },
-    { "id": "532", "label": "天原绝境", "images": [ { "section": "Image_Bg", "image": "data/source/maps/天原绝境minimap_mb/loadingtyjj.png" } ] }
+            {
+              "id": "296",
+              "label": "龙门绝境",
+              "images": [
+                {
+                  "section": "Image_Bg",
+                  "image": "data/source/maps/龙门寻宝minimap_mb/loadinglmxb.png"
+                }
+              ]
+            },
+            {
+              "id": "297",
+              "label": "龙门绝境·夜",
+              "images": [
+                {
+                  "section": "Image_Bg",
+                  "image": "data/source/maps/龙门寻宝_夜晚minimap_mb/loadinglmjj2.png"
+                }
+              ]
+            },
+            {
+              "id": "410",
+              "label": "沧溟绝境",
+              "images": [
+                {
+                  "section": "Image_Bg",
+                  "image": "data/source/maps/海岛绝境minimap_mb/loading.png"
+                }
+              ]
+            },
+            {
+              "id": "512",
+              "label": "白龙绝境",
+              "images": [
+                {
+                  "section": "Image_Bg",
+                  "image": "data/source/maps/白龙绝境minimap_mb/bgblk.png"
+                }
+              ]
+            },
+            {
+              "id": "532",
+              "label": "天原绝境",
+              "images": [
+                {
+                  "section": "Image_Bg",
+                  "image": "data/source/maps/天原绝境minimap_mb/loadingtyjj.png"
+                }
+              ]
+            }
           ],
           "hide": "Handle_Traffic,Handle_PakV4Msg",
           "adjust": [
-            { "section": "LoadingPanel", "width": 1280, "height": 720 },
-            { "section": "Image_Bg", "width": 1284, "height": 722, "left": -3, "top": -1 },
-            { "section": "Handle_Nor", "left": 128, "top": 644 },
-            { "section": "Handle_Traffic", "left": 128, "top": 644 },
-            { "section": "Text_Msg", "left": 128, "top": 646, "width": 1024, "height": 25 },
-            { "section": "Handle_Msg", "left": 128, "top": 646, "width": 1024, "height": 60 },
-            { "section": "Handle_MPakInfo", "left": 128, "top": 646, "width": 1024, "height": 60 },
-            { "section": "Handle_PakV4Msg", "left": 470, "top": 709 },
-            { "section": "Handle_Tip", "left": 670, "top": 115 },
-            { "section": "Text_Tip", "left": 670, "top": 115 },
-            { "section": "Image_Progress", "width": 912 },
-            { "section": "Image_ProgressT", "width": 615 }
+            {
+              "section": "LoadingPanel",
+              "width": 1280,
+              "height": 720
+            },
+            {
+              "section": "Image_Bg",
+              "width": 1284,
+              "height": 722,
+              "left": -3,
+              "top": -1
+            },
+            {
+              "section": "Handle_Nor",
+              "left": 128,
+              "top": 644
+            },
+            {
+              "section": "Handle_Traffic",
+              "left": 128,
+              "top": 644
+            },
+            {
+              "section": "Text_Msg",
+              "left": 128,
+              "top": 646,
+              "width": 1024,
+              "height": 25
+            },
+            {
+              "section": "Handle_Msg",
+              "left": 128,
+              "top": 646,
+              "width": 1024,
+              "height": 60
+            },
+            {
+              "section": "Handle_MPakInfo",
+              "left": 128,
+              "top": 646,
+              "width": 1024,
+              "height": 60
+            },
+            {
+              "section": "Handle_PakV4Msg",
+              "left": 470,
+              "top": 709
+            },
+            {
+              "section": "Handle_Tip",
+              "left": 670,
+              "top": 115
+            },
+            {
+              "section": "Text_Tip",
+              "left": 670,
+              "top": 115
+            },
+            {
+              "section": "Image_Progress",
+              "width": 912
+            },
+            {
+              "section": "Image_ProgressT",
+              "width": 615
+            }
           ],
           "summary": "Full-screen loading overlay for a map transfer, 1280x720. One viewer entry with the Page selector switching the destination map (296 龙门绝境 / 297 龙门绝境·夜 / 410 沧溟绝境 / 512 白龙绝境 / 532 天原绝境): Image_Bg = the map's own [loading] image art (CDN _mb PNG, full-bleed 1284x722 at -3,-1), Handle_Traffic and Handle_PakV4Msg hidden (normal map load; the traffic bar and the PakV4 download tips show only while the client is streaming resources), progress bar at (10% w, 89.4% h) with an 80%-wide track and a 912px fill, message/tip handles at (128,646), tip panel at (670,115) = the exact 1280-wide runtime anchor (UpdateLayout: Text_Tip/Handle_Tip SetRelPos(clientW - w - 100, 115), so the position follows the resolution while the 510x101 box size is fixed; the content is the map's loading story from g_tLoadingStory/minimap/loadingstory.tab with the map font, ~34 CJK chars/line x 4-5 lines at the shipped fonts; that table is not in the local extractions so the area renders empty) — all from LoadingPanel.lua CorrectShow/ShowProgress. Map art pulled from the CDN hpkg with tools/netcode/extract_hpkg_member.py.",
           "evidence": [
@@ -1685,24 +2556,110 @@
           "root": "ui",
           "path": "Config/Default/RemainingTimeNotify.ini",
           "hide": "Handle_Num,Image_Minute,Image_Num",
-          "show": [ "__lt_Handle_Count_0_Image_Num", "__lt_Handle_Count_1_Image_Num", "Image_Second" ],
+          "show": [
+            "__lt_Handle_Count_0_Image_Num",
+            "__lt_Handle_Count_1_Image_Num",
+            "Image_Second"
+          ],
           "lists": [
-            { "container": "Handle_Count", "ini": "RemainingTimeNotify.ini", "item": "Handle_Num", "count": 2, "flow": "row" }
+            {
+              "container": "Handle_Count",
+              "ini": "RemainingTimeNotify.ini",
+              "item": "Handle_Num",
+              "count": 2,
+              "flow": "row"
+            }
           ],
           "adjust": [
-            { "section": "__lt_Handle_Count_0_Image_Num", "alpha": 255 },
-            { "section": "__lt_Handle_Count_1_Image_Num", "alpha": 255 }
+            {
+              "section": "__lt_Handle_Count_0_Image_Num",
+              "alpha": 255
+            },
+            {
+              "section": "__lt_Handle_Count_1_Image_Num",
+              "alpha": 255
+            }
           ],
           "images": [
-            { "section": "__lt_Handle_Count_0_Image_Num", "frame": 3 },
-            { "section": "__lt_Handle_Count_1_Image_Num", "frame": 0 }
+            {
+              "section": "__lt_Handle_Count_0_Image_Num",
+              "frame": 3
+            },
+            {
+              "section": "__lt_Handle_Count_1_Image_Num",
+              "frame": 0
+            }
           ],
           "pages": [
-            { "id": "5", "label": "5秒", "images": [ { "section": "__lt_Handle_Count_1_Image_Num", "frame": 5 } ], "hide": [ "__lt_Handle_Count_0_Handle_Num" ] },
-            { "id": "10", "label": "10秒", "images": [ { "section": "__lt_Handle_Count_0_Image_Num", "frame": 1 }, { "section": "__lt_Handle_Count_1_Image_Num", "frame": 0 } ] },
-            { "id": "15", "label": "15秒", "images": [ { "section": "__lt_Handle_Count_0_Image_Num", "frame": 1 }, { "section": "__lt_Handle_Count_1_Image_Num", "frame": 5 } ] },
-            { "id": "20", "label": "20秒", "images": [ { "section": "__lt_Handle_Count_0_Image_Num", "frame": 2 }, { "section": "__lt_Handle_Count_1_Image_Num", "frame": 0 } ] },
-            { "id": "30", "label": "30秒", "images": [ { "section": "__lt_Handle_Count_0_Image_Num", "frame": 3 }, { "section": "__lt_Handle_Count_1_Image_Num", "frame": 0 } ] }
+            {
+              "id": "5",
+              "label": "5秒",
+              "images": [
+                {
+                  "section": "__lt_Handle_Count_1_Image_Num",
+                  "frame": 5
+                }
+              ],
+              "hide": [
+                "__lt_Handle_Count_0_Handle_Num"
+              ]
+            },
+            {
+              "id": "10",
+              "label": "10秒",
+              "images": [
+                {
+                  "section": "__lt_Handle_Count_0_Image_Num",
+                  "frame": 1
+                },
+                {
+                  "section": "__lt_Handle_Count_1_Image_Num",
+                  "frame": 0
+                }
+              ]
+            },
+            {
+              "id": "15",
+              "label": "15秒",
+              "images": [
+                {
+                  "section": "__lt_Handle_Count_0_Image_Num",
+                  "frame": 1
+                },
+                {
+                  "section": "__lt_Handle_Count_1_Image_Num",
+                  "frame": 5
+                }
+              ]
+            },
+            {
+              "id": "20",
+              "label": "20秒",
+              "images": [
+                {
+                  "section": "__lt_Handle_Count_0_Image_Num",
+                  "frame": 2
+                },
+                {
+                  "section": "__lt_Handle_Count_1_Image_Num",
+                  "frame": 0
+                }
+              ]
+            },
+            {
+              "id": "30",
+              "label": "30秒",
+              "images": [
+                {
+                  "section": "__lt_Handle_Count_0_Image_Num",
+                  "frame": 3
+                },
+                {
+                  "section": "__lt_Handle_Count_1_Image_Num",
+                  "frame": 0
+                }
+              ]
+            }
           ],
           "summary": "The staging/phase countdown notify (ui/Config/Default/RemainingTimeNotify.ini + .lua, PakV4, recovered 2026-10-02): anchored TOPCENTER,0,150; Open(nSeconds) renders the remaining time as big RougeLike.UITex digit frames (frame = digit 0-9, verified frame 3 shows the digit 3) and auto-closes ~5s (OnFrameBreathe); n%60==0 shows Image_Minute + the minutes digits, otherwise Image_Second + the seconds (the lua switches the 分/秒 labels; SFX_Num plays ROUGELIKE_KILL<digit>.pss per digit; Scene/MapWindow8 frames the label). Static render = the 30s state (seconds mode, digits 3/0). The staging phase therefore DOES have displays: this notify (server-driven remaining time), the mode notice panel BattleFieldHSLHNotice (黑山绝境 event notices e.g. 毒蘑菇即将出现/方位提示), and the phase announcements (绝境将在30/20/10秒后开始) which arrive as system messages and render on MainMessageLine (5.8); the safe-zone boundary is engine-drawn (MapCircle + SFX_CircleNew) and BattleFieldMap.Text_Time stays hidden for treasure maps.",
           "evidence": [
@@ -1736,7 +2693,10 @@
           "root": "ui",
           "path": "Config/Default/BattleField/BattleFieldMap.ini",
           "images": [
-            { "section": "Image_Map", "image": "data/source/maps/龙门寻宝minimap_mb/middlemap.png" }
+            {
+              "section": "Image_Map",
+              "image": "data/source/maps/龙门寻宝minimap_mb/middlemap.png"
+            }
           ],
           "hide": "CheckBox_Hq,Handle_Hq,CheckBox_Er,Handle_Er,Wnd_Route,CheckBox_Follow,CheckBox_ShowNum,Btn_Refresh,Handle_MainCmd_Hq,Handle_MainCmd_Er,Handle_OtherCmd_Hq,Handle_OtherCmd_Er,Handle_CampObBoard,Handle_GFAreaList,Handle_GFArea,Handle_GFList_Num,Handle_DataMod,Image_Data,Handle_MapIcon,Handle_Gather,Handle_Mark,Handle_Arrow,Handle_EventMod,Image_DrawLine1,Image_Player,Image_Teammate,Image_LineA_*,Image_LineC_*,Image_LineE_*,*709*",
           "summary": "Draggable battlefield M-map panel with the map art in Image_Map — pages 296/297/410/512/532 take it from each map's minimap pack (like the loading and M windows). The map-suffixed team/line elements exist only for 512 and 709 in the INI (Image_MapLine_512_*, Image_CLine_512_*, Handle_Team_512_* with Image_Num*_512_*/Image_Team[M/L]512_*/Text_512_*, plus the Image_M709_*/Handle_Team_709_* set); the runtime looks up Handle_Team_<currentMapID>_n (:3324-3358) and Image_CLine_ (:3653), so the four other pages hide both sets (page hide *_512_* + *709_*) and page 512 hides *709*, leaving only map 512's ring segments + team numbers. The window-level hide drops what belongs to other modes or to runtime data: the faction/camp set (CheckBox_Hq/Er + Handle_Hq/Er, Handle_MainCmd_*/Handle_OtherCmd_*, Handle_CampObBoard), the top-bar mode controls (Wnd_Route line tabs + CheckBox_Follow — the 绝境 line-choose phase, hidden at init and after MIDDLE_MAP_ON_JUEJING_STOPCHOOSELINE; CheckBox_ShowNum + Btn_Refresh — CanShowHeatMap (map.lua:347-371) is true only for IsInTongWarFieldMap or CommandBase.CanShowHeatMap, never for a treasure map, so 显示人数/刷新 do not belong here), the heat-map grid (Handle_GFAreaList/Handle_GFArea/Handle_GFList_Num) and the runtime item prototypes the client clears/appends (Handle_DataMod/Image_Data, Handle_MapIcon, Handle_Gather/Mark/Arrow, Handle_EventMod, Image_DrawLine1, Image_Player, Image_Teammate). Viewer fix: the skin filter no longer counts ui/Image/MiddleMap/StormLine/* art as old-skin chrome — with the heat-map items hidden it classified the whole Handle_Map layer as an old root and dropped the map as a duplicate of Image_Bg. When IsInTreasureBattleFieldMap() it shows Handle_StormLine and registers MapCircle/SFX_CircleNew; only map 512 ships line data in the INI (Image_CLine_512_* — the choice-line ring, shown; the runtime grays/normalizes one line, ShowLootMode :3636-3679) — the other maps have none, so no storm line is drawn for them; the 圈 is the SFX_CircleNew particle (C_自己圈范围_677.pss), no bitmap, not rendered. Heat map toggle; mark/gain/sfx notify events.",
@@ -1759,11 +2719,75 @@
             "STR_BATTLEFIELD_MAPTIP3"
           ],
           "pages": [
-            { "id": "296", "label": "龙门绝境", "images": [ { "section": "Image_Map", "image": "data/source/maps/龙门寻宝minimap_mb/middlemap.png" } ], "hide": ["*_512_*", "*709*"] },
-            { "id": "297", "label": "龙门绝境·夜", "images": [ { "section": "Image_Map", "image": "data/source/maps/龙门寻宝_夜晚minimap_mb/middlemap.png" } ], "hide": ["*_512_*", "*709*"] },
-            { "id": "410", "label": "沧溟绝境", "images": [ { "section": "Image_Map", "image": "data/source/maps/海岛绝境minimap_mb/middlemap.png" } ], "hide": ["*_512_*", "*709*"] },
-            { "id": "512", "label": "白龙绝境", "images": [ { "section": "Image_Map", "image": "data/source/maps/白龙绝境minimap_mb/middlemap.png" } ], "hide": ["*709*"] },
-            { "id": "532", "label": "天原绝境", "images": [ { "section": "Image_Map", "image": "data/source/maps/天原绝境minimap_mb/middlemap.png" } ], "hide": ["*_512_*", "*709*"] }
+            {
+              "id": "296",
+              "label": "龙门绝境",
+              "images": [
+                {
+                  "section": "Image_Map",
+                  "image": "data/source/maps/龙门寻宝minimap_mb/middlemap.png"
+                }
+              ],
+              "hide": [
+                "*_512_*",
+                "*709*"
+              ]
+            },
+            {
+              "id": "297",
+              "label": "龙门绝境·夜",
+              "images": [
+                {
+                  "section": "Image_Map",
+                  "image": "data/source/maps/龙门寻宝_夜晚minimap_mb/middlemap.png"
+                }
+              ],
+              "hide": [
+                "*_512_*",
+                "*709*"
+              ]
+            },
+            {
+              "id": "410",
+              "label": "沧溟绝境",
+              "images": [
+                {
+                  "section": "Image_Map",
+                  "image": "data/source/maps/海岛绝境minimap_mb/middlemap.png"
+                }
+              ],
+              "hide": [
+                "*_512_*",
+                "*709*"
+              ]
+            },
+            {
+              "id": "512",
+              "label": "白龙绝境",
+              "images": [
+                {
+                  "section": "Image_Map",
+                  "image": "data/source/maps/白龙绝境minimap_mb/middlemap.png"
+                }
+              ],
+              "hide": [
+                "*709*"
+              ]
+            },
+            {
+              "id": "532",
+              "label": "天原绝境",
+              "images": [
+                {
+                  "section": "Image_Map",
+                  "image": "data/source/maps/天原绝境minimap_mb/middlemap.png"
+                }
+              ],
+              "hide": [
+                "*_512_*",
+                "*709*"
+              ]
+            }
           ]
         },
         {
@@ -1774,26 +2798,75 @@
           "root": "ui",
           "path": "Config/Default/LootList.ini",
           "hide": "Handle_Item,Handle_Currency",
-          "show": [ "Image_Gold", "Image_Silver", "Image_Copper" ],
+          "show": [
+            "Image_Gold",
+            "Image_Silver",
+            "Image_Copper"
+          ],
           "lists": [
-            { "container": "Handle_LootList", "ini": "LootList.ini", "item": "Handle_Item", "count": 2, "textSection": "Text_Item",
-              "rowTexts": ["麻布绷带", "月影沙"],
-              "hide": ["Image_Auction", "Image_ItemMO"] }
+            {
+              "container": "Handle_LootList",
+              "ini": "LootList.ini",
+              "item": "Handle_Item",
+              "count": 2,
+              "textSection": "Text_Item",
+              "rowTexts": [
+                "麻布绷带",
+                "月影沙"
+              ],
+              "hide": [
+                "Image_Auction",
+                "Image_ItemMO"
+              ]
+            }
           ],
           "texts": [
-            { "section": "Text_Sure", "text": "全部拾取［F］" },
-    { "section": "Text_Gold", "text": "12" },
-    { "section": "Text_Silver", "text": "34" },
-    { "section": "Text_Copper", "text": "56" },
-            { "section": "__lt_Handle_LootList_0_Text_Item", "fontColor": "#00D24B" },
-            { "section": "__lt_Handle_LootList_1_Text_Item", "fontColor": "#007EFF" }
+            {
+              "section": "Text_Sure",
+              "text": "全部拾取［F］"
+            },
+            {
+              "section": "Text_Gold",
+              "text": "12"
+            },
+            {
+              "section": "Text_Silver",
+              "text": "34"
+            },
+            {
+              "section": "Text_Copper",
+              "text": "56"
+            },
+            {
+              "section": "__lt_Handle_LootList_0_Text_Item",
+              "fontColor": "#00D24B"
+            },
+            {
+              "section": "__lt_Handle_LootList_1_Text_Item",
+              "fontColor": "#007EFF"
+            }
           ],
           "images": [
-            { "section": "__lt_Handle_LootList_0_Box_Item", "borderColor": "#00D24B" },
-            { "section": "__lt_Handle_LootList_1_Box_Item", "borderColor": "#007EFF" },
-            { "section": "Box_Money", "image": "ui/Image/Icon/System/Coin/coin01.UITex" },
-    { "section": "__lt_Handle_LootList_0_Box_Item", "image": "ui/Image/Icon/System/Drug/CL_0417_01.UITex" },
-            { "section": "__lt_Handle_LootList_1_Box_Item", "image": "ui/Image/Icon/System/Drug/medicNew01b.UITex" }
+            {
+              "section": "__lt_Handle_LootList_0_Box_Item",
+              "borderColor": "#00D24B"
+            },
+            {
+              "section": "__lt_Handle_LootList_1_Box_Item",
+              "borderColor": "#007EFF"
+            },
+            {
+              "section": "Box_Money",
+              "image": "ui/Image/Icon/System/Coin/coin01.UITex"
+            },
+            {
+              "section": "__lt_Handle_LootList_0_Box_Item",
+              "image": "ui/Image/Icon/System/Drug/CL_0417_01.UITex"
+            },
+            {
+              "section": "__lt_Handle_LootList_1_Box_Item",
+              "image": "ui/Image/Icon/System/Drug/medicNew01b.UITex"
+            }
           ],
           "summary": "Container loot window (OnSyncLootList): the Lua rebuilds the list per container - a money row when GetLootMoney>0 (UpdateMoneyShow splits gold/silver/copper, lua:616-713, Box_Money icon = GetMoneyIcon: gold>10 -> icon 94 System\\Coin\\coin01, silver -> 96/97, copper -> 98/99) then one Handle_Item row per GetLootList entry (Text_Item = GetItemNameByItem + SetFontColor(GetItemFontColorByQuality): q1 250,250,250 / q2 0,210,75 / q3 0,126,255 / q4 255,45,255 / q5 255,165,0 (item.lua); Box_Item gets SetObject/SetObjectIcon(Table_GetItemIconID)/SetOverText(stack count, RIGHT_BOTTOM font 15)/UpdateItemBoxExtend(genre, quality) which paints the quality box; Image_Auction shows only for the loot master). Rows are engine items: PosType 10 in a handle with FirstItemPosType 2/4, so the view stacks them in append order below the previous item (money row first). Viewer replays a container with 12金34银56铜 + 麻布绷带/q2 and 月影沙/q3: exact quality RGB via #hex fontColor/borderColor, Box icons from the pak (icon 6011 System\\Drug\\CL_0417_01, 1321 System\\Drug\\medicNew01b, coin 94 System\\Coin\\coin01); Btn_Sure = 全部拾取［F］ (STR_PICK_ALL + STR_BRACKETS [GetKeyShow]). Known gaps: the Box over-text stack overlay and UpdateItemBoxExtend's box art are approximated (borderColor) / not drawn; the money coin glyphs (LootPanel frames 10-12) overlap at the authored PosType 8 spot.",
           "evidence": [
@@ -1833,22 +2906,71 @@
           ],
           "hide": "Handle_Currency,Handle_Info,Handle_Money,Handle_Camp,Image_Glassmorphism",
           "adjust": [
-            { "section": "__lt_Handle_MainMessage_0_Handle_Info_", "width": 115 },
-            { "section": "__lt_Handle_MainMessage_1_Handle_Info_", "width": 206 },
-            { "section": "__lt_Handle_MainMessage_2_Handle_Info_", "width": 106 },
-            { "section": "__lt_Handle_MainMessage_3_Handle_Info_", "width": 106 },
-            { "section": "__lt_Handle_MainMessage_4_Handle_Info_", "width": 83 }
+            {
+              "section": "__lt_Handle_MainMessage_0_Handle_Info_",
+              "width": 115
+            },
+            {
+              "section": "__lt_Handle_MainMessage_1_Handle_Info_",
+              "width": 206
+            },
+            {
+              "section": "__lt_Handle_MainMessage_2_Handle_Info_",
+              "width": 106
+            },
+            {
+              "section": "__lt_Handle_MainMessage_3_Handle_Info_",
+              "width": 106
+            },
+            {
+              "section": "__lt_Handle_MainMessage_4_Handle_Info_",
+              "width": 83
+            }
           ],
           "lists": [
-            { "container": "Handle_MainMessage", "ini": "MainMessageLine.ini", "item": "Handle_Info", "count": 5, "flow": "row", "textSection": "Text_TitleI",
-              "rowTexts": ["网络延迟：", "时间：", "渲染FPS：", "逻辑FPS：", "飞沙令："], "hide": ["Image_HighlightI"] }
+            {
+              "container": "Handle_MainMessage",
+              "ini": "MainMessageLine.ini",
+              "item": "Handle_Info",
+              "count": 5,
+              "flow": "row",
+              "textSection": "Text_TitleI",
+              "rowTexts": [
+                "网络延迟：",
+                "时间：",
+                "渲染FPS：",
+                "逻辑FPS：",
+                "飞沙令："
+              ],
+              "hide": [
+                "Image_HighlightI"
+              ]
+            }
           ],
           "texts": [
-            { "section": "__lt_Handle_MainMessage_0_Text_ContentI", "text": "100", "fontScheme": 105 },
-            { "section": "__lt_Handle_MainMessage_1_Text_ContentI", "text": "2026-08-22 00:31:45" },
-            { "section": "__lt_Handle_MainMessage_2_Text_ContentI", "text": "34", "fontScheme": 101 },
-            { "section": "__lt_Handle_MainMessage_3_Text_ContentI", "text": "34", "fontScheme": 101 },
-            { "section": "__lt_Handle_MainMessage_4_Text_ContentI", "text": "0" }
+            {
+              "section": "__lt_Handle_MainMessage_0_Text_ContentI",
+              "text": "100",
+              "fontScheme": 105
+            },
+            {
+              "section": "__lt_Handle_MainMessage_1_Text_ContentI",
+              "text": "2026-08-22 00:31:45"
+            },
+            {
+              "section": "__lt_Handle_MainMessage_2_Text_ContentI",
+              "text": "34",
+              "fontScheme": 101
+            },
+            {
+              "section": "__lt_Handle_MainMessage_3_Text_ContentI",
+              "text": "34",
+              "fontScheme": 101
+            },
+            {
+              "section": "__lt_Handle_MainMessage_4_Text_ContentI",
+              "text": "0"
+            }
           ],
           "elements": [
             "Message line + queue",
@@ -1913,68 +3035,243 @@
           "path": "ACC_TreasureFinal.ini",
           "hide": "Handle_Player,Image_On,Image_Select,Wnd_PersonCard,Text_WarningTime,Btn_Export",
           "adjust": [
-            { "section": "Handle_Titile", "left": 403 },
-            { "section": "Handle_FinalList", "left": 415 },
-            { "section": "Text_JJFen", "left": 609, "width": 72 },
-            { "section": "Text_Result", "left": 721, "width": 84 }
+            {
+              "section": "Handle_Titile",
+              "left": 403
+            },
+            {
+              "section": "Handle_FinalList",
+              "left": 415
+            },
+            {
+              "section": "Text_JJFen",
+              "left": 609,
+              "width": 72
+            },
+            {
+              "section": "Text_Result",
+              "left": 721,
+              "width": 84
+            }
           ],
           "appends": [
-            { "container": "Handle_WarningTime", "text": "将在", "font": 257, "flow": true },
-            { "container": "Handle_WarningTime", "text": "29", "font": 258, "flow": true },
-            { "container": "Handle_WarningTime", "text": "秒后传出战场", "font": 257, "flow": true }
+            {
+              "container": "Handle_WarningTime",
+              "text": "将在",
+              "font": 257,
+              "flow": true
+            },
+            {
+              "container": "Handle_WarningTime",
+              "text": "29",
+              "font": 258,
+              "flow": true
+            },
+            {
+              "container": "Handle_WarningTime",
+              "text": "秒后传出战场",
+              "font": 257,
+              "flow": true
+            }
           ],
           "backdrop": "#33393E",
           "lists": [
-            { "container": "Handle_FinalList", "ini": "ACC_TreasureFinal.ini", "item": "Handle_Player", "count": 5 }
+            {
+              "container": "Handle_FinalList",
+              "ini": "ACC_TreasureFinal.ini",
+              "item": "Handle_Player",
+              "count": 5
+            }
           ],
           "texts": [
-            { "section": "Text_Rank", "text": "队伍排名：18/20" },
-            { "section": "Text_Time", "text": "已用时间： 12分45秒" },
-            { "section": "__lt_Handle_FinalList_0_Text_PlayerName", "text": "云舟过影" },
-            { "section": "__lt_Handle_FinalList_0_Text_KillNum", "text": "2" },
-            { "section": "__lt_Handle_FinalList_0_Text_Line", "text": "/" },
-            { "section": "__lt_Handle_FinalList_0_Text_XSNum", "text": "4" },
-            { "section": "__lt_Handle_FinalList_0_Text_BestZGNum", "text": "0" },
-            { "section": "__lt_Handle_FinalList_0_Text_HarmNum", "text": "1234.5万" },
-            { "section": "__lt_Handle_FinalList_0_Text_JJFenNum", "text": "12345" },
-            { "section": "__lt_Handle_FinalList_0_Text_ResultNum", "text": "24" },
-            { "section": "__lt_Handle_FinalList_0_Text_AwardNum", "text": "100" },
-            { "section": "__lt_Handle_FinalList_1_Text_PlayerName", "text": "剑影流光" },
-            { "section": "__lt_Handle_FinalList_1_Text_KillNum", "text": "0" },
-            { "section": "__lt_Handle_FinalList_1_Text_Line", "text": "/" },
-            { "section": "__lt_Handle_FinalList_1_Text_XSNum", "text": "3" },
-            { "section": "__lt_Handle_FinalList_1_Text_BestZGNum", "text": "0" },
-            { "section": "__lt_Handle_FinalList_1_Text_HarmNum", "text": "987.6万" },
-            { "section": "__lt_Handle_FinalList_1_Text_JJFenNum", "text": "9876" },
-            { "section": "__lt_Handle_FinalList_1_Text_ResultNum", "text": "24" },
-            { "section": "__lt_Handle_FinalList_1_Text_AwardNum", "text": "100" },
-            { "section": "__lt_Handle_FinalList_2_Text_PlayerName", "text": "清风明月" },
-            { "section": "__lt_Handle_FinalList_2_Text_KillNum", "text": "2" },
-            { "section": "__lt_Handle_FinalList_2_Text_Line", "text": "/" },
-            { "section": "__lt_Handle_FinalList_2_Text_XSNum", "text": "3" },
-            { "section": "__lt_Handle_FinalList_2_Text_BestZGNum", "text": "0" },
-            { "section": "__lt_Handle_FinalList_2_Text_HarmNum", "text": "657.7万" },
-            { "section": "__lt_Handle_FinalList_2_Text_JJFenNum", "text": "6777" },
-            { "section": "__lt_Handle_FinalList_2_Text_ResultNum", "text": "20" },
-            { "section": "__lt_Handle_FinalList_2_Text_AwardNum", "text": "80" },
-            { "section": "__lt_Handle_FinalList_3_Text_PlayerName", "text": "暮色苍茫" },
-            { "section": "__lt_Handle_FinalList_3_Text_KillNum", "text": "0" },
-            { "section": "__lt_Handle_FinalList_3_Text_Line", "text": "/" },
-            { "section": "__lt_Handle_FinalList_3_Text_XSNum", "text": "5" },
-            { "section": "__lt_Handle_FinalList_3_Text_BestZGNum", "text": "0" },
-            { "section": "__lt_Handle_FinalList_3_Text_HarmNum", "text": "555.5万" },
-            { "section": "__lt_Handle_FinalList_3_Text_JJFenNum", "text": "5555" },
-            { "section": "__lt_Handle_FinalList_3_Text_ResultNum", "text": "24" },
-            { "section": "__lt_Handle_FinalList_3_Text_AwardNum", "text": "80" },
-            { "section": "__lt_Handle_FinalList_4_Text_PlayerName", "text": "星河长明" },
-            { "section": "__lt_Handle_FinalList_4_Text_KillNum", "text": "2" },
-            { "section": "__lt_Handle_FinalList_4_Text_Line", "text": "/" },
-            { "section": "__lt_Handle_FinalList_4_Text_XSNum", "text": "5" },
-            { "section": "__lt_Handle_FinalList_4_Text_BestZGNum", "text": "0" },
-            { "section": "__lt_Handle_FinalList_4_Text_HarmNum", "text": "444.4万" },
-            { "section": "__lt_Handle_FinalList_4_Text_JJFenNum", "text": "4444" },
-            { "section": "__lt_Handle_FinalList_4_Text_ResultNum", "text": "24" },
-            { "section": "__lt_Handle_FinalList_4_Text_AwardNum", "text": "60" }
+            {
+              "section": "Text_Rank",
+              "text": "队伍排名：18/20"
+            },
+            {
+              "section": "Text_Time",
+              "text": "已用时间： 12分45秒"
+            },
+            {
+              "section": "__lt_Handle_FinalList_0_Text_PlayerName",
+              "text": "云舟过影"
+            },
+            {
+              "section": "__lt_Handle_FinalList_0_Text_KillNum",
+              "text": "2"
+            },
+            {
+              "section": "__lt_Handle_FinalList_0_Text_Line",
+              "text": "/"
+            },
+            {
+              "section": "__lt_Handle_FinalList_0_Text_XSNum",
+              "text": "4"
+            },
+            {
+              "section": "__lt_Handle_FinalList_0_Text_BestZGNum",
+              "text": "0"
+            },
+            {
+              "section": "__lt_Handle_FinalList_0_Text_HarmNum",
+              "text": "1234.5万"
+            },
+            {
+              "section": "__lt_Handle_FinalList_0_Text_JJFenNum",
+              "text": "12345"
+            },
+            {
+              "section": "__lt_Handle_FinalList_0_Text_ResultNum",
+              "text": "24"
+            },
+            {
+              "section": "__lt_Handle_FinalList_0_Text_AwardNum",
+              "text": "100"
+            },
+            {
+              "section": "__lt_Handle_FinalList_1_Text_PlayerName",
+              "text": "剑影流光"
+            },
+            {
+              "section": "__lt_Handle_FinalList_1_Text_KillNum",
+              "text": "0"
+            },
+            {
+              "section": "__lt_Handle_FinalList_1_Text_Line",
+              "text": "/"
+            },
+            {
+              "section": "__lt_Handle_FinalList_1_Text_XSNum",
+              "text": "3"
+            },
+            {
+              "section": "__lt_Handle_FinalList_1_Text_BestZGNum",
+              "text": "0"
+            },
+            {
+              "section": "__lt_Handle_FinalList_1_Text_HarmNum",
+              "text": "987.6万"
+            },
+            {
+              "section": "__lt_Handle_FinalList_1_Text_JJFenNum",
+              "text": "9876"
+            },
+            {
+              "section": "__lt_Handle_FinalList_1_Text_ResultNum",
+              "text": "24"
+            },
+            {
+              "section": "__lt_Handle_FinalList_1_Text_AwardNum",
+              "text": "100"
+            },
+            {
+              "section": "__lt_Handle_FinalList_2_Text_PlayerName",
+              "text": "清风明月"
+            },
+            {
+              "section": "__lt_Handle_FinalList_2_Text_KillNum",
+              "text": "2"
+            },
+            {
+              "section": "__lt_Handle_FinalList_2_Text_Line",
+              "text": "/"
+            },
+            {
+              "section": "__lt_Handle_FinalList_2_Text_XSNum",
+              "text": "3"
+            },
+            {
+              "section": "__lt_Handle_FinalList_2_Text_BestZGNum",
+              "text": "0"
+            },
+            {
+              "section": "__lt_Handle_FinalList_2_Text_HarmNum",
+              "text": "657.7万"
+            },
+            {
+              "section": "__lt_Handle_FinalList_2_Text_JJFenNum",
+              "text": "6777"
+            },
+            {
+              "section": "__lt_Handle_FinalList_2_Text_ResultNum",
+              "text": "20"
+            },
+            {
+              "section": "__lt_Handle_FinalList_2_Text_AwardNum",
+              "text": "80"
+            },
+            {
+              "section": "__lt_Handle_FinalList_3_Text_PlayerName",
+              "text": "暮色苍茫"
+            },
+            {
+              "section": "__lt_Handle_FinalList_3_Text_KillNum",
+              "text": "0"
+            },
+            {
+              "section": "__lt_Handle_FinalList_3_Text_Line",
+              "text": "/"
+            },
+            {
+              "section": "__lt_Handle_FinalList_3_Text_XSNum",
+              "text": "5"
+            },
+            {
+              "section": "__lt_Handle_FinalList_3_Text_BestZGNum",
+              "text": "0"
+            },
+            {
+              "section": "__lt_Handle_FinalList_3_Text_HarmNum",
+              "text": "555.5万"
+            },
+            {
+              "section": "__lt_Handle_FinalList_3_Text_JJFenNum",
+              "text": "5555"
+            },
+            {
+              "section": "__lt_Handle_FinalList_3_Text_ResultNum",
+              "text": "24"
+            },
+            {
+              "section": "__lt_Handle_FinalList_3_Text_AwardNum",
+              "text": "80"
+            },
+            {
+              "section": "__lt_Handle_FinalList_4_Text_PlayerName",
+              "text": "星河长明"
+            },
+            {
+              "section": "__lt_Handle_FinalList_4_Text_KillNum",
+              "text": "2"
+            },
+            {
+              "section": "__lt_Handle_FinalList_4_Text_Line",
+              "text": "/"
+            },
+            {
+              "section": "__lt_Handle_FinalList_4_Text_XSNum",
+              "text": "5"
+            },
+            {
+              "section": "__lt_Handle_FinalList_4_Text_BestZGNum",
+              "text": "0"
+            },
+            {
+              "section": "__lt_Handle_FinalList_4_Text_HarmNum",
+              "text": "444.4万"
+            },
+            {
+              "section": "__lt_Handle_FinalList_4_Text_JJFenNum",
+              "text": "4444"
+            },
+            {
+              "section": "__lt_Handle_FinalList_4_Text_ResultNum",
+              "text": "24"
+            },
+            {
+              "section": "__lt_Handle_FinalList_4_Text_AwardNum",
+              "text": "60"
+            }
           ],
           "summary": "寻宝（绝境）最终结算 (1920x700, module ACC_TreasureFinal, script ui/Config/Default/BattleField/ACC_TreasureFinal.lua). The title band (Handle_Title) shows the team rank (Text_Rank = FormatString(STR_TREASURE_RANK, nRank, nTotal), badge art Image_Title/Image_TitleBg1 from Table_GetTreasureInfoTitle and the big digits Handle_Rank Image_Num1/Num2/Image_Ming), rank 1-3 also play Handle_SFX SFX_Copper/Silver/Gold. The my-team rows clone Handle_Player inside Handle_FinalList (Update: rows = GetMyTeamMemberData(nTeamID) sorted by field 12; TemplateGetRowData maps Name->Text_PlayerName, DECAPITATE_COUNT->Text_KillNum, KILL_COUNT->Text_XSNum, BEST_ASSIST_KILL_COUNT->Text_BestZGNum, HARM_OUTPUT->Text_HarmNum, SPECIAL_OP_3->Text_JJFenNum, SPECIAL_OP_6->Text_ResultNum; per-row AWARD_1/2/3 in Handle_Reward -> Image_AwardIcon frames on ui/Image/UITga/DesertStorm.UITex + Text_AwardNum). Handle_Fail/Handle_Win carry the ZS ribbon state art, the header labels live in Handle_Titile (STR_FBLIST_DUIYUANMINGZI/STR_TIPS7/STR_BF_KILL1/STR_BF_ZJZG/STR_BF_DAMAGE/STR_SHOW/STR_SHOW2/STR_GETCITY_JIANGLI), Text_Time = STR_BATTLEFIELD_TIME_USED, Text_WarningTime = STR_NEW_BANISH_1..2 banishing countdown, Btn_Leave -> LeaveALLBattleField (Text_Leave = STR_UISET_BFCENCEL), Btn_Export -> ExportData (Text_Export = STR_FACELIST_DAOCHUMIANJU, STR_CONTENST_INFO_EXPORT_SUCCESS), Wnd_PersonCard opens the clicked member's PersonalCard. Sample rows are placeholders in the window's real formats: Text_Line = '/' so Text_KillNum+Line+XSNum read as the 击/助 pair, Text_BestZGNum = 最佳助攻, Text_HarmNum is 万-formatted, Text_JJFenNum = 本场表现分, Text_ResultNum = 个人评分结算; the rank badge keeps the INI's authored digits (第18名) and Text_Rank carries the matching 队伍排名 text. The PVPUI12 chrome (LockShowAndHide=1) stays off. The window ships no opaque background: its only backdrop art is the semi-transparent veil Image_Bg1 (PVPShowFinal1 frame 11, ImageType=12, ~23% alpha) plus the row bands, composed over the live game world on the client, so the viewer renders it over a neutral tone (`backdrop` #33393E) instead of black; with the personal-card column out of scope the table block is centered on the window (Handle_Titile 403, Handle_FinalList 415). Verified against the capture (downscaled 1/1.73 to design px): button labels follow the engine's WndButton NormalFont, not the child Text scheme (Btn_Leave scheme 3 = 16px white, Btn_Export scheme 18 = 15px white - the authored Text_Leave 28/Text_Export 27 are copy-paste leftovers; 25% of shipped buttons differ), the banishing countdown is the runtime AppendItemFromString sequence in Handle_WarningTime (将在 f257 / seconds f258 yellow2 / 秒后传出战场 f257, viewer `appends` with flow), and the 击/助 pair packs tight because Text_Line is AutoSize=1 PosType=9 (the viewer now measures AutoSize text instead of using the authored box). 导出数据 is hidden per the user's call (the capture shows it, but the viewer drops it: hide Btn_Export). The window is a full-screen overlay centred on the screen (the editor parks the root at (screen-window)/2), so the viewer renders it inside a 1920x1080 screen frame (`screenWidth`/`screenHeight`) with the window centred on the neutral backdrop - the veil reads as the in-game band instead of filling the render.",
           "evidence": [
@@ -2014,11 +3311,20 @@
           "root": "ui",
           "path": "Config/Default/ExitPanel.ini",
           "texts": [
-            { "section": "Text_ExitGame", "text": "你确定要退出游戏吗？" }
+            {
+              "section": "Text_ExitGame",
+              "text": "你确定要退出游戏吗？"
+            }
           ],
           "adjust": [
-            { "section": "Text_ExitGame", "hAlign": 1 },
-            { "section": "Image_Warning", "left": 124 }
+            {
+              "section": "Text_ExitGame",
+              "hAlign": 1
+            },
+            {
+              "section": "Image_Warning",
+              "left": 124
+            }
           ],
           "summary": "Client exit / return confirm dialog (420x108, anchored TOPCENTER,TOPCENTER,0,360 below the screen top; ShowModeID 27,26,24,22,12,36). OpenExitPanel(szReason) sets Text_ExitGame from g_tStrings: close -> EXIT_QUIT 你确定要退出游戏吗？, loginclose -> EXIT_LOGIN_QUIT 你确定要退出游戏吗？, returntologin -> EXIT_RETURN_LOGIN 你确定要返回到登录吗？, returntorole -> EXIT_RETURN_CHOOSE 你确定要返回到角色选择吗？ (ExitPanel.lua). Btn_Sure (确定, STR_SURE) exits the game / ReInitUI by the reason, Btn_Cancel (取消, STR_CANCEL) plus Esc/Enter close it. Image_Back is a runtime full-screen dimmer: UpdateBgImageSize sizes it to Station.GetClientSize() and pins it to the window origin; it stays hidden in the static render (screen context, like the world backdrop). The warning icon and the glass PanelBg/PanelBg18 ornaments come from UItimate. The shipped Text_ExitGame leaves HAlign at the left default although its 241-wide box is glued to the icon (76..348, group centred on the 420 dialog) and no shipped reason fills it, so the viewer centres the message in its box (`adjust hAlign=1`) and moves the icon to the message's left edge (Image_Warning left=124, the authored 76 assumed a full-width message); re-open when a capture of the live dialog is available.",
           "evidence": [
@@ -2231,19 +3537,6 @@
           "summary": "MindControlActionBar (ui/Config/Default/MindControlActionBar.ini, 6 sections; root WndFrame 774x48 @550,500 under Lowest). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/MindControlActionBar.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "plactionbar",
-          "title": "PLActionBar",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/PLActionBar.ini",
-          "backdrop": "#33393E",
-          "summary": "PLActionBar (ui/Config/Default/PLActionBar.ini, 26 sections; root WndFrame 409x53 @500,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: HUD) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/PLActionBar.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -2711,20 +4004,6 @@
           ]
         },
         {
-          "id": "craftreadcomparepanel",
-          "title": "CraftReadComparePanel",
-          "cn": "阅读",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/CraftReadComparePanel.ini",
-          "backdrop": "#33393E",
-          "summary": "CraftReadComparePanel (ui/Config/Default/CraftReadComparePanel.ini, 85 sections; root WndFrame 600x524 @100,100 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: character/bag/skill) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/CraftReadComparePanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "craftreaderpanel",
           "title": "CraftReaderPanel",
           "status": "PARTIAL",
@@ -3067,20 +4346,6 @@
           "summary": "GoldTeamPrice (ui/Config/Default/GoldTeamPrice.ini, 109 sections; root WndFrame 376x318 @200,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: social/team/guild) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/GoldTeamPrice.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "goldteamsetsubsidy",
-          "title": "GoldTeamSetSubsidy",
-          "cn": "设置补贴",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/GoldTeamSetSubsidy.ini",
-          "backdrop": "#33393E",
-          "summary": "GoldTeamSetSubsidy (ui/Config/Default/GoldTeamSetSubsidy.ini, 28 sections; root WndFrame 296x188 @200,200 under Normal1). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: social/team/guild) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/GoldTeamSetSubsidy.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -3478,19 +4743,6 @@
           "summary": "WantedPanel (ui/Config/Default/WantedPanel.ini, 283 sections; root WndFrame 766x501 @50,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: mail/auction/bank) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/WantedPanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "reputationpanel",
-          "title": "ReputationPanel",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/ReputationPanel.ini",
-          "backdrop": "#33393E",
-          "summary": "ReputationPanel (ui/Config/Default/ReputationPanel.ini, 261 sections; root WndFrame 1118x648 @28,20 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: panels: social/team/guild) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/ReputationPanel.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         }
@@ -5578,20 +6830,6 @@
           ]
         },
         {
-          "id": "craftintroduce",
-          "title": "CraftIntroduce",
-          "cn": "战阶",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/CraftIntroduce.ini",
-          "backdrop": "#33393E",
-          "summary": "CraftIntroduce (ui/Config/Default/CraftIntroduce.ini, 57 sections; root WndFrame 859x558 @500,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/CraftIntroduce.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "craftstuffpanel",
           "title": "CraftStuffPanel",
           "cn": "所缺材料",
@@ -7340,20 +8578,6 @@
           ]
         },
         {
-          "id": "fieldpqpanel",
-          "title": "FieldPQPanel",
-          "cn": "排名",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/FieldPQPanel.ini",
-          "backdrop": "#33393E",
-          "summary": "FieldPQPanel (ui/Config/Default/FieldPQPanel.ini, 25 sections; root WndFrame 290x260 @170,300 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/FieldPQPanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "fightprogress",
           "title": "FightProgress",
           "status": "PARTIAL",
@@ -7522,20 +8746,6 @@
           "summary": "FlowerPanel (ui/Config/Default/FlowerPanel.ini, 83 sections; root WndFrame 610x256 @500,300 under Normal1). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/FlowerPanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "friendback",
-          "title": "FriendBack",
-          "cn": "奖励介绍",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/FriendBack.ini",
-          "backdrop": "#33393E",
-          "summary": "FriendBack (ui/Config/Default/FriendBack.ini, 46 sections; root WndFrame 660x385 @539,62 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/FriendBack.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -9055,19 +10265,6 @@
           ]
         },
         {
-          "id": "irrigatepanel",
-          "title": "IrrigatePanel",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/IrrigatePanel.ini",
-          "backdrop": "#33393E",
-          "summary": "IrrigatePanel (ui/Config/Default/IrrigatePanel.ini, 24 sections; root WndFrame 400x200 @100,300 under Topmost). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/IrrigatePanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "itembox",
           "title": "ItemBox",
           "cn": "人物属性",
@@ -9602,20 +10799,6 @@
           ]
         },
         {
-          "id": "middlemapsimple",
-          "title": "MiddleMapSimple",
-          "cn": "常规任务",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/MiddleMapSimple.ini",
-          "backdrop": "#33393E",
-          "summary": "MiddleMapSimple (ui/Config/Default/MiddleMapSimple.ini, 69 sections; root WndFrame 1000x850 @220,100 under Normal1). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/MiddleMapSimple.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "minimizeeffect",
           "title": "MinimizeEffect",
           "status": "PARTIAL",
@@ -10139,20 +11322,6 @@
           "summary": "NewJYPlayReward (ui/Config/Default/NewJYPlayReward.ini, 35 sections; root WndFrame 458x187 @0,0 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/NewJYPlayReward.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "newoperationactivity",
-          "title": "NewOperationActivity",
-          "cn": "花萼楼",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/NewOperationActivity.ini",
-          "backdrop": "#33393E",
-          "summary": "NewOperationActivity (ui/Config/Default/NewOperationActivity.ini, 58 sections; root WndFrame 1221x686 @348,106 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/NewOperationActivity.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -11127,20 +12296,6 @@
           "summary": "PerformanceCollect (ui/Config/Default/PerformanceCollect.ini, 26 sections; root WndFrame 248x147 @0,0 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/PerformanceCollect.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "photoshop",
-          "title": "PhotoShop",
-          "cn": "图片编辑",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/PhotoShop.ini",
-          "backdrop": "#33393E",
-          "summary": "PhotoShop (ui/Config/Default/PhotoShop.ini, 97 sections; root WndFrame 1290x920 @0,0 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/PhotoShop.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -12213,20 +13368,6 @@
           ]
         },
         {
-          "id": "selfie",
-          "title": "Selfie",
-          "cn": "基本规则",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/Selfie.ini",
-          "backdrop": "#33393E",
-          "summary": "Selfie (ui/Config/Default/Selfie.ini, 1242 sections; root WndFrame 1290x970 @0,0 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/Selfie.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "selfieemotion",
           "title": "SelfieEmotion",
           "cn": "表情动作",
@@ -12937,19 +14078,6 @@
           ]
         },
         {
-          "id": "skilltippanel",
-          "title": "SkillTipPanel",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/SkillTipPanel.ini",
-          "backdrop": "#33393E",
-          "summary": "SkillTipPanel (ui/Config/Default/SkillTipPanel.ini, 19 sections; root WndFrame 230x105 @500,730 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/SkillTipPanel.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "smallbagpanel",
           "title": "SmallBagPanel",
           "cn": "全部宠物",
@@ -12964,20 +14092,6 @@
           ]
         },
         {
-          "id": "smallcalender",
-          "title": "SmallCalender",
-          "cn": "抽奖日历",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/SmallCalender.ini",
-          "backdrop": "#33393E",
-          "summary": "SmallCalender (ui/Config/Default/SmallCalender.ini, 32 sections; root WndFrame 1030x548 @733,200 under Topmost). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/SmallCalender.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "speedeffect",
           "title": "SpeedEffect",
           "status": "PARTIAL",
@@ -12987,20 +14101,6 @@
           "summary": "SpeedEffect (ui/Config/Default/SpeedEffect.ini, 5 sections; root WndFrame 0x0 @0,0 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/SpeedEffect.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "speedrankpanel",
-          "title": "SpeedRankPanel",
-          "cn": "竞速排行",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/SpeedRankPanel.ini",
-          "backdrop": "#33393E",
-          "summary": "SpeedRankPanel (ui/Config/Default/SpeedRankPanel.ini, 120 sections; root WndFrame 773x499 @170,124 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/SpeedRankPanel.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -13846,20 +14946,6 @@
           ]
         },
         {
-          "id": "videosettingdetails",
-          "title": "VideoSettingDetails",
-          "cn": "坐骑同模",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/VideoSettingDetails.ini",
-          "backdrop": "#33393E",
-          "summary": "VideoSettingDetails (ui/Config/Default/VideoSettingDetails.ini, 414 sections; root WndFrame 360x884 @1294,0 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/VideoSettingDetails.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "vkactionbar",
           "title": "VkActionBar",
           "status": "PARTIAL",
@@ -14161,20 +15247,6 @@
           "summary": "WoodCardSFX (ui/Config/Default/WoodCardSFX.ini, 12 sections; root WndFrame 500x500 @0,0 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/WoodCardSFX.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "wulinshenghuiduizhen",
-          "title": "WulinShenghuiDuizhen",
-          "cn": "十六强英雄榜",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/WulinShenghuiDuizhen.ini",
-          "backdrop": "#33393E",
-          "summary": "WulinShenghuiDuizhen (ui/Config/Default/WulinShenghuiDuizhen.ini, 225 sections; root WndFrame 836x512 @486,130 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: other panels/dialogs) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/WulinShenghuiDuizhen.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -14922,19 +15994,6 @@
           ]
         },
         {
-          "id": "battlemappay",
-          "title": "BattleMapPay",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/BattleMapPay.ini",
-          "backdrop": "#33393E",
-          "summary": "BattleMapPay (ui/Config/Default/BattleMapPay.ini, 28 sections; root WndFrame 400x179 @200,400 under Normal1). Authored-state render (INI only - no Lua replay, no GT capture yet; group: modes/entry) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/BattleMapPay.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "battlepass",
           "title": "BattlePass",
           "cn": "霓裳锦囊",
@@ -15105,19 +16164,6 @@
           "summary": "DaoZongInjuryRecord (ui/Config/Default/DaoZongInjuryRecord.ini, 19 sections; root WndFrame 281x50 @900,300 under Lowest1). Authored-state render (INI only - no Lua replay, no GT capture yet; group: modes/entry) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/DaoZongInjuryRecord.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "debug",
-          "title": "Debug",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/Debug.ini",
-          "backdrop": "#33393E",
-          "summary": "Debug (ui/Config/Default/Debug.ini, 3 sections; root WndFrame 640x480 @400,0 under Topmost). Authored-state render (INI only - no Lua replay, no GT capture yet; group: modes/entry) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/Debug.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -15366,19 +16412,6 @@
           ]
         },
         {
-          "id": "homelandinvitation",
-          "title": "HomelandInvitation",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/HomelandInvitation.ini",
-          "backdrop": "#33393E",
-          "summary": "HomelandInvitation (ui/Config/Default/HomelandInvitation.ini, 48 sections; root WndFrame 844x310 @764,238 under Normal1). Authored-state render (INI only - no Lua replay, no GT capture yet; group: modes/entry) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/HomelandInvitation.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "homelandlocker",
           "title": "HomelandLocker",
           "cn": "家园储物箱",
@@ -15509,19 +16542,6 @@
           "summary": "HomelandUnlockArea (ui/Config/Default/HomelandUnlockArea.ini, 62 sections; root WndFrame 300x500 @400,200 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: modes/entry) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/HomelandUnlockArea.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "internetexplorer",
-          "title": "InternetExplorer",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/InternetExplorer.ini",
-          "backdrop": "#33393E",
-          "summary": "InternetExplorer (ui/Config/Default/InternetExplorer.ini, 39 sections; root WndFrame 1065x735 @100,100 under Topmost). Authored-state render (INI only - no Lua replay, no GT capture yet; group: modes/entry) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/InternetExplorer.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -15953,19 +16973,6 @@
           "summary": "LuckyMeetingGet (ui/Config/Default/LuckyMeetingGet.ini, 14 sections; root WndFrame 302x130 @220,330 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: modes/entry) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
             "ui/Config/Default/LuckyMeetingGet.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
-          "id": "luckymeetinginfo",
-          "title": "LuckyMeetingInfo",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/LuckyMeetingInfo.ini",
-          "backdrop": "#33393E",
-          "summary": "LuckyMeetingInfo (ui/Config/Default/LuckyMeetingInfo.ini, 7 sections; root WndFrame 500x522 @740,182 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: modes/entry) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/LuckyMeetingInfo.ini",
             "docs/ui/BASIC_UI_INVENTORY.md"
           ]
         },
@@ -16870,20 +17877,6 @@
           ]
         },
         {
-          "id": "singlefstatistic",
-          "title": "SingleFStatistic",
-          "cn": "祁非",
-          "status": "PARTIAL",
-          "root": "ui",
-          "path": "Config/Default/SingleFStatistic.ini",
-          "backdrop": "#33393E",
-          "summary": "SingleFStatistic (ui/Config/Default/SingleFStatistic.ini, 43 sections; root WndFrame 440x348 @550,250 under Normal). Authored-state render (INI only - no Lua replay, no GT capture yet; group: modes/entry) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
-          "evidence": [
-            "ui/Config/Default/SingleFStatistic.ini",
-            "docs/ui/BASIC_UI_INVENTORY.md"
-          ]
-        },
-        {
           "id": "sniperpanel",
           "title": "SniperPanel",
           "status": "PARTIAL",
@@ -17022,7 +18015,9 @@
           "status": "PARTIAL",
           "root": "ui",
           "path": "Config/Default/HLBOp_Main.ini",
-          "show": [ "HLBOp_Main" ],
+          "show": [
+            "HLBOp_Main"
+          ],
           "backdrop": "#33393E",
           "summary": "HLBOp_Main (ui/Config/Default/HLBOp_Main.ini, 1 sections; root WndFrame 0x0 @0,0 under Lowest). Script-positioned/shown window (root is 0x0 with LockShowAndHide=1, MousePenetrable=1); the entry shows the root so the authored tree renders. Authored-state render (INI only - no Lua replay, no GT capture yet; group: modes/entry) - scope register docs/ui/BASIC_UI_INVENTORY.md.",
           "evidence": [
@@ -17124,14 +18119,34 @@
           "path": "Config/Default/MapQueue.ini",
           "hide": "Handle_Content,Handle_Content_0",
           "lists": [
-            { "container": "Handle_List", "ini": "MapQueue.ini", "item": "Handle_Content", "count": 1 }
+            {
+              "container": "Handle_List",
+              "ini": "MapQueue.ini",
+              "item": "Handle_Content",
+              "count": 1
+            }
           ],
           "adjust": [
-            { "section": "MapQueue", "height": 112 },
-            { "section": "Handle_List", "height": 48 },
-            { "section": "Handle_Total", "height": 48 },
-            { "section": "Image_Bg", "height": 82 },
-            { "section": "WndCheckBox_AutoSure", "top": 53 }
+            {
+              "section": "MapQueue",
+              "height": 112
+            },
+            {
+              "section": "Handle_List",
+              "height": 48
+            },
+            {
+              "section": "Handle_Total",
+              "height": 48
+            },
+            {
+              "section": "Image_Bg",
+              "height": 82
+            },
+            {
+              "section": "WndCheckBox_AutoSure",
+              "top": 53
+            }
           ],
           "summary": "Per-map queue rows with elapsed time, cancel menu and the auto-enter checkbox; fed by OnSyncMapQueueInfo. Handle_Content/_0 are parked prototypes cloned per queued map by AppendItemFromIni into Handle_List, so the default hides them and injects one authored row. UpdateListSize (MapQueue.decompiled.lua:667-745) resizes the list/bg/checkbox from the row count and then calls Collapse (lua:330-376), which sets the window to 32 + rows*48 + 32 (112 for one row) and shows Wnd_List; the inventory adjust list carries those one-row values.",
           "evidence": [
