@@ -1,0 +1,355 @@
+# JX3ClientX64.exe xrefs for 'RegionInfo'
+# image base 0x140000000
+
+## xref @ 0x1404a0616 -> 0x140876f50 'pRegionInfo'  fn start 0x1404a0560
+  0x1404a0560: push     rbp
+  0x1404a0562: push     r14
+  0x1404a0564: push     r15
+  0x1404a0566: sub      rsp, 0x30
+  0x1404a056a: mov      eax, edx
+  0x1404a056c: mov      r15d, edx
+  0x1404a056f: cdq      
+  0x1404a0570: mov      rbp, rcx
+  0x1404a0573: mov      ecx, dword ptr [rip + 0x5e8bc7]
+  0x1404a0579: and      edx, 0x7ff
+  0x1404a057f: add      eax, edx
+  0x1404a0581: mov      r14d, r8d
+  0x1404a0584: sar      eax, 0xb
+  0x1404a0587: movsxd   r9, eax
+  0x1404a058a: mov      eax, r8d
+  0x1404a058d: cdq      
+  0x1404a058e: and      edx, 0x7ff
+  0x1404a0594: add      eax, edx
+  0x1404a0596: sar      eax, 0xb
+  0x1404a0599: dec      ecx
+  0x1404a059b: cmp      ecx, 1
+  0x1404a059e: jbe      0x1404a05d7
+  0x1404a05a0: lea      rcx, [rip + 0x3d6941]  ; 'KLandIndexConfig::GetLandIndexByXY'
+  0x1404a05a7: mov      r9d, 0x42f
+  0x1404a05ad: mov      qword ptr [rsp + 0x20], rcx
+  0x1404a05b2: lea      r8, [rip + 0x3d6957]  ; 's_eUserType == hut_client || s_eUserType == hut_landserver'
+  0x1404a05b9: mov      ecx, 3
+  0x1404a05be: lea      rdx, [rip + 0x4ae973]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1404a05c5: call     qword ptr [rip + 0x317e7d]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1404a05cb: xor      eax, eax
+  0x1404a05cd: add      rsp, 0x30
+  0x1404a05d1: pop      r15
+  0x1404a05d3: pop      r14
+  0x1404a05d5: pop      rbp
+  0x1404a05d6: ret      
+  0x1404a05d7: cmp      r9d, 0x7f
+  0x1404a05db: ja       0x1404a05cb
+  0x1404a05dd: cmp      eax, 0x7f
+  0x1404a05e0: ja       0x1404a05cb
+  0x1404a05e2: mov      qword ptr [rsp + 0x58], rsi
+  0x1404a05e7: mov      rcx, r9
+  0x1404a05ea: shl      rcx, 7
+  0x1404a05ee: movsxd   rsi, eax
+  0x1404a05f1: add      rsi, 0x8003
+  0x1404a05f8: add      rsi, rcx
+  0x1404a05fb: shl      rsi, 4
+  0x1404a05ff: add      rsi, rbp
+  0x1404a0602: jne      0x1404a063e
+  0x1404a0604: lea      rcx, [rip + 0x3d68dd]  ; 'KLandIndexConfig::GetLandIndexByXY'
+  0x1404a060b: mov      r9d, 0x435
+  0x1404a0611: mov      qword ptr [rsp + 0x20], rcx
+  0x1404a0616: lea      r8, [rip + 0x3d6933]  ; 'pRegionInfo'
+  0x1404a061d: lea      ecx, [rsi + 3]
+  0x1404a0620: lea      rdx, [rip + 0x4ae911]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1404a0627: call     qword ptr [rip + 0x317e1b]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1404a062d: mov      rsi, qword ptr [rsp + 0x58]
+  0x1404a0632: xor      eax, eax
+  0x1404a0634: add      rsp, 0x30
+  0x1404a0638: pop      r15
+  0x1404a063a: pop      r14
+  0x1404a063c: pop      rbp
+  0x1404a063d: ret      
+  0x1404a063e: mov      rax, qword ptr [rsi]
+  0x1404a0641: mov      qword ptr [rsp + 0x50], rbx
+  0x1404a0646: mov      rbx, qword ptr [rax]
+  0x1404a0649: cmp      rbx, rax
+  0x1404a064c: je       0x1404a06f3
+  0x1404a0652: mov      qword ptr [rsp + 0x60], rdi
+  0x1404a0657: nop      word ptr [rax + rax]
+  0x1404a0660: mov      edi, dword ptr [rbx + 0x1c]
+  0x1404a0663: mov      r8d, r14d
+  0x1404a0666: imul     r9d, edi, 0x64
+  0x1404a066a: mov      edx, r15d
+  0x1404a066d: mov      rcx, rbp
+  0x1404a0670: call     0x1404a0f20
+  0x1404a0675: test     eax, eax
+  0x1404a0677: jne      0x1404a06ef
+  0x1404a0679: mov      rax, qword ptr [rbx + 0x10]
+  0x1404a067d: cmp      byte ptr [rax + 0x19], 0
+  0x1404a0681: je       0x1404a06a8
+  0x1404a0683: mov      rax, qword ptr [rbx + 8]
+  0x1404a0687: cmp      byte ptr [rax + 0x19], 0
+  0x1404a068b: jne      0x1404a06a3
+  0x1404a068d: nop      dword ptr [rax]
+  0x1404a0690: cmp      rbx, qword ptr [rax + 0x10]
+  0x1404a0694: jne      0x1404a06a3
+  0x1404a0696: mov      rbx, rax
+  0x1404a0699: mov      rax, qword ptr [rax + 8]
+  0x1404a069d: cmp      byte ptr [rax + 0x19], 0
+  0x1404a06a1: je       0x1404a0690
+  0x1404a06a3: mov      rbx, rax
+  0x1404a06a6: jmp      0x1404a06cf
+  0x1404a06a8: mov      rcx, qword ptr [rax]
+  0x1404a06ab: mov      rbx, rax
+  0x1404a06ae: cmp      byte ptr [rcx + 0x19], 0
+  0x1404a06b2: jne      0x1404a06cf
+  0x1404a06b4: nop      dword ptr [rax]
+  0x1404a06b8: nop      dword ptr [rax + rax]
+  0x1404a06c0: mov      rax, qword ptr [rcx]
+  0x1404a06c3: mov      rbx, rcx
+  0x1404a06c6: mov      rcx, rax
+  0x1404a06c9: cmp      byte ptr [rax + 0x19], 0
+  0x1404a06cd: je       0x1404a06c0
+  0x1404a06cf: cmp      rbx, qword ptr [rsi]
+  0x1404a06d2: jne      0x1404a0660
+  0x1404a06d4: xor      eax, eax
+  0x1404a06d6: mov      rdi, qword ptr [rsp + 0x60]
+  0x1404a06db: mov      rbx, qword ptr [rsp + 0x50]
+  0x1404a06e0: mov      rsi, qword ptr [rsp + 0x58]
+  0x1404a06e5: add      rsp, 0x30
+  0x1404a06e9: pop      r15
+  0x1404a06eb: pop      r14
+  0x1404a06ed: pop      rbp
+  0x1404a06ee: ret      
+  0x1404a06ef: mov      eax, edi
+  0x1404a06f1: jmp      0x1404a06d6
+  0x1404a06f3: xor      eax, eax
+  0x1404a06f5: jmp      0x1404a06db
+  0x1404a06f7: int3     
+  0x1404a06f8: int3     
+  0x1404a06f9: int3     
+  0x1404a06fa: int3     
+  0x1404a06fb: int3     
+  0x1404a06fc: int3     
+  0x1404a06fd: int3     
+  0x1404a06fe: int3     
+  0x1404a06ff: int3     
+  0x1404a0700: mov      dword ptr [rsp + 0x10], edx
+  0x1404a0704: push     rbx
+  0x1404a0705: sub      rsp, 0x30
+  0x1404a0709: mov      rbx, rcx
+  0x1404a070c: call     0x1404a0930
+  0x1404a0711: test     eax, eax
+  0x1404a0713: jne      0x1404a0746
+  0x1404a0715: lea      rcx, [rip + 0x3d68e4]  ; 'KLandIndexConfig::GetLandName'
+  0x1404a071c: mov      r9d, 0x4ee
+  0x1404a0722: mov      qword ptr [rsp + 0x20], rcx
+  0x1404a0727: lea      r8, [rip + 0x3d68f2]  ; 'HaveLand(nRealLandIndex)'
+  0x1404a072e: lea      ecx, [rax + 3]
+  0x1404a0731: lea      rdx, [rip + 0x4ae800]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1404a0738: call     qword ptr [rip + 0x317d0a]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1404a073e: xor      eax, eax
+  0x1404a0740: add      rsp, 0x30
+  0x1404a0744: pop      rbx
+  0x1404a0745: ret      
+  0x1404a0746: lea      rdx, [rsp + 0x48]
+  0x1404a074b: mov      rcx, rbx
+  0x1404a074e: call     0x14049e160
+  0x1404a0753: add      rax, 0x64
+  0x1404a0757: add      rsp, 0x30
+  0x1404a075b: pop      rbx
+  0x1404a075c: ret      
+  0x1404a075d: int3     
+  0x1404a075e: int3     
+  0x1404a075f: int3     
+  0x1404a0760: sub      rsp, 0x38
+  0x1404a0764: mov      r8, qword ptr [rcx + 0x20]
+  0x1404a0768: mov      rcx, r8
+  0x1404a076b: mov      rax, qword ptr [r8 + 8]
+  0x1404a076f: cmp      byte ptr [rax + 0x19], 0
+  0x1404a0773: jne      0x1404a078c
+  0x1404a0775: cmp      dword ptr [rax + 0x1c], edx
+  0x1404a0778: jge      0x1404a0780
+  0x1404a077a: mov      rax, qword ptr [rax + 0x10]
+  0x1404a077e: jmp      0x1404a0786
+  0x1404a0780: mov      rcx, rax
+  0x1404a0783: mov      rax, qword ptr [rax]
+  0x1404a0786: cmp      byte ptr [rax + 0x19], 0
+  0x1404a078a: je       0x1404a0775
+  0x1404a078c: cmp      byte ptr [rcx + 0x19], 0
+  0x1404a0790: jne      0x1404a0797
+  0x1404a0792: cmp      edx, dword ptr [rcx + 0x1c]
+  0x1404a0795: jge      0x1404a079a
+  0x1404a0797: mov      rcx, r8
+  0x1404a079a: cmp      rcx, r8
+  0x1404a079d: jne      0x1404a07d1
+  0x1404a079f: lea      rcx, [rip + 0x3d68ba]  ; 'KLandIndexConfig::GetMaxSubLandIndex'
+  0x1404a07a6: mov      r9d, 0x508
+  0x1404a07ac: mov      qword ptr [rsp + 0x20], rcx
+  0x1404a07b1: lea      r8, [rip + 0x3d68d0]  ; 'itFind != MaxSubLand.end()'
+  0x1404a07b8: mov      ecx, 3
+  0x1404a07bd: lea      rdx, [rip + 0x4ae774]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1404a07c4: call     qword ptr [rip + 0x317c7e]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1404a07ca: xor      eax, eax
+  0x1404a07cc: add      rsp, 0x38
+  0x1404a07d0: ret      
+  0x1404a07d1: mov      eax, dword ptr [rcx + 0x20]
+  0x1404a07d4: add      rsp, 0x38
+  0x1404a07d8: ret      
+  0x1404a07d9: int3     
+  0x1404a07da: int3     
+  0x1404a07db: int3     
+  0x1404a07dc: int3     
+  0x1404a07dd: int3     
+  0x1404a07de: int3     
+  0x1404a07df: int3     
+  0x1404a07e0: mov      rax, qword ptr [rcx + 8]
+  0x1404a07e4: sub      rax, qword ptr [rcx]
+  0x1404a07e7: sar      rax, 2
+  0x1404a07eb: lea      rax, [rax*4 + 4]
+  0x1404a07f3: ret      
+  0x1404a07f4: int3     
+  0x1404a07f5: int3     
+  0x1404a07f6: int3     
+  0x1404a07f7: int3     
+  0x1404a07f8: int3     
+  0x1404a07f9: int3     
+  0x1404a07fa: int3     
+  0x1404a07fb: int3     
+  0x1404a07fc: int3     
+  0x1404a07fd: int3     
+  0x1404a07fe: int3     
+  0x1404a07ff: int3     
+  0x1404a0800: sub      rsp, 0x38
+  0x1404a0804: mov      r8, qword ptr [rcx]
+  0x1404a0807: mov      rcx, r8
+  0x1404a080a: mov      rax, qword ptr [r8 + 8]
+  0x1404a080e: cmp      byte ptr [rax + 0x19], 0
+  0x1404a0812: jne      0x1404a082b
+  0x1404a0814: cmp      dword ptr [rax + 0x1c], edx
+  0x1404a0817: jae      0x1404a081f
+  0x1404a0819: mov      rax, qword ptr [rax + 0x10]
+  0x1404a081d: jmp      0x1404a0825
+  0x1404a081f: mov      rcx, rax
+  0x1404a0822: mov      rax, qword ptr [rax]
+  0x1404a0825: cmp      byte ptr [rax + 0x19], 0
+  0x1404a0829: je       0x1404a0814
+  0x1404a082b: cmp      byte ptr [rcx + 0x19], 0
+  0x1404a082f: jne      0x1404a0836
+  0x1404a0831: cmp      edx, dword ptr [rcx + 0x1c]
+  0x1404a0834: jae      0x1404a0839
+  0x1404a0836: mov      rcx, r8
+  0x1404a0839: cmp      rcx, r8
+  0x1404a083c: jne      0x1404a0870
+  0x1404a083e: lea      rcx, [rip + 0x3d64cb]  ; 'KPrivateHomeSkinConfig::GetSkinInfo'
+  0x1404a0845: mov      r9d, 0x30b
+  0x1404a084b: mov      qword ptr [rsp + 0x20], rcx
+  0x1404a0850: lea      r8, [rip + 0x3d64e1]  ; 'itFind != m_SkinConfig.end()'
+  0x1404a0857: mov      ecx, 3
+  0x1404a085c: lea      rdx, [rip + 0x4ae6d5]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x1404a0863: call     qword ptr [rip + 0x317bdf]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x1404a0869: xor      eax, eax
+  0x1404a086b: add      rsp, 0x38
+  0x1404a086f: ret      
+  0x1404a0870: lea      rax, [rcx + 0x20]
+  0x1404a0874: add      rsp, 0x38
+  0x1404a0878: ret      
+  0x1404a0879: int3     
+  0x1404a087a: int3     
+  0x1404a087b: int3     
+  0x1404a087c: int3     
+  0x1404a087d: int3     
+  0x1404a087e: int3     
+  0x1404a087f: int3     
+  0x1404a0880: mov      word ptr [rsp + 0x18], r8w
+  0x1404a0886: sub      rsp, 0x28
+  0x1404a088a: sub      edx, 1
+  0x1404a088d: je       0x1404a08d6
+  0x1404a088f: cmp      edx, 1
+  0x1404a0892: jne      0x1404a0923
+  0x1404a0898: mov      rcx, qword ptr [rcx + 0x64]
+  0x1404a089c: mov      rax, qword ptr [rcx + 8]
+  0x1404a08a0: cmp      byte ptr [rax + 0x19], 0
+  0x1404a08a4: jne      0x1404a08bf
+  0x1404a08a6: cmp      word ptr [rax + 0x20], r8w
+  0x1404a08ab: jae      0x1404a08b3
+  0x1404a08ad: mov      rax, qword ptr [rax + 0x10]
+  0x1404a08b1: jmp      0x1404a08b9
+  0x1404a08b3: mov      rcx, rax
+  0x1404a08b6: mov      rax, qword ptr [rax]
+  0x1404a08b9: cmp      byte ptr [rax + 0x19], 0
+  0x1404a08bd: je       0x1404a08a6
+  0x1404a08bf: cmp      byte ptr [rcx + 0x19], 0
+  0x1404a08c3: jne      0x1404a0923
+  0x1404a08c5: cmp      r8w, word ptr [rcx + 0x20]
+  0x1404a08ca: jb       0x1404a0923
+  0x1404a08cc: mov      eax, 1
+  0x1404a08d1: add      rsp, 0x28
+  0x1404a08d5: ret      
+  0x1404a08d6: lea      r9, [rcx + 0x54]
+  0x1404a08da: mov      rcx, qword ptr [rcx + 0x54]
+  0x1404a08de: mov      rax, qword ptr [rcx + 8]
+  0x1404a08e2: cmp      byte ptr [rax + 0x19], 0
+  0x1404a08e6: jne      0x1404a0901
+  0x1404a08e8: cmp      word ptr [rax + 0x1a], r8w
+  0x1404a08ed: jae      0x1404a08f5
+  0x1404a08ef: mov      rax, qword ptr [rax + 0x10]
+  0x1404a08f3: jmp      0x1404a08fb
+  0x1404a08f5: mov      rcx, rax
+  0x1404a08f8: mov      rax, qword ptr [rax]
+  0x1404a08fb: cmp      byte ptr [rax + 0x19], 0
+  0x1404a08ff: je       0x1404a08e8
+  0x1404a0901: cmp      byte ptr [rcx + 0x19], 0
+  0x1404a0905: jne      0x1404a0923
+  0x1404a0907: cmp      r8w, word ptr [rcx + 0x1a]
+  0x1404a090c: jb       0x1404a0923
+  0x1404a090e: lea      rdx, [rsp + 0x40]
+  0x1404a0913: mov      rcx, r9
+  0x1404a0916: call     0x14047ed10
+  0x1404a091b: movsx    eax, word ptr [rax]
+  0x1404a091e: add      rsp, 0x28
+  0x1404a0922: ret      
+  0x1404a0923: xor      eax, eax
+  0x1404a0925: add      rsp, 0x28
+  0x1404a0929: ret      
+  0x1404a092a: int3     
+  0x1404a092b: int3     
+  0x1404a092c: int3     
+  0x1404a092d: int3     
+  0x1404a092e: int3     
+  0x1404a092f: int3     
+  0x1404a0930: mov      r8, qword ptr [rcx]
+  0x1404a0933: mov      rax, qword ptr [r8 + 8]
+  0x1404a0937: cmp      byte ptr [rax + 0x19], 0
+  0x1404a093b: jne      0x1404a0957
+  0x1404a093d: nop      dword ptr [rax]
+  0x1404a0940: cmp      dword ptr [rax + 0x20], edx
+  0x1404a0943: jge      0x1404a094b
+  0x1404a0945: mov      rax, qword ptr [rax + 0x10]
+  0x1404a0949: jmp      0x1404a0951
+  0x1404a094b: mov      r8, rax
+  0x1404a094e: mov      rax, qword ptr [rax]
+  0x1404a0951: cmp      byte ptr [rax + 0x19], 0
+  0x1404a0955: je       0x1404a0940
+  0x1404a0957: cmp      byte ptr [r8 + 0x19], 0
+  0x1404a095c: jne      0x1404a096a
+  0x1404a095e: cmp      edx, dword ptr [r8 + 0x20]
+  0x1404a0962: jl       0x1404a096a
+  0x1404a0964: mov      eax, 1
+  0x1404a0969: ret      
+  0x1404a096a: xor      eax, eax
+  0x1404a096c: ret      
+  0x1404a096d: int3     
+  0x1404a096e: int3     
+  0x1404a096f: int3     
+  0x1404a0970: mov      qword ptr [rsp + 0x10], rbx
+  0x1404a0975: mov      qword ptr [rsp + 0x18], rsi
+  0x1404a097a: mov      qword ptr [rsp + 0x20], rdi
+  0x1404a097f: push     rbp
+  0x1404a0980: push     r12
+  0x1404a0982: push     r13
+  0x1404a0984: push     r14
+  0x1404a0986: push     r15
+  0x1404a0988: mov      rbp, rsp
+  0x1404a098b: sub      rsp, 0x70
+  0x1404a098f: mov      r13, rcx
+  0x1404a0992: xor      esi, esi
+  0x1404a0994: mov      rax, qword ptr [rcx + 0x44]
+  0x1404a0998: .byte    0x48
+  0x1404a0999: .byte    0x8b
+
