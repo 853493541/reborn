@@ -376,7 +376,7 @@ def apply_tani_anim(steps: list, matched: str, tanis: list) -> list:
             if t.lower() == stem + ".tani":
                 tani = t
                 break
-    if not tani:
+    if not tani or tani_blacklisted(tani):
         return steps
     out = []
     tagged = tani in TANI_TAGS_CACHE
@@ -395,6 +395,19 @@ def apply_tani_anim(steps: list, matched: str, tanis: list) -> list:
     return out
 
 
+# tanis whose playback AVs the engine (FrameMove) - keep the base .ani + PSS.
+# 2026-10-06: F1stm09机关攻击03七煞毒.tani (天绝地灭) crashed with
+# System.AccessViolationException in KGEngineCLR.FrameMove (repro log
+# Skill_20261006_213454.log). Re-open when the tag-system AV cause is found.
+TANI_BLACKLIST = {
+    "f1stm09机关攻击03七煞毒.tani",
+}
+
+
+def tani_blacklisted(path: str) -> bool:
+    return os.path.basename(str(path).replace("/", "\\")).lower() in TANI_BLACKLIST
+
+
 # tanis known to embed .Sfx tags (ability_picker/data/sfx_tags.json keys ->
 # matched tanis; used to decide whether the PSS stand-in can be dropped)
 TANI_TAGS_CACHE = set()
@@ -403,8 +416,9 @@ TANI_TAGS_CACHE = set()
 def refresh_tani_tags_cache(all_entries: list) -> None:
     TANI_TAGS_CACHE.clear()
     for e in all_entries:
-        if e.get("name") in SFX_TAGS and e.get("matched"):
-            TANI_TAGS_CACHE.add(e["matched"])
+        m = e.get("matched") or ""
+        if e.get("name") in SFX_TAGS and m and not tani_blacklisted(m):
+            TANI_TAGS_CACHE.add(m)
 
 
 def apply_sfx_tags(steps: list, name: str) -> list:

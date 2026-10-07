@@ -2200,7 +2200,9 @@ internal static class RebornClient
             {
                 long cyc = 0;
                 long.TryParse(Env("RC_CAST_CYCLE", "0"), out cyc);
-                if (cyc > 0 && taniAbilityNames.Count > 0)
+                // gentle mode: the next cast waits for the previous to finish
+                // (rapid tani switching AVs the engine - see EXPERIENCES)
+                if (cyc > 0 && taniAbilityNames.Count > 0 && !castActive)
                 {
                     if (castCycleNext == 0) castCycleNext = now + cyc;
                     if (now >= castCycleNext)
@@ -2279,6 +2281,12 @@ internal static class RebornClient
                     skillUntil = now + animMs + 40;
                     curClip = null;
                     castActive = true; castStart = now; castUntil = now + pssMs + 120;
+                    // RC_CAST_CAP=<ms>: cap the cast duration (sweep runs)
+                    {
+                        long cap = 0;
+                        long.TryParse(Env("RC_CAST_CAP", "0"), out cap);
+                        if (cap > 0 && castUntil > now + cap) castUntil = now + cap;
+                    }
                     castIdx = 0; castPss = false; castPssPath = "";
                     lastCastX = 1e9f; lastCastZ = 1e9f;
                     castCooldownUntil = now + castCooldownMs;

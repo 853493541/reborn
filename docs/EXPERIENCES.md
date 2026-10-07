@@ -4993,3 +4993,21 @@ if the cache/host frames appear.
   tani-playing abilities verified rendering.
 - Note: cast duration = the process PSS durMs when a dummy exists (up to 25 s),
   so a full 79 sweep takes ~15-20 min with cycle=4000.
+
+### 2026-10-06 — v5 — tani playback: engine AV on sequential casts + 天绝地灭 blacklist
+
+- 天绝地灭's tani (F1stm09机关攻击03七煞毒.tani) AVs the engine
+  (System.AccessViolationException in KGEngineCLR.FrameMove, repro
+  Skill_20261006_213454.log) -> TANI_BLACKLIST in the builder (base .ani kept;
+  re-open when the tag-system AV cause is found).
+- Sequential-tani sweep (RC_CAST_CYCLE, gentle: next cast waits for the previous
+  to finish): 8-9 different tanis play fine, then the engine AVs at the 9th
+  (two runs, same point) - the tag manager accumulates state across different
+  tani playbacks. Manual paced casting (one ability) is unaffected. Documented
+  as an engine limitation; mitigation = restart after heavy casting.
+- Full tables extracted from the client paks (PakV4SfxExtract resolves
+  Represent\\... paths): skill_tag 812 rows / skill_dash 77 / skill_chain 682 /
+  player_animation_f1 21975 - the cache copies are complete (no gap). Chain
+  audit: 38 dataset names have a skill_tag->f1 row; 30 already match the
+  dataset, 8 differ (multi-school name collisions - curated dig picks win).
+- App: RC_CAST_CAP (cast duration cap for sweeps).

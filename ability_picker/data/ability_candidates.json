@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-06T21:10:43",
+ "generatedAt": "2026-10-06T21:42:32",
  "cache": "C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd\\SeasunDownloaderV2.4\\jx3-web-map-viewer\\cache-extraction\\pakv4-probe\\ability-matcher\\ability-tani-sound-cache.json",
  "count": 383,
  "withTanis": 307,
@@ -837,9 +837,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1stm09机关攻击03七煞毒.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1stm09机关攻击03.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
     },
     {
      "t": 0,
