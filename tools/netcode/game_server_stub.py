@@ -91,6 +91,17 @@ def id5_frame(role_id, sub=0, dtype=0, data=None):
     return bytes(p)
 
 
+def id3_frame(ts=None):
+    """S2C id 3 (11 B fixed) - used as the benign keepalive when testing whether the
+    synthetic id-5 (OnSyncQuestData) payloads are what crash the client."""
+    if ts is None:
+        ts = int(time.time() * 1000) & 0xFFFFFFFF
+    p = bytearray(11)
+    struct.pack_into("<H", p, 0, 3)
+    struct.pack_into("<I", p, 7, ts)
+    return bytes(p)
+
+
 def handshake_respond(server_name=b"127.0.0.1", timeout=30, recover=1, flag2=1, success=1):
     """S2C id 0x2FF, min size 71 (0x47). Handler 0x140143A30 (OnHandShakeRespond):
     reads dwords at +7/+0xB/+0xF/+0x13, copies 32B ServerName from +0x17 to
@@ -160,8 +171,14 @@ def handle(conn, addr):
                     # GAME_KEEPALIVE=0 disables it (test whether the id-5 payload is what jams
                     # the client's packet pump / logging loop).
                     if os.environ.get("GAME_KEEPALIVE", "1") == "1":
-                        conn.sendall(sess.encrypt(id5_frame(ROLE_ID)))
-                        w("[%s] SYNC keepalive id=5" % time.strftime("%H:%M:%S"))
+                        # id-5 (OnSyncQuestData) synthetic payloads are the crash suspect ->
+                        # keepalive = benign id 3 unless GAME_KEEPALIVE_ID5=1.
+                        if os.environ.get("GAME_KEEPALIVE_ID5", "0") == "1":
+                            conn.sendall(sess.encrypt(id5_frame(ROLE_ID)))
+                            w("[%s] SYNC keepalive id=5" % time.strftime("%H:%M:%S"))
+                        else:
+                            conn.sendall(sess.encrypt(id3_frame()))
+                            w("[%s] SYNC keepalive id=3" % time.strftime("%H:%M:%S"))
                     next_t = now + 6.0
             if bind_left[0] > 0 and now >= next_bind_t[0]:
                 p188 = bytearray(7)
@@ -211,7 +228,7 @@ def handle(conn, addr):
                         w("[%s] SYNC armed (id4 -> await confirm -> id5 keepalive)" % time.strftime("%H:%M:%S"))
                 elif proto == 5 and os.environ.get("GAME_SYNC", "1") == "1":
                     confirmed[0] = True
-                    if os.environ.get("GAME_CONFIRM_REPLY", "1") == "1":
+                    if os.environ.get("GAME_CONFIRM_REPLY", "0") == "1":
                         time.sleep(0.2)
                         resp = id5_frame(ROLE_ID)
                         conn.sendall(sess.encrypt(resp))

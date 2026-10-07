@@ -2724,3 +2724,11 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   the crash XML (exception, stack, modules) survives the reporter's cleanup. Next: catch the
   next crash XML, read the stack, fix the trigger; stub switch `GAME_CONFIRM_REPLY=0` added to
   test the id-5-reply suspect.
+- All client deaths share the crash exit code **0xCFFFFFFF** (26 s / 91 s / 219 s / 890 s runs) —
+  they are crashes, not watchdogs. The synthetic **id-5 OnSyncQuestData frames** (keepalive every
+  6 s + the post-confirm reply) were the only self-built payloads in the stream -> suspect.
+- **Fix test in flight**: stub now uses a benign **id-3** keepalive (`id3_frame`, GAME_KEEPALIVE_ID5=1
+  restores id-5) and the confirm reply defaults off (`GAME_CONFIRM_REPLY=0`). First no-id5 run:
+  the client survived 5+ min (vs 26-91 s early crashes) at state 7 with the bind done, entering
+  the long map load. If it clears the loading completion without crashing, the id-5 payload is
+  the confirmed crash trigger and must be built to the client's real OnSyncQuestData layout.
