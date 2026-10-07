@@ -4781,3 +4781,19 @@ if the cache/host frames appear.
   length (RC_CHAIN_SEG), suspend hover. No managed water query exists; the
   physics terrain loader carries no water layer.
 - Outcome: W6 swim/轻功 implemented and verified; fly/suspend is harness-only.
+
+### 2026-10-06 - 3x-states W6 follow-up: state-0x1F float law decoded + implemented
+
+- Did: replaced the invented hover with the client's own float branch
+  (`KCharacter::ProcessVerticalMove` @0x31913C, state 0x1F): descend under gravity
+  until `y <= terrain_cell_top + 0x100` (256 u), then hold `vz=0` at the floor.
+  `FlyTo` @0x310B70 / `EndFlyJump` @0x310960 decoded as pure transitions (0x1F/0x20
+  valid; EndFlyJump requires 0x21 and returns to state 4 - no velocity writes), so
+  the vertical law lives in the integrator, not those functions.
+- Verify: `proof/character/3x_states/run_20261006_210340.txt` -
+  `fly: float floor y=1218 (terrain+0x100, PVM 0x31913C state 0x1F)` (ground 962 +
+  256), then `chain: end seg=3 end=60,90,11`, then `EndFlyJump state=0x21 -> 4`.
+  Gates green (build 0, smoke ALL PASS, collision 36/36).
+- Outcome: fly/suspend entry still a harness (skill/script trigger), but the float
+  vertical law is now the client's own; 0x20 fly / 0x21 fly-jump verticals remain
+  open (EndFlyJump is a transition only).

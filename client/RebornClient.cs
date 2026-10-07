@@ -2127,7 +2127,7 @@ internal static class RebornClient
         bool chainLog = Env("RC_CHAIN_LOG", "0") == "1";
         bool swimLog = Env("RC_SWIM_LOG", "0") == "1";
         bool suspendDemo = Env("RC_SUSPEND_DEMO", "0") == "1";
-        bool suspendLogged = false, suspendEnded = false;
+        bool suspendLogged = false, suspendEnded = false, floatLogged = false;
         int swimState = 0;                 // logic move-state mirror: 6/7 swim, 8 swim jump
         bool swimmingLast = false;         // last tick's water state (clip selection)
         long suspendUntil = 0, lastSwimLog = 0;
@@ -3494,8 +3494,9 @@ internal static class RebornClient
                     }
                     if (suspendDemo && jumpCount >= 2)
                     {
-                        suspendUntil = now + 1200;
+                        suspendUntil = now + 3500;
                         suspendEnded = false;
+                        floatLogged = false;
                         if (!suspendLogged)
                         {
                             suspendLogged = true;
@@ -3531,8 +3532,28 @@ internal static class RebornClient
             }
             else if (!grounded && suspendDemo && now < suspendUntil)
             {
-                vy = 0f;
-                py = airStartY;
+                // Decoded FLOAT law (KCharacter::ProcessVerticalMove state 0x1F
+                // branch @0x31913C): descend under gravity until the float
+                // floor = terrain cell top + 0x100 (256 u), then hold (vz=0,
+                // y := floor). The trigger stays a harness (the real 0x1F entry
+                // is a 轻功 skill/script transition), but the vertical law is
+                // the client's own.
+                float floorY = ground + 256f;
+                if (py + vy * pdt <= floorY)
+                {
+                    vy = 0f;
+                    py = floorY;
+                    if (!floatLogged)
+                    {
+                        floatLogged = true;
+                        Log(string.Format("fly: float floor y={0:F0} (terrain+0x100, PVM 0x31913C state 0x1F)", py));
+                    }
+                }
+                else
+                {
+                    vy -= curJumpGravity * pdt;
+                    py += vy * pdt;
+                }
             }
             else if (!grounded)
             {

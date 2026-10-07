@@ -433,9 +433,11 @@ Implemented in the client on top of the decoded rules above:
 - **轻功 chain End phase**: `JumpTable.EndTriples` + `TotalFrame` generated from
   `JumpParam.tab`/`JumpFrameParam.tab`; on segment end the `...End` triple of the
   current segment is applied and `jumpCount := 1` (ModifySprintEndSpeed semantics).
-- **Fly/suspend harness** (`RC_SUSPEND_DEMO=1`): logs the decoded state codes
-  (`FlyTo` 0x1F, `EndFlyJump` 0x21 -> 4) with a hover harness; the real triggers are
-  skill/script driven (named host gap).
+- **Fly/suspend** (`RC_SUSPEND_DEMO=1`): state codes `FlyTo` 0x1F / `EndFlyJump`
+  0x21 -> 4 logged; the state-0x1F **float law** is implemented from the client's own
+  branch (PVM 0x31913C: descend under gravity until the floor = terrain cell top +
+  0x100 (256 u), then hold vz=0 at the floor); the entry trigger remains a harness
+  (the real 0x1F entry is a 轻功 skill/script transition).
 - **Test harness**: `RC_DEMO_STATES=1` scripted chain presses; `RC_CHAIN_SEG`,
   `RC_SWIM_LOG`, `RC_CHAIN_LOG`; proof runs in `proof/character/3x_states/`.
 
@@ -453,5 +455,7 @@ REGISTERED PROVISIONALS (AGENTS §6, re-open criteria):
 4. **Chain segment length**: client trigger is a server move-record flag; host uses
    `JumpFrameParam.TotalFrame` when shipped (schools 10/11), else `RC_CHAIN_SEG`
    (default 51 ticks, the shipped 51-81 range). Re-open: server record producer.
-5. **Suspend hover**: harness only (1.2 s hold); the real 0x1F/0x20/0x21 vertical law
-   is not decoded. Re-open: fly-state physics decode.
+5. **Suspend float**: the state-0x1F float law is decoded + implemented (floor =
+   terrain cell top + 0x100 = 256 u, PVM 0x31913C branch); the entry trigger is a
+   harness (real 0x1F entry = 轻功 skill/script transition) and the 0x20 fly /
+   0x21 fly-jump verticals beyond EndFlyJump stay open. Re-open: fly-state decode.
