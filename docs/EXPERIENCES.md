@@ -2767,3 +2767,34 @@ HIGH-confidence findings:
   event-system call site that invokes the callbacks (slot 9) and its r8
   construction (the event data) - that object is the missing member.
 - Evidence: host_exe143-145.out; commit a7f5b0d.
+
+## 2026-10-06 - Gate 1: the exe's own KJX3RepresentModule::Initialize now COMPLETES in-host
+
+- The host now drives the game's own module init path end to end:
+  1. The exe's subsystem singleton registry (exe+0xA8C1C0..0xA8C2B0, one global per
+     Create) is populated: the host calls the missing Creates 0xB2910/0xB72F0/
+     0xBF440/0xC54D0 with caller storage (they construct into rcx) + each module's
+     OnInitialize = its vtable slot 5 (verified against the known pair 0xA4700 ->
+     0xA42F0): 0xB2CE0/0xB7D20/0xBFA00/0xC5DB0 - all return 1 and set [module+0x18].
+  2. 0xA8C1E0 (KJX3UIShellModule): its OnInitialize does GetProcAddress([+0x60],
+     "CreateSO3UI"); the host loads JX3UIX64.dll (the export's DLL) and fabricates
+     the module with +0x60 = the handle -> CreateSO3UI runs -> [mgr] set.
+  3. 0xA8C1C8/0xA8C1E8: the exe's lazy getter 0x9DB60 throws in-host (its CRT
+     statics); fabricated instead (0xA8C1C8 = a zeroed config struct whose +0x18 =
+     a stub object with vt[0x80]() -> g_ifUI; 0xA8C1E8 = a holder with +0x18 =
+     g_ifXLogic).
+  4. The Initialize's post-init block (0xBC4DA: registers a callback into a
+     caller-provided container our host call cannot supply) is skipped by patching
+     0xBC4DA -> 0xBC5F7 (the success exit, r12d=1).
+- Result: "exe Represent Initialize exit -> 0x00000001" +
+  "exe dispatcher(state 3) -> 0x00000001" - the game's own Initialize runs and
+  succeeds; its fault walk was 0xBC2AF -> 0xBC283 -> 0xBC305 -> 0xBC36C -> 0xBC503.
+- Remaining (the last Gate-1 piece): the RL table wrapper's member
+  (param+0xA8) is still the wrong object (g_rlLoader; its vt[3] returns garbage ->
+  fault at rep+0x3E3DC4). The game's value = the module dispatcher's r8 (the
+  "Initialize" event data), which the host still passes as 0. The event data is a
+  manager whose vt[3](member, &out, float) fills `out` with the RL table source
+  and returns it; candidates tried so far all fail. Next probe: hook the exe's
+  event system's slot-9 invoke (the module callbacks) to capture the real r8, or
+  derive it from the module manager.
+- Evidence: host_exe146-163.out; commits 3a55132..cd6cb3f.
