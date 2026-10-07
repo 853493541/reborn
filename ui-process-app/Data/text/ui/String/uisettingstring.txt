@@ -1,0 +1,2 @@
+ID	Length	String
+STR_UISETTING_EDIT	2	编辑
