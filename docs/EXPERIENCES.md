@@ -2679,3 +2679,22 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   the login driver (post_login/role_enter) is flaky across runs (check the gateway log first).
 - Wrappers: C:\jx3tmp\run_gamestub_296.cmd / run_gamestub_296b.cmd (spawn from the map's
   editorContext.json camera 54991,42845,2930).
+
+### 2026-10-06 — V2: the scene cells stay empty because KSceneClientLoader::LoadRegion never runs
+- Region data chain: `KScene::ValidateRegions` (0x1401830B0) calls the load-request fn
+  0x1403D8A00 per cell; the actual loader is `KSceneClientLoader::LoadRegion` (0x1403D8B30),
+  reached via a singleton wrapper 0x1403D9320 (gets "KSceneClientLoader" then tail-jumps).
+  No static Lua registration pointer found; the UI-side name appears as `LoadRegion` in the
+  extracted WorldMap.lua (b11) next to LoadZoning/LoadMapRegion.
+- Live: 25/25 cells around the player (map 296, dims 64) present but **0 with valid terrain
+  sub-region data**; all-thread RIP sampling (14880 samples, 248 threads) caught **zero** EXE
+  game-logic execution (no ValidateRegions, no request fn, no loader, no ProcessPackage) — the
+  client only renders; its game-logic thread idles in system waits. The loader never populates
+  the cells -> the position validator fails -> SetMainPlayer never fires -> no world UI/input.
+- NEXT TARGET: find what invokes KSceneClientLoader::LoadRegion in the normal entry flow (the
+  UI/map-loading path) and make it run for the bind's scene (the game-logic scene created for
+  the id-4 map, as opposed to the KG3D visual map which does load).
+- Freeze handling now automated (user rule): `watch_freeze.py` detects FROZEN (hung + static
+  90 s) or STUCK (responsive + static + no client packets 180 s), copies the client's own KG3D
+  log + stub/gateway tails + state + screenshot to C:\jx3tmp\freeze_<stamp>\, then kills;
+  background wrapper C:\jx3tmp\run_freeze_watch.cmd; rule in AGENTS.md §13.
