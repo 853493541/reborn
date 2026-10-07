@@ -1,0 +1,290 @@
+22:16:47.678 build=reborn_client_3x_mount.exe 2026-10-06 22:16:37 git=eae9c54 dirty=2 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80,BACKFACE=1,HITWIN=0,OPMODE=joystick)
+22:16:47.678 start map=data\source\maps\龙门寻宝\龙门寻宝.jsonmap
+22:16:47.678 asset_root=C:\SeasunGame\Game\JX3\bin\zhcn_hd phys=C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\PhysicsEngineX64.dll
+22:16:47.694 window: client=1280x720 fullscreen=0
+22:16:47.750 Startup shim: rc=0 mode=nodb applied=0 armed (waiting KG3D_MaterialSystemX64.dll)
+22:16:48.451 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_3x_mount.memory ms=(31,0,672)
+22:16:48.451 initcfg=./configHttpFile.ini
+22:16:52.015 Init3DEngine=1 err=1 ms=3563
+22:16:52.015 Startup: mode=nodb applied=1 sites=1 build=ok
+22:16:52.052 editor.Init result=0
+22:16:52.054 sound: KG3DSoundCLR.Init ok
+22:16:52.055 sound: skill wav C:\SeasunGame\MovieEditor\bin64\flws_sound.wav
+22:16:53.714 LoadMap result=0 ms=1672
+22:16:53.999 winId=789738
+22:16:54.000 clr m_pScene=0x7DA8FC08 unmapped exec=0
+22:16:54.000 clr scene.vt=0x7FF95C7EF278 KG_EngineEditorX64.dll+0x6F278
+22:16:54.000 clr scene: obj=000000007DA8FC08 vt=00007FF95C7EF278 48=00007FF95C7BD5F0(0) 50=00007FF95C7BD710(0) 58=00007FF95C7BD7E0(0) 60=00007FF95C7BD810(0)
+22:16:54.001 clr sceneCam=0x1777348C8 unmapped exec=0
+22:16:54.001 clr cam: obj=00000001777348C8 vt=00007FF95C7F1FA8 48=00007FF95C7D03A0(0) 50=00007FF95C7D03E0(0) 58=00007FF95C7D0440(0) 60=00007FF95C7D04A0(0)
+22:16:54.001 clr camGet rc=0 pos=(0.0,500.0,-800.0) tgt=(0.0,0.0,0.0) managed=(0.0,500.0,-800.0)
+22:16:54.004 TerrainSampler: size=512 regions=8x8 cell=100 origin=(-102400,-102400) cache=4
+22:16:54.010 terrain load (2,2) ms=3.8 holes=0 cache=1
+22:16:54.647 FoliageCollision: instances=5107 meshes=685 camflag0=310 noObstacle=184 foliage=龙门寻宝_foliage_collision.bin structures=龙门寻宝_structure_collision.bin
+22:16:54.648 EngineRay: exports ok, waiting for engine/scene
+22:16:54.649 EngineCam bind ex: Object contains non-primitive or non-blittable data.
+22:16:54.650 CameraShim: loaded rc=0 selftest=0x53484D01 status=obj=00000001777348C8 vt=00007FF95C7F1FA8 48=00007FF95C7D03A0(0) 50=00007FF95C7D03E0(0) 58=00007FF95C7D0440(0) 60=00007FF95C7D04A0(0) d6=seed slot=0x00007FF91075BBD0 value=0x392E0BFA0428F080
+22:16:54.654 camera config: C:\SeasunGame\MovieEditor\bin64\camera.json
+22:16:54.655 ad habit: strafe (RC_ADHABIT=strafe|turn)
+22:16:54.724 CameraSettings: loaded real per-role camera settings: C:\SeasunGame\Game\JX3\bin\zhcn_hd\userdata\binkp1\双线区\破阵子\测试角色\custom.dat
+22:16:54.724 CameraSettings: mapId=296 sceneInit=1 yaw=5.109930 pitch=-0.219 max=821 drag=1.00/1.00 eyeScale=1.00
+22:16:54.724 CameraSettings: operationMode=joystick perModeFollow classic=0 joystick=0
+22:16:54.725 CameraSettings extra: mode=1 resetSpring=1.00 resetCam=1.00 smoothing=1 curve=0 eyeFollow=1
+22:16:54.725 opmode applied: op=joystick followMode=0 springReset=1.00 cameraReset=1.00
+22:16:54.725 CameraSystem ready: mode=character dist=821u height=200u units/m=100 op=joystick
+22:16:54.726 view angle factor=1
+22:16:54.727 fov source=client-max-default angle=60.00 deg (1.0472 rad) factor=1.2500 [panel 30-60, default 50]
+22:16:54.727 view angle factor applied=1.250002
+22:16:55.058 spawn=(18991,962,33853) view=(0.00,1.00)
+22:16:55.654 player handle=5848719224
+22:16:55.655 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+22:16:56.165 anchor bone: actor=0x1026549A0 idx=1
+22:16:56.446 spawn ground settle took 281ms py=962
+22:16:56.446 target ui: RC_UI_ROOT not set - target HUD art disabled
+22:16:56.452 target dummy rid=35901 model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl' ani='data\source\npc_source\练功木桩001\动作\wj_练功木桩001_st02.ani' handle=5848325432 at (18991,961,34253)
+22:16:56.453 target entity registered: 初级试炼木桩 lv131 hp=500000000 (Tab = facing cone search)
+22:16:56.453 target dummy ani -> 0
+22:16:56.453 camera yaw init=-1.571 (view dir 0.00,1.00)
+22:16:56.456 hotkeys: source=embedded (proof/movement/extracted snapshot) rows=286 commands=430 overrides=0
+22:16:56.456 hotkeys: context=''
+22:16:56.457 hotkey MOVEFORWARD = W / Up
+22:16:56.457 hotkey MOVEBACKWARD = S / Down
+22:16:56.457 hotkey STRAFELEFT = A
+22:16:56.458 hotkey STRAFERIGHT = D
+22:16:56.458 hotkey TURNLEFT =  / Left
+22:16:56.458 hotkey TURNRIGHT =  / Right
+22:16:56.458 hotkey JUMP = Space
+22:16:56.458 hotkey TOGGLERUN = Num/
+22:16:56.458 hotkey TOGGLEAUTORUN = G / NumLock
+22:16:56.458 mount: data ride=0 model='data\source\NPC_source\Horse\模型\Horse_01_01a_00.mdl' rider='data\source\player\f1\动作\f1bqg_horse_run.ani'
+22:16:56.461 jump: mode=flip school=0 scale=0.520 (apex 191u ~ 191cm per jump)
+22:16:56.462 states: waterBoxes=0 swim=300u/s chainSegTicks=51 suspendDemo=0
+22:16:56.464 skillmove table: 7 rows from <embedded>
+22:16:56.464 camera init applied mapId=296 yaw=5.110 gamePitch=-0.219 modelPitch=0.219
+22:16:56.466 clip -> data\source\player\f1\动作\f1b02yd小跳c.ani (0)
+22:16:56.467 anchorbone t=(1.5,96.4,1.1) yRaw=96.4 chest=90.0
+22:16:56.469 terrain load (2,1) ms=0.2 holes=0 cache=2
+22:16:56.521 EngineRay: ready scene=0x102F326F0 terrain+950=0x7812D420 terrain+A28=0x0 vtB8=True space=0x77EA5598 spaceRay=True entity=0x121316488 entityRay=True entCount=10 guardCell=0x3FCE39E0
+22:16:56.535 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+22:16:56.967 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.442 dist=821 r=889.5 cam=(19300,1437,33113) obst=0 hit=-1 len=886 eff=821 clamp=0 op=joystick
+22:16:56.968 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:16:56.968 vertprobe h=-1(hr=0) at player
+22:16:56.968 obstprobe N=-1 S=-1 E=1860 W=-1 inst=5107 ray=1 terrD=90 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=-1(hr=-2147467259,hit=0) sceneE=1860
+22:16:56.970 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:16:56.973 postdbg intended=(19300,1437,33113) actual=(19300,1437,33113) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:16:57.469 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.442 dist=821 r=889.4 cam=(19300,1437,33113) obst=0 hit=-1 len=886 eff=821 clamp=0 op=joystick
+22:16:57.469 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:16:57.470 vertprobe h=-1(hr=0) at player
+22:16:57.470 obstprobe N=-1 S=-1 E=1860 W=-1 inst=5107 ray=1 terrD=90 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=-1(hr=-2147467259,hit=0) sceneE=1860
+22:16:57.470 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:16:57.474 postdbg intended=(19300,1437,33113) actual=(19300,1437,33113) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:16:57.972 camBind rc=0 pos=(19299.6,1437.3,33113.2) cam=0000000102F326F0 posOff=0x9E0 bound=1
+22:16:57.973 camObjDump: obj=0000000102F326F0 vt=00007FF90FBC5598 48=00007FF90E373870(1) 50=00007FF90E373A40(1) 58=00007FF90E398810(1) 60=00007FF90E373C70(1)
+22:16:57.973 slot50: slot50=00007FF90E373A40: 48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 41 56
+22:16:57.974 slot58: slot58=00007FF90E398810: 40 53 48 83 EC 30 4C 89 4C 24 20 BB 05 40 00 80 4D 8B C8 4C 8B C2 48 8B
+22:16:57.974 slot60: slot60=00007FF90E373C70: 48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 65 48 8B 04 25 58 00 00 00
+22:16:57.974 slot68: slot68=00007FF90E373D50: 48 89 5C 24 18 48 89 6C 24 20 56 57 41 56 48 83 EC 40 48 8B FA 48 8B F1
+22:16:57.975 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.442 dist=821 r=889.4 cam=(19300,1437,33113) obst=0 hit=-1 len=886 eff=821 clamp=0 op=joystick
+22:16:57.975 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:16:57.975 vertprobe h=-1(hr=0) at player
+22:16:57.975 obstprobe N=-1 S=-1 E=1860 W=-1 inst=5107 ray=1 terrD=90 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=-1(hr=-2147467259,hit=0) sceneE=1860
+22:16:57.976 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:16:57.981 postdbg intended=(19300,1437,33113) actual=(19300,1437,33113) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:16:58.468 t=2s fps=271 pos=(18991,962,33853) vy=0 grounded=True blocked=False hits=0 colCalls=29 colBlocked=0 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=16 clip=f1b01ty普通待机01.ani mount=off
+22:16:58.505 mount: on ride=0 model='data\source\NPC_source\Horse\模型\Horse_01_01a_00.mdl' handle=2010333960 at (18991,962,33853)
+22:16:58.505 mounttest t=2.0 mount mounted=1
+22:16:58.506 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:16:58.507 mount seat bone: actor=0x1A2F66CD0 idx=0
+22:16:58.508 mount facing: tail->head f=(0.00,-1.00) alpha=-90deg offset=0deg (model-Z dot 1.00)
+22:16:58.508 mount horse clip -> data\source\NPC_source\Horse\动作\H普通待机01.tani (0)
+22:16:58.508 mount seat dbg local=(0.1,174.0,12.8) world=(18991.1,1136.0,33865.8)
+22:16:58.510 anchorbone t=(1.9,96.7,1.0) yRaw=1232.7 chest=1226.0
+22:16:58.514 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.442 dist=821 r=967.8 cam=(19299,1611,33126) obst=0 hit=-1 len=886 eff=821 clamp=0 op=joystick
+22:16:58.515 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:16:58.515 vertprobe h=-1(hr=0) at player
+22:16:58.515 obstprobe N=-1 S=-1 E=1860 W=-1 inst=5107 ray=1 terrD=90 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=-1(hr=-2147467259,hit=0) sceneE=1860
+22:16:58.516 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:16:58.521 postdbg intended=(19302,1539,33154) actual=(19302,1539,33154) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:16:59.017 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.442 dist=821 r=907.3 cam=(19303,1540,33154) obst=0 hit=-1 len=886 eff=821 clamp=0 op=joystick
+22:16:59.017 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:16:59.017 vertprobe h=-1(hr=0) at player
+22:16:59.018 obstprobe N=-1 S=-1 E=1860 W=-1 inst=5107 ray=1 terrD=90 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=-1(hr=-2147467259,hit=0) sceneE=1860
+22:16:59.018 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:16:59.023 postdbg intended=(19303,1540,33154) actual=(19303,1540,33154) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:16:59.469 mounttest t=3.0 IDLE jump press mounted=1
+22:16:59.469 mount jump idle: no move record -> generic jump (0x313C2F), mount kept
+22:16:59.469 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:16:59.470 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:16:59.518 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.442 dist=821 r=912.2 cam=(19302,1589,33153) obst=0 hit=-1 len=886 eff=821 clamp=0 op=joystick
+22:16:59.519 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:16:59.519 vertprobe h=-1(hr=0) at player
+22:16:59.519 obstprobe N=-1 S=-1 E=1871 W=-1 inst=5107 ray=1 terrD=131 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=-1(hr=-2147467259,hit=0) sceneE=1870
+22:16:59.519 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:16:59.524 postdbg intended=(19301,1593,33151) actual=(19301,1593,33151) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:00.021 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.442 dist=821 r=951.6 cam=(19302,1737,33121) obst=0 hit=-1 len=886 eff=821 clamp=0 op=joystick
+22:17:00.022 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:17:00.022 vertprobe h=-1(hr=0) at player
+22:17:00.022 obstprobe N=-1 S=1751 E=-1 W=-1 inst=5107 ray=1 terrD=253 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=-1(hr=-2147467259,hit=0) sceneE=-1
+22:17:00.022 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:17:00.027 postdbg intended=(19302,1737,33121) actual=(19302,1737,33121) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:00.327 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_00_3800ms.png
+22:17:00.468 t=4s fps=264 pos=(18991,977,33853) vy=-585 grounded=False blocked=False hits=0 colCalls=59 colBlocked=0 spd=0u/s(RIDE_IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=62 clip=f1H小跳a.ani mount=on0
+22:17:00.478 mount intact after landing n=1
+22:17:00.480 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:17:00.480 mount horse clip -> data\source\NPC_source\Horse\动作\H普通待机01.tani (0)
+22:17:00.512 mount seat dbg local=(-1.3,170.9,14.2) world=(18989.7,1140.2,33867.3)
+22:17:00.512 anchorbone t=(-2.6,28.2,-25.9) yRaw=1168.4 chest=1230.2
+22:17:00.522 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.442 dist=821 r=910.4 cam=(19303,1546,33154) obst=0 hit=-1 len=886 eff=821 clamp=0 op=joystick
+22:17:00.524 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:17:00.524 vertprobe h=-1(hr=0) at player
+22:17:00.524 obstprobe N=-1 S=-1 E=1860 W=-1 inst=5107 ray=1 terrD=90 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=-1(hr=-2147467259,hit=0) sceneE=1860
+22:17:00.525 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:17:00.529 postdbg intended=(19302,1544,33154) actual=(19302,1544,33154) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:01.022 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.442 dist=821 r=907.4 cam=(19303,1540,33155) obst=0 hit=-1 len=886 eff=821 clamp=0 op=joystick
+22:17:01.023 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:17:01.023 vertprobe h=-1(hr=0) at player
+22:17:01.023 obstprobe N=-1 S=-1 E=1860 W=-1 inst=5107 ray=1 terrD=90 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=-1(hr=-2147467259,hit=0) sceneE=1860
+22:17:01.024 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:17:01.028 postdbg intended=(19303,1540,33155) actual=(19303,1540,33155) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:01.466 mounttest t=5.0 forward (moving)
+22:17:01.466 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:17:01.526 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_01_5000ms.png
+22:17:01.527 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.442 dist=821 r=906.1 cam=(19303,1539,33156) obst=0 hit=-1 len=886 eff=821 clamp=0 op=joystick
+22:17:01.527 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:17:01.527 vertprobe h=-1(hr=0) at player
+22:17:01.528 obstprobe N=-1 S=-1 E=1860 W=-1 inst=5107 ray=1 terrD=90 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=-1(hr=-2147467259,hit=0) sceneE=1860
+22:17:01.528 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:17:01.533 postdbg intended=(19306,1554,33179) actual=(19306,1554,33179) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:02.027 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.442 dist=821 r=942.0 cam=(19305,1549,33477) obst=0 hit=-1 len=886 eff=821 clamp=0 op=joystick
+22:17:02.027 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:17:02.027 vertprobe h=-1(hr=0) at player
+22:17:02.028 obstprobe N=-1 S=-1 E=-1 W=-1 inst=5107 ray=1 terrD=90 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=-1(hr=-2147467259,hit=0) sceneE=-1
+22:17:02.028 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:17:02.032 postdbg intended=(19305,1548,33479) actual=(19305,1548,33479) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:02.467 mounttest t=6.0 MOVING jump press mounted=1
+22:17:02.470 t=6s fps=224 pos=(18991,956,34453) vy=0 grounded=True blocked=False hits=0 colCalls=119 colBlocked=0 spd=600u/s(RIDE) yaw=0.00 dir=(0.00,1.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=60 clip=f1bqg_horse_run.ani mount=on0
+22:17:02.491 mount jump triple=(60,180,11) vy=1404 g=1287 bonus=0 ([+0x34C] script) pos=(18991,955,34493)
+22:17:02.492 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:17:02.492 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:17:02.528 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.442 dist=821 r=908.5 cam=(19301,1594,33774) obst=0 hit=-1 len=886 eff=821 clamp=0 op=joystick
+22:17:02.529 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:17:02.529 vertprobe h=-1(hr=0) at player
+22:17:02.529 obstprobe N=-1 S=-1 E=-1 W=-1 inst=5107 ray=1 terrD=178 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=-1(hr=-2147467259,hit=0) sceneE=-1
+22:17:02.529 mount seat dbg local=(0.0,182.4,26.0) world=(18991.0,1191.9,34503.6)
+22:17:02.529 anchorbone t=(-0.3,35.9,-13.1) yRaw=1227.8 chest=1281.9
+22:17:02.529 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:17:02.533 postdbg intended=(19302,1607,33778) actual=(19302,1607,33778) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:02.726 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_02_6200ms.png
+22:17:03.031 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.442 dist=821 r=950.1 cam=(19302,2104,34038) obst=0 hit=-1 len=886 eff=821 clamp=0 op=joystick
+22:17:03.032 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:17:03.032 vertprobe h=-1(hr=0) at player
+22:17:03.032 obstprobe N=-1 S=774 E=-1 W=-1 inst=5107 ray=1 terrD=641 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=-1(hr=-2147467259,hit=0) sceneE=-1
+22:17:03.032 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:17:03.037 postdbg intended=(19302,2107,34041) actual=(19302,2107,34041) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:03.468 mounttest t=7.0 DOUBLE press airborne mounted=1
+22:17:03.500 mount jump reject n=1 (mounted; mount kept)
+22:17:03.534 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.442 dist=821 r=952.5 cam=(19301,2268,34346) obst=0 hit=-1 len=886 eff=821 clamp=0 op=joystick
+22:17:03.535 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:17:03.535 vertprobe h=-1(hr=0) at player
+22:17:03.535 obstprobe N=-1 S=1555 E=-1 W=-1 inst=5107 ray=1 terrD=-1 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=-1(hr=-2147467259,hit=0) sceneE=-1
+22:17:03.535 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:17:03.540 postdbg intended=(19301,2268,34348) actual=(19301,2268,34348) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:04.036 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.442 dist=821 r=940.8 cam=(19301,2153,34663) obst=0 hit=-1 len=886 eff=821 clamp=0 op=joystick
+22:17:04.037 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:17:04.037 vertprobe h=-1(hr=0) at player
+22:17:04.038 obstprobe N=-1 S=175 E=-1 W=-1 inst=5107 ray=1 terrD=664 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=-1(hr=-2147467259,hit=0) sceneE=-1
+22:17:04.039 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:17:04.043 postdbg intended=(19301,2150,34666) actual=(19301,2150,34666) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:04.234 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:17:04.235 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:17:04.471 t=8s fps=247 pos=(18965,1399,35521) vy=-827 grounded=True blocked=False hits=9 colCalls=209 colBlocked=9 spd=600u/s(RIDE) yaw=0.00 dir=(0.00,1.00) auto=0 vj=(0,468) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=61 clip=f1bqg_horse_run.ani mount=on0
+22:17:04.537 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_03_8000ms.png
+22:17:04.538 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.442 dist=821 r=534.7 cam=(19149,1805,35131) obst=0 hit=5 len=0 eff=821 clamp=0 op=joystick
+22:17:04.539 betweendbg cam->anchor bake=484 terr=-1 scene=482
+22:17:04.539 vertprobe h=8475(hr=1) at player
+22:17:04.540 obstprobe N=19 S=26 E=38 W=-1 inst=5107 ray=1 terrD=548 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=29(hr=-2147467259,hit=0) sceneE=36
+22:17:04.542 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:17:04.542 hideNear hide camDist=84.4 (B1 host approximation)
+22:17:04.547 postdbg intended=(18999,1625,35489) actual=(18999,1625,35489) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:04.548 mount seat dbg local=(1.5,166.7,14.7) world=(18966.1,1565.3,35534.8)
+22:17:04.548 anchorbone t=(-3.5,17.5,-26.3) yRaw=1582.8 chest=1655.3
+22:17:04.588 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:17:04.589 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:17:04.658 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:17:04.659 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:17:04.854 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:17:04.855 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:17:04.922 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:17:04.922 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:17:05.039 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.212 vpitch=-0.417 dist=821 r=123.7 cam=(18962,1605,35563) obst=0 hit=3 len=0 eff=821 clamp=0 op=joystick
+22:17:05.039 betweendbg cam->anchor bake=50 terr=-1 scene=49
+22:17:05.040 vertprobe h=8474(hr=1) at player
+22:17:05.040 obstprobe N=50 S=18 E=38 W=-1 inst=5107 ray=1 terrD=546 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=60(hr=-2147467259,hit=0) sceneE=38
+22:17:05.041 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:17:05.045 postdbg intended=(18962,1605,35564) actual=(18962,1605,35564) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:05.122 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:17:05.122 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:17:05.187 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:17:05.188 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:17:05.541 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.190 vpitch=-0.376 dist=821 r=102.7 cam=(18981,1599,35606) obst=0 hit=6 len=0 eff=821 clamp=0 op=joystick
+22:17:05.542 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:17:05.542 vertprobe h=8289(hr=1) at player
+22:17:05.543 obstprobe N=10 S=98 E=426 W=358 inst=5107 ray=1 terrD=573 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=10(hr=-2147467259,hit=0) sceneE=414
+22:17:05.543 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:17:05.548 postdbg intended=(18981,1600,35606) actual=(18981,1600,35606) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:05.724 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:17:05.724 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:17:05.788 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:17:05.788 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:17:05.966 mounttest t=9.5 stop mounted=1 grounded=1 pos=(18952,1404,35551)
+22:17:05.967 mount horse clip -> data\source\NPC_source\Horse\动作\H普通待机01.tani (0)
+22:17:06.044 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.442 dist=821 r=105.9 cam=(18959,1611,35584) obst=1 hit=34 len=16 eff=821 clamp=0 op=joystick
+22:17:06.045 betweendbg cam->anchor bake=84 terr=-1 scene=83
+22:17:06.046 vertprobe h=8286(hr=1) at player
+22:17:06.047 obstprobe N=13 S=96 E=536 W=426 inst=5107 ray=1 terrD=572 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=13(hr=-2147467259,hit=0) sceneE=523
+22:17:06.047 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:17:06.051 postdbg intended=(18959,1611,35585) actual=(18959,1611,35585) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:06.475 t=10s fps=207 pos=(18952,1412,35584) vy=-86 grounded=True blocked=False hits=71 colCalls=283 colBlocked=71 spd=0u/s(RIDE_IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,468) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=71 clip=f1bqg_horse_run.ani mount=on0
+22:17:06.544 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.441 dist=821 r=106.6 cam=(18958,1606,35613) obst=1 hit=29 len=11 eff=821 clamp=0 op=joystick
+22:17:06.544 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:17:06.545 vertprobe h=8282(hr=1) at player
+22:17:06.546 obstprobe N=37 S=72 E=1536 W=443 inst=5107 ray=1 terrD=572 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=37(hr=-2147467259,hit=0) sceneE=1523
+22:17:06.546 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:17:06.551 postdbg intended=(18958,1606,35613) actual=(18958,1606,35613) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:06.560 mount seat dbg local=(-1.3,170.9,14.2) world=(18950.7,1584.1,35598.3)
+22:17:06.561 anchorbone t=(-3.1,17.7,-24.8) yRaw=1601.7 chest=1674.0
+22:17:06.970 mount: off (DownHorse)
+22:17:06.971 mounttest t=10.5 dismount mounted=0
+22:17:06.971 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+22:17:07.045 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.173 vpitch=-0.441 dist=821 r=13.2 cam=(18953,1513,35576) obst=0 hit=15 len=0 eff=821 clamp=0 op=joystick
+22:17:07.045 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:17:07.046 vertprobe h=8282(hr=1) at player
+22:17:07.047 obstprobe N=37 S=72 E=1539 W=443 inst=5107 ray=1 terrD=570 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=37(hr=-2147467259,hit=0) sceneE=1526
+22:17:07.047 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:17:07.052 postdbg intended=(18953,1512,35577) actual=(18953,1512,35577) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:07.547 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.107 vpitch=-0.477 dist=821 r=8.1 cam=(18950,1510,35583) obst=1 hit=13 len=0 eff=821 clamp=0 op=joystick
+22:17:07.548 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:17:07.548 vertprobe h=8282(hr=1) at player
+22:17:07.549 obstprobe N=37 S=72 E=1539 W=443 inst=5107 ray=1 terrD=570 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=37(hr=-2147467259,hit=0) sceneE=1526
+22:17:07.550 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:17:07.554 postdbg intended=(18950,1510,35583) actual=(18950,1510,35583) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:07.969 mounttest summary mounted=0 clip=f1b01ty普通待机01.ani
+22:17:08.047 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.107 vpitch=-0.444 dist=821 r=6.1 cam=(18951,1510,35583) obst=1 hit=14 len=0 eff=821 clamp=0 op=joystick
+22:17:08.048 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:17:08.048 vertprobe h=8282(hr=1) at player
+22:17:08.049 obstprobe N=37 S=72 E=1536 W=443 inst=5107 ray=1 terrD=572 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=37(hr=-2147467259,hit=0) sceneE=1523
+22:17:08.049 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:17:08.053 postdbg intended=(18951,1510,35583) actual=(18951,1510,35583) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:08.478 t=12s fps=252 pos=(18952,1412,35584) vy=-86 grounded=True blocked=False hits=86 colCalls=313 colBlocked=86 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,468) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=9 clip=f1b01ty普通待机01.ani mount=off
+22:17:08.547 camdbg mode=character yaw=-1.173 pitch=0.219 vyaw=-1.107 vpitch=-0.421 dist=821 r=5.5 cam=(18950,1509,35583) obst=1 hit=14 len=0 eff=821 clamp=0 op=joystick
+22:17:08.548 betweendbg cam->anchor bake=-1 terr=-1 scene=-1
+22:17:08.548 vertprobe h=8282(hr=1) at player
+22:17:08.550 obstprobe N=37 S=72 E=1536 W=443 inst=5107 ray=1 terrD=572 terrN=-1(hr=0,hit=0) terrE=-1 sceneN=37(hr=-2147467259,hit=0) sceneE=1523
+22:17:08.550 engineSet direct rc=0 native=True cam=unmapped exec=0
+22:17:08.553 postdbg intended=(18950,1509,35583) actual=(18950,1509,35583) moved=0.0 rayPost=-1(hr=-2147467259,hit=0) sceneLevel=-1(hr=-2147467259,hit=0)
+22:17:08.576 anchorbone t=(1.8,96.6,1.0) yRaw=1510.3 chest=1503.7
+22:17:08.971 terrain stats terrLoads=2 msTotal=4.0 msMax=3.8 last=0.2 cache=2 zeroRetries=0
+22:17:08.971 shutdown sound ok
+22:17:08.972 shutdown log ok
+22:17:08.972 shutdown memory ok
+22:17:08.972 DONE

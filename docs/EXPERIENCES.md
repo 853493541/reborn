@@ -4981,3 +4981,19 @@ if the cache/host frames appear.
   camera_smoke ALL PASS, collision 36/36.
 - Note: the school-999 PlayerRush rows are the acceleration/afterimage set (bqg加速跑 +
   horse dismount columns) - not the mounted locomotion override (deviation text fixed).
+
+### 2026-10-06 - Mounted system re-derivation: jump rules + facing (owned end-to-end)
+
+- Directive: own the full mount system - facing, jump rules, state integrity.
+- Decoded KCharacter::Jump (0x140313680): the mounted block sits behind the
+  move-record gate [+0x1F8] (written from the server record byte at 0x140182814).
+  Guards: triple at 0x140313A40-A88 (mounted, jumpCount<1); reject at A4F-A52;
+  the press-2 DownHorse jump-off at A1A-A30 exists only on the move-record path;
+  no record -> the generic land branch (0x313C22/2F/46) applies a small hop.
+- Host mapping: moving = move-record analogue; idle -> generic jump (mount kept);
+  airborne press-2 -> reject, mount kept (host deviation 5, user directive).
+- Facing derived from the horse skeleton (tail->head = -Z, offset 0deg) - not
+  guessed; logged per mount.
+- Proof: run_20261006_221647_fullsystem.txt (all four cases, mount intact after
+  landing, DONE), screenshots + fingerprints; gates camera_smoke ALL PASS,
+  collision 36/36.

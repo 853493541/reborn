@@ -1801,8 +1801,8 @@ internal static class RebornClient
         bool mvStrafe = false, mvStrafeDone = false, mvBack = false, mvBackDone = false, mvDrop = false, mvDone = false;
         bool mvSit = false, mvSitDone = false, mvSheath = false, mvSheathDone = false;
         bool mountTest = Env("RC_MOUNT_TEST", "0") == "1";
-        bool mtMounted = false, mtFwd = false, mtJump1 = false, mtJump2 = false, mtStop = false;
-        bool mtMount2 = false, mtDown = false, mtDone = false;
+        bool mtMounted = false, mtIdleJump = false, mtFwd = false, mtJump1 = false;
+        bool mtJump2 = false, mtStop = false, mtDown = false, mtDone = false;
         long mtT0 = 0;
         bool mvWA = false, mvWADone = false, mvWD = false, mvWDDone = false;
         int demoRmbWa = 0;
@@ -3127,14 +3127,14 @@ internal static class RebornClient
                 // test frame (engine init can consume the absolute clock).
                 if (mtT0 == 0) mtT0 = now;
                 long mt = now - mtT0;
-                if (mt >= 2500 && !mtMounted) { mtMounted = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest t=2.5 mount press mounted=" + (mount.Mounted ? 1 : 0)); }
-                if (mt >= 3200 && !mtFwd) { mtFwd = true; if (Env("RC_MOUNT_NOMOVE", "0") != "1") { pW = true; Log("mounttest t=3.2 forward (mounted run)"); } else Log("mounttest t=3.2 forward SKIPPED (RC_MOUNT_NOMOVE)"); }
-                if (mt >= 4500 && !mtJump1) { mtJump1 = true; jumpPressed = true; Log("mounttest t=4.5 horse jump"); }
-                if (mt >= 5600 && !mtJump2) { mtJump2 = true; jumpPressed = true; Log("mounttest t=5.6 second press midair"); }
-                if (mt >= 7500 && !mtStop) { mtStop = true; pW = false; Log(string.Format("mounttest t=7.5 stop mounted={0} grounded={1} pos=({2:F0},{3:F0},{4:F0})", mount.Mounted ? 1 : 0, grounded ? 1 : 0, px, py, pz)); }
-                if (mt >= 8500 && !mtMount2) { mtMount2 = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest t=8.5 remount mounted=" + (mount.Mounted ? 1 : 0)); }
-                if (mt >= 9800 && !mtDown) { mtDown = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest t=9.8 dismount press mounted=" + (mount.Mounted ? 1 : 0)); }
-                if (mt >= 10600 && !mtDone) { mtDone = true; Log(string.Format("mounttest summary mounted={0} clip={1}", mount.Mounted ? 1 : 0, curClip == null ? "-" : Path.GetFileName(curClip))); }
+                if (mt >= 2000 && !mtMounted) { mtMounted = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest t=2.0 mount mounted=" + (mount.Mounted ? 1 : 0)); }
+                if (mt >= 3000 && !mtIdleJump) { mtIdleJump = true; jumpPressed = true; Log("mounttest t=3.0 IDLE jump press mounted=" + (mount.Mounted ? 1 : 0)); }
+                if (mt >= 5000 && !mtFwd) { mtFwd = true; pW = true; Log("mounttest t=5.0 forward (moving)"); }
+                if (mt >= 6000 && !mtJump1) { mtJump1 = true; jumpPressed = true; Log("mounttest t=6.0 MOVING jump press mounted=" + (mount.Mounted ? 1 : 0)); }
+                if (mt >= 7000 && !mtJump2) { mtJump2 = true; jumpPressed = true; Log("mounttest t=7.0 DOUBLE press airborne mounted=" + (mount.Mounted ? 1 : 0)); }
+                if (mt >= 9500 && !mtStop) { mtStop = true; pW = false; Log(string.Format("mounttest t=9.5 stop mounted={0} grounded={1} pos=({2:F0},{3:F0},{4:F0})", mount.Mounted ? 1 : 0, grounded ? 1 : 0, px, py, pz)); }
+                if (mt >= 10500 && !mtDown) { mtDown = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest t=10.5 dismount mounted=" + (mount.Mounted ? 1 : 0)); }
+                if (mt >= 11500 && !mtDone) { mtDone = true; Log(string.Format("mounttest summary mounted={0} clip={1}", mount.Mounted ? 1 : 0, curClip == null ? "-" : Path.GetFileName(curClip))); }
             }
             if (probeControl && now >= nextProbeMs)
             {
@@ -3808,20 +3808,21 @@ internal static class RebornClient
                     bool mountHandled = false;
                     if (mount.Mounted)
                     {
-                        // KCharacter::Jump mounted branches (0x140313A30..A88): the
-                        // horse triple 60/180/11 when jumpCount==0; jumpCount>=1 while
-                        // mounted rejects; at jumpCount==1 the press dismounts first
-                        // (DownHorse) and the normal jump rules then apply.
-                        if (!grounded && jumpCount == 1)
+                        // Decoded mounted jump (KCharacter::Jump 0x140313A40-A88 +
+                        // the move-record gate 0x313975): the horse triple applies
+                        // while a move record is active - mapped to `moving` in the
+                        // host. Without it the generic land branch runs (0x313C2F):
+                        // a normal jump, horse state kept. jumpCount>=1 while mounted
+                        // rejects (bail 0x313D5E). The client's press-2 DownHorse
+                        // (0x313A30) exists only on the server move-record path (the
+                        // host has no move records) - the host keeps the mount per
+                        // the user directive (registered host deviation).
+                        if (jumpCount >= 1)
                         {
-                            mount.Dismount(scene, Log);
-                        }
-                        else if (!grounded)
-                        {
-                            Log("mount jump reject n=" + jumpCount + " (airborne)");
+                            Log("mount jump reject n=" + jumpCount + " (mounted; mount kept)");
                             mountHandled = true;
                         }
-                        else
+                        else if (moving)
                         {
                             jumpCount = 1;
                             vy = 180f * 15f * jumpScale;
@@ -3835,6 +3836,11 @@ internal static class RebornClient
                                 "mount jump triple=(60,180,11) vy={0:F0} g={1:F0} bonus=0 ([+0x34C] script) pos=({2:F0},{3:F0},{4:F0})",
                                 vy, curJumpGravity, px, py, pz));
                             mountHandled = true;
+                        }
+                        else
+                        {
+                            Log("mount jump idle: no move record -> generic jump (0x313C2F), mount kept");
+                            // fall through to the generic jump rules with the mount kept
                         }
                     }
                     if (!mountHandled)
@@ -3991,6 +3997,7 @@ internal static class RebornClient
                     float impact = vy;
                     if (vy < 0f) vy = 0f;
                     grounded = true;
+                    if (mount.Mounted) Log("mount intact after landing n=" + jumpCount);
                     // landing branch: height difference vs FallDownHeightFloor
                     // (player_suspend.krl.txt F1: 500 u) -> the authored landing
                     // animation; otherwise the normal resume.
