@@ -2573,6 +2573,10 @@ internal static class RebornClient
         // the surface. RC_FLOATMOD models a non-zero modifier for research.
         float wFloatMod = 0f;
         float.TryParse(Env("RC_FLOATMOD", "0"), out wFloatMod);
+        // Depth gate T (SPEC_STATES_P2 §2): T = [+0x16C]*[+0x40]/100; client
+        // defaults 70*896/100 = 627 u. Shallower water is WADED (no swim state).
+        float swimT = 627f;
+        float.TryParse(Env("RC_SWIM_DEPTH", "627"), out swimT);
         string clipSwimIdle = Env("RC_CLIP_SWIM_IDLE", f1 + "F1b02yd\u6E38\u6CF3\u6C34\u4E2D\u5F85\u673A.tani");
         string clipSwimFwd  = Env("RC_CLIP_SWIM_FWD",  f1 + "F1b02yd\u6E38\u6CF3\u5411\u524D\u6E38\u6CF3.tani");
         string clipSwimBack = Env("RC_CLIP_SWIM_BACK", f1 + "F1b02yd\u6E38\u6CF3\u5411\u540E\u6E38\u6CF3.tani");
@@ -2590,14 +2594,16 @@ internal static class RebornClient
         bool swimLog = Env("RC_SWIM_LOG", "0") == "1";
         bool suspendDemo = Env("RC_SUSPEND_DEMO", "0") == "1";
         bool suspendLogged = false, suspendEnded = false, floatLogged = false;
-        int swimState = 0;                 // logic move-state mirror: 6/7 swim, 8 swim jump
+        int swimState = 0;                 // logic move-state mirror: 6/7 swim (8 = script only)
         bool swimmingLast = false;         // last tick's water state (clip selection)
+        float wSurf = 0f;                  // current water surface (post-move sample)
+        float wDepth = 0f;                 // current submersion depth
         long suspendUntil = 0, lastSwimLog = 0;
         bool chainActive = false;
         int chainSegIdx = 0;
         long chainSegEndMs = 0;
-        Log(string.Format("states: map='{0}' {1} swim={2:F0}u/s floatMod={3:F0} chainSegTicks={4:F0} suspendDemo={5}",
-            waterMapName == null ? "?" : waterMapName, waterBox.Describe(), pSwim, wFloatMod, chainSegTicks, suspendDemo ? 1 : 0));
+        Log(string.Format("states: map='{0}' {1} swim={2:F0}u/s swimT={3:F0} floatMod={4:F0} chainSegTicks={5:F0} suspendDemo={6}",
+            waterMapName == null ? "?" : waterMapName, waterBox.Describe(), pSwim, swimT, wFloatMod, chainSegTicks, suspendDemo ? 1 : 0));
         // Character step budget (host proxy for the server-authoritative step;
         // the client's own prediction has no capsule-vs-mesh blocking at all,
         // CLIENT_COLLISION_IMPROVEMENT_PLAN 8.3). 64 u = the game-side ground/landing
@@ -3807,24 +3813,15 @@ internal static class RebornClient
             float ground = py;
             bool groundOk = true;
             if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
-            // States spec §1.3: water = authored surface (per-map list, P1 cell
-            // mapping in WaterField). The float floor is the cell-top surface
-            // minus the scaled gravity modifier (0 by default -> at the surface).
-            bool inWater = false;
-            float wSurf = 0f, wFloat = 0f;
-            float wGround = ground;
-            if (waterBox.Count > 0 && waterBox.Sample(px, pz, wGround, out wSurf))
-            {
-                wFloat = wSurf - wFloatMod;    // y = max(y, cellTop - scaled[+0x170])
-                inWater = py <= wSurf && vy <= 0f && wFloat > ground + 1f;
-            }
-            swimmingLast = inWater;
+            // Water entry/exit is evaluated AFTER the move substeps (SPEC_STATES_P2
+            // §7); the current move speed uses the state from the last evaluation.
+            bool swimmingNow = swimState != 0;
             float mvx = 0f, mvz = 0f;
             float subStep = 0f;
             int subCount = 1;
             if (moving)
             {
-                float baseSp = inWater ? pSwim
+                float baseSp = swimmingNow ? pSwim
                             : shiftDown ? pRun * 10f
                             : mount.Mounted ? (walkMode ? rideWalk : rideRun)
                             : walkMode ? pSpeed
@@ -3834,8 +3831,8 @@ internal static class RebornClient
                 // authored slow pace). Pure lateral (no forward/back) is the
                 // walk-tier side-step (挪步 clip cadence); a forward component
                 // runs. Joystick always faces the travel -> run tier.
-                bool backPedal = !inWater && classicalMode && fwdAxis < 0f;
-                bool sideOnly = !inWater && classicalMode && fwdAxis == 0f && Math.Abs(latAxis) > 0.01f;
+                bool backPedal = !swimmingNow && classicalMode && fwdAxis < 0f;
+                bool sideOnly = !swimmingNow && classicalMode && fwdAxis == 0f && Math.Abs(latAxis) > 0.01f;
                 float sp = (backPedal || sideOnly ? (shiftDown ? pSpeed * 10f : mount.Mounted ? rideWalk : pSpeed) : baseSp);
                 // SPEC_MOTION_P2: FLWS channel keeps walk live at x1.10 (buff 2151)
                 if (channelActive) sp *= channelMoveMul;
@@ -4148,6 +4145,47 @@ internal static class RebornClient
                 else curYaw += Math.Sign(d) * step;
             }
 
+            // Water entry/exit (SPEC_STATES_P2 §2/§3/§5): evaluated at the
+            // post-move position. The gate depth is the LOCAL water depth
+            // (surface - ground; "walking on the bottom: depth = the local
+            // water depth", P2 §1) - the character's own submersion is 0 once
+            // floated, so it cannot be the sustained gate. The client enters
+            // state 6 (moving) / 7 (idle) when depth >= T, floats at the
+            // surface, and leaves automatically at the shallow edge (depth < T).
+            bool wFound = false;
+            if (waterBox.Count > 0)
+            {
+                wFound = waterBox.Sample(px, pz, ground, out wSurf);
+                wDepth = wFound ? wSurf - ground : 0f;
+            }
+            bool swimNow = wFound && py <= wSurf && wDepth >= swimT;
+            if (swimNow)
+            {
+                int newSwimState = moving ? 6 : 7;
+                if (swimState == 0)
+                    Log(string.Format("swim: enter state={0} surface={1:F0} depth={2:F0} T={3:F0} y={4:F0} pos=({5:F0},{6:F0})",
+                        newSwimState, wSurf, wDepth, swimT, py, px, pz));
+                swimState = newSwimState;
+                float floorY = Math.Max(ground, wSurf - wFloatMod);
+                if (py < floorY) py = floorY;
+                vy = 0f;
+                grounded = false;
+                jumpCount = 0;
+                if (swimLog && now - lastSwimLog >= 1000)
+                {
+                    lastSwimLog = now;
+                    Log(string.Format("swim: state={0} surface={1:F0} depth={2:F0} y={3:F0} pos=({4:F0},{5:F0})",
+                        swimState, wSurf, wDepth, py, px, pz));
+                }
+            }
+            else if (swimState != 0)
+            {
+                Log(string.Format("swim: exit state={0}->0 depth={1:F0} T={2:F0} y={3:F0} ground={4:F0} pos=({5:F0},{6:F0})",
+                    swimState, wDepth, swimT, py, ground, px, pz));
+                swimState = 0;
+            }
+            swimmingLast = swimNow;
+
             // grounded / step / drop - engine rules (KCharacter::ProcessVerticalMove
             // 0x140318E73 clamps y = min(y, ground); the 64 u = 1 尺 landing
             // tolerance at 0x14031A25E):
@@ -4187,29 +4225,24 @@ internal static class RebornClient
                     // (consumer 0x14031377D).
                     Log("jump reject: parachute flag set (bOnParachuteFlag [+0x214], spec §3.6)");
                 }
-                else if (inWater)
+                else if (swimState != 0)
                 {
-                    if (moving)
-                    {
-                        if (swimLog) Log("swim: jump ignored while moving (state 8 starts from standing in water, spec §1.3/§1.5)");
-                    }
-                    else
-                    {
-                        // SWIM_JUMP: logic state 8 (setter 0x14031C400: state 1 +
-                        // tower/parachute/hold flags clear) - carries NO velocity.
-                        // REGISTERED PROVISIONAL P2: reuse the calibrated plain
-                        // profile impulse. Re-open: trace the state-8 velocity writer.
-                        int[] t0 = JumpTable.Triples[jumpSchool][0];
-                        int jg = t0[2]; if (jg < 0) jg = 0; else if (jg > 31) jg = 31;
-                        vy = t0[1] * 15f * jumpScale;
-                        curJumpGravity = jg * 225f * jumpScale;
-                        grounded = false;
-                        airStartY = py;
-                        jumpCount = 1;
-                        swimState = 8;
-                        Log(string.Format("swim: jump state=8 [P2 REGISTERED PROVISIONAL - impulse not decoded, using plain profile] triple={0},{1},{2} vy={3:F0} pos=({4:F0},{5:F0},{6:F0})",
-                            t0[0], t0[1], t0[2], vy, px, py, pz));
-                    }
+                    // Input jump in water = state 5 (SPEC_STATES_P2 §3): the plain
+                    // jump profile from the common velocity store, accepted from
+                    // states 1..7 in deep water. Shallow water never reaches here
+                    // (no swim state) and takes the normal jump path. State 8 is
+                    // the SwimTo script path only (documented, not a key).
+                    int[] t0 = JumpTable.Triples[jumpSchool][0];
+                    int jg = t0[2]; if (jg < 0) jg = 0; else if (jg > 31) jg = 31;
+                    vy = t0[1] * 15f * jumpScale;
+                    curJumpGravity = jg * 225f * jumpScale;
+                    grounded = false;
+                    airStartY = py;
+                    jumpCount = 1;
+                    swimState = 0;          // leave the float; water re-entry sets 7
+                    swimmingLast = false;
+                    Log(string.Format("swim: jump state=5 (plain profile, P2 §3) triple={0},{1},{2} vy={3:F0} pos=({4:F0},{5:F0},{6:F0})",
+                        t0[0], t0[1], t0[2], vy, px, py, pz));
                 }
                 else
                 {
@@ -4364,25 +4397,19 @@ internal static class RebornClient
                 }
             }
 
-            // Swim float (SPEC §1.3): PVM clamps y = max(y, cellTop - scaled
-            // [+0x170]) in states 6/7 (clamp-up only; 0x31A285). With modifier
-            // 0 the character floats AT the surface. Below-surface push is P3
-            // (not decoded -> not invented; the clamp is the decoded behavior).
+            // Swim float (SPEC_STATES_P2 §4): states 6/7 hold the root at the
+            // surface (y = max(ground, cellTop); the [+0x170] clamp is secondary
+            // via RC_FLOATMOD). The float was applied at the post-move water
+            // evaluation; here the vertical integrator is bypassed while
+            // swimming. Below-surface push stays P3 (not decoded, not invented).
             // Fly/suspend harness (RC_SUSPEND_DEMO): game states 0x1F/0x21 are
             // skill/script driven; the harness hovers and logs the decoded
             // state codes - labeled HARNESS, never game behavior (P5).
-            if (!grounded && inWater && vy <= 0f)
+            if (swimState != 0)
             {
-                swimState = moving ? 6 : 7;
                 vy = 0f;
-                if (py < wFloat) py = wFloat;
-                jumpCount = 0;
-                if (swimLog && now - lastSwimLog >= 1000)
-                {
-                    lastSwimLog = now;
-                    Log(string.Format("swim: state={0} surface={1:F0} float={2:F0} y={3:F0} depth={4:F0} pos=({5:F0},{6:F0})",
-                        swimState, wSurf, wFloat, py, wSurf - py, px, pz));
-                }
+                float floorY = Math.Max(ground, wSurf - wFloatMod);
+                if (py < floorY) py = floorY;
             }
             else if (!grounded && suspendDemo && now < suspendUntil)
             {

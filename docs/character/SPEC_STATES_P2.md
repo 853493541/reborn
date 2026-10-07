@@ -360,3 +360,33 @@ water JSON extraction under `ext\out3\...\water\surface\`; repo:
 `proof/gravity/disasm/{get_waterline,kcharacter_jump,swim_to,process_vertical_move,process_acceleration}.txt`.
 
 Last verified: 2026-10-07 (release 1-5-0 binaries static; exp 1-6 loader delta string check only).
+
+---
+
+## Implementation note (2026-10-07, `agent/3x-states`)
+
+Implemented per the acceptance criteria above; proofs in
+`proof/character/3x_states/p2_*`.
+
+- Region = authored rectangle (center `Postion`, half-extents
+  `0.5*BaseWidth*ScaleX` x `0.5*BaseLenght*ScaleZ`, yaw `RotY`, `ground < surface`;
+  type 0 global). P1-provisional, labeled in the startup line.
+- Entry from ground movement: post-move evaluation (no `!grounded` gate); state 6
+  moving / 7 idle at `depth >= T` (default 627, `RC_SWIM_DEPTH`); the float
+  `y = max(ground, surface - RC_FLOATMOD)`; exit at `depth < T` or leaving the
+  region, `swimState` reset. Input jump in water = state 5 (plain profile),
+  shallow = normal jump; the old key->state-8 path is removed (script only).
+- **Correction to criterion 2 (evidence-first):** the gate quantity is the LOCAL
+  water depth `surface - ground`, not `surface - max(ground, y)`. Once the player
+  floats at the surface the submersion form yields 0, so a sustained 6/7 state
+  would exit on the next tick - observed in the first implementation
+  (`swim: exit state=6->0 depth=0` immediately after entering). The local-depth
+  form matches section 1 ("walking on the bottom: depth = the local water depth")
+  and the case-3 sustained keep; entry from air also uses it (state 4 + `Vz<0` +
+  local depth >= T).
+- Proofs: `p2_walkthrough.txt` (walk in: `enter state=6 surface=150 depth=1002
+  y=-852` -> `exit state=6->0 ... y=150` at the far edge), `p2_idle.txt`
+  (`enter state=7` -> `y=150`), `p2_shallow_wade.txt` (T=1500: no swim, walks the
+  floor), `p2_jump_deep.txt` (`swim: jump state=5` -> re-entry state 7),
+  `p2_jump_shallow.txt` (normal jump). Gates: build 0, smoke ALL PASS, collision
+  36/36.

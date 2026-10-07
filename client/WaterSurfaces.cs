@@ -12,7 +12,7 @@ internal static class WaterSurfaces
     public struct Body
     {
         public int Type;
-        public float X, Y, Z, ScaleX, ScaleZ, BaseW, BaseL, Depth;
+        public float X, Y, Z, ScaleX, ScaleZ, BaseW, BaseL, Depth, RotY;
     }
 
     static readonly Body[] None = new Body[0];

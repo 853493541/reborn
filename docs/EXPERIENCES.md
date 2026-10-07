@@ -5180,3 +5180,22 @@ power-pool values remain undecoded (re-open criteria in the doc).
 - Proofs: `proof/character/3x_motion/p2_*.txt` + the README P2 table; spec note
   appended to SPEC_MOTION_P2.md.
 
+
+### 2026-10-07 - 3x-states E2: water entry rebuilt from the client semantics
+
+- Bug: walking into water never entered swim (the host required airborne +
+  pinned the player to the basin floor). Rebuilt per SPEC_STATES_P2: authored-
+  rectangle region (RotY; replaces the invented radius), post-move evaluation,
+  depth gate T=627 (RC_SWIM_DEPTH) with wade below it, state 6/7 entry from
+  ground movement, float y=max(ground,surface), auto-exit + swimState reset,
+  input jump = state 5 (plain profile; shallow = normal jump), key->state-8
+  removed (script only).
+- Evidence-first correction: the gate must use the LOCAL water depth
+  (surface-ground); the addendum's `surface-max(ground,y)` form goes to 0 once
+  floated and exited the state every tick (first run: `exit state=6->0 depth=0`
+  right after entering). Fixed and noted on the addendum.
+- Proofs: p2_walkthrough (enter 6 at depth 1002 -> float -> exit at the edge),
+  p2_idle (7 at y=150), p2_shallow_wade (T=1500 -> walks the floor),
+  p2_jump_deep (`swim: jump state=5` -> re-entry 7), p2_jump_shallow (normal
+  jump). Gates: build 0, smoke ALL PASS, collision 36/36.
+
