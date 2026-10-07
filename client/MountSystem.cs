@@ -31,6 +31,10 @@
 //      BeginJumpOnce->10204).
 //   4. Ride yaw values (0.003465 / 0.0023 1/ms) have no located consumer; turn rate
 //      stays the camera-row value. Re-open when the represent consumer is decoded.
+//   5. Mounted airborne press: the client's move-record path calls DownHorse
+//      (jump-off) at 0x140313A30; the host has no server move records ([+0x1F8]),
+//      so the press is rejected and the mount kept (user directive). Re-open when
+//      a move-record layer exists.
 
 using System;
 using MovieEngineCLR;
@@ -67,6 +71,7 @@ internal sealed class MountState
     public bool Dbg;
     public IntPtr SeatActor = IntPtr.Zero;
     public int SeatIdx = -1;
+    public float FacingOffset;   // horse yaw offset so its authored forward == rider forward
     private long lastSeatDbg;
     public KGModelCLR Model_;
     public string CurHorseClip;
@@ -134,13 +139,14 @@ internal sealed class MountState
         if (!Mounted) return;
         try
         {
+            float hyaw = yaw + FacingOffset;
             if (Math.Abs(x - lastX) > 0.5f || Math.Abs(y - lastY) > 0.5f ||
-                Math.Abs(z - lastZ) > 0.5f || Math.Abs(yaw - lastYaw) > 0.01f)
+                Math.Abs(z - lastZ) > 0.5f || Math.Abs(hyaw - lastYaw) > 0.01f)
             {
                 // same-name AddDummyModel keeps the handle and the running clip
                 // (proven player pattern, client/RebornClient.cs placePlayer).
                 var pos = new CLRfloat3(); pos.x = x; pos.y = y; pos.z = z;
-                float half = yaw * 0.5f;
+                float half = hyaw * 0.5f;
                 var rot = new CLRfloat4();
                 rot.x = 0f; rot.y = (float)Math.Sin(half); rot.z = 0f; rot.w = (float)Math.Cos(half);
                 var scl = new CLRfloat3(); scl.x = 1f; scl.y = 1f; scl.z = 1f;
@@ -148,7 +154,7 @@ internal sealed class MountState
                 Handle = scene.AddDummyModel("mount_horse", Model, pos, rot, scl);
                 if (Dbg && Handle != prev)
                     log("mount dbg: re-add handle " + prev + " -> " + Handle + " at (" + (int)x + "," + (int)y + "," + (int)z + ")");
-                lastX = x; lastY = y; lastZ = z; lastYaw = yaw;
+                lastX = x; lastY = y; lastZ = z; lastYaw = hyaw;
             }
             if (Handle != AttachedHandle)
             {
@@ -159,6 +165,7 @@ internal sealed class MountState
                 SeatActor = IntPtr.Zero;
                 SeatIdx = -1;
                 ResolveSeat(log);
+                ResolveFacing(log);
             }
             string want = !grounded ? ClipJump : moving ? ClipRun : ClipIdle;
             if (want != CurHorseClip)
@@ -169,6 +176,43 @@ internal sealed class MountState
             }
         }
         catch (Exception e) { log("mount update ex: " + e.Message); }
+    }
+
+    // Horse facing: the horse model's authored forward is derived from its own
+    // skeleton (tail -> head, Horse_01 bones `bip01_horse tail` / `bip01_horse head`),
+    // not guessed. The placement convention maps a model vector (x,z) by yaw h to
+    // world angle alpha - h; the rider forward (-sin r, -cos r) has angle
+    // gamma(r) = -pi/2 - r, so the horse needs h = r + (alpha + pi/2) - a constant
+    // offset computed once per mount.
+    private void ResolveFacing(Action<string> log)
+    {
+        FacingOffset = 0f;
+        try
+        {
+            int hi = -1, ti = -1;
+            IntPtr ha = CameraShim.FindBoneActor(new IntPtr(Handle), "bip01_horse head", out hi);
+            IntPtr ta = CameraShim.FindBoneActor(new IntPtr(Handle), "bip01_horse tail", out ti);
+            float[] mh = new float[16], mt = new float[16];
+            if (ha != IntPtr.Zero && hi != -1 && ta != IntPtr.Zero && ti != -1 &&
+                CameraShim.ActorBoneMatrix(ha, hi, mh) == 0 &&
+                CameraShim.ActorBoneMatrix(ta, ti, mt) == 0)
+            {
+                double fx = mh[12] - mt[12], fz = mh[14] - mt[14];
+                double len = Math.Sqrt(fx * fx + fz * fz);
+                if (len > 1e-3)
+                {
+                    fx /= len; fz /= len;
+                    double alpha = Math.Atan2(fz, fx);
+                    FacingOffset = (float)(alpha + Math.PI / 2.0);
+                    log(string.Format(
+                        "mount facing: tail->head f=({0:F2},{1:F2}) alpha={2:F0}deg offset={3:F0}deg (model-Z dot {4:F2})",
+                        fx, fz, alpha * 180.0 / Math.PI, FacingOffset * 180.0 / Math.PI, -fz));
+                }
+                else log("mount facing: head/tail coincide (offset 0)");
+            }
+            else log("mount facing: horse bones unresolved (offset 0)");
+        }
+        catch (Exception e) { log("mount facing ex: " + e.Message); }
     }
 
     // Seat bone: the horse skeleton carries `b_hs` (idx 10 in Horse_01, parsed
@@ -191,7 +235,7 @@ internal sealed class MountState
     // (`f1bqg_horse_run.ani`) is authored relative to this bind point, so the
     // rider model must be PLACED here - the game binds the rider actor to the
     // horse's s_hs; this is the same transform without the socket matrix.
-    public bool SeatWorld(float hx, float hy, float hz, float yaw, Action<string> log,
+    public bool SeatWorld(float hx, float hy, float hz, float riderYaw, Action<string> log,
         out float x, out float y, out float z)
     {
         x = hx; y = hy; z = hz;
@@ -200,6 +244,7 @@ internal sealed class MountState
             if (SeatActor == IntPtr.Zero || SeatIdx == -1) return false;
             float[] m = new float[16];
             if (CameraShim.ActorBoneMatrix(SeatActor, SeatIdx, m) != 0) return false;
+            double yaw = riderYaw + FacingOffset;   // seat local is in the horse's rotated frame
             double ca = Math.Cos(yaw), sa = Math.Sin(yaw);
             double tx = m[12], ty = m[13], tz = m[14];
             x = (float)(hx + tx * ca + tz * sa);

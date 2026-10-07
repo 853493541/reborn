@@ -682,3 +682,31 @@ mounted, no obstruction pulls (`obst=0` throughout, camera r ~1200 stable), full
 mount -> run -> jump -> midair dismount -> remount -> dismount green; screenshots
 `seated_run.png` / `seated_jump_dismount.png` / `seated_idle_remount.png`
 (`image_stats_seatfix_20261006.txt`).
+
+### Full-system re-derivation: mounted jump + facing (2026-10-06, `agent/3x-mount`)
+
+Decoded from `JX3ClientX64.exe` (image base `0x140000000`):
+
+| Input / state at press | Decoded guard | Branch taken | Evidence |
+|---|---|---|---|
+| mounted, move record active (`[+0x1F8]!=0`), `jumpCount<1` | `!bit30([+8]) && [+0x1E774]!=0` | horse triple Vxy=word`[g+0x25F50+6*(school+jc)]` (=60), Vz=word`[...+2]` (=180) + `[+0x34C]`, g=word`[...+4]` (=11); `jumpCount++` -> state 4 | `0x140313A40-A88`, `0x140313BBF` |
+| mounted, `jumpCount>=1` | `[+0x1E774]!=0` | reject (bail `0x140313D5E`) | `0x140313A4F-A52` |
+| mounted, `jumpCount==1` airborne, move-record path | `[+0x1E774]!=0 && [+0x330]==1` | `KPlayer::DownHorse(this,0)` (`0x140365C60`) - the "jump off the horse"; flag clears, generic rules run | `0x140313A1A-A30` |
+| mounted, NO move record (`[+0x1F8]==0`) | state in {1..7, 0x1C} | generic land branch: `jumpCount++` (cap `[+0x334]`, <15) + state 4 - the small hop, NOT the horse triple | `0x313975` -> `0x313C22/2F/46` |
+
+- The move-record gate `[+0x1F8]` is written from the server move-record byte
+  (`0x140182814`, sibling of the 天轻功 End trigger `0x140182874`) - a live-server
+  stream; the host has no move records, so `[+0x1F8]` is always 0 here.
+- **Host mapping (implemented):** mounted && `moving` (the host's move-record
+  analogue) && `jumpCount==0` -> horse triple; mounted && `!moving` -> the generic
+  jump (mount kept); mounted && `jumpCount>=1` -> reject, **mount kept** (no
+  jump-off; registered host deviation 5, re-open with a move-record layer).
+- **Facing** is derived from the model's own skeleton: `bip01_horse tail` ->
+  `bip01_horse head` = `(0.00,-1.00)` in model XZ => the authored forward is `-Z`
+  (identical to the player), placement offset = `alpha + pi/2` = **0 deg**. Logged
+  per mount: `mount facing: tail->head f=(0.00,-1.00) alpha=-90deg offset=0deg
+  (model-Z dot 1.00)`.
+- **Proof:** `proof/character/mount/run_20261006_221647_fullsystem.txt` (idle ->
+  generic jump; moving -> triple; airborne double press -> reject + mount kept;
+  mounted at stop; dismount; DONE) + `fs_idle_mounted.png` / `fs_moving_jump.png` /
+  `fs_after_double_press.png` + `image_stats_fullsystem_20261006.txt`.
