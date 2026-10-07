@@ -3622,6 +3622,15 @@ int main(void)
                                     if (val != NULL &&
                                         *(void**)val == (void*)((BYTE*)g_repModule + 0xC99D30))
                                     {
+                                        __try
+                                        {
+                                            HMODULE lua60 = GetModuleHandleA("Engine_Lua5X64.dll");
+                                            if (lua60 != NULL)
+                                                logf("[host] frame60: lua=%p gOpenFile(0x170040)=%p",
+                                                     lua60, *(void**)((BYTE*)lua60 + 0x170040));
+                                        }
+                                        __except (EXCEPTION_EXECUTE_HANDLER)
+                                        { logf("[host] frame60: lua probe fault"); }
                                         logf("[host] frame60: invoke RL table task[%d] val=%p",
                                              n, val);
                                         // the timed wrapper reads the step
