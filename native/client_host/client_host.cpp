@@ -234,6 +234,122 @@ static void __fastcall hookTableBuilder(void* a1, unsigned a2, void* a3, void* a
     ((void (__fastcall *)(void*, unsigned, void*, void*))g_buildTramp)(a1, a2, a3, a4);
 }
 
+// --- lua file-layer trace hooks (Gate 1: RL table load) ---------------------
+// The RL table runner opens its tables through Engine_Lua5X64's file layer
+// (g_OpenIniFile -> g_OpenFile -> KG_OpenPakV4File). These hooks log the
+// name/path/result at each step so the wild call can be localized.
+// Static ground truth (exports of Engine_Lua5X64.dll):
+//   0xB5400 g_SetRootPath    -> root string 0x170060 (trailing sep stripped)
+//   0xB5220 g_SetFilePath    -> file path   0x170170 (trailing sep ensured)
+//   0xB5380 g_SetPriorRootPath -> prior root 0x1729C0 (pak priority root)
+//   0xCC2D0 KG_InitPakV4FileSystem -> pak mgr 0x1730B8 + type vector 0x1730A0
+//   0xB4390 g_GetFullPath(buf, name)        = root + name (builder 0xB3710)
+//   0xB4570 g_GetPriorFullPath(buf, name)   = prior root + name
+//   0xB2F50 g_OpenFile(name, flags, mode)
+//   0xB5060 g_IsFileExist(path)
+//   0xCC670 KG_OpenPakV4File(name, flags)
+//   0xB1C70 internal loose open(obj, name, mode); vt slot [rax+0x58] + fopen
+static BYTE g_gfpSaved[32];
+static BYTE* g_gfpTramp = NULL;
+static BYTE g_gfp2Saved[32];
+static BYTE* g_gfp2Tramp = NULL;
+static BYTE g_ofSaved[32];
+static BYTE* g_ofTramp = NULL;
+static BYTE g_ifeSaved[32];
+static BYTE* g_ifeTramp = NULL;
+static BYTE g_opv4Saved[32];
+static BYTE* g_opv4Tramp = NULL;
+static BYTE g_looseSaved[32];
+static BYTE* g_looseTramp = NULL;
+
+static void safeCopyStr(char* out, size_t cap, const char* s)
+{
+    out[0] = 0;
+    if (s == NULL || (DWORD64)s < 0x10000)
+        return;
+    __try
+    {
+        size_t i = 0;
+        while (i + 1 < cap && s[i] != 0) { out[i] = s[i]; i++; }
+        out[i] = 0;
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    { out[0] = 0; }
+}
+
+static void __fastcall hookGetFullPath(void* buf, const char* name, void* a3, void* a4)
+{
+    char n[260];
+    safeCopyStr(n, sizeof(n), name);
+    logf("[host] lua GetFullPath name='%s'", n);
+    ((void (__fastcall *)(void*, const char*, void*, void*))g_gfpTramp)(buf, name, a3, a4);
+    char r[260];
+    safeCopyStr(r, sizeof(r), (const char*)buf);
+    logf("[host] lua GetFullPath -> '%s'", r);
+}
+
+static void __fastcall hookGetPriorFullPath(void* buf, const char* name, void* a3, void* a4)
+{
+    char n[260];
+    safeCopyStr(n, sizeof(n), name);
+    logf("[host] lua GetPriorFullPath name='%s'", n);
+    ((void (__fastcall *)(void*, const char*, void*, void*))g_gfp2Tramp)(buf, name, a3, a4);
+    char r[260];
+    safeCopyStr(r, sizeof(r), (const char*)buf);
+    logf("[host] lua GetPriorFullPath -> '%s'", r);
+}
+
+static void* __fastcall hookOpenFileLua(const char* name, int flags, int mode)
+{
+    char n[260];
+    safeCopyStr(n, sizeof(n), name);
+    logf("[host] lua g_OpenFile name='%s' flags=%d mode=%d", n, flags, mode);
+    void* r = ((void* (__fastcall *)(const char*, int, int))g_ofTramp)(name, flags, mode);
+    logf("[host] lua g_OpenFile -> %p", r);
+    return r;
+}
+
+static int __fastcall hookIsFileExist(const char* path)
+{
+    char n[260];
+    safeCopyStr(n, sizeof(n), path);
+    logf("[host] lua g_IsFileExist path='%s'", n);
+    int r = ((int (__fastcall *)(const char*))g_ifeTramp)(path);
+    logf("[host] lua g_IsFileExist -> %d", r);
+    return r;
+}
+
+static void* __fastcall hookOpenPakV4(const char* name, int flags)
+{
+    char n[260];
+    safeCopyStr(n, sizeof(n), name);
+    HMODULE lua = GetModuleHandleA("Engine_Lua5X64.dll");
+    void* mgr = (lua != NULL) ? *(void**)((BYTE*)lua + 0x1730B8) : NULL;
+    char d[64] = {0};
+    __try
+    {
+        if (mgr != NULL)
+            describeAddr((DWORD64)(*(void***)mgr)[2], d, sizeof(d));
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    { strcpy_s(d, sizeof(d), "?"); }
+    logf("[host] lua KG_OpenPakV4File name='%s' flags=%d mgr=%p vt2=%s",
+         n, flags, mgr, d);
+    void* r = ((void* (__fastcall *)(const char*, int))g_opv4Tramp)(name, flags);
+    logf("[host] lua KG_OpenPakV4File -> %p", r);
+    return r;
+}
+
+static int __fastcall hookLooseOpen(void* obj, const char* name, int mode)
+{
+    char n[260];
+    safeCopyStr(n, sizeof(n), name);
+    logf("[host] lua looseOpen obj=%p name='%s' mode=%d", obj, n, mode);
+    int r = ((int (__fastcall *)(void*, const char*, int))g_looseTramp)(obj, name, mode);
+    logf("[host] lua looseOpen -> %d", r);
+    return r;
+}
+
 // trace the exe's KJX3RepresentModule::Initialize (the game's own param fill)
 static BYTE g_exeInitSaved[32];
 static BYTE* g_exeInitTramp = NULL;
@@ -423,6 +539,7 @@ static volatile LONG g_movieWatchArmed = 0;
 static void* g_engineInstance = NULL;
 static void* g_engIface = NULL;
 static BYTE* g_taskInvokeStub = NULL;
+static HMODULE g_luaModule = NULL;
 static volatile LONG g_flagWatchHit = 0;
 static BYTE g_ctwSaved[32];
 static BYTE* g_ctwTramp = NULL;
@@ -853,8 +970,8 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
             logf("[VEH] exc=0x%08X at=%p (module?)", ep->ExceptionRecord->ExceptionCode,
                  ep->ExceptionRecord->ExceptionAddress);
         }
-        // stack trace for the first few AVs inside the represent module or the
-        // CRT (a memset AV shows as VCRUNTIME140+0x17B0 - need its caller).
+        // stack trace for AVs (a wild call lands outside every known module -
+        // always trace, the caller chain identifies the faulting call site).
         static int vehTraces = 0;
         DWORD64 fa = (DWORD64)ep->ExceptionRecord->ExceptionAddress;
         int inRep = (g_repModule != NULL && fa >= (DWORD64)g_repModule &&
@@ -863,6 +980,8 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
                      fa < (DWORD64)g_exeModule + 0x1000000);
         int inCrt = 0;
         int inNtdll = 0;
+        int inLua = (g_luaModule != NULL && fa >= (DWORD64)g_luaModule &&
+                     fa < (DWORD64)g_luaModule + 0x200000);
         {
             HMODULE m = NULL;
             if (GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
@@ -878,7 +997,8 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
                     inNtdll = 1;
             }
         }
-        if ((inRep || inCrt || inExe || inNtdll) && vehTraces < 12)
+        if ((inRep || inCrt || inExe || inNtdll || inLua || vehTraces < 6) &&
+            vehTraces < 24)
         {
             vehTraces++;
             void* frames[20];
@@ -1361,7 +1481,6 @@ static HANDLE g_mainThreadHandle = NULL;
 static HANDLE g_logicThread = NULL;
 static HMODULE g_logicModule = NULL;
 static HMODULE g_x3dModule = NULL;
-static HMODULE g_luaModule = NULL;
 
 static void describeAddr(DWORD64 a, char* out, size_t n)
 {
@@ -2039,11 +2158,38 @@ int main(void)
             typedef void (__cdecl *SetRootFn)(const char*);
             ((SetRootFn)((BYTE*)lua + 0xB5400))(rootA);
             ((SetRootFn)((BYTE*)lua + 0xB5220))(rootA);
-            typedef int (__cdecl *InitPakFn)(const char*, const char*, const char*,
-                                             int, int, int, int, int, void*);
-            int pr = ((InitPakFn)((BYTE*)lua + 0xCC2D0))(
-                "C:/SeasunGame/Game/JX3/Pakv4", "Trunk.Dir", "", 0, 0, 0, 0, 0, (void*)"");
-            logf("[host] file layer init=%d", pr);
+            logf("[host] lua SetRootPath/SetFilePath('%s') done", rootA);
+            // The sandbox serves loose files only; the game's own pak config object
+            // (JX3ClientX64 exe+0xB3D4A context) is not available in-host, so the
+            // pak subsystem stays uninitialized by default (KG_OpenPakV4File then
+            // takes its documented loose-file branch). RC_HOST_PAK=1 keeps the old
+            // pak probing path for comparison.
+            {
+                char pakFlag[8];
+                if (GetEnvironmentVariableA("RC_HOST_PAK", pakFlag, sizeof(pakFlag)) != 0)
+                {
+                    typedef int (__cdecl *InitPakFn)(const char*, const char*, const char*,
+                                                     int, int, int, int, int, void*);
+                    int pr = ((InitPakFn)((BYTE*)lua + 0xCC2D0))(
+                        "C:/SeasunGame/Game/JX3/Pakv4", "Trunk.Dir", "", 0, 0, 0, 0, 0, (void*)"");
+                    logf("[host] file layer InitPak=%d (RC_HOST_PAK=1)", pr);
+                }
+                else
+                    logf("[host] file layer InitPak skipped (loose only)");
+            }
+            logf("[host] lua file hooks gfp=%d gfp2=%d of=%d ife=%d opv4=%d loose=%d",
+                 installInlineHook(lua, 0xB4390, (void*)hookGetFullPath,
+                                   g_gfpSaved, &g_gfpTramp, 15),
+                 installInlineHook(lua, 0xB4570, (void*)hookGetPriorFullPath,
+                                   g_gfp2Saved, &g_gfp2Tramp, 15),
+                 installInlineHook(lua, 0xB2F50, (void*)hookOpenFileLua,
+                                   g_ofSaved, &g_ofTramp, 15),
+                 installInlineHook(lua, 0xB5060, (void*)hookIsFileExist,
+                                   g_ifeSaved, &g_ifeTramp, 15),
+                 installInlineHook(lua, 0xCC670, (void*)hookOpenPakV4,
+                                   g_opv4Saved, &g_opv4Tramp, 15),
+                 installInlineHook(lua, 0xB1C70, (void*)hookLooseOpen,
+                                   g_looseSaved, &g_looseTramp, 18));
             // the game initializes the engine's size-class allocator early; the
             // client logic module's SO3World (5.6 MB) allocates through it.
             {
@@ -3119,7 +3265,8 @@ int main(void)
             maxFrames = 2000000;
         logf("[host] frame budget=%d keep=%s", maxFrames,
              (maxFrames > 100000) ? "yes" : "no");
-        for (int f = 0; f < maxFrames; f++)
+        int frame60Ran = 0;
+        for (int f = 0; f < maxFrames; )
         {
             MSG msg;
             while (PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE))
@@ -3295,8 +3442,10 @@ int main(void)
                 }
                 ResumeThread(g_logicThread);
             }
-            if (f == 60 && g_logicDone && g_so3World != NULL && g_repSingleton != NULL)
+            if (f >= 60 && !frame60Ran && g_logicDone &&
+                g_so3World != NULL && g_repSingleton != NULL)
             {
+                frame60Ran = 1;
                 __try
                 {
                     if (*(void**)((BYTE*)g_repSingleton + 0x100) == NULL)
@@ -3632,18 +3781,37 @@ int main(void)
                                                 logf("[host] frame60: lua+0xBBA30=%p repIAT(0x109A020)=%p",
                                                      (BYTE*)lua60 + 0xBBA30,
                                                      *(void**)((BYTE*)g_repModule + 0x109A020));
-                                                logf("[host] frame60: lua fs cb 170030=%p 170040=%p 170048=%p",
+                                                logf("[host] frame60: lua fs cb 170030=%p 170038=%p 170040=%p 170048=%p",
                                                      *(void**)((BYTE*)lua60 + 0x170030),
+                                                     *(void**)((BYTE*)lua60 + 0x170038),
                                                      *(void**)((BYTE*)lua60 + 0x170040),
                                                      *(void**)((BYTE*)lua60 + 0x170048));
-                                                char pakFlag = *(char*)((BYTE*)lua60 + 0x1729C0);
-                                                logf("[host] frame60: lua pakFlag(0x1729C0)=%d",
-                                                     (int)pakFlag);
-                                                if (pakFlag == 0)
+                                                char rootS[0x110] = {0};
+                                                char fileS[0x110] = {0};
+                                                char priorS[0x110] = {0};
+                                                safeCopyStr(rootS, sizeof(rootS),
+                                                            (const char*)lua60 + 0x170060);
+                                                safeCopyStr(fileS, sizeof(fileS),
+                                                            (const char*)lua60 + 0x170170);
+                                                safeCopyStr(priorS, sizeof(priorS),
+                                                            (const char*)lua60 + 0x1729C0);
+                                                logf("[host] frame60: lua root(0x170060)='%s'", rootS);
+                                                logf("[host] frame60: lua filepath(0x170170)='%s'", fileS);
+                                                logf("[host] frame60: lua priorRoot(0x1729C0)='%s'", priorS);
+                                                void* pakMgr = *(void**)((BYTE*)lua60 + 0x1730B8);
+                                                void* vecB = *(void**)((BYTE*)lua60 + 0x1730A0);
+                                                void* vecE = *(void**)((BYTE*)lua60 + 0x1730A8);
+                                                char mvt[64] = {0};
+                                                char mvt2[64] = {0};
+                                                if (pakMgr != NULL)
                                                 {
-                                                    *(char*)((BYTE*)lua60 + 0x1729C0) = 1;
-                                                    logf("[host] frame60: lua pakFlag set to 1 (pak path)");
+                                                    describeAddr((DWORD64)*(void**)pakMgr, mvt, sizeof(mvt));
+                                                    describeAddr((DWORD64)(*(void***)pakMgr)[2], mvt2, sizeof(mvt2));
                                                 }
+                                                logf("[host] frame60: lua pakMgr(0x1730B8)=%p vt=%s vt2=%s vec=[%p,%p)",
+                                                     pakMgr, mvt, mvt2, vecB, vecE);
+                                                void* otherFs = *(void**)((BYTE*)lua60 + 0x172968);
+                                                logf("[host] frame60: lua otherFs(0x172968)=%p", otherFs);
                                             }
                                         }
                                         __except (EXCEPTION_EXECUTE_HANDLER)
@@ -4665,6 +4833,11 @@ int main(void)
                 }
             }
             Sleep(16);
+            // do not consume the frame budget while the logic worker is still
+            // initializing (it loads tables through the pak now - slow); the
+            // engine keeps pumping in this loop so the worker can progress.
+            if (!(f >= 60 && !g_logicDone))
+                f++;
         }
         logf("[host] frame loop done");
     }
