@@ -2283,3 +2283,22 @@ solved it, and what is still open. **Newest at the bottom.**
 - Viewer: the authored list flow now accepts HandleType 1/2 too (was 3/6) - AsuraPanel's
   Handle_MemberList (type 2) arranges its children; 4/5 remain unhandled and documented.
   A/B stable (20 fuller / 28 fewer), selftest 1240/0/0, audit oob 8784.
+
+### 2026-10-05 ? UI ? FirstItemPosType decode + replay stub classes (OK 1148 -> 1158)
+- FirstItemPosType (runtime +0x2f8) decoded from the engine's jump table at 0x180108964
+  (13 cases): the FIRST ITEM's alignment inside the container sets the flow origin -
+  0 = item's own authored offset, 1/10 bottom, 3 v-center, 5/7 right, 6 h-center,
+  8/11 bottom-right, 9 right-center, 12 bottom-center, 2/4 origin. Implemented as the
+  flow origin in UiLayout (evidence appended to kgui_handle_layout.txt).
+- Replay stub classes fixed (harness): camelCase predicates is<Upper> return a false
+  function (isPlaying/isItemShow were hitting the ^i numeric rule); the number type
+  metatable gains __index/__newindex/__len (scripts index/assign/len a stub 0 - the
+  missing __newindex was the "attempt to index a number value" on ASSIGNMENT);
+  JSON.decode(table) passes tables through (Selfie). Batch: 1148 -> **1158 OK / 53 ERR**;
+  flipped CampFireworks, IdentityPanel, NumericalPanel, QuestGuide, LuckyPerson,
+  CrossingChoosePanel, InterludePanel, InterludeHSLHPanel, Partner, EYaShaInterlude.
+- Gap report: drag registration reclassified as interaction (not static layout);
+  state-bearing visual drops 32 -> **22** (arrangement 1 + render 21).
+- Remaining ERR classes: 18 no-entry (base-class scripts), pairs/sort on a nil module
+  global, table.concat with a table element (~5), nil-upvalue indexes, assert in Init.
+- Verified: replay_summary OK=1158 ERR=53; --selftest 1240/0/0; commits 83d913e, 0570050, 02e1186.
