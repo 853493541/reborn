@@ -5488,6 +5488,15 @@ int main(void)
                                     { logf("[host] frame60: emgr vt[8] fault"); }
                                     logf("[host] frame60: Init args c0=%p emgr=%p a3=%p",
                                          c0, emgr, a3);
+                                    __try
+                                    {
+                                        unsigned* reg = (unsigned*)((BYTE*)g_repSingleton
+                                                                    + 0x262C0);
+                                        logf("[host] frame60: delegate registry @ +0x262C0 count=%u array=%p",
+                                             *reg, *(void**)((BYTE*)reg + 8));
+                                    }
+                                    __except (EXCEPTION_EXECUTE_HANDLER)
+                                    { logf("[host] frame60: registry probe fault"); }
                                     void* ir = ((void* (__fastcall *)(void*, void*,
                                                       void*))
                                                ((BYTE*)g_repModule + 0x36DA50))(
