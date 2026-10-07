@@ -2260,3 +2260,12 @@ solved it, and what is still open. **Newest at the bottom.**
   items unchanged in Handle_List. A/B: 19 fuller / 29 fewer, no collapse; selftest 1240/0/0; audit
   oob 8804 (the +117 over baseline = scroll content logically overflowing viewports that now clip).
 - Verified: --selftest 1240/0/0; --audit oob=8804; commit 98b619f.
+
+### 2026-10-05 ? UI ? AppendItemFromData wired via CreateItemData (GuildBankPanel 68 -> 359)
+- The last dropped item-creation class: `CreateItemData(ini, proto)` creates a data source, then
+  the script loops `AppendItemFromData(data)` (GuildBankPanel's bytecode: `for i = 1, 98 do ... end` -
+  the row count is authored in the script). The recorder serializes the data arg as the source's
+  tostring `[GuildBankPanel]`; the viewer now stores CreateItemData per window and materializes each
+  AppendItemFromData row from that ini+section, through the same owning-list container logic.
+- GuildBankPanel 68 -> 359 sections (98 rows), SocialPanel 5 rows; gap report's item-creation 103 -> 0.
+  Verified: --selftest 1240/0/0; --status guildbankpanel sections=359.

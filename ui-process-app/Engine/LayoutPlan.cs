@@ -694,6 +694,8 @@ namespace UiProcessApp.Engine
         var lastCloneByContainer = new Dictionary<string, IniSection>(StringComparer.OrdinalIgnoreCase);
         // receiver section -> containers its appends landed in (the engine's item list)
         var containersByReceiver = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+        // window -> its CreateItemData source (ini + prototype section)
+        var itemDataSources = new Dictionary<string, (string IniPath, string Section)>(StringComparer.OrdinalIgnoreCase);
             int applied = 0;
             foreach (var line in lines)
             {
@@ -789,7 +791,6 @@ namespace UiProcessApp.Engine
                         applied++;
                         break;
                     case "AppendItemFromIni":
-                    case "AppendItemFromData":
                     case "AppendContentFromIni":
                     {
                         // AppendItemFromIni(container, iniPath, item [, flag]) and
@@ -798,35 +799,36 @@ namespace UiProcessApp.Engine
                         var source = FindAppendSource(filtered, iniPath, parts, sourceCache);
                         if (source != null)
                         {
-                            // The engine appends the clone into the list that owns the
-                            // prototype (its authored parent), not the Lua receiver: the
-                            // scripts call AppendItemFromIni on the window/page while the
-                            // prototype lives under its handle (Page_Progress -> the
-                            // scroll's Handle_QuestList, SelectMacroIconPanel -> Handle_Icon).
-                            var container = ResolveAppendContainer(filtered, section, source);
-                            if (!containersByReceiver.TryGetValue(section.Name, out var receivers))
-                            {
-                                receivers = new List<string>();
-                                containersByReceiver[section.Name] = receivers;
-                            }
-                            if (!receivers.Contains(container.Name)) receivers.Add(container.Name);
-                            if (pendingClear.Remove(container.Name) &&
-                                addedByContainer.TryGetValue(container.Name, out var previous))
-                            {
-                                foreach (var clone in previous) RemoveDescendants(filtered, clone.Name);
-                                previous.Clear();
-                            }
                             var desired = parts.Length > 4 && !string.IsNullOrWhiteSpace(parts[4]) ? parts[4] : null;
-                            var appended = AppendClone(filtered, source, container.Name, desired);
-                            lastCloneByContainer[container.Name] = appended;
-                            if (!addedByContainer.TryGetValue(container.Name, out var list))
-                            {
-                                list = new List<IniSection>();
-                                addedByContainer[container.Name] = list;
-                            }
-                            list.Add(appended);
-                            applied++;
+                            AppendRuntimeItem(filtered, section, source, desired, containersByReceiver,
+                                pendingClear, addedByContainer, lastCloneByContainer, ref applied);
                         }
+                        break;
+                    }
+                    case "AppendItemFromData":
+                    {
+                        // AppendItemFromData(data): the row prototype comes from the
+                        // window's CreateItemData source (its ini + section); the recorded
+                        // data argument is the source's tostring "[<creator>]".
+                        IniSection source = null;
+                        var creator = parts.Length > 2 && parts[2].Length > 2 &&
+                            parts[2][0] == '[' && parts[2][parts[2].Length - 1] == ']'
+                            ? parts[2].Substring(1, parts[2].Length - 2) : null;
+                        if (creator != null && itemDataSources.TryGetValue(creator, out var src))
+                            source = FindAppendSource(filtered, src.IniPath,
+                                new[] { "", "", src.IniPath, src.Section }, sourceCache);
+                        if (source == null)
+                        {
+                            foreach (var kv in itemDataSources)
+                            {
+                                source = FindAppendSource(filtered, kv.Value.IniPath,
+                                    new[] { "", "", kv.Value.IniPath, kv.Value.Section }, sourceCache);
+                                if (source != null) break;
+                            }
+                        }
+                        if (source != null)
+                            AppendRuntimeItem(filtered, section, source, null, containersByReceiver,
+                                pendingClear, addedByContainer, lastCloneByContainer, ref applied);
                         break;
                     }
                     case "AppendItemFromString":
@@ -953,6 +955,12 @@ namespace UiProcessApp.Engine
                         applied++;
                         break;
                     case "CreateItemData":
+                        // The window creates a data source (ini + prototype section) that
+                        // its later AppendItemFromData calls materialize rows from.
+                        if (parts.Length > 3 && !string.IsNullOrWhiteSpace(parts[3]))
+                            itemDataSources[section.Name] = (parts[2], parts[3]);
+                        applied++;
+                        break;
                     case "SetObject":
                     case "SetObjectIcon":
                     case "SetObjectSelected":
@@ -1229,6 +1237,40 @@ namespace UiProcessApp.Engine
             if (!string.IsNullOrWhiteSpace(parentName) && TryFind(file, parentName, out var parent))
                 return parent;
             return ResolveContentTarget(file, receiver);
+        }
+
+        /// <summary>
+        /// Materializes one runtime item: clones the prototype into its owning list,
+        /// records the container for the receiver's later arrangement passes and drops
+        /// the previous generation on a deferred Clear.
+        /// </summary>
+        private static void AppendRuntimeItem(IniFile filtered, IniSection receiver, IniSection source,
+            string desired, Dictionary<string, List<string>> containersByReceiver, HashSet<string> pendingClear,
+            Dictionary<string, List<IniSection>> addedByContainer, Dictionary<string, IniSection> lastCloneByContainer,
+            ref int applied)
+        {
+            var container = ResolveAppendContainer(filtered, receiver, source);
+            if (!containersByReceiver.TryGetValue(receiver.Name, out var receivers))
+            {
+                receivers = new List<string>();
+                containersByReceiver[receiver.Name] = receivers;
+            }
+            if (!receivers.Contains(container.Name)) receivers.Add(container.Name);
+            if (pendingClear.Remove(container.Name) &&
+                addedByContainer.TryGetValue(container.Name, out var previous))
+            {
+                foreach (var clone in previous) RemoveDescendants(filtered, clone.Name);
+                previous.Clear();
+            }
+            var appended = AppendClone(filtered, source, container.Name, desired);
+            lastCloneByContainer[container.Name] = appended;
+            if (!addedByContainer.TryGetValue(container.Name, out var list))
+            {
+                list = new List<IniSection>();
+                addedByContainer[container.Name] = list;
+            }
+            list.Add(appended);
+            applied++;
         }
 
         private static string FindAssetsRoot(string iniPath)
