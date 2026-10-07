@@ -2864,3 +2864,14 @@ HIGH-confidence findings:
   path's wild call site (0xB1CB5's vt[0xB] or the 0xB1D17 indirect call) as the
   fallback.
 - Evidence: host_exe171-177.out; commits 478090a..b9baebb.
+
+## 2026-10-06 - Next-agent handoff guide written
+
+- Added `docs/engine_host/NEXT_AGENT_HANDOFF.md` (registered in the area README
+  index): the full Gate 1 / RL-table-chain map with the exact addresses, the
+  current blocker (Engine_Lua5X64 file layer: wild call in the pak/loose open;
+  pak flag lua+0x1729C0 was 0; prefix suspect lua+0x1709C0), the ordered next
+  probes, the instrumentation already in the host, the pitfalls (order bugs,
+  CRT guards, stepCtrl/invoke conventions, address-arithmetic traps), the
+  evidence/commit index, and the fallbacks.
+- Evidence: docs commit 5a46839; host_exe146-178.out.
