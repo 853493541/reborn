@@ -588,6 +588,20 @@ static void* __fastcall hookAedfd0(void* a1, void* a2)
     return r;
 }
 
+// Gate 3: KRLScene::InitializeScene (rep+0xADFFE0) - log its self and whether
+// it sets [self+0xF29E8] (the scene node / local-player chain start).
+static BYTE g_isSaved[32];
+static BYTE* g_isTramp = NULL;
+
+static int __fastcall hookInitScene(void* self, unsigned id)
+{
+    int r = ((int (__fastcall *)(void*, unsigned))g_isTramp)(self, id);
+    void* f = (self != NULL) ? *(void**)((BYTE*)self + 0xF29E8) : NULL;
+    logf("[host] InitializeScene(0xADFFE0) self=%p id=%u -> %d [self+0xF29E8]=%p",
+         self, id, r, f);
+    return r;
+}
+
 static int armExecTrace(void* addr)
 {
     CONTEXT ctx;
@@ -2702,6 +2716,9 @@ int main(void)
             g_repModule = rep;
             installInlineHook(rep, 0xAEDFD0, (void*)hookEntityFactory,
                               g_efSaved, &g_efTramp, 12);
+            logf("[host] InitializeScene hook -> %d",
+                 installInlineHook(rep, 0xADFFE0, (void*)hookInitScene,
+                                   g_isSaved, &g_isTramp, 15));
             {
                 char rpFlag[8];
                 if (GetEnvironmentVariableA("RC_HOST_REPINIT", rpFlag, sizeof(rpFlag)) != 0)
