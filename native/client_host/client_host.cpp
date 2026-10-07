@@ -3315,6 +3315,41 @@ int main(void)
                             *(void**)(stepA + 0x10) = stepAlloc;
                             *(void**)stepBuf = stepA;
                             *(void**)(param + 0xC8) = stepBuf;
+                        // param+0xA8 is captured by the RL table tasks (the V
+                        // functors store it at +0x18) and read by the timed
+                        // wrapper as the resource member whose vt[3]() loads the
+                        // table resource. The exe fills it from the dispatcher
+                        // arg; the host uses the RL resource loader.
+                        *(void**)(param + 0xA8) = g_rlLoader;
+                        // try the MapConverter resource manager as the wrapper's
+                        // resource member (the table loads go through the rep
+                        // resource manager)
+                        {
+                            void* conv60 = *(void**)((BYTE*)g_repSingleton + 0x1A0 + 0x260);
+                            if (conv60 != NULL)
+                            {
+                                *(void**)(param + 0xA8) = conv60;
+                                logf("[host] frame60: param+0xA8 = convMgr %p", conv60);
+                            }
+                        }
+                        // probe: the wrapper calls [param+0xA8]'s vt[3](); log the
+                        // candidate members' slots to pick a valid one
+                        __try
+                        {
+                            char b1[64] = {0}, b2[64] = {0}, b3[64] = {0};
+                            if (g_rlLoader != NULL)
+                                describeAddr((DWORD64)(*(void***)g_rlLoader)[3], b1, sizeof(b1));
+                            if (g_ifMgr != NULL)
+                                describeAddr((DWORD64)(*(void***)g_ifMgr)[3], b2, sizeof(b2));
+                            void* cvt = (g_repSingleton != NULL)
+                                ? *(void**)((BYTE*)g_repSingleton + 0x1A0 + 0x260) : NULL;
+                            if (cvt != NULL)
+                                describeAddr((DWORD64)(*(void***)cvt)[3], b3, sizeof(b3));
+                            logf("[host] frame60: vt3 probe: rlLoader=%s mgr=%s convMgr=%s",
+                                 b1, b2, b3);
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: vt3 probe fault"); }
                         }
                         logf("[host] frame60: param logicMgr=%p repMgr=%p",
                              *(void**)(param + 0x98), *(void**)(param + 0xA0));
@@ -3333,6 +3368,63 @@ int main(void)
                              *(void**)(taskList + 0x00), *(void**)(taskList + 0x08),
                              *(void**)(taskList + 0x10), *(void**)(taskList + 0x18),
                              *(void**)(taskList + 0x20), *(void**)(taskList + 0x28));
+                        {
+                            void* sc60 = *(void**)(param + 0xC8);
+                            void* sa60 = (sc60 != NULL) ? *(void**)sc60 : NULL;
+                            logf("[host] frame60: stepCtrl after Init: buf=%p stepA=%p",
+                                 sc60, sa60);
+                            if (sa60 != NULL)
+                            {
+                                void* head = *(void**)((BYTE*)sa60 + 0x70);
+                                void* tail = *(void**)((BYTE*)sa60 + 0x78);
+                                void* cur = *(void**)((BYTE*)sa60 + 0x80);
+                                logf("[host] frame60: stepA list head=%p tail=%p cur=%p",
+                                     head, tail, cur);
+                                int n = 0;
+                                void* nd = head;
+                                while (nd != NULL && n < 12)
+                                {
+                                    void* val = *(void**)((BYTE*)nd + 8);
+                                    char db[64] = {0};
+                                    void* vt = NULL;
+                                    __try { vt = (val != NULL) ? *(void**)val : NULL; }
+                                    __except (EXCEPTION_EXECUTE_HANDLER) { vt = NULL; }
+                                    if (vt != NULL)
+                                        describeAddr((DWORD64)vt, db, sizeof(db));
+                                    logf("[host] frame60: stepA task[%d] node=%p val=%p vt=%s",
+                                         n, nd, val, db);
+                                    nd = *(void**)((BYTE*)nd + 0);
+                                    n++;
+                                }
+                                // the step controller never runs in-host: invoke only
+                                // the RL table-loader task (vtable rep+0xC99D30);
+                                // the other queued tasks are engine-init steps that
+                                // must NOT be re-run here.
+                                nd = head;
+                                n = 0;
+                                while (nd != NULL && n < 12)
+                                {
+                                    void* val = *(void**)((BYTE*)nd + 8);
+                                    if (val != NULL &&
+                                        *(void**)val == (void*)((BYTE*)g_repModule + 0xC99D30))
+                                    {
+                                        void** tvt = *(void***)val;
+                                        logf("[host] frame60: invoke RL table task[%d] val=%p",
+                                             n, val);
+                                        __try
+                                        {
+                                            ((void (__fastcall *)(void*))tvt[1])(val);
+                                        }
+                                        __except (EXCEPTION_EXECUTE_HANDLER)
+                                        { logf("[host] RL table task fault"); }
+                                    }
+                                    nd = *(void**)((BYTE*)nd + 0);
+                                    n++;
+                                }
+                                logf("[host] frame60: after task run [main+0x210]=%p",
+                                     *(void**)((BYTE*)g_repSingleton + 0x210));
+                            }
+                        }
                         // the RL table tasks run through the KGAsyncTask system; the
                         // game polls KGAsyncTaskInterface::FetchResult to apply
                         // finished task results (the tables). Probe it here.

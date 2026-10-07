@@ -2715,3 +2715,31 @@ HIGH-confidence findings:
   KGAsyncTask worker pool is started in-host (CreateGroup/AddTask behavior), and
   (3) who calls V::method1 in the game (vtable call - likely a dispatcher state
   after the Initialize). Evidence: host_exe125-133.out.
+
+## 2026-10-06 - Gate 1: RL table task chain located and driven; wrapper needs the right resource member (last unknown)
+
+- Big step: the SO3Represent::Init DOES queue the RL tasks - they sit in the
+  step controller the host fabricates ([param+0xC8] -> [0] = the list owner;
+  list head/tail/cur at +0x70/+0x78/+0x80). Probed after the Init: 5 tasks
+  (vtables rep+0xC99C90, 0xC99CE0, **0xC99D30 (the RL table loader)**, 0xC99D58,
+  0xC99D80).
+- The tasks are std::function-style functors whose **slot 1** is the work (slot 2
+  is a no-op thunk). Invoking slot 1:
+  - task 0 (vt1 rep+0x3E59F0) and task 3 (rep+0x3E5A40) run long engine-init-like
+    work (task 3 re-runs KG3D_Engine init - it must NOT be re-run in-host);
+  - task 2 (the table loader, vt1 rep+0x3E59C0) reaches the timed wrapper
+    (rep+0x3E3D90, hook fires) - so the host now invokes ONLY task 2.
+- The wrapper's first step: `rcx = [param+0xA8]` (captured by the task at +0x18);
+  `call [rcx]->vt[3](rcx, &out, float)`; the result's [0] is transferred. With
+  param+0xA8 unset (garbage) the call faults at rep+0x3E3DC4 (`mov rsi,[rax]`);
+  tried g_rlLoader (vt[3] = rep+0x18AB6 returns a bad object) and the engine
+  manager (vt[3] = x3d+0x201D0 is a shutdown method) - both wrong; the MapConverter
+  manager is NULL at Init time in-host (built later in frame60).
+- The exe's param+0xA8 = rbx of the module dispatcher (0xBC6A0, `mov rbx, r8`),
+  which is called indirectly (no direct caller found) - its exact object is the
+  last unknown. Next probe: identify the dispatcher's r8 object (the module
+  context) at runtime by hooking the exe's Initialize 0xBC150 entry and logging
+  rbx, then use the same object in-host.
+- State: line 198 still cleared; line 212 still fails (tables NULL). The host
+  currently invokes only the RL table task (others skipped to avoid re-init).
+  Evidence: host_exe134-141.out; commits a3ec137 + this one.
