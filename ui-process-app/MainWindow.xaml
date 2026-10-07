@@ -76,6 +76,7 @@
                                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
         <Border x:Name="LayoutHost" Padding="24"
                 PreviewMouseLeftButtonDown="OnLayoutClick"
+                PreviewMouseLeftButtonUp="OnLayoutMouseUp"
                 MouseMove="OnLayoutMouseMove"
                 PreviewMouseWheel="OnLayoutMouseWheel"
                                         HorizontalAlignment="Left" VerticalAlignment="Top"/>

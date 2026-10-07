@@ -46,15 +46,14 @@ CONSUMED = {
     "FromTextureFile",
     "SetAnimateGroupMouseDown", "SetAnimateGroupMouseOver", "SetAnimateGroupNormal",
     "SetAnimation", "SetLoopCount", "SetTextAutoTipEnabled",
+    "SetDragArea", "RegisterLButtonDrag", "EnableDrag",
     "Expand", "ActivePage",
 }
 ITEM_CREATION = set()
 ARRANGEMENT = set()
 # Drag registration wires interaction, not static layout (the viewer's click/hover
 # server dispatches by control type; drag regions need the interaction layer).
-INTERACTION = {
-    "SetDragArea", "RegisterLButtonDrag", "EnableDrag",
-}
+INTERACTION = set()
 RENDER = {
     "FromIconID",  # data-blocked: the icon id needs the server icon table
 }

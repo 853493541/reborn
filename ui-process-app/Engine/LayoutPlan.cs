@@ -1013,6 +1013,22 @@ namespace UiProcessApp.Engine
                         if (parts.Length > 2) section.Values["$FontColor"] = parts[2];
                         applied++;
                         break;
+                    case "SetDragArea":
+                        // The window's drag region (left, top, right, bottom insets):
+                        // recorded for the viewer's window-move affordance.
+                        if (parts.Length > 4)
+                            section.Values["$DragArea"] = parts[2] + "," + parts[3] + "," + parts[4] + (parts.Length > 5 ? "," + parts[5] : "");
+                        applied++;
+                        break;
+                    case "EnableDrag":
+                        if (parts.Length > 2)
+                            section.Values["$DragEnabled"] = parts[2].Equals("false", StringComparison.OrdinalIgnoreCase) ? "0" : "1";
+                        applied++;
+                        break;
+                    case "RegisterLButtonDrag":
+                        section.Values["$DragRegistered"] = "1";
+                        applied++;
+                        break;
                     case "SetAnimateGroupNormal":
                     case "SetAnimateGroupMouseOver":
                     case "SetAnimateGroupMouseDown":

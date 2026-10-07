@@ -42,6 +42,11 @@ namespace UiProcessApp
         // Wheel scroll offsets per WndScroll section (engine-native viewport scroll).
         private readonly System.Collections.Generic.Dictionary<string, double> _scrollOffsets =
             new System.Collections.Generic.Dictionary<string, double>(StringComparer.Ordinal);
+        // Window move (the engine's moveable windows / SetDragArea): drag the root
+        // background to translate the whole window canvas.
+        private bool _windowDragActive;
+        private System.Windows.Point _windowDragStart;
+        private double _windowDragOffX, _windowDragOffY;
 
         // Render speed: the resolver/texture cache is shared across renders (atlas TGAs
         // decode once per session) and built layouts are cached per window/page/hide so
@@ -733,6 +738,7 @@ namespace UiProcessApp
         /// handler through the interaction server and re-render with the delta applied.</summary>
         private void OnLayoutClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            if (TryBeginWindowDrag(e)) return;
             if (_replayServer == null || _replayIn == null || _replayOut == null) return;
             if (_lastBuild == null || _elementToSection == null || _currentWindow == null) return;
             if (!string.Equals(_currentWindow.Id, _replayWindowId, StringComparison.OrdinalIgnoreCase)) return;
@@ -758,6 +764,18 @@ namespace UiProcessApp
         /// the cursor changes (the scripts' own state handlers, same server).</summary>
         private void OnLayoutMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
+            if (_windowDragActive)
+            {
+                var pos = e.GetPosition(LayoutHost);
+                if (LayoutHost.Child is FrameworkElement dragCanvas)
+                {
+                    dragCanvas.RenderTransform = new System.Windows.Media.TranslateTransform(
+                        _windowDragOffX + (pos.X - _windowDragStart.X),
+                        _windowDragOffY + (pos.Y - _windowDragStart.Y));
+                }
+                e.Handled = true;
+                return;
+            }
             if (_replayServer == null || _replayIn == null || _replayOut == null) return;
             if (_lastBuild == null || _elementToSection == null || _currentWindow == null) return;
             if (!string.Equals(_currentWindow.Id, _replayWindowId, StringComparison.OrdinalIgnoreCase)) return;
@@ -787,9 +805,58 @@ namespace UiProcessApp
             return null;
         }
 
-        /// <summary>Wheel over a WndScroll scrolls its content handle (the engine's native
-        /// viewport scroll): the ScrollHandle subtree is translated by the scroll step,
-        /// clamped to the content extent. The scroll offset resets on re-render.</summary>
+        /// <summary>The engine's moveable windows: a mousedown on the root background
+        /// (within its SetDragArea when one is recorded) starts a window move; the
+        /// canvas is translated by the drag delta (viewer affordance for Moveable=1).</summary>
+        private bool TryBeginWindowDrag(System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (_lastBuild == null || _elementToSection == null) return false;
+            var sectionName = HitTestSection(e.GetPosition(LayoutHost));
+            if (sectionName == null) return false;
+            IniSection rootSec = null;
+            foreach (var kv in _lastBuild.Elements)
+            {
+                if (!ReferenceEquals(kv.Value, _lastBuild.Root)) continue;
+                _lastBuild.Sections.TryGetValue(kv.Key, out rootSec);
+                break;
+            }
+            if (rootSec == null || !string.Equals(sectionName, rootSec.Name, StringComparison.OrdinalIgnoreCase)) return false;
+            bool moveable = rootSec.GetInt("Moveable") == 1 || rootSec.Get("$DragEnabled") == "1" ||
+                            rootSec.Get("$DragArea") != null;
+            if (!moveable) return false;
+            var pos = e.GetPosition(LayoutHost);
+            var area = rootSec.Get("$DragArea");
+            if (!string.IsNullOrWhiteSpace(area))
+            {
+                var parts = area.Split(',');
+                if (parts.Length >= 4 &&
+                    double.TryParse(parts[0], out var l) && double.TryParse(parts[1], out var t) &&
+                    double.TryParse(parts[2], out var r) && double.TryParse(parts[3], out var b))
+                {
+                    double w = rootSec.GetDouble("Width"), h = rootSec.GetDouble("Height");
+                    if (pos.X < l || pos.Y < t || (w > 0 && pos.X > w - r) || (h > 0 && pos.Y > h - b)) return false;
+                }
+            }
+            _windowDragActive = true;
+            _windowDragStart = pos;
+            if (LayoutHost.Child is FrameworkElement canvas && canvas.RenderTransform is System.Windows.Media.TranslateTransform tt)
+            {
+                _windowDragOffX = tt.X;
+                _windowDragOffY = tt.Y;
+            }
+            else
+            {
+                _windowDragOffX = 0;
+                _windowDragOffY = 0;
+            }
+            e.Handled = true;
+            return true;
+        }
+
+        private void OnLayoutMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            _windowDragActive = false;
+        }
         private void OnLayoutMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
             if (_lastBuild == null || _elementToSection == null || _currentWindow == null) return;
