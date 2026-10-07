@@ -2341,3 +2341,14 @@ solved it, and what is still open. **Newest at the bottom.**
   complete state (honest disposition, not a failure).
 - Batch: **OK=1178 ERR=24 NOENTRY=9** of 1,211 scripted; UI_SYSTEM_COVERAGE row updated
   (97.4% of scripted windows fully replayed). Selftest 1240/0/0; gap windows=1202.
+
+### 2026-10-05 ? UI ? insert/JsonDecode tolerances; assert tolerance reverted (OK 1178 -> 1180)
+- `table.insert(t, Table_GetPath(...))`: the stub multi-return gave 0/1/N values and Lua 5.1
+  rejects wrong arg counts. The wrapper keeps the first value (append) or (pos, value) when the
+  first is a number - flips RougeLikeFinal, RougeLikeTimeEvent.
+- `JsonDecode` (the base lib's wrapper, not JSON.decode) now passes tables through - Selfie
+  progressed past the decode error (still ERR later on a nil field).
+- Tried a tolerant `assert` for WulinShenghuiDuizhen (stub-data assert): it flipped that window but
+  BROKE EmotionPanel (its pcall-guarded assert branch changed; 1420 mutations -> 35). Reverted -
+  lesson: an assert inside pcall is control flow, not just a guard.
+- Batch: **OK=1180 ERR=22 NOENTRY=9**; selftest 1240/0/0; gap windows=1202.
