@@ -77,20 +77,34 @@ CreateRLScene. Result: `[main+0x210]` becomes non-null and **KRLScene::Init
 line 27/212 now PASS** — CreateRLScene proceeds far deeper (loads the represent
 lua scripts, sets up entities).
 
-**STATUS (2026-10-07, run 234): Gate 1 and Gate 2 done; Gate 3 in progress.**
+**STATUS (2026-10-07, run 239): Gate 1, Gate 2, Gate 3 done; Gate 4 blocked.**
 - Gate 1: `CreateRLScene` -> `GetRLScene(2)` non-null (non-null 3DScene);
   `m_tabCommon` via `KTableList::LoadConfigureFile`. The "wild call" was a host
   hook-length bug (entityFactory len 16->12), fixed at the root.
 - Gate 2: char chain runs fault-free on the real scene (`0x924B(2)` non-null).
-- Gate 3: `KRLScene::InitializeScene` (rep+0xADFFE0) needs the ECS stack. The
-  host now initializes the named-object manager (`rep+0x920D10`, sets
-  `[rep+0xF51298]`) and the ECS root (`rep+0x924B20`, sets `[rep+0xF512A8]`,
-  creates `root`/`reference`). Remaining blocker: `CreateComponent`
-  (`rep+0xAE5D40`) `bsearch`es a **component-factory registry table** passed
-  into `CreateTransformEntity` (`rep+0xAEE1F0`); the registry is empty in-host
-  (`CreateComponent` line 104 `pRegistry`, then `InitializeScene` line 54). Next:
-  create/populate that ECS registry (the represent ECS init) so
-  `[KRLScene+0xF29E8]` is set and the local-player chain can run.
+- Gate 3 **checkpoint met**: running the engine's own initializers in order -
+  named-object manager (`rep+0x920D10`), ECS root (`rep+0x924B20`), and the
+  **global scene-system init `rep+0xADEFD0`** (no args, registers `"scene[main]"`)
+  - makes `InitializeScene` (`rep+0xADFFE0`) return 1 and set
+  `[KRLScene+0xF29E8]` (non-null). Note: the `0x58CE20` chain is the **camera**
+  lookup (0x1B9D7 -> 0x304650 searches the scene node for `"camera"`), not the
+  local player.
+- Gate 4 **blocked (root cause found)**: the represent's actor/dummy managers
+  (`RLActorMgrNT`, `KRLDummyMgr`) are created by the **logic-driven scene-enter**,
+  not by represent-scene creation. Run 239 has `SO3Represent::Init -> 1`, the real
+  `CreateRLScene` (GBK name, arg9=1), `InitializeScene -> 1`, yet **no** manager
+  event registration fires. The manager API is fully located (see below) but its
+  construction has no static caller (runtime dispatch) and no debugger is installed.
+  Same root as Gate 3's local player (`KSO3World::AddPlayer`, logic-side).
+- Gate 4 API (all located, `rep+`): `RLActorMgrNT::CreateRLActorNT` 0x36D3E5,
+  `RLActorMgrNT::Init` 0x36DA50, `RLActorNT::Init` 0x35C0A9, `LoadModel` 0x35C370,
+  `LoadPart` 0x35CC22, `KRLDummyMgr::Create` 0x40D770, `KRLDummy::CreateDummyEntity`
+  0x409500, `KRLDummyMgr::Init` 0x40F050. Host has an event-register hook on
+  `rep+0x39D560` (len **23** - its `sub rsp,0x80` is 7 bytes; len 20 = illegal
+  instruction) that captures `{vtable,this}`; the RLActorMgrNT handler vtable is
+  `rep+0xC90848`.
+- Next: drive the logic scene-enter (or construct `RLActorMgrNT`), then
+  `CreateRLActorNT` + `LoadModel` F1 + `tools/proof/image_stats.py` proof.
 - `m_tabCommon` is set by the game's own `KTableList::LoadConfigureFile`
   (`"CommonKRL"`).
 - The long-running "wild call" was a **host inline-hook bug**: `hookEntityFactory`
