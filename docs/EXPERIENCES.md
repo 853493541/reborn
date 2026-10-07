@@ -3601,5 +3601,19 @@ HIGH-confidence findings:
 - The `CreateRLActorNT` call is now guarded on Init success (avoids the heap-corruption
   crash when Init fails).
 - Evidence: host_exe252/253.out; static disasm (`rep+0x3E44C1` caller).
+
+## 2026-10-07 - Init's line-86 failure located: the async-task delegate registry is undersized
+
+- The failing call is `rep+0x1B97D` (`0x36A1D0`): `g_pRL->m_AsyncTask.Delegates.Register`
+  (= `Register(registry, edx, this, handler)`). Its first check is `cmp edx,[rcx]; jae
+  error` - so `edx` must be < the registry's entry count.
+- The registry is at **rep_main+0x262C0** (embedded; `[rcx]=count`, `[rcx+8]=array` of
+  0x18-byte entries). `RLActorMgrNT::Init` registers `RLActorMgrNT::_OnRequestCharacterDisplayData`
+  with `edx=0x32` (the `eraqCharacterDisplayData` enum) - and it fails, so the registry's
+  count is < 0x33 in the host (it is normally sized during represent init).
+- So Gate 4's next blocker is initializing the represent async-task delegate registry
+  (`m_AsyncTask.Delegates` at rep_main+0x262C0). Once `Init` succeeds, call
+  `CreateRLActorNT(mgr, F1id, type)` + `RLActorNT::LoadModel`.
+- Evidence: host_exe253.out; static disasm (`0x36A1D0`, `0x36DCC4`).
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
