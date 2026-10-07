@@ -2827,3 +2827,20 @@ HIGH-confidence findings:
   find the game's step processing), then the tables should land in
   [SO3Represent+0x210].
 - Evidence: host_exe165-170.out; commits f846e48, 478090a.
+
+## 2026-10-06 - RL task chain reaches the game's runTasks runner; fault in the lua file layer
+
+- The builder's created register/run tasks land in the STEPBUF's own list (its
+  +0x70), not the stepA's: the host re-walks it after the V task and invokes them
+  with the stub. The runTasks hook fires (the game's own runner 0x80B8C0 runs).
+- The runner opens 'SkillCasterModel' (works), then calls the lua module's
+  g_OpenIniFile (Engine_Lua5X64 export 0xBBA30) -> g_OpenFile (0xB2F50) ->
+  KG_OpenPakV4File (0xCC670) or the loose opener (lua global 0x170040; probed
+  in-host: set, lua+0xB1F80). The fault is a call to a module BASE address
+  (0x7FF7CD600000 in the last run) inside that path - an invalid/unresolved
+  function pointer in the lua file layer.
+- Next probes: (1) identify the faulting module (the describeAddr printed
+  module-unknown - the module list may need the new base); (2) trace
+  KG_OpenPakV4File / the lua file-system init (the host calls SetRoot 0xB5400/
+  0xB5220 + InitPak 0xCC2D0; something else may need init).
+- Evidence: host_exe171-175.out; commits 478090a..2e2e63a.
