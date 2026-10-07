@@ -264,7 +264,6 @@ internal static class RebornClient
         Action loadDatasetNames = delegate
         {
             datasetAbilityNames.Clear();
-            sfxTagNames.Clear();
             try
             {
                 if (!File.Exists(dataPath)) return;
@@ -282,14 +281,26 @@ internal static class RebornClient
                     string mt = StrOf(d, "matched");
                     if (mt == "") continue;   // skip unresolved duplicate rows
                     if (!datasetAbilityNames.Contains(nm)) datasetAbilityNames.Add(nm);
-                    foreach (object po in (object[])pv2)
-                    {
-                        var pd = po as Dictionary<string, object>;
-                        if (pd != null && StrOf(pd, "kind") == "sfx") { sfxTagNames.Add(nm); break; }
-                    }
                 }
             }
             catch (Exception e) { Log("loadDatasetNames ex: " + e.Message); }
+            // sfx-tag category: abilities whose matched tani embeds authored
+            // .Sfx tags (ability_picker\sfx_tags.json, the v5 tani-tag pass).
+            // Independent of whether the process plays them right now - the
+            // engine path creates but does not render yet (SFX_RE_TEST.md).
+            sfxTagNames.Clear();
+            try
+            {
+                string sfxTagsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ability_picker", "sfx_tags.json");
+                if (File.Exists(sfxTagsPath))
+                {
+                    var ser2 = new JavaScriptSerializer();
+                    var root2 = ser2.DeserializeObject(File.ReadAllText(sfxTagsPath, System.Text.Encoding.UTF8)) as Dictionary<string, object>;
+                    if (root2 != null)
+                        foreach (KeyValuePair<string, object> kv in root2) sfxTagNames.Add(kv.Key);
+                }
+            }
+            catch (Exception e) { Log("loadSfxTags ex: " + e.Message); }
         };
 
         // client skill data (ability_picker/tools/build_skill_data.py): icon/desc/
