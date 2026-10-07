@@ -822,18 +822,33 @@ namespace MapUiApp.Engine
                     }
                     return FrameOrGroup(section, fallbackKey, textures, imagePath);
                 }
+                // SetAnimateGroupNormal(group): the resting animation group the engine
+                // selects (CompassPanel/GMPanel set their groups at runtime); the static
+                // render shows it in place of the authored NormalGroup.
+                int NormalFrame()
+                {
+                    var overrideGroup = section.GetInt("$NormalGroup", -1);
+                    if (overrideGroup >= 0 && !string.IsNullOrWhiteSpace(imagePath))
+                    {
+                        var grouped = textures.GetGroupFrame(imagePath, overrideGroup);
+                        if (grouped >= 0) return grouped;
+                    }
+                    return FrameOrGroup(section, "NormalGroup", textures, imagePath);
+                }
                 var frame = type switch
                 {
                     // Buttons render their normal-state frame group; Frame is only a fallback.
                     "WndButton" => disabled
                         ? GroupOr("DisableGroup", "NormalGroup")
-                        : FrameOrGroup(section, "NormalGroup", textures, imagePath),
+                        : NormalFrame(),
                     "WndCheckBox" => disabled
                         ? GroupOr(isChecked ? "CheckAndDisable" : "UnCheckAndDisable",
                                   isChecked ? "CheckAndEnable" : "UnCheckAndEnable")
                         : FrameOrGroup(section, isChecked ? "CheckAndEnable" : "UnCheckAndEnable", textures, imagePath),
                     // Frame=-1 is authored for state/runtime-driven frames; default to 0.
-                    _ => Math.Max(0, section.GetInt("Frame", 0)),
+                    _ => section.Get("$NormalGroup") != null
+                        ? NormalFrame()
+                        : Math.Max(0, section.GetInt("Frame", 0)),
                 };
                 var autoSize = section.GetBool("AutoSize");
                 if (string.IsNullOrWhiteSpace(imagePath))

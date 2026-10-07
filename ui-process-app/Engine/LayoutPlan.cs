@@ -1013,6 +1013,26 @@ namespace UiProcessApp.Engine
                         if (parts.Length > 2) section.Values["$FontColor"] = parts[2];
                         applied++;
                         break;
+                    case "SetAnimateGroupNormal":
+                    case "SetAnimateGroupMouseOver":
+                    case "SetAnimateGroupMouseDown":
+                    {
+                        // Animation groups (CompassPanel/GMPanel): the static render shows
+                        // the Normal group; the hover/pressed groups are recorded for the
+                        // interaction layer (hover dispatches the script's own handlers).
+                        var key = parts[1] == "SetAnimateGroupNormal" ? "$NormalGroup"
+                            : parts[1] == "SetAnimateGroupMouseOver" ? "$MouseOverGroup" : "$MouseDownGroup";
+                        SetValue(section, key, parts, 2);
+                        applied++;
+                        break;
+                    }
+                    case "SetAnimation":
+                    case "SetLoopCount":
+                    case "SetTextAutoTipEnabled":
+                        // Frame animation timeline / tooltip flag: no static layout effect
+                        // (the engine ticks frames and shows tooltips at draw time).
+                        applied++;
+                        break;
                     // ---- control state ----
                     case "Enable":
                         if (parts.Length > 2)
