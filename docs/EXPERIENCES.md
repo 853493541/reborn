@@ -2848,3 +2848,22 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   with our client's thread ids); the render module `KJX3RenderModule::Load` (0x1400B7D20 ->
   `LoadX3DEngine`) is the gate and its caller is runtime-dispatched (module vtable at
   0x140958ED0, no static xrefs).
+
+### 2026-10-07 🔥 V2: the REAL login→GS handoff found — S2C id 7 OnSwitchGS (this is the big one)
+- `KPlayerClient::OnSwitchGS` (handler 0x14014C9B0, fixed size **37 B**): dword @+7, GS IP
+  (network order, `inet_ntoa` at +0x1B), u16 port @+0x1F, dword @+0x21. On receipt the client
+  **tears down the whole session** (DeleteClientPlayer 0x1401743E0 + all subsystem singletons),
+  reconnects to the given GS and runs the real enter flow.
+- Live-proven: sending a crafted id-7 (127.0.0.1:3725, map 296) via `gsend.hex` at 08:35:54 made
+  the client reconnect to our game stub within 4 s; the new session ran the genuine flow
+  (hello → op1 → 0x2FE → id-4 → ApplyEnterScene → 187/188) and the **confirm arrived at 213 s**
+  instead of 300–1657 s; the represent vector rebuilt clean (no `#8=#9` duplicate, no crash).
+- The stub now sends id-7 once per process after the ApplyEnterScene answer (`GAME_SEND_ID7=1`,
+  `ID7_DONE`), producing the two-session flow automatically.
+- Post-confirm A/B (in flight): session A (confirm reply ON) → client confirmed, our id-5 reply
+  went out, client **reconnected 7 s later** (loop). Current run: id-7 flow + confirm reply OFF
+  → observing whether the client STAYS and enters the world.
+- Correction: S2C id 5 = `KQuestList::LoadQuestState` (quest bitfield: [count][count dwords]
+  expanded to bits, parser 0x140327680) — NOT the world attribute array as previously noted.
+- Note: with the world rendered and focused, ESC produces zero reaction until the world UI is
+  active — the user's ESC→character-screen→re-enter shortcut needs a completed entry first.

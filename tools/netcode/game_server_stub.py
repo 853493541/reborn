@@ -111,6 +111,19 @@ def id3_frame(ts=None):
     return bytes(p)
 
 
+def id7_frame(ip="127.0.0.1", port=3725, map_id=296, gs_id=1):
+    """S2C id 7 OnSwitchGS (0x14014C9B0, fixed 37 B): dword @+7 id, IP (network order,
+    inet_ntoa) @+0x1B, u16 port @+0x1F, dword @+0x21 (map). The client tears down the
+    session, reconnects to the GS and re-enters (real login -> world-GS handoff)."""
+    p = bytearray(37)
+    struct.pack_into("<H", p, 0, 7)
+    struct.pack_into("<I", p, 7, gs_id)
+    p[0x1B:0x1F] = socket.inet_aton(ip)
+    struct.pack_into("<H", p, 0x1F, port)
+    struct.pack_into("<I", p, 0x21, map_id)
+    return bytes(p)
+
+
 def handshake_respond(server_name=b"127.0.0.1", timeout=30, recover=1, flag2=1, success=1):
     """S2C id 0x2FF, min size 71 (0x47). Handler 0x140143A30 (OnHandShakeRespond):
     reads dwords at +7/+0xB/+0xF/+0x13, copies 32B ServerName from +0x17 to
@@ -144,6 +157,8 @@ class GameSession(object):
 
 
 CMD_FILE = r"C:\jx3tmp\gsend.hex"
+PORT = 3725
+ID7_DONE = [False]
 
 
 def handle(conn, addr):
@@ -157,6 +172,8 @@ def handle(conn, addr):
     confirmed = [False]
     bind_left = [0]
     next_bind_t = [0.0]
+    id7_sent = ID7_DONE
+    port_used = PORT
     try:
         time.sleep(0.2)
         conn.sendall(hello())
@@ -294,6 +311,18 @@ def handle(conn, addr):
                     else:
                         w("[%s] SYNC id=188 SKIPPED (GAME_SEND188=0)" % time.strftime("%H:%M:%S"))
                     time.sleep(0.3)
+                    if os.environ.get("GAME_SEND_ID7", "1") == "1" and not id7_sent[0]:
+                        # Real login -> world-GS handoff: the client tears down and reconnects
+                        # to the GS (live-verified 2026-10-07: new GAME CONNECT + clean vector).
+                        id7_sent[0] = True
+                        conn.sendall(sess.encrypt(id7_frame(
+                            ip=os.environ.get("GAME_ID7_IP", "127.0.0.1"),
+                            port=int(os.environ.get("GAME_ID7_PORT", str(port_used))),
+                            map_id=int(os.environ.get("GAME_ID4_MAP", "296")),
+                            gs_id=int(os.environ.get("GAME_ID7_GSID", "1")))))
+                        w("[%s] SENT id=7 OnSwitchGS -> %s:%s (client should reconnect)"
+                          % (time.strftime("%H:%M:%S"), os.environ.get("GAME_ID7_IP", "127.0.0.1"),
+                             os.environ.get("GAME_ID7_PORT", str(port_used))))
                     sync_step = 2
                     next_t = time.time() + 6.0
     except Exception as e:
@@ -303,7 +332,7 @@ def handle(conn, addr):
 
 
 def main():
-    global _logf, _rawf
+    global _logf, _rawf, PORT
     port = 3725
     logpath = r"C:\jx3tmp\game_stub.log"
     rawpath = None
@@ -315,6 +344,7 @@ def main():
             logpath = args[i + 1]
         elif a == "--rawlog" and i + 1 < len(args):
             rawpath = args[i + 1]
+    PORT = port
     _logf = open(logpath, "a", encoding="utf-8")
     if rawpath:
         _rawf = open(rawpath, "a", encoding="utf-8")
