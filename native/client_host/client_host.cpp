@@ -603,9 +603,15 @@ static void* __fastcall hookAedfd0(void* a1, void* a2)
     if (n < 12)
     {
         n++;
-        logf("[host] Aedfd0 enter a1=%p a2=%p", a1, a2);
+        void* sing = (g_repModule != NULL)
+            ? *(void**)((BYTE*)g_repModule + 0xF51298) : NULL;
+        logf("[host] Aedfd0 enter a1=%p a2=%p singleton([rep+0xF51298])=%p",
+             a1, a2, sing);
     }
-    return ((void* (__fastcall *)(void*, void*))g_aedfTramp)(a1, a2);
+    void* r = ((void* (__fastcall *)(void*, void*))g_aedfTramp)(a1, a2);
+    if (n <= 12)
+        logf("[host] Aedfd0 exit -> %p", r);
+    return r;
 }
 
 static int armExecTrace(void* addr)
