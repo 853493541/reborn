@@ -186,6 +186,7 @@ internal static class RebornClient
         const long castCooldownMs = 3000;
         long castCooldownUntil = 0;
         var datasetAbilityNames = new List<string>();   // panel: abilities with a process
+        var sfxTagNames = new HashSet<string>();        // panel: process has kind "sfx"
         System.Drawing.Point lastMousePt = new System.Drawing.Point(0, 0);
         bool feiAiming = false, feiConfirm = false, feiCancel = false;
         bool autoSkillConfirmDone = false;
@@ -263,6 +264,7 @@ internal static class RebornClient
         Action loadDatasetNames = delegate
         {
             datasetAbilityNames.Clear();
+            sfxTagNames.Clear();
             try
             {
                 if (!File.Exists(dataPath)) return;
@@ -280,6 +282,11 @@ internal static class RebornClient
                     string mt = StrOf(d, "matched");
                     if (mt == "") continue;   // skip unresolved duplicate rows
                     if (!datasetAbilityNames.Contains(nm)) datasetAbilityNames.Add(nm);
+                    foreach (object po in (object[])pv2)
+                    {
+                        var pd = po as Dictionary<string, object>;
+                        if (pd != null && StrOf(pd, "kind") == "sfx") { sfxTagNames.Add(nm); break; }
+                    }
                 }
             }
             catch (Exception e) { Log("loadDatasetNames ex: " + e.Message); }
@@ -472,7 +479,7 @@ internal static class RebornClient
         abilityBtn.Font = new System.Drawing.Font("Consolas", 10f, System.Drawing.FontStyle.Bold);
         abilityBtn.Cursor = Cursors.Hand;
         var abilityPanel = new Panel();
-        abilityPanel.Size = new System.Drawing.Size(224, 200);
+        abilityPanel.Size = new System.Drawing.Size(260, 420);
         abilityPanel.BackColor = System.Drawing.Color.FromArgb(210, 0, 0, 0);
         abilityPanel.Visible = false;
         Func<string> abilityLabel = delegate { return "P: " + abilitySel; };
@@ -509,10 +516,12 @@ internal static class RebornClient
             skillIcons[nm] = img;
             return img;
         };
-        // icon grid: 6 per row, no labels (hover = client tooltip, click = cast)
+        // icon grid: 6 per row, grouped - abilities whose staged process carries
+        // authored tani .Sfx tags first, then the rest (hover = client tooltip,
+        // click = cast)
         var abilityGrid = new FlowLayoutPanel();
         abilityGrid.Location = new System.Drawing.Point(6, 6);
-        abilityGrid.Size = new System.Drawing.Size(212, 158);
+        abilityGrid.Size = new System.Drawing.Size(248, 378);
         abilityGrid.AutoScroll = true;
         abilityGrid.BackColor = System.Drawing.Color.FromArgb(12, 12, 12);
         abilityGrid.FlowDirection = FlowDirection.LeftToRight;
@@ -521,21 +530,53 @@ internal static class RebornClient
         skillTip.InitialDelay = 200;
         skillTip.ReshowDelay = 100;
         skillTip.AutoPopDelay = 20000;
-        var abilityIcons = new List<PictureBox>();
-        int abilitySelIdx = abilityItems.IndexOf(abilitySel);
-        if (abilitySelIdx < 0) abilitySelIdx = 0;
-        if (abilityItems.Count > 0) abilitySel = abilityItems[abilitySelIdx];
-        for (int i = 0; i < abilityItems.Count; i++)
+        var sfxItems = new List<string>();
+        var noneItems = new List<string>();
+        foreach (string nm in abilityItems)
         {
-            string name = abilityItems[i];
-            int idx = i;
+            if (sfxTagNames.Contains(nm)) sfxItems.Add(nm); else noneItems.Add(nm);
+        }
+        var orderedItems = new List<string>();
+        var sectionAt = new Dictionary<int, string>();
+        if (sfxItems.Count > 0)
+        {
+            sectionAt[orderedItems.Count] = "sfx tags (" + sfxItems.Count + ")";
+            orderedItems.AddRange(sfxItems);
+        }
+        sectionAt[orderedItems.Count] = "none (" + noneItems.Count + ")";
+        orderedItems.AddRange(noneItems);
+        Func<string, Label> sectionLabel = delegate(string txt)
+        {
+            var lb = new Label();
+            lb.Text = txt;
+            lb.ForeColor = System.Drawing.Color.FromArgb(255, 220, 140);
+            lb.BackColor = System.Drawing.Color.FromArgb(12, 12, 12);
+            lb.Font = new System.Drawing.Font("Consolas", 9f, System.Drawing.FontStyle.Bold);
+            lb.Size = new System.Drawing.Size(210, 16);
+            lb.Margin = new Padding(1, 4, 1, 1);
+            return lb;
+        };
+        var abilityIcons = new List<PictureBox>();
+        int abilitySelIdx = orderedItems.IndexOf(abilitySel);
+        if (abilitySelIdx < 0) abilitySelIdx = 0;
+        if (orderedItems.Count > 0) abilitySel = orderedItems[abilitySelIdx];
+        for (int i = 0; i < orderedItems.Count; i++)
+        {
+            string name = orderedItems[i];
+            string sect;
+            if (sectionAt.TryGetValue(i, out sect))
+            {
+                Label slb = sectionLabel(sect);
+                abilityGrid.Controls.Add(slb);
+                abilityGrid.SetFlowBreak(slb, true);
+            }
             var pb = new PictureBox();
             pb.Size = new System.Drawing.Size(32, 32);
             pb.Margin = new Padding(1);
             pb.SizeMode = PictureBoxSizeMode.Zoom;
             pb.Cursor = Cursors.Hand;
             pb.BackColor = System.Drawing.Color.FromArgb(24, 24, 24);
-            pb.BorderStyle = (idx == abilitySelIdx) ? BorderStyle.FixedSingle : BorderStyle.None;
+            pb.BorderStyle = (name == abilitySel) ? BorderStyle.FixedSingle : BorderStyle.None;
             Image img = iconFor(name);
             if (img != null) pb.Image = img;
             skillTip.SetToolTip(pb, skillTipText(name));
@@ -543,7 +584,7 @@ internal static class RebornClient
             {
                 abilitySel = name;
                 for (int k = 0; k < abilityIcons.Count; k++)
-                    abilityIcons[k].BorderStyle = (k == idx) ? BorderStyle.FixedSingle : BorderStyle.None;
+                    abilityIcons[k].BorderStyle = (abilityIcons[k] == pb) ? BorderStyle.FixedSingle : BorderStyle.None;
                 abilityBtn.Text = abilityLabel();
                 clickCastRequested = true;
                 Log("ability click-cast: " + abilitySel);
@@ -556,7 +597,7 @@ internal static class RebornClient
         soundBox.Text = "sound";
         soundBox.ForeColor = System.Drawing.Color.White;
         soundBox.Checked = soundOn;
-        soundBox.Location = new System.Drawing.Point(6, 172);
+        soundBox.Location = new System.Drawing.Point(6, 392);
         soundBox.AutoSize = true;
         soundBox.CheckedChanged += delegate { soundOn = soundBox.Checked; };
         abilityPanel.Controls.Add(soundBox);
@@ -569,7 +610,7 @@ internal static class RebornClient
         Action placeAbilityUi = delegate
         {
             abilityBtn.Location = new System.Drawing.Point(Math.Max(0, panel.ClientSize.Width - 150), 10);
-            abilityPanel.Location = new System.Drawing.Point(Math.Max(0, panel.ClientSize.Width - 236), 36);
+            abilityPanel.Location = new System.Drawing.Point(Math.Max(0, panel.ClientSize.Width - 272), 36);
             abilityBtn.Text = abilityLabel();
         };
         panel.Resize += delegate { placeAbilityUi(); };
