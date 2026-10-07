@@ -2328,3 +2328,16 @@ solved it, and what is still open. **Newest at the bottom.**
 - Batch: 1167 -> **1177 OK / 34 ERR** (day start 1148/63). Viewer selftest 1240/0/0; gap report
   windows=1201; visual drops still 22. Remaining: ~10 no-entry (pure class defs), ~20 nil-field
   indexes on script/real-lib tables, 2 insert-args, 1 assert, 2 upvalues.
+
+### 2026-10-05 ? UI ? class-style entry + NOENTRY disposition (OK 1177 -> 1178, ERR 34 -> 24)
+- Decoded the engine's `class()` helper (ui/Script/class.lua): method assignments go through a
+  `__newindex` into an internal members table, and `new()` builds instances with `__index` = that
+  members table - so a class-style script's OnFrameCreate is NOT on the `<Stem>_Base` table, only on
+  its instances. The harness now instantiates `<Stem>_Base:new()` (pcall) and looks for the entry on
+  the instance (BubblePanel flips OK).
+- The 9 windows that define only OnLButtonClick/OnFrameBreathe-style handlers (no create/load/open
+  init - Cyclopaedia_*, Debug, FieldPQPanel, GoldTeamSetSubsidy, IrrigatePanel) now report
+  **NOENTRY** instead of ERR: they are popups driven by their opener, so the authored INI is their
+  complete state (honest disposition, not a failure).
+- Batch: **OK=1178 ERR=24 NOENTRY=9** of 1,211 scripted; UI_SYSTEM_COVERAGE row updated
+  (97.4% of scripted windows fully replayed). Selftest 1240/0/0; gap windows=1202.
