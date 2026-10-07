@@ -2798,3 +2798,32 @@ HIGH-confidence findings:
   event system's slot-9 invoke (the module callbacks) to capture the real r8, or
   derive it from the module manager.
 - Evidence: host_exe146-163.out; commits 3a55132..cd6cb3f.
+
+## 2026-10-06 - Gate 1 BREAKTHROUGH: the game's own RL table task chain runs through the builder
+
+- The RL table wrapper's member (param+0xA8) is now correct: the exe's own
+  Initialize derives it at 0xBC194-0xBC21C from
+  `[exe+0xA8C208 + 0x18]` - the KJX3LogicModule's sub-object (module vtable
+  exe+0x956808 slot 5 = 0xAF1E0; sub-object vtable exe+0x952B20 whose slot 3 =
+  0x98A20 = the table-source getter).
+- The KJX3LogicModule is created by a standalone function exe+0xAF4A0 (creates
+  the module + sub-object, stores it at 0xA8C208). The host calls it in frame60
+  before the Param build.
+- The task invoke stub was corrected: the wrapper's arg2 (rdx) is the STEP
+  CONTROLLER (the game's runner passes it; the wrapper saves it and forwards it
+  as the builder's arg4). The stub now does `mov rax,[rcx]; mov rax,[rax+8];
+  jmp rax` with (rcx = the task, rdx = the stepCtrl).
+- The host's fake stepCtrl also needs the pool allocator at BOTH
+  `[stepCtrl+0x10]` (the builder's read) and `[[stepCtrl]+0x10]` (the rep Init's
+  read) - added.
+- RESULT: the wrapper's member getter runs, the wrapper calls the game's own
+  task-list builder (rep+0x8261F0), and the builder COMPLETES WITHOUT FAULT
+  (host_exe170: "table builder enter" then straight to "after task run").
+- Remaining: the builder pushes the created register/run/load tasks into a
+  container ([r14] = the holder's [0]); they still need their RUN (the register
+  functor 0x80E340 -> 0x80B6A0 and the run functor 0x80E360 -> 0x80B8C0 ->
+  the 0x80B9C3 load lambda, which the host has hooks for and which have not
+  fired). Next probe: walk the builder's container and invoke those tasks (or
+  find the game's step processing), then the tables should land in
+  [SO3Represent+0x210].
+- Evidence: host_exe165-170.out; commits f846e48, 478090a.
