@@ -3533,5 +3533,20 @@ HIGH-confidence findings:
   does not directly reveal how the game represent constructs its managers.
 - The tracer is a reusable tool (RVAs are MovieEditor-rep specific; the host's game rep
   differs - 16872888 vs 17049528 bytes). Evidence: trace_out2.txt; static disasm.
+
+## 2026-10-07 - Host hook return-value bug: void hooks clobbered the engine's bool
+
+- `SO3Represent::Init` has an async lambda (`rep+0x3E3D90`,
+  `SO3Represent::Init::<lambda_2648052f...>::operator()`) that loads a table via
+  `rep+0x8261F0` and checks its bool result; on failure it logs
+  `KGLOG_PROCESS_ERROR(bRetCode) at line 834`.
+- The host hooked `rep+0x8261F0` as `hookTableBuilder` **declared `void`**, so the hook
+  discarded the engine's return value -> the lambda always saw failure. (The host also
+  hooks `rep+0x3E3D90` as `hookTableWrapper`, also `void`.) Fixed both to return the
+  trampoline's result. Run 246: the line-834 error is gone.
+- This is a real host bug (return-value clobbering), same class as the earlier hook
+  `len` mistakes. Still did NOT create the represent managers (`g_rlActorMgr=0`), so it
+  is necessary-but-not-sufficient for Gate 4.
+- Evidence: host_exe245.out (line 834 error), host_exe246.out (error gone).
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
