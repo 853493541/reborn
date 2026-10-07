@@ -665,3 +665,20 @@ Wired in `client/MountSystem.cs` + `client/RebornClient.cs` (feature build
   per-region RGB; region means `#AA9178` / `#AA9076` / `#91755C`).
 - **Reproduce**: `RC_STARTUP=nodb`, `RC_MOUNT_TEST=1`, `RC_AUTORUN=12500`
   (+ `RC_SHOTS=4200,5200,7000,9200,10400`), cwd `C:\SeasunGame\MovieEditor`.
+
+### Seat fix + camera collapse (2026-10-06, bug report on `reborn_client_3x.exe`)
+
+Report: after `T`, the camera zoomed in and the rider rendered UNDER the horse.
+Root cause (reproduced on the integration build): the rider model was placed at the
+player's physics position while the riding clips (`f1bqg_horse_run.ani`) are authored
+relative to the horse's saddle bind point - with the model at ground the head-bone
+camera anchor sat at ~991 (inside the horse; terrain/scene probes collapsed the camera
+to ~63 u). Fix: place the rider model at the horse's own **`b_hs` bone** (the s_hs
+socket parent; resolved via the Agent A shim `FindBoneActor`/`ActorBoneMatrix`, idx 0
+in the child part, saddle 174 u above the horse root) and compose the camera anchor
+from the MODEL placement instead of the physics position. Verified in
+`proof/character/mount/run_20261006_220215_seatfix.txt`: anchor 991 -> 1169 while
+mounted, no obstruction pulls (`obst=0` throughout, camera r ~1200 stable), full
+mount -> run -> jump -> midair dismount -> remount -> dismount green; screenshots
+`seated_run.png` / `seated_jump_dismount.png` / `seated_idle_remount.png`
+(`image_stats_seatfix_20261006.txt`).

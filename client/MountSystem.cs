@@ -13,19 +13,22 @@
 //     at the verified 15 Hz tick -> 120 / 600 u/s (proof/gravity/number.krl.txt).
 //
 // Registered deviations (AGENTS §6; re-open criteria below):
-//   1. The rider is NOT socket-bound. The real client binds the rider to the horse's
-//      s_hs socket (KRLLocalCharacter::MountMannedSpace / slot_link); the CLR exposes
-//      no bone/socket transform (docs/character/3_1_RIG_SOCKETS.md). Both models are
-//      placed at the player position; the authored riding clip carries the seated pose.
-//      Re-open when Agent A's socket shim (RC_ActorSocketMatrix) lands.
+//   1. The rider is seated on the horse's b_hs BONE, not socket-bound: the rider
+//      model is placed at the b_hs matrix composed to world (the s_hs socket stays
+//      uninitialized on the dummy path; b_hs is the socket's parent - verified
+//      idx/height 174 u on Horse_01, 2026-10-06). The real client binds the rider
+//      to s_hs (BindTo); re-open for the socket bind when dummy sockets initialize
+//      or the Represent bind becomes reachable.
 //   2. Horse inventory (equip boxes 0x18-0x1B, horse-item exterior) does not exist in
 //      the host: T toggles the flag directly (KPlayer::RideHorse precondition/apply
 //      fns 0x140363AF0/0x140363C40 are inventory-side and are not modeled).
 //      Re-open when an item/inventory layer exists.
-//   3. The 999-sentinel PlayerRush row (player locomotion override while mounted) is
-//      NOT consumed yet; the horse gait itself uses the engine's adjust-table mapping
-//      (RideType 0: Idle->10030, RunForward->10016, BeginJumpOnce->10204). Re-open
-//      with the locomotion pass (W2 wiring).
+//   3. The school-999 PlayerRush rows examined (2026-10-06) are the acceleration/
+//      afterimage set (bqg加速跑 clips + horse dismount columns 48/49), NOT a
+//      mounted locomotion override; the mounted rider pose is ride_rush col 23.
+//      The runtime mount override key stays open. The horse gait itself uses the
+//      engine's adjust-table mapping (RideType 0: Idle->10030, RunForward->10016,
+//      BeginJumpOnce->10204).
 //   4. Ride yaw values (0.003465 / 0.0023 1/ms) have no located consumer; turn rate
 //      stays the camera-row value. Re-open when the represent consumer is decoded.
 
@@ -62,6 +65,9 @@ internal sealed class MountState
     public long Handle;
     public long AttachedHandle = -999;
     public bool Dbg;
+    public IntPtr SeatActor = IntPtr.Zero;
+    public int SeatIdx = -1;
+    private long lastSeatDbg;
     public KGModelCLR Model_;
     public string CurHorseClip;
     private float lastX = float.MaxValue, lastY = float.MaxValue, lastZ = float.MaxValue, lastYaw = float.MaxValue;
@@ -150,6 +156,9 @@ internal sealed class MountState
                 Model_.AttachModel(Handle);
                 AttachedHandle = Handle;
                 CurHorseClip = null;
+                SeatActor = IntPtr.Zero;
+                SeatIdx = -1;
+                ResolveSeat(log);
             }
             string want = !grounded ? ClipJump : moving ? ClipRun : ClipIdle;
             if (want != CurHorseClip)
@@ -160,5 +169,50 @@ internal sealed class MountState
             }
         }
         catch (Exception e) { log("mount update ex: " + e.Message); }
+    }
+
+    // Seat bone: the horse skeleton carries `b_hs` (idx 10 in Horse_01, parsed
+    // from the shipped H普通待机01a.ani) - the horse-back bone the s_hs socket
+    // parents to (docs/character/3_1_RIG_SOCKETS.md; the rider bind in the real
+    // client is LoadRide -> s_hs). Bones resolve for dummy actors (the proven
+    // head-bone anchor route); sockets stay uninitialized on the dummy path.
+    private void ResolveSeat(Action<string> log)
+    {
+        try
+        {
+            SeatActor = CameraShim.FindBoneActor(new IntPtr(Handle), "b_hs", out SeatIdx);
+            log("mount seat bone: actor=0x" + SeatActor.ToInt64().ToString("X") + " idx=" + SeatIdx);
+        }
+        catch (Exception e) { log("mount seat ex: " + e.Message); }
+    }
+
+    // Rider seat world position: horse placement x bone local (the same
+    // composition the client's head-bone camera anchor uses). The rider clip
+    // (`f1bqg_horse_run.ani`) is authored relative to this bind point, so the
+    // rider model must be PLACED here - the game binds the rider actor to the
+    // horse's s_hs; this is the same transform without the socket matrix.
+    public bool SeatWorld(float hx, float hy, float hz, float yaw, Action<string> log,
+        out float x, out float y, out float z)
+    {
+        x = hx; y = hy; z = hz;
+        try
+        {
+            if (SeatActor == IntPtr.Zero || SeatIdx == -1) return false;
+            float[] m = new float[16];
+            if (CameraShim.ActorBoneMatrix(SeatActor, SeatIdx, m) != 0) return false;
+            double ca = Math.Cos(yaw), sa = Math.Sin(yaw);
+            double tx = m[12], ty = m[13], tz = m[14];
+            x = (float)(hx + tx * ca + tz * sa);
+            y = (float)(hy + ty);
+            z = (float)(hz - tx * sa + tz * ca);
+            if (Dbg && Environment.TickCount - lastSeatDbg > 2000)
+            {
+                lastSeatDbg = Environment.TickCount;
+                log(string.Format("mount seat dbg local=({0:F1},{1:F1},{2:F1}) world=({3:F1},{4:F1},{5:F1})",
+                    tx, ty, tz, x, y, z));
+            }
+            return true;
+        }
+        catch { return false; }
     }
 }
