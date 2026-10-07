@@ -87,6 +87,10 @@ the runtime mutations as data the viewer consumes:
   `luaV_tonumber`** (loop bounds). Lua 5.1's mixed-type comparisons cannot use metamethods; the stub
   environment wants the permissive branch. This is a test-rig patch only (documented here), not
   product behavior.
+- **Concat build patch (2026-10-05):** the same build is patched in `ltablib.c` `addfield` so a
+  non-string element of `table.concat` concatenates as `""` instead of erroring ("invalid value
+  (table) at index N in table for 'concat'" - the scripts concat stub values). Rebuild recipe is in
+  the Reproduce section (cl /c ..\src\*.c + link without luac.obj/print.obj).
 - **Engine base data layer (2026-10-05):** the window scripts consume engine globals
   (`g_tTable`/`Table_*`, `g_tStrings`, `VideoBase`, `g_tExpression`, ...) that the engine builds
   from its own UI library. `ui/module_info.xml` (extracted from PakV4) lists 1,016 modules; the

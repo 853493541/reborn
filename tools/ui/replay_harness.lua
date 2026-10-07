@@ -411,6 +411,26 @@ do
   wrap("sub"); wrap("find"); wrap("gmatch"); wrap("gsub"); wrap("len"); wrap("byte")
 end
 
+-- A stubbed engine-data field read as nil and then iterated (pairs/ipairs/sort)
+-- aborted the replay; treat a nil collection as empty (the data object is absent).
+do
+  local realPairs, realIpairs = pairs, ipairs
+  local realSort = table.sort
+  local empty = function() return nil end
+  pairs = function(t)
+    if type(t) ~= "table" then return empty, nil, nil end
+    return realPairs(t)
+  end
+  ipairs = function(t)
+    if type(t) ~= "table" then return empty, nil, nil end
+    return realIpairs(t)
+  end
+  table.sort = function(t, cmp)
+    if type(t) ~= "table" then return end
+    return realSort(t, cmp)
+  end
+end
+
 -- Lua 5.1 resolves comparison/arith metamethods on the LEFT operand only; give the
 -- number type a metatable so a stubbed proxy on the right never aborts a replay
 -- (mixed number/table comparisons and arithmetic return neutral values).

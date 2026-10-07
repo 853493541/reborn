@@ -19,8 +19,8 @@ This report measures what is **still dropped** — the remaining calls per windo
 | render | 21 | DROPPED — runtime image source/mode/animation |
 | state | 0 | DROPPED — control state (enable/check/expand/page) |
 | interaction | 10 | DROPPED — drag/interaction registration (not static layout) |
-| consumed | 5738 | applied by the viewer today |
-| noise | 10050 | engine plumbing, no visual state (lookup/events/getters) |
+| consumed | 6670 | applied by the viewer today |
+| noise | 11000 | engine plumbing, no visual state (lookup/events/getters) |
 
 State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21 + state 0).
 
@@ -187,6 +187,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | CampTipPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | CardBuy | other-ui | 0 | 0 | 0 | 0 | 0 | 5 | 0 | 1 |
 | CardSell | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| CastingPanel | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | CastleFightCleanup | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | Challenge | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | ChallengeCountDown | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -201,7 +202,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | CharacterPanelAwardTip | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | CharacterPanelExplainTip | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | CharacterPanel_Homeland | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
-| Charge | other-ui | 94 | 0 | 0 | 0 | 0 | 0 | 0 | 78 |
+| Charge | other-ui | 88 | 0 | 0 | 0 | 0 | 0 | 0 | 78 |
 | ChatButton | hud-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | ChatPanel_Bg | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | ChatPanel_Game | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
@@ -339,7 +340,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | DesertEquipmentChoose | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | DesertItemBuySure | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | DesertItemNumSure | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| DesertPreset | other-ui | 30 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| DesertPreset | other-ui | 42 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | DesertQuickPack | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
 | DesertSell | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | DesertStormInfoPanel | other-ui | 26 | 0 | 0 | 0 | 0 | 0 | 0 | 235 |
@@ -416,7 +417,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | EditBox | menus-ui | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | EmergencyChoose | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
 | EmotionManagePanel | other-ui | 13 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| EmotionPanel | liked | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+| EmotionPanel | liked | 701 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | EndOfBattle | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | EnterAreaTip | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | EquipCopy | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 4 |
@@ -446,7 +447,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | FBShowPanel | other-ui | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | FBShowTeam | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | FBTimeRank | other-ui | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
-| FBlist | other-ui | 11 | 0 | 0 | 0 | 0 | 1 | 1 | 95 |
+| FBlist | other-ui | 14 | 0 | 0 | 0 | 0 | 1 | 1 | 95 |
 | FBlistBossKillTip | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | FEActivationPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | FEEquipExtractPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
@@ -668,7 +669,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | LeftMessage | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | LevelUpAward | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | LevelUpMax | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| LightingCityPanel | other-ui | 9 | 0 | 0 | 0 | 0 | 1 | 0 | 14 |
+| LightingCityPanel | other-ui | 47 | 0 | 0 | 0 | 0 | 1 | 0 | 14 |
 | LimitedSalePanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | LoadingPanel | ? | 25 | 0 | 0 | 1 | 0 | ? | ? | ? |
 | LoadingPlay | other-ui | 10 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -824,13 +825,13 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | NewHomelandChangeSkin | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | NewHorse | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | NewJYPlayReward | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| NewOperationActivity | other-ui | 175 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| NewOperationActivity | other-ui | 179 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | NewPartnerEquipment | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | NewPet | recommended | 31 | 0 | 0 | 2 | 0 | 2 | 0 | 3 |
 | NewPetInfo | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | NewPetSkill | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | NewPlayerBF | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| NewQuestPanel | other-ui | 7 | 0 | 0 | 0 | 0 | 1 | 0 | 1 |
+| NewQuestPanel | other-ui | 22 | 0 | 0 | 0 | 0 | 1 | 0 | 1 |
 | NewRecipeTip | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | NewSafePanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | NewSkillBar | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -925,7 +926,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | PetActionBar | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | PetPanel | liked | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 3 |
 | PhotoShop | other-ui | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 7 |
-| Player | ? | 46 | 0 | 0 | 2 | 0 | ? | ? | ? |
+| Player | ? | 48 | 0 | 0 | 2 | 0 | ? | ? | ? |
 | PlayerKillMessage | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | PlayerMode | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | PlayerReturn | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
@@ -983,6 +984,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | RecoverEquipment | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | RedEnvelope | other-ui | 10 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
 | RedEnvelopeInfo | other-ui | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 22 |
+| RefinePanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | RegressionPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | RemainingTimeNotify | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | RemoteCDProcess | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
@@ -1157,7 +1159,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | ThermometerPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | TimeBuff | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | TitleRankReward | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
-| TongArena | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| TongArena | other-ui | 165 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | TongBaoGift | other-ui | 397 | 0 | 0 | 0 | 0 | 0 | 0 | 639 |
 | TongBaoPanel | other-ui | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
 | TongBattleTips | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
