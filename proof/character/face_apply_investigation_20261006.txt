@@ -1,0 +1,60 @@
+Face apply investigation (agent/3x-face + merged agent/3x-rig) - 2026-10-06
+===========================================================================
+
+Goal: visible MetaFace apply on the player model (3.4). Result: NOT achieved;
+two real bugs fixed en route; the remaining E_FAIL is localized to the editor
+engine's face subsystem and is registered as a boundary.
+
+Chain of evidence
+-----------------
+1. After merging agent/3x-rig, the client reached the shim export:
+   face: apply rc=-2147467259 (0x80004005 E_FAIL).
+2. Shim RVA bug (FIXED): A's RC_ModelLoadMetaFaceJson called
+   KG_EngineEditorX64.dll 0x46FB0, which is KG3DModelProxy::LoadFaceDefinitionINI
+   (KGLOG name string @0x6FBF0, assert line 0x4d6). The JSON wrapper is 0x47010
+   (KG3DModelProxy::LoadMetaFaceDefinitionJson, name string @0x6FC18, assert line
+   0x4e6, inner vt[+0x640]). Shim fixed -> 0x47010, rebuilt (native\build_shim.cmd).
+3. Proxy object test: m_pModel (CLR field, IKG3DModelProxy*) and the
+   AddDummyModel handle (RTTI-verified KG3DModelProxy) BOTH return E_FAIL
+   (handle path used after the fix: run reborn_20261006_202929.log).
+4. Actor test: source\主角替换模型\F1主角模Meta脸.actor (P8 =
+   f1_meta_face_hd.mdl) creates fine, apply still E_FAIL
+   (run reborn_20261006_203115.log).
+5. Crash bug (FIXED): source\主角替换模型\F1主角模型.actor fails creation ->
+   AddDummyModel returns E_FAIL (player handle=-2147467259) -> AttachModel on
+   the negative handle AVs (exit 0xC0000005, run reborn_20261006_203208.log).
+   Client now rejects handle<=0 before attach and exits cleanly with a log line
+   (run reborn_20261006_203318.log); FaceData also only accepts handle>0.
+6. Face subsystem precondition evidence: engine init requests SD face meshes
+   data/source/player/<role>/部件/<role>_new_face.mesh
+   (proof/engine_host/startup_nodb_2026_10_04/*_engine_init.txt:
+   "WARN KG3D_LoadFile failed ... m2_new_face.mesh" +
+   "KGLOG_PROCESS_ERROR(m_pMeshFileData) at line 101 in KG3D_FaceLiftMeshData::Init").
+   Extraction probe: f1_new_face.mesh = MISS from the game paks (only
+   f1_new_face_hd.mesh ships, 293,506 B). So the editor engine's face-lift data
+   init fails on the SD name before any definition can be applied.
+7. Actor scan: the default 花萝无动作.actor has EMPTY FaceDefIni / MetaFaceDefJson
+   and P8 = f1_1004_face_hd (no face-lift part). MetaFace-capable actors exist
+   only under source\主角替换模型\ (F1/F2/M1/M2 主角模Meta脸).
+
+Current state
+-------------
+- Offline pipeline + client load path: DONE and verified (see
+  face_pipeline_20261006.txt; tools/character/face_data.py selftest 4/4).
+- Apply: blocked in the editor host at the engine face subsystem (E_FAIL at
+  pActor->LoadMetaFaceDefinitionJson, and the face-lift mesh init cannot load
+  the SD asset that does not exist in any install).
+- Robustness: negative AddDummyModel handles no longer AV (real crash fixed).
+
+Next probes (re-open criteria)
+------------------------------
+1. MovieEditorHD.exe MetaFaceLiftForm IL: recover the editor's exact call
+   sequence (ChangePlayerFaceType / face-model actor setup / Load order).
+2. INI-then-JSON order on the 花萝 actor (0x46FB0 LoadFaceDefinitionINI with the
+   actor FaceDefIni path) before the JSON apply.
+3. How the game/editor maps <role>_new_face.Mesh to the HD asset (suffix
+   mapping) so KG3D_FaceLiftMeshData::Init succeeds.
+
+Logs: reborn_20261006_202205 / 202428 / 202929 / 203115 / 203208 / 203318.
+Gates on the merged build: build exit 0; camera_smoke_3x_face ALL PASS;
+collision 36/36; d6=seed.

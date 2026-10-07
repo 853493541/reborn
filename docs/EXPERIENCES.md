@@ -4834,3 +4834,29 @@ if the cache/host frames appear.
 - Outcome: W2 done (base clip data-driven + verified; tiers gated pending per-clip
   verification). W1+W2 complete on agent/3x-rig.
 
+### 2026-10-06 - Character 3.4 face apply (agent/3x-face + merged 3x-rig): shim JSON entry fixed, apply blocked at the face subsystem
+
+- Did: merged `agent/3x-rig` (02e1709), then chased the face apply to a verdict.
+  - Real fix 1: A's `RC_ModelLoadMetaFaceJson` called `KG_EngineEditorX64.dll`
+    0x46FB0 = **`KG3DModelProxy::LoadFaceDefinitionINI`** (KGLOG name string
+    @0x6FBF0, line 0x4d6); the JSON wrapper is **0x47010**
+    (`LoadMetaFaceDefinitionJson`, @0x6FC18, inner vt[+0x640]). Shim switched to
+    0x47010 and rebuilt (shared dll; d6=seed verified after).
+  - Real fix 2: `AddDummyModel` E_FAIL (0x80004005 sign-extended, e.g.
+    `F1主角模型.actor` parts unresolved) flowed into `AttachModel` -> AV
+    (0xC0000005). Client now rejects `handle <= 0` before attach (clean exit +
+    log); `FaceData` accepts only `handle > 0`.
+  - Apply still E_FAIL with both proxies (`m_pModel`, AddDummyModel handle) and
+    both MetaFace-capable actors (`source\主角替换模型\*Meta脸.actor`).
+    Precondition evidence: `KG3D_FaceLiftMeshData::Init` requests the **SD** mesh
+    `data/source/player/<role>/部件/<role>_new_face.mesh` (startup WARN proof),
+    which exists nowhere (extraction probe: only `_hd` ships) -> face-lift data
+    never initializes. Default 花萝 actor has empty FaceDefIni/MetaFaceDefJson
+    and no face part; MetaFace actors live only in `source\主角替换模型\`.
+  - Added `RC_ACTOR=<path>` test hook (default unchanged).
+- Verify: build exit 0; `camera_smoke_3x_face` ALL PASS; collision 36/36;
+  runs `reborn_20261006_202929/203115/203208(AV before fix)/203318(clean bail)`.
+  Evidence: `proof/character/face_apply_investigation_20261006.txt`.
+- Outcome: offline pipeline + client load done; engine apply is a registered
+  boundary (re-open: editor-app IL sequence, INI->JSON order probe, HD suffix
+  mapping for the face-lift mesh init). Branch `agent/3x-face` @ 1250816.
