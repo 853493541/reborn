@@ -519,6 +519,24 @@ internal static class CameraShim
         return IntPtr.Zero;
     }
 
+    // Face apply (3x-face workstream): KG3DModelProxy methods in
+    // KG_EngineEditorX64.dll (fn 0x46FB0 / 0x47710; see 3_4_FACIAL.md).
+    [DllImport("camera_shim.dll", CallingConvention = CallingConvention.Cdecl)]
+    static extern int RC_ModelLoadMetaFaceJson(IntPtr proxy, string jsonUtf8);
+
+    [DllImport("camera_shim.dll", CallingConvention = CallingConvention.Cdecl)]
+    static extern int RC_ProxySetFaceLiftParams(IntPtr proxy, IntPtr a1, IntPtr a2, IntPtr a3);
+
+    public static int ModelLoadMetaFaceJson(IntPtr proxy, string json)
+    {
+        try { return RC_ModelLoadMetaFaceJson(proxy, json); } catch { return -99; }
+    }
+
+    public static int ProxySetFaceLiftParams(IntPtr proxy, IntPtr a1, IntPtr a2, IntPtr a3)
+    {
+        try { return RC_ProxySetFaceLiftParams(proxy, a1, a2, a3); } catch { return -99; }
+    }
+
     public static string Mat16(float[] m)
     {
         string s = "";
