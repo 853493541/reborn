@@ -5304,6 +5304,19 @@ int main(void)
                                                                &g_aedfTramp, 12));
                                 }
                             }
+                            if (g_so3World != NULL && g_logicModule != NULL)
+                            {
+                                __try
+                                {
+                                    long ns = ((long (__fastcall *)(void*, unsigned, unsigned))
+                                               ((BYTE*)g_logicModule + 0x12BEB0))(
+                                        g_so3World, 2, 0);
+                                    logf("[host] frame60: KSO3World::NewClientScene(world,2,0) -> 0x%08X",
+                                         (unsigned)ns);
+                                }
+                                __except (EXCEPTION_EXECUTE_HANDLER)
+                                { logf("[host] frame60: NewClientScene fault"); }
+                            }
                             __try
                             {
                                 // sceneName must be GBK: it feeds the destination

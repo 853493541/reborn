@@ -3448,5 +3448,22 @@ HIGH-confidence findings:
 - Gate 4 next probe: drive the logic scene-enter (or construct RLActorMgrNT directly) so
   its Init runs and the hook captures the manager; then `CreateRLActorNT` + `LoadModel`
   with F1. Evidence: host_exe239.out; static disasm.
+
+## 2026-10-07 - Logic KSO3World functions located; NewClientScene does not create the managers
+
+- The logic module's debug names DO have lea xrefs (unlike the represent's - earlier I
+  only scanned u64). Located: `KSO3World::AddPlayer` = logic+0x12A6F0,
+  `KSO3World::NewPlayer` = logic+0x12CB30 (allocates 0x25BF0, uses `[this+0x5673D8]`),
+  `KSO3World::NewClientScene` = logic+0x12BEB0 (allocates 0x21558 scene, via
+  `[g_world(0x9C1320)+0x1280]`), `KSO3World::NewEditorScene` = logic+0x12C410,
+  `KSO3World::Init_ForEditor` = logic+0x12B7xx.
+- Host now calls `NewClientScene(g_so3World, 2, 0)` before `CreateRLScene` (SEH-guarded).
+  Run 240: returns non-null (a 0x21F... heap pointer), `CreateRLScene -> 0x1`,
+  `InitializeScene -> 1` - but still **no manager registration** and `g_rlActorMgr=0`.
+- Conclusion: the represent does not create its actor/dummy managers from the logic
+  scene object directly; it reacts to a **scene-enter event via the dispatcher** (the
+  plan's Phase B represent-Param wiring), which the host has not fully connected. This
+  is the remaining Gate 4 blocker.
+- Evidence: host_exe240.out; static disasm (logic lea xrefs).
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
