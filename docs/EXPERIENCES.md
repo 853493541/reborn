@@ -2313,3 +2313,18 @@ solved it, and what is still open. **Newest at the bottom.**
   (more windows now replay), visual drops still 22.
 - Remaining ERR classes: 18 no-entry base-class scripts, `#nil` module globals, nil upvalues,
   assert in Init, and a few per-case stubs.
+
+### 2026-10-05 ? UI ? long session: entry fallback, VM nil coercions, child-by-name (OK 1167 -> 1177)
+- Entry fallback: class-style scripts (WishPanel, ActivityTipPanel, InstanceInfo, PVPMessageBoard)
+  define no On* entry - the harness now calls the module's own `Open` (what the engine does when the
+  window opens).
+- VM nil-coercion patches (lvm.c, test-rig, documented in UI_RUNTIME_REPLAY.md): `#nil` -> 0,
+  nil in arithmetic -> 0, nil in `..` -> "" - the remaining failures where a real engine table
+  field the client fills at startup is absent.
+- string.match/format/rep/upper/lower coerce non-string first args; the section proxy resolves an
+  authored child control by exact name (`self.Text_SelectM`, `self.WndContainer_X`) before the
+  generic method fallback (indexing that function aborted) - flipped QuickConsumePanel,
+  QuickConsumeShare, PersonalCard_BirthdaySetPop, AccelerateBall, LoginScene.
+- Batch: 1167 -> **1177 OK / 34 ERR** (day start 1148/63). Viewer selftest 1240/0/0; gap report
+  windows=1201; visual drops still 22. Remaining: ~10 no-entry (pure class defs), ~20 nil-field
+  indexes on script/real-lib tables, 2 insert-args, 1 assert, 2 upvalues.
