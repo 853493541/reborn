@@ -2352,3 +2352,11 @@ solved it, and what is still open. **Newest at the bottom.**
   BROKE EmotionPanel (its pcall-guarded assert branch changed; 1420 mutations -> 35). Reverted -
   lesson: an assert inside pcall is control flow, not just a guard.
 - Batch: **OK=1180 ERR=22 NOENTRY=9**; selftest 1240/0/0; gap windows=1202.
+
+### 2026-10-05 ? UI ? C1.X hardship stage (review the hard tail on top)
+- User: mark the remaining hard windows as hardship and put them in a catalog stage "C1.X" on top to
+  review whether they are really needed. Created stage `hardship` / title `C1.X` as stage 1 with the
+  **26 in-catalog hard windows** (22 partial replay + 4 NOENTRY; the 5 Cyclopaedia_* NOENTRY are
+  sub-panels, not catalog entries); each keeps `originalStageId` for promotion back, the viewer's X
+  reject still works (rejected returns to C1.X). `defaultWindow` = achievementpanel so the review
+  starts on the set. Total stays 1,240; selftest 1240/0/0; commit 23349b0.
