@@ -4441,3 +4441,25 @@ if the cache/host frames appear.
 - Verified live: window `skill v5`, panel open via posted P key ->
   `sfx tags (19)` / `none (63)`, 6 per row, scrollable; proof
   `proof/netcode/capture_p_panel_1_3000ms.png`.
+
+### 2026-10-06 — v5 — .Sfx revert + the render gap root cause (tag-manager registration missing)
+
+- User report: the 19 sfx-tagged abilities had NO visible effects (engine create
+  rc=0 but nothing renders) and some moves looked wrong -> reverted the dataset
+  wiring (`APPLY_SFX_TAGS=False`, 如意法 PSS restored, warm-up default off);
+  effects are visible again. Commits 41f3644, 93206ff.
+- Render gap root cause (disasm ME KG3DEngineDX11EX64.dll): the engine's tag
+  update (@0xE34147) creates the SFX with the tag's matrix block at a6
+  (tagdata+0x288) + out at a4, plays via vt[0xD58](1,1,0), vt[0xD60](ctx or
+  NULL); the shim mirrored the args (matrix at a6) and added ctx/node calls -
+  still nothing draws. vt[0x180]/vt[0x190] are stubs/E_NOINTERFACE on the
+  created type. Conclusion: the engine draws only tags REGISTERED in its
+  animation-tag manager (KG3D_AnimationTagX64.dll); a bare create+play leaves
+  the object unmanaged -> never rendered. The real fix = create/register a tag
+  instance in the scene's tag manager (the parked client-stack tag-system
+  work), not more create-arg tuning.
+- Moves: verified 17/19 anims = their matched tanis' authored base .ani (same
+  motion as the game's tani); 2 tag-sourced matches (玄水蛊/蛊虫献祭) resolve to
+  shared clips named after other skills. The "wrong-looking moves" are mostly
+  the missing effect layer; the 70-match diff vs the v2-era dataset is the
+  Phase-1 authoritative pass (documented).
