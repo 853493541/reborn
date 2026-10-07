@@ -41,12 +41,18 @@ def main():
                 continue
             seen.add(n)
             dst = os.path.join(args.out, "%d_%s" % (int(time.time()), n))
-            try:
-                shutil.copy2(src, dst)
-                print("[%s] CAUGHT %s -> %s (%d bytes)" % (
-                    time.strftime("%H:%M:%S"), n, dst, os.path.getsize(dst)), flush=True)
-            except OSError as e:
-                print("[%s] copy failed %s: %s" % (time.strftime("%H:%M:%S"), n, e), flush=True)
+            # the .dmp is often still being written/locked by DumpReport - retry a few times
+            for attempt in range(20):
+                try:
+                    shutil.copy2(src, dst)
+                    print("[%s] CAUGHT %s -> %s (%d bytes)" % (
+                        time.strftime("%H:%M:%S"), n, dst, os.path.getsize(dst)), flush=True)
+                    break
+                except OSError as e:
+                    if attempt == 19:
+                        print("[%s] copy failed %s: %s" % (time.strftime("%H:%M:%S"), n, e), flush=True)
+                    else:
+                        time.sleep(0.5)
         time.sleep(0.1)
     print("crash catcher done", flush=True)
     return 0
