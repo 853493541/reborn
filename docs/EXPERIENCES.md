@@ -3233,5 +3233,22 @@ HIGH-confidence findings:
   init runs; not yet called in-host), and populate it; then `CreateComponent`
   succeeds and `[KRLScene+0xF29E8]` is set.
 - Evidence: host_exe234.out; commit (ECS root init).
+
+## 2026-10-07 - Gate 3 layer 3: the "scene[main]" registry creator identified
+
+- `InitializeScene` (`rep+0xADFFE0`) looks up `"scene[main]"` (rep+0xD0B000) in
+  the named-object manager (`0x1B2D9(1)` -> hash map) to obtain the transform/
+  component registry it passes to `CreateTransformEntity` (`rep+0xAEE1F0`); when
+  the entry is missing, `rbx=0` and `CreateComponent` (`rep+0xAE5D40`) got
+  `pRegistry` NULL.
+- The `"scene[main]"` string is referenced by three functions: `rep+0xADEFD0`
+  (a large scene-init that creates managers/objects - the likely **registry
+  creator**), `rep+0xAE008A` (InitializeScene lookup), and `rep+0xAFBE50`.
+- Next probe: determine whether `CreateRLScene` calls `rep+0xADEFD0` before
+  `InitializeScene`; if the host must call it, do so (and its prerequisites),
+  then `"scene[main]"` resolves, `CreateComponent` succeeds, and
+  `[KRLScene+0xF29E8]` is set. `RegisterComponent` = `rep+0xAE5FF0` (writes a
+  0x18-byte entry into a `{base,count,cap}` struct).
+- Evidence: host_exe234.out; offline RE.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
