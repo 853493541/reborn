@@ -45,6 +45,23 @@ The UI object (`client+0xA755C0`, JX3UIX64.dll) vtable slots (found via .rdata):
   input still dead. The fix must make the scene cells actually load (map load pipeline / the
   scene's region streamer), not repeat the bind.
 
+### map=296 (the real loaded map) — major step forward (2026-10-06)
+
+The client actually loads **龙门寻宝 = MapList id 296** (`data\source\maps\龙门寻宝\龙门寻宝.jsonmap`;
+the account's UGC map under `data\UGC\binkp1\龙门寻宝`, 975 MB). Our id-4 said map=1 -> the game
+logic built a stub scene (dims 32, empty cells). With **GAME_ID4_MAP=296**:
+- the bind finds a **real scene: map=296, region=0, dims 64x64** (vs 32 stub);
+- the world renders the real map (desert tones) with UI elements (HP 2000/2000, MP 1000/2000);
+- the client **sends the proper C2S proto=5 confirm** (the confirm round-trip) — observed only
+  with map=296; the stub's id-5 reply went out; the earlier map=1 runs sent C2S id 2 instead;
+- the client still exits at the ~219 s watchdog (a testing constraint: bind -> test within ~3 min);
+- input still produces no 0x1E8 and no position change (the cell-data/validator gate remains).
+- Wrappers: `C:\jx3tmp\run_gamestub_296.cmd` (spawn 23334,24224,761) and `run_gamestub_296b.cmd`
+  (spawn = the map's editor camera 54991,42845,2930 from `systemCamera.json`/`editorContext.json`).
+- KG3D log (client's own): map loads, 64 sub-file loads fail (foliage/blendmap/clusterinfo.json,
+  bd/volumetricCloud, 龙门寻宝_PFX_Runtime.json, LightTagConfig.json — mostly cosmetic) and
+  `KG3D_Scene::RayIntersection` asserts ~1000x -> the game-logic cell data is still absent.
+
 ### Movement still gated (open)
 With the world rendering and the client responsive: SendInput W/A/D/S (game foreground, verified
 fg == hwnd), PostMessage WM_KEYDOWN, ESC/C keys, mouse right-drag — **no C2S 0x1E8, no position

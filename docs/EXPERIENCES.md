@@ -2666,3 +2666,16 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   from ValidateRegions) -> the bind validator fails -> no SetMainPlayer -> no world UI/input.
 - Distance to movable: the protocol/UI chain is done; the remaining gate is **map data
   completeness** (the 64 missing files / the ground data), not protocol work.
+
+### 2026-10-06 — V2: id-4 map must be the loaded map (296 龙门寻宝); real scene + confirm observed
+- MapList.tab: 龙门寻宝 = id **296** (path data\source\maps\龙门寻宝\龙门寻宝.jsonmap = the file the
+  KG3D log loads; the account's UGC copy lives at data\UGC\binkp1\龙门寻宝, 975 MB).
+- With GAME_ID4_MAP=296: the bind finds a REAL scene (map=296, dims 64x64 vs the map=1 stub's 32),
+  the real map renders (desert tones, HP/MP UI), and the client sends the proper **C2S proto=5
+  confirm** (only seen with 296; map=1 runs sent C2S id 2). The stub's id-5 reply went out.
+- Still no input: cells remain data-less (RayIntersection asserts; 64 sub-file load failures are
+  mostly cosmetic), so the position validator fails and SetMainPlayer stays un-fired.
+- Testing constraint: the client exits at the ~219 s watchdog -> bind-to-test within ~3 min;
+  the login driver (post_login/role_enter) is flaky across runs (check the gateway log first).
+- Wrappers: C:\jx3tmp\run_gamestub_296.cmd / run_gamestub_296b.cmd (spawn from the map's
+  editorContext.json camera 54991,42845,2930).
