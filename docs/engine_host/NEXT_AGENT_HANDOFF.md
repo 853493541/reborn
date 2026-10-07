@@ -79,20 +79,22 @@ lua scripts, sets up entities).
 
 **New blocker (a wild call inside CreateRLScene):** after LoadConfigureFile,
 CreateRLScene faults with `exc 0xC0000005 at 0x...16001D (module?)`. The VEH now
-also scans the raw stack (`[VEH] stk[i] ...`). The chain:
-`CreateRLScene (rep+0xB0BB74)` -> `rep+0xAEE2DD` / `rep+0xAE000F` /
-`rep+0x3DB9B7` (a return after `call [rax+0xD0]` on `[scene+0xF1978]`) -> the
-wild target. This is the same class of fault as the earlier "wild call": an
-uninitialized table/object in a newly reached path. Next probes:
+also scans the raw stack (`[VEH] stk[i] ...`) and logs the AV registers,
+including `regs rip/rsp/rbp/rax..rdi`. Observed (run 209):
+`rip=0x207DB86001D rax=0x35B1DFE0 rcx=rsp+0x9F rdx=7 rsi=rsp+0x108 rdi=0
+rbx=rep/eng ptr`; raw-stack chain `rep+0xAEE2DD`, `rep+0xAE000F`,
+`rep+0x3DB9B7` (return after `call [rax+0xD0]` on `[scene+0xF1978]`),
+`CreateRLScene (rep+0xB0BB74)`. The 32-bit-looking `rax=0x35B1DFE0` and the
+stack-pointing `rcx` suggest an indirect call through a bad/truncated pointer
+(or an object whose vtable was never set). Same class as the earlier wild call.
+Next probes:
 
-1. Identify the object at `[scene+0xF1978]` (the 3D scene) and the vtable slot
-   `[+0xD0]`; the call is at rep+0x3DB9B1. Check which loaded table/config
-   should have been applied first.
-2. Trace `rep+0xAEE2DD` (return after `call 0x15BF4`) and `rep+0xAE000F`
-   (return after `call 0xD4EA`) — likely another table-driven create that needs
-   a table the host has not loaded.
-3. If it is a missing table load, add the corresponding game loader call (as
-   done for `LoadConfigureFile`) rather than fabricating.
+1. Use the AV registers + stack scan to pick the immediate caller; disassemble
+   around `rep+0xAEE2DD` (`call 0x15BF4` -> 0xAEDFD0) and `rep+0x3DB9B1`
+   (`call [rax+0xD0]`); log `Rip`, `Rax`, `Rcx` on the next AV.
+2. Check which table/config the newly reached path expects (a table loader the
+   host still has not called, as was the case for `LoadConfigureFile`).
+3. If it is another missing game loader, call it (do not fabricate).
 4. Then re-check the CreateRLScene return and `GetRLScene(2)`.
 
 **Superseded leads (kept for context):** the register-step / async-queue theory
