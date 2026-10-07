@@ -376,11 +376,9 @@ internal static class RebornClient
         var panel = new Panel();
         panel.Dock = DockStyle.Fill;
         form.Controls.Add(panel);
-        // M1.7: the engine renders into a child window of 
-orm, so WinForms
+        // M1.7: the engine renders into a child window of form, so WinForms
         // child controls sit behind the 3D output. The HUD is a separate
-        // top-level layered overlay (client/HudOverlay.cs) owned by 
-orm;
+        // top-level layered overlay (client/HudOverlay.cs) owned by form;
         // Esc toggles the information panel (info + control mode + COPY LOG);
         // nothing is shown while it is closed (no on-screen panel hints).
         var hud = new HudOverlay();
