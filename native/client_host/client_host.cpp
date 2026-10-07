@@ -225,10 +225,12 @@ static char __fastcall hookRunTasks(void* a1)
     __try
     {
         if (kt != NULL)
-            logf("[host] runTasks exit -> %d kt+0x0=%p +0x8=%p +0x68=%p +0x70=%p +0x78=%p",
+            logf("[host] runTasks exit -> %d kt+0x0=%p +0x8=%p +0x68=%p +0x70=%p +0x78=%p +0x11FF8=%p +0x12000=%p +0x1DE40=%p +0x23BB8=%p",
                  (int)r, *(void**)kt, *(void**)((BYTE*)kt + 8),
                  *(void**)((BYTE*)kt + 0x68), *(void**)((BYTE*)kt + 0x70),
-                 *(void**)((BYTE*)kt + 0x78));
+                 *(void**)((BYTE*)kt + 0x78),
+                 *(void**)((BYTE*)kt + 0x11FF8), *(void**)((BYTE*)kt + 0x12000),
+                 *(void**)((BYTE*)kt + 0x1DE40), *(void**)((BYTE*)kt + 0x23BB8));
         else
             logf("[host] runTasks exit -> %d kt=NULL", (int)r);
     }
