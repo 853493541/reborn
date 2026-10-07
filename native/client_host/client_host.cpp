@@ -2740,7 +2740,11 @@ int main(void)
         // host adaptation: fix zero shadow-mask descriptors at use time
         // (see shadowDescFix above)
         if (rep != NULL)
-            logf("[host] shadow desc hook -> %d", installShadowDescHook(rep));
+        {
+            int sdOk = (GetEnvironmentVariableA("RC_HOST_NOSHADOWDESC", NULL, 0) != 0)
+                ? -1 : installShadowDescHook(rep);
+            logf("[host] shadow desc hook -> %d", sdOk);
+        }
         if (rep != NULL)
             logf("[host] table load hook -> %d", installTableLoadHook(rep));
         if (rep != NULL)
