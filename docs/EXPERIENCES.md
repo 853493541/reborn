@@ -3663,5 +3663,21 @@ HIGH-confidence findings:
   hook, and whether `0x1B97D` really targets `0x36A1D0`; log `edx/rcx/result` at the real
   Register to see which condition returns false.
 - Evidence: host_exe256/257.out; static disasm.
+
+## 2026-10-07 - MILESTONE: RLActorMgrNT::Init succeeds (void hooks clobbered Register's return)
+
+- The line-86 failure was NOT the registry: `Register` (`rep+0x36A1D0`) actually returned
+  1 for all 8 handlers (hook log: `ev-reg2 id=50/80/51/81/55/84/56/85 -> 1 count=86`),
+  but the host's `hookEventRegister2` was declared **`void`**, so it discarded the return
+  value and Init saw failure. Fixed both `hookEventRegister` (0x39D560) and
+  `hookEventRegister2` (0x36A1D0) to return the trampoline result.
+- Run 259: `RLActorMgrNT::Init(mgr, [singleton+0xC0], [singleton+0xB0]->vt[8]()) -> 1`
+  (SUCCESS). Gate 4's manager is now initialized.
+- Next blocker: `CreateRLActorNT(mgr, 1, 0)` still crashes (VEH reaches `rep+0x815827`,
+  the earlier recursion site) - the representID/type args need the real F1 values.
+- This is the third instance of the "hook return-type clobbers the engine return"
+  bug class (after hookTableBuilder/hookTableWrapper) - audit all `void` hooks.
+- Evidence: host_exe258.out (ev-reg2 ->1 but line-86 fired), host_exe259.out (Init -> 1);
+  static disasm.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
