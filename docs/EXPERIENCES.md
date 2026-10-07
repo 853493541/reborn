@@ -2797,3 +2797,33 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - V2 client state (00:23 run): loading phase 10+ min, represent vector cycles 0 -> 18 -> 0 -> 9
   before the game connect (login/role transitions), no dup yet; watches:
   `tools/netcode/watch_represent_array.py`.
+
+### 2026-10-07 ☀️ V2 morning findings: scene data is HEALTHY; engine never starts during loading
+- Attribution fix: a third writer uses the shared KG3D log dir — the user's `Skill.exe`
+  (`MovieEditor\bin64\Skill\out\Skill_<time>.log`, `start map=...reborn_sandbox...`). Decisive
+  attribution = thread IDs: engine-log `<TID>` must intersect the JX3Client process threads
+  (system-unique). No recent KG3D log intersects our client -> our V2 client has NO KG3D
+  session during the whole loading phase (its engine DLLs are loaded but the engine never inits).
+- New live tools:
+  * `tools/netcode/read_scene_loader.py` — reads `KSceneClientLoader` (scene+0x211D8): active,
+    seq/pending counters, loaded-region count. Live: `active=1 seq=169 pending=0 regions=88
+    reglist=88` -> the SceneLoader worker thread drains everything; **cell/region loading works**.
+  * `tools/netcode/read_validator.py` — reads the position-validator (0x1403D5220) inputs:
+    cell grid + sub-region array [cell+0x20] / index table [cell+0x28], idx=(minorY<<6)+minorX,
+    record flags/heights, player Z. Live: entry=4114, record h=16460, `h<<6 = 1053440 == player
+    Z` -> **the player stands exactly on the terrain; the old "uninitialized garbage cell /
+    garbage Z" readings were wrong** (1053440 is the fixed-point height, not garbage).
+- Static decode of the loader chain: `KSceneClientLoader::Init` (0x1403D8840, called from the
+  KScene constructor 0x140180852) creates a named worker thread ("SceneLoader", fn 0x1403D9320
+  -> consumer 0x1403D8B30) that pops requests queued by 0x1403D8A00 (called from ValidateRegions)
+  and calls 0x1403D6AC0 to load each region.
+- Live re-bind experiment: writing `bc000000000000` (id 188, 7 B) to `C:\jx3tmp\gsend.hex`
+  re-triggers the client's 0x6D role-data upload burst (so a late bind reaches the role-data
+  path) but does NOT complete the loading panel / activate input (loading UI still up, drive_move
+  W -> no C2S 0x1E8, pos unchanged). id-8 OnSwitchMap (0x14014CE10; map @+7, region @+0xB) sent
+  live with map=296 is a no-op (same map).
+- Consequence: the remaining loading gate is NOT the logic-scene data (loaded) and NOT the
+  position validator (passes). The loading panel waits on a scene/3D object it never gets
+  (`RealOnSyncSceneLoadingProcess`: if GetClientScene() is nil it logs the timeout error and
+  stops polling) until the client force-confirms; the confirm is followed by the represent
+  double-free crash.
