@@ -2240,3 +2240,23 @@ solved it, and what is still open. **Newest at the bottom.**
   state-driven reductions (worst dynamicweathersetting 133->92, 69% - no collapse), selftest
   1240/0/0, audit ph=538 oob=8698.
 - Verified: extract log 1420 HIT/40 MISS; replay_summary OK=1148 ERR=63; --selftest 1240/0/0.
+
+### 2026-10-05 ? UI ? item-list wiring: appends clone into the prototype's own list (the big "wrong place" class)
+- Evidence: across all recorded appends, **260/301 have the Lua receiver != the prototype's
+  authored parent** (Page_Progress -> Handle_QuestList, SelectMacroIconPanel -> Handle_Icon,
+  HatredPanel -> Handle_HaredList, WndScroll_Activities -> Handle_List, ...). The engine appends the
+  clone into the list that owns the prototype, not into the receiver; our clones were parented to the
+  receiver, so runtime items landed in the wrong coordinate space / were arranged by the wrong section.
+- Fix (LayoutPlan): `ResolveAppendContainer` = prototype's authored `._Parent` when present in the
+  file, else the receiver (through its `ScrollHandle`); `FormatAllItemPos`/`SetSizeByAllItemSize`/
+  `Clear` now apply to the containers the receiver's appends actually went into; WndScroll content
+  resolves through `ScrollHandle` (its own Left/Top offsets the items). UiLayout: a WndScroll viewport
+  clips its content (`ClipToBounds`), as the engine does.
+- Regression caught and fixed the same pass: with the clones moved out, the receiver's `$FormatItems`
+  stacked its authored children (Page_Progress's scroll got flowed as an item) - a receiver whose
+  appends landed elsewhere no longer formats its own children (cleanup pass before return).
+- Evidence of effect: selectmacroiconpanel oob 56 -> 5 (items now in Handle_Icon); tongbaogift scroll
+  back at its authored (79,100) with items stacked in Handle_QuestList (79,537, 108px pitch); charge
+  items unchanged in Handle_List. A/B: 19 fuller / 29 fewer, no collapse; selftest 1240/0/0; audit
+  oob 8804 (the +117 over baseline = scroll content logically overflowing viewports that now clip).
+- Verified: --selftest 1240/0/0; --audit oob=8804; commit 98b619f.
