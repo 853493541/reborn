@@ -359,6 +359,30 @@ namespace UiProcessApp.Engine
                 filtered.Sections.Add(clone);
                 filtered.ByName[clone.Name] = clone;
             }
+
+            // AppendString handles (HandleType 4, AppendStringType=1): the engine appends
+            // the authored string as a text item at load (KFActionBarPanel's Handle_Text*,
+            // MobileBuffList's Handle_BuffText). Synthesize the item so it renders.
+            var appendHandles = filtered.Sections
+                .Where(s => !string.IsNullOrWhiteSpace(s.Get("$AppendString")))
+                .ToList();
+            foreach (var handle in appendHandles)
+            {
+                var itemName = handle.Name + "~Append";
+                if (filtered.ByName.ContainsKey(itemName)) continue;
+                var item = new IniSection { Name = itemName };
+                item.Values["._WndType"] = "Text";
+                item.Values["._Parent"] = handle.Name;
+                item.Values["$Text"] = handle.Get("$AppendString");
+                item.Values["Left"] = "0";
+                item.Values["Top"] = "0";
+                if (handle.Get("FontScheme") != null) item.Values["FontScheme"] = handle.Get("FontScheme");
+                if (handle.Get("FontColor") != null) item.Values["FontColor"] = handle.Get("FontColor");
+                var width = handle.Get("Width");
+                if (!string.IsNullOrWhiteSpace(width)) item.Values["Width"] = width;
+                filtered.Sections.Add(item);
+                filtered.ByName[itemName] = item;
+            }
             return new LayoutPlan { Filtered = filtered, Pages = pages };
         }
 
@@ -891,6 +915,14 @@ namespace UiProcessApp.Engine
                         if (parts.Length > 2 && !string.IsNullOrWhiteSpace(parts[2]))
                             section.Values["Image"] = parts[2];
                         SetValue(section, "Frame", parts, 3);
+                        applied++;
+                        break;
+                    case "FromTextureFile":
+                        // Runtime image source from a file path (MonopolyCardUseConfirm's
+                        // TreasureChest1.UITex, MonopolyLandPurchaseDlg's ForSale.tga).
+                        // Stub values ("0", "") carry no path and stay authored.
+                        if (parts.Length > 2 && !string.IsNullOrWhiteSpace(parts[2]) && parts[2] != "0")
+                            section.Values["Image"] = parts[2];
                         applied++;
                         break;
                     case "SetImageType":

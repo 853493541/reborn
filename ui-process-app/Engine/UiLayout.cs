@@ -198,12 +198,15 @@ namespace MapUiApp.Engine
                 }
             }
 
-            // HandleType 1/2/3/6 lay their items out themselves (engine dispatcher
+            // HandleType 1/2/3/5/6 lay their items out themselves (engine dispatcher
             // 0x1801064f5: types 0-3/6 share the row/list path; the post pass
-            // 0x180106cc0 routes 1/2/3/6 to the same list path) — items flow
-            // left-to-right, wrap when the next one would exceed the container width,
-            // then each row is aligned by HAlign/VAlign. The authored Left/PosType of
-            // an item is ignored. Types 4/5 are distinct arrangement modes (unhandled).
+            // 0x180106cc0 routes 1/2/3/6 to the same list path; type 5 is the distinct
+            // 0x180107410 path but its INI properties - RowSpacing, PixelScroll,
+            // vertical ShapTexture masks - are the same vertical scroll list, so it
+            // flows with them). Items flow left-to-right, wrap when the next one would
+            // exceed the container width, then each row is aligned by HAlign/VAlign.
+            // The authored Left/PosType of an item is ignored. Type 4 is the
+            // AppendString row (handled in LayoutPlanBuilder.Build).
             // See proof/ui/evidence/re/kgui_handle_layout.txt.
             var listPos = new Dictionary<string, (double X, double Y)>(StringComparer.Ordinal);
             foreach (var list in ini.Sections)
@@ -212,7 +215,7 @@ namespace MapUiApp.Engine
                 // The runtime marks containers the script arranges (FormatAllItemPos/
                 // FormatAllContentPos) so the engine's flow pass applies to them too.
                 bool runtimeFlow = list.Get("$FormatItems") == "1";
-                if (handleType != 1 && handleType != 2 && handleType != 3 && handleType != 6 && !runtimeFlow) continue;
+                if (handleType != 1 && handleType != 2 && handleType != 3 && handleType != 5 && handleType != 6 && !runtimeFlow) continue;
                 // Wrap at the authored control width (the engine's list box); fall back
                 // to the measured size only when the INI leaves it open.
                 double listW = list.GetInt("Width");
