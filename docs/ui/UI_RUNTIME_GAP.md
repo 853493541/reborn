@@ -14,32 +14,31 @@ This report measures what is **still dropped** — the remaining calls per windo
 
 | category | calls | meaning |
 |---|---|---|
-| item-creation | 5 | DROPPED — list rows never materialize (missing items) |
-| arrangement | 8 | DROPPED — engine position/size passes (wrong placement) |
-| render | 13 | DROPPED — runtime image source/mode/animation |
+| item-creation | 103 | DROPPED — list rows never materialize (missing items) |
+| arrangement | 11 | DROPPED — engine position/size passes (wrong placement) |
+| render | 21 | DROPPED — runtime image source/mode/animation |
 | state | 0 | DROPPED — control state (enable/check/expand/page) |
-| consumed | 1753 | applied by the viewer today |
-| noise | 3272 | engine plumbing, no visual state (lookup/events/getters) |
+| consumed | 5442 | applied by the viewer today |
+| noise | 9865 | engine plumbing, no visual state (lookup/events/getters) |
 
-State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13 + state 0).
+State-bearing dropped calls: **135** (item-creation 103 + arrangement 11 + render 21 + state 0).
 
 ## Dropped methods (distinct, with the windows using them)
 
 | method | category | calls | windows |
 |---|---|---|---|
-| `AppendItemFromData` | item-creation | 5 | SocialPanel |
+| `AppendItemFromData` | item-creation | 103 | GuildBankPanel, SocialPanel |
+| `FromTextureFile` | render | 7 | BattleFieldMap, LoadingPanel, MonopolyCardUseConfirm, MonopolyLandPurchaseDlg, NewPet, StoryDisplay |
+| `SetDragArea` | arrangement | 4 | BigBagPanel, DesertPreset, ShareBagPanel |
 | `EnableDrag` | arrangement | 3 | Matrix, QuestTraceList |
+| `RegisterLButtonDrag` | arrangement | 3 | BigBagPanel, NoticeBoard, VoiceRoomNotice |
 | `SetTextAutoTipEnabled` | render | 3 | ReputationPanel |
-| `RegisterLButtonDrag` | arrangement | 2 | BigBagPanel, NoticeBoard |
+| `SetAnimateGroupMouseDown` | render | 2 | CompassPanel, GMPanel |
+| `SetAnimateGroupMouseOver` | render | 2 | CompassPanel, GMPanel |
+| `SetAnimateGroupNormal` | render | 2 | CompassPanel, GMPanel |
 | `SetAnimation` | render | 2 | MainBarPanel, MiniMap |
-| `SetDragArea` | arrangement | 2 | BigBagPanel |
 | `FormatTextForDraw` | render | 1 | Player |
 | `FromIconID` | render | 1 | Player |
-| `FromTextureFile` | render | 1 | LoadingPanel |
-| `SetAlwaysTop` | render | 1 | PakV4Loading |
-| `SetAnimateGroupMouseDown` | render | 1 | CompassPanel |
-| `SetAnimateGroupMouseOver` | render | 1 | CompassPanel |
-| `SetAnimateGroupNormal` | render | 1 | CompassPanel |
 | `SetLoopCount` | render | 1 | Bullet |
 | `SetScrollVerStepSize` | arrangement | 1 | ReputationPanel |
 
@@ -47,159 +46,1309 @@ State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13
 
 | window | stage | consumed | item-creation | arrangement | render | state | placeholders | unresolved | oob |
 |---|---|---|---|---|---|---|---|---|---|
+| GuildBankPanel | liked | 205 | 98 | 0 | 0 | 0 | 0 | 1 | 8 |
 | SocialPanel | liked | 38 | 5 | 0 | 0 | 0 | 2 | 0 | 51 |
 | BigBagPanel | liked | 373 | 0 | 3 | 0 | 0 | 0 | 0 | 108 |
 | QuestTraceList | recommended | 9 | 0 | 2 | 0 | 0 | 0 | 0 | 7 |
+| DesertPreset | other-ui | 42 | 0 | 1 | 0 | 0 | 0 | 0 | 1 |
 | Matrix | liked | 15 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
 | NoticeBoard | other-ui | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 2 |
 | ReputationPanel | panels-ui | 84 | 0 | 1 | 3 | 0 | 2 | 0 | 4 |
+| ShareBagPanel | recommended | 24 | 0 | 1 | 0 | 0 | 0 | 0 | 4 |
+| VoiceRoomNotice | other-ui | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 2 |
+| ACC_BFInfo | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_BFShowFinal | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_DesertStormInfo | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_Excellent | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_JJCInfo | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_JJCRougeInfo | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_JJCRougeShowFinal | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_JJCRougeShowPassData | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_JJCShowFinal | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_MobaAffordableEquipment | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_MobaBattleGeneralMsg | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_MobaBattleGeneralMsgEx | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_MobaBattleOneSidedMsg | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_MobaBattleTwoSidedMsg | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_MobaLocalData | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_MobaShowFinal | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_MyRecord | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_PleasantGoatFinal | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_PleasantGoatTeamInfo | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_PleasantGoatWinOrDefect | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_Praise | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_TreasureFinal | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_TreasureHuntFinal | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_TreasureHuntInfo | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ACC_WinOrDefect | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| AIChatPanel | other-ui | 6 | 0 | 0 | 0 | 0 | 4 | 0 | 4 |
+| AIChat_Statement | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | AccelerateBall | liked | 2 | 0 | 0 | 0 | 0 | 2 | 0 | 13 |
+| AccountException | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| AccountFriendTip | panels-ui | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 1 |
+| AchievementPanel | liked | 18 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| AchievementTip | menus-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | ActionBar | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ActionBarBind | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
+| ActionSmallBar | hud-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| ActiveMessage0 | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ActivityDetail | menus-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ActivityGift | menus-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | ActivityList | recommended | 64 | 0 | 0 | 0 | 0 | 2 | 0 | 229 |
-| AnimationMgr | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ActivityPanel | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| ActivityPlotPanel | menus-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| ActivityRewardCollection | menus-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ActivitySignIn | recommended | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 6 |
+| AddAccountFriend | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| AddFriendPanel | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| AddPartnerExterior | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| AddTBMegBox | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| AddonChangeLog | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| AddonPanel | modes-ui | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 17 |
+| Aim | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Album | recommended | 0 | 0 | 0 | 0 | 0 | 4 | 0 | 2 |
+| AllKBAccounts | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| AnimationMgr | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| AnniversaryWishPop | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| Announce | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ArenaBonusPool | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ArenaCHList | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | ArenaCorpsPanel | modes-ui | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| ArenaCorpsTipl | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ArenaGuessPool | modes-ui | 2 | 0 | 0 | 0 | 0 | 2 | 0 | 14 |
+| ArenaInheritLevels | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ArenaLivePanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 15 |
 | ArenaOpponent | modes-ui | 5 | 0 | 0 | 0 | 0 | 1 | 0 | 13 |
+| ArenaQueue | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| ArenaVotingPanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 8 |
+| ArtistReward | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| ArtistRewardAmount | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 3 |
+| ArtistRewardSure | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| AssassinationTaskScroll | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| AssistNewbieDungeon | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| AssistNewbieInvite | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| AssistNewbieRelease | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| AsuraAssemble | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| AsuraBattle | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| AsuraPanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| AsuraSettlement | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| AuctionMsgBox | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | AuctionPanel | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 13 |
-| Balloon | hud-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| AudienceListPanel | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| AutoExitPanel | menus-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| AutoSearch | menus-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 49 |
+| BZBossList | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| BadaoPosture | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| BalanceBar | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| BalanceShip | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Balloon | hud-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| BanishPanel | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | BanksInterface | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+| BarMitzvah | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| BatchUse | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| BattleFieldHSLHNotice | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 13 |
+| BattleFieldMap | ? | 30 | 0 | 0 | 1 | 0 | ? | ? | ? |
+| BattleFieldObjective | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| BattleIntegral | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| BattleMapPay | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| BattlePass | modes-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 12 |
+| BattleTipPanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | BigBankPanel | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 17 |
+| BirthdayCelebrateCardPop | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| BlackMarketOperate | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| BlueSeaPanel | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| BlueprintsChoice | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+| BookCopyPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| BookExchangePanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| BookInfoPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| BreatheBar | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | BuffFold | liked | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | BuffList | ? | 6 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| BuffMonitor | recommended | 16 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| BuffMonitorDaoZong | hud-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| BuffMonitorGeneral | hud-ui | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
 | BuffMonitorYaoZong | hud-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
+| BugReport | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | Bullet | hud-ui | 7 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
+| ButlerNpcInfo | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| BuyNumberPanel | menus-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| BuyRule | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| BuyTime | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| CDProcess | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | CGSelectPanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| CJPosture | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| CMDOB | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| CMD_Add | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CallFriendPannel | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| CallGuildMemberPannel | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| CampActiveTime | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| CampBigThings | modes-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
+| CampBossPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| CampFireworks | other-ui | 10 | 0 | 0 | 0 | 0 | 0 | 0 | 17 |
+| CampMaps | modes-ui | 1 | 0 | 0 | 0 | 0 | 33 | 0 | 6 |
+| CampMapsTips | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 1 |
+| CampMapsWeatherTip | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| CampMapsYinShanPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| CampOB | other-ui | 1 | 0 | 0 | 0 | 0 | 12 | 0 | 14 |
 | CampPanel | recommended | 2 | 0 | 0 | 0 | 0 | 18 | 0 | 2 |
+| CampRewardTip | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| CampTipPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| CardBuy | other-ui | 0 | 0 | 0 | 0 | 0 | 5 | 0 | 1 |
+| CardSell | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| CastleFightCleanup | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Challenge | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| ChallengeCountDown | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| ChangGePosture | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| ChangGeShadow | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| ChangeVoice | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| ChannelPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Chapters | other-ui | 6 | 0 | 0 | 0 | 0 | 1 | 0 | 9 |
+| CharInfo | liked | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| CharInfoMore | recommended | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
 | CharacterPanel | liked | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 21 |
+| CharacterPanelAwardTip | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| CharacterPanelExplainTip | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| CharacterPanel_Homeland | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| Charge | other-ui | 94 | 0 | 0 | 0 | 0 | 0 | 0 | 78 |
+| ChatButton | hud-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ChatPanel_Bg | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ChatPanel_Game | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ChatPanel_Normal | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ChatPanel_Recent | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ChatSettingPanel | recommended | 261 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| CheatWarningPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| CheckBaiZhanInfo | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| ChooseGift | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| ChooseGiftMessage | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+| ChooseGiftSFX | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ChooseReward | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
+| ChooseVoiceRoom | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
+| CityBelong | modes-ui | 6 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
+| CleanDxPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| CloakColorChange | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| ClueShowList | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Cohabitation | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| CoinShop | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 18 |
+| CoinShop_AiFace | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_BodyShop | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_BoxMod | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_Center | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_ChangeHairColor | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_CheckOut | ? | 3 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_CustomEffects | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_Cutscene | ? | 4 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_DyeingCheckOut | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_DyeingHair | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_Entrance | ? | 10 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_Exterior | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_FaceSave | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_GeneralSetList | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_GoodsIntroduce | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_Groupon | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_HairShop | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_HairdyeSave | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_Home | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_MyBody | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_MyExterior | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_MyHair | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_MyNewFace | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_MyPosture | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_MySpecialEffects | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_NewFaceShop | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_NewHairShop | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_News | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_Outfit | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_PackTip | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_PointsAward | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_PreviewBox | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_RemoveSure | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_SchoolExterior | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_Search | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_SetList | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_SetTip | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_ShareStation | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_ShowHide | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_SortSetting | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_TradeCenter | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_TuoyinRule | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_UnPayRel | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_Video | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_View | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_Weapons | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_Welfare | ? | 4 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| CoinShop_ZhouBianRule | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| Coinshop_CantBuy | ? | 4 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| Coinshop_SpecialEffectPart | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| Collection | other-ui | 12 | 0 | 0 | 0 | 0 | 0 | 9 | 7 |
+| Collection_Bag | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| Collection_DeleteSure | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| Collection_Message | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| Collection_MiniBag | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| Collection_OpenBox | ? | 4 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| Collection_Orange | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| Collection_View | ? | 4 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ColorPalette | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ColorTablePanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| CombatText | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | ComboPanel | liked | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 2 |
+| ComboWinEffect | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| CommandAddGang | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| CommandAddMoney | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| CommandAuction | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 2 |
+| CommandBuySure | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| CommandChangeCommander | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| CommandDataPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| CommandDistribute | other-ui | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 3 |
+| CommandDistributeSure | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| CommandElection | other-ui | 1 | 0 | 0 | 0 | 0 | 3 | 0 | 2 |
+| CommandKickPlayer | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| CommandPlayerList | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| CommandSetting | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| CommandSignup | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 25 |
+| CommandVoteOnline | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| CommonBlankPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | CompassPanel | recommended | 3 | 0 | 0 | 3 | 0 | 0 | 0 | 3 |
+| ConfirmTime | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ConflatePanel | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 4 |
+| ContactsList | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| CraftIntroduce | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| CraftManagePanelnew | panels-ui | 3 | 0 | 0 | 0 | 0 | 1 | 0 | 7 |
 | CraftPanel | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| CraftReadComparePanel | panels-ui | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| CraftReadManagePanel | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+| CraftReaderPanel | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| CraftStuffPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| CreateVoiceRoom | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 17 |
+| CreditsPanel | modes-ui | 71 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| CrossMap | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
+| Crosshair | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| CrossingChoosePanel | modes-ui | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| CrossingFinishPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| CrossingProcessPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| CurrencyBagPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
 | CustomEffects | menus-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| CustomMessage | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| CustomTrackList | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| Cyclopaedia | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 6 |
+| DBMPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| DLCPanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| DaTangJiaYuan | other-ui | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 15 |
+| DailySignIn | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
+| Danmaku | other-ui | 19 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| DanmakuSetting | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | DaoZongInjuryRecord | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| DashBoard | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 22 |
+| DdzIconPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| DdzPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| DdzSettlementPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | DebuffList | liked | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| DebugNpcPortrait | other-ui | 21 | 0 | 0 | 0 | 0 | 20 | 0 | 0 |
+| DelphisGift | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| DesertEquipmentChoose | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| DesertItemBuySure | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| DesertItemNumSure | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| DesertQuickPack | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
+| DesertSell | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| DesertStormInfoPanel | other-ui | 26 | 0 | 0 | 0 | 0 | 0 | 0 | 235 |
+| DesertStormOB | other-ui | 18 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| DesertStormOBList | other-ui | 3 | 0 | 0 | 0 | 0 | 2 | 0 | 2 |
+| DesertStormSkillPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
+| DesertSuit | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| DesertWarehouse | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| DesertWeaponChoose | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 35 |
+| DesertWeaponSkill | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| DesignationPanelNew | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | DialoguePanel | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Direction | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| DisableCompositionTip | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | Dismantle | recommended | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| DivinationPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| DomesticatePanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| DramaAnnouncement | other-ui | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
+| DramaBuyingTip | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| DramaCluePanel | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
+| DramaDetailPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| DramaHall | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| DramaHallFilterMenu | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| DramaJieSan | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| DramaLabelFilter | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| DramaLinkSwitch | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| DramaMoreMessageCard | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| DramaNewClueCard | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| DramaOperation | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 35 |
+| DramaPassWord | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| DramaPlayerList | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| DramaPlayerTip | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| DramaScore | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| DramaSelectRole | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| DramaStoryPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 11 |
+| DramaTeamBuilding | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| DramaTitle | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| DramaVotePanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| DramaVotingResults | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| DropDownWnd | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
 | DropLinePanel | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
+| DurabilityPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| DyeingQualityTips | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| DynamicActionBar | hud-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | DynamicBattleRoyale | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| DynamicMutualBar | hud-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| DynamicBeastBar | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 21 |
+| DynamicCarrierBar | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| DynamicMutualBar | hud-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| DynamicNpcMorphPhoto | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| DynamicPetBar | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | DynamicRougeActionBar | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | DynamicRougeActionBarSetting | modes-ui | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| DynamicSkillBar | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| DynamicWeatherSetting | other-ui | 11 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| EULAPanel | modes-ui | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
+| EYaShaEmergency | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| EYaShaEventPlay | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| EYaShaGameTeach | other-ui | 0 | 0 | 0 | 0 | 0 | 7 | 0 | 21 |
+| EYaShaHelper | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| EYaShaInterlude | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| EYaShaLeaveButton | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| EYaShaMeetingOperate | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| EYaShaMeetingRoom | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| EYaShaMeetingStage | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| EYaShaOpenMeetingConfirm | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| EYaShaPlayer | other-ui | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 2 |
+| EYaShaPlayerCard | other-ui | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
+| EYaShaQuestWatchList | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| EYaShaQuickMsgPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| EYaShaReport | other-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 2 |
+| EYaShaSetting | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| EYaShaShowFinal | other-ui | 25 | 0 | 0 | 0 | 0 | 14 | 0 | 4 |
+| EYaShaTopMenu | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | EditBox | menus-ui | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| EmergencyChoose | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| EmotionManagePanel | other-ui | 13 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | EmotionPanel | liked | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+| EndOfBattle | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | EnterAreaTip | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| EquipCopy | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 4 |
+| EquipInquire | other-ui | 111 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+| EquipRecommend | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 6 |
+| Equip_Distance | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| EquipmentDIY | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 13 |
+| EquipmentDIYChoose | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| EquipmentDIYExport | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 13 |
+| EquipmentDIYImport | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| EquipmentDIYMgr | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 |
+| EquipmentDIYModify | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| EquipmentDIYPic | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
+| EquipmentDIYPlan | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
 | EquipmentShare | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | ExaminationPanel | recommended | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 3 |
 | ExitPanel | ? | 4 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | ExpLine | liked | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | ExteriorAction | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| ExteriorBoxError | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 19 |
+| ExteriorSellBag | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
+| ExteriorView | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| Exterior_Operator | ? | 8 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| FBBossPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| FBCountDown | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| FBCountNum | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| FBShowPanel | other-ui | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| FBShowTeam | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | FBTimeRank | other-ui | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
 | FBlist | other-ui | 11 | 0 | 0 | 0 | 0 | 1 | 1 | 46 |
+| FBlistBossKillTip | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| FEActivationPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| FEEquipExtractPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| FPS | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| FamePanel | other-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 11 |
+| FameTeach | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| FameUpgrade | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| FancySkating | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| Fellowship | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| FellowshipChoose | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| FellowshipQuest | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| FightProgress | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | FightingNum | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | FightingStatistic | ? | 12 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| FightingWarning | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| FilterInviteMsg | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| FilterMask | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | FilterPanel | menus-ui | 56 | 0 | 0 | 0 | 0 | 4 | 0 | 6 |
+| FindBugGame | modes-ui | 25 | 0 | 0 | 0 | 0 | 3 | 0 | 0 |
+| FindTeamPQObjective | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| FindingYouShang | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| FireCardSFX | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| FishPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| FiveAttributeDetailsPop | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| FiveAttributePop | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 2 |
+| FixRoomNum | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| FlowerDayPs | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| FlowerInfoPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| FlowerPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| FormationPanel | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| FriendBack | other-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 1 |
+| FriendPraise | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| FriendPraiseTip | other-ui | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| FriendRecruit | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| FriendTip | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 1 |
+| FullScreenSFX | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| FullScreenWarning | liked | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| FullShop | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 21 |
+| FullShop_BG | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| FullShop_Detail | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| FullShop_ItemImage | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| FullShop_Left | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| FullShop_List | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| FullShop_Money | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| FullShop_View | ? | 3 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| FurnitureSetCollect | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 22 |
+| GMAnnouncePanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| GMCheck | modes-ui | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 2 |
+| GMPanel | other-ui | 26 | 0 | 0 | 3 | 0 | 1 | 0 | 100 |
+| GameGuideCPLevelAwards | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | GameTeach | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 11 |
 | GasMonitorCY | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| GeneralAttributePop | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| GeneralCounterSFX | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| GeneralInvitation | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| GeneralProgressBar | hud-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | GetNamePanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| GetNew | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| GetNewHomelandSkin | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| GetNewPartner | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| GetNumberPanel | menus-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| GetPercentagePanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| GetPricePanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| GlobalEventHandler | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| GoldPresetPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | GoldTeam | recommended | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 14 |
+| GoldTeamAddMoney | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| GoldTeamDistribution | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| GoldTeamLootList | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| GoldTeamPartialPayment | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| GoldTeamPrice | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | GoldTeamTotalLootList | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
+| GongZhan | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| GoodFanWorks | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| GrouponConfirm | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| GrouponRemind | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
+| GrouponRule | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| GuardInfo | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| GuardList | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| GuardPanelSure | other-ui | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 3 |
+| GuardPanelSureInfo | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| GuidePerson_MengXin | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | GuildAddMember | recommended | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 15 |
+| GuildCampReverse | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| GuildCastleWarPoints | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| GuildCastleWarRule | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| GuildLeagueMatches | panels-ui | 1 | 0 | 0 | 0 | 0 | 13 | 0 | 87 |
+| GuildLeagueMatchesSheet | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| GuildLeagueMatches_BattleInfo | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| GuildLeagueMatches_EnterTip | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| GuildLeagueShowPanel | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 51 |
+| GuildLeagueShowPanelTips | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| GuildLeagueSignHint | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| GuildListPanel | recommended | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 17 |
 | GuildMainPanel | recommended | 3 | 0 | 0 | 0 | 0 | 0 | 8 | 3 |
-| HatredPanel | other-ui | 24 | 0 | 0 | 0 | 0 | 0 | 0 | 34 |
+| GuildMemberDragPanel | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| GuildRename | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| GuildRenameEX | panels-ui | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| GuilderPanel | panels-ui | 1 | 0 | 0 | 0 | 0 | 5 | 0 | 1 |
+| HLBOp_Main | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_AreaManagement | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_Blueprint | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_BlueprintExport | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_BlueprintImport | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_BlueprintLoadBar | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_Blueprint_SerialNum | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_BuildingStats | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_CamSpeed | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_CellarLayers | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_CustomBrush | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_DeleteSure | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_DigitalBlueprintExport | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_ErrorItemList | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_ExtractFurniture | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_ExtractPanel | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_Filters | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_GenuineIcons | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_Help | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_ItemList | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_ItemOpColor | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_ItemOpHeight | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_ItemOpMain | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_ItemOpRotate | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_ItemOpScale | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_ItemRotateDirection | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_Main | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_MatchItemList | ? | 6 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_Message | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_NormalItemList | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_PendantBuy | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_RClick | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_Recycle | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_ReplaceList | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_Saveusage | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_SomeInfo | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_WeatherSetting | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HLBView_Welfare | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HatredPanel | other-ui | 24 | 0 | 0 | 0 | 0 | 0 | 0 | 46 |
+| HelpPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| HelpSound | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| HideOtherHomeTip | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| HomelandAddFriends | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| HomelandAddOthers | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| HomelandArchBuyConfirm | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
+| HomelandCoinBuyConfirm | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| HomelandEasyBuy | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 11 |
+| HomelandEasyBuySearch | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| HomelandEventHandler | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HomelandGetHouse | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| HomelandGroupBuy | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 13 |
+| HomelandInvitation | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| HomelandLocker | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| HomelandOverview | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| HomelandOverviewMenu | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| HomelandOverviewTips | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| HomelandPVP | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 14 |
+| HomelandSeasonDistance | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| HomelandSpecialBuyConfirm | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| HomelandStorageArea | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| HomelandTeamSure | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| HomelandUnlockArea | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| HonorChallengePanel | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
+| HonorChallengeReward | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 5 |
+| HorseEquip | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| HorseExterior | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| HorseExterior_CheckOut | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | HorsePanel | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 13 |
+| HorseStable | other-ui | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | HotSpot | other-ui | 0 | 0 | 0 | 0 | 0 | 15 | 0 | 19 |
 | HotkeyPanel | liked | 10 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| HouseFastPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| HouseFastPanel_Vistor | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HouseFastPanel_Wander | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| HouseFrameLicense | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| HouseKeeper | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 17 |
+| HouseLinkTip | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| HouseMovingGuide | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 |
+| HousePlayPanel | other-ui | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| HouseUpgrade | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| HuaZhaoPhoto | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 6 |
+| Identity | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
+| IdentityDynActBar | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| IdentityDynamicBar | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| IdentityPanel | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 82 |
+| IdentityUpGrade | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| IllusionPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| InstrumentStatement | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| Instrument_File | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| Instrument_Main | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| Instrument_Op | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| Instrument_Play | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| InterludeHSLHPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| InterludePanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| InviteFriends | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| ItemBox | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| ItemBuySure | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ItemBuy_MoneyTrace | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| JJCEquipmentDIY | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+| JJCQiXuePanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| JJCRougeChallengePop | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| JJCRougeChooseCards | modes-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 10 |
+| JJCRougeInsideEnhanced | modes-ui | 1 | 0 | 0 | 0 | 0 | 3 | 0 | 0 |
+| JJCRougeInsideShop | modes-ui | 1 | 0 | 0 | 0 | 0 | 3 | 0 | 1 |
+| JJCRougeObtainCards | modes-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 7 |
+| JJCRougePanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
+| JiangHuMatrix | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| JigsawDragPiece | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| JoinCamp | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| JoinHousePVP | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| KFActionBarPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| KeyPanel | recommended | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | Keyboard | other-ui | 189 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| KillInformation | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| KillMessage | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | KoreaLogo | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | KungFuPanel | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | LXGMonitor | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| LeftMessage | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| LevelUpAward | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| LevelUpMax | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| LightingCityPanel | other-ui | 9 | 0 | 0 | 0 | 0 | 1 | 0 | 14 |
+| LimitedSalePanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | LoadingPanel | ? | 25 | 0 | 0 | 1 | 0 | ? | ? | ? |
+| LoadingPlay | other-ui | 10 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| LoadingWaiting | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | LockPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| LoginCustomRole | modes-ui | 23 | 0 | 0 | 0 | 0 | 5 | 0 | 59 |
+| LoginCustomRoleMode | modes-ui | 4 | 0 | 0 | 0 | 0 | 1 | 0 | 43 |
+| LoginCustomRoleName | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| LoginCustomRoleNext | modes-ui | 11 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | LoginDeleteRole | modes-ui | 3 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
+| LoginLogo | modes-ui | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | LoginMessage | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+| LoginPassword | modes-ui | 11 | 0 | 0 | 0 | 0 | 1 | 0 | 7 |
 | LoginPayFor | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| LoginQuestPanel | modes-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 3 |
 | LoginRename | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| LoginRoleList | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 134 |
+| LoginScene | modes-ui | 5 | 0 | 0 | 0 | 0 | 6 | 0 | 34 |
 | LoginServerList | modes-ui | 4 | 0 | 0 | 0 | 0 | 1 | 0 | 21 |
-| LoginSwordLogo | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| LoginServerPanel | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| LoginSwordLogo | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | LoginTokenPanel | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | LoginWaitServerList | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | LoginWaiting | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | LootList | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
-| LootRoll | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| LootRollMini | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| LootRoll | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| LootRollMini | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| LootShowList | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | LuckyMeeting | modes-ui | 15 | 0 | 0 | 0 | 0 | 2 | 0 | 13 |
+| LuckyMeetingDialogue | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
+| LuckyMeetingGet | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| LuckyMeetingInfo | modes-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 0 |
+| LuckyMeetingTrace | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| LuckyPerson | other-ui | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 10 |
+| MacroSettingPanel | other-ui | 97 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| MahjongIconPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| MahjongPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 27 |
+| MahjongSettlementPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | MailPanel | recommended | 50 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | MainBarPanel | ? | 28 | 0 | 0 | 1 | 0 | ? | ? | ? |
 | MainMessageLine | ? | 10 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| MainPlotPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| MainStoryPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 7 |
+| MapCopyList | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | MapQueue | ? | 4 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| MasterEquipRecommend | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| MasterNote | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Match3Game | other-ui | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 2 |
+| MaterialInfoMore | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
+| MentorFindMessage | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| MentorMessage | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| MentorPanel | recommended | 0 | 0 | 0 | 0 | 0 | 11 | 0 | 10 |
+| MentorPanelTip | panels-ui | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 1 |
+| MentorTask | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| MentorTransform | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| MessageBoard | other-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 2 |
 | MiddleMap | liked | 24 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| MiddleMapFlagEditor | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| MiddleMapSimple | other-ui | 3 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
+| MilitaryRanking | recommended | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 8 |
+| MindControlActionBar | hud-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | MingJiaoSkill | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
-| MiniGameDescription | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| MiniMap | liked | 40 | 0 | 0 | 1 | 0 | 0 | 0 | 3 |
+| MiniGameDescription | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| MiniGameGuide | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| MiniGameJigsaw | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 21 |
+| MiniGamePoetry | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| MiniGameResult | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| MiniGameSelectLevel | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 4 |
+| MiniGameStart | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| MiniGameStatusBar | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| MiniMap | liked | 52 | 0 | 0 | 1 | 0 | 0 | 0 | 3 |
+| MinimizeEffect | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| MoGaoKuPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 6 |
+| MobaControlPanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| MobaEnemyPanel | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| MobaInformationPanel | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| MobaPVPInput | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
+| MobaPVPList | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| MobaShop | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
+| MobaShowPanel | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| MobileBuffList | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | MobileSkillGrandPanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| MobileSkillGrandPanelTip | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| MobileSkillIntroduce | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| MobileSkillTip | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| MoneyBuy | other-ui | 0 | 0 | 0 | 0 | 0 | 4 | 1 | 7 |
+| MoneySell | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| MonopolyAuctionInfoPanel | modes-ui | 13 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| MonopolyBg | modes-ui | 3 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
+| MonopolyCardCast | modes-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
+| MonopolyCardList | modes-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
+| MonopolyCardShop | modes-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 2 |
+| MonopolyCardUseConfirm | modes-ui | 4 | 0 | 0 | 1 | 0 | 1 | 0 | 0 |
+| MonopolyChangeBuffRequest | modes-ui | 12 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| MonopolyDaLeTouPanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 5 |
+| MonopolyDice | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
+| MonopolyFateEvent | modes-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 10 |
+| MonopolyGameNotice | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| MonopolyGameOverFinal | modes-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 3 |
+| MonopolyGamePanel | modes-ui | 0 | 0 | 0 | 0 | 0 | 4 | 0 | 40 |
+| MonopolyGodNotify | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| MonopolyInfo | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| MonopolyLandExchangeRequest | modes-ui | 24 | 0 | 0 | 0 | 0 | 2 | 0 | 1 |
+| MonopolyLandPurchaseDlg | modes-ui | 8 | 0 | 0 | 1 | 0 | 1 | 0 | 0 |
+| MonopolyLogList | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| MonopolyMenuBar | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
+| MonopolyMoneyNotify | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| MonopolyNotify | modes-ui | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 20 |
+| MonopolyOutShow | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+| MonopolyPlayerList | modes-ui | 12 | 0 | 0 | 0 | 0 | 0 | 0 | 21 |
+| MonopolyQueue | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| MonopolyReadyArea | modes-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
+| MonopolyRemoveObstacles | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 16 |
+| MonopolyRoundCountdown | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| MonopolySelectDirection | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| MonopolyShowFinal | modes-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 10 |
+| MonopolyStep | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
+| MonopolyTargetSelectPanel | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| MonopolyTip | modes-ui | 26 | 0 | 0 | 0 | 0 | 0 | 0 | 18 |
+| MonopolyWarning | modes-ui | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| MonsterBuffChoose | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| MonsterBuffPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| MonsterDistribute | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| MonsterEntrance | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 19 |
+| MonsterLocker | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| MonsterPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
+| MonsterSettlement | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 6 |
 | MonsterSkillPreset | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 19 |
+| MonsterSpiritEnduranceData | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 4 |
 | MoviePanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| MultiItemSelect | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| MvpShowPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| MyAward | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| MyCloudInstrument | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| NPCFeeling | other-ui | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 1 |
+| NPCGuidelines | menus-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| NPCRoster | other-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 0 |
 | NPCSpeechSounds | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| Navigator | menus-ui | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| NetbarAd | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| NetworkVideo | other-ui | 5 | 0 | 0 | 0 | 0 | 1 | 0 | 6 |
+| NetworkVideoWaiting | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| NewAchievement | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| NewAddFriendPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| NewBag | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | NewBattleFieldQueue | ? | 3 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| NewBattleFieldRull | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
+| NewChargeGiftMonthly | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| NewEmotionAction | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| NewEquip | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| NewEquipRecommend | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| NewHomelandChangeSkin | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| NewHorse | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| NewJYPlayReward | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| NewOperationActivity | other-ui | 175 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| NewPartnerEquipment | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| NewPet | recommended | 31 | 0 | 0 | 2 | 0 | 2 | 0 | 3 |
+| NewPetInfo | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | NewPetSkill | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| NewPlayerBF | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| NewQuestPanel | other-ui | 7 | 0 | 0 | 0 | 0 | 1 | 0 | 1 |
+| NewRecipeTip | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| NewSafePanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| NewSkillBar | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | NewSkillGuidePanel | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | NewSkillPanel | liked | 8 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
+| NewTrialValley | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| NewYearPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+| NpcExteriorView | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| NpcMorphBar | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 68 |
+| NumericalPanel | other-ui | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| OTActionBar | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| OTGCDBar | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| OTPetActionBar | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| OldQuestAcceptPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| OperatPreOrder | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| OperationCenter | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 8 |
+| OperationMode | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
+| OperationRules | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | OptionPanel | liked | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| OrangeWeaponUpg | other-ui | 1 | 0 | 0 | 0 | 0 | 4 | 0 | 21 |
+| OutMap | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 4 |
+| OutfitModList | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| PKLeavePanel | modes-ui | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | PLActionBar | hud-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| PQNextStage | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| PQTeach | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 0 |
+| PQTimePanel | other-ui | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | PQprogressbar | hud-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| PQwarning | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| PVPInput | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
+| PVPQiXueList | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| PVPRandomForce | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| PVPReplayAnnouncement | other-ui | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
+| PVPReplayBar | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| PVPSelectMap | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| PVPSetting | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
+| PVPSetting_Last | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| PVPShowFinal | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| PVPShowHarm | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | PVPShowPanel | modes-ui | 3 | 0 | 0 | 0 | 0 | 4 | 0 | 106 |
-| PakV4Loading | other-ui | 2 | 0 | 0 | 1 | 0 | 0 | 0 | 4 |
+| PVPShowSFX | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| PVPShowSetting | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| PZZ_Buildings | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| PZZ_ChoosePage | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| PZZ_SpecialBuildings | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| PZZ_VillageManage | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| PZZ_Villagers | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| PakV4DownloadInfo | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| PakV4Info | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
+| PakV4Loading | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| PanelChargeHintPop | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| PanzhazhaiPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| PanzhazhaiTime | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| Partner | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 7 |
+| PartnerAttribute | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 37 |
+| PartnerBag | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 11 |
+| PartnerBreak | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
+| PartnerBuyConfirm | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| PartnerDefaultPlan | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| PartnerEquipmentUpgrade | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
+| PartnerExterior | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| PartnerLockLink | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| PartnerMeetbyChance | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 5 |
+| PartnerMessage | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| PartnerScence | other-ui | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| PartnerSelect | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| PartnerTaskAwards | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| PartnerTaskCheck | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| PartnerTaskList | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 8 |
+| PartnerTaskSetting | other-ui | 3 | 0 | 0 | 0 | 0 | 1 | 0 | 25 |
+| PartnerTeam | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| PartnerTeamSetting | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 42 |
+| PartnerTip | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| PartnerUpGrade | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| PartnerVoiceAndStory | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 20 |
 | PartyRecruitPanel | other-ui | 16 | 0 | 0 | 0 | 0 | 2 | 0 | 6 |
+| PayPathPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| PendantBase | other-ui | 3 | 0 | 0 | 0 | 0 | 2 | 0 | 30 |
+| PendantChoiceColor | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| PendantUpgrade | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 3 |
+| PendantUpgradeSelect | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 6 |
+| PerformanceCollect | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| PersonalCard_BirthdaySetPop | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| PersonalCard_CheckOut | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| PersonalCard_Cut | ? | 12 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| PersonalCard_DataEdit | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| PersonalCard_Decorate | ? | 4 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| PersonalCard_Mine | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| PersonalCard_ShowData | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| PersonalCard_Tip | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | PetActionBar | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | PetPanel | liked | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 3 |
+| PhotoShop | other-ui | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 7 |
 | Player | ? | 46 | 0 | 0 | 2 | 0 | ? | ? | ? |
+| PlayerKillMessage | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| PlayerMode | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| PlayerReturn | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| PlayerReturnTip | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| PlayerView | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
+| PlayerViewJJC | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| PlayerVisitCard | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 3 |
+| Playerbar | other-ui | 20 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| PlotDialoguePanel | other-ui | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 40 |
+| PlotExplain | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| PlotSound | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| PluginSingle | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| PluginTotal | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 21 |
+| PluginsWarning | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| PopupBuffList | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| PopupRemind | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
+| PreSetComment | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| PresetMusicList | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
+| PrestigePanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | ProgressBar | hud-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| ProgressSaveData | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | PuppetActionBar | hud-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | QCSword | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| QGJump | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| QMSoulPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| QTEPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| QiXiuPosture | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| QixiAlbumPop | other-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 7 |
+| QixiPicturePop | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| QixueLookup | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| QixueTeachBy | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| QuestAcceptPanel | menus-ui | 10 | 0 | 0 | 0 | 0 | 0 | 0 | 15 |
+| QuestBar | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| QuestContrastPanel | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| QuestGuide | recommended | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| QuestItem | menus-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| QuestRewardTip | menus-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 3 |
+| Questionnaire_FresherExitGame | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| Queue | modes-ui | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
+| QuickConsumePanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
+| QuickConsumeShare | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| QuitCohabitMessage | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
+| RaidDragPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | RaidPanel | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 15 |
+| RandomReward | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | RankingPanel | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 51 |
+| ReadMailPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| RealBP | other-ui | 1 | 0 | 0 | 0 | 0 | 12 | 0 | 8 |
+| RealFirstCharge | other-ui | 2 | 0 | 0 | 0 | 0 | 2 | 0 | 1 |
+| RealNameCertify | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| RechargeRemind | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| RecipeOpenSure | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| RecordClientData | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| RecoverEquipment | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| RedEnvelope | other-ui | 10 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
+| RedEnvelopeInfo | other-ui | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 22 |
+| RegressionPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| RemainingTimeNotify | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| RemoteCDProcess | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| RenewRule | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | ReputationPanelNew | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| Resourcebar | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| RevivePanel | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| RoadChivalrous | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| RoadChivalrousDetail | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
+| RoadChivalrousPopup | other-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 10 |
+| RoadChivalrousTips | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| RoleRename | other-ui | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| RoomLinkTip | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
+| RoomPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| RoomRaidReset | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| RoommateDragPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| RoommateTeam | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| RougeLikeDataPanel | modes-ui | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 9 |
+| RougeLikeFinal | modes-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
+| RougeLikeIntro | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| RougeLikeKillCount | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 17 |
+| RougeLikeQueue | modes-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 13 |
+| RougeLikeTimeEvent | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
+| SFXPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| SMPopupMenu | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| SafeModifyPwd | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | SafePanel | other-ui | 39 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
-| SecurityCard | other-ui | 140 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
+| SafeReminder | menus-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 13 |
+| SafeTip | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| SanFangShaQueue | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 3 |
+| SavePreset | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| SaveSharePreset | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| Scene | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| SceneBlackMask | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| SceneCampTip | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| SceneMini | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| ScreenLock | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ScreenShotPanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ScrollDisplay | other-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 9 |
+| SearchWnd | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| SeasonDistance | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| SeasonFurniture | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 51 |
+| SeasonFurnitureFragment | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| SeasonFurnitureInfo | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
+| SeasonLetter | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| SeasonRankPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| SeasonRewardPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 7 |
+| SecurityCard | other-ui | 140 | 0 | 0 | 0 | 0 | 0 | 0 | 60 |
+| SelectCampPlanes | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
+| SelectEnchantment | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| SelectGround | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| SelectMacroIconPanel | other-ui | 258 | 0 | 0 | 0 | 0 | 0 | 0 | 56 |
+| Selfie | other-ui | 37 | 0 | 0 | 0 | 0 | 2 | 1 | 17 |
+| SelfieEmotion | other-ui | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| SelfieExportDetails | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
+| SelfieMovieRecordLogo | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| SelfieNav | other-ui | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 3 |
+| SelfieOneClick | other-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 8 |
+| SelfieOneClickPreview | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| SelfieOneClickRecording | other-ui | 4 | 0 | 0 | 0 | 0 | 1 | 0 | 8 |
+| SelfiePosture | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| SelfieRecord | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| SelfieSaveAI | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 11 |
+| SelfieSaveMusic | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+| SelfieSizeBox | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+| SelfieStatement | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| SelfieStudio | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| SelfieTemplateExport | other-ui | 1 | 0 | 0 | 0 | 0 | 2 | 0 | 1 |
+| SelfieTemplateImport | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| SelfieTemplatePop | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| SellBag | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 4 |
+| SellSure | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | ServantDismiss | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ServerReconnect | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| SetMusic | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| SetPersonalVolume | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
+| SetTeamLootMode | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| ShareBagBindingPanel | other-ui | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| ShareStation | other-ui | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 388 |
+| ShareStation_DyeDetails | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ShareStation_EditInfo | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ShareStation_Expression | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ShareStation_ExteriorChoose | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ShareStation_ExteriorFilter | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ShareStation_Filter | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ShareStation_ImportExterior | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ShareStation_Report | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ShareStation_Rules | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ShareStation_Shoot | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ShareStation_Statement | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ShareStation_UploadCut | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ShareStation_UploadInfo | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ShareStation_WorkLinkTip | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| ShenJianXin | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| ShortcutInturn | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 2 | 0 |
+| SidePanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| SignIn | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 1 |
+| SimpleDLCPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| SingleFStatistic | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| SituationMap | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| SkillBanEdit | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 44 |
+| SkillCDJingYuJue | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | SkillFormulaPanel | panels-ui | 24 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
+| SkillGlossaryPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| SkillGuidePanel | other-ui | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+| SkillGuidePanelTips | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | SkillGuideSettingPanel | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | SkillIntroduce | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 22 |
+| SkillPanelTeaching | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| SkillRemind | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| SkillTipPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Skill_SkinVideo | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | Skill_TalentComment | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| SmallBagPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| SmallCalender | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| SniperPanel | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| SnsPanel | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | SoundSettingPanel | liked | 52 | 0 | 0 | 0 | 0 | 0 | 1 | 2 |
+| SpeedEffect | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| SpeedRankPanel | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| SpiritEndurancePanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 15 |
+| SprintPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | SprintPower | modes-ui | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| StampPlay | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| StartTask | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| StoryDisplay | other-ui | 23 | 0 | 0 | 1 | 0 | 1 | 0 | 2 |
+| StoryMode | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| StrangeBox | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | SummonBar | other-ui | 2 | 0 | 0 | 0 | 0 | 3 | 0 | 0 |
+| SuperRoom | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| SurpriseFreeAd | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| SwitchCenter | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| SwitchServerDLC | other-ui | 1 | 0 | 0 | 0 | 0 | 6 | 0 | 12 |
+| SwitchServerInfoTip | other-ui | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 5 |
+| SwitchServerMemorabilia | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| SwitchServerQueue | other-ui | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| SwitchServerStandHoldTip | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| SwitchSword | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | SystemMenu_Left | ? | 17 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| SystemMenu_List | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | SystemMenu_Right | ? | 5 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| TapTapAdvice | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| TapTapFeedback | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | TargetBuff | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | TargetDeBuff | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| TargetFaceSet | recommended | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| TargetResourcebar | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| TargetSkill | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | TargetTarget | liked | 2 | 0 | 0 | 0 | 0 | 5 | 0 | 6 |
+| Teaching | other-ui | 14 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| TeachingAim | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| TeachingMove | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| TeachingPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | TeamBuff | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | TeamBuildMessage | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| TeamBuildTip | panels-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | TeamBuilding | liked | 25 | 0 | 0 | 0 | 0 | 0 | 0 | 19 |
+| TeamBuildingPlayerSet | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| TeamCountdown | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| TeamEditPlayerTags | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| TeamNumList | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| TeamNumListLong | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| TeamPlayerTagList | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| TeamStatePop | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | TeamSwitchBtn | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| TeamTagPlayers | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | Teammate | spare | 3 | 0 | 0 | 0 | 0 | 10 | 0 | 16 |
+| TestGuild | modes-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 11 |
+| TheFlopPanel | other-ui | 20 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| ThermometerPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| TimeBuff | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| TitleRankReward | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| TongArena | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| TongBaoGift | other-ui | 397 | 0 | 0 | 0 | 0 | 0 | 0 | 639 |
+| TongBaoPanel | other-ui | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
+| TongBattleTips | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| TongBattledragonTips | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| TongFarmPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| TopBuff | liked | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| TopBuffSet | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | TopMenu | recommended | 43 | 0 | 0 | 0 | 0 | 0 | 0 | 73 |
+| TopMenuOther | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
+| TopMenuSaleList | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | ToyBox | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| TraceButton | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| TrackingTip | menus-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| TradePanel | liked | 19 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | TradingPanels | menus-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
-| TradingSure | menus-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| TradingSellers | menus-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| TradingSure | menus-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| TrafficSure | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| TrafficSurePanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| TreasureHuntBP | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| Treasure_GetRewardNew | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| Treasure_PreviewNew | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| TrialValleyReward | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| TurnCard | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| TwoDimensionalLogin | modes-ui | 13 | 0 | 0 | 0 | 0 | 1 | 0 | 4 |
+| UIComfirm | other-ui | 2 | 0 | 0 | 0 | 0 | 2 | 0 | 2 |
+| UICursor | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | UICustomModePanel | liked | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | UILock | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| UISetting | liked | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 107 |
+| UIMovie | other-ui | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| UISetting | liked | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 105 |
+| UpGradeEffect | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| UserActionChoose | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| VagabondCraftManage | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0 |
+| VagabondCrossMap | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| VagabondPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| VagabondReward | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| VampireCountPanel | other-ui | 38 | 0 | 0 | 0 | 0 | 0 | 0 | 88 |
+| VampireInfoPanel | other-ui | 39 | 0 | 0 | 0 | 0 | 0 | 0 | 26 |
+| VideoCustomPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| VideoSettingDetails | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 |
 | VideoSettingPanel | liked | 20 | 0 | 0 | 0 | 0 | 1 | 0 | 45 |
 | ViewEquip | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| VkActionBar | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 18 |
+| VoiceHall | other-ui | 2 | 0 | 0 | 0 | 0 | 5 | 0 | 24 |
+| VoiceHallAgreement | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| VoiceMessage | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| VoiceRoomMessage | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| VoiceRoomPassword | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| VoiceRoomUpGrade | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | WantedPanel | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| Wanted_Publish | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| WarningTipPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| WeaponBag | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
+| WeaponSkillBar | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| WeaponSwitcher | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| WeaponsDisplay | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| WelcomeSignIn | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| WelfareReturn | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| WhoIsUndercover | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | WhoSeeMe | recommended | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| WinterFestivalNpcInfo | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
+| WinterFestivalSkillMsg | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| WishingBar | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | WishingTemplePanel | modes-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
-| WndLock | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| WithdrawGold | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| WndLock | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| WoodCardSFX | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | WorldMap | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+| WorldMark | liked | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 15 |
+| WulinShenghuiDuizhen | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| XiangQiPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| XuanSuQingMaiMonitor | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| YanTianZongSoullamp | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| YangDaoCardItem | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | YaoZCultivateBar | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
+| YaoZongSkillHint | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ZombieFightFinal | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 56 |
+| friendrank | recommended | 19 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
+| regionPQPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 27 |
+| regionPQreward | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
 ## Full dropped-call detail (every window, item-creation/arrangement/render/state)
 
+### GuildBankPanel
+
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+- `item-creation` AppendItemFromData WndScroll_Item [GuildBankPanel]
+
 ### SocialPanel
 
-- `item-creation` AppendItemFromData PageSet_Company function: 02FBDE88
-- `item-creation` AppendItemFromData PageSet_Company function: 02FBDBB8
-- `item-creation` AppendItemFromData PageSet_Company function: 02FBDF48
+- `item-creation` AppendItemFromData PageSet_Company function: 021A7FA0
+- `item-creation` AppendItemFromData PageSet_Company function: 021A8270
+- `item-creation` AppendItemFromData PageSet_Company function: 021A89F0
 - `item-creation` AppendItemFromData PageSet_Company [SocialPanel]
 - `item-creation` AppendItemFromData PageSet_Company [SocialPanel]
 
@@ -213,6 +1362,10 @@ State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13
 
 - `arrangement` EnableDrag QuestTraceList true
 - `arrangement` EnableDrag QuestTraceList true
+
+### DesertPreset
+
+- `arrangement` SetDragArea DesertPreset 0 0 596
 
 ### Matrix
 
@@ -229,6 +1382,18 @@ State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13
 - `render` SetTextAutoTipEnabled Wnd_FilterMap true
 - `arrangement` SetScrollVerStepSize ReputationPanel 516
 
+### ShareBagPanel
+
+- `arrangement` SetDragArea ShareBagPanel 0 0 514
+
+### VoiceRoomNotice
+
+- `arrangement` RegisterLButtonDrag Btn_Drag 
+
+### BattleFieldMap
+
+- `render` FromTextureFile Image_Map 
+
 ### Bullet
 
 - `render` SetLoopCount Bullet 1
@@ -238,6 +1403,12 @@ State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13
 - `render` SetAnimateGroupNormal Btn_Close 9
 - `render` SetAnimateGroupMouseOver Btn_Close 10
 - `render` SetAnimateGroupMouseDown Btn_Close 8
+
+### GMPanel
+
+- `render` SetAnimateGroupNormal PageSet_Total 0
+- `render` SetAnimateGroupMouseOver PageSet_Total 1
+- `render` SetAnimateGroupMouseDown PageSet_Total 2
 
 ### LoadingPanel
 
@@ -251,14 +1422,27 @@ State-bearing dropped calls: **26** (item-creation 5 + arrangement 8 + render 13
 
 - `render` SetAnimation CheckBox_Switch ui/Image/UItimate/Minimap/Minimap.UITex 48 52
 
-### PakV4Loading
+### MonopolyCardUseConfirm
 
-- `render` SetAlwaysTop PakV4Loading true
+- `render` FromTextureFile Image_SquareIcon ui\Image\TreasureChest\TreasureChest1.UITex
+
+### MonopolyLandPurchaseDlg
+
+- `render` FromTextureFile Image_tLand ui/Image/RichMan/Building/ForSale.tga
+
+### NewPet
+
+- `render` FromTextureFile Image_CardBorder 
+- `render` FromTextureFile Handle_CardPic 0
 
 ### Player
 
 - `render` FormatTextForDraw Text_Player 
 - `render` FromIconID Image_Player 14659
+
+### StoryDisplay
+
+- `render` FromTextureFile Image_Map 
 
 ## Fix status
 

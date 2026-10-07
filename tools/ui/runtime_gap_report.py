@@ -53,8 +53,9 @@ ARRANGEMENT = {
 RENDER = {
     "SetTextAutoTipEnabled", "FormatTextForDraw", "SetAnimation",
     "SetAnimateGroupMouseDown", "SetAnimateGroupMouseOver", "SetAnimateGroupNormal",
-    "SetLoopCount", "FromIconID", "FromTextureFile", "SetAlwaysTop",
+    "SetLoopCount", "FromIconID", "FromTextureFile",
 }
+# SetAlwaysTop is a window z-order flag - no visual state in a static render.
 STATE = set()
 
 CATEGORY_ORDER = ["item-creation", "arrangement", "render", "state", "consumed", "noise"]
