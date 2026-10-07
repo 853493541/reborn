@@ -54,6 +54,10 @@ namespace UiProcessApp
         private readonly System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<(string Name, string Type)>> _checklistCache =
             new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<(string Name, string Type)>>(StringComparer.OrdinalIgnoreCase);
         private System.Windows.Controls.Border _checkHighlight;
+        // One-shot out-of-bounds pass after a render (the elements must be measured).
+        private UiBuildResult _pendingOobBuild;
+        private System.Collections.Generic.List<(string Name, string Type)> _pendingOobItems;
+        private System.Collections.Generic.Dictionary<string, string> _pendingOobIssues;
 
         // Render speed: the resolver/texture cache is shared across renders (atlas TGAs
         // decode once per session) and built layouts are cached per window/page/hide so
@@ -95,6 +99,7 @@ namespace UiProcessApp
             RejectionStore.Apply(_inventory, _rejected);
             foreach (var pair in ItemCheckStore.Load(Paths.AppRoot)) _itemChecks[pair.Key] = pair.Value;
             _status = LoadStatus();
+            LayoutHost.LayoutUpdated += OnLayoutUpdated;
             BuildTree(null);
             StatusText.Text =
                 $"assets={Paths.AppRoot}   ui={(Paths.ProofUiRoot != null ? Paths.ProofUiRoot : Path.Combine(Paths.AppRoot, "assets", "ui"))}   " +
@@ -665,7 +670,11 @@ namespace UiProcessApp
                         .Select(s => (Name: s.Name, Type: s.Get("._WndType") ?? ""))
                         .ToList();
                     _checklistCache[key] = items;
-                    PopulateItemChecklist(items);
+                    var issues = CollectItemIssues(buildResult);
+                    PopulateItemChecklist(items, issues);
+                    _pendingOobBuild = buildResult;
+                    _pendingOobItems = items;
+                    _pendingOobIssues = issues;
                 }
                 else
                 {
@@ -681,10 +690,80 @@ namespace UiProcessApp
             }
         }
 
-        /// <summary>Fills the 清单 tab with the rendered items of the current window
-        /// (INI order): a checkbox per item, persisted in Data/item_checks.tsv; clicking
-        /// an item name highlights its element in the canvas.</summary>
-        private void PopulateItemChecklist(System.Collections.Generic.List<(string Name, string Type)> items)
+        /// <summary>Per-item issues from the build: placeholder art and unresolved string
+        /// ids (the reasons shown in the checklist; out-of-bounds is added after measure).</summary>
+        private static System.Collections.Generic.Dictionary<string, string> CollectItemIssues(UiBuildResult build)
+        {
+            var issues = new System.Collections.Generic.Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var p in build.Placeholders)
+            {
+                var name = p.Split(' ')[0];
+                if (!string.IsNullOrEmpty(name) && !issues.ContainsKey(name)) issues[name] = "缺图";
+            }
+            foreach (var u in build.UnresolvedStrings)
+            {
+                var name = u.Split(' ')[0];
+                if (!string.IsNullOrEmpty(name) && !issues.ContainsKey(name)) issues[name] = "文案缺失";
+            }
+            return issues;
+        }
+
+        /// <summary>One-shot after each render: flag elements outside the window and
+        /// refresh the checklist defaults (user overrides stay).</summary>
+        private void OnLayoutUpdated(object sender, EventArgs e)
+        {
+            if (_pendingOobBuild == null) return;
+            var build = _pendingOobBuild;
+            _pendingOobBuild = null;
+            try
+            {
+                var rootFe = build.Root as FrameworkElement;
+                double width = rootFe != null && rootFe.ActualWidth > 0 ? rootFe.ActualWidth : 0;
+                double height = rootFe != null && rootFe.ActualHeight > 0 ? rootFe.ActualHeight : 0;
+                if (width <= 0 || height <= 0) return;
+                var issues = _pendingOobIssues ?? new System.Collections.Generic.Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                foreach (var pair in build.Elements)
+                {
+                    var el = pair.Value;
+                    if (el.Visibility != Visibility.Visible) continue;
+                    if (el.ActualWidth <= 0 && el.ActualHeight <= 0) continue;
+                    // Scroll content legitimately overflows its viewport (the engine clips
+                    // it); only flag items outside the window on a non-scroll path.
+                    bool underScroll = false;
+                    var cursor = pair.Key;
+                    var guard = 0;
+                    while (!string.IsNullOrWhiteSpace(cursor) && guard++ < 64)
+                    {
+                        if (!build.Sections.TryGetValue(cursor, out var sec)) break;
+                        if (string.Equals(sec.Get("._WndType"), "WndScroll", StringComparison.OrdinalIgnoreCase))
+                        {
+                            underScroll = true;
+                            break;
+                        }
+                        cursor = sec.Get("._Parent");
+                    }
+                    if (underScroll) continue;
+                    try
+                    {
+                        var p = el.TransformToAncestor(build.Root).Transform(new Point(0, 0));
+                        double w = el.ActualWidth, h = el.ActualHeight;
+                        if (p.X < -1 || p.Y < -1 || p.X + w > width + 1 || p.Y + h > height + 1)
+                            if (!issues.ContainsKey(pair.Key)) issues[pair.Key] = "超出窗口";
+                    }
+                    catch { }
+                }
+                PopulateItemChecklist(_pendingOobItems ?? new System.Collections.Generic.List<(string Name, string Type)>(), issues);
+            }
+            catch { }
+        }
+
+        /// <summary>Fills the item checklist with the rendered items of the current window
+        /// (INI order). Items with a detected issue (placeholder art / unresolved string /
+        /// out-of-bounds) default to UNCHECKED with the reason shown; everything else
+        /// defaults to checked (it is displayed). Ticks are remembered as explicit
+        /// overrides in Data/item_checks.tsv.</summary>
+        private void PopulateItemChecklist(System.Collections.Generic.List<(string Name, string Type)> items,
+            System.Collections.Generic.Dictionary<string, string> issues = null)
         {
             ClearItemHighlight();
             ItemCheckList.Children.Clear();
@@ -693,10 +772,13 @@ namespace UiProcessApp
                 ItemCheckSummary.Text = "已核对 0 / 0";
                 return;
             }
+            issues = issues ?? new System.Collections.Generic.Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             int checkedCount = 0;
             foreach (var item in items)
             {
-                bool isChecked = ItemCheckStore.IsChecked(_itemChecks, _currentWindow.Id, item.Name);
+                issues.TryGetValue(item.Name, out var issue);
+                bool hasOverride = _itemChecks.TryGetValue(ItemCheckStore.Key(_currentWindow.Id, item.Name), out var ov);
+                bool isChecked = hasOverride ? ov : string.IsNullOrEmpty(issue);
                 if (isChecked) checkedCount++;
                 var row = new System.Windows.Controls.DockPanel { Margin = new Thickness(0, 1, 0, 1) };
                 var cb = new System.Windows.Controls.CheckBox
@@ -712,11 +794,14 @@ namespace UiProcessApp
                 row.Children.Add(cb);
                 var label = new System.Windows.Controls.TextBlock
                 {
-                    Text = item.Name + "   [" + item.Type + "]",
-                    Foreground = new SolidColorBrush(Color.FromRgb(0xD8, 0xD8, 0xD8)),
+                    Text = item.Name + "   [" + item.Type + "]" + (string.IsNullOrEmpty(issue) ? "" : "   ⚠ " + issue),
+                    Foreground = string.IsNullOrEmpty(issue)
+                        ? new SolidColorBrush(Color.FromRgb(0xD8, 0xD8, 0xD8))
+                        : new SolidColorBrush(Color.FromRgb(0xFF, 0x9A, 0x50)),
                     VerticalAlignment = VerticalAlignment.Center,
                     Tag = item.Name,
                     Cursor = System.Windows.Input.Cursors.Hand,
+                    TextTrimming = TextTrimming.CharacterEllipsis,
                 };
                 label.MouseLeftButtonUp += (o, e) =>
                 {
