@@ -4981,3 +4981,15 @@ if the cache/host frames appear.
   carries them).
 - Commits: (this change) + the earlier revert/probe commits. Docs:
   `docs/engine_host/SFX_RE_TEST.md` top section updated.
+
+### 2026-10-06 — v5 — tani sweep tool (RC_CAST_CYCLE) + 11 abilities verified clean
+
+- App: RC_CAST_CYCLE=<ms> selects + casts the next tani-playing ability
+  (list built from the dataset anim steps ending .tani) every <ms>; interrupts
+  the previous cast. 	aniAbilityNames exposed.
+- Sweep run (Skill_20261006_210623.log): 8 abilities in one run
+  (九转归一/九霄风雷/云栖松/凌然天风/剑破虚空/十方玄机/听风吹雪/天绝地灭),
+  process exited rc=0 - no AVs; plus the earlier 如意法/百足/五蕴皆空 -> 11
+  tani-playing abilities verified rendering.
+- Note: cast duration = the process PSS durMs when a dummy exists (up to 25 s),
+  so a full 79 sweep takes ~15-20 min with cycle=4000.

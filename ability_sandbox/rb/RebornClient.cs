@@ -173,6 +173,8 @@ internal static class RebornClient
         bool castActive = false;
         bool sfxBatchDone = false;
         bool sfxWarmDone = false;
+        long castCycleNext = 0;
+        int castCycleIdx = 0;
         List<SfxRetryItem> sfxRetry = new List<SfxRetryItem>();
         long castStart = 0, castUntil = 0;
         int castIdx = 0;
@@ -186,6 +188,7 @@ internal static class RebornClient
         const long castCooldownMs = 3000;
         long castCooldownUntil = 0;
         var datasetAbilityNames = new List<string>();   // panel: abilities with a process
+        var taniAbilityNames = new List<string>();      // abilities whose anim plays a tani
         var sfxTagNames = new HashSet<string>();        // panel: process has kind "sfx"
         System.Drawing.Point lastMousePt = new System.Drawing.Point(0, 0);
         bool feiAiming = false, feiConfirm = false, feiCancel = false;
@@ -281,6 +284,16 @@ internal static class RebornClient
                     string mt = StrOf(d, "matched");
                     if (mt == "") continue;   // skip unresolved duplicate rows
                     if (!datasetAbilityNames.Contains(nm)) datasetAbilityNames.Add(nm);
+                    foreach (object po in (object[])pv2)
+                    {
+                        var pd = po as Dictionary<string, object>;
+                        if (pd == null || StrOf(pd, "kind") != "anim") continue;
+                        if (StrOf(pd, "v").ToLower().EndsWith(".tani"))
+                        {
+                            if (!taniAbilityNames.Contains(nm)) taniAbilityNames.Add(nm);
+                            break;
+                        }
+                    }
                 }
             }
             catch (Exception e) { Log("loadDatasetNames ex: " + e.Message); }
@@ -2180,6 +2193,25 @@ internal static class RebornClient
             {
                 clickCastRequested = false;
                 skillPressed = true;
+            }
+
+            // RC_CAST_CYCLE=<ms>: sweep - select + cast the next tani-playing
+            // ability every <ms> (verification pass: effects + AV detection)
+            {
+                long cyc = 0;
+                long.TryParse(Env("RC_CAST_CYCLE", "0"), out cyc);
+                if (cyc > 0 && taniAbilityNames.Count > 0)
+                {
+                    if (castCycleNext == 0) castCycleNext = now + cyc;
+                    if (now >= castCycleNext)
+                    {
+                        castCycleNext = now + cyc;
+                        abilitySel = taniAbilityNames[castCycleIdx % taniAbilityNames.Count];
+                        castCycleIdx++;
+                        clickCastRequested = true;
+                        Log("cast cycle -> " + abilitySel + " (" + castCycleIdx + "/" + taniAbilityNames.Count + ")");
+                    }
+                }
             }
             if (autoSkillMs > 0 && !autoSkillDone && now >= autoSkillMs)
             {
