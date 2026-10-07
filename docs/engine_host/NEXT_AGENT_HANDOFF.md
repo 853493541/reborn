@@ -28,12 +28,41 @@ If the lua route dead-ends, the fallback is documented at the end (fab the
 tables / the offline editor-stack map compile) — but exhaust the lua file
 layer first: the chain is one step away.
 
-## 1. Where the work lives
+## 1. Where the work lives — worktree + branch (READ FIRST)
 
-- Worktree: `C:\Users\Zhibin Ren\Desktop\reborn-iso-skillv2-sandbox`
-- Branch: `agent/skillv2-sandbox` (never push; never merge to main; commit small)
+**Main checkout (do not do feature work here):**
+`C:\Users\Zhibin Ren\Desktop\reborn` (branch `main`, shared by other agents).
+
+**This task's worktree (do ALL work here):**
+`C:\Users\Zhibin Ren\Desktop\reborn-iso-skillv2-sandbox`
+
+**This task's branch:** `agent/skillv2-sandbox` (local only).
+
+- Setup pattern (already done; for reference / if the worktree is ever missing):
+  from the main checkout run
+  `git worktree add "../reborn-iso-skillv2-sandbox" -b "agent/skillv2-sandbox" main`.
+- Verify you are in the right place before editing (all four must match):
+  `git worktree list` (shows the worktree + branch),
+  `git branch --show-current` -> `agent/skillv2-sandbox`,
+  `git log -1 --oneline` -> a `Client:`/`Docs:` commit from the 2026-10-06 session,
+  `git status --short` -> clean.
+- History note: this worktree/branch was once accidentally merged into
+  `agent/item1-completion` (commit `ec9e3a1`) and then reverted (`a8b37bc`);
+  the worktree was deleted and **restored** at commit `c1869a2` (with the
+  session's uncommitted edits preserved). If you see a stale merge or a missing
+  worktree, that is the story; do not re-merge.
+- Rules (AGENTS §2): commit small and often with `Area: summary` messages;
+  **never push to origin**; **never merge to main**; never delete the worktree;
+  never touch another agent's worktree. Do not commit generated/binary
+  artifacts (`bin64/`, `samples/`, `*.bin`, `*.pss`, `*.t2`, `.venv/`).
+- Shared resources: `bin64\camera_shim.dll` is shared by all clients (rebuild it
+  only from a worktree current with main; a stale-branch shim reintroduces the
+  D6 crash for everyone). Engine runs are namespace-exclusive: this host uses
+  its own namespace; do not run two clients in the same namespace.
+
+**Build/run (from the worktree root):**
 - Build: `native\client_host\build_client_host.cmd` -> `native\client_host\out\client_host.exe`
-- Run (PowerShell, from the repo root; the host reads these env vars):
+- Run (PowerShell; the host reads these env vars):
 
 ```powershell
 $env:RC_HOST_ROOT = "$env:TEMP\opencode\skillv2\client_root"
