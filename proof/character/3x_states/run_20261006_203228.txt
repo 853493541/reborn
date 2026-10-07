@@ -1,0 +1,85 @@
+20:32:28.931 build=reborn_client_3x_states.exe 2026-10-06 20:29:55 git=42a6af0 dirty=1 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80,BACKFACE=1,HITWIN=0,OPMODE=joystick)
+20:32:28.932 start map=data\source\maps\龙门寻宝\龙门寻宝.jsonmap
+20:32:28.932 asset_root=C:\SeasunGame\Game\JX3\bin\zhcn_hd phys=C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\PhysicsEngineX64.dll
+20:32:28.949 window: client=1280x720 fullscreen=0
+20:32:29.002 Startup shim: rc=0 mode=nodb applied=0 armed (waiting KG3D_MaterialSystemX64.dll)
+20:32:29.432 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_3x_states.memory ms=(31,0,391)
+20:32:29.432 initcfg=./configHttpFile.ini
+20:32:32.545 Init3DEngine=1 err=1 ms=3125
+20:32:32.545 Startup: mode=nodb applied=1 sites=1 build=ok
+20:32:32.580 editor.Init result=0
+20:32:32.582 sound: KG3DSoundCLR.Init ok
+20:32:32.582 sound: skill wav C:\SeasunGame\MovieEditor\bin64\flws_sound.wav
+20:32:34.217 LoadMap result=0 ms=1641
+20:32:34.501 winId=528304
+20:32:34.502 clr m_pScene=0x7FFDFC08 unmapped exec=0
+20:32:34.502 clr scene.vt=0x7FF9DF3EF278 KG_EngineEditorX64.dll+0x6F278
+20:32:34.503 clr scene: obj=000000007FFDFC08 vt=00007FF9DF3EF278 48=00007FF9DF3BD5F0(0) 50=00007FF9DF3BD710(0) 58=00007FF9DF3BD7E0(0) 60=00007FF9DF3BD810(0)
+20:32:34.503 clr sceneCam=0x177FF2808 unmapped exec=0
+20:32:34.503 clr cam: obj=0000000177FF2808 vt=00007FF9DF3F1FA8 48=00007FF9DF3D03A0(0) 50=00007FF9DF3D03E0(0) 58=00007FF9DF3D0440(0) 60=00007FF9DF3D04A0(0)
+20:32:34.504 clr camGet rc=0 pos=(0.0,500.0,-800.0) tgt=(0.0,0.0,0.0) managed=(0.0,500.0,-800.0)
+20:32:34.506 TerrainSampler: size=512 regions=8x8 cell=100 origin=(-102400,-102400) cache=4
+20:32:34.513 terrain load (2,2) ms=4.0 holes=0 cache=1
+20:32:35.147 FoliageCollision: instances=5107 meshes=685 camflag0=310 noObstacle=184 foliage=龙门寻宝_foliage_collision.bin structures=龙门寻宝_structure_collision.bin
+20:32:35.148 EngineRay: exports ok, waiting for engine/scene
+20:32:35.149 EngineCam bind ex: Object contains non-primitive or non-blittable data.
+20:32:35.150 CameraShim: loaded rc=0 selftest=0x53484D01 status=obj=0000000177FF2808 vt=00007FF9DF3F1FA8 48=00007FF9DF3D03A0(0) 50=00007FF9DF3D03E0(0) 58=00007FF9DF3D0440(0) 60=00007FF9DF3D04A0(0) d6=seed slot=0x00007FF90B38BBD0 value=0x392E0BFA0428F080
+20:32:35.154 camera config: C:\SeasunGame\MovieEditor\bin64\camera.json
+20:32:35.155 ad habit: strafe (RC_ADHABIT=strafe|turn)
+20:32:35.218 CameraSettings: loaded real per-role camera settings: C:\SeasunGame\Game\JX3\bin\zhcn_hd\userdata\binkp1\双线区\破阵子\油锅\custom.dat
+20:32:35.218 CameraSettings: mapId=296 sceneInit=1 yaw=1.398317 pitch=-0.262 max=2000 drag=1.00/1.00 eyeScale=0.90
+20:32:35.218 CameraSettings: operationMode=joystick perModeFollow classic=0 joystick=0
+20:32:35.218 CameraSettings extra: mode=0 resetSpring=1.00 resetCam=1.00 smoothing=1 curve=0 eyeFollow=1
+20:32:35.219 opmode applied: op=joystick followMode=0 springReset=1.00 cameraReset=1.00
+20:32:35.219 CameraSystem ready: mode=character dist=2000u height=200u units/m=100 op=joystick
+20:32:35.219 view angle factor=1
+20:32:35.221 fov source=client-max-default angle=60.00 deg (1.0472 rad) factor=1.2500 [panel 30-60, default 50]
+20:32:35.221 view angle factor applied=1.250002
+20:32:35.543 spawn=(18991,962,33853) view=(0.00,1.00)
+20:32:36.147 player handle=2022899704
+20:32:36.148 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+20:32:36.929 spawn ground settle took 250ms py=962
+20:32:36.929 target ui: RC_UI_ROOT not set - target HUD art disabled
+20:32:36.935 target dummy rid=35901 model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl' ani='data\source\npc_source\练功木桩001\动作\wj_练功木桩001_st02.ani' handle=2023515272 at (18991,961,34253)
+20:32:36.936 target entity registered: 初级试炼木桩 lv131 hp=500000000 (Tab = facing cone search)
+20:32:36.936 target dummy ani -> 0
+20:32:36.936 camera yaw init=-1.571 (view dir 0.00,1.00)
+20:32:36.940 hotkeys: source=embedded (proof/movement/extracted snapshot) rows=286 commands=430 overrides=0
+20:32:36.940 hotkeys: context=''
+20:32:36.941 hotkey MOVEFORWARD = W / Up
+20:32:36.941 hotkey MOVEBACKWARD = S / Down
+20:32:36.942 hotkey STRAFELEFT = A
+20:32:36.942 hotkey STRAFERIGHT = D
+20:32:36.942 hotkey TURNLEFT =  / Left
+20:32:36.942 hotkey TURNRIGHT =  / Right
+20:32:36.942 hotkey JUMP = Space
+20:32:36.942 hotkey TOGGLERUN = Num/
+20:32:36.942 hotkey TOGGLEAUTORUN = G / NumLock
+20:32:36.947 jump: mode=flip school=0 scale=0.520 (apex 191u ~ 191cm per jump)
+20:32:36.949 states: waterBoxes=1 swim=300u/s chainSegTicks=51 suspendDemo=0
+20:32:36.950 skillmove table: 7 rows from <embedded>
+20:32:36.950 camera init applied mapId=296 yaw=1.398 gamePitch=-0.262 modelPitch=0.262
+20:32:36.952 clip -> data\source\player\f1\动作\f1b02yd小跳c.ani (0)
+20:32:37.008 EngineRay: ready scene=0x102350330 terrain+950=0x125996440 terrain+A28=0x0 vtB8=True space=0x78719FE8 spaceRay=True entity=0x1000D6488 entityRay=True entCount=10 guardCell=0x369AE900
+20:32:37.022 clip -> data\source\player\f1\动作\F1b02yd游泳水中待机.tani (0)
+20:32:37.953 swim: state=7 surface=1062 base=762 float=994 y=994 depth=68 pos=(18991,33853)
+20:32:38.459 camBind rc=0 pos=(19109.5,1348.4,34533.3) cam=0000000102350330 posOff=0x9E0 bound=1
+20:32:38.459 camObjDump: obj=0000000102350330 vt=00007FF90A7F5598 48=00007FF908FA3870(1) 50=00007FF908FA3A40(1) 58=00007FF908FC8810(1) 60=00007FF908FA3C70(1)
+20:32:38.460 slot50: slot50=00007FF908FA3A40: 48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 41 56
+20:32:38.460 slot58: slot58=00007FF908FC8810: 40 53 48 83 EC 30 4C 89 4C 24 20 BB 05 40 00 80 4D 8B C8 4C 8B C2 48 8B
+20:32:38.460 slot60: slot60=00007FF908FA3C70: 48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 65 48 8B 04 25 58 00 00 00
+20:32:38.460 slot68: slot68=00007FF908FA3D50: 48 89 5C 24 18 48 89 6C 24 20 56 57 41 56 48 83 EC 40 48 8B FA 48 8B F1
+20:32:38.954 swim: state=6 surface=1062 base=762 float=994 y=994 depth=68 pos=(18991,33873)
+20:32:38.955 clip -> data\source\player\f1\动作\F1b02yd游泳向前游泳.tani (0)
+20:32:38.961 t=2s fps=241 pos=(18991,994,33873) vy=0 grounded=False blocked=False hits=0 colCalls=31 colBlocked=0 spd=300u/s(RUN) yaw=0.00 dir=(0.00,1.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=17 clip=F1b02yd游泳向前游泳.tani
+20:32:39.820 clip -> data\source\player\f1\动作\f1b02yd小跳c.ani (0)
+20:32:39.886 clip -> data\source\player\f1\动作\f1b02yd奔跑.ani (0)
+20:32:40.961 t=4s fps=247 pos=(18991,956,34473) vy=0 grounded=True blocked=False hits=0 colCalls=91 colBlocked=0 spd=300u/s(RUN) yaw=0.00 dir=(0.00,1.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=9 clip=f1b02yd奔跑.ani
+20:32:42.961 t=6s fps=247 pos=(18973,944,35043) vy=0 grounded=True blocked=False hits=0 colCalls=151 colBlocked=0 spd=300u/s(RUN) yaw=-2.07 dir=(-0.88,-0.48) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=8 clip=f1b02yd奔跑.ani
+20:32:43.955 clip -> data\source\player\f1\动作\f1b02yd行走.ani (0)
+20:32:44.963 t=8s fps=254 pos=(18641,942,34855) vy=0 grounded=True blocked=False hits=0 colCalls=195 colBlocked=0 spd=90u/s(WALK) yaw=-2.07 dir=(-0.88,-0.48) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=12 clip=f1b02yd行走.ani
+20:32:45.958 terrain stats terrLoads=1 msTotal=4.0 msMax=4.0 last=4.0 cache=1 zeroRetries=0
+20:32:45.958 shutdown sound ok
+20:32:45.958 shutdown log ok
+20:32:45.959 shutdown memory ok
+20:32:45.959 DONE
