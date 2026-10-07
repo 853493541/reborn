@@ -113,6 +113,17 @@ Next probes:
    creation path (or the caller's continuation `rep+0xAEE311 call 0xE5D4`).
    Live bytes at frame60 are unmodified: `0xAEE2D8 = E8 17 79 52 FF`,
    `0x15BF4 = E9 D7 83 AD 00`.
+   **New (run 221):** the fault's `rax` is exactly the **low 32 bits of a code
+   pointer**: with `rep` base `0x7FF854E60000`, `rep+0xAEDFE0` low-32 =
+   `0x5594DFE0` == the observed `rax` (it was `0x35B1DFE0` in run 209 with the
+   corresponding base). So some code holds a **32-bit-truncated pointer near
+   `rep+0xAEDFE0`** and calls through it. The singleton `[rep+0xF51298]` is
+   **NULL** at frame60, so the factory should early-return 0 (no wild) - yet the
+   wild happens, so either `[rep+0xF51298]` becomes a bad non-null value during
+   CreateRLScene, or the truncated pointer is the real cause. Next: hook
+   `0x1687E`/`0x923400`, log `rcx`, and check `[rep+0xF51298]` right before the
+   fault; search for a 32-bit store of a `rep+0xAEDFE0`-like pointer (the
+   truncation site).
 2. **Critical observation (run 216):** when the fault is caught (that run had
    the debug arms active, which changed exception dispatch), the host's own
    `__try` logged `real CreateRLScene fault` and **`GetRLScene(2)` returned
