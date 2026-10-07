@@ -376,9 +376,11 @@ internal static class RebornClient
         var panel = new Panel();
         panel.Dock = DockStyle.Fill;
         form.Controls.Add(panel);
-        // M1.7: the engine renders into a child window of orm, so WinForms
+        // M1.7: the engine renders into a child window of 
+orm, so WinForms
         // child controls sit behind the 3D output. The HUD is a separate
-        // top-level layered overlay (client/HudOverlay.cs) owned by orm;
+        // top-level layered overlay (client/HudOverlay.cs) owned by 
+orm;
         // Esc toggles the information panel (info + control mode + COPY LOG);
         // nothing is shown while it is closed (no on-screen panel hints).
         var hud = new HudOverlay();
@@ -1774,6 +1776,10 @@ internal static class RebornClient
         int unhandledCmd = 0;
         string lastUnhandled = "";
         bool demoMove = Env("RC_DEMO_MOVE", "0") == "1";
+        // W6 state test harness (RC_DEMO_STATES=1): scripted 轻功 chain presses
+        // (+ optional suspend hover / water run via the RC_WATER box).
+        bool demoStates = Env("RC_DEMO_STATES", "0") == "1";
+        bool stJump1 = false, stJump2 = false, stJump3 = false;
         probeControl = Env("RC_PROBE_CONTROL", "0") == "1";
         bool sprintTest = Env("RC_SPRINT_TEST", "0") == "1";
         bool sprintT1 = false, sprintT2 = false, sprintT3 = false, sprintT4 = false;
@@ -2361,6 +2367,42 @@ internal static class RebornClient
         if (radEnv.Length > 0) float.TryParse(radEnv, out playerRadius);
         string hgtEnv = Env("RC_HEIGHT", "");
         if (hgtEnv.Length > 0) float.TryParse(hgtEnv, out playerHeight);
+        // ---------------- W6 water / swim / 轻功 chain / fly harness ----------------
+        // Water source: REGISTERED PROVISIONAL (WaterField, RC_WATER boxes) - the
+        // game's logic cell stream (m_pCell / GetWaterline 0x140312440) is not
+        // host-reachable (no managed water query; water/regiondata extraction is
+        // a MISS). Swim behavior on top uses the decoded values: waterline depth
+        // = 6h*11/112 (players, 0.589), float height = max(base, surface-depth),
+        // CharacterSwimSpeed = 20 u/frame -> 300 u/s, state 6 moving / 7 in
+        // place, swim jump = logic state 8.
+        WaterField waterBox = WaterField.FromEnv(Env("RC_WATER", ""));
+        float pSwim = 300f;
+        float.TryParse(Env("RC_SWIM_SPEED", "300"), out pSwim);
+        string clipSwimIdle = Env("RC_CLIP_SWIM_IDLE", f1 + "F1b02yd\u6E38\u6CF3\u6C34\u4E2D\u5F85\u673A.tani");
+        string clipSwimFwd  = Env("RC_CLIP_SWIM_FWD",  f1 + "F1b02yd\u6E38\u6CF3\u5411\u524D\u6E38\u6CF3.tani");
+        string clipSwimBack = Env("RC_CLIP_SWIM_BACK", f1 + "F1b02yd\u6E38\u6CF3\u5411\u540E\u6E38\u6CF3.tani");
+        string clipSwimL    = Env("RC_CLIP_SWIM_L",    f1 + "F1b02yd\u6E38\u6CF3\u5DE6\u4FA7\u6E38\u6CF3.tani");
+        string clipSwimR    = Env("RC_CLIP_SWIM_R",    f1 + "F1b02yd\u6E38\u6CF3\u53F3\u4FA7\u6E38\u6CF3.tani");
+        // 滞空 loop (player_suspend.krl.txt ZhiKongQingGong body 6 = F1)
+        string clipSuspend = Env("RC_CLIP_SUSPEND", "data\\source\\player\\F1\\\u52A8\u4F5C\\F1bqg\u957F\u6B4C\u95E8\u6EDE\u7A7Ab.ani");
+        // 轻功 chain segment length: JumpFrameParam.TotalFrame when shipped
+        // (schools 10/11), else REGISTERED PROVISIONAL RC_CHAIN_SEG ticks -
+        // the game's own trigger is a server move-record flag (guards decoded:
+        // state in {4,0x1A}, [+0x1F8]==0, jumpCount>=1 -> End triple, jumpCount:=1).
+        float chainSegTicks = 51f;
+        float.TryParse(Env("RC_CHAIN_SEG", "51"), out chainSegTicks);
+        bool chainLog = Env("RC_CHAIN_LOG", "0") == "1";
+        bool swimLog = Env("RC_SWIM_LOG", "0") == "1";
+        bool suspendDemo = Env("RC_SUSPEND_DEMO", "0") == "1";
+        bool suspendLogged = false, suspendEnded = false, floatLogged = false;
+        int swimState = 0;                 // logic move-state mirror: 6/7 swim, 8 swim jump
+        bool swimmingLast = false;         // last tick's water state (clip selection)
+        long suspendUntil = 0, lastSwimLog = 0;
+        bool chainActive = false;
+        int chainSegIdx = 0;
+        long chainSegEndMs = 0;
+        Log(string.Format("states: waterBoxes={0} swim={1:F0}u/s chainSegTicks={2:F0} suspendDemo={3}",
+            waterBox.Count, pSwim, chainSegTicks, suspendDemo ? 1 : 0));
         // Character step budget (host proxy for the server-authoritative step;
         // the client's own prediction has no capsule-vs-mesh blocking at all,
         // CLIENT_COLLISION_IMPROVEMENT_PLAN 8.3). 64 u = the game-side ground/landing
@@ -3008,6 +3050,15 @@ internal static class RebornClient
                 demoJumped = true;
                 jumpPressed = true;
             }
+            // W6 state tests (RC_DEMO_STATES=1): 轻功 chain presses at 2.5/4.0/6.0 s
+            // (with RC_DJUMP=chain; End phase per segment), optional suspend
+            // hover (RC_SUSPEND_DEMO=1), optional water (RC_WATER box).
+            if (demoStates)
+            {
+                if (now >= 2500 && !stJump1) { stJump1 = true; jumpPressed = true; }
+                if (now >= 3200 && !stJump2) { stJump2 = true; jumpPressed = true; }
+                if (now >= 4000 && !stJump3) { stJump3 = true; jumpPressed = true; }
+            }
             if (demoMove)
             {
                 // scripted movement-controls run (RC_DEMO_MOVE=1): autorun ->
@@ -3412,12 +3463,27 @@ internal static class RebornClient
             float ground = py;
             bool groundOk = true;
             if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
+            // W6 water sample (registered provisional source): float height per
+            // the decoded GetWaterline semantics (base/surface cell words << 6;
+            // player submersion factor 0.589 = 6h*11/112). The box's authored
+            // base falls back to the terrain ground.
+            bool inWater = false;
+            float wSurf = 0f, wBase = 0f, wFloat = 0f;
+            if (waterBox.Count > 0 && waterBox.Sample(px, pz, out wSurf, out wBase))
+            {
+                if (!waterBox.HasBase(px, pz)) wBase = ground;
+                float wsub = playerHeight * WaterField.PlayerSubmersionFactor;
+                wFloat = Math.Max(wBase, wSurf - wsub);
+                inWater = py <= wSurf && vy <= 0f && wFloat > ground + 1f;
+            }
+            swimmingLast = inWater;
             float mvx = 0f, mvz = 0f;
             float subStep = 0f;
             int subCount = 1;
             if (moving)
             {
-                float baseSp = shiftDown ? pRun * 10f
+                float baseSp = inWater ? pSwim
+                            : shiftDown ? pRun * 10f
                             : mount.Mounted ? (walkMode ? rideWalk : rideRun)
                             : walkMode ? pSpeed
                             : pRun;
@@ -3426,8 +3492,8 @@ internal static class RebornClient
                 // authored slow pace). Pure lateral (no forward/back) is the
                 // walk-tier side-step (挪步 clip cadence); a forward component
                 // runs. Joystick always faces the travel -> run tier.
-                bool backPedal = classicalMode && fwdAxis < 0f;
-                bool sideOnly = classicalMode && fwdAxis == 0f && Math.Abs(latAxis) > 0.01f;
+                bool backPedal = !inWater && classicalMode && fwdAxis < 0f;
+                bool sideOnly = !inWater && classicalMode && fwdAxis == 0f && Math.Abs(latAxis) > 0.01f;
                 float sp = (backPedal || sideOnly ? (shiftDown ? pSpeed * 10f : mount.Mounted ? rideWalk : pSpeed) : baseSp) / len;
                 float ux = dirX / len, uz = dirZ / len;
                 float heading = (float)Math.Atan2(ux, uz);
@@ -3630,39 +3696,59 @@ internal static class RebornClient
             {
                 jumpPressed = false;
                 if (sitting) { sitting = false; Log("sit: stand (jump)"); }
-                bool mountHandled = false;
-                if (mount.Mounted)
+                if (inWater)
                 {
-                    // KCharacter::Jump mounted branches (0x140313A30..A88): the
-                    // horse triple 60/180/11 when jumpCount==0; jumpCount>=1 while
-                    // mounted rejects; at jumpCount==1 the press dismounts first
-                    // (DownHorse) and the normal jump rules then apply.
-                    if (!grounded && jumpCount == 1)
-                    {
-                        mount.Dismount(scene, Log);
-                    }
-                    else if (!grounded)
-                    {
-                        Log("mount jump reject n=" + jumpCount + " (airborne)");
-                        mountHandled = true;
-                    }
-                    else
-                    {
-                        jumpCount = 1;
-                        vy = 180f * 15f * jumpScale;
-                        curJumpGravity = 11f * 225f * jumpScale;
-                        grounded = false;
-                        airStartY = py;
-                        float xySpd = 60f * 15f * jumpScale;
-                        if (len > 0.01f) { vjx = dirX / len * xySpd; vjz = dirZ / len * xySpd; }
-                        else { vjx = 0f; vjz = 0f; }
-                        Log(string.Format(
-                            "mount jump triple=(60,180,11) vy={0:F0} g={1:F0} bonus=0 ([+0x34C] script) pos=({2:F0},{3:F0},{4:F0})",
-                            vy, curJumpGravity, px, py, pz));
-                        mountHandled = true;
-                    }
+                    // SWIM_JUMP: logic state 8 (setter 0x14031C400; guards:
+                    // tower/parachute/hold flags clear). The vertical impulse
+                    // source is not decoded -> REGISTERED PROVISIONAL: reuse the
+                    // school J0 takeoff triple (the generic jump), not an
+                    // invented value. Re-open: trace the state-8 velocity writer.
+                    int[] t0 = JumpTable.Triples[jumpSchool][0];
+                    int jg = t0[2]; if (jg < 0) jg = 0; else if (jg > 31) jg = 31;
+                    vy = t0[1] * 15f * jumpScale;
+                    curJumpGravity = jg * 225f * jumpScale;
+                    grounded = false;
+                    airStartY = py;
+                    jumpCount = 1;
+                    swimState = 8;
+                    Log(string.Format("swim: jump state=8 (prov J0 impulse) triple={0},{1},{2} vy={3:F0} pos=({4:F0},{5:F0},{6:F0})",
+                        t0[0], t0[1], t0[2], vy, px, py, pz));
                 }
-                if (!mountHandled)
+                else
+                {
+                    bool mountHandled = false;
+                    if (mount.Mounted)
+                    {
+                        // KCharacter::Jump mounted branches (0x140313A30..A88): the
+                        // horse triple 60/180/11 when jumpCount==0; jumpCount>=1 while
+                        // mounted rejects; at jumpCount==1 the press dismounts first
+                        // (DownHorse) and the normal jump rules then apply.
+                        if (!grounded && jumpCount == 1)
+                        {
+                            mount.Dismount(scene, Log);
+                        }
+                        else if (!grounded)
+                        {
+                            Log("mount jump reject n=" + jumpCount + " (airborne)");
+                            mountHandled = true;
+                        }
+                        else
+                        {
+                            jumpCount = 1;
+                            vy = 180f * 15f * jumpScale;
+                            curJumpGravity = 11f * 225f * jumpScale;
+                            grounded = false;
+                            airStartY = py;
+                            float xySpd = 60f * 15f * jumpScale;
+                            if (len > 0.01f) { vjx = dirX / len * xySpd; vjz = dirZ / len * xySpd; }
+                            else { vjx = 0f; vjz = 0f; }
+                            Log(string.Format(
+                                "mount jump triple=(60,180,11) vy={0:F0} g={1:F0} bonus=0 ([+0x34C] script) pos=({2:F0},{3:F0},{4:F0})",
+                                vy, curJumpGravity, px, py, pz));
+                            mountHandled = true;
+                        }
+                    }
+                    if (!mountHandled)
                 {
                 if (grounded) jumpCount = 0;
                 int nextJump = jumpCount + 1;
@@ -3707,16 +3793,95 @@ internal static class RebornClient
                     if (djumpLog) Log(string.Format(
                         "djb press n={0} mode={1} triple={2},{3},{4} vy={5:F0} g={6:F0} pos={7:F0},{8:F0},{9:F0}",
                         jumpCount, djumpMode, trip[0], trip[1], trip[2], vy, curJumpGravity, px, py, pz));
+                    // 轻功 chain segment start: the ...End triple of THIS segment
+                    // is applied when the segment ends (ModifySprintEndSpeed
+                    // 0x1403140A0 semantics; the game's own trigger is a server
+                    // move-record flag). Segment length: JumpFrameParam.TotalFrame
+                    // when shipped (schools 10/11), else RC_CHAIN_SEG provisional.
+                    if (chainMode)
+                    {
+                        chainActive = true;
+                        chainSegIdx = jumpCount;
+                        int tf = 0;
+                        if (jumpSchool < JumpTable.TotalFrame.Length &&
+                            jumpCount - 1 < JumpTable.TotalFrame[jumpSchool].Length)
+                            tf = JumpTable.TotalFrame[jumpSchool][jumpCount - 1];
+                        if (tf <= 0) tf = (int)chainSegTicks;
+                        chainSegEndMs = now + (long)(tf * (1000.0 / 15.0));
+                        if (chainLog) Log(string.Format("chain: seg={0} start ticks={1} endMs=+{2}",
+                            jumpCount, tf, chainSegEndMs - now));
+                    }
+                    if (suspendDemo && jumpCount >= 2)
+                    {
+                        suspendUntil = now + 3500;
+                        suspendEnded = false;
+                        floatLogged = false;
+                        if (!suspendLogged)
+                        {
+                            suspendLogged = true;
+                            Log("fly: FlyTo state=0x1F (harness) - real trigger is skill/script driven");
+                        }
+                    }
                 }
                 else if (djumpLog) Log(string.Format(
                     "djb reject n={0} max={1} grounded={2} mode={3}",
                     nextJump, maxJump, grounded ? 1 : 0, djumpMode));
                 }
+                }
             }
 
-            // gravity (per-jump magnitude; J0 11 u/f2 -> 2475 u/s2 = the old constant)
-            if (!grounded)
+            // W6 swim float: hold at the waterline. The game's PVM clamps
+            // y = min(y, float height) for water cells; the below-waterline
+            // buoyancy is not decoded, so the host holds the float height
+            // (registered; re-open with the buoyancy decode).
+            // Fly/suspend harness (RC_SUSPEND_DEMO): game states 0x1F/0x21 are
+            // skill/script driven; the harness hovers for 1.2 s and logs the
+            // decoded state codes. Real triggers are a named host gap.
+            if (!grounded && inWater && vy <= 0f)
             {
+                swimState = moving ? 6 : 7;
+                vy = 0f;
+                py = wFloat;
+                jumpCount = 0;
+                if (swimLog && now - lastSwimLog >= 1000)
+                {
+                    lastSwimLog = now;
+                    Log(string.Format("swim: state={0} surface={1:F0} base={2:F0} float={3:F0} y={4:F0} depth={5:F0} pos=({6:F0},{7:F0})",
+                        swimState, wSurf, wBase, wFloat, py, wSurf - py, px, pz));
+                }
+            }
+            else if (!grounded && suspendDemo && now < suspendUntil)
+            {
+                // Decoded FLOAT law (KCharacter::ProcessVerticalMove state 0x1F
+                // branch @0x31913C): descend under gravity until the float
+                // floor = terrain cell top + 0x100 (256 u), then hold (vz=0,
+                // y := floor). The trigger stays a harness (the real 0x1F entry
+                // is a 轻功 skill/script transition), but the vertical law is
+                // the client's own.
+                float floorY = ground + 256f;
+                if (py + vy * pdt <= floorY)
+                {
+                    vy = 0f;
+                    py = floorY;
+                    if (!floatLogged)
+                    {
+                        floatLogged = true;
+                        Log(string.Format("fly: float floor y={0:F0} (terrain+0x100, PVM 0x31913C state 0x1F)", py));
+                    }
+                }
+                else
+                {
+                    vy -= curJumpGravity * pdt;
+                    py += vy * pdt;
+                }
+            }
+            else if (!grounded)
+            {
+                if (suspendDemo && !suspendEnded && suspendLogged && now >= suspendUntil)
+                {
+                    suspendEnded = true;
+                    Log("fly: EndFlyJump state=0x21 -> 4 (harness exp)");
+                }
                 float vyBefore = vy;
                 vy -= curJumpGravity * pdt;
                 py += vy * pdt;
@@ -3765,6 +3930,30 @@ internal static class RebornClient
                 }
             }
             else jumpCount = 0;
+            // 轻功 chain End phase (ModifySprintEndSpeed 0x1403140A0: the ...End
+            // triple of the current segment is applied when the segment ends,
+            // then jumpCount := 1; host segment length = TotalFrame or the
+            // RC_CHAIN_SEG provisional).
+            if (chainActive && !grounded && now >= chainSegEndMs)
+            {
+                chainActive = false;
+                int idx = chainSegIdx - 1;
+                if (idx >= 0 && idx < JumpTable.EndTriples[jumpSchool].Length)
+                {
+                    int[] et = JumpTable.EndTriples[jumpSchool][idx];
+                    int evz = et[1]; if (evz < -2048) evz = -2048; else if (evz > 2047) evz = 2047;
+                    vy = evz * 15f * jumpScale;
+                    int eg = et[2]; if (eg < 0) eg = 0; else if (eg > 31) eg = 31;
+                    curJumpGravity = eg * 225f * jumpScale;
+                    int exy = et[0]; if (exy < 0) exy = 0; else if (exy > 127) exy = 127;
+                    float esp = exy * 15f * jumpScale;
+                    if (len > 0.01f) { vjx = dirX / len * esp; vjz = dirZ / len * esp; }
+                    Log(string.Format("chain: end seg={0} end={1},{2},{3} vy={4:F0} pos=({5:F0},{6:F0},{7:F0})",
+                        chainSegIdx, et[0], et[1], et[2], vy, px, py, pz));
+                }
+                jumpCount = 1;   // decoded: reset to 1, not 0
+            }
+            if (grounded) chainActive = false;
             // engine integer positions (u = cm)
             px = (float)Math.Round(px);
             py = (float)Math.Round(py);
@@ -3779,7 +3968,17 @@ internal static class RebornClient
 
             // animation state
             if (skillUntil > now) { /* skill clip playing */ }
+            else if (swimState != 0 && swimmingLast)
+            {
+                setClip(swimState == 8 ? clipSwimFwd
+                    : !moving ? clipSwimIdle
+                    : gait == 3 ? clipSwimBack
+                    : gait == 1 ? clipSwimL
+                    : gait == 2 ? clipSwimR
+                    : clipSwimFwd);
+            }
             else if (mount.Mounted) setClip(!grounded ? mount.RiderJump : mount.RiderClip);
+            else if (!grounded && suspendDemo && suspendLogged && now < suspendUntil) setClip(clipSuspend);
             else if (!grounded) setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
             else if (now < landClipUntil) setClip(clipLand);
             else if (sitting) setClip(clipSit);

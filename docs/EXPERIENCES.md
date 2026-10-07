@@ -4883,3 +4883,45 @@ if the cache/host frames appear.
 - Deviations (in MountSystem.cs header): rider not socket-bound (s_hs; needs Agent A's
   shim), no horse inventory, 999-sentinel row not consumed, ride-yaw consumer unlocated.
 
+
+### 2026-10-06 - 3x-states W6: swim states + 轻功 chain End phase + fly/suspend harness
+
+- Did: implemented W6 in the client (`WaterField.cs`, RebornClient states):
+  swim states 6/7/8 with the decoded float rule (`max(base, surface-0.589h)`,
+  player factor `6h*11/112`) and `CharacterSwimSpeed` 20 u/f -> 300 u/s; the
+  轻功 chain End phase (`JumpTable.EndTriples`/`TotalFrame` regenerated from the
+  tables; apply the `...End` triple + `jumpCount := 1` on segment end); a
+  fly/suspend harness logging the decoded state codes; scripted harnesses
+  (`RC_DEMO_STATES`, `RC_CHAIN_SEG`, `RC_SWIM_LOG`, `RC_CHAIN_LOG`).
+- Verified runs (`proof/character/3x_states/`): swim idle `state=7 float=994
+  depth=68`; swim moving `state=6` at 300 u/s + exit; swim jump `state=8`;
+  chain `end seg=3 end=60,90,11` then land n=1; suspend `FlyTo 0x1F` /
+  `EndFlyJump 0x21 -> 4`. Gates: build 0, `camera_smoke_3x_states` ALL PASS,
+  `collision_selftest_reborn_client_3x_states` 36/36.
+- Lesson: the default `RC_SHOTS` proof screenshots block the loop for seconds
+  (the engine `DoScreenShotImmediate`); phase-timing runs must set
+  `RC_SHOTS=999999` (first chain run was polluted by the 8000 ms shot).
+- Registered provisionals (§6, re-open criteria in the 3_5_3_7 doc): water source
+  (RC_WATER; the logic m_pCell stream is not host-reachable - water/regiondata is
+  a MISS in the paks), swim-jump impulse (J0 triple), buoyancy hold, chain segment
+  length (RC_CHAIN_SEG), suspend hover. No managed water query exists; the
+  physics terrain loader carries no water layer.
+- Outcome: W6 swim/轻功 implemented and verified; fly/suspend is harness-only.
+
+
+### 2026-10-06 - 3x-states W6 follow-up: state-0x1F float law decoded + implemented
+
+- Did: replaced the invented hover with the client's own float branch
+  (`KCharacter::ProcessVerticalMove` @0x31913C, state 0x1F): descend under gravity
+  until `y <= terrain_cell_top + 0x100` (256 u), then hold `vz=0` at the floor.
+  `FlyTo` @0x310B70 / `EndFlyJump` @0x310960 decoded as pure transitions (0x1F/0x20
+  valid; EndFlyJump requires 0x21 and returns to state 4 - no velocity writes), so
+  the vertical law lives in the integrator, not those functions.
+- Verify: `proof/character/3x_states/run_20261006_210340.txt` -
+  `fly: float floor y=1218 (terrain+0x100, PVM 0x31913C state 0x1F)` (ground 962 +
+  256), then `chain: end seg=3 end=60,90,11`, then `EndFlyJump state=0x21 -> 4`.
+  Gates green (build 0, smoke ALL PASS, collision 36/36).
+- Outcome: fly/suspend entry still a harness (skill/script trigger), but the float
+  vertical law is now the client's own; 0x20 fly / 0x21 fly-jump verticals remain
+  open (EndFlyJump is a transition only).
+

@@ -419,3 +419,43 @@ $S="C:\Users\ZHIBIN~1\AppData\Local\Temp\opencode\char3x"
 
 All new artifacts referenced above live in the scratch dir; nothing in the repo or the game
 installs was modified.
+
+## Host implementation (W6, 2026-10-06, branch `agent/3x-states`)
+
+Implemented in the client on top of the decoded rules above:
+
+- **Swim** (`client/WaterField.cs` + `RebornClient.cs`): states 6 (moving) / 7 (in
+  place) / 8 (swim jump); float height = `max(base, surface - 0.589*h)` with the
+  player factor `6h*11/112`; `CharacterSwimSpeed` applied directly at 20 u/frame
+  -> 300 u/s (the logic moves via MoveTo/server speed); water landing thresholds
+  (500/50) stay in the existing landing branch; swim clips `F1b02yd游泳...`
+  (9 F1 rows in `player_animation_use_originroot_trans.txt`).
+- **轻功 chain End phase**: `JumpTable.EndTriples` + `TotalFrame` generated from
+  `JumpParam.tab`/`JumpFrameParam.tab`; on segment end the `...End` triple of the
+  current segment is applied and `jumpCount := 1` (ModifySprintEndSpeed semantics).
+- **Fly/suspend** (`RC_SUSPEND_DEMO=1`): state codes `FlyTo` 0x1F / `EndFlyJump`
+  0x21 -> 4 logged; the state-0x1F **float law** is implemented from the client's own
+  branch (PVM 0x31913C: descend under gravity until the floor = terrain cell top +
+  0x100 (256 u), then hold vz=0 at the floor); the entry trigger remains a harness
+  (the real 0x1F entry is a 轻功 skill/script transition).
+- **Test harness**: `RC_DEMO_STATES=1` scripted chain presses; `RC_CHAIN_SEG`,
+  `RC_SWIM_LOG`, `RC_CHAIN_LOG`; proof runs in `proof/character/3x_states/`.
+
+REGISTERED PROVISIONALS (AGENTS §6, re-open criteria):
+1. **Water source**: the real surface is the logic `m_pCell` stream (GetWaterline
+   0x140312440: flag bit0, `word[+6]<<6` surface, `word[+4]<<6` base) - not
+   host-reachable (no managed query; `water/regiondata/RegionInfo.json` is a MISS
+   in the paks). Host maps `RC_WATER` boxes. Re-open: trace the `m_pCell` writer /
+   KMiniScene cell stream, or an engine water-node query.
+2. **Swim jump impulse**: state 8 setter 0x14031C400 sets the state but no velocity
+   site was found; the host reuses the school J0 takeoff triple. Re-open: trace the
+   state-8 velocity writer.
+3. **Swim buoyancy**: the game's below-waterline push is not decoded; the host holds
+   the float height (clamp up+down). Re-open: decode the PVM below-float branch.
+4. **Chain segment length**: client trigger is a server move-record flag; host uses
+   `JumpFrameParam.TotalFrame` when shipped (schools 10/11), else `RC_CHAIN_SEG`
+   (default 51 ticks, the shipped 51-81 range). Re-open: server record producer.
+5. **Suspend float**: the state-0x1F float law is decoded + implemented (floor =
+   terrain cell top + 0x100 = 256 u, PVM 0x31913C branch); the entry trigger is a
+   harness (real 0x1F entry = 轻功 skill/script transition) and the 0x20 fly /
+   0x21 fly-jump verticals beyond EndFlyJump stay open. Re-open: fly-state decode.
