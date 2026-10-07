@@ -82,10 +82,11 @@ static void __fastcall shadowDescFix(void* desc, void* caller)
 }
 
 // Host adaptation: the RL scene's shadow-scene name ([rlScene+0xF2890]) is empty
-// because the map's shadow data is missing from the sandbox; the movie engine's
+// in our host (its real writer was not found in the rep module; the game's movie
+// context wrapper that normally fills it is skipped). The movie engine's
 // shadow-scene getter (movie+0x2A00) then fails its caller's non-empty check
-// (KRLScene::InitShadowScene line 1849). Fill the name (GBK) when empty at call
-// time. Documented deviation: docs/EXPERIENCES.md.
+// (KRLScene::InitShadowScene line 1849). Fill a short no-dot name when empty at
+// call time. Documented deviation: docs/EXPERIENCES.md (2026-10-06).
 static void __fastcall movieNameFix(void* movie, void* nameBuf)
 {
     (void)movie;
@@ -95,14 +96,15 @@ static void __fastcall movieNameFix(void* movie, void* nameBuf)
     {
         if (*(char*)nameBuf == 0)
         {
-            // The field is the shadow-scene MAP FILENAME (the adapter context does
-            // strrchr(name,'.') then strcpy_s(ext, ".map")); it is at most 8 bytes
-            // (the next member lives at +8). The engine's canonicalization
-            // (eng+0x9AD3A0) FAILS for a name with no directory part (the
-            // sprintf("%s%s", drive, dir) returns 0 for ""), so use a short path
-            // with a directory: "a\a.map" (7 chars + NUL = 8).
-            strcpy((char*)nameBuf, "a\\a.map");
-            logf("[host] movieNameFix: shadow scene name set ('a\\a.map')");
+            // The field is the shadow-scene NAME (the adapter context does
+            // strrchr(name,'.') and branches: no dot -> clean no-op S_OK;
+            // ".map" -> the compiled-map path (eng+0x9ACBF0); ".jsonmap" -> the
+            // source path (eng+0x9ACE80)). It is at most 8 bytes (the next member
+            // lives at +8; a longer name corrupts the container). Use a short
+            // no-dot name: the adapter then returns S_OK without touching the
+            // engine (the same result as a map without a shadow scene).
+            strcpy((char*)nameBuf, "shadow");
+            logf("[host] movieNameFix: shadow scene name set ('shadow')");
         }
     }
     __except (EXCEPTION_EXECUTE_HANDLER) { }
@@ -3650,10 +3652,16 @@ int main(void)
                                 unsigned long long a9);
                             __try
                             {
+                                // sceneName must be GBK: it feeds the destination
+                                // paths built at rep+0xB0C7B0 (buf1 =
+                                // data\source\maps\<sceneName>, buf2 =
+                                // ...\<sceneName>_Setting.ini); the 9th arg = 1
+                                // enables that destination block (the later Init
+                                // steps need buf2 - EXPERIENCES 2026-10-06).
                                 long cs = ((CreateRLSceneFn)
                                            ((BYTE*)g_repModule + 0xB0B5C0))(
                                     2, 0x10, 0, 0, 0, mapPath60,
-                                    0, "\xE9\xBE\x99\xE9\x97\xA8\xE5\xAF\xBB\xE5\xAE\x9D_s", 0);
+                                    0, "\xC1\xFA\xC3\xC5\xD1\xB0\xB1\xA6_s", 1);
                                 logf("[host] frame60: real CreateRLScene -> 0x%08X", (unsigned)cs);
                             }
                             __except (EXCEPTION_EXECUTE_HANDLER)
