@@ -2360,3 +2360,14 @@ solved it, and what is still open. **Newest at the bottom.**
   sub-panels, not catalog entries); each keeps `originalStageId` for promotion back, the viewer's X
   reject still works (rejected returns to C1.X). `defaultWindow` = achievementpanel so the review
   starts on the set. Total stays 1,240; selftest 1240/0/0; commit 23349b0.
+
+### 2026-10-06 ? UI ? C1.X resolved: plactionbar kept (-> liked), 25 rejected (不需要)
+- User review of C1.X: only 1.12 (PLActionBar) is needed; everything else goes to 不需要.
+- PLActionBar moved to the `liked` stage (explicitly liked, not its original hud-ui);
+  defaultWindow=plactionbar. The hardship stage is removed; the other 25 windows stay in their
+  original stages in the JSON and are moved to the 不需要 stage at load by the rejection store
+  (Data/rejected.tsv: windowId TAB originalStageId) - fully reversible with X.
+- First attempt dropped the 25 windows from the JSON entirely (removing the stage loses its
+  windows); fixed by restoring them to their originalStageId stages and using the side file.
+- Full recheck: selftest 1240/0/0; audit ph=538 unresolved=49 oob=9346; status refreshed; replay
+  batch reproducible OK=1180 ERR=22 NOENTRY=9; gap windows=1202, visual drops 22.

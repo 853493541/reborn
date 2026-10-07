@@ -74,7 +74,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | ACC_WinOrDefect | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | AIChatPanel | other-ui | 6 | 0 | 0 | 0 | 0 | 4 | 0 | 4 |
 | AIChat_Statement | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
-| AccelerateBall | liked | 13 | 0 | 0 | 0 | 0 | 2 | 0 | 13 |
+| AccelerateBall | liked | 13 | 0 | 0 | 0 | 0 | 2 | 0 | 3 |
 | AccountException | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | AccountFriendTip | panels-ui | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 1 |
 | AchievementPanel | liked | 21 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -178,7 +178,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | CampActiveTime | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | CampBigThings | modes-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
 | CampBossPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| CampFireworks | other-ui | 48 | 0 | 0 | 0 | 0 | 0 | 0 | 17 |
+| CampFireworks | other-ui | 48 | 0 | 0 | 0 | 0 | 0 | 0 | 23 |
 | CampMaps | modes-ui | 1 | 0 | 0 | 0 | 0 | 33 | 0 | 6 |
 | CampMapsTips | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 1 |
 | CampMapsWeatherTip | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
@@ -449,7 +449,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | FBShowPanel | other-ui | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | FBShowTeam | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | FBTimeRank | other-ui | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 8 |
-| FBlist | other-ui | 14 | 0 | 0 | 0 | 0 | 1 | 1 | 95 |
+| FBlist | other-ui | 14 | 0 | 0 | 0 | 0 | 1 | 1 | 260 |
 | FBlistBossKillTip | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | FEActivationPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | FEEquipExtractPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
@@ -835,7 +835,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | NewPetInfo | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | NewPetSkill | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | NewPlayerBF | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| NewQuestPanel | other-ui | 22 | 0 | 0 | 0 | 0 | 1 | 0 | 1 |
+| NewQuestPanel | other-ui | 22 | 0 | 0 | 0 | 0 | 1 | 0 | 51 |
 | NewRecipeTip | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | NewSafePanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | NewSkillBar | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -860,7 +860,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | OutMap | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 4 |
 | OutfitModList | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | PKLeavePanel | modes-ui | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| PLActionBar | hud-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| PLActionBar | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | PQNextStage | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | PQTeach | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 0 |
 | PQTimePanel | other-ui | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -972,8 +972,8 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | QuestTraceList | recommended | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | Questionnaire_FresherExitGame | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | Queue | modes-ui | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
-| QuickConsumePanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
-| QuickConsumeShare | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| QuickConsumePanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 11 |
+| QuickConsumeShare | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | QuitCohabitMessage | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
 | RaidDragPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | RaidPanel | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 15 |
@@ -1164,7 +1164,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | ThermometerPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | TimeBuff | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | TitleRankReward | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
-| TongArena | other-ui | 165 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| TongArena | other-ui | 165 | 0 | 0 | 0 | 0 | 0 | 0 | 232 |
 | TongBaoGift | other-ui | 397 | 0 | 0 | 0 | 0 | 0 | 0 | 639 |
 | TongBaoPanel | other-ui | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
 | TongBattleTips | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
