@@ -24,6 +24,27 @@ id-4 packet `+0xDF` (qword) → `player+0xEC8` = the global role id. Zero makes
 registration. Stub now sends `GAME_GLOBAL_ID` (default 1001 = the gateway role global id);
 live: `player+0xEC8 = 0x3E9`, world gid map present.
 
+### Input gate pinned (2026-10-06 late): the world UI never gets SetMainPlayer
+
+The UI object (`client+0xA755C0`, JX3UIX64.dll) vtable slots (found via .rdata):
+**+0x2E0 SetMainPlayer, +0x2E8 SyncRoleDataBegin, +0x2F0 SyncRoleDataEnd**.
+- id 4 fires SyncRoleDataBegin (EXE 0x14015C7ED, in the reset+bind block); id 188 fires
+  SyncRoleDataEnd (handler tail). Both fire — so the role-data events are not the gate.
+- **SetMainPlayer (+0x2E0) is called by the scene setter 0x14017BDD0 (0x14017BEE8) and by
+  0x140178730 (0x1401786D1) — but only on the setter's SUCCESS path, which requires the
+  position validator 0x1403D5220(cell, player) to return non-zero.**
+- 0x1403D5220 walks the cell's terrain sub-regions: `cell+0x20` = sub-region pointer array,
+  `cell+0x28` = index table; index = `minorY*64 + minorX`; the sub-region holds the terrain
+  height words ([+4]/[+6] << 6) validated against the player Z ([player+0x18]).
+- **Live: the player's cell (11,11) sub-region entry for minor (25,53) is uninitialized garbage**
+  (`0x3FDA000000010112`) — the cells were created empty by `KScene::ValidateRegions`; the bind
+  only *requests* async cell loads (0x1403d8a00) and they never complete for this scene.
+  So the validator fails -> the setter returns 0 (bRetCode 0x78c) -> SetMainPlayer never fires
+  -> the world UI/input layer never activates -> WASD/ESC/click produce nothing.
+- Repeat-bind experiment (stub repeats id 188 x4, 8-10 s apart): cell data stays uninitialized,
+  input still dead. The fix must make the scene cells actually load (map load pipeline / the
+  scene's region streamer), not repeat the bind.
+
 ### Movement still gated (open)
 With the world rendering and the client responsive: SendInput W/A/D/S (game foreground, verified
 fg == hwnd), PostMessage WM_KEYDOWN, ESC/C keys, mouse right-drag — **no C2S 0x1E8, no position

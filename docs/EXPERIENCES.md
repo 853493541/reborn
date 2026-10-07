@@ -2640,3 +2640,19 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   docs/netcode/V2_WORLD_MOVEMENT_CHAIN.md UPDATE section).
 - Tools: watch_world_bind.py player_lookup head-pointer bug fixed (snapshot passed the head
   field address, not the head pointer) - the reader had always shown player=None.
+
+### 2026-10-06 — V2: input gate pinned to the cell terrain data (SetMainPlayer never fires)
+- UI object (client+0xA755C0, JX3UIX64) vtable: +0x2E0 SetMainPlayer, +0x2E8 SyncRoleDataBegin,
+  +0x2F0 SyncRoleDataEnd. id 4 fires Begin (0x14015C7ED); id 188 fires End (handler tail).
+- SetMainPlayer fires ONLY on the scene setter's success path (0x14017BEE8 / 0x1401786D1),
+  which requires the position validator 0x1403D5220(cell, player) to pass. The validator walks
+  the cell's terrain sub-regions (cell+0x20 array / cell+0x28 index; index = minorY*64+minorX;
+  heights = word[+4]/[+6]<<6 vs player Z).
+- Live: the player's cell sub-region entry is uninitialized garbage; the cells were created
+  empty by ValidateRegions and the async cell loads (0x1403d8a00) never complete -> validator
+  fails -> setter returns 0 -> no SetMainPlayer -> no world UI/input. Repeat binds (x4) do not
+  help. Next: make the scene cells load (map load pipeline / region streamer) - then the bind's
+  success path fires the UI and input should activate.
+- Input probes tried and ruled out: SendInput (focused, topmost, WM_ACTIVATE posted),
+  PostMessage keys, mouse clicks/drag, 187->188 ordering, repeated 188 - all produce zero client
+  packets and no position change; the client renders (1.2 cores) but ignores input entirely.

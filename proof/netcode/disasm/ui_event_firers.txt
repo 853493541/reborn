@@ -1,0 +1,202 @@
+# JX3UIX64.dll xrefs to 0x180393ec8, 0x1803945e0, 0x180394640, 0x180394650, 0x180394668, 0x180394980
+
+## ref @ 0x1800d3434 -> 0x180393ec8
+  0x1800d33f8: je       0x1800d33ca
+  0x1800d33fa: cli      
+  0x1800d33fb: call     qword ptr [rax - 0x6af0247b]
+  0x1800d3401: and      al, 0x30
+  0x1800d3404: mov      dword ptr [rsp + 0x38], 8
+  0x1800d340c: mov      byte ptr [rsp + 0x3c], 1
+  0x1800d3411: lea      rdx, [rsp + 0x30]
+  0x1800d3416: lea      rcx, [rsp + 0x50]
+  0x1800d341b: call     0x180080470
+  0x1800d3420: nop      
+  0x1800d3421: call     0x180080c30
+  0x1800d3426: mov      rcx, rax
+  0x1800d3429: mov      r9d, 2
+  0x1800d342f: lea      r8, [rsp + 0x40]
+  0x1800d3434: lea      rdx, [rip + 0x2c0a8d]
+  0x1800d343b: call     0x18010c3d0
+  0x1800d3440: nop      
+  0x1800d3441: mov      r9, rsi
+  0x1800d3444: mov      edx, 0x10
+  0x1800d3449: lea      r8d, [rdx - 0xe]
+  0x1800d344d: lea      rcx, [rsp + 0x40]
+  0x1800d3452: call     0x180377a58
+  0x1800d3457: mov      rcx, qword ptr [rsp + 0x60]
+
+## ref @ 0x1800f0675 -> 0x180394980
+  0x1800f0639: jmp      qword ptr [rax + 0x118]
+  0x1800f0640: ret      
+  0x1800f0641: int3     
+  0x1800f0642: int3     
+  0x1800f0643: int3     
+  0x1800f0644: int3     
+  0x1800f0645: int3     
+  0x1800f0646: int3     
+  0x1800f0647: int3     
+  0x1800f0648: int3     
+  0x1800f0649: int3     
+  0x1800f064a: int3     
+  0x1800f064b: int3     
+  0x1800f064c: int3     
+  0x1800f064d: int3     
+  0x1800f064e: int3     
+  0x1800f064f: int3     
+  0x1800f0650: sub      rsp, 0x38
+  0x1800f0654: mov      rax, qword ptr [rip + 0x3bcf85]
+  0x1800f065b: mov      r8, rcx
+  0x1800f065e: mov      rcx, qword ptr [rax + 0x18]
+  0x1800f0662: test     rcx, rcx
+  0x1800f0665: je       0x1800f0689
+  0x1800f0667: cmp      dword ptr [r8 + 8], 0
+  0x1800f066c: jne      0x1800f0689
+  0x1800f066e: lea      rax, [rdx + 4]
+  0x1800f0672: mov      r9, rdx
+  0x1800f0675: lea      rdx, [rip + 0x2a4304]
+  0x1800f067c: mov      qword ptr [rsp + 0x20], rax
+  0x1800f0681: xor      r8d, r8d
+  0x1800f0684: call     0x1800d29b0
+  0x1800f0689: add      rsp, 0x38
+  0x1800f068d: ret      
+  0x1800f068e: int3     
+  0x1800f068f: int3     
+  0x1800f0690: mov      qword ptr [rsp + 8], rbx
+  0x1800f0695: push     rdi
+  0x1800f0696: sub      rsp, 0x1a0
+
+## ref @ 0x1800f445d -> 0x1803945e0
+  0x1800f4421: nop      
+  0x1800f4422: add      byte ptr [rcx], al
+  0x1800f4424: add      byte ptr [rax], al
+  0x1800f4426: mov      rax, qword ptr [rip + 0x3b91b3]
+  0x1800f442d: mov      rcx, qword ptr [rax + 0x18]
+  0x1800f4431: mov      rax, qword ptr [rcx]
+  0x1800f4434: cmp      dword ptr [rdi + 4], 0
+  0x1800f4438: setne    r8b
+  0x1800f443c: lea      rdx, [rip + 0x28c6a5]
+  0x1800f4443: call     qword ptr [rax + 0x110]
+  0x1800f4449: mov      rax, qword ptr [rip + 0x3b9190]
+  0x1800f4450: mov      rcx, qword ptr [rax + 0x18]
+  0x1800f4454: mov      rax, qword ptr [rcx]
+  0x1800f4457: xor      r9d, r9d
+  0x1800f445a: xor      r8d, r8d
+  0x1800f445d: lea      rdx, [rip + 0x2a017c]
+  0x1800f4464: call     qword ptr [rax + 0x118]
+  0x1800f446a: nop      
+  0x1800f446b: lea      rcx, [rsp + 0x20]
+  0x1800f4470: call     0x18008ec80
+  0x1800f4475: mov      rcx, qword ptr [rip + 0x3b9164]
+  0x1800f447c: mov      rcx, qword ptr [rcx + 0x58]
+  0x1800f4480: mov      rax, qword ptr [rcx]
+  0x1800f4483: .byte    0x44
+  0x1800f4484: .byte    0x8b
+
+## ref @ 0x1800f5fa5 -> 0x180394640
+  0x1800f5f69: lea      ecx, [rsp + 0x20]
+  0x1800f5f6d: call     0x1800a8b40
+  0x1800f5f72: nop      
+  0x1800f5f73: mov      rax, qword ptr [rip + 0x3b7666]
+  0x1800f5f7a: mov      rcx, qword ptr [rax + 0x18]
+  0x1800f5f7e: mov      rax, qword ptr [rcx]
+  0x1800f5f81: mov      r8d, edi
+  0x1800f5f84: lea      rdx, [rip + 0x28ab55]
+  0x1800f5f8b: call     qword ptr [rax + 0x100]
+  0x1800f5f91: mov      rax, qword ptr [rip + 0x3b7648]
+  0x1800f5f98: mov      rcx, qword ptr [rax + 0x18]
+  0x1800f5f9c: mov      rax, qword ptr [rcx]
+  0x1800f5f9f: xor      r9d, r9d
+  0x1800f5fa2: xor      r8d, r8d
+  0x1800f5fa5: lea      rdx, [rip + 0x29e694]
+  0x1800f5fac: call     qword ptr [rax + 0x118]
+  0x1800f5fb2: nop      
+  0x1800f5fb3: lea      rcx, [rsp + 0x20]
+  0x1800f5fb8: call     0x18008ec80
+  0x1800f5fbd: mov      rcx, qword ptr [rsp + 0x190]
+  0x1800f5fc5: xor      rcx, rsp
+  0x1800f5fc8: call     0x180377c80
+
+## ref @ 0x1800fe0c3 -> 0x180394650
+  0x1800fe087: jne      0x1800fe0a0
+  0x1800fe089: mov      rax, qword ptr [rcx]
+  0x1800fe08c: lea      rdx, [rip + 0x298d35]
+  0x1800fe093: xor      r9d, r9d
+  0x1800fe096: xor      r8d, r8d
+  0x1800fe099: jmp      qword ptr [rax + 0x118]
+  0x1800fe0a0: ret      
+  0x1800fe0a1: int3     
+  0x1800fe0a2: int3     
+  0x1800fe0a3: int3     
+  0x1800fe0a4: int3     
+  0x1800fe0a5: int3     
+  0x1800fe0a6: int3     
+  0x1800fe0a7: int3     
+  0x1800fe0a8: int3     
+  0x1800fe0a9: int3     
+  0x1800fe0aa: int3     
+  0x1800fe0ab: int3     
+  0x1800fe0ac: int3     
+  0x1800fe0ad: int3     
+  0x1800fe0ae: int3     
+  0x1800fe0af: int3     
+  0x1800fe0b0: mov      rax, qword ptr [rip + 0x3af529]
+  0x1800fe0b7: mov      rcx, qword ptr [rax + 0x18]
+  0x1800fe0bb: test     rcx, rcx
+  0x1800fe0be: je       0x1800fe0d7
+  0x1800fe0c0: mov      rax, qword ptr [rcx]
+  0x1800fe0c3: lea      rdx, [rip + 0x296586]
+  0x1800fe0ca: xor      r9d, r9d
+  0x1800fe0cd: xor      r8d, r8d
+  0x1800fe0d0: jmp      qword ptr [rax + 0x118]
+  0x1800fe0d7: ret      
+  0x1800fe0d8: int3     
+  0x1800fe0d9: int3     
+  0x1800fe0da: int3     
+  0x1800fe0db: int3     
+  0x1800fe0dc: int3     
+  0x1800fe0dd: int3     
+  0x1800fe0de: int3     
+  0x1800fe0df: int3     
+  0x1800fe0e0: mov      rax, qword ptr [rip + 0x3af4f9]
+  0x1800fe0e7: mov      rcx, qword ptr [rax + 0x18]
+
+## ref @ 0x1800fe0f3 -> 0x180394668
+  0x1800fe0b7: mov      rcx, qword ptr [rax + 0x18]
+  0x1800fe0bb: test     rcx, rcx
+  0x1800fe0be: je       0x1800fe0d7
+  0x1800fe0c0: mov      rax, qword ptr [rcx]
+  0x1800fe0c3: lea      rdx, [rip + 0x296586]
+  0x1800fe0ca: xor      r9d, r9d
+  0x1800fe0cd: xor      r8d, r8d
+  0x1800fe0d0: jmp      qword ptr [rax + 0x118]
+  0x1800fe0d7: ret      
+  0x1800fe0d8: int3     
+  0x1800fe0d9: int3     
+  0x1800fe0da: int3     
+  0x1800fe0db: int3     
+  0x1800fe0dc: int3     
+  0x1800fe0dd: int3     
+  0x1800fe0de: int3     
+  0x1800fe0df: int3     
+  0x1800fe0e0: mov      rax, qword ptr [rip + 0x3af4f9]
+  0x1800fe0e7: mov      rcx, qword ptr [rax + 0x18]
+  0x1800fe0eb: test     rcx, rcx
+  0x1800fe0ee: je       0x1800fe107
+  0x1800fe0f0: mov      rax, qword ptr [rcx]
+  0x1800fe0f3: lea      rdx, [rip + 0x29656e]
+  0x1800fe0fa: xor      r9d, r9d
+  0x1800fe0fd: xor      r8d, r8d
+  0x1800fe100: jmp      qword ptr [rax + 0x118]
+  0x1800fe107: ret      
+  0x1800fe108: int3     
+  0x1800fe109: int3     
+  0x1800fe10a: int3     
+  0x1800fe10b: int3     
+  0x1800fe10c: int3     
+  0x1800fe10d: int3     
+  0x1800fe10e: int3     
+  0x1800fe10f: int3     
+  0x1800fe110: push     rbx
+  0x1800fe112: sub      rsp, 0x1a0
+  0x1800fe119: .byte    0x48
+  0x1800fe11a: .byte    0x8b
