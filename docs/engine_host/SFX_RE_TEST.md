@@ -56,30 +56,46 @@ with no model/play tail.
   NULLs are suspected ME-build format gaps); socket/bone binding; wiring the
   engine-SFX step into the dataset processes (the app hook exists).
 
-## Wired into the dataset (如意法) - 2026-10-06
+## Wired into the dataset (broad pass, 2026-10-06)
 
-The dataset's `sfx` step kind now plays authored `.Sfx` through the engine:
+Every staged ability whose matched tani embeds `.Sfx` tags now plays them
+through the engine instead of the staged PSS stand-in:
 
-- `ability_picker/tools/build_candidates.py` `PROCESS["如意法"]`: the staged PSS
-  stand-in was **replaced by the four authored tani tags** (`m明教元素18.sfx`,
-  `m明教元素19.sfx`, `释放_气场聚集03.sfx`, `g光晕02.sfx`) as `kind: "sfx"` steps.
-- App (`ability_sandbox/rb/RebornClient.cs`): a `sfx` cast step resolves a bare
-  name against `bin64\ability_picker\sfx` (`SB_SFX_DIR` override) and calls
-  `engineSfxPlay(...)` (the owner-chain shim, create + play).
-- Local staging: copy the extracted tags from
-  `%TEMP%\opencode\skillv2\out_sfx\data\source\other\特效\技能\sfx\释放\` into
-  `MovieEditor\bin64\ability_picker\sfx\` (runtime dir, not tracked).
+- Tani-tag pass: extracted the 53 missing matched tanis (PakV4SfxExtract),
+  parsed the `.sfx` path strings from all 82 unique matched tanis -> **20
+  abilities** embed tags, **61 unique tag files** (60 extracted from the paks;
+  `抖动1.sfx` is a dangling reference but was already staged). Manifest:
+  `ability_picker/data/sfx_tags.json`.
+- `build_candidates.py` `apply_sfx_tags()`: for those abilities the `dummy`
+  steps are dropped and the tags appended as `kind: "sfx"` steps (19 wired;
+  幻蛊 has no staged process).
+- App (`ability_sandbox/rb/RebornClient.cs`): `sfx` step kind (bare names
+  resolve against `bin64\ability_picker\sfx`, `SB_SFX_DIR` override) calls
+  `engineSfxPlay` (owner-chain shim).
+- Local staging: the 61 tags live in `MovieEditor\bin64\ability_picker\sfx\`
+  (runtime dir, not tracked).
 
-Run evidence (`Skill_20261006_160240.log`, `SB_ABILITY=如意法 SB_CAST_MS=3000`):
+**Startup warm-up (required).** The ME engine's *first* create of ~27 of the
+61 tags AVs (`exc=0xC0000005`, shim-guarded -> NULL) once the scene has
+settled (~3 s in), while the same creates at t~0 all pass (61/61). A startup
+warm-up pass (`RC_SFX_WARM`, default on) creates every staged tag once at a
+far position (player +20000/-2000/+20000): the resources get cached and
+cast-time creates then succeed. Measured before/after (same ability):
+五蕴皆空 2/4 -> **4/4**, 如意法 3/4 -> **4/4**; 驱夜断愁 **6/6**, 百足 **2/2**
+(`Skill_20261006_170936/171018/171059.log`). `RC_SFX_WARM=0` disables;
+`RC_SFX_BATCH=1` + `RC_SFX_BATCH_DELAY=<ms>` re-runs the rc table.
+Residual transient NULLs are retried up to 3x 250 ms apart (`cast sfx retry`).
+
+Run evidence (`Skill_20261006_170936.log`, `SB_ABILITY=五蕴皆空 SB_CAST_MS=3000`):
 
 ```
-cast: 如意法 steps=6 animMs=939            <- no dummy step remains
-cast anim -> ...\f1smj10双刀buff04.ani
-cast sound -> 75054615
-engine sfx play rc=0 ... -> obj=0x16E652900 exc=0x0   cast sfx -> m明教元素18.sfx ok=1
-engine sfx play rc=0 ...                              cast sfx -> m明教元素19.sfx ok=1
-engine sfx play rc=0 ...                              cast sfx -> 释放_气场聚集03.sfx ok=1
-engine sfx play rc=7 ...                              cast sfx -> g光晕02.sfx ok=0
+cast: 五蕴皆空 steps=6                     <- no dummy step remains
+cast anim -> ...\f1ssl04袈裟攻击05.ani
+cast sound -> 157383905
+cast sfx -> 释放_袈裟03_01.sfx ok=1        <- engine sfx play rc=0, obj non-null
+cast sfx -> 释放_袈裟03_02.sfx ok=1
+cast sfx -> 释放_袈裟03_03.sfx ok=1
+cast sfx -> 释放_袈裟03_04.sfx ok=1
 ```
 
 Visual fingerprint (engine `RC_SHOTS` renders, same run; character small at the
@@ -123,12 +139,18 @@ regenerated `ability_picker\data\ability_candidates.json` to the runtime
 
 ```powershell
 $env:RC_MAP='C:\jx3tmp\reborn_sandbox\map\龙门寻宝_s\龙门寻宝_s.jsonmap'
-$env:RC_AUTORUN='14000'; $env:SB_CAST_MS='3000'; $env:SB_ABILITY='如意法'
+$env:RC_AUTORUN='14000'; $env:SB_CAST_MS='3000'; $env:SB_ABILITY='五蕴皆空'
 $env:RC_SHOTS='2600,3200,3800,4400,5200,6500,8500'   # engine renders -> out
 & C:\SeasunGame\MovieEditor\bin64\Skill.exe
 ```
 
 `ability_sandbox\build.cmd` rebuilds the app; `build_candidates.py` regenerates
 the tracked dataset.
+
+Tag re-extraction (next pass): collect the matched tani VFS paths from the
+dataset, `PakV4SfxExtract.exe <path-list.txt(gb18030)> <out>` for the missing
+tanis, regex the GBK `.sfx` path strings (normalize truncated ones to
+`data\source\other\特效\技能\sfx\...`), extract them the same way, refresh
+`ability_picker/data/sfx_tags.json`, regenerate, copy to the runtime dir.
 
 Last verified: 2026-10-06 (v5, `agent/skillv5-sandbox`).

@@ -45,6 +45,14 @@ internal static class RebornClient
         public float S = 1f;
     }
 
+    internal class SfxRetryItem
+    {
+        public string path = "";
+        public string name = "";
+        public long due;
+        public int tries;
+    }
+
     [System.Runtime.InteropServices.DllImport("winmm.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto)]
     static extern bool PlaySound(string pszSound, IntPtr hmod, uint fdwSound);
     const uint SND_ASYNC = 0x0001;
@@ -163,6 +171,9 @@ internal static class RebornClient
         string castMatched = "";
         string castName = "";
         bool castActive = false;
+        bool sfxBatchDone = false;
+        bool sfxWarmDone = false;
+        List<SfxRetryItem> sfxRetry = new List<SfxRetryItem>();
         long castStart = 0, castUntil = 0;
         int castIdx = 0;
         bool castPss = false;
@@ -2322,6 +2333,16 @@ internal static class RebornClient
                                 : Path.Combine(sfxDir, st.V);
                             bool sfxOk = engineSfxPlay(sfxPath, px, py + 2f, pz);
                             Log("cast sfx -> " + st.V + " ok=" + (sfxOk ? 1 : 0));
+                            if (!sfxOk)
+                            {
+                                // the engine create can hit a transient AV for some
+                                // files in the cast context (shim-guarded -> NULL);
+                                // retry a few times before giving up
+                                SfxRetryItem ri = new SfxRetryItem();
+                                ri.path = sfxPath; ri.name = st.V;
+                                ri.due = now + 250; ri.tries = 0;
+                                sfxRetry.Add(ri);
+                            }
                         }
                     }
                     catch (Exception e) { Log("cast step ex (" + st.Kind + "): " + e.Message); }
@@ -2378,6 +2399,76 @@ internal static class RebornClient
                     }
                     Log("cast done: " + castName);
                 }
+            }
+
+            // pending engine-SFX creates that returned NULL in the cast context:
+            // retry a few frames later (transient engine state, shim-guarded)
+            if (sfxRetry.Count > 0)
+            {
+                for (int i = sfxRetry.Count - 1; i >= 0; i--)
+                {
+                    SfxRetryItem ri = sfxRetry[i];
+                    if (now < ri.due) continue;
+                    bool okR = engineSfxPlay(ri.path, px, py + 2f, pz);
+                    ri.tries++;
+                    if (okR)
+                    {
+                        Log("cast sfx retry -> " + ri.name + " ok=1 (try " + ri.tries + ")");
+                        sfxRetry.RemoveAt(i);
+                    }
+                    else if (ri.tries >= 3)
+                    {
+                        Log("cast sfx retry -> " + ri.name + " gave up (3 tries, engine create NULL)");
+                        sfxRetry.RemoveAt(i);
+                    }
+                    else
+                    {
+                        ri.due = now + 400;
+                    }
+                }
+            }
+
+            // RC_SFX_WARM (default 1): create every staged tag once at startup,
+            // far from the player. The ME engine's first-time create for ~27 of
+            // the tags AVs once the scene has settled (shim-guarded -> NULL);
+            // after this warm-up the resource is cached and cast-time creates
+            // succeed (measured 4/4 vs 2/4, 2026-10-06).
+            if (!sfxWarmDone && Env("RC_SFX_WARM", "1") == "1")
+            {
+                sfxWarmDone = true;
+                try
+                {
+                    string[] files = Directory.GetFiles(sfxDir, "*.sfx");
+                    int wOk = 0;
+                    foreach (string f in files)
+                    {
+                        bool w = engineSfxPlay(f, px + 20000f, py - 2000f, pz + 20000f);
+                        if (w) wOk++;
+                    }
+                    Log("sfx warm: " + wOk + "/" + files.Length + " cached (far position)");
+                }
+                catch (Exception e) { Log("sfx warm ex: " + e.Message); }
+            }
+
+            // RC_SFX_BATCH=1: create+play every staged .sfx once and log the rc
+            // table (which authored tags the engine accepts - wiring pass)
+            long sfxBatchDelay = 0;
+            long.TryParse(Env("RC_SFX_BATCH_DELAY", "0"), out sfxBatchDelay);
+            if (Env("RC_SFX_BATCH", "0") == "1" && !sfxBatchDone && now >= sfxBatchDelay)
+            {
+                sfxBatchDone = true;
+                try
+                {
+                    string[] files = Directory.GetFiles(sfxDir, "*.sfx");
+                    Log("sfx batch: " + files.Length + " files in " + sfxDir);
+                    foreach (string f in files)
+                    {
+                        bool sfxOkB = engineSfxPlay(f, px, py + 2f, pz);
+                        Log("sfx batch -> " + Path.GetFileName(f) + " ok=" + (sfxOkB ? 1 : 0));
+                    }
+                    Log("sfx batch done");
+                }
+                catch (Exception e) { Log("sfx batch ex: " + e.Message); }
             }
 
             // input -> direction; hold the world-space direction while the key

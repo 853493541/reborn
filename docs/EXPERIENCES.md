@@ -4405,3 +4405,29 @@ if the cache/host frames appear.
 - Open: tani tag frame times not parsed (t=0 today); `g光晕02` NULL cause;
   close-camera visual pass; same wiring for the other abilities whose authored
   .Sfx create on ME.
+
+### 2026-10-06 — v5 — broad .Sfx wiring: 19 abilities play their authored tani tags (startup warm-up fixes the cast-time AVs)
+
+- Scope pass: extracted the 53 missing matched tanis (PakV4SfxExtract, path
+  list gb18030) and parsed the `.sfx` path strings from all 82 unique matched
+  tanis -> 20 abilities embed tags, 61 unique files (60 extracted; 抖动1 is a
+  dangling ref but was already staged). Manifest committed:
+  `ability_picker/data/sfx_tags.json`.
+- Wiring: `apply_sfx_tags()` in `build_candidates.py` replaces the `dummy` PSS
+  step with `kind:"sfx"` tag steps for those abilities (19 wired; 幻蛊 has no
+  staged process). App `sfx` step kind resolves bare names against
+  `bin64\ability_picker\sfx` and calls the owner-chain shim.
+- KEY engine finding: the ME engine's FIRST create of ~27/61 tags AVs
+  (`exc=0xC0000005`, shim-guarded -> NULL) once the scene has settled (~3 s),
+  while the same creates at t~0 pass 61/61 (no cast involved - time/scene
+  state, not the cast). Fix: startup warm-up pass (`RC_SFX_WARM`, default on)
+  creates every staged tag once at a far position -> resources cached ->
+  cast-time creates succeed. Measured: 五蕴皆空 2/4 -> 4/4, 如意法 3/4 -> 4/4,
+  驱夜断愁 6/6, 百足 2/2. Residual NULLs retried 3x/250 ms.
+- Debug notes: the failing creates in the cast path first looked cast-related;
+  controlled runs (batch at 0 ms vs 3 s vs after-cast) isolated it to scene
+  settle time. `loadAbility` is pure C# (no engine calls). The shim's SEH guard
+  turns the AV into a graceful NULL - no crash at any point.
+- Open: tag play time = cast start (tani tag frame times unparsed); 幻蛊 needs
+  a staged process; the remaining staged abilities' tanis embed no tags (PSS
+  stands). Docs: `docs/engine_host/SFX_RE_TEST.md` rewritten for the broad pass.

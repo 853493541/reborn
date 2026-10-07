@@ -338,6 +338,34 @@ WEM_ADD = {
     "云飞玉皇": ["315695614", "93452115", "90745220", "578379755"],
 }
 
+# authored tani .Sfx tags per ability (ability_picker/data/sfx_tags.json,
+# built by the v5 tani-tag pass 2026-10-06). When present, the process plays
+# these through the engine (kind "sfx", owner-chain shim) instead of the
+# staged PSS stand-in; tag play time = cast start (the tani tag frame times
+# are not parsed yet - see docs/engine_host/SFX_RE_TEST.md).
+SFX_TAGS = {}
+try:
+    SFX_TAGS = json.load(open(
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "sfx_tags.json"),
+        encoding="utf-8"))
+except Exception:
+    pass
+
+
+def apply_sfx_tags(steps: list, name: str) -> list:
+    if name not in SFX_TAGS or not steps:
+        return steps
+    out = [s for s in steps if s.get("kind") not in ("dummy", "sfx")]
+    tags = []
+    for tag in SFX_TAGS[name]:
+        tags.append({
+            "t": 0, "kind": "sfx", "v": tag,
+            "n": "tani 内嵌 .Sfx 标签; 引擎创建+播放 (启动预热后施法时刻 100% ok, SFX_RE_TEST.md 2026-10-06); "
+                 "真实标签时刻未解析, 取施法起点",
+        })
+    return out + tags
+
+
 # playable process steps per ability (visual timeline + staged playback in the picker)
 # step = {t: ms, kind: anim|sound|dummy|remove, v: value, n: note, x/y/z: world offset}
 PROCESS = {
@@ -1768,7 +1796,7 @@ def apply_overrides(all_entries: list) -> None:
         # duplicate rows per name and the host reads the first row it sees
         # (RebornClient.loadFeiZhua). Decoupled from the animation match (the
         # staged process is its own authored timeline).
-        e["process"] = PROCESS.get(name, []) if name not in seen_proc else []
+        e["process"] = apply_sfx_tags(PROCESS.get(name, []), name) if name not in seen_proc else []
         if e["process"]:
             seen_proc.add(name)
 
