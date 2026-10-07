@@ -1107,7 +1107,8 @@ namespace UiProcessApp
             {
                 var dx = point.X - _pointerDownPoint.X;
                 var dy = point.Y - _pointerDownPoint.Y;
-                if (_pointerDragging || (dx * dx + dy * dy) >= 16)
+                // The engine's own threshold: distance² > 0xa (KGUIX64 0x180158c4d).
+                if (_pointerDragging || (dx * dx + dy * dy) >= 10)
                 {
                     _pointerDragging = true;
                     if (ShouldDispatchDrag())
