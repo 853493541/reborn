@@ -5074,3 +5074,27 @@ harness line is labeled `HARNESS - NOT GAME BEHAVIOR` (startup warning too), and
 with citations. The real grant source (which buffs/skills invoke the ops) and the
 power-pool values remain undecoded (re-open criteria in the doc).
 
+### 2026-10-06 - 3x-states re-implementation per SPEC_STATES.md (grant gate, real water, labels)
+
+- Did: rebuilt the states against the spec contract (supersedes the old W6 model):
+  water from the generated per-map surface table (`tools/character/water_surfaces.py`
+  -> `client/WaterSurfaces.cs`, P1 cell heuristic radius=Scale*4096 calibrated to the
+  known water point), float = surface clamp (0.589 was a run-speed factor, now the
+  swim speed: 0.589*nRunSpeed = 177 u/s), states 6/7 + P2-labeled state 8, jump grant
+  cap = 1 + 踏云 (RC_GRANT/RC_CAP) with the plain profile only, RC_PARACHUTE models
+  [+0x214], chain harness labeled in logs AND the window title, suspend harness
+  labeled (P5).
+- Acceptance proofs (`proof/character/3x_states/acc_*`): a9 no-grant press rejected
+  (max=1); a10 grant cap 2 -> one extra plain jump (triple 40,90,11), third rejected,
+  landing resets; a13 chain title `sandbox-3x_states [HARNESS - NOT GAME BEHAVIOR]`;
+  a21 parachute rejects jumps; water stand/move: state 7->6, `surface=150 float=150
+  y=150`, `spd=177u/s(SWIM)`, walked out onto the shore (state 4/ground), seed on ->
+  DONE (no AV); a6b standing swim jump state=8 [P2], moving press ignored; a16 float
+  floor 1218 (terrain+256) labeled. Seed-off attempt was clean this time
+  (race-dependent, consistent with the spec).
+- Mistake + fix: `water_surfaces.py` first passed RELATIVE paths to the official
+  extractor, which runs with its own cwd -> it created empty dirs under
+  `C:\SeasunGame\...\zhcn_hd\samples\` (read-only rule). Cleaned immediately
+  (dirs only, no files), tool hardened with `.resolve()` + a C:\SeasunGame refusal
+  guard. No install content was modified.
+- Gates: build 0, camera_smoke_3x_states ALL PASS, collision 36/36.
