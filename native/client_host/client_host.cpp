@@ -5463,12 +5463,21 @@ int main(void)
                                 logf("[host] frame60: actor mgr @ singleton+0x25150 vt=rep+0x%llX",
                                      (unsigned long long)((DWORD64)avt -
                                      (DWORD64)g_repModule));
-                                void* actor = ((void* (__fastcall *)(void*, unsigned,
-                                                      unsigned))
-                                               ((BYTE*)g_repModule + 0x36D3E5))(am, 0, 0);
-                                logf("[host] frame60: RLActorMgrNT::CreateRLActorNT(mgr,0,0) -> %p",
-                                     actor);
-                            }
+                                void* udm = *(void**)((BYTE*)g_repModule + 0xEDAFA8);
+                                logf("[host] frame60: [rep+0xEDAFA8] unit-data mgr = %p", udm);
+                                char af[8] = {0};
+                                if (GetEnvironmentVariableA("RC_HOST_ACTOR", af,
+                                                            sizeof(af)) != 0)
+                                {
+                                    unsigned rid = 0, atype = 0;
+                                    sscanf_s(af, "%u,%u", &rid, &atype);
+                                    void* actor = ((void* (__fastcall *)(void*, unsigned,
+                                                          unsigned))
+                                                   ((BYTE*)g_repModule + 0x36D3E5))(
+                                        am, rid, atype);
+                                    logf("[host] frame60: CreateRLActorNT(mgr,%u,%u) -> %p",
+                                         rid, atype, actor);
+                                }                            }
                             __except (EXCEPTION_EXECUTE_HANDLER)
                             { logf("[host] frame60: actor mgr probe fault"); }
                         }

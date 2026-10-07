@@ -3568,5 +3568,22 @@ HIGH-confidence findings:
   may be null). Next: find F1's representID (the RL unit id; `GetUnit('F1')` returned
   dword id=0) and the actor type, and verify `[rep+0xEDAFA8]`.
 - Evidence: host_exe247.out (manager vt), host_exe248.out (call crash); static disasm.
+
+## 2026-10-07 - Manager exists; CreateRLActorNT needs manager init first (heap corruption otherwise)
+
+- Run 249: `[rep+0xEDAFA8]` (the unit-data manager `RLActorNT::Init` uses) is non-null
+  (`0x1BEA0F70198`), so the crash is not a null global.
+- Run 248 crash decoded: VEH shows the return `rep+0x36D440` (inside `CreateRLActorNT`,
+  right after `call 0x399F(mgr+0x610)`) and the AV at `ntdll!RtlReportCriticalFailure`
+  (`ntdll+0x3ED12`) - i.e. **heap corruption** (a fast-fail, so the host `__try` cannot
+  catch it). Calling `CreateRLActorNT` on the freshly-constructed manager corrupts the
+  heap because the manager's runtime state (set by `RLActorMgrNT::Init` rep+0x36DA50,
+  which registers handlers / sets +0x708) is not established.
+- So the correct sequence is `RLActorMgrNT::Init(mgr, rdx, r8)` first. `Init` passes rdx
+  and r8 to its +8 subobject init; the values are not statically resolvable (no caller).
+- `GetUnit('F1')` dword id = 0; the F1 unit is an "RL00" data struct (magic `30 30 4C 52`,
+  ver 1). The representID arg to `CreateRLActorNT` still needs identifying.
+- Evidence: host_exe248.out (heap-corruption VEH), host_exe249.out ([0xEDAFA8] non-null,
+  unit bytes); static disasm.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
