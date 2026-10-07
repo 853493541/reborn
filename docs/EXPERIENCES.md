@@ -2302,3 +2302,14 @@ solved it, and what is still open. **Newest at the bottom.**
 - Remaining ERR classes: 18 no-entry (base-class scripts), pairs/sort on a nil module
   global, table.concat with a table element (~5), nil-upvalue indexes, assert in Init.
 - Verified: replay_summary OK=1158 ERR=53; --selftest 1240/0/0; commits 83d913e, 0570050, 02e1186.
+
+### 2026-10-05 ? UI ? stub tolerances: nil collections + concat (OK 1158 -> 1167)
+- pairs/ipairs/table.sort wrapped: a non-table stub (nil module global, stub 0) iterates as an
+  empty collection instead of aborting - EmotionPanel 22 -> 1420 mutations, FBlist, NewQuestPanel.
+- Second temp-Lua build patch: ltablib.c addfield coerces a non-string table element to "" for
+  table.concat (documented in UI_RUNTIME_REPLAY.md; rebuild recipe there) - flips CastingPanel,
+  LightingCityPanel, RefinePanel, ReputationPanelNew, TongArena (347 mutations).
+- Batch: 1158 -> **1167 OK / 44 ERR**. Viewer selftest 1240/0/0; gap report windows=1196
+  (more windows now replay), visual drops still 22.
+- Remaining ERR classes: 18 no-entry base-class scripts, `#nil` module globals, nil upvalues,
+  assert in Init, and a few per-case stubs.
