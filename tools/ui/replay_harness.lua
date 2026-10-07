@@ -161,6 +161,13 @@ proxyOf = function(sec)
           rawset(t, k, v)
           return v
         end
+        -- Predicates (isPlaying/isItemShow/...): the engine exposes them as methods;
+        -- returning 0 aborted the replay ("attempt to call field 'isPlaying'").
+        if k:match("^is%u") then
+          local pred = function() return false end
+          rawset(t, k, pred)
+          return pred
+        end
         return 0
       end
       local fn = methods[k]
@@ -207,7 +214,7 @@ _G.clone = clone
 -- (counts/ids/indices/levels/scores/screens/rates). The scripts use them as
 -- numeric loop bounds and in comparisons; returning a proxy/table errors in Lua
 -- 5.1 ("'for' limit must be a number", "compare number with table"). Excluded on
--- purpose: Size (bag scripts continue through GetBoxSize arithmetic — returning 0
+-- purpose: Size (bag scripts continue through GetBoxSize arithmetic �?returning 0
 -- costs BigBagPanel ~200 mutations) and Time/Frame (GetTodayTime returns a
 -- month/day table, GetMgFrame/GetGameFrame return frame objects; returning 0 broke
 -- EditBox and LuckyMeeting).
@@ -260,6 +267,11 @@ proxy = function(name)
         -- camelCase data field: the engine's Hungarian prefixes tell the type.
         if k:match("^is_") then
           -- API-table predicates (sns_sina.is_bind): boolean functions, not ints.
+          return function() return false end
+        end
+        if k:match("^is%u") then
+          -- camelCase predicates (isPlaying/isItemShow): engine methods, not ints;
+          -- returning 0 aborted the replay ("attempt to call field 'isPlaying'").
           return function() return false end
         end
         if k:match("^b") then return false end
@@ -412,6 +424,12 @@ pcall(function()
     __div = function() return 0 end,
     __mod = function() return 0 end,
     __pow = function() return 0 end,
+    -- Stub reads that fell through to a number can still be indexed/len-ed/assigned
+    -- by the scripts (self.tX.something, #self.list, self.tX.foo = 1): keep those
+    -- from aborting the replay (settable needs __newindex, not __index).
+    __index = function() return proxy("number") end,
+    __newindex = function() end,
+    __len = function() return 0 end,
   })
 end)
 
@@ -557,6 +575,16 @@ do
     end
     mf:close()
     module = savedModule
+    -- Selfie passes an already-decoded table to JSON.decode; the engine's real
+    -- json lib raises "expected string argument". Accept tables as pass-through.
+    local jsonLib = rawget(_G, "JSON")
+    if type(jsonLib) == "table" and type(jsonLib.decode) == "function" then
+      local realDecode = jsonLib.decode
+      jsonLib.decode = function(s, ...)
+        if type(s) == "table" then return s end
+        return realDecode(s, ...)
+      end
+    end
     -- Replace file-backed descriptor entries with lazy table objects (the engine
     -- loads all of g_tTableFile at startup; here each table parses on first use).
     local gtf, gt = rawget(_G, "g_tTableFile"), rawget(_G, "g_tTable")
