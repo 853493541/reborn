@@ -78,24 +78,37 @@ line 27/212 now PASS** — CreateRLScene proceeds far deeper (loads the represen
 lua scripts, sets up entities).
 
 **New blocker (a wild call inside CreateRLScene):** after LoadConfigureFile,
-CreateRLScene faults with `exc 0xC0000005 at 0x...16001D (module?)`. The VEH now
-also scans the raw stack (`[VEH] stk[i] ...`) and logs the AV registers,
-including `regs rip/rsp/rbp/rax..rdi`. Observed (run 209):
-`rip=0x207DB86001D rax=0x35B1DFE0 rcx=rsp+0x9F rdx=7 rsi=rsp+0x108 rdi=0
-rbx=rep/eng ptr`; raw-stack chain `rep+0xAEE2DD`, `rep+0xAE000F`,
-`rep+0x3DB9B7` (return after `call [rax+0xD0]` on `[scene+0xF1978]`),
-`CreateRLScene (rep+0xB0BB74)`. The 32-bit-looking `rax=0x35B1DFE0` and the
-stack-pointing `rcx` suggest an indirect call through a bad/truncated pointer
-(or an object whose vtable was never set). Same class as the earlier wild call.
+CreateRLScene faults with `exc 0xC0000005 at 0x...001D (module?)`. The VEH now
+logs AV registers (with `tid=`) and dumps the first 24 raw stack qwords (any
+module) plus a filtered game-stack scan. Observed (runs 209-212):
+
+- The fault is on the **main thread** inside CreateRLScene (`regs tid` == the
+  `[host] main tid` line); the process still dies (the host `__try` may catch
+  the first one but the engine retries the same fault and dies; the last log
+  lines are lost to stdio buffering — the VEH `fflush`es).
+- `regs rip=0x...001D rax=0x35B1DFE0 rcx=rsp+0x9F rdx=7 rsi=rsp+0x108
+  rdi=rsp+0xB0 rbx=rep+? `; `rax=0x35B1DFE0` is **constant across runs** (a
+  32-bit-looking value, not a pointer).
+- raw stack: `raw[13]=JX3RepresentX64.dll+0xAEE2DD` is the top game return
+  (raw[0..12] are the host VEH/exception frames); the same frame was seen in
+  runs 206/208/210/211. `raw[20..21]` spell `scene[000002]`; the rep assert
+  format `"scene[%.6u]"` lives at rep+0xD0A2B0 (referenced by 0xAD38B0, a
+  scene-id wrapper `obj=0x14E2F(id)` -> `0x2CB6(obj,id)`).
+- The wild call has **no pushed return address** at [rsp] (raw[0]=raw[1]=0), so
+  it is an indirect `jmp [reg]`/tail dispatch, not a plain `call [reg]`.
+
 Next probes:
 
-1. Use the AV registers + stack scan to pick the immediate caller; disassemble
-   around `rep+0xAEE2DD` (`call 0x15BF4` -> 0xAEDFD0) and `rep+0x3DB9B1`
-   (`call [rax+0xD0]`); log `Rip`, `Rax`, `Rcx` on the next AV.
-2. Check which table/config the newly reached path expects (a table loader the
-   host still has not called, as was the case for `LoadConfigureFile`).
-3. If it is another missing game loader, call it (do not fabricate).
-4. Then re-check the CreateRLScene return and `GetRLScene(2)`.
+1. Find the indirect transfer: disassemble the function that reaches
+   rep+0xAEE2DD (`call 0x15BF4` -> 0xAEDFD0 at 0xAEE2D8) and its callees
+   (0xE5D4, 0x4750, 0x1384A, 0x4B33) for a `jmp`/`call` through a table.
+2. Search why `rax=0x35B1DFE0` (constant) — likely an ID/hash used to index a
+   function table; a missing registration leaves a garbage entry.
+3. Check the scene callbacks: the `scene[%.6u]` wrapper (0xAD38B0) and the
+   scene-id dispatch (0x14E2F); the host creates scene id 2 manually.
+4. When identified, wire the game's own registration (as done for
+   `LoadConfigureFile`); then re-check the CreateRLScene return and
+   `GetRLScene(2)`.
 
 **Superseded leads (kept for context):** the register-step / async-queue theory
 for m_tabCommon was a red herring — `LoadConfigureFile` sets it directly. The

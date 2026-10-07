@@ -3014,5 +3014,25 @@ HIGH-confidence findings:
 - VEH improvement: traces up to 60 AVs and scans 400 stack qwords for code
   addresses (isCodeAddr) so frameless wild calls still show their callers.
 - Evidence: host_exe205-208.out; commit 5bb2f49.
+
+## 2026-10-07 - New CreateRLScene blocker: frameless wild call on the main thread
+
+- After the m_tabCommon fix, CreateRLScene runs deep (represent lua scripts
+  load) then AVs with `exc 0xC0000005 at 0x...001D (module?)`. VEH diagnostics
+  added: AV registers with `tid=`, the first 24 raw stack qwords resolved to
+  any module, and a game-stack scan.
+- Findings (runs 209-212): the fault is on the **main thread** (tid == main);
+  `rax=0x35B1DFE0` is constant across runs (32-bit-looking, not a pointer);
+  `rcx=rsp+0x9F rdx=7 rsi=rsp+0x108 rdi=rsp+0xB0`; the top game return address
+  is `JX3RepresentX64.dll+0xAEE2DD`; the stack spells `scene[000002]` and the
+  rep assert format `"scene[%.6u]"` is at rep+0xD0A2B0 (scene-id wrapper
+  0xAD38B0). No return address is pushed at [rsp] -> the transfer is an
+  indirect `jmp`/tail dispatch, not a plain call. The engine retries the same
+  fault (the VEH line appears twice) and the process dies.
+- Next: RE the function reaching rep+0xAEE2DD (`call 0x15BF4` -> 0xAEDFD0 at
+  0xAEE2D8) and its callees for the indirect transfer; the constant
+  `0x35B1DFE0` likely indexes a function table with a missing registration
+  (same class as the earlier wild call). Details in NEXT_AGENT_HANDOFF section 0.
+- Evidence: host_exe206-212.out; commits 5bb2f49, cb8a54f, <tid commit>.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
