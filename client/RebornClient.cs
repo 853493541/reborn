@@ -702,6 +702,24 @@ internal static class RebornClient
         Log("LoadMap result=" + loadResult + " ms=" + mMap);
         if (loading != null) loading.Phase("Preparing scene...");
         if (loadResult < 0) { Log("FATAL: LoadMap failed"); return; }
+        // Engine flux-water system init (crash fix 2026-10-06): the host never
+        // enabled the engine's water system, so its water registry stayed empty
+        // and the render path AVs (KG3DEngineDX11EX64+0x12282B3, NULL rbtree
+        // lookup in the assert/format path) as soon as the actor walks below a
+        // water surface (龙门 region 3,3 at y~-100+). The MovieEditor editor
+        // drives the same three calls; do it here after map load (RC_WATERSIM=0
+        // to A/B the old behavior).
+        if (Env("RC_WATERSIM", "1") == "1")
+        {
+            try
+            {
+                int wsEn = scene.EnableFluxWaterSimulation(1);
+                scene.ResetFluxWaterSimulation();
+                scene.UpdateFluxCollisionHeightMap();
+                Log("watersim: enabled=" + wsEn + " flux water initialized after map load");
+            }
+            catch (Exception e) { Log("watersim ex: " + e.Message); }
+        }
         // Environment data override (weather workstream A1): apply a host-side
         // copy of environment.json/playerEnvironment.json via ResetEnvironment
         // (no install write). Used to drive dayNightCycle authored values.
@@ -2413,6 +2431,13 @@ internal static class RebornClient
         long chainSegEndMs = 0;
         Log(string.Format("states: waterBoxes={0} swim={1:F0}u/s chainSegTicks={2:F0} suspendDemo={3}",
             waterBox.Count, pSwim, chainSegTicks, suspendDemo ? 1 : 0));
+        // Engine-water boundary guard (see the movement-loop check): only the
+        // known 龙门寻宝 lake basin is mapped so far (registered boundary).
+        bool waterGuard = Env("RC_WATERGUARD", "1") == "1";
+        bool waterGuardMap = false;
+        try { waterGuardMap = mapPath.IndexOf("\u9F99\u95E8\u5BFB\u5B9D") >= 0; } catch { }
+        int waterGuardBlocks = 0;
+        long lastWaterGuardLog = 0;
         // Character step budget (host proxy for the server-authoritative step;
         // the client's own prediction has no capsule-vs-mesh blocking at all,
         // CLIENT_COLLISION_IMPROVEMENT_PLAN 8.3). 64 u = the game-side ground/landing
@@ -3591,6 +3616,28 @@ internal static class RebornClient
                 px += sdx;
                 pz += sdz;
                 if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
+                // Engine-water boundary guard (2026-10-06): the host has no water
+                // layer and the engine AVs (KG3DEngineDX11EX64+0x12282B3, NULL
+                // registry lookup) when the actor moves below a map water surface
+                // - reproduced in the 龙门寻宝 lake basin (region 3,3, bed BCH
+                // -300..-746). Block movement into the known basin below the
+                // waterline bound. REGISTERED BOUNDARY (VOID_SPAWN_CRASH_TRIAGE
+                // §2; re-open when the M2 water layer / engine water init lands).
+                // RC_WATERGUARD=0 to A/B.
+                if (waterGuard && waterGuardMap && px >= 64000f && px <= 68500f &&
+                    pz >= 54800f && pz <= 62300f && (ground < -100f || py < -100f))
+                {
+                    px -= sdx; pz -= sdz;
+                    blocked = true; blockedEvents++; waterGuardBlocks++;
+                    if (now - lastWaterGuardLog >= 1000)
+                    {
+                        lastWaterGuardLog = now;
+                        Log(string.Format("waterguard: blocked move pos=({0:F0},{1:F0}) ground={2:F0} y={3:F0} - engine water layer not loaded (registered boundary)",
+                            px, pz, ground, py));
+                    }
+                    if (sampler != null) groundOk = sampler.SampleGround(px, pz, out ground);
+                    break;
+                }
 
                 // object/foliage collision (walls, buildings, rocks, trees)
                 if (col != null)
