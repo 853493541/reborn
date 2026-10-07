@@ -2739,6 +2739,40 @@ int main(void)
         logf("[host] window=%p view=%p arg=%s (create=0x%08X add=0x%08X camera=0x%08X active=0x%08X)",
              window, view, viewArg ? viewArg : "(null)",
              (unsigned)vrc, (unsigned)arc, (unsigned)crc, (unsigned)aw);
+        // dump the engine window's vtable here (the object is valid at startup;
+        // GetActiveWindow2 later returns 0) - find KG3D_Window::Present
+        if (window != NULL)
+        {
+            __try
+            {
+                void** wv = *(void***)window;
+                int k;
+                for (k = 0; k < 32; k++)
+                {
+                    char d[64] = {0};
+                    describeAddr((DWORD64)wv[k], d, sizeof(d));
+                    logf("[host] win vt[%d]=%s", k, d);
+                }
+                // candidate object fields (the swapchain/device pointers)
+                logf("[host] win fields: +0x8=%p +0x10=%p +0x18=%p +0x20=%p +0x28=%p",
+                     *(void**)((BYTE*)window + 0x8), *(void**)((BYTE*)window + 0x10),
+                     *(void**)((BYTE*)window + 0x18), *(void**)((BYTE*)window + 0x20),
+                     *(void**)((BYTE*)window + 0x28));
+                // find the HWND field: scan for g_hostHwnd in the window object
+                {
+                    DWORD64 want = (DWORD64)g_hostHwnd;
+                    int off;
+                    for (off = 0; off < 0x200; off += 8)
+                    {
+                        if (*(DWORD64*)((BYTE*)window + off) == want)
+                            logf("[host] win HWND found at +0x%X (host=%p)",
+                                 off, g_hostHwnd);
+                    }
+                }
+            }
+            __except (EXCEPTION_EXECUTE_HANDLER)
+            { logf("[host] win vt dump fault"); }
+        }
 
         // camera pose from the sandbox spawn (Y-up), via the view's camera
         if (view != NULL)
@@ -3910,6 +3944,24 @@ int main(void)
                 }
                 __except (EXCEPTION_EXECUTE_HANDLER) { }
             }
+            // keep the engine's active window set (the frame's present path needs
+            // it; GetActiveWindow2 drops to 0 otherwise)
+            if (window != NULL)
+            {
+                static int actLogged = 0;
+                __try
+                {
+                    long ar = ((long (__fastcall *)(void*, void*))
+                               ((BYTE*)eng + 0x8C7300))(engine, window);
+                    if (actLogged < 2)
+                    {
+                        actLogged++;
+                        logf("[host] SetActiveWindow(frame %d) -> 0x%08X", f, (unsigned)ar);
+                    }
+                }
+                __except (EXCEPTION_EXECUTE_HANDLER)
+                { if (actLogged < 2) { actLogged++; logf("[host] SetActiveWindow fault"); } }
+            }
             engFm(engine);
             if (camObj != NULL)
                 ((long (__fastcall *)(void*, float*, int))((BYTE*)eng + 0xB36540))(camObj, camPose, 0);
@@ -3921,6 +3973,26 @@ int main(void)
                     beginView(window, view);
                     endView(window, view);
                     endPaint(window);
+                    // the engine's own window paint/present (the missing on-screen
+                    // present): 0xA703D0 makes the paint context, 0xA706D0 paints
+                    // and calls the DXGI Present (0xA71810 -> [swapchain+0x40]).
+                    {
+                        static int presLogged = 0;
+                        void* pctx = ((void* (__fastcall *)(void*))
+                                      ((BYTE*)eng + 0xA703D0))(window);
+                        if (presLogged < 2)
+                        {
+                            presLogged++;
+                            logf("[host] present ctx -> %p", pctx);
+                        }
+                        if (pctx != NULL)
+                        {
+                            long pr = ((long (__fastcall *)(void*, void*, void*))
+                                       ((BYTE*)eng + 0xA706D0))(pctx, NULL, NULL);
+                            if (presLogged <= 2)
+                                logf("[host] present -> 0x%08X", (unsigned)pr);
+                        }
+                    }
                 }
                 __except (EXCEPTION_EXECUTE_HANDLER)
                 {
