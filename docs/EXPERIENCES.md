@@ -2617,3 +2617,19 @@ solved it, and what is still open. **Newest at the bottom.**
   GT capture.
 - Gates: `--selftest` 1240/0/0; `--audit` placeholders 482, unresolved 49, oob 7,690 (unchanged
   total, now classed).
+
+### 2026-10-07 — UI — oob P2 finding: parked is script-parked, not a viewer bug
+
+- The `parked` class (1,633) is mostly **engine-faithful**, not hidden-but-shown: Selfie's side bars
+  are authored on-screen (`Wnd_LeftBottom Top=852` in a 970-tall frame) but the replay itself parks
+  them (`SetRelPos 0 -100`, `Wnd_RightTopFrame -290 0`, `Wnd_RightBottom -790 -100`); the viewer
+  applies those positions correctly. In the game the full-screen window puts y=-100 off-screen;
+  the viewer's **overhang canvas expansion** (`MainWindow.xaml.cs:1622` `ComputeOverhang`) is what
+  pulls them into view — so the visible "component outside the window" is partly the viewer's own
+  review affordance, not a placement bug.
+- A true B (script-hidden but rendered) would not be flagged at all (hidden elements are skipped),
+  so the actionable A queue needs a rendered-vs-script-position detector: compare each element's
+  rendered position with the script's last `SetRelPos`/`SetAbsPos`/`SetPoint`; match = C, mismatch =
+  A. Added to `UI_OOB_FIX_PLAN.md` (P3 step 1), plus a P2 overhang-policy decision (clip-to-frame
+  toggle vs clip negative overhang) that needs the reviewer's call.
+- Plan doc updated with the P0 class totals and this correction; no code changed in this entry.

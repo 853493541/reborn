@@ -48,9 +48,23 @@ decor 708 — consistent with the uncapped totals.
 | **C. authored/runtime overhang** | rendered rect == expected rect, but outside the frame | keep (engine draws it; no clip API) — report separately |
 | **D. clip false positive** | element under a clipping control (WndScroll, `$Clip`) | exclude from the actionable list |
 
-Only A and B are bugs. C is a data property of the shipped INI; D is measurement noise. A blanket
-clip-to-frame fix is **not** in this plan: the engine's own scripts park dropdowns/tooltips outside
-frames on purpose, so clipping everything would invent behavior.
+Only A and B are bugs. C is a data property of the shipped INI/script; D is measurement noise. A
+blanket clip-to-frame fix is **not** in this plan: the engine's own scripts park dropdowns/tooltips
+outside frames on purpose, so clipping everything would invent behavior.
+
+**P0 finding — `parked` is mostly script-parked (C), not hidden-but-shown (B).** Selfie's side bars
+are authored on-screen (`Wnd_LeftBottom Top=852` in a 970-tall frame) but the replay itself moves
+them off-screen: `Wnd_LeftBottom SetRelPos 0 -100`, `Wnd_RightTopFrame SetRelPos -290 0`,
+`Wnd_RightBottom SetRelPos -790 -100` (Selfie.tsv) — the script slides them in/out. The viewer
+applies those positions correctly, so the panels render where the script put them; in the game the
+window is full-screen and y=-100 is off-screen (invisible), while the viewer's **overhang canvas
+expansion** (`MainWindow.xaml.cs:1622` `ComputeOverhang`) pulls them into view. So the parked class
+is C, and the visible "component outside the window" is partly the viewer's expansion affordance.
+
+**Concrete A detector (for P3):** for each oob element, compare its rendered position with the
+script's own last recorded `SetRelPos`/`SetAbsPos`/`SetPoint` for that section (and its parent
+chain). Match → C (script/author-faithful); mismatch → A (viewer placement bug). This is
+independent of the viewer's layout math and needs no GT.
 
 ## 3. Phases
 
@@ -75,23 +89,31 @@ frames on purpose, so clipping everything would invent behavior.
    "expected" rect uses the engine's real sizing.
 3. Deliverable: a short evidence note (this doc + `UI_RUNTIME_REPLAY.md` if it changes the shim).
 
-**P2 — fix class B, hidden-but-shown (1-2 sessions).**
-1. Group the parked/prototype hits by window and cause:
-   - windows whose replay is NOENTRY/ERR (no state to apply) — check whether the authored parked
-     popups are engine-visible at rest or script-hidden; document data-blocked ones;
-   - runtime popups the script hides via `Show(false)`/`Hide` — verify the guard applies them;
-   - authored list prototypes with runtime clones — verify `Clear`/deferred-clear removed them.
-2. Fix the state application systemically (the guards in `LayoutPlanBuilder.ApplyRuntimeMutations`
+**P2 — fix class B + decide the overhang policy (1 session).**
+1. True B is small: a section the script hides (`Show(false)`/`Hide`/`Clear`) that the viewer still
+   renders would not be flagged at all (hidden elements are skipped), so re-class the `parked`
+   queue by the script's own recorded position (`SetRelPos`/`SetAbsPos`): match → C, mismatch → A.
+   The residual B candidates are: NOENTRY/ERR windows (283 parked items, no state to apply) and
+   authored list prototypes with runtime clones.
+2. **Viewer overhang policy (the user-visible complaint):** the canvas expansion reveals
+   engine-off-screen content. Options: (a) keep expansion but add a "clip to frame" toggle;
+   (b) expand only for positive (right/bottom) overhang and clip negative (off-screen in the game);
+   (c) keep as-is and rely on the classified audit. Recommendation: (a) — review-friendly default,
+   one key to see the engine's clipping. Decide with the reviewer before implementing.
+3. Fix the state application systemically (the guards in `LayoutPlanBuilder.ApplyRuntimeMutations`
    and `MainWindow`'s hide/collapse logic), never per window.
-3. Acceptance: parked-visible count falls to the set the scripts never hide; each remaining hit
-   carries a class-B reason in the audit.
+4. Acceptance: each remaining parked hit is labelled script-parked/authored (C) or no-state; the
+   overhang policy is chosen and documented.
 
 **P3 — fix class A, viewer placement bugs (1-2 sessions).**
-1. Group the A mismatches by cause: PosType edge cases (3/4/5/8-12), anchors (`AnchorDst`/`SetPoint`),
-   flex (`WndFlexContainer`/`FlexHandle`), item flow (`FirstItemPosType`), runtime mutation
-   application order.
-2. Fix each cause against the engine's jump tables/RVAs; re-run P0's report per cause.
-3. Acceptance: A list empty for the corpus; every fixed cause has a gate + a fingerprint sample.
+1. Implement the A detector from section 2: rendered position vs the script's own last
+   `SetRelPos`/`SetAbsPos`/`SetPoint` per section. Emit `oob[placed-wrong]` where they disagree;
+   the rest of `parked`/`overhang` is C.
+2. Group the A mismatches by cause: PosType edge cases (3/4/5/9-12), anchors
+   (`AnchorDst`/`SetPoint`), flex (`WndFlexContainer`/`FlexHandle`), item flow
+   (`FirstItemPosType`), runtime mutation application order.
+3. Fix each cause against the engine's jump tables/RVAs; re-run the report per cause.
+4. Acceptance: A list empty for the corpus; every fixed cause has a gate + a fingerprint sample.
 
 **P4 — script/page-driven sizing (1 session).**
 1. For the 66 root-sized windows and page-sized windows (QuestTraceList), verify the replay
