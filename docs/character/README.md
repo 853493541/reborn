@@ -42,6 +42,8 @@ dives, all read-only against `C:\SeasunGame\Game\JX3\bin\zhcn_hd` + `C:\SeasunGa
 | `SPEC_MOUNT.md` | **redefined mount spec** (C re-task): lifecycle + record interface, jump rules (idle skill 13618 / moving 44565 / sprint-branch triple), facing/seat, animations, acceptance criteria |
 | `SPEC_MOTION.md` | **redefined motion spec** (D re-task): `SkillMove.tab` displacement chain (`OnSkillMove`), heading-at-start rule, MotionTag container settled, camera rule, acceptance criteria |
 | `SPEC_STATES.md` | **redefined states spec** (E re-task): 轻功 grant (passive skill 18 踏云 `MAX_JUMP_COUNT+1`), per-map water surfaces, waterline correction, water AV root cause, fly/bird triggers, acceptance criteria |
+| `SPEC_MOTION_P2.md` | **addendum (client truth)**: per-skill motion - 太阴指 = `DASH_BACKWARD` primitive (960 u / 16 f, `KCharacter::Dash`), 风来吴山 = channel with walk allowed (no displacement); camera = positional follow only, yaw dead-zone 0.45 |
+| `SPEC_STATES_P2.md` | **addendum (client truth)**: water entry - no swim key; walk/fall/jump in; depth gate ~627 u (shallow = wade); jump = state 5; region = terrain cell flag (replace radius heuristic) |
 
 ## Tools
 
