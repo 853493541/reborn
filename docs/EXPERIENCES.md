@@ -3173,5 +3173,26 @@ HIGH-confidence findings:
   logic module (`JX3LogicEditOperationX64.dll`) exposes `AddPlayer`/`LuaAddPlayer`
   bindings; find the logic-side local-player creation and drive it.
 - Evidence: host_exe230/231.out; commit (Gate 2 fix).
+
+## 2026-10-07 - Gate 3 lead: [KRLScene+0xF29E8] needs the named-object manager initialized
+
+- The writer of `[KRLScene+0xF29E8]` is `KRLScene::InitializeScene` (`rep+0xADFFE0`,
+  verified: stores `[rsi+0xF29E8] = rdi` at 0xAE0102). It creates a node named
+  `"scene[%.6u]"` (format `rep+0xD0B0B0`) via `0xD4EA` -> `rep+0xAEE1F0` ->
+  the named-object factory `rep+0xAEDFD0`, then registers it.
+- `0xAEDFD0` gets the named-object manager via `0xDF8A` -> `0x920C40`, which
+  reads `[rep+0xF51298]`; if it is 0 the getter asserts and returns 0, so the
+  factory returns 0 and `InitializeScene` fails -> `[KRLScene+0xF29E8]` stays 0
+  (observed run 231).
+- `[rep+0xF51298]` is created by `rep+0x920D10` (allocates 0x50 via 0x4494,
+  stores at 0xF51298); that initializer is never called in-host (no direct
+  caller found; likely a CRT/static or table-driven init). There is a `0x50`
+  allocation and the factory context (a 2-entry vector at rcx).
+- Gate 3 checkpoint (`[world+0xF29E8] != 0`): first initialize the named-object
+  manager (`rep+0x920D10`) with its factory context before/in CreateRLScene, so
+  `InitializeScene` creates the `scene[%06u]` node. Then look for the local
+  player (`LuaCreateHangPet` 0x5BE120 needs a pCharacter; logic module exposes
+  `AddPlayer`/`LuaAddPlayer`).
+- Evidence: host_exe231.out; offline RE scripts.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
