@@ -39,6 +39,12 @@ dives, all read-only against `C:\SeasunGame\Game\JX3\bin\zhcn_hd` + `C:\SeasunGa
 | `3_5_3_7_RAGDOLL_SWIM_FLY.md` | claim-by-claim verification of ragdoll/swim/轻功/fly docs + true gaps + host wiring notes |
 | `3_6_MOUNTS_GLIDER.md` | mount/vehicle/glider/parachute state machines, 15 extracted ride tables, symbols/RVAs |
 
+## Tools
+
+| Tool | Content |
+|---|---|
+| `tools/character/motion_tag.py` | `.tani` GATA container parser + MotionTag stream dump (selftest 11/11; `--tsv`/`--json`) |
+
 ## Corrections applied to older docs (2026-10-06)
 
 The deep pass corrected several stale claims; each affected doc carries a dated correction
