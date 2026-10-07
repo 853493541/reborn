@@ -1,0 +1,183 @@
+22:32:52.311 build=reborn_client_3x_mount.exe 2026-10-06 22:32:09 git=01f44ba dirty=2 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80,BACKFACE=1,HITWIN=0,OPMODE=joystick)
+22:32:52.311 start map=C:\jx3tmp\reborn_sandbox\map\龙门寻宝_s\龙门寻宝_s.jsonmap
+22:32:52.312 asset_root=C:\SeasunGame\Game\JX3\bin\zhcn_hd phys=C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\PhysicsEngineX64.dll
+22:32:52.327 window: client=1280x720 fullscreen=0
+22:32:52.383 Startup shim: rc=0 mode=nodb applied=0 armed (waiting KG3D_MaterialSystemX64.dll)
+22:32:52.857 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_3x_mount.memory ms=(31,0,453)
+22:32:52.857 initcfg=./configHttpFile.ini
+22:32:56.020 Init3DEngine=1 err=1 ms=3157
+22:32:56.021 Startup: mode=nodb applied=1 sites=1 build=ok
+22:32:56.057 editor.Init result=0
+22:32:56.058 sound: KG3DSoundCLR.Init ok
+22:32:56.058 sound: skill wav C:\SeasunGame\MovieEditor\bin64\flws_sound.wav
+22:32:56.224 LoadMap result=0 ms=157
+22:32:56.551 winId=1248542
+22:32:56.552 clr m_pScene=0x112A02008 unmapped exec=0
+22:32:56.553 clr scene.vt=0x7FF97CD8F278 KG_EngineEditorX64.dll+0x6F278
+22:32:56.553 clr scene: obj=0000000112A02008 vt=00007FF97CD8F278 48=00007FF97CD5D5F0(0) 50=00007FF97CD5D710(0) 58=00007FF97CD5D7E0(0) 60=00007FF97CD5D810(0)
+22:32:56.553 clr sceneCam=0x153AFC1C8 unmapped exec=0
+22:32:56.553 clr cam: obj=0000000153AFC1C8 vt=00007FF97CD91FA8 48=00007FF97CD703A0(0) 50=00007FF97CD703E0(0) 58=00007FF97CD70440(0) 60=00007FF97CD704A0(0)
+22:32:56.554 clr camGet rc=0 pos=(0.0,500.0,-800.0) tgt=(0.0,0.0,0.0) managed=(0.0,500.0,-800.0)
+22:32:56.556 TerrainSampler: size=512 regions=1x1 cell=100 origin=(0,0) cache=4
+22:32:56.562 terrain load (0,0) ms=1.8 holes=0 cache=1
+22:32:57.190 FoliageCollision: instances=5107 meshes=685 camflag0=310 noObstacle=184 foliage=龙门寻宝_s_foliage_collision.bin structures=龙门寻宝_s_structure_collision.bin
+22:32:57.191 EngineRay: exports ok, waiting for engine/scene
+22:32:57.192 EngineCam bind ex: Object contains non-primitive or non-blittable data.
+22:32:57.192 CameraShim: loaded rc=0 selftest=0x53484D01 status=obj=0000000153AFC1C8 vt=00007FF97CD91FA8 48=00007FF97CD703A0(0) 50=00007FF97CD703E0(0) 58=00007FF97CD70440(0) 60=00007FF97CD704A0(0) d6=seed slot=0x00007FF91075BBD0 value=0x392E0BFA0428F080
+22:32:57.197 camera config: C:\SeasunGame\MovieEditor\bin64\camera.json
+22:32:57.197 ad habit: strafe (RC_ADHABIT=strafe|turn)
+22:32:57.267 CameraSettings: loaded real per-role camera settings: C:\SeasunGame\Game\JX3\bin\zhcn_hd\userdata\binkp1\双线区\破阵子\测试角色\custom.dat
+22:32:57.268 CameraSettings: mapId=-1 sceneInit=1 yaw=5.109930 pitch=-0.219 max=821 drag=1.00/1.00 eyeScale=1.00
+22:32:57.268 CameraSettings: operationMode=joystick perModeFollow classic=0 joystick=0
+22:32:57.268 CameraSettings extra: mode=1 resetSpring=1.00 resetCam=1.00 smoothing=1 curve=0 eyeFollow=1
+22:32:57.268 opmode applied: op=joystick followMode=0 springReset=1.00 cameraReset=1.00
+22:32:57.268 CameraSystem ready: mode=character dist=821u height=200u units/m=100 op=joystick
+22:32:57.270 view angle factor=1
+22:32:57.270 fov source=client-max-default angle=60.00 deg (1.0472 rad) factor=1.2500 [panel 30-60, default 50]
+22:32:57.270 view angle factor applied=1.250002
+22:32:57.591 spawn=(18991,962,33853) view=(0.00,1.00)
+22:32:58.206 player handle=2028484584
+22:32:58.207 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+22:32:58.716 anchor bone: actor=0x101654AA0 idx=1
+22:32:58.994 spawn ground settle took 265ms py=962
+22:32:58.994 target ui: RC_UI_ROOT not set - target HUD art disabled
+22:32:59.002 target dummy rid=35901 model='data\source\npc_source\练功木桩001\模型\wj_练功木桩002.mdl' ani='data\source\npc_source\练功木桩001\动作\wj_练功木桩001_st02.ani' handle=2031793944 at (18991,961,34253)
+22:32:59.002 target entity registered: 初级试炼木桩 lv131 hp=500000000 (Tab = facing cone search)
+22:32:59.003 target dummy ani -> 0
+22:32:59.003 camera yaw init=-1.571 (view dir 0.00,1.00)
+22:32:59.006 hotkeys: source=embedded (proof/movement/extracted snapshot) rows=286 commands=430 overrides=0
+22:32:59.007 hotkeys: context=''
+22:32:59.007 hotkey MOVEFORWARD = W / Up
+22:32:59.008 hotkey MOVEBACKWARD = S / Down
+22:32:59.008 hotkey STRAFELEFT = A
+22:32:59.008 hotkey STRAFERIGHT = D
+22:32:59.008 hotkey TURNLEFT =  / Left
+22:32:59.008 hotkey TURNRIGHT =  / Right
+22:32:59.008 hotkey JUMP = Space
+22:32:59.008 hotkey TOGGLERUN = Num/
+22:32:59.008 hotkey TOGGLEAUTORUN = G / NumLock
+22:32:59.010 mount: data ride=0 model='data\source\NPC_source\Horse\模型\Horse_01_01a_00.mdl' rider='data\source\player\f1\动作\f1bqg_horse_run.ani'
+22:32:59.015 jump: mode=flip school=0 scale=0.520 (apex 191u ~ 191cm per jump)
+22:32:59.017 states: waterBoxes=0 swim=300u/s chainSegTicks=51 suspendDemo=0
+22:32:59.018 skillmove table: 7 rows from <embedded>
+22:32:59.018 camera init applied mapId=-1 yaw=5.110 gamePitch=-0.219 modelPitch=0.219
+22:32:59.022 clip -> data\source\player\f1\动作\f1b02yd小跳c.ani (0)
+22:32:59.079 EngineRay: ready scene=0x101D684B0 terrain+950=0x1014F2B90 terrain+A28=0x0 vtB8=True space=0x1018108E8 spaceRay=True entity=0x11213B188 entityRay=True entCount=10 guardCell=0x406959E0
+22:32:59.092 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+22:33:00.528 camBind rc=0 pos=(19109.5,1205.4,33565.7) cam=0000000101D684B0 posOff=0x9E0 bound=1
+22:33:00.528 camObjDump: obj=0000000101D684B0 vt=00007FF90FBC5598 48=00007FF90E373870(1) 50=00007FF90E373A40(1) 58=00007FF90E398810(1) 60=00007FF90E373C70(1)
+22:33:00.530 slot50: slot50=00007FF90E373A40: 48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 41 56
+22:33:00.530 slot58: slot58=00007FF90E398810: 40 53 48 83 EC 30 4C 89 4C 24 20 BB 05 40 00 80 4D 8B C8 4C 8B C2 48 8B
+22:33:00.530 slot60: slot60=00007FF90E373C70: 48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 65 48 8B 04 25 58 00 00 00
+22:33:00.530 slot68: slot68=00007FF90E373D50: 48 89 5C 24 18 48 89 6C 24 20 56 57 41 56 48 83 EC 40 48 8B FA 48 8B F1
+22:33:01.056 mount: on ride=0 model='data\source\NPC_source\Horse\模型\Horse_01_01a_00.mdl' handle=2029394168 at (18991,962,33853)
+22:33:01.057 mounttest t=2.0 mount mounted=1
+22:33:01.057 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:33:01.058 mount seat bone: actor=0x1682CB9A0 idx=0
+22:33:01.060 mount facing: tail->head f=(0.00,-1.00) alpha=-90deg offset=-180deg (model-Z dot 1.00)
+22:33:01.061 mount horse clip -> data\source\NPC_source\Horse\动作\H普通待机01.tani (0)
+22:33:01.062 mount seat dbg local=(0.1,174.0,12.8) world=(18990.9,1136.0,33840.2)
+22:33:01.067 t=2s fps=217 pos=(18991,962,33853) vy=0 grounded=True blocked=False hits=0 colCalls=30 colBlocked=0 spd=0u/s(RIDE_IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=23 clip=f1bqg_horse_run.ani mount=on0
+22:33:02.022 mounttest t=3.0 IDLE jump press mounted=1
+22:33:02.022 mount jump reject: idle, no move record (0x313975 gate); mount kept
+22:33:02.720 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_00_3600ms.png
+22:33:03.036 t=4s fps=230 pos=(18991,962,33853) vy=0 grounded=True blocked=False hits=0 colCalls=59 colBlocked=0 spd=0u/s(RIDE_IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=96 clip=f1bqg_horse_run.ani mount=on0
+22:33:03.074 mount seat dbg local=(-1.3,170.9,14.2) world=(18992.3,1132.9,33838.8)
+22:33:04.033 mounttest t=5.0 forward (moving)
+22:33:04.034 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:33:04.035 mount facing check: head dot travel=1.00 riderYaw=0.00 horseYaw=-3.14 head_d=(2,93)
+22:33:04.714 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_01_5600ms.png
+22:33:05.028 mounttest t=6.0 MOVING jump press mounted=1
+22:33:05.056 t=6s fps=144 pos=(18991,957,34413) vy=0 grounded=True blocked=False hits=0 colCalls=116 colBlocked=0 spd=600u/s(RIDE) yaw=0.00 dir=(0.00,1.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=92 clip=f1bqg_horse_run.ani mount=on0
+22:33:05.057 mount jump triple=(60,180,11) vy=1404 g=1287 bonus=0 ([+0x34C] script) pos=(18991,956,34453)
+22:33:05.057 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:33:05.058 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:33:05.058 mount facing check: head dot travel=1.00 riderYaw=0.00 horseYaw=-3.14 head_d=(-2,103)
+22:33:05.092 mount seat dbg local=(0.0,182.4,26.0) world=(18991.0,1206.8,34418.0)
+22:33:06.022 mounttest t=7.0 DOUBLE press airborne mounted=1
+22:33:06.053 mount jump reject n=1 (mounted; mount kept)
+22:33:06.074 mount facing check: head dot travel=1.00 riderYaw=0.00 horseYaw=-3.14 head_d=(-1,102)
+22:33:06.783 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:33:06.783 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:33:07.045 t=8s fps=148 pos=(18965,1399,35521) vy=-827 grounded=True blocked=False hits=6 colCalls=206 colBlocked=6 spd=600u/s(RIDE) yaw=0.00 dir=(0.00,1.00) auto=0 vj=(0,468) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=25 clip=f1bqg_horse_run.ani mount=on0
+22:33:07.095 mount facing check: head dot travel=1.00 riderYaw=0.00 horseYaw=-3.14 head_d=(-3,106)
+22:33:07.112 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:33:07.112 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:33:07.113 mount seat dbg local=(1.5,166.4,14.7) world=(18961.7,1563.1,35504.5)
+22:33:07.175 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:33:07.176 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:33:07.384 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:33:07.384 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:33:07.445 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:33:07.445 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:33:07.647 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:33:07.648 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:33:07.717 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:33:07.718 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:33:07.720 hideNear hide camDist=96.2 (B1 host approximation)
+22:33:08.022 mounttest t=9.0 turn right (heading change)
+22:33:08.108 mount facing check: head dot travel=1.00 riderYaw=0.79 horseYaw=-2.36 head_d=(71,75)
+22:33:08.311 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:33:08.311 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:33:08.710 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:33:08.710 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:33:08.778 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:33:08.779 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:33:08.902 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_02_9800ms.png
+22:33:09.046 t=10s fps=155 pos=(19238,1372,35646) vy=-343 grounded=False blocked=False hits=83 colCalls=296 colBlocked=83 spd=600u/s(RIDE) yaw=0.79 dir=(0.71,0.71) auto=0 vj=(0,468) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=81 clip=f1H小跳a.ani mount=on0
+22:33:09.123 mount facing check: head dot travel=1.00 riderYaw=0.79 horseYaw=-2.36 head_d=(24,25)
+22:33:09.123 mount seat dbg local=(0.0,207.7,40.5) world=(19227.6,1551.6,35617.4)
+22:33:09.206 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:33:09.207 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:33:09.525 mounttest t=10.5 turn right done yaw=0.79
+22:33:09.542 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:33:09.542 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:33:09.607 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:33:09.607 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:33:09.675 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:33:09.676 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:33:09.747 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:33:09.747 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:33:09.807 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:33:09.807 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:33:09.873 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:33:09.873 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:33:09.941 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:33:09.941 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:33:10.013 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:33:10.014 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:33:10.022 mounttest t=11.0 turn left
+22:33:10.136 mount facing check: head dot travel=1.00 riderYaw=-0.79 horseYaw=-3.93 head_d=(-80,78)
+22:33:10.209 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:33:10.210 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:33:10.413 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:33:10.413 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:33:10.875 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:33:10.875 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:33:11.008 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:33:11.008 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:33:11.050 t=12s fps=171 pos=(19092,1334,35637) vy=-86 grounded=True blocked=False hits=167 colCalls=386 colBlocked=167 spd=600u/s(RIDE) yaw=-0.79 dir=(-0.71,0.71) auto=0 vj=(0,468) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=17 clip=f1bqg_horse_run.ani mount=on0
+22:33:11.137 mount seat dbg local=(1.5,182.1,14.7) world=(19073.2,1509.3,35630.4)
+22:33:11.153 mount facing check: head dot travel=1.00 riderYaw=-0.79 horseYaw=-3.93 head_d=(-80,78)
+22:33:11.211 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:33:11.211 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:33:11.273 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:33:11.273 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:33:11.477 clip -> data\source\player\f1\动作\f1H小跳a.ani (0)
+22:33:11.477 mount horse clip -> data\source\NPC_source\Horse\动作\H小跳a.ani (0)
+22:33:11.522 mounttest t=12.5 turn left done yaw=-0.79
+22:33:11.540 clip -> data\source\player\f1\动作\f1bqg_horse_run.ani (0)
+22:33:11.541 mount horse clip -> data\source\NPC_source\Horse\动作\H奔跑01.tani (0)
+22:33:12.021 mounttest t=13.0 stop mounted=1 grounded=1 pos=(18928,1327,35638)
+22:33:12.021 mount horse clip -> data\source\NPC_source\Horse\动作\H普通待机01.tani (0)
+22:33:13.025 mount: off (DownHorse)
+22:33:13.025 mounttest t=14.0 dismount mounted=0
+22:33:13.025 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+22:33:13.057 t=14s fps=163 pos=(18928,1327,35640) vy=-86 grounded=True blocked=False hits=227 colCalls=446 colBlocked=227 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,468) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=22 clip=f1b01ty普通待机01.ani mount=off
+22:33:14.021 mounttest summary mounted=0 clip=f1b01ty普通待机01.ani
+22:33:15.061 t=16s fps=169 pos=(18928,1327,35640) vy=-86 grounded=True blocked=False hits=257 colCalls=476 colBlocked=257 spd=0u/s(IDLE) yaw=0.00 dir=(0.00,0.00) auto=0 vj=(0,468) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=20 clip=f1b01ty普通待机01.ani mount=off
+22:33:15.531 terrain stats terrLoads=1 msTotal=1.8 msMax=1.8 last=1.8 cache=1 zeroRetries=0
+22:33:15.531 shutdown sound ok
+22:33:15.532 shutdown log ok
+22:33:15.532 shutdown memory ok
+22:33:15.532 DONE

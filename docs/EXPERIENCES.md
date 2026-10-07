@@ -4997,3 +4997,16 @@ if the cache/host frames appear.
 - Proof: run_20261006_221647_fullsystem.txt (all four cases, mount intact after
   landing, DONE), screenshots + fingerprints; gates camera_smoke ALL PASS,
   collision 36/36.
+
+### 2026-10-06 - Mounted acceptance re-derivation: idle reject, facing flip found by runtime check
+
+- The user rejected the previous mapping; re-derived strictly from the client:
+  the mounted jump block sits behind the move-record/sprint gate (0x313975 ->
+  horse-power block 0x31398E-A13) - an idle press is REJECTED (no jump). Fixed.
+- Facing: static derivation had the rider-forward sign wrong (+pi/2 vs -pi/2);
+  the new runtime check (horse head bone world position vs actual travel
+  direction) caught it immediately - dot=-1.00 -> auto-flip; after the formula
+  fix (offset -180deg) the check reads +1.00 at riderYaw 0/+0.79/-0.79.
+- Verified on BOTH maps (full 龙门寻宝 and the 1x1 mini sandbox): idle reject,
+  moving triple, double-press reject with mount intact, facing dot +1.00 at all
+  headings; 2 run logs + 6 screenshots + fingerprints; gates ALL PASS / 36/36.

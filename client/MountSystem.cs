@@ -71,6 +71,8 @@ internal sealed class MountState
     public bool Dbg;
     public IntPtr SeatActor = IntPtr.Zero;
     public int SeatIdx = -1;
+    public IntPtr HeadActor = IntPtr.Zero;
+    public int HeadIdx = -1;
     public float FacingOffset;   // horse yaw offset so its authored forward == rider forward
     private long lastSeatDbg;
     public KGModelCLR Model_;
@@ -180,10 +182,13 @@ internal sealed class MountState
 
     // Horse facing: the horse model's authored forward is derived from its own
     // skeleton (tail -> head, Horse_01 bones `bip01_horse tail` / `bip01_horse head`),
-    // not guessed. The placement convention maps a model vector (x,z) by yaw h to
-    // world angle alpha - h; the rider forward (-sin r, -cos r) has angle
-    // gamma(r) = -pi/2 - r, so the horse needs h = r + (alpha + pi/2) - a constant
-    // offset computed once per mount.
+    // not guessed. Placement convention: a model vector (x,z) under yaw h maps to
+    // world angle alpha - h; the rider's forward at yaw r is +Z (movement
+    // convention: yaw 0 moves along +Z), i.e. (sin r, cos r) with angle
+    // gamma(r) = pi/2 - r; so h = alpha - gamma = r + (alpha - pi/2) - a constant
+    // offset. Verified at runtime by the head-vs-travel dot (RebornClient) - the
+    // first version used +pi/2 and the check caught the horse facing backward
+    // (run reborn_20261006_223121, dot=-1.00 -> auto-flip).
     private void ResolveFacing(Action<string> log)
     {
         FacingOffset = 0f;
@@ -192,6 +197,7 @@ internal sealed class MountState
             int hi = -1, ti = -1;
             IntPtr ha = CameraShim.FindBoneActor(new IntPtr(Handle), "bip01_horse head", out hi);
             IntPtr ta = CameraShim.FindBoneActor(new IntPtr(Handle), "bip01_horse tail", out ti);
+            HeadActor = ha; HeadIdx = hi;
             float[] mh = new float[16], mt = new float[16];
             if (ha != IntPtr.Zero && hi != -1 && ta != IntPtr.Zero && ti != -1 &&
                 CameraShim.ActorBoneMatrix(ha, hi, mh) == 0 &&
@@ -203,7 +209,7 @@ internal sealed class MountState
                 {
                     fx /= len; fz /= len;
                     double alpha = Math.Atan2(fz, fx);
-                    FacingOffset = (float)(alpha + Math.PI / 2.0);
+                    FacingOffset = (float)(alpha - Math.PI / 2.0);
                     log(string.Format(
                         "mount facing: tail->head f=({0:F2},{1:F2}) alpha={2:F0}deg offset={3:F0}deg (model-Z dot {4:F2})",
                         fx, fz, alpha * 180.0 / Math.PI, FacingOffset * 180.0 / Math.PI, -fz));
@@ -213,6 +219,29 @@ internal sealed class MountState
             else log("mount facing: horse bones unresolved (offset 0)");
         }
         catch (Exception e) { log("mount facing ex: " + e.Message); }
+    }
+
+    // Horse head world position - the runtime facing proof: compare the head's
+    // actual position against the travel direction (mesh/skeleton independent);
+    // a negative dot means the horse faces backwards and needs a pi flip.
+    public bool HeadWorld(float hx, float hy, float hz, float riderYaw,
+        out float x, out float y, out float z)
+    {
+        x = hx; y = hy; z = hz;
+        try
+        {
+            if (HeadActor == IntPtr.Zero || HeadIdx == -1) return false;
+            float[] m = new float[16];
+            if (CameraShim.ActorBoneMatrix(HeadActor, HeadIdx, m) != 0) return false;
+            double yaw = riderYaw + FacingOffset;
+            double ca = Math.Cos(yaw), sa = Math.Sin(yaw);
+            double tx = m[12], ty = m[13], tz = m[14];
+            x = (float)(hx + tx * ca + tz * sa);
+            y = (float)(hy + ty);
+            z = (float)(hz - tx * sa + tz * ca);
+            return true;
+        }
+        catch { return false; }
     }
 
     // Seat bone: the horse skeleton carries `b_hs` (idx 10 in Horse_01, parsed
