@@ -2891,3 +2891,18 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
   to be free. The V2 gateway (3724) was briefly stopped during the stub swap and restored.
 - Docs: `docs/netcode/V3_PLAN.md` (layout, run/bump procedure, reproduce) registered in
   `docs/netcode/README.md`; tools table updated.
+
+### 2026-10-07 — V3 validation GREEN: frozen install runs login -> bind -> state 7
+- Ran the real client from `C:\JX3ZHENCHUAN` (RC_V3_ROOT) with the V3 stubs (cipher table read
+  from the frozen exe): full login -> game connect -> id 4 -> ApplyEnterScene -> id 187/188 bind
+  flow; `read_bind_state.py` -> `map=296 reg=0 id=1001 state=7`, `player+0x60` bound,
+  pos (23334,24224,...) - identical to the live V2 behavior. So a selective copy of the stock
+  client runs from a foreign root (relative `PakDir` resolves; no absolute-path breakage), and
+  the tooling root-resolver + frozen-exe cipher source are correct.
+- Isolation confirmed: the frozen client wrote its own logs inside the frozen root
+  (`C:\JX3ZHENCHUAN\Game\JX3\bin\zhcn_hd\logs\{DumpReport,Dumper,GameDoctorSDK,KGPK4_...}` at
+  16:49:24) - clean attribution, live install untouched.
+- Shared-namespace note: validation had to wait for another raw V2 session to end; an autolaunch
+  waiter (`C:\jx3tmp\zhenchuan_autolaunch.ps1`) required a sustained 60 s free window, took over
+  ports 3724/3725 with the V3 stubs, launched the frozen client, and guarded against collisions.
+- Client released after validation; V3 stubs left listening on 80/3724/3725.

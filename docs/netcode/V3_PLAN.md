@@ -65,11 +65,16 @@ until the new one passes validation.
 
 - DONE: frozen copy + verification + marker; V3 worktree/branch `agent/v3`; `client_root`
   resolver + parameterized runtime tools (commit `e529861`); wrappers.
-- OPEN: first validation run on the frozen client (login → bind → state 7) — blocked when
-  another raw client session is live (shared namespace). Then: update/CDN endpoint
-  handling (`preupdater.ini` hosts, `jx3v4*-miniupdate` CDN), optional stale-pak trim via
-  `Pakv4\Trunk.dir`/`versionmap.cfg`/`garbage_v2.txt`, and carry the V2 movement/crash work
-  onto V3.
+- DONE — **validation GREEN (2026-10-07 16:49)**: launching the frozen client with
+  `RC_V3_ROOT=C:\JX3ZHENCHUAN` + `run_emul_zhenchuan.cmd` produced the full login → game
+  connect → `id 4` → ApplyEnterScene → `id 188` bind flow (stub decrypts correctly with the
+  cipher table read from the frozen exe), and a one-shot read shows `map=296 reg=0 id=1001
+  state=7`, `player+0x60` bound. The frozen client wrote its own logs into
+  `C:\JX3ZHENCHUAN\Game\JX3\bin\zhcn_hd\logs\` (DumpReport/Dumper/GameDoctorSDK/KGPK4 at
+  16:49:24) — isolation and clean attribution confirmed. Client released after the run.
+- OPEN: update/CDN endpoint handling (`preupdater.ini` hosts, `jx3v4*-miniupdate` CDN),
+  optional stale-pak trim via `Pakv4\Trunk.dir`/`versionmap.cfg`/`garbage_v2.txt`, and carry
+  the V2 movement/crash work onto V3.
 
 ## Reproduce
 
