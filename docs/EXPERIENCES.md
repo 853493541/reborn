@@ -2682,3 +2682,36 @@ HIGH-confidence findings:
   [main+0x210] after the Init; find why the lambda does not run / its arg objects).
 - Evidence: host_exe119-124.out; commits 78e32e5 (destination args + no-dot shadow
   name), 3a55132 (window fix + vt[6] gate + probes).
+
+## 2026-10-06 - Gate 1: RL table-list blocker traced to the dormant async task chain (not finished)
+
+- Goal: clear KRLWeatherController::Init line 27 (`[SO3Represent+0x210]` =
+  m_TableList.m_tabCommon NULL) so KRLScene::Init line 212 passes.
+- Probes/experiments this session (all committed):
+  - the fs resolves the logical file the runner opens ('SkillCasterModel') fine
+    (rep+0x3F08F0 opener with rep_main+0x120 as an ADDRESS) - so the table files
+    are reachable; the failure is upstream.
+  - param+0x98 changed from an event manager to a fresh zeroed task container
+    (the exe's Initialize passes a caller-stack object there); the Init still
+    returns 1 and leaves it empty (nothing pushed).
+  - KGAsyncTaskInterface::FetchResult (KGCommon 0x39F0) after the Init -> 0 (no
+    completed tasks) - the RL table tasks are never queued.
+- Trace hooks (rep+0x80B6A0 registerTasks, rep+0x80B8C0 runTasks, rep+0x80B9C3
+  table-load lambda, rep+0x3E3D90 timed wrapper, rep+0x8261F0 task-list builder)
+  installed and never fire in-host: the whole chain V::method1 (rep+0x3E59C0,
+  vtable rep+0xC99D30 slot 1) -> wrapper -> builder -> tasks -> lambda is
+  dormant. The SO3Represent::Init does create the task functors (rep+0x3E64FF /
+  0x3E653D inside the Init 0x3E6070-0x3E6657) but nothing invokes them.
+- The game's side: the exe's KJX3RepresentModule::Initialize (0xBC150, called by
+  the module dispatcher 0xBC6A0 state 3, which first creates a KGAsyncTask group
+  - 0x14079AEE0 + the list init) calls the rep Init at 0xBC46E with the param;
+  the post-Init block (0xBC4DA) pushes a 0x10 callback functor (manager vtable
+  0x95A330; slot 2 invoke = 0x87980 = a no-op) into the container. The actual
+  run/await of the RL tasks is still unidentified (KGAsyncTask workers or a
+  later dispatcher state).
+- Next probes: (1) the Init's guard that gates the task creation (why the V
+  functors are created but never invoked - compare the param fields against the
+  exe's exact fill at 0xBC263-0xBC46E, especially +0x90..+0xB8); (2) whether the
+  KGAsyncTask worker pool is started in-host (CreateGroup/AddTask behavior), and
+  (3) who calls V::method1 in the game (vtable call - likely a dispatcher state
+  after the Initialize). Evidence: host_exe125-133.out.

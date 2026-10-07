@@ -181,6 +181,88 @@ static int installCtxShadowHook(void)
     return 1;
 }
 
+// log the RL table-load lambda (rep+0x80B9C3) entry: tells whether the table
+// list load runs at all (KRLWeatherController::Init line 27 needs its result
+// in [SO3Represent+0x210] = m_TableList.m_tabCommon).
+static void __fastcall tableLoadLog(void* a1, void* a2)
+{
+    logf("[host] tableLoad lambda enter (a1=%p a2=%p)", a1, a2);
+}
+
+// trace the table-task registration (rep+0x80B6A0) and runner (rep+0x80B8C0)
+static BYTE g_rtSaved[32];
+static BYTE* g_rtTramp = NULL;
+static BYTE g_runSaved[32];
+static BYTE* g_runTramp = NULL;
+
+static int __fastcall hookRegisterTasks(void* a1, void* a2)
+{
+    logf("[host] registerTasks enter (a1=%p a2=%p)", a1, a2);
+    return ((int (__fastcall *)(void*, void*))g_rtTramp)(a1, a2);
+}
+
+static char __fastcall hookRunTasks(void* a1)
+{
+    logf("[host] runTasks enter (this=%p)", a1);
+    char r = ((char (__fastcall *)(void*))g_runTramp)(a1);
+    logf("[host] runTasks exit -> %d", (int)r);
+    return r;
+}
+
+static BYTE g_wrapSaved[32];
+static BYTE* g_wrapTramp = NULL;
+static BYTE g_buildSaved[32];
+static BYTE* g_buildTramp = NULL;
+
+static void __fastcall hookTableWrapper(void* a1, void* a2)
+{
+    logf("[host] table wrapper enter (this=%p a2=%p)", a1, a2);
+    ((void (__fastcall *)(void*, void*))g_wrapTramp)(a1, a2);
+}
+
+static void __fastcall hookTableBuilder(void* a1, unsigned a2, void* a3, void* a4)
+{
+    logf("[host] table builder enter (a1=%p a2=%u a3=%p a4=%p)", a1, a2, a3, a4);
+    ((void (__fastcall *)(void*, unsigned, void*, void*))g_buildTramp)(a1, a2, a3, a4);
+}
+
+static int installTableLoadHook(HMODULE rep)
+{
+    BYTE* site = (BYTE*)rep + 0x80B9C3;
+    const int origLen = 7;
+    BYTE* stub = (BYTE*)VirtualAlloc(NULL, 0x100, MEM_COMMIT | MEM_RESERVE,
+                                     PAGE_EXECUTE_READWRITE);
+    if (stub == NULL)
+        return 0;
+    int i = 0;
+    stub[i++] = 0x51; stub[i++] = 0x52; stub[i++] = 0x41; stub[i++] = 0x50;
+    stub[i++] = 0x41; stub[i++] = 0x51;
+    stub[i++] = 0x48; stub[i++] = 0x83; stub[i++] = 0xEC; stub[i++] = 0x28;
+    stub[i++] = 0x49; stub[i++] = 0xB8;
+    *(void**)(stub + i) = (void*)tableLoadLog; i += 8;
+    stub[i++] = 0x41; stub[i++] = 0xFF; stub[i++] = 0xD0;
+    stub[i++] = 0x48; stub[i++] = 0x83; stub[i++] = 0xC4; stub[i++] = 0x28;
+    stub[i++] = 0x41; stub[i++] = 0x59; stub[i++] = 0x41; stub[i++] = 0x58;
+    stub[i++] = 0x5A; stub[i++] = 0x59;
+    // replay the original lea rsi,[rip+0x70B126] as mov rsi, <the resolved
+    // table address> (a rip-relative replay at the stub would point wrong)
+    stub[i++] = 0x48; stub[i++] = 0xBE;
+    *(void**)(stub + i) = (void*)((BYTE*)rep + 0xF16AF0); i += 8;
+    stub[i++] = 0x48; stub[i++] = 0xB8;
+    *(void**)(stub + i) = (void*)(site + origLen); i += 8;
+    stub[i++] = 0xFF; stub[i++] = 0xE0;
+    DWORD old;
+    if (!VirtualProtect(site, origLen, PAGE_EXECUTE_READWRITE, &old))
+        return 0;
+    // 5-byte relative jmp fits the 7-byte original (pad the rest with nops)
+    site[0] = 0xE9;
+    *(int*)(site + 1) = (int)(stub - (site + 5));
+    site[5] = 0x90; site[6] = 0x90;
+    VirtualProtect(site, origLen, old, &old);
+    FlushInstructionCache(GetCurrentProcess(), site, origLen);
+    return 1;
+}
+
 static int installMovieNameHook(void)
 {
     HMODULE mv = GetModuleHandleA("KG_MovieEngineX64.dll");
@@ -1966,6 +2048,20 @@ int main(void)
         if (rep != NULL)
             logf("[host] shadow desc hook -> %d", installShadowDescHook(rep));
         if (rep != NULL)
+            logf("[host] table load hook -> %d", installTableLoadHook(rep));
+        if (rep != NULL)
+            logf("[host] task trace hooks -> %d %d",
+                 installInlineHook(rep, 0x80B6A0, (void*)hookRegisterTasks,
+                                   g_rtSaved, &g_rtTramp, 15),
+                 installInlineHook(rep, 0x80B8C0, (void*)hookRunTasks,
+                                   g_runSaved, &g_runTramp, 15));
+        if (rep != NULL)
+            logf("[host] table chain hooks -> %d %d",
+                 installInlineHook(rep, 0x3E3D90, (void*)hookTableWrapper,
+                                   g_wrapSaved, &g_wrapTramp, 15),
+                 installInlineHook(rep, 0x8261F0, (void*)hookTableBuilder,
+                                   g_buildSaved, &g_buildTramp, 15));
+        if (rep != NULL)
         {
             typedef void* (__cdecl *CreateRepFn)(void);
             CreateRepFn cr = (CreateRepFn)GetProcAddress(rep, "CreateSO3Represent");
@@ -3186,9 +3282,15 @@ int main(void)
                             ? g_exeDispatcher : makeStubObject(0x400);
                         *(void**)(param + 0x90) = (g_exeCommonMgr != NULL)
                             ? g_exeCommonMgr : makeStubObject(0x400);
-                        // real event managers created by the game exe's own modules
-                        *(void**)(param + 0x98) = (g_exeLogicMgr != NULL)
-                            ? g_exeLogicMgr : makeStubObject(0x400);
+                        // param+0x98 = the task container the exe's Initialize
+                        // returns by value (a caller-allocated object; the rep's
+                        // Init pushes the RL table tasks into it - that is what
+                        // loads the RL table list). The host previously passed an
+                        // event manager here (wrong object).
+                        static unsigned char taskList[0x200];
+                        memset(taskList, 0, sizeof(taskList));
+                        *(void**)(param + 0x98) = taskList;
+                        logf("[host] frame60: taskList=%p", taskList);
                         *(void**)(param + 0xA0) = (g_exeRepMgr != NULL)
                             ? g_exeRepMgr : makeStubObject(0x400);
                         // zero the represent's fallback allocations (the Init's
@@ -3224,6 +3326,47 @@ int main(void)
                         logf("[host] frame60: after Init singleton+0xB0=%p +0x100=%p",
                              *(void**)((BYTE*)g_repSingleton + 0xB0),
                              *(void**)((BYTE*)g_repSingleton + 0x100));
+                        logf("[host] frame60: tables [main+0x1B0]=%p [main+0x210]=%p",
+                             *(void**)((BYTE*)g_repSingleton + 0x1B0),
+                             *(void**)((BYTE*)g_repSingleton + 0x210));
+                        logf("[host] frame60: taskList after Init: %p %p %p %p %p %p",
+                             *(void**)(taskList + 0x00), *(void**)(taskList + 0x08),
+                             *(void**)(taskList + 0x10), *(void**)(taskList + 0x18),
+                             *(void**)(taskList + 0x20), *(void**)(taskList + 0x28));
+                        // the RL table tasks run through the KGAsyncTask system; the
+                        // game polls KGAsyncTaskInterface::FetchResult to apply
+                        // finished task results (the tables). Probe it here.
+                        __try
+                        {
+                            HMODULE kgc = GetModuleHandleA("KGCommonX64.dll");
+                            if (kgc != NULL)
+                            {
+                                typedef int (__cdecl *FetchFn)(void);
+                                FetchFn fr = (FetchFn)GetProcAddress(kgc,
+                                    "?FetchResult@KGAsyncTaskInterface@@SAHXZ");
+                                int r = (fr != NULL) ? fr() : -1;
+                                logf("[host] frame60: FetchResult -> %d tables=[main+0x210]=%p",
+                                     r, *(void**)((BYTE*)g_repSingleton + 0x210));
+                            }
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: FetchResult probe fault"); }
+                        // the table-task runner (rep+0x80B8C0) opens the logical
+                        // file 'SkillCasterModel' through the rep fs
+                        // (rep_main+0x120) before it can load the tables; probe
+                        // that resolution.
+                        __try
+                        {
+                            void* fs60 = (BYTE*)g_repSingleton + 0x120;
+                            void* fo = NULL;
+                            fo = ((void* (__fastcall *)(void*, const char*, size_t))
+                                  ((BYTE*)g_repModule + 0x3F08F0))(fs60,
+                                                                   "SkillCasterModel", 0);
+                            logf("[host] frame60: fs=%p inner=%p open('SkillCasterModel') -> %p",
+                                 fs60, *(void**)((BYTE*)fs60 + 8), fo);
+                        }
+                        __except (EXCEPTION_EXECUTE_HANDLER)
+                        { logf("[host] frame60: SkillCasterModel probe fault"); }
                     }
                     __except (EXCEPTION_EXECUTE_HANDLER)
                     { logf("[host] frame60 Init fault"); }
