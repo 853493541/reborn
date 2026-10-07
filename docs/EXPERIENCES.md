@@ -3502,5 +3502,18 @@ HIGH-confidence findings:
   host now creates the logic scene/player (`NewClientScene`/`NewPlayer`) and has the
   represent event managers wired; the missing link is the event emission/dispatch.
 - Evidence: host_exe243.out; static disasm (exe+0xBC150 Param fill).
+
+## 2026-10-07 - Neither represent event-register path fires for the managers
+
+- `RLActorMgrNT::Init` registers via TWO functions: `rep+0x39D560` (via thunk
+  `rep+0x1C08`) and `rep+0x36A1D0` (via thunk `rep+0x1B97D`, args
+  `(eventmgr, id, this, handler)`). Hooked both (0x39D560 len 23, 0x36A1D0 len 26).
+- Run 244: the second hook installed (`-> 1`) but fired **zero** times; the first fired
+  once (unrelated class). So the represent registers almost no events in the host and the
+  managers' `Init` never runs - the represent's event/lifecycle setup is incomplete.
+- The exe's `KJX3RepresentModule::Initialize` (exe+0xBC150) runs (hook logs enter/exit 1)
+  but with host-fabricated globals (`sysCfg`/`sysHolder`), so its manager-creation steps
+  are likely skipped. Gate 4 needs that module-init flow completed (or a debugger trace).
+- Evidence: host_exe244.out; static disasm.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.

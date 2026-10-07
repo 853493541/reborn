@@ -610,6 +610,22 @@ static BYTE g_ramSaved[32];
 static BYTE* g_ramTramp = NULL;
 static void* g_rlActorMgr = NULL;
 static volatile LONG g_ramLog = 0;
+static BYTE g_er2Saved[40];
+static BYTE* g_er2Tramp = NULL;
+static volatile LONG g_er2Log = 0;
+static void __fastcall hookEventRegister2(void* mgr, unsigned id, void* thisObj,
+                                          void* handler)
+{
+    ((void (__fastcall *)(void*, unsigned, void*, void*))g_er2Tramp)(
+        mgr, id, thisObj, handler);
+    if (g_er2Log < 80)
+    {
+        g_er2Log++;
+        logf("[host] ev-reg2: id=%u this=%p handler=rep+0x%llX mgr=%p",
+             id, thisObj, (unsigned long long)((DWORD64)handler -
+             (g_repModule ? (DWORD64)g_repModule : 0)), mgr);
+    }
+}
 static void __fastcall hookEventRegister(void* self, unsigned evId, void* hs)
 {
     ((void (__fastcall *)(void*, unsigned, void*))g_ramTramp)(self, evId, hs);
@@ -2759,6 +2775,9 @@ int main(void)
             logf("[host] RLActorMgr event-register hook -> %d",
                  installInlineHook(rep, 0x39D560, (void*)hookEventRegister,
                                    g_ramSaved, &g_ramTramp, 23));
+            logf("[host] event-register2 hook -> %d",
+                 installInlineHook(rep, 0x36A1D0, (void*)hookEventRegister2,
+                                   g_er2Saved, &g_er2Tramp, 26));
             {
                 char rpFlag[8];
                 if (GetEnvironmentVariableA("RC_HOST_REPINIT", rpFlag, sizeof(rpFlag)) != 0)
