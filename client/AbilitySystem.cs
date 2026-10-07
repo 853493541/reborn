@@ -55,6 +55,7 @@ internal static class AbilitySystem
     static readonly Dictionary<string, Image> iconCache = new Dictionary<string, Image>();
     static readonly List<PictureBox> icons = new List<PictureBox>();
     static Panel panel;
+    static Control panelHost;
     static string sel = "";
     static bool castReq = false;
     static bool active = false;
@@ -193,6 +194,15 @@ internal static class AbilitySystem
 
     static void BuildPanel()
     {
+        // host: the client's render panel (Dock.Fill) - the panel must live in
+        // the same surface the engine draws into so it scales with the window
+        Panel host = null;
+        foreach (Control c in form.Controls)
+        {
+            Panel p2 = c as Panel;
+            if (p2 != null && p2.Dock == DockStyle.Fill) { host = p2; break; }
+        }
+        panelHost = (host != null) ? (Control)host : (Control)form;
         panel = new Panel();
         panel.Size = new Size(260, 420);
         panel.BackColor = Color.FromArgb(210, 0, 0, 0);
@@ -238,12 +248,12 @@ internal static class AbilitySystem
         soundBox.AutoSize = true;
         soundBox.CheckedChanged += delegate { soundOn = soundBox.Checked; };
         panel.Controls.Add(soundBox);
-        form.Controls.Add(panel);
+        panelHost.Controls.Add(panel);
         Action place = delegate
         {
-            panel.Location = new Point(Math.Max(0, form.ClientSize.Width - 272), 36);
+            panel.Location = new Point(Math.Max(0, panelHost.ClientSize.Width - 272), 36);
         };
-        form.Resize += delegate { place(); };
+        panelHost.Resize += delegate { place(); };
         place();
         if (panel.Visible) panel.BringToFront();
     }
@@ -321,10 +331,10 @@ internal static class AbilitySystem
         }
         // the picker panel follows window resizes / fullscreen (form.Resize
         // alone misses the maximized path on some hosts)
-        if (panel != null && form != null &&
-            (form.ClientSize.Width != lastFormW || form.ClientSize.Height != lastFormH))
+        if (panel != null && panelHost != null &&
+            (panelHost.ClientSize.Width != lastFormW || panelHost.ClientSize.Height != lastFormH))
         {
-            lastFormW = form.ClientSize.Width; lastFormH = form.ClientSize.Height;
+            lastFormW = panelHost.ClientSize.Width; lastFormH = panelHost.ClientSize.Height;
             panel.Location = new Point(Math.Max(0, lastFormW - 272), 36);
             if (panel.Visible) panel.BringToFront();
         }
