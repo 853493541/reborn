@@ -3503,16 +3503,14 @@ int main(void)
                             *(void**)(param + 0xC8) = stepBuf;
                         // param+0xA8 is captured by the RL table tasks (the V
                         // functors store it at +0x18) and read by the timed
-                        // wrapper as the resource member whose vt[3]() loads the
-                        // table resource. The exe fills it from the dispatcher
-                        // arg; the host uses the RL resource loader.
+                        // DECODED (exe Initialize 0xBC194-0xBC21C): param+0xA8 =
+                        // [exe+0xA8C208+0x18] (the logic module's manager)'s
+                        // vt[3](&out, float) result = the RL table source. The
+                        // host has that manager in g_exeLogicMgr.
                         *(void**)(param + 0xA8) = g_rlLoader;
-                        // the wrapper's member vt[3](member, out, float) must fill
-                        // `out` (a smart pointer) and return &out; candidates tried
-                        // (rlLoader, engine mgr, conv, rep singleton, xlogic, facade)
-                        // either return garbage or do not fill the out. The exe passes
-                        // the module dispatcher's r8 (the event data) here - see
-                        // EXPERIENCES 2026-10-06 for the remaining probe.
+                        if (g_exeLogicMgr != NULL)
+                            *(void**)(param + 0xA8) = g_exeLogicMgr;
+                        
                         // NOTE: the wrapper's resource member (param+0xA8) is still
                         // unidentified; candidates tried: g_rlLoader (vt[3] =
                         // rep+0x18AB6), g_ifMgr (x3d+0x201D0), g_ifConv - all return
