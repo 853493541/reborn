@@ -5011,3 +5011,17 @@ if the cache/host frames appear.
   audit: 38 dataset names have a skill_tag->f1 row; 30 already match the
   dataset, 8 differ (multi-school name collisions - curated dig picks win).
 - App: RC_CAST_CAP (cast duration cap for sweeps).
+
+### 2026-10-07 — v5 — session handoff: ability system in the client sandbox
+
+- Deliverable: main's client + the ported ability system (`reborn_client_skillv5.exe`,
+  title `skill v5`). Handoff doc: `docs/engine_host/ABILITY_SYSTEM_CLIENT_HANDOFF.md`
+  (state, files, verified facts, open work, user directives, commands).
+- User directives recorded: never change the client window size/camera in launches;
+  no MovieEditor-sandbox advances; the product = main's client + abilities.
+- Regression fixed this session: the tani pass had dropped the PSS dummies -> the
+  visible effect layer vanished; restored (the PSS is the main effect layer, the
+  tani tags are partial).
+- Open: "effects replay wrong" (needs a named ability), the 70 changed animation
+  matches vs the v2-era dataset, 天绝地灭 tani AV (blacklisted), sequential-tani
+  engine AV (guard only).
