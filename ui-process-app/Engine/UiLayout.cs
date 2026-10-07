@@ -359,6 +359,155 @@ namespace MapUiApp.Engine
                     list.Values["Height"] = newH.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 }
             }
+            // Flex containers (WndFlexContainer/FlexHandle) are Yoga nodes: the engine lays
+            // their children out by flexbox (KGUIX64 exports the Yoga API; the INI keys map
+            // 1:1 to YGNodeStyleSet*: Direction/FlexDirection/Wrap/JustifyContent/AlignItems/
+            // AlignContent/FlexMargin*/FlexPadding*/FlexGrow/FlexShrink). The authored child
+            // Left/Top are parked prototypes (ACC_Excellent's buttons sit at Top=632).
+            double Distribute(int mode, double free, int count, out double gap)
+            {
+                gap = 0;
+                switch (mode)
+                {
+                    case 1: return free / 2;
+                    case 2: return free;
+                    case 3: gap = count > 1 ? free / (count - 1) : 0; return 0;
+                    case 4: gap = count > 0 ? free / count : 0; return gap / 2;
+                    case 5: gap = count > 0 ? free / (count + 1) : 0; return gap;
+                    default: return 0;
+                }
+            }
+            var inv = System.Globalization.CultureInfo.InvariantCulture;
+            foreach (var flex in ini.Sections)
+            {
+                var flexType = flex.Get("._WndType");
+                if (!string.Equals(flexType, "WndFlexContainer", StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(flexType, "FlexHandle", StringComparison.OrdinalIgnoreCase)) continue;
+                var kids = ini.Sections.Where(s => !ReferenceEquals(s, flex) &&
+                    string.Equals(s.Get("._Parent"), flex.Name, StringComparison.OrdinalIgnoreCase) &&
+                    s.GetInt("Alpha", 255) > 0).ToList();
+                if (kids.Count == 0) continue;
+
+                double padL = flex.GetDouble("FlexPaddingLeft");
+                double padT = flex.GetDouble("FlexPaddingTop");
+                double padR = flex.GetDouble("FlexPaddingRight");
+                double padB = flex.GetDouble("FlexPaddingBottom");
+                double innerW = Math.Max(0, flex.GetDouble("Width") - padL - padR);
+                double innerH = Math.Max(0, flex.GetDouble("Height") - padT - padB);
+                int flexDir = flex.GetInt("FlexDirection");   // Yoga: 0 column, 1 column-reverse, 2 row, 3 row-reverse
+                int wrap = flex.GetInt("Wrap");               // 0 nowrap, 1 wrap, 2 wrap-reverse
+                int justify = flex.GetInt("JustifyContent");  // 0 start, 1 center, 2 end, 3 between, 4 around, 5 evenly
+                int align = flex.GetInt("AlignItems");        // 0 auto(=stretch), 1 start, 2 center, 3 end, 4 stretch
+                int alignContent = flex.GetInt("AlignContent");
+                bool row = flexDir == 2 || flexDir == 3;
+                bool reverse = flexDir == 1 || flexDir == 3;
+                var ordered = reverse ? Enumerable.Reverse(kids).ToList() : kids;
+
+                double MainMargin(IniSection s) => row
+                    ? s.GetDouble("FlexMarginLeft") + s.GetDouble("FlexMarginRight")
+                    : s.GetDouble("FlexMarginTop") + s.GetDouble("FlexMarginBottom");
+                double CrossMargin(IniSection s) => row
+                    ? s.GetDouble("FlexMarginTop") + s.GetDouble("FlexMarginBottom")
+                    : s.GetDouble("FlexMarginLeft") + s.GetDouble("FlexMarginRight");
+                double MainSize(IniSection s) { var z = SizeOf(s); return row ? z.W : z.H; }
+                double CrossSize(IniSection s) { var z = SizeOf(s); return row ? z.H : z.W; }
+                double Limit() => row ? innerW : innerH;
+
+                // line breaking along the main axis
+                var lines = new List<List<IniSection>>();
+                var current = new List<IniSection>();
+                double used = 0;
+                foreach (var item in ordered)
+                {
+                    double itemMain = MainSize(item) + MainMargin(item);
+                    if (wrap != 0 && current.Count > 0 && Limit() > 0 && used + itemMain > Limit() + 0.5)
+                    {
+                        lines.Add(current); current = new List<IniSection>(); used = 0;
+                    }
+                    current.Add(item); used += itemMain;
+                }
+                lines.Add(current);
+                if (wrap == 2) lines.Reverse();
+
+                // grow/shrink distribute each line's free main space
+                var lineCross = new List<double>();
+                foreach (var line in lines)
+                {
+                    double free = Limit() - line.Sum(it => MainSize(it) + MainMargin(it));
+                    double growSum = line.Sum(it => Math.Max(0, it.GetDouble("FlexGrow")));
+                    double shrinkSum = line.Sum(it => Math.Max(0, it.GetDouble("FlexShrink")));
+                    if (free > 0.5 && growSum > 0)
+                    {
+                        foreach (var it in line)
+                        {
+                            double g = Math.Max(0, it.GetDouble("FlexGrow"));
+                            if (g <= 0) continue;
+                            double add = free * g / growSum;
+                            if (row) it.Values["Width"] = (it.GetDouble("Width") + add).ToString(inv);
+                            else it.Values["Height"] = (it.GetDouble("Height") + add).ToString(inv);
+                        }
+                    }
+                    else if (free < -0.5 && shrinkSum > 0)
+                    {
+                        foreach (var it in line)
+                        {
+                            double sh = Math.Max(0, it.GetDouble("FlexShrink"));
+                            if (sh <= 0) continue;
+                            double size = MainSize(it);
+                            double cut = -free * sh * size / Math.Max(1e-6, line.Sum(x => Math.Max(0, x.GetDouble("FlexShrink")) * MainSize(x)));
+                            if (row) it.Values["Width"] = Math.Max(0, size - cut).ToString(inv);
+                            else it.Values["Height"] = Math.Max(0, size - cut).ToString(inv);
+                        }
+                    }
+                    lineCross.Add(line.Max(it => CrossSize(it) + CrossMargin(it)));
+                }
+                double crossFree = (row ? innerH : innerW) - lineCross.Sum();
+                double lineGap;
+                double crossCursor = (row ? padT : padL) +
+                    Distribute(alignContent, Math.Max(0, crossFree), lines.Count, out lineGap);
+
+                for (int li = 0; li < lines.Count; li++)
+                {
+                    var line = lines[li];
+                    double lineFree = Limit() - line.Sum(it => MainSize(it) + MainMargin(it));
+                    double itemGap;
+                    double cursor = (row ? padL : padT) + Distribute(justify, Math.Max(0, lineFree), line.Count, out itemGap);
+                    foreach (var it in line)
+                    {
+                        double mL = row ? it.GetDouble("FlexMarginLeft") : it.GetDouble("FlexMarginTop");
+                        double mR = row ? it.GetDouble("FlexMarginRight") : it.GetDouble("FlexMarginBottom");
+                        cursor += mL;
+                        double itemCross = CrossSize(it);
+                        double cT = row ? it.GetDouble("FlexMarginTop") : it.GetDouble("FlexMarginLeft");
+                        double cB = row ? it.GetDouble("FlexMarginBottom") : it.GetDouble("FlexMarginRight");
+                        double crossPos;
+                        bool stretch = align == 0 || align == 4;
+                        if (stretch && it.Get(row ? "Height" : "Width") == null)
+                        {
+                            double grown = Math.Max(0, lineCross[li] - cT - cB);
+                            if (row) { it.Values["Height"] = grown.ToString(inv); itemCross = grown; }
+                            else { it.Values["Width"] = grown.ToString(inv); itemCross = grown; }
+                            crossPos = cT;
+                        }
+                        else
+                        {
+                            crossPos = align switch
+                            {
+                                1 => cT,
+                                2 => (lineCross[li] - itemCross) / 2,
+                                3 => lineCross[li] - itemCross - cB,
+                                _ => cT,
+                            };
+                        }
+                        double x = row ? cursor : crossCursor + crossPos;
+                        double y = row ? crossCursor + crossPos : cursor;
+                        listPos[it.Name] = (x, y);
+                        cursor += itemCross * 0 + (row ? SizeOf(it).W : SizeOf(it).H) + mR;
+                    }
+                    crossCursor += lineCross[li] + lineGap;
+                }
+            }
+
 
             // Attach parents before children so every element can resolve its absolute
             // origin, which PosType 1/8/11 need (they are window-relative, not parent-relative).
@@ -606,6 +755,7 @@ namespace MapUiApp.Engine
                                 placeholderSize = placeholderFontSize;
                                 placeholderBrush = new SolidColorBrush(placeholderColor);
                             }
+
                             var placeholderBlock = new TextBlock
                             {
                                 Text = placeholder,
