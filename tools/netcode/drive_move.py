@@ -59,27 +59,65 @@ def find_window():
 
 
 def focus(hwnd):
-    """Force the game window foreground (ALT trick + thread attach); retries, returns fg."""
+    """Gentle foreground attempt (no minimize/restore - that can kill fullscreen clients).
+
+    Focus is NOT required for the game to see keys: the engine polls GetAsyncKeyState, which
+    reflects the global async key state produced by SendInput regardless of the foreground
+    window. This only improves the odds that the client also gets mouse activation."""
     k32 = ctypes.windll.kernel32
     SW_RESTORE = 9
-    VK_MENU = 0x12
-    for _ in range(5):
+    u32.AllowSetForegroundWindow(0xFFFFFFFF)
+    for _ in range(3):
         if u32.GetForegroundWindow() == hwnd:
             return hwnd
         if u32.IsIconic(hwnd):
             u32.ShowWindow(hwnd, SW_RESTORE)
-        u32.keybd_event(VK_MENU, 0, 0, 0)
-        u32.keybd_event(VK_MENU, 0, KEYEVENTF_KEYUP, 0)
         fg = u32.GetForegroundWindow()
         tid_fg = u32.GetWindowThreadProcessId(fg, None)
         tid_us = k32.GetCurrentThreadId()
         u32.AttachThreadInput(tid_us, tid_fg, True)
         u32.SetForegroundWindow(hwnd)
-        u32.BringWindowToTop(hwnd)
-        u32.SetFocus(hwnd)
         u32.AttachThreadInput(tid_us, tid_fg, False)
         time.sleep(0.4)
     return u32.GetForegroundWindow()
+
+
+class MOUSEINPUT(ctypes.Structure):
+    _fields_ = [("dx", w.LONG), ("dy", w.LONG), ("mouseData", w.DWORD),
+                ("dwFlags", w.DWORD), ("time", w.DWORD),
+                ("dwExtraInfo", ctypes.POINTER(ctypes.c_ulong))]
+
+
+class MOUSE_INPUT(ctypes.Structure):
+    class _U(ctypes.Union):
+        _fields_ = [("mi", MOUSEINPUT), ("pad", ctypes.c_byte * 32)]
+
+    _anonymous_ = ("u",)
+    _fields_ = [("type", w.DWORD), ("u", _U)]
+
+
+def click_center(hwnd):
+    """Left-click the window center via SendInput (activates 3D input focus on some clients)."""
+    r = w.RECT()
+    u32.GetWindowRect(hwnd, ctypes.byref(r))
+    x = (r.left + r.right) // 2
+    y = (r.top + r.bottom) // 2
+    SW = 3840
+    SH = 2160
+    ax = int(x * 65535 / (SW - 1))
+    ay = int(y * 65535 / (SH - 1))
+    MOUSEEVENTF_MOVE = 0x0001
+    MOUSEEVENTF_ABSOLUTE = 0x8000
+    MOUSEEVENTF_LEFTDOWN = 0x0002
+    MOUSEEVENTF_LEFTUP = 0x0004
+    for flags in (MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE,
+                  MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTDOWN,
+                  MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTUP):
+        inp = MOUSE_INPUT()
+        inp.type = 0
+        inp.mi = MOUSEINPUT(ax, ay, 0, flags, 0, None)
+        u32.SendInput(1, ctypes.byref(inp), ctypes.sizeof(MOUSE_INPUT))
+        time.sleep(0.08)
 
 
 def post_key(hwnd, key, down):
@@ -113,6 +151,8 @@ def main():
     sequence = "default"
     key = None
     hold = 2.0
+    click = False
+    do_focus = False
     args = sys.argv[1:]
     i = 0
     while i < len(args):
@@ -124,6 +164,10 @@ def main():
             key = args[i + 1]; i += 2
         elif args[i] == "--hold" and i + 1 < len(args):
             hold = float(args[i + 1]); i += 2
+        elif args[i] == "--click":
+            click = True; i += 1
+        elif args[i] == "--focus":
+            do_focus = True; i += 1
         else:
             i += 1
     wins = find_window()
@@ -131,11 +175,14 @@ def main():
         print("no KGWin32App window")
         return 1
     hwnd = wins[0]
-    fg = focus(hwnd)
+    fg = focus(hwnd) if do_focus else u32.GetForegroundWindow()
     print("window hwnd=%s focus now=%s mode=%s" % (hwnd, fg, mode), flush=True)
-    if fg != hwnd:
-        print("FOCUS FAILED - refusing to send input to the wrong window")
-        return 2
+    if do_focus and fg != hwnd:
+        print("note: focus not held; SendInput still feeds GetAsyncKeyState (global async state)")
+    if click:
+        click_center(hwnd)
+        print("clicked window center (activation)", flush=True)
+        time.sleep(0.4)
     if key:
         drive(mode, hwnd, key, hold)
     elif sequence == "default":

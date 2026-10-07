@@ -86,6 +86,27 @@ def screen_hash():
         return None
 
 
+def newest_stub_log():
+    best = None
+    try:
+        for f in os.listdir(r"C:\jx3tmp"):
+            if f.startswith("game_stub") and f.endswith(".log"):
+                p = os.path.join(r"C:\jx3tmp", f)
+                m = os.path.getmtime(p)
+                if best is None or m > best[0]:
+                    best = (m, p)
+    except OSError:
+        pass
+    return best[1] if best else None
+
+
+def stub_size(path):
+    try:
+        return os.path.getsize(path)
+    except OSError:
+        return -1
+
+
 def check(pid, hwnd, check_secs):
     res = ctypes.c_size_t()
     r = u32.SendMessageTimeoutW(hwnd, 0, 0, 0, SMTO_ABORTIFHUNG | SMTO_BLOCK, 1500, ctypes.byref(res))
@@ -181,12 +202,17 @@ def main():
     ap.add_argument("--interval", type=float, default=5.0)
     ap.add_argument("--frozen-secs", type=float, default=90.0,
                     help="hung AND static screen for this long -> frozen (0 = immediate on hang)")
+    ap.add_argument("--stuck-secs", type=float, default=180.0,
+                    help="window responsive but screen static AND no client packets for this long -> stuck")
     ap.add_argument("--out", default=r"C:\jx3tmp")
     ap.add_argument("--pid", type=int, default=None)
     args = ap.parse_args()
 
     stable_since = None
     last_hash = None
+    stuck_since = None
+    last_stub = None
+    last_stub_size = None
     while True:
         pid = args.pid or W.find_client_pid()
         if not pid:
@@ -214,18 +240,32 @@ def main():
         else:
             stable_since = None
         last_hash = h
+        # stuck: responsive window, static screen, and no client packets (stub log not growing)
+        stub = newest_stub_log()
+        size = stub_size(stub) if stub else -1
+        if h is not None and h == last_hash and size == last_stub_size and stub == last_stub:
+            if stuck_since is None:
+                stuck_since = now
+        else:
+            stuck_since = now
+        last_stub = stub
+        last_stub_size = size
         frozen = False
+        stuck = False
         if info["no_pump"] and info["hung_flag"]:
             if args.frozen_secs <= 0:
                 frozen = True
             elif stable_since is not None and (now - stable_since) >= args.frozen_secs:
                 frozen = True
-        info["frozen"] = frozen
-        tag = "FROZEN" if frozen else ("hung" if info["no_pump"] and info["hung_flag"] else "ok")
-        print("[%s] pid=%d no_pump=%s hung=%s cpu=%.2f stable=%.0fs -> %s" % (
+        elif args.stuck_secs > 0 and stuck_since is not None and (now - stuck_since) >= args.stuck_secs:
+            stuck = True
+        info["frozen"] = frozen or stuck
+        tag = "FROZEN" if frozen else ("STUCK" if stuck else ("hung" if info["no_pump"] and info["hung_flag"] else "ok"))
+        print("[%s] pid=%d no_pump=%s hung=%s cpu=%.2f stable=%.0fs stuck=%.0fs -> %s" % (
             time.strftime("%H:%M:%S"), pid, info["no_pump"], info["hung_flag"], info["cpu"],
-            (now - stable_since) if stable_since else 0.0, tag), flush=True)
-        if frozen:
+            (now - stable_since) if stable_since else 0.0,
+            (now - stuck_since) if stuck_since else 0.0, tag), flush=True)
+        if frozen or stuck:
             d, report = grab(pid, wins[0], info, args.out)
             print("\n".join(report), flush=True)
             print("evidence dir: %s" % d, flush=True)
