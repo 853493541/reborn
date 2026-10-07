@@ -4877,7 +4877,13 @@ int main(void)
                         // 1849 fails and no scene is created; with it the scene
                         // is created but an engine cleanup derefs the field as an
                         // object (caught, non-fatal). See EXPERIENCES 2026-10-06.
-                        logf("[host] frame60: movie name hook -> %d", installMovieNameHook());
+                        {
+                            char nmFlag[8] = {0};
+                            int mnOk = (GetEnvironmentVariableA("RC_HOST_NOMOVIENAME",
+                                                                nmFlag, sizeof(nmFlag)) != 0)
+                                ? -1 : installMovieNameHook();
+                            logf("[host] frame60: movie name hook -> %d", mnOk);
+                        }
                         logf("[host] frame60: ctx shadow hook -> %d", installCtxShadowHook());
                         // probe the KGCommon file-system global (the engine's
                         // destination-scene name resolution needs it)

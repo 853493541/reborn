@@ -3478,5 +3478,15 @@ HIGH-confidence findings:
   scene/player objects directly. The host has the logic world and scene/player now; the
   missing link is the logic->represent event dispatch.
 - Evidence: host_exe240.out, host_exe241.out.
+
+## 2026-10-07 - movieNameFix confirmed required (not the manager cause)
+
+- Added `RC_HOST_NOMOVIENAME` to skip the `movieNameFix` deviation for testing. Run 242
+  (hook off): `CreateRLScene -> 0` (S_OK) but `GetRLScene(2) -> NULL` (no scene) - the
+  deviation is genuinely required for the scene to exist (matches the registered
+  deviation: the sandbox map has no shadow-scene, line 1849). Managers still absent.
+- So `movieNameFix` is not the cause of the missing actor/dummy managers.
+- Gate 4 remains blocked on the logic->represent dispatcher scene-enter (Phase B).
+- Evidence: host_exe242.out.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
