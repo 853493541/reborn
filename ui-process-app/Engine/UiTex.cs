@@ -49,7 +49,10 @@ namespace MapUiApp.Engine
             TextureWidth = BitConverter.ToInt32(b, 4);
             TextureHeight = BitConverter.ToInt32(b, 8);
             int count = Math.Max(0, BitConverter.ToInt32(b, 12));
-            TextureName = Encoding.ASCII.GetString(b, 24, 64).TrimEnd('\0');
+            // The texture-name field is GBK (game text): an em-dash name like
+            // `Help—Bg.Tga` (0xA1AA) decoded as ASCII became two junk chars and the
+            // sibling texture was never found.
+            TextureName = MapUiApp.Engine.TextFile.DecodeGameText(b, 24, 64).TrimEnd('\0');
             var frames = new List<UiTexFrame>(count);
             for (int i = 0; i < count; i++)
             {
@@ -141,12 +144,30 @@ namespace MapUiApp.Engine
                 {
                     _textureLoaded = true;
                     var directory = System.IO.Path.GetDirectoryName(Path);
-                    var file = _assets.ResolveSibling(directory, TextureName);
-                    if (file != null)
+                    // The atlas's frame extent decides which sibling texture is usable: a
+                    // stale small tga beside the real dds would crop outside the image
+                    // (Cangjian: 128x128 tga vs 868x428 dds for a 866x428 frame span).
+                    double needW = 0, needH = 0;
+                    foreach (var f in Frames)
                     {
-                        try { _texture = TextureLoader.Load(file); }
-                        catch { _texture = null; }
+                        needW = Math.Max(needW, f.X + f.W);
+                        needH = Math.Max(needH, f.Y + f.H);
                     }
+                    BitmapSource fallback = null;
+                    foreach (var file in _assets.ResolveSiblingCandidates(directory, TextureName))
+                    {
+                        BitmapSource loaded;
+                        try { loaded = TextureLoader.Load(file); }
+                        catch { continue; }
+                        if (loaded == null) continue;
+                        fallback ??= loaded;
+                        if (loaded.PixelWidth + 0.5 >= needW && loaded.PixelHeight + 0.5 >= needH)
+                        {
+                            _texture = loaded;
+                            return _texture;
+                        }
+                    }
+                    _texture = fallback;
                 }
                 return _texture;
             }

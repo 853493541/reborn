@@ -691,14 +691,21 @@ namespace UiProcessApp
         }
 
         /// <summary>Per-item issues from the build: placeholder art and unresolved string
-        /// ids (the reasons shown in the checklist; out-of-bounds is added after measure).</summary>
+        /// ids (the reasons shown in the checklist; out-of-bounds is added after measure).
+        /// `TextureName=no`/`0` placeholders are intentional (the engine assigns that art
+        /// at runtime) and are not flagged.</summary>
         private static System.Collections.Generic.Dictionary<string, string> CollectItemIssues(UiBuildResult build)
         {
             var issues = new System.Collections.Generic.Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             foreach (var p in build.Placeholders)
             {
                 var name = p.Split(' ')[0];
-                if (!string.IsNullOrEmpty(name) && !issues.ContainsKey(name)) issues[name] = "缺图";
+                if (string.IsNullOrEmpty(name) || issues.ContainsKey(name)) continue;
+                var bracket = p.IndexOf('[');
+                var detail = bracket >= 0 ? p.Substring(bracket + 1).TrimEnd(']') : "";
+                if (detail.Contains("no Image") || detail.StartsWith("Image 0 ") || detail.StartsWith("Image frame"))
+                    continue;  // intentional runtime-assigned art
+                issues[name] = "缺图";
             }
             foreach (var u in build.UnresolvedStrings)
             {

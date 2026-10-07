@@ -48,6 +48,25 @@ namespace MapUiApp.Engine
             return null;
         }
 
+        /// <summary>All existing texture candidates for a sibling name, in preference
+        /// order (the direct name first, then stem.tga/.dds/.png). The atlas loader uses
+        /// this to skip a stale texture that cannot cover the atlas's frame extent
+        /// (Cangjian ships a 128x128 tga beside the real 868x428 dds).</summary>
+        public System.Collections.Generic.List<string> ResolveSiblingCandidates(string directory, string fileName)
+        {
+            var list = new System.Collections.Generic.List<string>();
+            if (string.IsNullOrWhiteSpace(fileName)) return list;
+            var direct = FindChild(directory, fileName);
+            if (direct != null && File.Exists(direct)) list.Add(direct);
+            var stem = Path.GetFileNameWithoutExtension(fileName);
+            foreach (var extension in new[] { ".tga", ".dds", ".png" })
+            {
+                var alternative = FindChild(directory, stem + extension);
+                if (alternative != null && File.Exists(alternative) && !list.Contains(alternative)) list.Add(alternative);
+            }
+            return list;
+        }
+
         private string ResolveInternal(string relative)
         {
             var parts = relative.Replace('\\', '/').Split('/', StringSplitOptions.RemoveEmptyEntries);
