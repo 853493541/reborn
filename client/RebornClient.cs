@@ -1534,6 +1534,20 @@ internal static class RebornClient
         // Stand(); sheath = SetSheath flag (gates: sitting blocks it; the
         // fight/bird/horse/tower/buff gates are always false in the host).
         bool sitting = false, sheathOn = false;
+        // mount core (client/MountSystem.cs, W4 horse phase 1): RC_MOUNT_RIDE=0..3
+        // selects the horse model; RC_HORSE_* / RC_MOUNT_CLIP_* override the
+        // extracted ride_rush values.
+        MountState mount = null;
+        {
+            int mride = 0;
+            int.TryParse(Env("RC_MOUNT_RIDE", "0"), out mride);
+            mount = new MountState(mride,
+                Env("RC_HORSE_MODEL", ""),
+                Env("RC_HORSE_CLIP_IDLE", ""), Env("RC_HORSE_CLIP_RUN", ""),
+                Env("RC_HORSE_CLIP_JUMP", ""),
+                Env("RC_MOUNT_CLIP_RIDE", ""), Env("RC_MOUNT_CLIP_JUMP", ""));
+            Log("mount: data ride=" + mride + " model='" + mount.Model + "' rider='" + mount.RiderClip + "'");
+        }
         long sheathDrawUntil = 0;   // draw transition window (拔剑 start clip)
         int unhandledCmd = 0;
         string lastUnhandled = "";
@@ -1544,6 +1558,9 @@ internal static class RebornClient
         bool mvAuth = false, mvAuthOff = false, mvJumped = false, mvTurn = false, mvTurnDone = false;
         bool mvStrafe = false, mvStrafeDone = false, mvBack = false, mvBackDone = false, mvDrop = false, mvDone = false;
         bool mvSit = false, mvSitDone = false, mvSheath = false, mvSheathDone = false;
+        bool mountTest = Env("RC_MOUNT_TEST", "0") == "1";
+        bool mtMounted = false, mtFwd = false, mtJump1 = false, mtJump2 = false, mtStop = false;
+        bool mtMount2 = false, mtDown = false, mtDone = false;
         bool mvWA = false, mvWADone = false, mvWD = false, mvWDDone = false;
         int demoRmbWa = 0;
         int.TryParse(Env("RC_DEMO_RMBWA", "0"), out demoRmbWa);   // 1 = hold RMB, 2 = + orbit drag
@@ -1631,6 +1648,22 @@ internal static class RebornClient
                             if (sheathOn) sheathDrawUntil = (long)Environment.TickCount + 800;
                             Log("sheath: " + (sheathOn ? "drawn" : "sheathed"));
                         }
+                    }
+                    break;
+                case "RIDEHORSE":
+                    // decoded action RideHorse();/DownHorse(); (default hotkey T=84).
+                    // Guards: mount needs ground + not sitting (the decoded
+                    // [+0x208]/[+0x160] guards map to host state; inventory-side
+                    // preconditions are deviation 2 in MountSystem.cs).
+                    if (down)
+                    {
+                        if (!mount.Mounted)
+                        {
+                            if (!grounded) Log("mount rejected: airborne (RideHorse guard)");
+                            else if (sitting) Log("mount rejected: sitting");
+                            else mount.Mount(scene, px, py, pz, curYaw, Log);
+                        }
+                        else mount.Dismount(scene, Log);
                     }
                     break;
                 default:
@@ -2067,6 +2100,15 @@ internal static class RebornClient
         // the merge reconciles the old 16 fps 96/320 conversion to the engine's
         // verified 15 Hz tick).
         float pSpeed = 90f, pRun = 300f;
+        // Mounted speeds (CommonNumber CharacterRideWalkSpeed=8 /
+        // CharacterRideRunSpeed=40 u/logic-frame at the 15 Hz tick -> 120/600 u/s;
+        // proof/gravity/number.krl.txt).
+        float rideWalk = 120f, rideRun = 600f;
+        {
+            float rv;
+            if (float.TryParse(Env("RC_RIDE_WALK", ""), out rv) && rv > 0f) rideWalk = rv;
+            if (float.TryParse(Env("RC_RIDE_RUN", ""), out rv) && rv > 0f) rideRun = rv;
+        }
         // Real character size (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md;
         // 1 unit = 1 cm): the loaded 花萝 actor (f1_1004 head + f1_2227 dress
         // parts) measures 115.58 u = 1.16 m from the extracted bind-pose
@@ -2781,6 +2823,20 @@ internal static class RebornClient
                 if (now >= 12150 && !sprintT3) { sprintT3 = true; keyCommand("MOVEFORWARD", true); }
                 if (now >= 12650 && !sprintT4) { sprintT4 = true; keyCommand("MOVEFORWARD", false); }
             }
+            if (mountTest)
+            {
+                // scripted mount run (W4 proof): mount -> mounted run -> horse
+                // jump -> midair second press (dismount + normal jump) -> stop ->
+                // remount -> standing dismount. Every step logs its state.
+                if (now >= 2500 && !mtMounted) { mtMounted = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest t=2.5 mount press mounted=" + (mount.Mounted ? 1 : 0)); }
+                if (now >= 3200 && !mtFwd) { mtFwd = true; pW = true; Log("mounttest t=3.2 forward (mounted run)"); }
+                if (now >= 4500 && !mtJump1) { mtJump1 = true; jumpPressed = true; Log("mounttest t=4.5 horse jump"); }
+                if (now >= 5600 && !mtJump2) { mtJump2 = true; jumpPressed = true; Log("mounttest t=5.6 second press midair"); }
+                if (now >= 7500 && !mtStop) { mtStop = true; pW = false; Log(string.Format("mounttest t=7.5 stop mounted={0} grounded={1} pos=({2:F0},{3:F0},{4:F0})", mount.Mounted ? 1 : 0, grounded ? 1 : 0, px, py, pz)); }
+                if (now >= 8500 && !mtMount2) { mtMount2 = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest t=8.5 remount mounted=" + (mount.Mounted ? 1 : 0)); }
+                if (now >= 9800 && !mtDown) { mtDown = true; runCommand("RIDEHORSE", true); runCommand("RIDEHORSE", false); Log("mounttest t=9.8 dismount press mounted=" + (mount.Mounted ? 1 : 0)); }
+                if (now >= 10600 && !mtDone) { mtDone = true; Log(string.Format("mounttest summary mounted={0} clip={1}", mount.Mounted ? 1 : 0, curClip == null ? "-" : Path.GetFileName(curClip))); }
+            }
             if (probeControl && now >= nextProbeMs)
             {
                 nextProbeMs = now + 2000;
@@ -3136,6 +3192,7 @@ internal static class RebornClient
             if (moving)
             {
                 float baseSp = shiftDown ? pRun * 10f
+                            : mount.Mounted ? (walkMode ? rideWalk : rideRun)
                             : walkMode ? pSpeed
                             : pRun;
                 // classical S / S+A / S+D: back-pedal at walk pace (user-
@@ -3145,7 +3202,7 @@ internal static class RebornClient
                 // runs. Joystick always faces the travel -> run tier.
                 bool backPedal = classicalMode && fwdAxis < 0f;
                 bool sideOnly = classicalMode && fwdAxis == 0f && Math.Abs(latAxis) > 0.01f;
-                float sp = (backPedal || sideOnly ? (shiftDown ? pSpeed * 10f : pSpeed) : baseSp) / len;
+                float sp = (backPedal || sideOnly ? (shiftDown ? pSpeed * 10f : mount.Mounted ? rideWalk : pSpeed) : baseSp) / len;
                 float ux = dirX / len, uz = dirZ / len;
                 float heading = (float)Math.Atan2(ux, uz);
                 // turn model (KCharacter::RunTo 0x14031B780; docs/movement/
@@ -3347,6 +3404,40 @@ internal static class RebornClient
             {
                 jumpPressed = false;
                 if (sitting) { sitting = false; Log("sit: stand (jump)"); }
+                bool mountHandled = false;
+                if (mount.Mounted)
+                {
+                    // KCharacter::Jump mounted branches (0x140313A30..A88): the
+                    // horse triple 60/180/11 when jumpCount==0; jumpCount>=1 while
+                    // mounted rejects; at jumpCount==1 the press dismounts first
+                    // (DownHorse) and the normal jump rules then apply.
+                    if (!grounded && jumpCount == 1)
+                    {
+                        mount.Dismount(scene, Log);
+                    }
+                    else if (!grounded)
+                    {
+                        Log("mount jump reject n=" + jumpCount + " (airborne)");
+                        mountHandled = true;
+                    }
+                    else
+                    {
+                        jumpCount = 1;
+                        vy = 180f * 15f * jumpScale;
+                        curJumpGravity = 11f * 225f * jumpScale;
+                        grounded = false;
+                        airStartY = py;
+                        float xySpd = 60f * 15f * jumpScale;
+                        if (len > 0.01f) { vjx = dirX / len * xySpd; vjz = dirZ / len * xySpd; }
+                        else { vjx = 0f; vjz = 0f; }
+                        Log(string.Format(
+                            "mount jump triple=(60,180,11) vy={0:F0} g={1:F0} bonus=0 ([+0x34C] script) pos=({2:F0},{3:F0},{4:F0})",
+                            vy, curJumpGravity, px, py, pz));
+                        mountHandled = true;
+                    }
+                }
+                if (!mountHandled)
+                {
                 if (grounded) jumpCount = 0;
                 int nextJump = jumpCount + 1;
                 bool chainMode = djumpMode == "chain";
@@ -3394,6 +3485,7 @@ internal static class RebornClient
                 else if (djumpLog) Log(string.Format(
                     "djb reject n={0} max={1} grounded={2} mode={3}",
                     nextJump, maxJump, grounded ? 1 : 0, djumpMode));
+                }
             }
 
             // gravity (per-jump magnitude; J0 11 u/f2 -> 2475 u/s2 = the old constant)
@@ -3461,6 +3553,7 @@ internal static class RebornClient
 
             // animation state
             if (skillUntil > now) { /* skill clip playing */ }
+            else if (mount.Mounted) setClip(!grounded ? mount.RiderJump : mount.RiderClip);
             else if (!grounded) setClip(vy > 0f ? (jumpCount > 1 && clipDJump.Length > 0 ? clipDJump : clipJump) : clipFall);
             else if (now < landClipUntil) setClip(clipLand);
             else if (sitting) setClip(clipSit);
@@ -3483,6 +3576,8 @@ internal static class RebornClient
                 placePlayer(rpx, rpy, rpz, curYaw);
                 lastModelX = rpx; lastModelY = rpy; lastModelZ = rpz; lastModelYaw = curYaw;
             }
+            if (mount.Mounted)
+                mount.Update(scene, rpx, rpy, rpz, curYaw, grounded, moving, Log);
             // re-attach whenever the dummy handle changes, including while
             // stationary (the hide/show path re-adds the dummy; without this
             // the animated model stays on the old handle and can remain visible
@@ -4584,10 +4679,12 @@ internal static class RebornClient
             if (now - lastHud >= 250)
             {
                 lastHud = now;
-                string state = skillUntil > now ? "SKILL" : !grounded ? ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : ""))
+                string state = (mount.Mounted ? "MOUNT " : "")
+                             + (skillUntil > now ? "SKILL" : !grounded ? ((vy > 0f ? "JUMP" : "FALL") + (jumpCount > 1 ? jumpCount.ToString() : ""))
                              : now < landClipUntil ? "LAND"
-                             : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : "RUN") : "IDLE";
+                             : moving ? (shiftDown ? "RUN x10" : walkMode ? "WALK" : "RUN") : "IDLE");
                 float moveSpeed = shiftDown ? pRun * 10f
+                                : mount.Mounted ? (walkMode ? rideWalk : rideRun)
                                 : walkMode ? pSpeed
                                 : pRun;
                 double hudFovFactor = 1.0;
@@ -4600,18 +4697,20 @@ internal static class RebornClient
                 if (skillMoveRow != null)
                     camExtra += string.Format(" skillmove s{0}", skillMoveStage);
                 hud.SetText(string.Format(
-                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}{11}\nclip {12}\nhitch {13}ms\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | C teleport | Esc info\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view\nF5 row | F6/F8 fov | PgUp/PgDn dist",
+                    "JX3\nfps {0}\npos {1:F0},{2:F0},{3:F0}\nstate {4}{5} hits {6}\nspeed {7:F1} \u5C3A/s\ncam {8} yaw {9:F2} dist {10:F0}{11}\nclip {12}\nmount {13}\nhitch {14}ms\nWASD move | / walk-run | Shift 10x | Space jump | 1 skill | T mount | C teleport | Esc info\nLMB drag = camera | RMB drag = camera+turn | +/- zoom | F11 reset | Home/End view\nF5 row | F6/F8 fov | PgUp/PgDn dist",
                     fps, px, py, pz, state, blocked ? " (blocked)" : "", blockedEvents,
                     moving ? moveSpeed / 64f : 0f,
                     camSys.Mode, camSys.Yaw, camSys.Distance, camExtra,
                     curClip == null ? "-" : Path.GetFileName(curClip),
+                    mount.Mounted ? ("on ride " + mount.RideType) : "off",
                     hudHitchMs));
                 if (hudLog)
                     Log("hudtext " + string.Format(
-                        "fps={0} cam={1} yaw={2:F2} dist={3:F0} fov={4:F0}deg obst={5} len={6:F0}{7} hitch={8}ms",
+                        "fps={0} cam={1} yaw={2:F2} dist={3:F0} fov={4:F0}deg obst={5} len={6:F0}{7} hitch={8}ms mount={9}",
                         fps, camSys.Mode, camSys.Yaw, camSys.Distance,
                         hudFovFactor * VideoSettings.DefaultAngle * 180.0 / Math.PI,
-                        camObst.Obstructed ? "ON" : "off", dbgLen, camExtra, hudHitchMs));
+                        camObst.Obstructed ? "ON" : "off", dbgLen, camExtra, hudHitchMs,
+                        mount.Mounted ? ("on" + mount.RideType) : "off"));
                 hudHitchMs = 0;
                 // top-left control-mode name (always visible)
                 hud.SetModeText("CONTROL: "
@@ -4774,20 +4873,23 @@ internal static class RebornClient
                 }
                 float curSpd = !moving ? 0f
                              : shiftDown ? pRun * 10f
+                             : mount.Mounted ? (walkMode ? rideWalk : rideRun)
                              : walkMode ? pSpeed
                              : pRun;
-                string moveMode = !moving ? "IDLE"
+                string moveMode = !moving ? (mount.Mounted ? "RIDE_IDLE" : "IDLE")
                                 : shiftDown ? "RUN10"
+                                : mount.Mounted ? "RIDE"
                                 : walkMode ? "WALK"
                                 : "RUN";
-                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}) auto={18} vj=({19:F0},{20:F0}) cmds_unhandled={21}({22}) gait={23} mode={24} ctx='{25}' sprint={26} hitch={27}{11} clip={12}",
+                Log(string.Format("t={0}s fps={1} pos=({2:F0},{3:F0},{4:F0}) vy={5:F0} grounded={6} blocked={7} hits={8} colCalls={9} colBlocked={10} spd={13:F0}u/s({14}) yaw={15:F2} dir=({16:F2},{17:F2}) auto={18} vj=({19:F0},{20:F0}) cmds_unhandled={21}({22}) gait={23} mode={24} ctx='{25}' sprint={26} hitch={27}{11} clip={12} mount={28}",
                     now / 1000, fps, px, py, pz, vy, grounded, blocked, blockedEvents,
                     colCalls, colBlockedCalls, nearInfo,
                     curClip == null ? "-" : Path.GetFileName(curClip),
                     curSpd, moveMode, curYaw, dirX, dirZ, autorunOn ? 1 : 0, vjx, vjz,
                     unhandledCmd, lastUnhandled, gait,
                     CameraOperationMode.Name(cameraSettings.OperationMode),
-                    hotkeys.Context, sprintOn ? 1 : 0, hitchMaxMs));
+                    hotkeys.Context, sprintOn ? 1 : 0, hitchMaxMs,
+                    mount.Mounted ? ("on" + mount.RideType) : "off"));
                 hitchMaxMs = 0;
             }
             if (f9At > 0 && !f9Fired && now >= f9At)
