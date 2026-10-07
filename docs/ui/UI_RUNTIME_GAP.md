@@ -20,8 +20,8 @@ This report measures what is **still dropped** �?the remaining calls per windo
 | state | 0 | DROPPED —control state (enable/check/expand/page) |
 | animation | 0 | DROPPED — animation group/state (static render uses the authored frame) |
 | interaction | 0 | DROPPED —drag/interaction registration (not static layout) |
-| consumed | 6833 | applied by the viewer today |
-| noise | 11162 | engine plumbing, no visual state (lookup/events/getters) |
+| consumed | 6880 | applied by the viewer today |
+| noise | 11191 | engine plumbing, no visual state (lookup/events/getters) |
 
 State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 + state 0).
 
@@ -65,7 +65,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | AccelerateBall | liked | 13 | 0 | 0 | 0 | 0 | 2 | 0 | 3 |
 | AccountException | panels-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | AccountFriendTip | panels-ui | 2 | 0 | 0 | 0 | 0 | 1 | 0 | 2 |
-| AchievementPanel | liked | 21 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| AchievementPanel | liked | 101 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | AchievementTip | menus-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | ActionBar | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | ActionBarBind | recommended | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
@@ -382,7 +382,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | DynamicNpcMorphPhoto | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | DynamicPetBar | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | DynamicRougeActionBar | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 58 |
-| DynamicRougeActionBarSetting | modes-ui | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| DynamicRougeActionBarSetting | modes-ui | 26 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | DynamicSkillBar | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | DynamicWeatherSetting | other-ui | 11 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | EULAPanel | modes-ui | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 9 |
@@ -437,7 +437,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | FBShowPanel | other-ui | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | FBShowTeam | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | FBTimeRank | other-ui | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
-| FBlist | other-ui | 14 | 0 | 0 | 0 | 0 | 1 | 1 | 260 |
+| FBlist | other-ui | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 260 |
 | FBlistBossKillTip | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | FEActivationPanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | FEEquipExtractPanel | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -823,7 +823,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | NewPetInfo | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | NewPetSkill | recommended | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | NewPlayerBF | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| NewQuestPanel | other-ui | 22 | 0 | 0 | 0 | 0 | 1 | 0 | 51 |
+| NewQuestPanel | other-ui | 24 | 0 | 0 | 0 | 0 | 1 | 0 | 51 |
 | NewRecipeTip | panels-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | NewSafePanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | NewSkillBar | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -982,7 +982,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | RemainingTimeNotify | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | RemoteCDProcess | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | RenewRule | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| ReputationPanel | panels-ui | 87 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| ReputationPanel | panels-ui | 47 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | ReputationPanelNew | liked | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | Resourcebar | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | RevivePanel | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
@@ -1097,7 +1097,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 | SmallCalender | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | SniperPanel | modes-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | SnsPanel | modes-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| SocialPanel | liked | 43 | 0 | 0 | 0 | 0 | 2 | 0 | 51 |
+| SocialPanel | liked | 45 | 0 | 0 | 0 | 0 | 2 | 0 | 51 |
 | SoundSettingPanel | liked | 52 | 0 | 0 | 0 | 0 | 0 | 1 | 2 |
 | SpeedEffect | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | SpeedRankPanel | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
@@ -1242,7 +1242,7 @@ State-bearing dropped calls: **1** (item-creation 0 + arrangement 0 + render 1 +
 
 ### Player
 
-- `render` FromIconID Image_Player 14659
+- `render` FromIconID Image_Player 0
 
 ## Fix status
 

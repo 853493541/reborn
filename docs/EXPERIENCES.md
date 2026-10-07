@@ -2423,3 +2423,19 @@ solved it, and what is still open. **Newest at the bottom.**
   SetTextAutoTipEnabled are consumed as static no-ops. Gap report: animation + tooltip calls
   consumed; visual drops stay **1** (FromIconID, data-blocked), interaction 10 (drag).
 - Gates: selftest 1240/0/0; commits e539313, a4084aa, 9de9e20.
+
+### 2026-10-06 ? UI ? plan phases 5-6 + Phase 1 start (drag, tails, AchievementPanel)
+- Phase 5 (drag): SetDragArea/EnableDrag/RegisterLButtonDrag consumed; moveable windows drag by
+  their root background (SetDragArea bounds respected, canvas translate) - interaction drops 10 -> 0.
+- Phase 6 tails: module_info.xml re-decoded from the pak as GB18030 (the tracked copy had
+  U+FFFD-mangled CJK names) - the 40 remaining manifest entries (22 mobile Traits, 4 Config/Default,
+  14 map includes) all probe MISS at their exact paths (not shipped in this client build). Art tail:
+  the 601 remaining MISS are absent at the referenced paths (the 205 HIT were copied earlier).
+- Phase 1 start: a VM-level TYPEERROR probe (temp ldebug.c patch printing the failing pcidx/opcode +
+  function size, matched against the luac listing) located AchievementPanel's nil index:
+  Table_FindAchievementProgress returned nil and the script indexed it. Harness now wraps
+  Table_Find*/Table_Get* to return a permissive proxy row when the stub data has no match -
+  **AchievementPanel OK with 202 mutations** (liked). FBlist trades places (its Init takes the
+  proxy path and indexes nil elsewhere; documented, net window count 1180).
+- Gates: replay 1180 OK / 22 ERR / 9 NOENTRY (same count, better state); selftest 1240/0/0;
+  commits fa2cd9a, 3a7582c, 57902df.
