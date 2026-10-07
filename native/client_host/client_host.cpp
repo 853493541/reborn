@@ -5454,6 +5454,24 @@ int main(void)
                         __except (EXCEPTION_EXECUTE_HANDLER)
                         { logf("[host] frame60: char scene get fault"); }
                         logf("[host] frame60: g_rlActorMgr = %p", g_rlActorMgr);
+                        if (g_repSingleton != NULL)
+                        {
+                            __try
+                            {
+                                void* am = (BYTE*)g_repSingleton + 0x25150;
+                                void* avt = *(void**)am;
+                                logf("[host] frame60: actor mgr @ singleton+0x25150 vt=rep+0x%llX",
+                                     (unsigned long long)((DWORD64)avt -
+                                     (DWORD64)g_repModule));
+                                void* actor = ((void* (__fastcall *)(void*, unsigned,
+                                                      unsigned))
+                                               ((BYTE*)g_repModule + 0x36D3E5))(am, 0, 0);
+                                logf("[host] frame60: RLActorMgrNT::CreateRLActorNT(mgr,0,0) -> %p",
+                                     actor);
+                            }
+                            __except (EXCEPTION_EXECUTE_HANDLER)
+                            { logf("[host] frame60: actor mgr probe fault"); }
+                        }
                         if (scene60 == NULL)
                         {
                         __try

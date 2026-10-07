@@ -3548,5 +3548,25 @@ HIGH-confidence findings:
   `len` mistakes. Still did NOT create the represent managers (`g_rlActorMgr=0`), so it
   is necessary-but-not-sufficient for Gate 4.
 - Evidence: host_exe245.out (line 834 error), host_exe246.out (error gone).
+
+## 2026-10-07 - BREAKTHROUGH: RLActorMgrNT exists at singleton+0x25150 (embedded member)
+
+- CORRECTION: the represent's `RLActorMgrNT` is NOT missing - it is an embedded member
+  of the SO3Represent singleton at **singleton+0x25150** (confirmed at run 247:
+  `actor mgr @ singleton+0x25150 vt=rep+0xC8FF98`). The singleton ctor
+  (`CreateSO3Represent` `0x3E0CC0`) calls the manager ctor (`rep+0x36B590`, sets vtable
+  `rep+0xC8FF98`) with `rcx=singleton+0x25150` and fully initializes its pool
+  (+0x5D8..+0x608, +0x610, +0x640). Only the manager's `Init` (which registers event
+  handlers) never runs.
+- `RLActorMgrNT::CreateRLActorNT` = `rep+0x36D3E5(this=mgr, edx=representID, r8d=type)`:
+  allocates/reuses an actor from the +0x610 pool (`0x399F`), calls the RLActorNT ctor
+  (`rep+0x358C20`: stores representID->[actor+0x10], type->[actor+0x14]) then
+  `RLActorNT::Init` (`rep+0x35BF60`: looks up the representID via `[rep+0xEDAFA8]` +
+  `0x20379`, stores the unit at [actor+0x28]).
+- Host now probes the manager and calls `CreateRLActorNT(mgr,0,0)`; run 248 crashed
+  (0xC0000005) - the args are wrong (representID=0 does not resolve; `[rep+0xEDAFA8]`
+  may be null). Next: find F1's representID (the RL unit id; `GetUnit('F1')` returned
+  dword id=0) and the actor type, and verify `[rep+0xEDAFA8]`.
+- Evidence: host_exe247.out (manager vt), host_exe248.out (call crash); static disasm.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
