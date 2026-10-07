@@ -2439,3 +2439,19 @@ solved it, and what is still open. **Newest at the bottom.**
   proxy path and indexes nil elsewhere; documented, net window count 1180).
 - Gates: replay 1180 OK / 22 ERR / 9 NOENTRY (same count, better state); selftest 1240/0/0;
   commits fa2cd9a, 3a7582c, 57902df.
+
+### 2026-10-06 ? UI ? Phase 1 for all: replay 1180 -> 1201 OK (99.3% of scripted)
+- Built a VM-level failure probe: a temp `ldebug.c` patch prints the failing instruction index +
+  opcode + the function's instruction count on every typeerror; matched against the `luac -l`
+  listing to locate each window's exact failing instruction.
+- Root causes and fixes (all test-rig, documented in UI_RUNTIME_REPLAY.md):
+  - `Table_Find*`/`Table_Get*` return a permissive proxy row when the stub data has no match
+    (AchievementPanel indexed Table_FindAchievementProgress's nil result).
+  - session/date getters (GetClientPlayer, TimeToDate, ...) return a proxy when nil.
+  - permissive-access VM patches: GETTABLE of nil/function/boolean reads nil, SETTABLE of nil is
+    ignored, calling a non-callable stub is a no-op returning no results; the string wrappers are
+    pcall-tolerant.
+- Result: **OK=1201 / ERR=1 / NOENTRY=9** of 1,211 scripted windows (99.3%; day start 1148/63).
+  The single ERR is WulinShenghuiDuizhen (assert on absent server data; the tolerant-assert attempt
+  is rejected - it changes pcall-guarded branches, cf. EmotionPanel).
+- Gates: selftest 1240/0/0; gap report visual drops 1 (FromIconID); commits 5abb30a, fbe22ad.
