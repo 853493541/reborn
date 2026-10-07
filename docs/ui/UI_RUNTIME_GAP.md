@@ -19,8 +19,8 @@ This report measures what is **still dropped** — the remaining calls per windo
 | render | 21 | DROPPED — runtime image source/mode/animation |
 | state | 0 | DROPPED — control state (enable/check/expand/page) |
 | interaction | 10 | DROPPED — drag/interaction registration (not static layout) |
-| consumed | 6767 | applied by the viewer today |
-| noise | 11128 | engine plumbing, no visual state (lookup/events/getters) |
+| consumed | 6794 | applied by the viewer today |
+| noise | 11142 | engine plumbing, no visual state (lookup/events/getters) |
 
 State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21 + state 0).
 
@@ -341,7 +341,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | DesertEquipmentChoose | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | DesertItemBuySure | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | DesertItemNumSure | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| DesertPreset | other-ui | 42 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| DesertPreset | other-ui | 54 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | DesertQuickPack | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
 | DesertSell | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | DesertStormInfoPanel | other-ui | 26 | 0 | 0 | 0 | 0 | 0 | 0 | 235 |
@@ -919,7 +919,7 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | PendantUpgrade | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 6 |
 | PendantUpgradeSelect | other-ui | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 6 |
 | PerformanceCollect | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
-| PersonalCard_BirthdaySetPop | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
+| PersonalCard_BirthdaySetPop | ? | 13 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | PersonalCard_CheckOut | ? | 1 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | PersonalCard_Cut | ? | 12 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | PersonalCard_DataEdit | ? | 0 | 0 | 0 | 0 | 0 | ? | ? | ? |
@@ -971,8 +971,8 @@ State-bearing dropped calls: **22** (item-creation 0 + arrangement 1 + render 21
 | QuestTraceList | recommended | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | Questionnaire_FresherExitGame | ? | 2 | 0 | 0 | 0 | 0 | ? | ? | ? |
 | Queue | modes-ui | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 12 |
-| QuickConsumePanel | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
-| QuickConsumeShare | other-ui | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| QuickConsumePanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
+| QuickConsumeShare | other-ui | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | QuitCohabitMessage | other-ui | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
 | RaidDragPanel | other-ui | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | RaidPanel | liked | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 15 |

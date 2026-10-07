@@ -172,6 +172,17 @@ proxyOf = function(sec)
       end
       local fn = methods[k]
       if fn then return fn end
+      if type(k) == "string" and k:match("^%u") then
+        -- Authored child control by name (self.Text_SelectM, self.WndContainer_X):
+        -- the engine exposes child sections as fields; resolve like Lookup before
+        -- falling back to the generic method function (indexing that function aborted).
+        local child = nil
+        for _, s in ipairs(order) do
+          if s.parent == sec.name and s.name == k then child = s break end
+        end
+        if child == nil and sections[k] then child = sections[k] end
+        if child ~= nil then return proxyOf(child) end
+      end
       if type(k) == "string" and k:match("^_") then
         -- engine-assigned data fields (_AutoPosInfo, ...): tables, not methods;
         -- the generic fallback returned a function and the real base libs
