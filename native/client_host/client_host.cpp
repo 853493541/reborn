@@ -1276,6 +1276,33 @@ static LONG WINAPI vehHandler(PEXCEPTION_POINTERS ep)
             // the return address only shows as a code pointer on the stack
             {
                 DWORD64* sp = (DWORD64*)ep->ContextRecord->Rsp;
+                char d[64];
+                // first 24 qwords unfiltered (the immediate return address,
+                // including ntdll/host frames isCodeAddr would skip)
+                for (int i = 0; i < 24; i++)
+                {
+                    DWORD64 v = 0;
+                    __try { v = sp[i]; }
+                    __except (EXCEPTION_EXECUTE_HANDLER) { break; }
+                    HMODULE vm = NULL;
+                    char vn[64] = {0};
+                    if (v > 0x10000 && GetModuleHandleExA(
+                            GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                            GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                            (LPCSTR)v, &vm) && vm != NULL)
+                    {
+                        char mp[MAX_PATH] = {0};
+                        GetModuleFileNameA(vm, mp, MAX_PATH);
+                        const char* bs = strrchr(mp, '\\');
+                        sprintf_s(vn, sizeof(vn), "%s+0x%llX",
+                                  (bs != NULL) ? bs + 1 : mp,
+                                  (unsigned long long)(v - (DWORD64)vm));
+                    }
+                    else
+                        describeAddr(v, vn, sizeof(vn));
+                    logf("[VEH]   raw[%d] 0x%llX %s", i,
+                         (unsigned long long)v, vn);
+                }
                 int shown = 0;
                 for (int i = 0; i < 400 && shown < 24; i++)
                 {
