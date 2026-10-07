@@ -2749,3 +2749,35 @@ angle; if the CDN per-mode rows land, re-derive the view angle with the real
 - NEXT: find the corruption writer - (a) run with a MINIMAL id-4 payload (tiny name, zero
   appearance) to rule our data in/out; (b) or run without the server confirm path; (c) keep the
   crash catcher armed (dmp retry) and, when a dump survives, analyze the heap block.
+
+### 2026-10-07 ❌ V2 CRASH ROOT CAUSE PROVEN from the caught dump: duplicate represent record -> LFH double free
+- The crash catcher's dmp retry worked: 182 MB dump caught at the 23:58:42 crash
+  (`C:\jx3tmp\crashes\1791356323_71276976-*.dmp` + 61 KB XML, same DumpKey BD677BCD...,
+  0xC0000374, TimeToFailure 340 s, CrashMap 龙门寻宝).
+- Minidump analysis (tools/camera/minidump_exc.py + one-off readers):
+  * exception param[0] -> HEAP_FAILURE_INFORMATION on the stack: Version 2, FailureType **8**
+    (heap_failure_lfh_bitmap_corruption), HeapAddress 0x1E0C6A10000, **Address 0x1E3E9D06E00**.
+  * the JX3Represent singleton `JX3RepresentX64+0xF51298` -> obj 0x1E3D4BEE190; its vector at
+    +0x10/+0x18 held 30 pointers with **index 8 == index 9 == 0x1E3E9D06E10** (the block the
+    failure address points at, +0x10 offset). The element is the local player's record
+    (first dword 0x3E9 = role 1001, "avatar" string at +0x28, KRLComponent vtable
+    0x180D0AB10 via RTTI).
+  * call chain (frame return addresses on the crash stack): `ucrtbase free` <-
+    JX3Represent+0x9230DE (0x9230B0: `for (p=begin;p!=end;p+=8) free(*p)`) <- +0x920B5C
+    (0x920B00: also destroys the global singleton) <- +0x5E15CC (~KGameWorldHandler) <-
+    +0x3E3C97 (~SO3Represent). The teardown frees the same LFH block twice -> bitmap corruption.
+- Mechanism: the world-entry/render-scene teardown runs on every engine-session cycle; it frees
+  the singleton record vector. If the record vector contains a duplicate entry at that moment,
+  the free loop double-frees -> 0xC0000374. The duplicate is intermittent (registration race?).
+- Live watcher added: `tools/netcode/watch_represent_array.py` polls the singleton vector and
+  prints elems/dups on change. Observed during loading-retry cycles: 0 -> 18 -> 0 -> 9 (the
+  vector is filled per attempt and cleared by the teardown). Run-to-run confirm time varies
+  5..28 min with engine-session survival; a run with the vector at 18+ entries but no dup
+  survives the teardown.
+- Map facts: the raw client loads the SANDBOX map (`C:\jx3tmp\reborn_sandbox\map\龙门寻宝_s`,
+  1x1 region, WorldOrigin (0,0), covers world X/Y in [0,51200)); spawn 54991 is outside ->
+  `KG3D_Scene::RayIntersection` assert storm is NOT spawn-caused (in-crop spawn 23334,24224,761
+  tested live: asserts persist) -> the ray misses are a sandbox-terrain/ray-data issue.
+- Also: `incident_report.py` now GBK-safe (a report with U+FFFD used to kill the watcher before
+  it could write/print), and `game_server_stub.py --rawlog` captures full C2S payloads (the
+  confirm burst: proto 109/234/254x3/94 then 5).
