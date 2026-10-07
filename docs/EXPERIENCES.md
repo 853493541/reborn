@@ -2883,3 +2883,13 @@ HIGH-confidence findings:
   setup pattern, four verify commands, the merge/revert incident history
   (ec9e3a1 -> a8b37bc, restored at c1869a2), and the commit/never-push/shared-
   resource rules. Evidence: commit a614387.
+
+## 2026-10-06 - Handoff guide: where-to-look block + START HERE marker
+
+- Per user request the guide now opens with its own location: file path
+  docs/engine_host/NEXT_AGENT_HANDOFF.md, worktree
+  C:\Users\Zhibin Ren\Desktop\reborn-iso-skillv2-sandbox, branch
+  agent/skillv2-sandbox, and the README registration row - plus the ordered
+  reading list (guide -> CLIENT_CHARACTER_PLAN.md -> EXPERIENCES 2026-10-06 ->
+  AGENTS section 2/15 -> the host_exe logs). The area index row is marked
+  START HERE. Evidence: commit bc84105.
