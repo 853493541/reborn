@@ -84,8 +84,14 @@ with no AV and no cross-cast replay observed).
    not reproduce on the client; `TANI_BLACKLIST` is now empty and 天绝地灭 plays
    its authored tani (verified `reborn_20261007_181151.log`). Re-add an entry
    only if a tani AVs the client (with repro log + cast context).
-4. **Sequential-tani AV**: casting many different abilities in a row AVs the
-   engine's tag manager (cast guard + restart exists; root cause unfixed).
+4. **Sequential-tani AV** — **resolved 2026-10-07**: the "casting many different
+   abilities AVs at the 9th" was at least partly *per-tani* AVs, not only
+   accumulation. A guarded `RC_CAST_CYCLE` sweep (full map) AVed on
+   花语酥心's tani (single-cast repro too) and, after blacklisting it, on
+   雷震子's tani. With both in `TANI_BLACKLIST` the sweep runs clean: **28 casts,
+   clean shutdown, no AV** (`reborn_20261007_182801.log`). The cast guard still
+   serializes rapid re-casts (keep it); re-run the sweep after game-data updates
+   to catch any new AVing tani.
 5. **Keep the PSS dummy**: the tani's tags render only part of the effects
    (sparks/trail); the PSS is the main visible layer. Dropping it (2026-10-07
    regression) removed the visible effects — reverted.

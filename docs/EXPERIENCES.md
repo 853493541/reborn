@@ -5125,3 +5125,16 @@ if the cache/host frames appear.
   Added to TANI_BLACKLIST (plays base .ani); verified clean
   (reborn_20261007_182006.log, cast done). Sweep to be repeated to find the next
   offending tani.
+
+### 2026-10-07 - v5 - item 4 RESOLVED: sequential-tani AV was per-tani (花语酥心, 雷震子)
+
+- The guarded RC_CAST_CYCLE sweep (full map) AVed on 花语酥心's tani (single-cast
+  repro too, KGEngineCLR.Render) and, after blacklisting it, on 雷震子's tani
+  (single-cast repro too). With both in TANI_BLACKLIST the sweep runs clean:
+  28 casts, clean shutdown, no AV (reborn_20261007_182801.log). So the
+  "sequential-tani AV" was at least partly per-tani AVs, not pure accumulation;
+  the cast guard stays.
+- Caution learned: a regen run from the wrong cwd wrote the *main checkout's*
+  dataset (build_candidates.py resolves its output via __file__, but I invoked
+  the main checkout's script by omitting workdir). Restored the main checkout
+  (timestamp-only diff) and re-ran from the worktree. Always pass workdir.
