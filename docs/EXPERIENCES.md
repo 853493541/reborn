@@ -5175,3 +5175,16 @@ if the cache/host frames appear.
   bursts (a big wolf-head sprite at ~2.4 s + staged shapes), not a repeated
   character animation. Open: confirm whether the user means the character or the
   effect; if the PSS effect itself loops, test the engine dummy-animation loop.
+
+### 2026-10-07 - v5 - timeline clarity: span labels, legend, live engine clip
+
+- The bar's two colours were the steps' authored spans (A anim blue, D dummy PSS
+  purple). Added span labels (e.g. `A1394`, `D6240`), a legend, a live
+  `clip=<engine clip>` readout (via a getClip callback from RebornClient) and a
+  `restarts=` PSS-handle-change counter. Captured during a 龙牙 cast:
+  `2632/6360ms  clip=f1b01ty普通待机01.ani  D6240` -> at 2.6 s the character's
+  engine clip is the IDLE, so the animation is not replaying; the long purple
+  span is the PSS effect (6240 ms), the short one the animation (1394 ms).
+- So the user's "pink part" = the PSS effect's authored lifetime, not extra
+  animations. The effect pulsing ~1.6 s (earlier lag-matrix) is the authored PSS
+  stages / engine PSS playback, with no client restart (restarts=0, re-adds=0).
