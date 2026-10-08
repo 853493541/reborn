@@ -6,8 +6,9 @@
 //   * plays the skill's authored animation (skill_caster_f1.txt
 //     CastSkillAnimationID0 -> player_animation_f1.txt -> .tani),
 //   * DASHES toward the target WHILE that animation plays (the skill's child
-//     DASH attribute; the value is a speed in engine units per frame — e.g.
-//     65030 DASH 120 -> 120 u/frame = 1920 u/s at GAME_FPS 16), and
+//     DASH attribute; the value is a speed in engine units per frame — the
+//     scripts name it `nDashSpeed`, unit `点/帧` = points/frame; e.g. 65030
+//     DASH 120 -> 120 u/frame = 1920 u/s at GAME_FPS 16), and
 //   * plays the skill's effect (skill_effect, PhysicsDamageEffectResultID) once.
 //
 // The dash is a fast, authored-speed move to the target (not a slow lerp over

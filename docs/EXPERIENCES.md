@@ -7823,3 +7823,13 @@ if the cache/host frames appear.
   are both consumed as "u/frame" by `SkillCast`; correct for 龙牙 (DASH 120); revisit if
   a skill's dash misbehaves.
 - Verified: builder exit=0; dataset regenerated; 65029 still 120.
+
+### 2026-10-07 — v6 — dash speed unit CONFIRMED (点/帧)
+
+- **User asked to verify the dash speed before pushing.** Confirmed from the skill
+  scripts' own comments: the field is `nDashSpeed`, and its unit is **`点/帧`** (raw
+  GBK bytes `\xb5\xe3/\xd6\xa1` = 点/帧 = points per frame = engine units/frame), e.g.
+  `nDashSpeed = 100/120` (绝境_老虎波, 绝境_狼牙棒, 轻功通用冲刺). So `DASH(120,0)` =
+  **120 u/frame = 1920 u/s at GAME_FPS 16** — exactly what `SkillCast` implements
+  (`dashSpeedPerFrame`, `speedUpS = value * GameFps`). **The dash speed is correct.**
+- Verified: raw byte decode of the script comment; consistent across 4+ dash scripts.
