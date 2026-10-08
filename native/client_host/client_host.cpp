@@ -20,14 +20,20 @@
 static HMODULE g_eng = NULL;
 static HMODULE g_repModule = NULL;
 
+static CRITICAL_SECTION g_logLock;
+static volatile LONG g_logLockInit = 0;
 static void logf(const char* fmt, ...)
 {
+    if (InterlockedCompareExchange(&g_logLockInit, 1, 0) == 0)
+        InitializeCriticalSection(&g_logLock);
+    EnterCriticalSection(&g_logLock);
     va_list ap;
     va_start(ap, fmt);
     vfprintf(stdout, fmt, ap);
     fprintf(stdout, "\n");
     fflush(stdout);
     va_end(ap);
+    LeaveCriticalSection(&g_logLock);
 }
 
 static void gbk(const wchar_t* src, char* out, int cap)
