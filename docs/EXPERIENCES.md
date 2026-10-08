@@ -5215,3 +5215,17 @@ if the cache/host frames appear.
   the dummy model object's `AniLoop`/`dwPlayType` field via a native shim (like
   sfx_shim's model-vtable access) and clear it, or play the PSS through the
   engine's animation-tag path (once) instead of a dummy model.
+
+### 2026-10-07 - v5 - PSS-loop: mesh-particle `.ani` lead + exhausted client fixes
+
+- The 龙牙 PSS's emitters reference mesh particles with their own `.ani`
+  (`l_狼头.mesh`+`l_狼头.ani`, `t_拖尾火焰01/02.mesh`+`.ani`, `x_旋转火焰01/02`),
+  so the ~1.6 s re-burst is likely a mesh-particle `.ani` looping inside the
+  engine's PSS playback (the wolf-head mesh re-animating) - authored/engine side.
+- Client fixes all failed (measured, reverted): KGModelCLR.PlayAnimation(pssPath,
+  loop=0) stops the loop but blanks the render; playing the tani (tag PSS) is
+  cut at ~1.7 s; extending animMs does not extend the tag life; RC_PSS_FOLLOW=
+  always still loops. No client API controls the dummy-model/mesh animation loop.
+- Next probe: control the loop at engine level (the model's AniLoop/dwPlayType
+  at AddDummyModel time, via a native shim), or extract/inspect `l_狼头.ani` to
+  confirm whether the loop is authored (then it is the game's own behaviour).
