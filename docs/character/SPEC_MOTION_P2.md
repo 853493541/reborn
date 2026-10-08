@@ -221,15 +221,18 @@ Acceptance evidence: `proof/character/3x_motion/README.md` (P2 table) — dash �
 −960 exact + camera follows positionally; FLWS pos delta 0, walk 330 u/s, jump
 rejected, camera yaw/pitch constant through the spin.
 
-**One criterion measured with a named boundary (evidence-first):** criterion 4's
-"with no input the camera position does not move" holds exactly in the no-cast idle
-baseline (camPos constant ×15 samples), but a standing FLWS cast shows a ±26 u slow
-camPos sway during the clip (settling exactly at the clip end; camYaw/camPitch
-unaffected). Cause: the host's C1 camera anchor uses the animated head-bone matrix
-(`client/RebornClient.cs` ~4777), so the spin clip's head-bone sway feeds the camera
-position. Re-open (camera workstream): anchor on the logic position + fixed offset
-per `SetCharacterCameraPosition`, or verify the real chain's head-bone use during
-spins.
+**Criterion 4 (camera position) — FIXED 2026-10-07 (`08a9bbc`).** The host now uses
+the client's anchor rule: the camera anchors on the character logic position + a
+CONSTANT height offset (the head bone's REST local translation, cached once while the
+idle clip runs); the animated bone matrix is no longer read per frame. Disasm (both
+builds, identical logic + constants): `AdjustCharacterCameraObjectY` takes the
+`Bip01 Head` branch only when `0.3 > ratio` AND (`[ctrl+0x5C]==8 || lookup`) AND
+`0.5 > |[ctrl+0xD0]|` — third-person distances never do, so the game's anchor is the
+logic/entity position + character height fields. Verified: a standing FLWS cast holds
+`camPos` byte-identical across the whole clip (per-frame trace, 1963 frames), the
+太阴指 dash still translates the anchor/camera by −960 u, and the no-cast idle
+baseline is exactly constant. Evidence: `proof/character/3x_motion/`
+(`p2_cam_fix_*` + `p2_flws_camconst_fixed.txt`).
 
 ### Reproduce
 ```powershell
