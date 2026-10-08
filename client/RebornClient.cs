@@ -4007,9 +4007,20 @@ internal static class RebornClient
                                     string[] cmr;
                                     if (mechanics.TryGetValue(cids[ci], out cmr))
                                     {
-                                        MechanicPlan cp = MechanicProgram.Resolve(cmr, "");
+                                        string cft = "";
+                                        string[] crr;
+                                        if (roster.TryGetValue(cids[ci], out crr) && crr.Length > 12) cft = crr[12];
+                                        MechanicPlan cp = MechanicProgram.Resolve(cmr, cft);
                                         TargetEntity ct = targetSelector.Current;
-                                        if (ct != null && cp.Damage > 0f) { ct.Hp -= (long)cp.Damage; if (ct.Hp < 0) ct.Hp = 0; }
+                                        if (ct != null)
+                                        {
+                                            if (cp.Damage > 0f) { ct.Hp -= (long)cp.Damage; if (ct.Hp < 0) ct.Hp = 0; }
+                                            for (int cbi = 0; cbi < cp.BuffsAdd.Count; cbi++)
+                                                if (!ct.Buffs.Contains(cp.BuffsAdd[cbi])) ct.Buffs.Add(cp.BuffsAdd[cbi]);
+                                            if (cp.BuffsRemove > 0) ct.Buffs.Clear();
+                                            if (cp.CcType.Length > 0) { ct.CcType = cp.CcType; ct.CcUntil = now + 2000; }
+                                            if (cp.Knockdown) { ct.CcType = "Knockdown"; ct.CcUntil = now + 1500; }
+                                        }
                                         Log("passive child " + cids[ci] + " " + cp.Summary());
                                     }
                                 }

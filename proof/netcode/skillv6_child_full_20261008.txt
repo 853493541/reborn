@@ -1,0 +1,17 @@
+# skill v6 — passive child casts apply the child's FULL mechanic (2026-10-08)
+# Build: reborn_client_skillv6.exe (git f40f0e1, dirty)
+# Change: when a passive's child skill is present in mechanics_f1.tsv, the client now applies
+#   the child's full mechanic (damage + buffs + CC from the child's functionType) to the target,
+#   not just damage.
+
+## Dormant in the roster: no passive child is in the dataset (checked), e.g. 28031's children
+#  22875/7276 are not in mechanics_f1 -> the branch is not exercised; the run is a clean
+#  no-regression check:
+## Driven run: RC_SLOTS=28031 RC_CAST_AT=40000:1
+passive 28031 -> child=[22875;7276] +buff=[12040;12363;12343] -buff=[] n=9
+summon 28031 npc=57658 handle=6186428872
+summon 28031 npc=67816 handle=6186431672
+DONE
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open: child skills are not in the roster/mechanics dataset (they are separate skills).

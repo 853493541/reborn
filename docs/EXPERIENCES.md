@@ -8231,3 +8231,14 @@ if the cache/host frames appear.
   clean `DONE`. Proof `proof/netcode/skillv6_doodad_20261008.txt`. Gates: jx3_model 10 PASS,
   gravity PASS, loot selftest PASS.
 - **Open:** doodad model resolution (different represent space); summon lifetime/owner.
+
+### 2026-10-08 — v6 — passive child casts apply the child's full mechanic
+
+- **Did:** when a passive's child skill is present in `mechanics_f1.tsv`, the client now applies
+  the child's **full** mechanic (damage + buffs + CC from the child's `functionType`), not just
+  damage.
+- **Verified (dormant):** no passive child is in the dataset (e.g. 28031's 22875/7276), so the
+  branch is unexercised; run is a clean no-regression check (`DONE`). Proof
+  `proof/netcode/skillv6_child_full_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Open:** child skills are separate skills, not in the roster/mechanics dataset.
