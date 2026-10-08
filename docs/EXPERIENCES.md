@@ -8325,6 +8325,14 @@ if the cache/host frames appear.
   buff 13603). Proof `proof/netcode/skillv6_batch2_20261008.txt`. Gates: jx3_model 10 PASS,
   gravity PASS, loot selftest PASS.
 
+### 2026-10-08 — v6 — 5 more abilities verified (batch 3)
+
+- **Verified:** 65153 (Stun), 65156 (Stun + buff 682), 65028 (buff 51402 + dmg 14.0), 27875
+  (child 15069 + buff 20236), 27903 (child 27970 + buff 20260 + dispels + mechanic child 21144,7276).
+  Proof `proof/netcode/skillv6_batch3_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Note:** 15 abilities explicitly verified now; the Apply-at-cast + ops model holds across them.
+
 ### 2026-10-08 — v6 — P7 server-spec reconciliation (documented)
 
 - **Did:** recorded P7 in `ABILITY_MECHANICS_PLAN.md`: the v6 ability runtime is a **local
