@@ -141,7 +141,14 @@ Animation resolution (client-side tables):
 ```
 skills.tab skill id ──skill_tag.txt──▶ AnimationID ──player_animation_<body>.txt──▶ .tani
                                             (Represent/skill/skill_dash.txt for dash anims)
+
+KRLCharacter::GetAnimationID / GetNextPerSkillAniID  ←  per-skill animation cycle
+        (InitSkillSequence/GetSkillNextAnimationID; cycle count from a global
+         config at +0x3c, `SEQUENCE_ANIMATION_CONFIG_FILE_NAME`) — NOT keyed by skill id
 ```
+
+Legend for §5: `skill_tag.txt` is the only skill-id→animation table; the
+per-skill sequence config only varies the animation across repeat casts.
 
 ### 2.6 Motion / dash
 
@@ -250,22 +257,41 @@ corrected by the next server state.
 
 ## 5. Open items (next probes)
 
-1. **Which `.tani` does the client actually play for 65029?** 65029 has **no**
-   `skill_tag` row, **no** `SkillRealization` row, **no** `ProxySkill` row, and no
-   other shipped table references it (a byte scan of `...\pakv4-probe` for
-   `65029`/`65030` hits only `skills.tab`, `Skill.txt`, and the derived
-   ability-matcher caches). So the client cannot resolve 65029 → animation from
-   the tables we have. Two possibilities to disprove/confirm:
-   (a) the server's `OnSkillCast` carries the **display skill id** (e.g. base 415)
-   for 绝境 skills, so the client plays 455's tani; or
-   (b) the client falls back to a generic melee/weapon-attack animation.
-   **Probe:** disassemble the client's skill→animation resolver (`KSkill` /
-   `KRLSkill` animation getter) and check its missing-`skill_tag` fallback; and
-   inspect what id the 绝境 action bar actually holds (`DynamicSkillGroup` 10002 /
-   `szDropSkillRemoteCall`).
-2. **`HDJueJingSkillCoe_130` numeric value** (scales 65029's `nChannelInterval`).
-   Symbol identified (`proof/pvp/cast/skill_lh_globals.txt:83`,
-   `proof/netcode/skill_data/skill_lh_constants.json`); constant not yet extracted.
+1. **Which `.tani` does the client actually play for 65029?** Hard evidence (2026-10-07):
+   * 65029/65030 appear in **none** of the 16 `Represent/skill/*` tables (checked
+     every file: `skill_tag`, `skill_effect`, `skill_chain`, `skill_dash`,
+     `skill_model`, `skill_result`, `skill_caster_effect`, `skill_shadow`,
+     `skill_missile`, `skill_buff`, `missile`, `skill_user_data.krl`, …) — only the
+     base **415** is present.
+   * No `SkillRealization`, `ProxySkill`, `SkillSkins`, `DynamicSkillGroup` (10002 is
+     empty), `SurplusSkill`, or `WeaponMapSkill` row resolves it; a byte scan for
+     `65029`/`65030` across `...\pakv4-probe` hits only `skills.tab`, `Skill.txt`,
+     and the derived ability-matcher caches.
+   * The represent resolver architecture is `skill_tag.txt` (skill id → AnimationID →
+     `player_animation_<body>.txt` → `.tani`) plus a separate global per-skill
+     animation cycle (`KRLCharacter::GetNextPerSkillAniID` / `GetSkillNextAnimationID`
+     → `InitSkillSequence`, count from a config at `+0x3c`), which is **not** keyed on
+     the skill id.
+
+   ⇒ The client cannot select a 绝境-specific animation from shipped data, so the
+   visible animation/effects must be those of the **base skill 龙牙 (415)**. This means
+   either the server's `OnSkillCast` carries the **display skill id** (415) for 绝境
+   skills, or the action bar holds the base skill and 65029 is the server-side
+   replacement. **Next probe:** read the S2C `OnSkillCast` skill id for a 绝境 cast
+   (arena/replay record) or trace `KRLCharacter::CastSkill`'s animation fetch and its
+   missing-`skill_tag` fallback; also confirm the id the 绝境 action bar holds
+   (`szDropSkillRemoteCall`).
+2. **`HDJueJingSkillCoe_130` numeric value** (scales 65029's `nChannelInterval`, and
+   the whole 绝境 skill set). The token exists **only** in `scripts/Include/Skill.lh`
+   (symbol identified: `proof/pvp/cast/skill_lh_globals.txt:83`,
+   `proof/netcode/skill_data/skill_lh_constants.json`). The include headers
+   (`LogicConst.lh`, `CommonFunction.lh`, `Table.lh`, `NewSkill.lh`, `GlobalParam.lua`,
+   `MasterScript.lua`) were extracted from the paks (official
+   `PakV4SfxExtract.exe`, output to temp — not committed) and none contains the
+   definition, so it is bound inside `Skill.lh`; the constant table holds a candidate
+   `8.4` adjacent to the three `HDJueJingSkillCoe*` names but the binding is
+   instruction-level and not yet decoded. Re-open with a `Skill.lh` main-proto
+   instruction dump.
 3. **`IsAutoTurn=0` vs. client auto-face** — does the client still turn 65029 to the
    target, or is `IsAutoTurn` the binding gate? (base 415 is also 0).
 4. **战意 cost**: the 65029 plaintext sets no `nCostRage`; the tooltip does not say
@@ -291,6 +317,14 @@ python tools\netcode\scan_skill_scripts.py --root "<cache>\scripts\skill" `
 # the represent tables:
 #   ...\pakv4-probe\skill-tables-out\Represent\skill\skill_tag.txt
 #   ...\pakv4-probe\player-animation-out\Represent\player\player_animation_f1.txt
+
+# negative check that the 绝境 skill has no represent binding (all 16 tables):
+python -c "import os;B=r'...\skill-tables-out\Represent\skill';[print(f,b'65029' in open(os.path.join(B,f),'rb').read()) for f in os.listdir(B)]"
+
+# include-header extraction (official tool; cwd = bin64, output to a temp dir,
+# NEVER to C:\SeasunGame; GBK, CRLF pathlist):
+#   PakV4SfxExtract.exe <pathlist.txt> <out_dir>
+#   pathlist: scripts/Include/LogicConst.lh, .../CommonFunction.lh, Table.lh, NewSkill.lh
 ```
 
 Last verified: 2026-10-07.

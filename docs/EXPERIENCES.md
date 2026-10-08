@@ -7510,3 +7510,32 @@ if the cache/host frames appear.
   `proof/pvp/cast/skill_cast_fields.tsv` (绝境_龙牙 row); extracted
   `skill-65029-65672\scripts-out|extra-out`; `skill_tag.txt`; `player_animation_f1.txt`.
 - Verified: read-only research; no gate run needed.
+
+### 2026-10-07 — Skills v6 — 绝境·龙牙 animation binding + represent resolver
+
+- **Did:** continued the v6 cast-flow research; disproved the "some table resolves
+  65029" hope with hard negatives.
+- **Hard negative:** 65029/65030 appear in **none** of the 16 `Represent/skill/*`
+  tables (only base **415** is present); no `SkillRealization` / `ProxySkill` /
+  `SkillSkins` / `DynamicSkillGroup` (10002 empty) / `SurplusSkill` / `WeaponMapSkill`
+  row resolves them; a byte scan for `65029`/`65030` across the extraction hits only
+  `skills.tab` + `Skill.txt` (+ derived caches).
+- **Resolver architecture (disasm):** represent maps `skill id → AnimationID` via
+  `skill_tag.txt` → `player_animation_<body>.txt` → `.tani`; the per-skill animation
+  *cycle* is a separate global config (`InitSkillSequence` / `GetSkillNextAnimationID`,
+  count at config `+0x3c`, `SEQUENCE_ANIMATION_CONFIG_FILE_NAME`) and is **not** keyed
+  on the skill id. Files: `proof/netcode/JX3RepresentX64_all_strings.txt` (0x00CAC628
+  `GetNextPerSkillAniID`, 0x00CBAE60 `InitSkillSequence`).
+- **Conclusion (leading, evidence-backed):** the client cannot pick a 绝境-specific
+  animation from shipped data → the visible animation is the base 龙牙 415's
+  (`skill_tag 415→455→F1s04tc技能13_龙牙hd.tani`); the server's `OnSkillCast` must
+  carry the display/base skill id (or the bar holds 415). Next probe: read the cast
+  skill id from a 绝境 cast/replay, or trace `KRLCharacter::CastSkill`'s animation fetch.
+- **Also:** extracted the include headers from the paks with the official
+  `PakV4SfxExtract.exe` (temp output only) to hunt `HDJueJingSkillCoe_130` — it is not
+  in `LogicConst/CommonFunction/Table/NewSkill/GlobalParam/MasterScript`; it is bound
+  inside `Skill.lh` (candidate constant `8.4` adjacent to the three names; binding not
+  yet decoded). Still OPEN.
+- **Boundary:** no files under `C:\SeasunGame` were written; extraction output went to
+  `%TEMP%`. Read-only research (no gate run needed).
+- Verified: `docs/netcode/JX3_SKILL_CAST_FLOW.md` §5 + Reproduce updated.
