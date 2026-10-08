@@ -4623,25 +4623,29 @@ internal static class RebornClient
                     {
                         float fdx = hwx - rpx, fdz = hwz - rpz;
                         float fl = (float)Math.Sqrt(fdx * fdx + fdz * fdz);
-                        float mvl = (float)Math.Sqrt(dirX * dirX + dirZ * dirZ);
-                        if (fl > 1f && mvl > 0.01f)
+                        if (fl > 1f)
                         {
-                            float dotF = (fdx * dirX + fdz * dirZ) / (fl * mvl);
+                            // Reference = the RIDER'S FACING, not the travel vector:
+                            // the horse follows the character heading (+0x44); travel
+                            // differs during 180-degree turns and backward movement, so
+                            // a travel reference flips a correct horse (real-input run
+                            // 17:34:24 auto-flipped twice while walking backward). The
+                            // offset is derived from the model once; this check only
+                            // asserts and logs - it NEVER mutates the placement.
+                            float fdxR = (float)Math.Sin(curYaw), fdzR = (float)Math.Cos(curYaw);
+                            float dotF = (fdx * fdxR + fdz * fdzR) / fl;
                             if (Environment.TickCount - mountFacingLog > 1000)
                             {
                                 mountFacingLog = Environment.TickCount;
                                 Log(string.Format(
-                                    "mount facing check: head dot travel={0:F2} riderYaw={1:F2} horseYaw={2:F2} head_d=({3:F0},{4:F0})",
+                                    "mount facing check: head dot rider={0:F2} riderYaw={1:F2} horseYaw={2:F2} head_d=({3:F0},{4:F0})",
                                     dotF, curYaw, curYaw + mount.FacingOffset, fdx, fdz));
                             }
                             if (dotF < -0.3f)
                             {
                                 mountFacingWrong++;
-                                if (mountFacingWrong == 3)
-                                {
-                                    mount.FacingOffset += (float)Math.PI;
-                                    Log("mount facing: auto-flip (+pi) - head was behind travel");
-                                }
+                                if (mountFacingWrong == 5)
+                                    Log("mount facing anomaly: 5 samples behind the rider facing - offset -180deg suspect (logged, not mutated)");
                             }
                             else mountFacingWrong = 0;
                         }

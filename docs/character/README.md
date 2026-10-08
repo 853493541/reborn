@@ -75,3 +75,10 @@ line pointing here: `CONTROL_MODES_P5_ANIM.md` (§2/§2b), `CONTROL_MODES_TRACEA
   (`%TEMP%\opencode\char3x\`) and are **not** committed (game assets stay private).
   Every doc ends with a Reproduce section using repo tools.
 - The map's §3 statuses were updated to match this pass (`GAME_SYSTEMS_RESEARCH_MAP.md`).
+
+## Tools
+
+| Tool | Role |
+|---|---|
+| `tools/character/drive_mount.ps1` | driven real-input mount scenario (OS keys; original) |
+| `tools/character/drive_mount2.ps1` | same scenario with verified foreground activation + PostMessage fallback (use this one) |
