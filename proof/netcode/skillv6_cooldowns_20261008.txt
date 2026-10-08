@@ -1,0 +1,19 @@
+# skill v6 — P4: resources / GCD / cooldowns (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 4d85bfc, dirty)
+# Change:
+#  - build_cooldowns.py extracts settings/CoolDownList.tab via the official tool ->
+#    cooldowns_f1.tsv (3510 rows: id, Duration(s), MinDuration, MaxCount, MaxDuration).
+#  - client loads it; GCD = the skill's gcdRow (SetPublicCoolDown; row 16 = 1.5 s);
+#    per-skill cooldown = normalCd row (SetNormalCoolDown); mana = nCostMana consumed at
+#    cast; a cast is blocked by GCD, per-skill cooldown, in-progress, or insufficient mana.
+
+## Driven run: RC_SLOTS=65029 RC_CAST_AT=40000:1,42000:1,46000:1
+cooldowns: 3510 rows from ...\cooldowns_f1.tsv
+cast chain 65029: ... gcdMs=1500 cdMs=5000 mana=9964      (cost 36; row 16=1.5s, row 1=5s)
+cast blocked: cooldown 2998ms                             (re-cast 2 s later)
+cast chain 65029: ... mana=9928                           (re-cast after the 5 s cooldown)
+DONE
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open: charges (MaxCount > 1) + overdraft; haste (CanAccelerate); mana regen / max from
+#   character attributes; school resources (rage/energy/accumulate); interrupt-on-move.

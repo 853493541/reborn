@@ -343,6 +343,27 @@ internal static class RebornClient
             else Log("mechanics: missing " + mechPath);
         }
         catch (Exception e) { Log("mechanics load ex: " + e.Message); }
+        // cooldown table (ability_picker/tools/build_cooldowns.py): row -> Duration(s),
+        // MaxCount. GCD = row 16 (1.5 s).
+        var cooldowns = new System.Collections.Generic.Dictionary<string, string[]>();
+        string cdPath = Env("RC_COOLDOWNS",
+            Path.Combine(Application.StartupPath, "ability_picker", "cooldowns_f1.tsv"));
+        try
+        {
+            if (File.Exists(cdPath))
+            {
+                int cl = 0;
+                foreach (string line in File.ReadAllLines(cdPath))
+                {
+                    if (cl++ == 0) continue;
+                    string[] p = line.Split('\t');
+                    if (p.Length >= 4 && p[0].Length > 0) cooldowns[p[0]] = p;
+                }
+                Log("cooldowns: " + cooldowns.Count + " rows from " + cdPath);
+            }
+            else Log("cooldowns: missing " + cdPath);
+        }
+        catch (Exception e) { Log("cooldowns load ex: " + e.Message); }
         // hotkey slots (RC_SLOTS overrides); keys 1..N select + cast a slot.
         string[] slotIds = Env("RC_SLOTS", "65029,65120,65087,65076,65036,65026").Split(',');
         int activeSlot = 0;
@@ -417,6 +438,11 @@ internal static class RebornClient
             if (int.TryParse(Env("RC_SWEEP_START", "0"), out ss) && ss > 0) sweepIdx = ss;
         }
         long castReadyAt = 0;   // post-cast cooldown (rapid casts AV the engine tag manager)
+        long gcdUntil = 0;      // public cooldown (CoolDownList row 16 = 1.5 s)
+        var cdReady = new System.Collections.Generic.Dictionary<string, long>();  // per-skill cooldown
+        float manaMax = 10000f;
+        float.TryParse(Env("RC_MANA_MAX", "10000"), out manaMax);
+        float mana = manaMax;
         // abilities whose cast AVs the engine (per-tani): skip in the sweep
         var skipIds = new System.Collections.Generic.HashSet<string>();
         foreach (string s in Env("RC_SKIP_IDS", "").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -3276,7 +3302,21 @@ internal static class RebornClient
                 skillPressed = false;
                 bool chained = false;
                 TargetEntity ctg = targetSelector.Current;
-                if (ctg != null && !skillCast.Active && now >= castReadyAt && !skipIds.Contains(selAbility))
+                long cdForSkill = 0; cdReady.TryGetValue(selAbility, out cdForSkill);
+                float gcdMs = 1500f, cdMs = 0f, costMana = 0f;
+                {
+                    string[] mrow;
+                    if (mechanics.TryGetValue(selAbility, out mrow))
+                    {
+                        float cm; if (mrow.Length > 2 && float.TryParse(mrow[2], out cm)) costMana = cm;
+                        int grow; string[] cr;
+                        if (mrow.Length > 6 && int.TryParse(mrow[6], out grow) && cooldowns.TryGetValue(grow.ToString(), out cr)) { float d; if (float.TryParse(cr[1], out d)) gcdMs = d * 1000f; }
+                        int nrow;
+                        if (mrow.Length > 7 && int.TryParse(mrow[7], out nrow) && cooldowns.TryGetValue(nrow.ToString(), out cr)) { float d; if (float.TryParse(cr[1], out d)) cdMs = d * 1000f; }
+                    }
+                }
+                if (ctg != null && !skillCast.Active && now >= castReadyAt && now >= gcdUntil
+                    && now >= cdForSkill && mana >= costMana && !skipIds.Contains(selAbility))
                 {
                     // v6 full chain: face the target, play the authored anim,
                     // dash to the target while it plays, then the one-shot effect.
@@ -3299,6 +3339,9 @@ internal static class RebornClient
                     curYaw = skillCast.FaceYaw();
                     skillUntil = now + skillCast.TotalMs();
                     castReadyAt = now + skillCast.TotalMs() + 1200;   // cooldown
+                    gcdUntil = now + (long)gcdMs;                     // public cooldown (row 16)
+                    cdReady[selAbility] = now + (long)cdMs;           // per-skill cooldown
+                    mana -= costMana;
                     curClip = null;
                     setClip(selAnimPath);
                     camShake.Start(2.0, 0.5, 0.8, 3);
@@ -3306,7 +3349,7 @@ internal static class RebornClient
                     Log("cast chain " + selAbility + ": target=" + ctg.ToString()
                         + " anim=" + selAnimPath + " fx=" + selFxPath
                         + " animMs=" + lyAnimMs + " prepareMs=" + selPrepareMs
-                        + " channelMs=" + selChannelMs
+                        + " channelMs=" + selChannelMs + " gcdMs=" + gcdMs + " cdMs=" + cdMs + " mana=" + mana
                         + " commitMs=" + skillCast.CommitMs() + " totalMs=" + skillCast.TotalMs()
                         + " fxAt=" + lyFxAt + " dash=" + effDash
                         + "u/f ->" + skillCast.DashMs() + "ms stop=" + lyStop
@@ -3314,14 +3357,12 @@ internal static class RebornClient
                 }
                 else
                 {
-                    if (skipIds.Contains(selAbility))
-                        Log("cast blocked: ability " + selAbility + " is AV-blacklisted (per-tani)");
-                    else
-                    {
-                        // No target: the ability system requires one. The old FLWS
-                        // (椋庢潵鍚村北) fallback is removed - it conflicted with abilities.
-                        Log("cast: no target - nothing cast (ability system needs a target)");
-                    }
+                    if (ctg == null) Log("cast: no target - nothing cast (ability system needs a target)");
+                    else if (skipIds.Contains(selAbility)) Log("cast blocked: " + selAbility + " AV-blacklisted");
+                    else if (skillCast.Active) Log("cast blocked: cast in progress");
+                    else if (now < gcdUntil) Log("cast blocked: GCD " + (gcdUntil - now) + "ms");
+                    else if (now < cdForSkill) Log("cast blocked: cooldown " + (cdForSkill - now) + "ms");
+                    else if (mana < costMana) Log("cast blocked: mana " + mana.ToString("F0") + " < " + costMana.ToString("F0"));
                 }
                 // The legacy FLWS sound is opt-in only; per-ability sound arrives
                 // with the ability dataset (v5 ability_candidates sound steps).

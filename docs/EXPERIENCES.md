@@ -8035,3 +8035,17 @@ if the cache/host frames appear.
   loot selftest PASS.
 - **Open:** PointArea ground point (Alt-direction) vs current-target; per-entity attenuation
   (`nAttackAttenuationCof`); range check vs `nMaxRadius`.
+
+### 2026-10-08 — v6 — P4: resources / GCD / cooldowns
+
+- **Did:** `build_cooldowns.py` extracts `settings/CoolDownList.tab` (official tool) →
+  `cooldowns_f1.tsv` (3510 rows: Duration(s)/MinDuration/MaxCount/MaxDuration). Client applies:
+  GCD = the skill's `SetPublicCoolDown` row (16 = 1.5 s); per-skill cooldown = `SetNormalCoolDown`
+  row; mana = `nCostMana` consumed at cast. A cast is blocked by GCD / cooldown / in-progress /
+  insufficient mana (with a specific reason logged).
+- **Verified:** 65029 → `gcdMs=1500 cdMs=5000 mana=9964`; re-cast 2 s later → `cast blocked:
+  cooldown 2998ms`; after 5 s → `mana=9928`; clean `DONE`. Proof
+  `proof/netcode/skillv6_cooldowns_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Open:** charges (MaxCount>1) + overdraft; haste; mana regen/max from attributes; school
+  resources; interrupt-on-move.
