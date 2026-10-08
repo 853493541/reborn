@@ -1,0 +1,20 @@
+# skill v6 — remove legacy FLWS default (2026-10-07)
+# Build: reborn_client_skillv6.exe (git 82e2cda, dirty) — title sandbox-skillv6
+# Change: the no-target cast fallback played FLWS (风来吴山) + its sound; removed.
+#         A cast with no target is now a no-op (the ability system needs a target);
+#         the old FLWS sound is opt-in (RC_SKILL_SOUND=1) and no longer fires.
+#         The RC_DEMO auto skill press at 18.5 s (also FLWS) is removed.
+
+# Driven: RC_CAST_AT=30000:1 (no target) + RC_TAB_AT=35000 + RC_CAST_AT=40000:1, RC_AUTORUN=46000
+
+## run log: bin64\reborn_out\reborn_20261007_234209.log
+23:43:10.813 RC_CAST_AT -> slot 1
+23:43:10.815 cast: no target - nothing cast (ability system needs a target)
+23:43:10.815 cast skipped (no target)          <- no FLWS clip, no FLWS sound
+23:43:15.813 RC_TAB_AT -> Tab (target next)
+23:43:20.814 cast chain 65029: target=初级试炼木桩(131) anim=...F1s04tc技能13_龙牙hd.tani dash=120u/f ->104ms
+23:43:20.814 cast chain started                 <- targeted cast still works
+23:43:26.814 DONE                                <- clean shutdown, no AV
+
+# (before: the no-target branch called setClip(clipSkill) where clipSkill =
+#  f1s07cj重剑技能15_风来吴山红色hd.tani + the FLWS wav/native sound)

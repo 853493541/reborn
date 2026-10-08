@@ -2837,7 +2837,7 @@ internal static class RebornClient
                 if (now >= 12500 && !demoJumped) { demoJumped = true; jumpPressed = true; }
                 // second press while airborne (ground jump apex ~0.55 s) -> 二段跳
                 if (now >= 13000 && demoJumped && !demoJumped2) { demoJumped2 = true; jumpPressed = true; }
-                if (now >= 18500 && !demoSkilled) { demoSkilled = true; skillPressed = true; }
+                // (the old demo skill cast played FLWS - removed with the FLWS default)
             }
             if (demoCollide)
             {
@@ -3133,36 +3133,38 @@ internal static class RebornClient
                 }
                 else
                 {
-                    skillUntil = now + skillMs;
-                    curClip = null;
-                    setClip(clipSkill);
-                    // camera shake on the cast (host default; per-skill shake rows
-                    // are data-gated)
-                    camShake.Start(2.0, 0.5, 0.8, 3);
+                    // No target: the ability system requires one. The old FLWS
+                    // (风来吴山) fallback is removed - it conflicted with abilities.
+                    Log("cast: no target - nothing cast (ability system needs a target)");
                 }
-                bool playedNative = false;
-                if (soundNative)
+                // The legacy FLWS sound is opt-in only; per-ability sound arrives
+                // with the ability dataset (v5 ability_candidates sound steps).
+                if (chained && Env("RC_SKILL_SOUND", "0") == "1")
                 {
-                    // ensure the media cwd + Wwise language at cast time too
-                    // (the engine resets the process cwd during map load)
-                    string media = Env("RC_SOUND_MEDIA", "");
-                    if (media.Length > 0) SoundProbe.SetMediaDir(media);
-                    uint pid = SoundProbe.PostEvent(nativeEvent, 1);
-                    Log("sound: native post id=" + nativeEvent + " playing=" + pid);
-                    if (pid != 0 && SoundProbe.Diag(pid) == 1) playedNative = true;
-                    else
+                    bool playedNative = false;
+                    if (soundNative)
                     {
-                        soundNative = false;
-                        Log("sound-native: no rendering (streamed media unresolved) - WAV fallback");
+                        // ensure the media cwd + Wwise language at cast time too
+                        // (the engine resets the process cwd during map load)
+                        string media = Env("RC_SOUND_MEDIA", "");
+                        if (media.Length > 0) SoundProbe.SetMediaDir(media);
+                        uint pid = SoundProbe.PostEvent(nativeEvent, 1);
+                        Log("sound: native post id=" + nativeEvent + " playing=" + pid);
+                        if (pid != 0 && SoundProbe.Diag(pid) == 1) playedNative = true;
+                        else
+                        {
+                            soundNative = false;
+                            Log("sound-native: no rendering (streamed media unresolved) - WAV fallback");
+                        }
+                    }
+                    if (!playedNative && skillWav != null)
+                    {
+                        bool played = PlaySound(skillWav, IntPtr.Zero,
+                            SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
+                        Log("sound: skill wav play rc=" + played);
                     }
                 }
-                if (!playedNative && skillWav != null)
-                {
-                    bool played = PlaySound(skillWav, IntPtr.Zero,
-                        SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
-                    Log("sound: skill wav play rc=" + played);
-                }
-                Log(chained ? "cast chain started" : "skill cast");
+                Log(chained ? "cast chain started" : "cast skipped (no target)");
             }
 
             // input -> direction (camera controls in both modes; the body faces

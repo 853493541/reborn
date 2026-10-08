@@ -7850,3 +7850,18 @@ if the cache/host frames appear.
   `proof/netcode/skillv6_slots_and_bar_20261007.txt`.
 - **Note:** no new mechanism — adding an ability stays a data/`RC_SLOTS` change; the bar
   is presentation only.
+
+### 2026-10-07 — v6 — remove legacy FLWS (风来吴山) cast default
+
+- **Did:** casting with **no target** used to fall back to the old skill clip `clipSkill`
+  = 风来吴山 (FLWS) + its FLWS sound; the `RC_DEMO` autopilot also fired a skill press at
+  18.5 s (same FLWS). Both removed — a no-target cast is now a no-op (the ability system
+  requires a target); the FLWS sound is opt-in (`RC_SKILL_SOUND=1`) and off by default.
+- **Verified:** driven run `reborn_client_skillv6.exe`: no-target cast → `cast: no target
+  - nothing cast` + `cast skipped (no target)` (no FLWS clip/sound); targeted cast →
+  `cast chain 65029 … started`; clean `DONE`. Proof:
+  `proof/netcode/skillv6_no_flws_20261007.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Note:** this is P1 of the skill-system plan (see `docs/netcode/JX3_SKILL_CAST_FLOW.md`
+  §7 / the plan in the session log): later steps = v5 roster + icons panel, camera max
+  default, real prepare/channel/GCD cast state, full-coverage verify.
