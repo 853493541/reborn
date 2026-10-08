@@ -50,7 +50,7 @@ function KeyUp([byte]$vk) {
 $script:fgOk = $fg
 $sw = [System.Diagnostics.Stopwatch]::StartNew()
 function At([int]$ms) { while ($sw.ElapsedMilliseconds -lt $ms) { Start-Sleep -Milliseconds 10 } }
-$W = 0x57; $S = 0x53; $T = 0x54; $SP = 0x20
+$W = 0x57; $S = 0x53; $T = 0x54; $SP = 0x20; $LEFT = 0x25; $RIGHT = 0x27
 At 0;     Key $T 80;  Write-Output "t=0     T (mount)"
 At 1500;  Key $SP 150; Write-Output "t=1500  Space idle"
 At 4000;  KeyDown $W; Write-Output "t=4000  W down"
@@ -60,5 +60,9 @@ At 12000; KeyUp $W;   Write-Output "t=12000 W up"
 At 15000; KeyDown $S; Write-Output "t=15000 S down"
 At 16500; Key $SP 150; Write-Output "t=16500 Space backward"
 At 18500; KeyUp $S;   Write-Output "t=18500 S up"
-At 21000; Key $T 80;  Write-Output "t=21000 T (dismount)"
-At 23000; Write-Output "driver done"
+At 18500; KeyUp $S;   Write-Output "t=18500 S up"
+At 19000; KeyDown $RIGHT; Write-Output "t=19000 RIGHT turn"
+At 20100; KeyUp $RIGHT;   Write-Output "t=20100 RIGHT turn done"
+At 20600; Key $SP 150; Write-Output "t=20600 Space after turn (expect 13618)"
+At 21500; Key $T 80;  Write-Output "t=21500 T (dismount)"
+At 23500; Write-Output "driver done"
