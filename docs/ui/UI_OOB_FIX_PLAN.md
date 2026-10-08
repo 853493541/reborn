@@ -28,9 +28,20 @@ viewer bugs from script-faithful overhang. After the first P3 fix (below), **oob
 list is empty, so the call is a no-op). BigBagPanel's `Handle_Bg` decoration images were stacked
 into a row at x≈1927 and the bag's right-side controls (Btn_Drag/Scroll_List/…) were dragged to
 y=0 — outside the window. Guarding the flow removed **813 oob elements** (7,690 → 6,877) and 8
-`placed-wrong`; Btn_Drag is back at its scripted (580,610). Remaining `placed-wrong` (6): Album
-`Wnd_Thumb`, Coinshop_CheckOut `PageSet_CheckOut`, Coinshop_CantBuy `Wnd_Warning`, Collection
-`Image_BottomBg`, ExteriorBoxError `Wnd_Error`, CreditsPanel `Image_CreditsPanelBg`.
+`placed-wrong`; Btn_Drag is back at its scripted (580,610). Remaining `placed-wrong` (6) and the
+observed pattern:
+- **SetAbsPos with an offset parent** — Collection `Image_BottomBg` (`SetAbsPos 0 -40`, parent
+  `Handle_BottomBg` at y≈1027 → rendered 987) and CreditsPanel `Image_CreditsPanelBg`
+  (`SetAbsPos 0 0`, parent `Handle_All` at -300,-28 → rendered -300,-28). The viewer treats
+  `SetAbsPos` like `SetRelPos` (both set Left/Top); if the engine's `SetAbsPos` is absolute to the
+  window, the viewer is wrong here. **P3 follow-up: disassemble `LuaWindow_SetAbsPos` vs
+  `LuaWindow_SetRelPos` and apply the correct semantics.**
+- **SetRelPos with one axis mismatched** — Album `Wnd_Thumb` (script -399.5,-110 → rendered
+  0,-110), Coinshop_CheckOut `PageSet_CheckOut` (-385.5,-360 → 0,-360), Coinshop_CantBuy
+  `Wnd_Warning` (-206,-157.5 → -206,0), ExteriorBoxError `Wnd_Error` (-248.5,-93 → 0,-93). The
+  INIs carry no `PosType`; if the viewer's default PosType for these control classes is non-zero
+  (anchor), the axis is anchored instead of relative. **P3 follow-up: confirm the PosType default
+  for WndWindow/WndPageSet/WndContainer against the engine.**
 
 The earlier capped analysis (first 40/window, 6,254 elements) gave scroll 1,194 · parked 1,347 ·
 negative-pos 457 · edge 149 · other 2,903, and the post-filter container 1,548 / leaf 1,204 /
