@@ -30,37 +30,40 @@ with no AV and no cross-cast replay observed).
 
 - Cast: `reborn_20261007_064153.log` — 如意法: tani + PSS + sound, process survives.
 - Warm-up: `sfx warm: 61/61 cached` (fixes the engine's first-time tag-create AV).
-- 81 abilities load; **81 anim steps play the authored tani**; 122 PSS dummies.
-- 18 abilities additionally spawn the engine's own tag effects from their tani
-  (五蕴皆空, 凌太虚, 剑主天地, 圣明佑, 如意法, 徐如林, 怖畏暗刑, 抱残式, 极乐引,
-  烈日斩, 玄水蛊, 百足, 花语酥心, 蛇影, 蛊虫献祭, 银月斩, 雷震子, 驱夜断愁).
+- 81 abilities load; **21 anim steps play the authored tani** (the other 58 whose
+  tani already carries the staged PSS play the base `.ani` — see open item 1);
+  122 PSS dummies.
+- Abilities whose tani does NOT duplicate a staged PSS additionally spawn the
+  engine's own tag effects from their tani (e.g. 五蕴皆空, 凌太虚, 剑主天地,
+  圣明佑, 徐如林, 抱残式, 极乐引, 烈日斩, 百足, 花语酥心, 蛇影, 蛊虫献祭,
+  银月斩, 雷震子, 驱夜断愁).
 
 ## Open work (priority order)
 
 1. **"Effects replay wrong"** (named ability: **如意法**; user: "特效反复从头重放 /
-   整个特效期间一直重放"). Status 2026-10-07: **not reproduced** on the current build.
-   Full-density engine captures (200 ms sampling across the whole 12.5 s effect,
-   standing/moving/W-taps) show one smooth play (rise -> steady -> decay), no
-   restart; an A/B of the PSS follow (`RC_PSS_FOLLOW=move` vs `always`, i.e. 1 vs
-   3468 re-adds) is pixel-identical; a transform-jitter probe (`jitter`, dummy
-   re-added at alternating +/-40u every frame) also does not restart the PSS.
-   What the trace DID find (new, verified):
+   整个特效期间一直重放"). **Fixed 2026-10-07** — the replay source was a duplicated
+   effect, not a timer:
    - The matched tani carries the effect records itself: `F1smj10双刀buff04_清净心01.tani`
      embeds `m_明教清净心01.pss` **and** `m_明教圣火_落地.pss` plus the 4 `.Sfx` tags.
-     The dataset also stages `m_明教清净心01.pss` as a dummy -> the engine's tag
-     path and the dummy are two sources of the same PSS (58 of 61 dummy-carrying
-     abilities have this). With the dummy present the tag burst is suppressed
-     (shared PSS instance); without the dummy the tag burst renders for ~1 s and
-     dies with the animation (the dummy is the long tail).
+     The dataset *also* staged `m_明教清净心01.pss` as a dummy -> playing the tani
+     made the engine spawn the same PSS a second time (tag instance) next to the
+     dummy. 58 of 61 dummy-carrying abilities had this duplicate; the game's own
+     process is the tani alone, so the effect came from two sources.
+   - Fix: `avoid_tani_pss_dup` (`AVOID_TANI_PSS_DUP=True`) plays the tani's base
+     `.ani` for those abilities -> the staged PSS is the single visible source
+     (game-truth process, no duplicate). Verified: 如意法 now = base `.ani` +
+     dummy, one smooth 12.5 s play (`reborn_20261007_174334.log`). Trade-off: the
+     tani's partial `.Sfx` sparks/trail are dropped for those 58 abilities (the
+     PSS stays the main layer per the user directive); re-open if a fuller
+     authored burst is wanted.
+   - Not-a-restart evidence (recorded for re-open): follow re-add A/B (`move` vs
+     `always`, 1 vs 3468 re-adds) is pixel-identical; a transform-jitter probe
+     does not restart the PSS; full-density 200 ms captures show no timer replay.
    - `ability_picker/data/tani_pss_tags.json` (built by
      `ability_picker/tools/scan_tani_tags.py`) records every ability's tani base
-     `.ani` + embedded `.pss`/`.sfx` paths.
-   - A dormant builder pass `avoid_tani_pss_dup` (`AVOID_TANI_PSS_DUP=False`)
-     can drop the tani (play the base `.ani`) for those abilities to remove the
-     duplicate — off because it also loses the authored early burst.
-   Next probe needs the user: which ability + interaction (does it need movement,
-   or casting a second ability?) and a capture at the moment the restart is seen;
-   the report may predate the 2026-10-07 PSS revert (`9a536eb`).
+     `.ani` + embedded `.pss`/`.sfx` paths (re-run after a game-data update).
+   Next: user compares against the real game (the duplicate is gone; the tani
+   `.Sfx` sparks/trail for those abilities are the known cost).
 2. **70 animation matches changed** vs the v2-era dataset (the "wrong moves"
    report): diff against `agent/skillv2-sandbox`'s
    `ability_picker/data/ability_candidates.json`. The 7 dash-sourced matches are

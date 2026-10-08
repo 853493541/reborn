@@ -5061,3 +5061,26 @@ if the cache/host frames appear.
   effect replay; the effect timeline is per-cast (rise at each cast, decay after).
   Frame attribution in the shared `reborn_out` was muddled by other agents'
   clients - use unique RC_SHOTS names / per-run copies.
+
+### 2026-10-07 - v5 - "effects replay wrong" (如意法) FIXED: duplicated PSS source
+
+- Root cause found by tracing the staged process against the game's own files:
+  the matched tani carries the effect records itself
+  (`F1smj10双刀buff04_清净心01.tani` embeds `m_明教清净心01.pss` +
+  `m_明教圣火_落地.pss` + 4 `.Sfx`). The dataset also staged the first PSS as a
+  dummy -> playing the tani made the engine spawn the same PSS a second time
+  next to the dummy. 58 of 61 dummy-carrying abilities had the duplicate; the
+  game's own process is the tani alone, so the effect played from two sources
+  ("replays from the beginning").
+- Fix: `AVOID_TANI_PSS_DUP=True` in build_candidates.py - for those abilities
+  play the tani's base `.ani` (via the `scan_tani_tags.py` manifest
+  `tani_pss_tags.json`), keeping the staged PSS as the single visible source.
+  Verified: 如意法 = base `.ani` + dummy, one smooth 12.5 s play
+  (`reborn_20261007_174334.log`). Trade-off: the tani's partial `.Sfx`
+  sparks/trail are dropped for those abilities; re-open if a fuller authored
+  burst is wanted.
+- Negative results kept for re-open: the follow re-add is NOT a restart source
+  (A/B `move` vs `always` = 1 vs 3468 re-adds, pixel-identical; a `jitter`
+  transform probe also no restart); full-density 200 ms captures show no timer
+  replay; the tani tag PSS dies with the animation (~1 s), which is why the
+  dummy is the long layer.
