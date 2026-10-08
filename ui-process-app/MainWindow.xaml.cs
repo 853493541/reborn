@@ -687,8 +687,11 @@ namespace UiProcessApp
                 // The per-item review checklist reflects the rendered items (INI order).
                 if (buildResult != null && _currentIni != null)
                 {
+                    // Rendered items, plus any item the checklist currently hides: the row
+                    // must stay in the list so it can be re-checked (only the window render
+                    // hides it).
                     var items = _currentIni.Sections
-                        .Where(s => buildResult.Elements.ContainsKey(s.Name))
+                        .Where(s => buildResult.Elements.ContainsKey(s.Name) || IsChecklistHidden(window.Id, s.Name))
                         .Select(s => (Name: s.Name, Type: s.Get("._WndType") ?? ""))
                         .ToList();
                     _checklistCache[key] = items;
@@ -850,6 +853,11 @@ namespace UiProcessApp
             ItemCheckSummary.Text = string.Format("显示 {0} / {1}", checkedCount, items.Count);
         }
 
+        /// <summary>True when the checklist explicitly unchecked this section (hidden in the
+        /// window render, but the row stays in the list).</summary>
+        private bool IsChecklistHidden(string windowId, string section)
+            => _itemChecks.TryGetValue(ItemCheckStore.Key(windowId, section), out var v) && !v;
+
         private void OnItemCheckToggled(object sender, RoutedEventArgs e)
         {
             if (_currentWindow == null) return;
@@ -858,8 +866,15 @@ namespace UiProcessApp
             ItemCheckStore.Set(_itemChecks, _currentWindow.Id, name, cb.IsChecked == true);
             ItemCheckStore.Save(Paths.AppRoot, _itemChecks);
             UpdateItemCheckSummary();
-            // Visibility changed: re-render (suppressed during a batch toggle).
-            if (!_updatingChecks) RenderLayout(_currentWindow);
+            // Visibility changed: invalidate the cached canvas and re-render (suppressed
+            // during a batch toggle).
+            if (!_updatingChecks)
+            {
+                _layoutCache.Clear();
+                _layoutOrder.Clear();
+                _layoutNotes.Clear();
+                RenderLayout(_currentWindow);
+            }
         }
 
         private void UpdateItemCheckSummary()
@@ -900,6 +915,9 @@ namespace UiProcessApp
             }
             _updatingChecks = false;
             UpdateItemCheckSummary();
+            _layoutCache.Clear();
+            _layoutOrder.Clear();
+            _layoutNotes.Clear();
             RenderLayout(_currentWindow);  // one re-render for the batch
         }
 
