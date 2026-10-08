@@ -1,0 +1,19 @@
+# skill v6 — camera default range = panel max (2026-10-07)
+# Build: reborn_client_skillv6.exe (git c86bf42, dirty) — title sandbox-skillv6
+# Change: the camera default (init + follow target) used the per-role
+#         custom.dat fMaxCameraDistance (=821 u). The user wants the panel hard
+#         max. Now the character row MaxCameraDistance + default distance use the
+#         panel max (camera.json / fMaxCameraDistance = 2000 u); custom.dat's
+#         smaller value no longer caps the range.
+# File: client/RebornClient.cs (~line 1210, 1231).
+
+## before (reborn_20261007_234209.log)
+23:42:38.978 CameraSettings: mapId=296 sceneInit=1 yaw=4.717295 pitch=-0.441 max=821 drag=1.00/1.00 eyeScale=1.00
+23:42:38.980 CameraSystem ready: mode=character dist=821u height=200u units/m=100 op=joystick
+
+## after (reborn_20261007_234957.log)
+23:50:26.244 CameraSettings: mapId=296 sceneInit=1 yaw=4.717295 pitch=-0.441 max=821 ...   (custom.dat value, informational)
+23:50:26.245 CameraSystem ready: mode=character dist=2000u height=200u units/m=100 op=joystick   <- max
+23:50:26.584 spawn=(18991,962,33853) view=(0.00,1.00)
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS (unchanged; camera-only change)

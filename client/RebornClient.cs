@@ -1207,7 +1207,11 @@ internal static class RebornClient
                 editorRoot, mapPath, cfgDir, Log);
             cameraSettings.ApplyOperationMode();
             Log("opmode applied: " + cameraSettings.DescribeApplied());
-            camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MaxCameraDistance", cameraSettings.MaxCameraDistance);
+            // user decision 2026-10-07: default camera range = the panel hard
+            // max (camera.json / fMaxCameraDistance = 2000 u). The per-role
+            // custom.dat fMaxCameraDistance (e.g. 821 u) does not cap it.
+            double panelMaxU = camSys.Rows[CameraSystem.MODE_CHARACTER].F("MaxCameraDistance", 2000.0);
+            camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MaxCameraDistance", panelMaxU);
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", cameraSettings.MinCameraDistance);
             // Game-data pitch is NEGATIVE when the camera sits above the anchor
             // (looking down): g_Scene_tCameraRuntime fPitch default -0.35,
@@ -1228,7 +1232,7 @@ internal static class RebornClient
             // overrides the 1245 u client-number initial (C10) - target AND
             // init distance are max, so the follow camera holds at max instead
             // of easing back to the row value.
-            double maxDistM = camSys.ClampDistanceUnits(cameraSettings.MaxCameraDistance)
+            double maxDistM = camSys.ClampDistanceUnits(panelMaxU)
                               / camSys.UnitsPerMeter;
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("TargetDistance", maxDistM);
             camSys.Rows[CameraSystem.MODE_CHARACTER].Set("InitCameraDistance", maxDistM);
