@@ -8115,3 +8115,14 @@ if the cache/host frames appear.
   `proof/netcode/skillv6_castbar.png`. Gates: jx3_model 10 PASS, gravity PASS, loot selftest PASS.
 - **Open (P5):** cooldown sweep on panel icons; target-frame buff/CC icons; world-projected
   floating numbers.
+
+### 2026-10-08 — v6 — passive extraction deepened (buffs)
+
+- **Did:** `build_passives.py` now extracts `AddBuff`/`DelBuff` ids from each `Apply()` body
+  (first numeric arg, handling `cPlayer.AddBuff(dwID,nLevel,id,stack)`) → `passives_f1.tsv`
+  buffs column (**61 buffs**, was 4; child casts unchanged 40).
+- **Verified:** 27892 → `buffs=[3479;20359;20354;20357;20356]`; 27874 → `child=[27996]
+  buffs=[13986;20292;20293]`. Proof `proof/netcode/skillv6_passives_buffs_20261008.txt`.
+  Gates: jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+- **Open:** apply the passive buffs to a self-buff list (not only log); other Apply effects
+  (DelBuff/CreateDoodad/CreateNpc/Dash/heal); Lua 5.1 VM for arbitrary bodies.

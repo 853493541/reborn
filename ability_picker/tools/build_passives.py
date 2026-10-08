@@ -54,6 +54,14 @@ def apply_body(t):
     return t[s:]
 
 
+def first_numeric_arg(call):
+    for p in call.split(","):
+        p = p.strip()
+        if p.isdigit():
+            return p
+    return None
+
+
 def main():
     tab = find_skills_tab()
     sfmap = {}
@@ -75,7 +83,11 @@ def main():
         t = open(p, "rb").read().decode("gb18030", "replace")
         body = apply_body(t)
         child = re.findall(r"CastSkill(?:XYZ|ByXYZ|ByDirection)?\s*\(\s*(\d+)", body)
-        buffs = re.findall(r"Add(?:Buff|State|Aura)\w*\s*\(\s*(\d+)", body)
+        buffs = []
+        for m in re.finditer(r"\.?(AddBuff|DelBuff\w*)\s*\(([^)]*)\)", body):
+            b = first_numeric_arg(m.group(2))
+            if b:
+                buffs.append(b)
         attrs = len(re.findall(r"AddAttribute\s*\(", body))
         tot_child += len(child)
         tot_buff += len(buffs)
