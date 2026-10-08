@@ -287,14 +287,22 @@ internal static class RebornClient
         catch (Exception e) { Log("cast chain load ex: " + e.Message); }
         string selAbility = Env("RC_ABILITY", "65029");
         string selAnimPath = lyAnim, selFxPath = lyFx;
+        float selDash = lyDash;
         {
             string[] ab;
             if (castChain.TryGetValue(selAbility, out ab))
             {
                 if (ab[2].Length > 0) selAnimPath = ab[2];
                 selFxPath = ab[3];
+                selDash = 0f;   // dataset is authoritative: dash 0 = no dash
+                if (ab.Length >= 6)
+                {
+                    float dd;
+                    if (float.TryParse(ab[5], out dd)) selDash = dd;
+                }
                 Log("cast chain ability: " + selAbility + " " + ab[1]
-                    + " anim=" + ab[2] + " fx=" + ab[3] + " bone=" + ab[4]);
+                    + " anim=" + ab[2] + " fx=" + ab[3] + " bone=" + ab[4]
+                    + " dash=" + selDash);
             }
             else Log("cast chain: ability " + selAbility + " not in dataset (longya defaults)");
         }
@@ -3075,7 +3083,7 @@ internal static class RebornClient
                     // v6 full chain: face the target, play the authored anim,
                     // dash to the target while it plays, then the one-shot effect.
                     skillCast.Begin(now, selAbility, selAnimPath, selFxPath,
-                        px, pz, ctg.X, ctg.Y, ctg.Z, lyAnimMs, lyFxAt, lyStop, lyDash);
+                        px, pz, ctg.X, ctg.Y, ctg.Z, lyAnimMs, lyFxAt, lyStop, selDash);
                     curYaw = skillCast.FaceYaw();
                     skillUntil = now + lyAnimMs;
                     curClip = null;
@@ -3084,7 +3092,7 @@ internal static class RebornClient
                     chained = true;
                     Log("cast chain " + selAbility + ": target=" + ctg.ToString()
                         + " anim=" + selAnimPath + " fx=" + selFxPath
-                        + " animMs=" + lyAnimMs + " fxAt=" + lyFxAt + " dash=" + lyDash
+                        + " animMs=" + lyAnimMs + " fxAt=" + lyFxAt + " dash=" + selDash
                         + "u/f ->" + skillCast.DashMs() + "ms stop=" + lyStop
                         + " dashTo=(" + ctg.X.ToString("F0") + "," + ctg.Z.ToString("F0") + ")");
                 }

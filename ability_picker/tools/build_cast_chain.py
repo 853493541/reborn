@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -96,6 +97,57 @@ def load_names(cache):
     return m
 
 
+def load_script_map(cache):
+    """skill id -> ScriptFile (relative), col 57 of skills.tab."""
+    p = os.path.join(cache, "ad-desc-probe-out", "settings", "skill", "skills.tab")
+    m = {}
+    for c in rows(p)[1:]:
+        if len(c) > 57 and c[1] and c[57]:
+            m[c[1]] = c[57].replace("/", "\\")
+    return m
+
+
+def load_script_texts(cache):
+    """ScriptFile-relative path -> script text, from the ability-matcher extraction."""
+    root = os.path.join(cache, "ability-matcher", "extracted", "scripts", "skill")
+    texts = {}
+    if not os.path.isdir(root):
+        return texts
+    for dp, ds, fs in os.walk(root):
+        for f in fs:
+            if f.lower().endswith(".lua"):
+                p = os.path.join(dp, f)
+                try:
+                    texts[os.path.relpath(p, root)] = read_gbk(p)
+                except Exception:
+                    pass
+    return texts
+
+
+def parse_dash(text):
+    """The dash speed (engine u/frame) from a skill script, or 0."""
+    if not text or text[:4] == "\x1bLua":
+        return 0
+    m = re.search(r"ATTRIBUTE_TYPE\.DASH\s*,\s*(\d+)", text)
+    if m:
+        return int(m.group(1))
+    m = re.search(r"DASH\((\d+)\s*,\s*\d+\)", text)
+    if m:
+        return int(m.group(1))
+    for kind in ("DASH_FORWARD", "DASH_BACKWARD", "DASH_LEFT", "DASH_RIGHT"):
+        m = re.search(kind + r"\((\d+)\s*,\s*(\d+)\)", text)
+        if m:
+            return int(m.group(2))
+    return 0
+
+
+def parse_child(text):
+    if not text or text[:4] == "\x1bLua":
+        return ""
+    m = re.search(r"CAST_SKILL_TARGET_DST\s*,\s*(\d+)", text)
+    return m.group(1) if m else ""
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--cache", default=CACHE_DEFAULT)
@@ -119,6 +171,21 @@ def main():
     result = load_result_map(args.cache)
     effect = load_effect_map(args.cache)
     names = load_names(args.cache)
+    script_map = load_script_map(args.cache)
+    script_texts = load_script_texts(args.cache)
+
+    def dash_for(sid):
+        """Dash speed (u/frame): the skill's own script, or its CAST_SKILL_TARGET_DST child."""
+        sp = script_map.get(sid, "")
+        if not sp:
+            return 0
+        d = parse_dash(script_texts.get(sp, ""))
+        if d:
+            return d
+        ch = parse_child(script_texts.get(sp, ""))
+        if ch:
+            d = parse_dash(script_texts.get(script_map.get(ch, ""), ""))
+        return d
 
     abilities = []
     for c in rows(caster_file)[1:]:
@@ -147,6 +214,7 @@ def main():
             "effectResultId": erid,
             "effectSfx": efx,
             "effectBone": bone,
+            "dash": dash_for(sid),
         })
 
     out = {"body": args.body, "cache": args.cache, "count": len(abilities),
@@ -157,10 +225,10 @@ def main():
     # TSV sidecar (the C#5 client parses this without a JSON library)
     tsv = os.path.splitext(args.out)[0] + ".tsv"
     with open(tsv, "w", encoding="utf-8", newline="\n") as fh:
-        fh.write("skillId\tname\tanimTani\teffectSfx\teffectBone\n")
+        fh.write("skillId\tname\tanimTani\teffectSfx\teffectBone\tdash\n")
         for a in abilities:
             fh.write("\t".join([a["skillId"], a["name"], a["animTani"],
-                                a["effectSfx"], a["effectBone"]]) + "\n")
+                                a["effectSfx"], a["effectBone"], str(a["dash"])]) + "\n")
     print("wrote %s: %d abilities (+ %s)" % (args.out, len(abilities), os.path.basename(tsv)))
     if tmp:
         import shutil

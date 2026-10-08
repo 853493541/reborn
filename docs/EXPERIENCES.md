@@ -7782,3 +7782,18 @@ if the cache/host frames appear.
   player covers the gap in ~0.1 s (`t=12s z=33868 → t=14s z=34053`), face + anim + no
   crash. Knob `RC_LY_DASH` (u/frame, default 120).
 - Verified: `client\build_client.cmd` exit=0; driven run alive.
+
+### 2026-10-07 — v6 — per-ability dash in the dataset (dash only if authored)
+
+- **Did:** `build_cast_chain.py` now parses each skill's script for its dash — its own
+  `ATTRIBUTE_TYPE.DASH`/`DASH(...)`/`DASH_FORWARD(frames,speed)`, or its
+  `CAST_SKILL_TARGET_DST` child's dash — and emits a `dash` column (engine u/frame) in
+  `cast_chain_f1.{json,tsv}`. `SkillCast` treats `dash<=0` as **no dash** (stays in
+  place); the client uses the dataset value (fallback knob `RC_LY_DASH`).
+- **Verified (driven):** `65029` dataset `dash=120` (from child `65030` DASH 120) →
+  cast `dash=120u/f ->104ms`, player reaches the target; `65076` dataset `dash=0` →
+  `dash=0u/f`, no movement (correct: not a dash skill). Both runs alive.
+- **Note:** only scripts present in the ability-matcher extraction are parsed, so most
+  abilities currently resolve `dash=0` (no dash) — a data-coverage gap, not a wrong
+  value; melee dash skills get their authored speed where the script is available.
+- Verified: `client\build_client.cmd` exit=0; driven runs `65029`/`65076` alive.

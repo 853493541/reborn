@@ -59,7 +59,8 @@ internal sealed class SkillCast
         float dx = tgtX - selfX;
         float dz = tgtZ - selfZ;
         float d = (float)Math.Sqrt(dx * dx + dz * dz);
-        if (d <= stopDistance + 1f)
+        // dashSpeedPerFrame <= 0 => the skill has no dash: stay in place.
+        if (dashSpeedPerFrame <= 0f || d <= stopDistance + 1f)
         {
             endX = selfX;
             endZ = selfZ;
