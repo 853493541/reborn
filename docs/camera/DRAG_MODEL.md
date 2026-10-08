@@ -65,9 +65,19 @@ same direction as the host engine's native orbit, confirmed in the captures
 
 1. **Anchor** (`0x180B0EE17`..`0x180B0EFDC`): mount socket (`+0x3A08`),
    custom offsets (`+0xCF8` / `+0x3CA8`), character head/entity
-   (`+0x3B9C`, `+0x38`), else the raw character position. The height helper
-   `AdjustCharacterCameraObjectY` @ `0x180AC8980` resolves **`Bip01 Head`**
-   (`0x180AC8C3D`) - the anchor is the character, normally the head/socket.
+   (`+0x3B9C`, `+0x38`), else the raw character position - i.e. the character
+   LOGIC/entity position plus authored offsets. The height helper
+   `AdjustCharacterCameraObjectY` (HD `0x180AC8980` / EXP `0x1808DCBxx`; logic
+   byte-identical) composes the camera-object Y from character fields; it reads
+   the animated **`Bip01 Head`** (`0x180AC8C3D` / EXP `0x1808DCB9E`) ONLY in a
+   narrow close-camera branch - entering requires all of `0.3 > ratio`,
+   `[ctrl+0x5C]==8 || lookup`, and `0.5 > |[ctrl+0xD0]|` (constants read from
+   both DLLs; the branch then overrides the composed Y with the head Y and sets
+   the `+0x17C` state). **Correction 2026-10-07:** the earlier "normally the
+   head/socket" reading over-read the string xref - third-person distances never
+   take the branch, so the anchor is the logic position + height fields, NOT the
+   animated bone. Feeding the animated bone matrix made an in-place spin (FLWS)
+   sway the camera ±26 u; fixed by the rest-offset anchor (`08a9bbc`).
 2. **Offset** = constant-length rotation of `(distance A, lateral B, height C)`
    by `(yaw, pitch)` (`CameraSystem.DesiredOffset` matches this; verified form
    in `docs/netcode/JX3_CAMERA_RESEARCH.md` section 6):

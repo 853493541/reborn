@@ -5208,7 +5208,7 @@ power-pool values remain undecoded (re-open criteria in the doc).
   position (`modelPlace`) - a spin clip can no longer move the anchor, while a real dash
   still translates it with the model.
 - Proof (`proof/character/3x_motion/`): FLWS standing cast -> `camPos=(18993,1582,33111)`
-  byte-identical across every sample of the clip (was +/-26 u); 太阴指 228 ->
+  byte-identical across every sample of the clip (was +/-26 u); 太阴�?228 ->
   `moved=960` backward, camPos follows positionally (33112->32152).
 - Gates: build 0, camera_smoke_3x_motion ALL PASS, collision 36/36.
 
@@ -5227,4 +5227,30 @@ power-pool values remain undecoded (re-open criteria in the doc).
   full scenario + dismount + DONE (realinput_after_fix.txt).
 - Scope named (not faked): vehicles/glider/full parachute/double-ride/footprints/
   fade phases/hidden 13618-44565 motions remain separate features.
+
+
+### 2026-10-07 - Camera anchor rule decoded (both builds) + per-frame verification
+
+- Decode (fresh disasm of `JX3RepresentX64.dll` HD + EXP copies): the Y helper
+  `AdjustCharacterCameraObjectY` (HD 0x180AC8980 / EXP 0x1808DCBxx) reads the
+  animated `Bip01 Head` (HD 0x180AC8C3D / EXP 0x1808DCB9E) ONLY when all of
+  `0.3 > ratio`, `[ctrl+0x5C]==8 || lookup`, `0.5 > |[ctrl+0xD0]|` hold - the
+  constants read from both DLLs are identical (xmm1=0.3, xmm8=0.5). Third-person
+  distances never take the branch, so the game's anchor = character LOGIC/entity
+  position + character height fields (the X/Z chain: mount socket / custom
+  offsets / entity / raw position). The earlier "normally the head/socket"
+  reading over-read the string xref; corrected in `docs/camera/DRAG_MODEL.md`.
+- Verification (per-frame `RC_CAM_TRACE=1`, not per-second samples): FLWS standing
+  cast -> anchor + engine camPos byte-identical across 1963 trace frames spanning
+  the whole clip; 太阴指 dash -> anchor/camPos translate with the -960 u dash
+  (camYaw/camPitch constant); idle no-cast baseline -> a single campos value for
+  the run; moving baseline (walk, no cast) -> anchor/campos translate with the walk
+  (anchor z 33853.6->36232.7, campos z 33111.2->35875.0) with camYaw/camPitch one
+  value for the whole run (the walk clip's bone motion no longer feeds the camera).
+  `proof/character/3x_motion/p2_cam_fix_*.txt`.
+- Note: the camera yaw/pitch difference vs the earlier runs (4.717/-0.441 vs
+  5.110/-0.219) is the user's `custom.dat` change, not the anchor - the states
+  build (94c9efa, no C2) shows the same values.
+- Gates re-run on the canonical build (git 08a9bbc): build 0, smoke ALL PASS,
+  collision 36/36.
 
