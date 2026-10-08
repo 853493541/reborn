@@ -5276,3 +5276,17 @@ power-pool values remain undecoded (re-open criteria in the doc).
   `KG3D_FluxDomainModel::Init` 0x180c05250).
 - Gates: build 0, camera_smoke_3x_states ALL PASS, collision 36/36.
 
+### 2026-10-07 - Water region regression fixed: restore the P1 footprint (P2 rect was ~100x too small)
+
+- Regression: E's P2 "authored rect" used `BaseWidth=40` raw as the half-extent
+  (~40 u), ~100x smaller than the water body; the real lake fell outside every rect and
+  water was ignored (user: "now it just completely ignores water"). The earlier P1
+  heuristic (`radius 4096 u * Scale`) accidentally covered the lake, which is why the
+  swim animation used to play.
+- Fix: restore the P1 footprint (`4096 u * Scale` from the body center) as the region,
+  explicitly labeled REGISTERED PROVISIONAL; BaseWidth/BaseLenght are base-mesh dims, not
+  the extent. Verified: spawn at the body center (67039,58548) -> `swim: enter state=7
+  surface=150 depth=1001 y=150`; dry points beyond the basin correctly stay dry.
+- True region remains the terrain-cell water layer (SPEC_STATES_P3); re-open when the
+  cell-stream writer is traced.
+- Gates: build 0.

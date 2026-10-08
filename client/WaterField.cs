@@ -86,8 +86,15 @@ internal sealed class WaterField
             }
             float dx = x - b.X;
             float dz = z - b.Z;
-            float hx = 0.5f * b.BaseW * b.ScaleX;
-            float hz = 0.5f * b.BaseL * b.ScaleZ;
+            // P1 REGISTERED PROVISIONAL region (restored 2026-10-07): the water
+            // body footprint is `4096 u * Scale` from the body center. E's P2
+            // "authored rect" used BaseWidth=40 raw (~40 u) which is ~100x too
+            // small and made the real lake "no water" (a regression vs the P1
+            // behavior the user had). BaseWidth/BaseLenght are base-mesh dims,
+            // not the extent. True region = the terrain-cell water layer
+            // (SPEC_STATES_P3); re-open when that writer is traced.
+            float hx = 4096f * b.ScaleX;
+            float hz = 4096f * b.ScaleZ;
             if (hx <= 0f) hx = 1f;
             if (hz <= 0f) hz = 1f;
             if (b.RotY != 0f)
