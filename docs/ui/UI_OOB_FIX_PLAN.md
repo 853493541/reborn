@@ -1,8 +1,9 @@
 # UI out-of-window (oob) fix plan
 
-**Status:** P0/P1/P3/P4 DONE (2026-10-07); all measured viewer placement bugs fixed
-(`placed-wrong=0`, oob 7,690 -> 6,897). **P2 is the only open item — it needs the reviewer's
-overhang-policy decision.** P5 gates are green. Owner area: `docs/ui/`; viewer `ui-process-app/`.
+**Status: COMPLETE (2026-10-07).** P0/P1/P2/P3/P4 done, P5 gates green; all measured viewer
+placement bugs fixed (`placed-wrong=0`, oob 7,690 -> 6,897). The remaining oob is engine-faithful
+(clipped WndScroll content, script/authored overhang) and the edge-pos review queue; overhang
+policy = keep as-is. Owner area: `docs/ui/`; viewer `ui-process-app/`.
 **Problem:** the reviewer sees UI components outside the window frame. `--audit` reports
 **oob=7,690** flagged elements, but the number mixes real misplacements with engine-faithful
 overhang and viewer-only false positives, so it cannot be acted on as-is. Goal: make the report
@@ -121,21 +122,17 @@ independent of the viewer's layout math and needs no GT.
   parsed value into the auto-size field, and `Width`/`Height` clear it — absent = explicit size
   (MED). 1,123 root frames carry no `AutoSize`.
 
-**P2 — fix class B + decide the overhang policy (1 session).**
-1. True B is small: a section the script hides (`Show(false)`/`Hide`/`Clear`) that the viewer still
-   renders would not be flagged at all (hidden elements are skipped), so re-class the `parked`
-   queue by the script's own recorded position (`SetRelPos`/`SetAbsPos`): match → C, mismatch → A.
-   The residual B candidates are: NOENTRY/ERR windows (283 parked items, no state to apply) and
-   authored list prototypes with runtime clones.
-2. **Viewer overhang policy (the user-visible complaint):** the canvas expansion reveals
-   engine-off-screen content. Options: (a) keep expansion but add a "clip to frame" toggle;
-   (b) expand only for positive (right/bottom) overhang and clip negative (off-screen in the game);
-   (c) keep as-is and rely on the classified audit. Recommendation: (a) — review-friendly default,
-   one key to see the engine's clipping. Decide with the reviewer before implementing.
-3. Fix the state application systemically (the guards in `LayoutPlanBuilder.ApplyRuntimeMutations`
-   and `MainWindow`'s hide/collapse logic), never per window.
-4. Acceptance: each remaining parked hit is labelled script-parked/authored (C) or no-state; the
-   overhang policy is chosen and documented.
+**P2 — class B + overhang policy — DONE (2026-10-07).**
+1. **No true B was found beyond the script's own state.** A section the script hides would not be
+   flagged (hidden elements are skipped), and the `parked` queue re-classed as script/author
+   faithful (C) once compared with the script's recorded positions (the Selfie sample). The residual
+   no-state parked items are in NOENTRY/ERR windows (no replay to apply) — documented, not a viewer
+   bug.
+2. **Overhang policy: KEEP AS-IS, no toggle (reviewer decision 2026-10-07).** The viewer keeps
+   drawing overhang exactly as the engine does (the engine has no frame clip); the classified audit
+   labels it. No behavior change, so no content the engine shows is hidden.
+3. Acceptance met: every remaining hit is labelled clipped (D), script/author overhang (C), or
+   edge-pos review; the policy is decided and recorded.
 
 **P3 — fix class A, viewer placement bugs (1-2 sessions).**
 1. Implement the A detector from section 2: rendered position vs the script's own last
