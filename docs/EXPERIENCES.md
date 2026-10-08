@@ -5056,3 +5056,8 @@ if the cache/host frames appear.
   (log line `abilities: ... pssFollow=...`). Note: the shared runtime
   `bin64\ability_picker\ability_candidates.json` was found holding a stale
   2026-09-28 copy at one point (1 ability loaded) - re-copy before each run.
+- Cross-cast sweep added (`RC_CAST_CYCLE=<ms>`, ported from the sandbox): 45 s run
+  cast 临时飞爪 -> 云栖松 -> 玄水蛊 -> 舍身诀 with no AV and no visible cross-cast
+  effect replay; the effect timeline is per-cast (rise at each cast, decay after).
+  Frame attribution in the shared `reborn_out` was muddled by other agents'
+  clients - use unique RC_SHOTS names / per-run copies.

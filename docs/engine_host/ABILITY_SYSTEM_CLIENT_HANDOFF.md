@@ -21,7 +21,10 @@ Controls: **P** = picker panel (scales with the window), **1** = cast selected,
 click an icon = select + cast. `RC_ABILITY=<name>` preselects (testing).
 Diagnostics: `RC_PSS_FOLLOW=move|off|always|jitter` (PSS follow mode; default
 `move` = re-add when the caster moved >32 u), `RC_PSS_SKIP=1` (skip the staged
-PSS dummy — inspect what the tani's own tags render).
+PSS dummy — inspect what the tani's own tags render), `RC_CAST_CYCLE=<ms>`
+(sweep: select + cast the next tani-playing ability every <ms>; the cast guard
+serializes casts — used for the cross-cast effect probe, ran 45 s / 4 abilities
+with no AV and no cross-cast replay observed).
 
 ## Verified working
 
