@@ -1616,24 +1616,17 @@ namespace UiProcessApp
                 canvas.Width = width;
                 canvas.Height = height;
             }
+            // Clip the window to its own rect: the engine has no frame clip, but this is a
+            // single-window review tool, and the scripts park popups / slide bars off-window
+            // (SetRelPos) and the INI authors overhang; expanding the canvas revealed all of
+            // it, so the reviewer saw "components outside the window". The off-window content
+            // is still measured by --audit (oob classes); the render just stops showing it.
+            canvas.Width = width;
+            canvas.Height = height;
+            canvas.ClipToBounds = true;
             canvas.Measure(new Size(width, height));
             canvas.Arrange(new Rect(0, 0, width, height));
             canvas.UpdateLayout();
-            var overhang = App.ComputeOverhang(build, width, height);
-            if (overhang.L > 0 || overhang.T > 0 || overhang.R > 0 || overhang.B > 0)
-            {
-                width += overhang.L + overhang.R;
-                height += overhang.T + overhang.B;
-                canvas.Width = width;
-                canvas.Height = height;
-                Canvas.SetLeft(build.Root, overhang.L + offsetX);
-                Canvas.SetTop(build.Root, overhang.T + offsetY);
-                if (overlayRoot != null)
-                {
-                    Canvas.SetLeft(overlayRoot, overhang.L);
-                    Canvas.SetTop(overlayRoot, overhang.T);
-                }
-            }
             note = $"page={page ?? "(all)"}  size={width:0}x{height:0}  " +
                    $"sections={ini.Sections.Count}  rendered={CountVisible(build.Root)}  " +
                    (runtimeApplied > 0 ? $"runtime={runtimeApplied}  " : "") +
