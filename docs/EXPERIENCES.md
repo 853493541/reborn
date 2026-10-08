@@ -8105,3 +8105,13 @@ if the cache/host frames appear.
   loot selftest PASS.
 - **Open:** passive buff/attribute extraction; deeper Apply (function calls/tables); full cast
   of the passive's child skills; Lua 5.1 VM for arbitrary Apply bodies.
+
+### 2026-10-08 — v6 — P5: cast bar (prepare/channel)
+
+- **Did:** `SkillCast.ElapsedPct(now)`; `CombatText.SetCast(name, pct)` draws a progress bar
+  (grey bg + green fill + `name NN%`) under the status line while a cast is active.
+- **Verified:** 65076 (prepare 1500 ms) + 27906 (channel 4000 ms) → overlay buffer
+  `434×46 sha256=2915698135189a4f` (green fill present);
+  `proof/netcode/skillv6_castbar.png`. Gates: jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+- **Open (P5):** cooldown sweep on panel icons; target-frame buff/CC icons; world-projected
+  floating numbers.

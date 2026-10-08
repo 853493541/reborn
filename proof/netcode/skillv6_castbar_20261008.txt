@@ -1,0 +1,15 @@
+# skill v6 — P5: cast bar (prepare/channel progress) (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 588221b, dirty)
+# Change: SkillCast.ElapsedPct(now); CombatText.SetCast(name, pct) draws a progress bar
+#   (grey bg + green fill + "name NN%") under the status line while a cast is active.
+#   RC_CT_DUMP now saves the buffer on a cast frame (RC_CT_DUMP_ALL=1 for every frame).
+
+## Driven run: RC_SLOTS=65076,27906 RC_CAST_AT=40000:1,52000:2 RC_CT_DUMP=proof\netcode\skillv6_castbar.png
+cast chain 65076 (prepareMs=1500) ; cast chain 27906 (channelMs=4000)
+# overlay buffer: proof/netcode/skillv6_castbar.png 434x46 sha256=2915698135189a4f
+#   (bottom grid row green ~ 5F7C5F/447144 = the progress fill)
+#   .venv\Scripts\python.exe tools\proof\image_stats.py proof\netcode\skillv6_castbar.png --grid 4x3
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open (P5): cooldown sweep on the ability-panel icons; target-frame buff/CC icons;
+#   world-projected floating numbers.

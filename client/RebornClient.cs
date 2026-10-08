@@ -5182,6 +5182,8 @@ internal static class RebornClient
                     ? (targetSelector.Current.Hp + "/" + targetSelector.Current.MaxHp) : "-")
                 + "  mana " + mana.ToString("F0")
                 + "  gcd " + (gcdUntil > now ? (gcdUntil - now) + "ms" : "ready"));
+            combatText.SetCast(skillCast.Active ? skillCast.Name : "",
+                skillCast.Active ? skillCast.ElapsedPct(now) : 0f);
             combatText.PlaceTop(form);
             combatText.UpdateLayered();
             // v6 numbered ability bar (top-right): key number + ability name

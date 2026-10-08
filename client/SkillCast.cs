@@ -133,6 +133,14 @@ internal sealed class SkillCast
     public long TotalMs() { return totalMs; }
     public long CommitMs() { return commitMs; }
 
+    // cast progress 0..1 (for the cast bar): elapsed / totalMs.
+    public float ElapsedPct(long now)
+    {
+        long t = totalMs > 0 ? totalMs : 1;
+        float p = (float)(now - startMs) / t;
+        return p < 0f ? 0f : (p > 1f ? 1f : p);
+    }
+
     public void EffectPoint(out float x, out float y, out float z)
     {
         x = fxX; y = fxY; z = fxZ;
