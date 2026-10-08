@@ -278,6 +278,25 @@ Resolved tuning globals (`scripts/Include/Skill.lh` main proto, instructions
   (绝境/阵船) ids** with their own `CastSkillAnimationID0` (e.g. 65667→1706,
   65076→711, 65145→611, 65119→460). So the 绝境 skills ship normal client cast
   animations — no server-side display-id remap is involved.
+* **Cross-body consistency:** 65029 → `CastSkillAnimationID0 = 455` in **all four**
+  real body files (`f1`, `m1`, `m2`, `f2`). `65030` (the dash child) has **no** row
+  (`-`); base `415` also has no row (it routes via `skill_tag.txt`); `41216` → 74161.
+* **Effect-result chain:** 65029 `PhysicsDamageEffectResultID = 415` →
+  `skill_result.txt` 415 (`EffectType=0, EffectID=415`) → `skill_effect.txt` 415
+  (`data\source\other\特效\…\龙牙_打击01_特效.Sfx`, bone `S_fxmid`).
+
+`skill_caster_<body>.txt` schema (51 cols; full header in the excerpt) — the cast-relevant
+columns for 65029:
+
+| col | field | 65029 |
+|---|---|---|
+| 0–3 | `SkillID`, `SkillLevel`, `MoveState`, `MissileID` | 65029, 1, 0, 0 |
+| 4 | `LockControlTime` | (empty) |
+| 5 | `PrepareCastSkillAnimationID` | 0 |
+| 6–9 | `CastSkillAnimationID0..3` | **455**, (rest 0) |
+| 10–29 | block/damage/heal/… `*EffectResultID` | only col 20 `PhysicsDamageEffectResultID = 415` |
+| 48 | `Haste` | 1 |
+| 50 | `HitSoundID` | (empty) |
 
 ### 3.6 The exact sequence (客户端实际会做什么)
 
@@ -342,12 +361,22 @@ corrected by the next server state.
    `PakV4SfxExtract.exe` (temp output, not committed). ⇒ 65029 `nChannelInterval =
    1267 * 1.2 = 1520.4`. Repro:
    `python -c "..."` on the extracted `Skill.lh` (SETGLOBAL/LOADK decode; see §3.3).
-3. **`IsAutoTurn=0` vs. client auto-face** — does the client still turn 65029 to the
-   target, or is `IsAutoTurn` the binding gate? (base 415 is also 0).
-4. **战意 cost**: the 65029 plaintext sets no `nCostRage`; the tooltip does not say
-   `消耗3点战意` (that is the base 415 text). Confirm whether 绝境 龙牙 costs 战意.
-5. Whether the 120 u dash (65030) is applied client-side (predicted) or via a
-   server `SkillMove` push.
+3. **`IsAutoTurn=0` vs. client auto-face** — client data: `skills.tab` 65029 and base
+   415 both have `IsAutoTurn=0`. No per-skill turn value exists in
+   `skill_caster_<body>.txt` (checked the 51-col schema). So the client carries no
+   65029-specific turn directive; the actual facing behaviour is `[UNVERIFIED]`
+   (general combat turn: `LuaTurnToCharacter` + server `OnSetTurnRange`, §2.2).
+4. **战意 cost** — client data: 65029's script has no `nCostRage`, and its
+   `skill.nCostMana = tSkillData[...]` line is **commented out** (the `tSkillData`
+   table lists mana numbers but they are not applied); the client tooltip
+   (`Skill.txt` 65029) omits `消耗3点战意` (that text is base 415's). So the client
+   carries no 65029 cost; any 战意 charge is **`[SERVER-INF]`**. Re-open on a server
+   cost table/capture.
+5. **Dash authority** — client data: 65030 has **no** `skill_caster_*` row and base 龙牙
+   is absent too; the displacement is the script `ATTRIBUTE_TYPE.DASH = 120`. Whether the
+   client applies it locally (prediction) or the server drives it via `SkillMove`/
+   `OnSyncMoveState` is **`[UNVERIFIED]`** (needs the skill-runtime `ApplyAttribute` path;
+   `docs/movement/JX3_GRAVITY_RESEARCH.md` §3.10 documents the SkillMove side).
 
 ## 6. Verification log (assumption audit, 2026-10-07)
 
