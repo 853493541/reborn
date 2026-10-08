@@ -1,0 +1,12 @@
+# skill v6 — block-comment fix in the mechanics parser (2026-10-08)
+# Build: n/a (offline parser) ; runtime reads the regenerated mechanics_f1.tsv
+# Bug: build_mechanics.py stripped only line comments (--), so commented template
+#   AddAttribute calls inside --[[ ... ]] blocks were parsed as real ops (e.g. 27890 had
+#   bogus ops "nAttributeEffectMode|nAttributeKey|nAttributeValue1"). This created false
+#   behaviors (child/buff) for several abilities.
+# Fix: strip block comments --[[ ... ]] / --[==[ ... ]==] before parsing.
+# Effect: 27890 ops now '' (correct); 27872 = EXECUTE_SCRIPT only; behavior matrix child 51->49,
+#   '-' 46->48 (2 false positives removed); 65029/65076 unchanged.
+
+## regenerated: ability_picker/data/mechanics_f1.tsv, ability_behavior_f1.tsv
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

@@ -8253,3 +8253,16 @@ if the cache/host frames appear.
 - **Verified:** artifact generated; proof `proof/netcode/skillv6_behavior_matrix_20261008.txt`.
   Gates: jx3_model 10 PASS, gravity PASS, loot selftest PASS.
 - **Open:** the 46 `-` abilities need the Lua 5.1 VM; child skills are separate skills.
+
+### 2026-10-08 — v6 — block-comment parser fix (correctness)
+
+- **Bug:** `build_mechanics.py` stripped only line comments (`--`), so commented template
+  `AddAttribute` calls inside `--[[ ... ]]` blocks were parsed as real ops (e.g. 27890 had bogus
+  `nAttributeEffectMode|nAttributeKey|nAttributeValue1`), creating false behaviors.
+- **Fix:** strip block comments `--[[ ... ]]` / `--[==[ ... ]==]` before parsing.
+- **Effect:** 27890 ops now empty (correct), 27872 = EXECUTE_SCRIPT only; behavior matrix
+  child 51→49, `-` 46→48 (2 false positives removed); 65029/65076 unchanged.
+- **Verified:** regenerated `mechanics_f1.tsv` + `ability_behavior_f1.tsv`; proof
+  `proof/netcode/skillv6_comment_fix_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Open:** the 48 `-` abilities need the Lua 5.1 VM; child skills are separate skills.

@@ -15,7 +15,7 @@ skillId	name	castMode	funcType	status	behaviors
 27890	抢珠式	TargetSingle	Damage	ok	-
 27892	九霄风雷	CasterSingle	Normal	ok	buff+,buff-
 27895	化蝶	CasterSingle	Normal	av	-
-27902	楚河汉界	CasterSingle	Normal	ok	child
+27902	楚河汉界	CasterSingle	Normal	ok	-
 27903	散流霞	CasterSingle	Normal	ok	child,buff
 27904	翔极碧落	TargetSingle	Damage	ok	dmg,child,buff+
 27905	跃潮斩波	TargetSingle	Damage	ok	-
@@ -126,7 +126,7 @@ skillId	name	castMode	funcType	status	behaviors
 65145	三才化生	CasterArea	Damage	ok	-
 65146	七星拱瑞	TargetSingle	Stun	ok	child,cc
 65149	五方行尽	PointArea	Charm	ok	dmg,buff,cc
-65150	人剑合一	CasterSingle	Normal	ok	child
+65150	人剑合一	CasterSingle	Normal	ok	-
 65153	大道无术	TargetSingle	Stun	ok	cc
 65154	坐忘无我	CasterSingle	Normal	ok	buff
 65155	剑转流云	TargetSingle	Damage	ok	buff

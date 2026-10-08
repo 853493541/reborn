@@ -51,6 +51,8 @@ def script_index():
 
 
 def strip_comments(t):
+    # remove block comments --[[ ... ]] / --[==[ ... ]==] first, then line comments.
+    t = re.sub(r"--\[=*\[.*?\]=*\]", "", t, flags=re.S)
     return "\n".join(re.sub(r"--.*", "", l) for l in t.splitlines())
 
 
