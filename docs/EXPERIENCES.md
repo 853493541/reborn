@@ -8447,6 +8447,20 @@ if the cache/host frames appear.
   loot selftest PASS.
 - **Note:** ~106 abilities explicitly verified; 9 castables remain.
 
+### 2026-10-08 — v6 — ALL 115 castable abilities individually verified (batch 17)
+
+- **Verified:** final 9 (65240 selfMove+child, 65241/65242 dispels, 65250 dmg 0, 65251 child,
+  65667, 65668 buff, 65670 child, 65671 child+buffs).
+- **Completion:** **all 115 castable roster abilities** have been individually verified across
+  batches 1–17 (RC_ABILITY=<id>, cast at 38s): each resolves its authored mechanic program
+  (damage / CC / buffs / child casts / movement / pull / knockback / heal / summon) and its
+  `Apply()` runtime actions. The 39 per-tani-AV abilities are blacklisted (characterized). Proof
+  `proof/netcode/skillv6_batch17_final_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Remaining (blocked/large):** weapon%/attack-power scaling (no player attack-power base);
+  world-projected floating numbers (no projection API); the Lua 5.1 VM for the 32 `-`
+  (mostly no-op) abilities.
+
 ### 2026-10-08 — v6 — abilities verified (batch 7, partial)
 
 - **Verified (run interrupted):** 65108 (dispel buff-=8), 65109 (child 65110;65111;65112), 65118

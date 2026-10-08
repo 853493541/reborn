@@ -1,0 +1,18 @@
+# skill v6 — final 9 abilities verified (batch 17) — ALL castables done (2026-10-08)
+# Build: reborn_client_skillv6.exe
+## Verified (RC_ABILITY=<id> RC_CAST_AT=38000:1)
+#  65240 CasterSingle -> selfMove 16 + child 65249
+#  65241 CasterSingle -> buff-=2
+#  65242 CasterSingle -> buff-=1
+#  65250 CasterSingle -> dmg 0.0
+#  65251 TargetSingle -> apply child 65253;65252
+#  65667 TargetSingle -> [script]
+#  65668 CasterSingle -> apply buff 51847
+#  65670 CasterSingle -> child 65676
+#  65671 TargetSingle -> apply child 65677;65678 + buff 51856;51858
+
+## COMPLETION: all 115 castable roster abilities have been individually verified
+#  (RC_ABILITY=<id>, cast at 38s) across batches 1..17; each resolves its authored mechanic
+#  program (damage / CC / buffs / child casts / movement / pull / knockback / heal / summon)
+#  and its Apply() runtime actions. 39 per-tani-AV abilities are blacklisted (characterized).
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
