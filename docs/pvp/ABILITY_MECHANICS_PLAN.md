@@ -92,4 +92,20 @@ Open:
   has no script — unavailable).
 - **P7** server-spec reconciliation.
 
+## P7 — server-spec reconciliation (2026-10-08)
+
+`REBORN_PVP_BATTLE_SPEC.md` §7 is server-authoritative: the client sends cast intents with
+predicted cooldown gating, predicts the cast bar/animation, and **never spawns damage numbers
+without `OP_SKILL_EFFECT`** (no local damage/buff/CC application).
+
+The v6 client ability runtime is a **local stand-in for the absent server**: it applies damage/
+buff/CC/cooldown locally (a documented host deviation — no server exists). Alignment points for
+when a server is built:
+- keep: target/AoE resolution, cast bar prediction, cooldown gating (already client-side);
+- move server-side: damage/buff/CC application and HP (replace the local `MechanicProgram`
+  application with `OP_SKILL_EFFECT` handling; the same `mechanics_f1` program can drive the
+  server's resolution so client and server agree);
+- the local `selfBuffs`/target `Buffs`/`CcUntil` become prediction mirrors of `OP_CONTROL`/
+  `OP_SKILL_EFFECT`.
+
 Last verified: 2026-10-08.

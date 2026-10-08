@@ -8279,3 +8279,12 @@ if the cache/host frames appear.
   gravity PASS, loot selftest PASS.
 - **Implication:** the client-side interpretable ability mechanics are complete; the residual is
   characterized, not silently missing.
+
+### 2026-10-08 — v6 — P7 server-spec reconciliation (documented)
+
+- **Did:** recorded P7 in `ABILITY_MECHANICS_PLAN.md`: the v6 ability runtime is a **local
+  stand-in for the absent server** (documented host deviation). Alignment for a future server:
+  keep client prediction (target/AoE, cast bar, cooldown gating); move damage/buff/CC application
+  to `OP_SKILL_EFFECT`/`OP_CONTROL`, driven by the same `mechanics_f1` program so client and
+  server agree; local `selfBuffs`/`Buffs`/`CcUntil` become prediction mirrors.
+- **Verified:** docs only; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
