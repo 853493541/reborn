@@ -5138,3 +5138,10 @@ if the cache/host frames appear.
   dataset (build_candidates.py resolves its output via __file__, but I invoked
   the main checkout's script by omitting workdir). Restored the main checkout
   (timestamp-only diff) and re-ran from the worktree. Always pass workdir.
+
+### 2026-10-07 - v5 - item 4 full-coverage verification: all 20 tani abilities clean
+
+- Improved RC_CAST_CYCLE to advance the index only on a successful cast, then ran
+  a 300 s sweep: all 20 tani-playing abilities cast (46 casts), clean shutdown,
+  no AV (reborn_20261007_183524.log). With 花语酥心 + 雷震子 in TANI_BLACKLIST the
+  sequential sweep is fully clean; the cast guard stays for rapid re-casts.
