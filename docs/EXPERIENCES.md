@@ -7486,3 +7486,27 @@ if the cache/host frames appear.
   checklist-hidden set, so toggling returned the stale canvas; the cache is invalidated on toggle
   (once per batch).
 - Verified: build 0 warnings; `--selftest` 1240/0/0; viewer relaunched for review.
+
+### 2026-10-07 — Skills v6 — cast-flow research: 绝境·龙牙 (65029)
+
+- **Did:** new `docs/netcode/JX3_SKILL_CAST_FLOW.md` — the full client-truth cast
+  chain (client-local target selection → C2S `DoCastProfessionSkill 0x49` /
+  `DoCharacterSkill 0x1B` → server validation → `OnSkillCast`/`OnSkillEffectResult`
+  → client presentation) + a pinned worked example of **绝境·龙牙**.
+- **绝境·龙牙 facts (client data):** skill 65029 `绝境_龙牙` (buff 28557 = the
+  `拥有的招式` possession marker), 天策, `TargetSingle`, `Adaptive`, enemy-only,
+  instant (`nPrepareFrames=0`), **20 尺 / 180°**, 100 % weapon + adaptive 外功,
+  GCD `SetPublicCoolDown(16)` = 1.5 s, CD row 7101; its script sets
+  `CAST_SKILL_TARGET_DST = 65030` = the child `绝境龙牙冲刺技能` (`DASH 120`).
+- **Key negative:** 65029 has **no** client Represent entry — no `skill_tag`,
+  `SkillRealization`, or `ProxySkill` row, and a byte scan for `65029`/`65030`
+  across `...\pakv4-probe` hits only `skills.tab` + `Skill.txt` (+ derived
+  ability-matcher caches). So the client cannot map 65029→animation from shipped
+  tables; the next probe is the `KSkill`/`KRLSkill` animation resolver fallback /
+  what id the 绝境 action bar holds. Logged as open item §5.1.
+- **Boundary:** main has **no** ability system (`client/AbilitySystem.cs` is only
+  on the unmerged `agent/skillv5-sandbox`); this pass was research-only, no code.
+- **Evidence:** `docs/netcode/JX3_SKILL_CAST_FLOW.md`;
+  `proof/pvp/cast/skill_cast_fields.tsv` (绝境_龙牙 row); extracted
+  `skill-65029-65672\scripts-out|extra-out`; `skill_tag.txt`; `player_animation_f1.txt`.
+- Verified: read-only research; no gate run needed.
