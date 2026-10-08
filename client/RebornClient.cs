@@ -1347,7 +1347,8 @@ internal static class RebornClient
         setClip(clipIdle);
         // dataset-driven ability system (client port of the ability sandbox):
         // P = picker panel, 1 = cast the selected ability
-        AbilitySystem.Init(scene, Log, setClip, form, Application.StartupPath);
+        AbilitySystem.Init(scene, Log, setClip, form, Application.StartupPath,
+            delegate { return curClip; });
         Pump(engine, 500);
 
         // Spawn ground settle (deferred): the engine streams terrain around the

@@ -60,6 +60,7 @@ internal static class AbilitySystem
     static KGSceneCLR scene;
     static Action<string> log;
     static Func<string, int> playClip;
+    static Func<string> getClip;   // live engine clip path (for the timeline)
     static Form form;
     static string dataDir = "";
     static string soundDir = "";
@@ -105,6 +106,8 @@ internal static class AbilitySystem
     static int tlReadds = 0;
     static long tlNextPaint = 0;
     static bool tlVisible = true;
+    static long tlPssHandle = 0;   // last PSS dummy handle (change = recreate)
+    static int tlRestarts = 0;     // PSS handle changes this cast
 
     public static string Selected { get { return sel; } }
     public static bool Active { get { return active; } }
@@ -114,9 +117,9 @@ internal static class AbilitySystem
     public static bool AnimActiveAt(long now) { return active && now < animUntil; }
 
     public static void Init(KGSceneCLR sceneIn, Action<string> logIn, Func<string, int> playClipIn,
-                            Form formIn, string startupDir)
+                            Form formIn, string startupDir, Func<string> clipGetter)
     {
-        scene = sceneIn; log = logIn; playClip = playClipIn; form = formIn;
+        scene = sceneIn; log = logIn; playClip = playClipIn; form = formIn; getClip = clipGetter;
         dataDir = Path.Combine(startupDir, "ability_picker");
         soundDir = Path.Combine(dataDir, "sound");
         LoadDataset();
@@ -353,8 +356,8 @@ internal static class AbilitySystem
         int maxw = panelHost.ClientSize.Width - 16;
         if (maxw < 200) maxw = 200;
         if (w > maxw) w = maxw;
-        int h = (int)(64 * uiScale);
-        if (h < 44) h = 44;
+        int h = (int)(78 * uiScale);
+        if (h < 52) h = 52;
         tlPanel.Size = new Size(w, h);
         tlPanel.Invalidate();
     }
@@ -401,9 +404,17 @@ internal static class AbilitySystem
             string rt = el + "/" + total + "ms";
             float rtw = g.MeasureString(rt, f).Width;
             g.DrawString(rt, f, cyan, w - 5 - rtw, 2);
-            string sub = "step " + fired + "/" + nsteps + "  PSS re-adds=" + tlReadds
-                + (pss ? "  [PSS on]" : "");
-            g.DrawString(sub, f, gray, 5, 2 + (int)(fs * 1.5f));
+            string sub = "step " + fired + "/" + nsteps + "  re-adds=" + tlReadds
+                + "  restarts=" + tlRestarts + (pss ? "  [PSS on]" : "");
+            g.DrawString(sub, f, gray, 5, 2 + (int)(fs * 1.4f));
+            // legend (kind -> colour) on the right of line 2
+            string leg = "A anim  D dummy(pss)  S sound";
+            float legw = g.MeasureString(leg, f).Width;
+            g.DrawString(leg, f, gray, w - 5 - legw, 2 + (int)(fs * 1.4f));
+            string cl = "";
+            try { if (getClip != null) { string c = getClip(); cl = (c == null || c.Length == 0) ? "" : Path.GetFileName(c); } }
+            catch { }
+            g.DrawString("clip=" + cl, f, cyan, 5, 2 + (int)(fs * 2.8f));
             if (tlEvent.Length > 0)
             {
                 string ev = tlEvent;
@@ -414,10 +425,10 @@ internal static class AbilitySystem
                         ev = ev.Substring(0, ev.Length - 1);
                     ev = ev + "..";
                 }
-                g.DrawString(ev, f, gray, 5, 2 + (int)(fs * 3.0f));
+                g.DrawString(ev, f, gray, 5, 2 + (int)(fs * 4.2f));
             }
 
-            int x0 = 5, x1 = w - 5, y = h - 15, bh = 7;
+            int x0 = 5, x1 = w - 5, y = h - 15, bh = 8;
             if (x1 <= x0) return;
             using (var baseBr = new SolidBrush(Color.FromArgb(55, 55, 55)))
                 g.FillRectangle(baseBr, x0, y, x1 - x0, bh);
@@ -428,17 +439,25 @@ internal static class AbilitySystem
                     int sx = x0 + (int)((x1 - x0) * (double)st.T / total);
                     if (sx < x0) sx = x0; if (sx > x1) sx = x1;
                     Color kc = KindColor(st.Kind);
+                    int ex = sx;
                     if (st.Dur > 0)
                     {
-                        int ex = x0 + (int)((x1 - x0) * (double)(st.T + st.Dur) / total);
+                        ex = x0 + (int)((x1 - x0) * (double)(st.T + st.Dur) / total);
                         if (ex > x1) ex = x1;
-                        using (var b2 = new SolidBrush(Color.FromArgb(70, kc)))
+                        using (var b2 = new SolidBrush(Color.FromArgb(90, kc)))
                             g.FillRectangle(b2, sx, y, Math.Max(1, ex - sx), bh);
                     }
                     using (var b = new SolidBrush(kc))
                     {
                         g.FillRectangle(b, sx - 1, y - 4, 3, bh + 8);
-                        g.DrawString(KindTag(st.Kind), f, b, sx - 2, y + bh);
+                        // span label: kind + duration (only when the span is wide enough)
+                        if (st.Dur > 0 && ex - sx > 34)
+                        {
+                            string lbl = KindTag(st.Kind) + st.Dur;
+                            g.DrawString(lbl, f, b, sx + 2, y - (int)(fs * 1.3f));
+                        }
+                        else
+                            g.DrawString(KindTag(st.Kind), f, b, sx - 2, y + bh);
                     }
                 }
             }
@@ -527,7 +546,7 @@ internal static class AbilitySystem
         try { scene.RemoveDummyModel("cast_pss"); } catch { }
         // timeline overlay state
         tlName = sel; tlSteps = steps; tlStart = now; tlUntil = untilMs;
-        tlElapsed = 0; tlReadds = 0;
+        tlElapsed = 0; tlReadds = 0; tlPssHandle = 0; tlRestarts = 0;
         TlEvent("start steps=" + steps.Count + " animMs=" + animMs + " pssMs=" + pssMs);
         log("cast: " + sel + " steps=" + steps.Count + " animMs=" + animMs + " pssMs=" + pssMs);
     }
@@ -646,6 +665,8 @@ internal static class AbilitySystem
                 var pr = new CLRfloat4(); pr.y = (float)Math.Sin(half); pr.w = (float)Math.Cos(half);
                 var ps = new CLRfloat3(); ps.x = 1f; ps.y = 1f; ps.z = 1f;
                 long h = scene.AddDummyModel("cast_pss", pssPath, pp, pr, ps);
+                if (tlPssHandle != 0 && h != tlPssHandle) tlRestarts++;
+                tlPssHandle = h;
                 TlEvent("pss ADD handle=" + h + " (follows caster)");
                 log("cast pss -> " + pssPath + " handle=" + h + " (follows caster)");
             }
@@ -662,6 +683,8 @@ internal static class AbilitySystem
                 var ps = new CLRfloat3(); ps.x = 1f; ps.y = 1f; ps.z = 1f;
                 long h = scene.AddDummyModel("cast_pss", pssPath, pp, pr, ps);
                 tlReadds++;
+                if (tlPssHandle != 0 && h != tlPssHandle) tlRestarts++;
+                tlPssHandle = h;
                 TlEvent("pss RE-ADD #" + tlReadds + " handle=" + h + " (follow " + followMode + ")");
                 log("cast pss re-added handle=" + h + " (follow " + followMode + ")");
             }
