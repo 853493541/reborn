@@ -3950,6 +3950,30 @@ internal static class RebornClient
                                         + (ht != null ? ht.Hp.ToString() : "-"));
                                     combatText.Push("+" + heal + " heal", System.Drawing.Color.FromArgb(120, 255, 120));
                                 }
+                                string npcIds = pv.Length > 6 ? pv[6] : "";
+                                string[] nids = npcIds.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                                for (int ni = 0; ni < nids.Length; ni++)
+                                {
+                                    int nrid;
+                                    if (!int.TryParse(nids[ni], out nrid)) continue;
+                                    try
+                                    {
+                                        string mp = scene.GetRepresentModelPath(nrid);
+                                        if (mp != null && mp.Length > 0)
+                                        {
+                                            float sx = px + 150f * (ni + 1), sz = pz;
+                                            var sp = new CLRfloat3(); sp.x = sx;
+                                            sp.y = sampler != null ? sampler.Sample(sx, sz) : py; sp.z = sz;
+                                            var sr = new CLRfloat4(); sr.w = 1f;
+                                            var ss = new CLRfloat3(); ss.x = 1f; ss.y = 1f; ss.z = 1f;
+                                            long sh = scene.AddDummyModel("summon" + nrid + "_" + ni,
+                                                mp.Replace('/', '\\'), sp, sr, ss);
+                                            Log("summon " + skillCast.Name + " npc=" + nrid + " handle=" + sh);
+                                            combatText.Push("summon " + nrid, System.Drawing.Color.FromArgb(220, 200, 120));
+                                        }
+                                    }
+                                    catch (Exception se) { Log("summon ex: " + se.Message); }
+                                }
                                 combatText.Push("passive " + skillCast.Name + (children.Length > 0 ? (" -> " + children) : ""),
                                     System.Drawing.Color.FromArgb(180, 220, 255));
                                 string[] cids = children.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);

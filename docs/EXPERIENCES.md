@@ -8210,3 +8210,13 @@ if the cache/host frames appear.
   `DONE`. Proof `proof/netcode/skillv6_heal_20261008.txt`. Gates: jx3_model 10 PASS, gravity
   PASS, loot selftest PASS.
 - **Open:** heal targeting (party/self/target); other Apply effects (summon/doodad).
+
+### 2026-10-08 — v6 — passive summon (CreateNpc) applied
+
+- **Did:** `build_passives.py` extracts `CreateNpc` ids from `Apply` → `passives_f1.tsv` `npcs`
+  column (3 summons); the client spawns each as an engine dummy model near the caster
+  (`scene.GetRepresentModelPath(id)` + `AddDummyModel`).
+- **Verified:** 28031 → `summon 28031 npc=57658 handle=…` + `npc=67816 handle=…`, clean `DONE`.
+  Proof `proof/netcode/skillv6_summon_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Open:** summon lifetime/owner; doodads; other Apply effects.
