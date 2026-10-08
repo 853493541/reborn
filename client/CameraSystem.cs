@@ -12,7 +12,8 @@
 //  - camera shake (cos/decay burst + rand jitter) and cinematic track spring
 //
 // Distances in the JX3 rows are meters; the host world uses units, so all
-// distance/height params are scaled by UnitsPerMeter (default 192).
+// distance/height params are scaled by UnitsPerMeter (canonical 100 u/m; the
+// old 192 figure was a metric-label artifact - see docs/camera/REAL_VALUES.md).
 
 using System;
 using System.Collections.Generic;
