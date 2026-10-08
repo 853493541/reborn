@@ -1,0 +1,35 @@
+# needle: KPlayer::LuaStopFollow
+# string VAs: ['0x1408555b8']
+# xrefs: 1
+
+## xref 0x1403f0190  fn_start 0x1403f0180
+0x01403f0180: sub	rsp, 0x38
+0x01403f0184: mov	rcx, rdx
+0x01403f0187: call	0x140112cb0
+0x01403f018c: test	eax, eax
+0x01403f018e: je	0x1403f01c2
+0x01403f0190: lea	rax, [rip + 0x465421]
+0x01403f0197: mov	r9d, 0x3208
+0x01403f019d: lea	r8, [rip + 0x40badc]
+0x01403f01a4: mov	qword ptr [rsp + 0x20], rax
+0x01403f01a9: lea	rdx, [rip + 0x55ed88]
+0x01403f01b0: mov	ecx, 3
+0x01403f01b5: call	qword ptr [rip + 0x3c828d]
+0x01403f01bb: xor	eax, eax
+0x01403f01bd: add	rsp, 0x38
+0x01403f01c1: ret	
+0x01403f01c2: call	0x140139560
+0x01403f01c7: mov	rcx, rax
+0x01403f01ca: xor	edx, edx
+0x01403f01cc: call	0x140380a00
+0x01403f01d1: xor	eax, eax
+0x01403f01d3: add	rsp, 0x38
+0x01403f01d7: ret	
+0x01403f01d8: int3	
+0x01403f01d9: int3	
+0x01403f01da: int3	
+0x01403f01db: int3	
+0x01403f01dc: int3	
+0x01403f01dd: int3	
+0x01403f01de: int3	
+0x01403f01df: int3	

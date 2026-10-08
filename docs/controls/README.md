@@ -22,9 +22,19 @@ state of our own client, so the full control system can be implemented later.
 | `controls/JX3_MOVEMENT_CONTROLS.md` | movement keys and the movement/turn model |
 | `controls/JX3_CAMERA_CONTROLS.md` | camera inputs, drag pipeline, modes, settings, obstruction |
 | `controls/JX3_COMBAT_CONTROLS.md` | targeting, action bars, cast input, server authority |
+| `controls/JX3_TARGET_SELECTION.md` | **target selection mechanics**: 3 cone zones (radius/angle/SelLevel), `KPlayer::LuaSearchForEnemy` disasm, filter/sort order, Tab cycle, click pick, reborn implementation plan |
 | `controls/JX3_UI_CUSTOMIZATION.md` | counts and mechanics of user customization |
 | `controls/REBORN_CONTROLS_SPEC.md` | our target architecture (design only) + phase plan |
+| `controls/OPERATION_MODES_PLAN.md` | CLASSICAL/JOYSTICK operation modes — game truth, routing matrix, switch key, P0–P4 |
 | `controls/CONTROLS_GAP_REGISTER.md` | every open gap with ID, status, dependency |
+| `controls/CLASSIC_CONTROLS_AUDIT.md` | classic-mode control surface audit: shipped default bindings vs client handlers (2026-10-01) |
+| `controls/CONTROL_MODES_TRACEABILITY.md` | **live matrix for the full CLASSICAL+JOYSTICK decode (incl. animation)** — layers, rows, gaps G1–G10 / A1–A20, verification plan (2026-10-02) |
+| `controls/CONTROL_MODES_LUA_ANNEX.md` | **P1 Lua annex** — decoded control handler bodies: mode wrapper, `ResponseWASDKey` joystick vector, mode apply/toggle/persistence (2026-10-02) |
+| `controls/CONTROL_MODES_P3_STATIC.md` | **P3 static** — thunk table, script-API wrappers, input apply chain; dynamic probe plan (2026-10-02) |
+| controls/CONTROL_MODES_P5_ANIM.md | **P5 animation** — locomotion selection algorithm (speed-tier thresholds, transition clip sets, two slots; param lookup next) (2026-10-02) |
+| controls/CONTROL_MODES_P4_PROBE.md | **P4 field map + host-build diff + probe plan** — camera-manager writers/readers, host RVAs, probe steps (2026-10-02) |
+| controls/FULL_CONTROL_PLAN.md | **full control plan** — all 286 bindings by subject, phases P0–P5 with dependencies + verification (2026-10-02) |
+| controls/CONTROL_AUDIT_20261002.md | **full audit (movement+camera+joystick)** — gates, scripted runs, feature matrix, residuals (2026-10-02) |
 
 ## The one-paragraph summary
 
@@ -33,10 +43,11 @@ JX3's controls are **data-driven**: a 428-command hotkey table (2 keys + context
 feeds a server-authoritative movement/combat model; the camera is a mouse-drag
 orbit around the character with per-user settings; roughly 340 action-bar slots,
 ~60 panel toggles and 202 persisted window-state keys are user-customizable.
-Our client currently has hardcoded keys, a working camera drag (JX3-exact
-sphere offset + per-frame aim sync) but **no wall obstruction**, no hotkey
-table/rebinding, no action bars/targeting/cast model, and no UI customization.
-Research is ~85–90% complete; implementation ~30–35%.
+Our client now decodes the real binding table and dispatches the movement
+command set from it (turn-in-place, autorun, jump, strafe; 2026-09-30) and has a
+working camera drag (JX3-exact sphere offset + per-frame aim sync), but **no wall
+obstruction**, no rebinding UI, no action bars/targeting/cast model, and no UI
+customization. Research is ~85–90% complete; implementation ~35–40%.
 
 ## Evidence base (already in the repo)
 
@@ -52,6 +63,15 @@ Research is ~85–90% complete; implementation ~30–35%.
 | `docs/movement/REBORN_JUMP_FALL_SPEC.md` | jump/fall/轻功 model |
 | `docs/pvp/JX3_PVP_BATTLE_RESEARCH.md` | combat/targeting/cooldowns |
 | `docs/ui/MAP_MINIMAP_RESEARCH.md` §2b | `custom.dat` window state |
+
+## Tools
+
+| Tool | What |
+|---|---|
+| `tools/controls/hotkey_parse.py` | decode `ui/hotkey/default.txt` + `bindings.ini` into the proof annexes; `--movement-check` prints and asserts the decoded movement key map (offline gate for C1/C2) |
+| `tools/controls/registry_summary.py` | summarise the generated hotkey command registry (context groups/categories) |
+| `tools/controls/lua51_probe.py` | instruction-level Lua 5.1 bytecode probe (packed UI scripts) |
+| `tools/controls/lua_index.py` | batch proto/name/global index for a directory of packed UI scripts (P1 substrate; writes `proof/controls/lua_index_*.txt`) |
 
 ## Rules for implementing later
 

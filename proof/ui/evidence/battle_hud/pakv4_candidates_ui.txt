@@ -1,0 +1,74 @@
+# Battle floating UI — PakV4 ui/ candidate paths (exact, no leading backslash).
+# Sources: proof/netcode/ui_lua_probe/out/ui/module_info.xml (module->file map)
+# and the sibling layout INIs. Extract with:
+#   .venv\Scripts\python.exe tools\netcode\extract_pak_paths.py \
+#     --list proof/ui/evidence/battle_hud/pakv4_candidates_ui.txt \
+#     --out-dir proof/ui/battle_hud/pakv4
+# 2026-09-30.
+ui/Config/Default/CombatText.lua
+ui/Config/Default/CombatText.ini
+ui/Config/Default/CastingPanel.lua
+ui/Config/Default/CastingPanel.ini
+ui/Config/Default/TopBuff.lua
+ui/Config/Default/TopBuff.ini
+ui/Config/Default/TopBuffSet.lua
+ui/Config/Default/TopBuffSet.ini
+ui/Config/Default/UISetting_HeadTop.lua
+ui/Config/Default/UISetting_HeadTop.ini
+ui/Script/BuffMgr.lua
+ui/Config/Default/KillMessage.lua
+ui/Config/Default/KillMessage.ini
+ui/Config/Default/KillInformation.lua
+ui/Config/Default/KillInformation.ini
+ui/Config/Default/EndOfBattle.lua
+ui/Config/Default/EndOfBattle.ini
+ui/Config/Default/FullScreenWarning.lua
+ui/Config/Default/FullScreenWarning.ini
+ui/Config/Default/PopupBuffList.lua
+ui/Config/Default/PopupBuffList.ini
+ui/Config/Default/MainMessageLine.lua
+ui/Config/Default/MainMessageLine.ini
+ui/Config/Default/Playerbar.lua
+ui/Config/Default/Playerbar.ini
+ui/Config/Default/Resourcebar.lua
+ui/Config/Default/Resourcebar.ini
+ui/Config/Default/TargetResourcebar.lua
+ui/Config/Default/TargetResourcebar.ini
+ui/Config/Default/ComboWinEffect.lua
+ui/Config/Default/ComboWinEffect.ini
+ui/Config/Default/TimeBuff.lua
+ui/Config/Default/TimeBuff.ini
+ui/Config/Default/Player.lua
+ui/Config/Default/Player.ini
+ui/Config/Default/Target.lua
+ui/Config/Default/Target.ini
+ui/Config/Default/TargetTarget.lua
+ui/Config/Default/TargetTarget.ini
+ui/Config/Default/BuffList.lua
+ui/Config/Default/BuffList.ini
+ui/Config/Default/DeBuffList.lua
+ui/Config/Default/DebuffList.ini
+ui/Config/Default/TargetBuff.lua
+ui/Config/Default/TargetBuff.ini
+ui/Config/Default/TargetDeBuff.lua
+ui/Config/Default/TargetDeBuff.ini
+ui/Config/Default/TeamBuff.lua
+ui/Config/Default/TeamBuff.ini
+ui/Config/Default/ComboPanel.lua
+ui/Config/Default/ComboPanel.ini
+ui/Config/Default/FightingNum.lua
+ui/Config/Default/FightingNum.ini
+ui/Config/Default/FightingStatistic.lua
+ui/Config/Default/FightingStatistic.ini
+ui/Config/Default/LootList.lua
+ui/Config/Default/LootList.ini
+ui/Config/Default/MainBarPanel.lua
+ui/Config/Default/MainBarPanel.ini
+ui/Config/Default/HatredPanel.lua
+ui/Config/Default/HatredPanel.ini
+ui/Config/Default/WhoSeeMe.lua
+ui/Config/Default/WhoSeeMe.ini
+ui/Config/Default/BuffFold.lua
+ui/Config/Default/BuffFold.ini
+ui/Config/Default/DynamicBattleRoyale.lua
+ui/Config/Default/DynamicBattleRoyale.ini

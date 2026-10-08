@@ -4,6 +4,7 @@
 // Uses UnitsPerMeter = 1 so the numbers match the reference exactly.
 
 using System;
+using System.IO;
 
 internal static class CameraSmoke
 {
@@ -32,9 +33,12 @@ internal static class CameraSmoke
         // the reference model uses metre-scaled numbers; the user/engine caps
         // are exercised separately by the clamp helper check
         cam.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", 0.0);
+        // reference model in metres; Update tracks the row TargetDistance, so
+        // pin it here (the client-truth max default is checked further down)
+        cam.Rows[CameraSystem.MODE_CHARACTER].Set("TargetDistance", 6.0);
         cam.SwitchMode(CameraSystem.MODE_CHARACTER);
         cam.Pitch = cam.Row.F("InitCameraPitch", -20.0 * DEG);
-        cam.Distance = cam.Row.F("InitCameraDistance", 6.0);
+        cam.Distance = 6.0;
 
         double[] anchor = { 0, 0, 0 };
         for (int i = 0; i < 60; i++) cam.Update(1.0 / 60.0, anchor);
@@ -50,6 +54,7 @@ internal static class CameraSmoke
         var cam3 = new CameraSystem();
         cam3.UnitsPerMeter = 1.0;
         cam3.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", 0.0);
+        cam3.Rows[CameraSystem.MODE_CHARACTER].Set("TargetDistance", 6.0);
         cam3.SwitchMode(CameraSystem.MODE_CHARACTER);
         cam3.Distance = 6.0;
         double[] pitches = { -40.0 * DEG, -20.0 * DEG, 0.0, 25.0 * DEG, 40.0 * DEG };
@@ -93,6 +98,41 @@ internal static class CameraSmoke
         for (int i = 0; i < 120; i++) cam.Update(1.0 / 60.0, anchor, true);
         Check("sprint pulls camera back", cam.Distance > 7.5,
               string.Format("dist={0:F2}", cam.Distance));
+
+        // sprint drag invariant (camera-wwdrag fix): placement smoothing is
+        // shared in every mode (CharacterCameraSmoothTime 60 ms) - rotating
+        // the camera while sprinting must not collapse the orbit radius. With
+        // the sprint row's SmoothTime (0.5 s) the live radius dropped 1305 ->
+        // 443 u at hit=-1 ("WW + right drag falsely zooms in").
+        {
+            var camS = new CameraSystem();
+            camS.UnitsPerMeter = 1.0;
+            camS.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", 0.0);
+            camS.Rows[CameraSystem.MODE_CHARACTER].Set("TargetDistance", 6.0);
+            camS.Rows[CameraSystem.MODE_SPRINT].Set("TargetDistance", 6.0);
+            camS.SwitchMode(CameraSystem.MODE_SPRINT);
+            camS.Distance = 6.0;
+            double pit = -20.0 * DEG;
+            // pin the move-pitch rows (active sprint row) so only yaw rotates
+            camS.Rows[CameraSystem.MODE_SPRINT].Set("CameraMovePitchAdjustPitch", pit);
+            camS.Rows[CameraSystem.MODE_SPRINT].Set("CameraMovePitchApplyAngle", pit);
+            camS.Pitch = pit;
+            for (int i = 0; i < 150; i++) camS.Update(1.0 / 60.0, anchor);
+            double r0 = Math.Sqrt(camS.Pos[0] * camS.Pos[0] + camS.Pos[1] * camS.Pos[1] +
+                                  camS.Pos[2] * camS.Pos[2]);
+            double worstR = 0.0;
+            for (int i = 0; i < 120; i++)
+            {
+                camS.Mouse(0.05, 0.0);   // 3 rad/s yaw orbit
+                camS.Update(1.0 / 60.0, anchor);
+                double rr = Math.Sqrt(camS.Pos[0] * camS.Pos[0] + camS.Pos[1] * camS.Pos[1] +
+                                      camS.Pos[2] * camS.Pos[2]);
+                double err = Math.Abs(rr - r0) / r0;
+                if (err > worstR) worstR = err;
+            }
+            Check("sprint drag keeps constant-length orbit", worstR < 0.03,
+                  string.Format("worst rel err={0:F4} r0={1:F2}", worstR, r0));
+        }
 
         cam.SwitchMode(CameraSystem.MODE_CARRIER);
         cam.Update(1.0 / 60.0, anchor);
@@ -140,9 +180,10 @@ internal static class CameraSmoke
         var cam2 = new CameraSystem();
         cam2.UnitsPerMeter = 1.0;
         cam2.Rows[CameraSystem.MODE_CHARACTER].Set("MinCameraDistance", 0.0);
+        cam2.Rows[CameraSystem.MODE_CHARACTER].Set("TargetDistance", 6.0);
         cam2.SwitchMode(CameraSystem.MODE_CHARACTER);
         cam2.Pitch = cam2.Row.F("InitCameraPitch", -20.0 * DEG);
-        cam2.Distance = cam2.Row.F("InitCameraDistance", 6.0);
+        cam2.Distance = 6.0;   // reference model in metres (obstruction case)
         for (int i = 0; i < 60; i++) cam2.Update(1.0 / 60.0, anchor);
         Func<double[], double[], double?> obst = delegate(double[] a, double[] pos)
         {
@@ -162,6 +203,33 @@ internal static class CameraSmoke
         // native wall obstruction state machine (18 u clearance, 50/100
         // hysteresis, spring return) - docs/camera/WALL_OBSTRUCTION.md
         var clampCam = new CameraSystem();
+        // user decision 2026-09-29: both settings default to the client-truth
+        // max - follow distance 2000 u (panel fMaxCameraDistance / engine cap)
+        // and FOV 60 deg (panel 30..60 max, see VideoSettings.PanelMaxDeg)
+        Check("distance default = client number 1245 u",
+              Math.Abs(clampCam.Row.F("InitCameraDistance", 0.0) - 12.45) < 1e-9 &&
+              Math.Abs(clampCam.Row.F("TargetDistance", 0.0) - 12.45) < 1e-9 &&
+              Math.Abs(clampCam.Row.F("MaxCameraDistance", 0.0) - 2000.0) < 1e-9,
+              string.Format("init={0:F0}m target={1:F0}m max={2:F0}u",
+                  clampCam.Row.F("InitCameraDistance", 0.0), clampCam.Row.F("TargetDistance", 0.0),
+                  clampCam.Row.F("MaxCameraDistance", 0.0)));
+        // corrected 2026-10-03: the decoded client rotates the camera only while
+        // LMB/RMB drag in BOTH modes (Scene camera drag handlers); no mode has
+        // an always-rotate mouse path and no mode keeps the cursor locked.
+        Check("operation mode gating (classical)",
+              CameraOperationMode.RmbTurnsBody(CameraOperationMode.Classical) &&
+              !CameraOperationMode.BodyFollowsHeading(CameraOperationMode.Classical),
+              CameraOperationMode.Name(CameraOperationMode.Classical));
+        Check("operation mode gating (joystick)",
+              !CameraOperationMode.RmbTurnsBody(CameraOperationMode.Joystick) &&
+              CameraOperationMode.BodyFollowsHeading(CameraOperationMode.Joystick),
+              CameraOperationMode.Name(CameraOperationMode.Joystick));
+        Check("operation mode parse (RC_MODE)",
+              CameraOperationMode.Parse("joystick") == CameraOperationMode.Joystick &&
+              CameraOperationMode.Parse("CLASSICAL") == CameraOperationMode.Classical &&
+              CameraOperationMode.Parse("junk") == CameraOperationMode.Classical &&
+              CameraOperationMode.Parse("") == CameraOperationMode.Classical,
+              "joystick/classical/junk/empty");
         Check("shared distance clamp helper (S5)",
               Math.Abs(clampCam.ClampDistanceUnits(50.0) - 100.0) < 1e-9 &&
               Math.Abs(clampCam.ClampDistanceUnits(5000.0) - 2000.0) < 1e-9 &&
@@ -222,6 +290,49 @@ internal static class CameraSmoke
         Check("camera springs out along a receding wall (stays in front)",
               obstD.Obstructed && Math.Abs(obstD.Distance - 532.0) < 1.0 && minOut >= 32.0 - 0.5,
               string.Format("dist={0:F1} min={1:F1}", obstD.Distance, minOut));
+
+        // Hotkey table: context-aware matching (rows from another context must
+        // not fire in normal play) and the shipped movement defaults.
+        HotkeyTable hk = HotkeyTable.Load(null, null);
+        hk.Context = "";
+        System.Collections.Generic.List<string> wNorm = hk.Match(87, false, false, false);
+        Check("hotkeys W normal -> MOVEFORWARD (not MINIGAME_JUMP)",
+              hk.Count == 286 && wNorm.Contains("MOVEFORWARD") && !wNorm.Contains("MINIGAME_JUMP"),
+              "rows=" + hk.Count + " m=" + string.Join(",", wNorm.ToArray()));
+        hk.Context = "minigame";
+        System.Collections.Generic.List<string> wMini = hk.Match(87, false, false, false);
+        Check("hotkeys W minigame context -> MINIGAME_JUMP only",
+              wMini.Contains("MINIGAME_JUMP") && !wMini.Contains("MOVEFORWARD"),
+              "m=" + string.Join(",", wMini.ToArray()));
+        hk.Context = "";
+        System.Collections.Generic.List<string> aNorm = hk.Match(65, false, false, false);
+        Check("hotkeys A normal -> STRAFELEFT",
+              aNorm.Contains("STRAFELEFT") && !aNorm.Contains("MINIGAME_STRAFELEFT"),
+              "m=" + string.Join(",", aNorm.ToArray()));
+
+        // Per-role override file (real userdata dirs contain ONLY this file):
+        // hotkey_newlast.txt = name \t context \t index \t key.
+        string tmpDir = Path.Combine(Path.GetTempPath(), "rc_hotkey_smoke");
+        try
+        {
+            Directory.CreateDirectory(tmpDir);
+            File.WriteAllText(Path.Combine(tmpDir, "hotkey_newlast.txt"),
+                "MOVEFORWARD\t\t1\t83\nSTRAFELEFT\t\t1\t\n");
+            HotkeyTable ov = HotkeyTable.Load(tmpDir, null);
+            System.Collections.Generic.List<string> w82 = ov.Match(83, false, false, false);
+            System.Collections.Generic.List<string> w87 = ov.Match(87, false, false, false);
+            System.Collections.Generic.List<string> a65 = ov.Match(65, false, false, false);
+            Check("hotkeys override file applies over embedded defaults",
+                  ov.Count == 286 && ov.Overrides == 2 &&
+                  w82.Contains("MOVEFORWARD") && !w87.Contains("MOVEFORWARD") &&
+                  !a65.Contains("STRAFELEFT"),
+                  "rows=" + ov.Count + " overrides=" + ov.Overrides +
+                  " w83=" + string.Join(",", w82.ToArray()));
+        }
+        catch (Exception e)
+        {
+            Check("hotkeys override file applies over embedded defaults", false, e.Message);
+        }
 
         Console.WriteLine(_fail == 0 ? "ALL PASS" : (_fail + " FAILED"));
         Environment.Exit(_fail == 0 ? 0 : 1);

@@ -1,0 +1,133 @@
+# needle: IsShowModeIdLegal
+# string VAs: ['0x1805bf358']
+# xrefs: 1
+
+## xref 0x18015aee4  fn_start 0x18015ae20
+0x018015ae20: mov	qword ptr [rsp + 0x10], rbx
+0x018015ae25: push	rdi
+0x018015ae26: sub	rsp, 0x110
+0x018015ae2d: mov	r8, qword ptr [rcx + 0x6548]
+0x018015ae34: lea	r11, [rcx + 0x6528]
+0x018015ae3b: mov	rdi, qword ptr [r11 + 0x18]
+0x018015ae3f: xor	ebx, ebx
+0x018015ae41: mov	r9, qword ptr [r11]
+0x018015ae44: mov	r10, rcx
+0x018015ae47: test	r8, r8
+0x018015ae4a: jne	0x18015ae65
+0x018015ae4c: mov	dword ptr [rcx + 0x6458], ebx
+0x018015ae52: mov	eax, ebx
+0x018015ae54: mov	rbx, qword ptr [rsp + 0x128]
+0x018015ae5c: add	rsp, 0x110
+0x018015ae63: pop	rdi
+0x018015ae64: ret	
+0x018015ae65: test	edx, edx
+0x018015ae67: jle	0x18015af9f
+0x018015ae6d: movsxd	rax, edx
+0x018015ae70: cmp	rax, r8
+0x018015ae73: ja	0x18015af9f
+0x018015ae79: sub	r8d, edx
+0x018015ae7c: movsxd	rcx, r8d
+0x018015ae7f: cmp	qword ptr [r10 + 0x6548], rcx
+0x018015ae86: jbe	0x18015afdd
+0x018015ae8c: mov	rax, rbx
+0x018015ae8f: test	r9, r9
+0x018015ae92: je	0x18015aea4
+0x018015ae94: mov	rax, qword ptr [r9]
+0x018015ae97: test	rax, rax
+0x018015ae9a: je	0x18015aea1
+0x018015ae9c: mov	rax, qword ptr [rax]
+0x018015ae9f: jmp	0x18015aea4
+0x018015aea1: mov	rax, rbx
+0x018015aea4: lea	r8, [rdi + rcx]
+0x018015aea8: test	rax, rax
+0x018015aeab: je	0x18015aec2
+0x018015aead: mov	rcx, qword ptr [rax]
+0x018015aeb0: test	rcx, rcx
+0x018015aeb3: je	0x18015aec2
+0x018015aeb5: mov	rax, qword ptr [rcx]
+0x018015aeb8: test	rax, rax
+0x018015aebb: je	0x18015aec2
+0x018015aebd: mov	rax, qword ptr [rax]
+0x018015aec0: jmp	0x18015aec5
+0x018015aec2: mov	rax, rbx
+0x018015aec5: mov	rcx, qword ptr [rax + 0x10]
+0x018015aec9: mov	rax, qword ptr [rax + 8]
+0x018015aecd: dec	rcx
+0x018015aed0: and	rcx, r8
+0x018015aed3: mov	rdx, qword ptr [rax + rcx*8]
+0x018015aed7: mov	eax, dword ptr [rdx]
+0x018015aed9: cmp	eax, 0x7f
+0x018015aedc: jbe	0x18015aef0
+0x018015aede: mov	r9d, 0x98f
+0x018015aee4: lea	r8, [rip + 0x46446d]	; 0x1805bf358 -> "IsShowModeIdLegal(smRecord.nId)"
+0x018015aeeb: jmp	0x18015afac
+0x018015aef0: mov	dword ptr [r10 + 0x6458], eax
+0x018015aef7: xorps	xmm0, xmm0
+0x018015aefa: mov	rdx, qword ptr [r11 + 0x20]
+0x018015aefe: add	rdx, qword ptr [r11 + 0x18]
+0x018015af02: mov	rax, qword ptr [r11]
+0x018015af05: movdqu	xmmword ptr [rsp + 0x30], xmm0
+0x018015af0b: test	rax, rax
+0x018015af0e: je	0x18015af20
+0x018015af10: mov	rax, qword ptr [rax]
+0x018015af13: test	rax, rax
+0x018015af16: je	0x18015af20
+0x018015af18: mov	rax, qword ptr [rax]
+0x018015af1b: mov	qword ptr [rsp + 0x30], rax
+0x018015af20: mov	qword ptr [rsp + 0x40], rdx
+0x018015af25: mov	rax, rbx
+0x018015af28: test	r9, r9
+0x018015af2b: je	0x18015af3d
+0x018015af2d: mov	rax, qword ptr [r9]
+0x018015af30: test	rax, rax
+0x018015af33: je	0x18015af3a
+0x018015af35: mov	rax, qword ptr [rax]
+0x018015af38: jmp	0x18015af3d
+0x018015af3a: mov	rax, rbx
+0x018015af3d: test	rax, rax
+0x018015af40: je	0x18015af4d
+0x018015af42: mov	rcx, qword ptr [rax]
+0x018015af45: test	rcx, rcx
+0x018015af48: je	0x18015af4d
+0x018015af4a: mov	rbx, qword ptr [rcx]
+0x018015af4d: movdqu	xmmword ptr [rsp + 0x48], xmm0
+0x018015af53: test	rbx, rbx
+0x018015af56: je	0x18015af68
+0x018015af58: mov	rax, qword ptr [rbx]
+0x018015af5b: test	rax, rax
+0x018015af5e: je	0x18015af68
+0x018015af60: mov	rax, qword ptr [rax]
+0x018015af63: mov	qword ptr [rsp + 0x48], rax
+0x018015af68: mov	qword ptr [rsp + 0x58], r8
+0x018015af6d: lea	r9, [rsp + 0x30]
+0x018015af72: lea	r8, [rsp + 0x48]
+0x018015af77: mov	rcx, r11
+0x018015af7a: lea	rdx, [rsp + 0xf0]
+0x018015af82: call	0x18015b700
+0x018015af87: mov	ebx, 1
+0x018015af8c: mov	eax, ebx
+0x018015af8e: mov	rbx, qword ptr [rsp + 0x128]
+0x018015af96: add	rsp, 0x110
+0x018015af9d: pop	rdi
+0x018015af9e: ret	
+0x018015af9f: mov	r9d, 0x98b
+0x018015afa5: lea	r8, [rip + 0x46438c]	; 0x1805bf338 -> "nStep > 0 && nStep <= nSize"
+0x018015afac: lea	rax, [rip + 0x4642d5]	; 0x1805bf288 -> "UI::KWndStation::Back2SpecShowModeInHistoryViaStep"
+0x018015afb3: mov	ecx, 3
+0x018015afb8: lea	rdx, [rip + 0x44e8b9]
+0x018015afbf: mov	qword ptr [rsp + 0x20], rax
+0x018015afc4: call	qword ptr [rip + 0x38c24e]
+0x018015afca: mov	eax, ebx
+0x018015afcc: mov	rbx, qword ptr [rsp + 0x128]
+0x018015afd4: add	rsp, 0x110
+0x018015afdb: pop	rdi
+0x018015afdc: ret	
+0x018015afdd: call	0x18015bc50
+0x018015afe2: int3	
+0x018015afe3: int3	
+0x018015afe4: int3	
+0x018015afe5: int3	
+0x018015afe6: int3	
+0x018015afe7: int3	
+0x018015afe8: int3	
+0x018015afe9: int3	

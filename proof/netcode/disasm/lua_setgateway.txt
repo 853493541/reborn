@@ -1,0 +1,302 @@
+# JX3ClientX64.exe xrefs for 'KScriptFuncList::LuaSetGatewayAddress'
+# image base 0x140000000
+
+## xref @ 0x14020c689 -> 0x140801778 'KScriptFuncList::LuaSetGatewayAddress'  fn start 0x14020c5f0
+  0x14020c5f0: push     rbx
+  0x14020c5f2: sub      rsp, 0x30
+  0x14020c5f6: mov      rbx, rcx
+  0x14020c5f9: call     0x140112cb0
+  0x14020c5fe: cmp      eax, 1
+  0x14020c601: je       0x14020c636
+  0x14020c603: mov      r9d, 0x544
+  0x14020c609: lea      r8, [rip + 0x74cba8]  ; 'nTopIndex == 1'
+  0x14020c610: lea      rax, [rip + 0x5f5c61]  ; 'KScriptFuncList::LuaXGSDKAccountVerify'
+  0x14020c617: mov      ecx, 3
+  0x14020c61c: lea      rdx, [rip + 0x742915]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x14020c623: mov      qword ptr [rsp + 0x20], rax
+  0x14020c628: call     qword ptr [rip + 0x5abe1a]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x14020c62e: xor      eax, eax
+  0x14020c630: add      rsp, 0x30
+  0x14020c634: pop      rbx
+  0x14020c635: ret      
+  0x14020c636: xor      r8d, r8d
+  0x14020c639: mov      rcx, rbx
+  0x14020c63c: lea      edx, [r8 + 1]
+  0x14020c640: call     0x140113670
+  0x14020c645: test     rax, rax
+  0x14020c648: jne      0x14020c659
+  0x14020c64a: mov      r9d, 0x547
+  0x14020c650: lea      r8, [rip + 0x5f5c49]  ; 'cpszAuthInfo'
+  0x14020c657: jmp      0x14020c610
+  0x14020c659: mov      rdx, rax
+  0x14020c65c: lea      rcx, [rip + 0x868f8d]
+  0x14020c663: call     0x14018a4e0
+  0x14020c668: xor      eax, eax
+  0x14020c66a: add      rsp, 0x30
+  0x14020c66e: pop      rbx
+  0x14020c66f: ret      
+  0x14020c670: push     rbx
+  0x14020c672: sub      rsp, 0x30
+  0x14020c676: mov      rbx, rcx
+  0x14020c679: call     0x140112cb0
+  0x14020c67e: cmp      eax, 2
+  0x14020c681: je       0x14020c6b5
+  0x14020c683: mov      r9d, 0x1a
+  0x14020c689: lea      rax, [rip + 0x5f50e8]  ; 'KScriptFuncList::LuaSetGatewayAddress'
+  0x14020c690: lea      r8, [rip + 0x5eb1c1]  ; 'Lua_GetTopIndex(L) == 2'
+  0x14020c697: mov      qword ptr [rsp + 0x20], rax
+  0x14020c69c: lea      rdx, [rip + 0x742895]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x14020c6a3: lea      ecx, [r9 - 0x17]
+  0x14020c6a7: call     qword ptr [rip + 0x5abd9b]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x14020c6ad: xor      eax, eax
+  0x14020c6af: add      rsp, 0x30
+  0x14020c6b3: pop      rbx
+  0x14020c6b4: ret      
+  0x14020c6b5: xor      r8d, r8d
+  0x14020c6b8: mov      qword ptr [rsp + 0x40], rdi
+  0x14020c6bd: mov      rcx, rbx
+  0x14020c6c0: lea      edx, [r8 + 1]
+  0x14020c6c4: call     0x140113670
+  0x14020c6c9: mov      rdi, rax
+  0x14020c6cc: test     rax, rax
+  0x14020c6cf: jne      0x14020c705
+  0x14020c6d1: lea      rax, [rip + 0x5f50a0]  ; 'KScriptFuncList::LuaSetGatewayAddress'
+  0x14020c6d8: lea      r9d, [rdi + 0x1d]
+  0x14020c6dc: mov      qword ptr [rsp + 0x20], rax
+  0x14020c6e1: lea      r8, [rip + 0x5f50b8]  ; 'cszLoginIP'
+  0x14020c6e8: lea      rdx, [rip + 0x742849]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x14020c6ef: lea      ecx, [rdi + 3]
+  0x14020c6f2: call     qword ptr [rip + 0x5abd50]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x14020c6f8: mov      rdi, qword ptr [rsp + 0x40]
+  0x14020c6fd: xor      eax, eax
+  0x14020c6ff: add      rsp, 0x30
+  0x14020c703: pop      rbx
+  0x14020c704: ret      
+  0x14020c705: mov      edx, 2
+  0x14020c70a: mov      rcx, rbx
+  0x14020c70d: call     0x140113710
+  0x14020c712: cvttsd2si r8d, xmm0
+  0x14020c717: mov      rdx, rdi
+  0x14020c71a: lea      rcx, [rip + 0x868ecf]
+  0x14020c721: call     0x14018a020
+  0x14020c726: mov      rdi, qword ptr [rsp + 0x40]
+  0x14020c72b: xor      eax, eax
+  0x14020c72d: add      rsp, 0x30
+  0x14020c731: pop      rbx
+  0x14020c732: ret      
+  0x14020c733: int3     
+  0x14020c734: int3     
+  0x14020c735: int3     
+  0x14020c736: int3     
+  0x14020c737: int3     
+  0x14020c738: int3     
+  0x14020c739: int3     
+  0x14020c73a: int3     
+  0x14020c73b: int3     
+  0x14020c73c: int3     
+  0x14020c73d: int3     
+  0x14020c73e: int3     
+  0x14020c73f: int3     
+  0x14020c740: sub      rsp, 0x28
+  0x14020c744: lea      rcx, [rip + 0x868ea5]
+  0x14020c74b: call     0x140185ed0
+  0x14020c750: xor      eax, eax
+  0x14020c752: add      rsp, 0x28
+  0x14020c756: ret      
+  0x14020c757: int3     
+  0x14020c758: int3     
+  0x14020c759: int3     
+  0x14020c75a: int3     
+  0x14020c75b: int3     
+  0x14020c75c: int3     
+  0x14020c75d: int3     
+  0x14020c75e: int3     
+  0x14020c75f: int3     
+  0x14020c760: push     rbx
+  0x14020c762: push     rsi
+  0x14020c763: push     rdi
+  0x14020c764: sub      rsp, 0x80
+  0x14020c76b: mov      rax, qword ptr [rip + 0x827c86]
+  0x14020c772: xor      rax, rsp
+  0x14020c775: mov      qword ptr [rsp + 0x70], rax
+  0x14020c77a: mov      rbx, rcx
+  0x14020c77d: xor      edi, edi
+  0x14020c77f: call     0x140112cb0
+  0x14020c784: xorps    xmm0, xmm0
+  0x14020c787: mov      esi, eax
+  0x14020c789: add      eax, -3
+  0x14020c78c: movups   xmmword ptr [rsp + 0x30], xmm0
+  0x14020c791: movups   xmmword ptr [rsp + 0x40], xmm0
+  0x14020c796: movups   xmmword ptr [rsp + 0x50], xmm0
+  0x14020c79b: movups   xmmword ptr [rsp + 0x60], xmm0
+  0x14020c7a0: cmp      eax, 1
+  0x14020c7a3: jbe      0x14020c7d1
+  0x14020c7a5: lea      rax, [rip + 0x5f5004]  ; 'KScriptFuncList::LuaSetAccountPassword'
+  0x14020c7ac: lea      r9d, [rdi + 0x44]
+  0x14020c7b0: mov      qword ptr [rsp + 0x20], rax
+  0x14020c7b5: lea      r8, [rip + 0x5ecf9c]  ; 'nTopIndex == 3 || nTopIndex == 4'
+  0x14020c7bc: lea      rdx, [rip + 0x742775]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x14020c7c3: lea      ecx, [rdi + 3]
+  0x14020c7c6: call     qword ptr [rip + 0x5abc7c]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x14020c7cc: jmp      0x14020c908
+  0x14020c7d1: xor      r8d, r8d
+  0x14020c7d4: mov      qword ptr [rsp + 0xa8], rbp
+  0x14020c7dc: mov      rcx, rbx
+  0x14020c7df: lea      edx, [r8 + 1]
+  0x14020c7e3: call     0x140113670
+  0x14020c7e8: mov      rbp, rax
+  0x14020c7eb: test     rax, rax
+  0x14020c7ee: jne      0x14020c81c
+  0x14020c7f0: lea      rax, [rip + 0x5f4fb9]  ; 'KScriptFuncList::LuaSetAccountPassword'
+  0x14020c7f7: lea      r9d, [rbp + 0x47]
+  0x14020c7fb: mov      qword ptr [rsp + 0x20], rax
+  0x14020c800: lea      r8, [rip + 0x5f4fd1]  ; 'pszAccountName'
+  0x14020c807: lea      rdx, [rip + 0x74272a]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x14020c80e: lea      ecx, [rbp + 3]
+  0x14020c811: call     qword ptr [rip + 0x5abc31]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x14020c817: jmp      0x14020c900
+  0x14020c81c: xor      r8d, r8d
+  0x14020c81f: mov      qword ptr [rsp + 0xb0], r14
+  0x14020c827: mov      rcx, rbx
+  0x14020c82a: lea      edx, [r8 + 2]
+  0x14020c82e: call     0x140113670
+  0x14020c833: mov      r14, rax
+  0x14020c836: test     rax, rax
+  0x14020c839: jne      0x14020c84b
+  0x14020c83b: lea      r9d, [rax + 0x4a]
+  0x14020c83f: lea      r8, [rip + 0x5efc52]  ; 'pszPassword'
+  0x14020c846: jmp      0x14020c8da
+  0x14020c84b: mov      edx, 3
+  0x14020c850: mov      rcx, rbx
+  0x14020c853: call     0x1401135f0
+  0x14020c858: test     eax, eax
+  0x14020c85a: je       0x14020c88d
+  0x14020c85c: mov      rcx, qword ptr [rip + 0x868d5d]
+  0x14020c863: test     rcx, rcx
+  0x14020c866: jne      0x14020c875
+  0x14020c868: lea      r9d, [rcx + 0x54]
+  0x14020c86c: lea      r8, [rip + 0x5b3f0d]  ; 'g_pGameWorldUIHandler'
+  0x14020c873: jmp      0x14020c8da
+  0x14020c875: mov      rax, qword ptr [rcx]
+  0x14020c878: lea      r8, [rsp + 0x30]
+  0x14020c87d: mov      rdx, r14
+  0x14020c880: call     qword ptr [rax + 0x10]
+  0x14020c883: test     eax, eax
+  0x14020c885: jne      0x14020c88d
+  0x14020c887: lea      r9d, [rax + 0x57]
+  0x14020c88b: jmp      0x14020c8d3
+  0x14020c88d: cmp      esi, 4
+  0x14020c890: jne      0x14020c8b4
+  0x14020c892: xor      r8d, r8d
+  0x14020c895: mov      edx, esi
+  0x14020c897: mov      rcx, rbx
+  0x14020c89a: call     0x140113670
+  0x14020c89f: mov      rdi, rax
+  0x14020c8a2: test     rax, rax
+  0x14020c8a5: jne      0x14020c8b4
+  0x14020c8a7: lea      r9d, [rsi + 0x5a]
+  0x14020c8ab: lea      r8, [rip + 0x5f4f36]  ; 'pszActiveCode'
+  0x14020c8b2: jmp      0x14020c8da
+  0x14020c8b4: mov      r9, rdi
+  0x14020c8b7: lea      r8, [rsp + 0x30]
+  0x14020c8bc: mov      rdx, rbp
+  0x14020c8bf: lea      rcx, [rip + 0x868d2a]
+  0x14020c8c6: call     0x140189ed0
+  0x14020c8cb: test     eax, eax
+  0x14020c8cd: jne      0x14020c8f8
+  0x14020c8cf: lea      r9d, [rax + 0x62]
+  0x14020c8d3: lea      r8, [rip + 0x744bbe]  ; 'bRetCode'
+  0x14020c8da: lea      rax, [rip + 0x5f4ecf]  ; 'KScriptFuncList::LuaSetAccountPassword'
+  0x14020c8e1: mov      ecx, 3
+  0x14020c8e6: lea      rdx, [rip + 0x74264b]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x14020c8ed: mov      qword ptr [rsp + 0x20], rax
+  0x14020c8f2: call     qword ptr [rip + 0x5abb50]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x14020c8f8: mov      r14, qword ptr [rsp + 0xb0]
+  0x14020c900: mov      rbp, qword ptr [rsp + 0xa8]
+  0x14020c908: xor      eax, eax
+  0x14020c90a: mov      rcx, qword ptr [rsp + 0x70]
+  0x14020c90f: xor      rcx, rsp
+  0x14020c912: call     0x14079ae80
+  0x14020c917: add      rsp, 0x80
+  0x14020c91e: pop      rdi
+  0x14020c91f: pop      rsi
+  0x14020c920: pop      rbx
+  0x14020c921: ret      
+  0x14020c922: int3     
+  0x14020c923: int3     
+  0x14020c924: int3     
+  0x14020c925: int3     
+  0x14020c926: int3     
+  0x14020c927: int3     
+  0x14020c928: int3     
+  0x14020c929: int3     
+  0x14020c92a: int3     
+  0x14020c92b: int3     
+  0x14020c92c: int3     
+  0x14020c92d: int3     
+  0x14020c92e: int3     
+  0x14020c92f: int3     
+  0x14020c930: sub      rsp, 0x28
+  0x14020c934: lea      rcx, [rip + 0x868cb5]
+  0x14020c93b: call     0x1401858e0
+  0x14020c940: xor      eax, eax
+  0x14020c942: add      rsp, 0x28
+  0x14020c946: ret      
+  0x14020c947: int3     
+  0x14020c948: int3     
+  0x14020c949: int3     
+  0x14020c94a: int3     
+  0x14020c94b: int3     
+  0x14020c94c: int3     
+  0x14020c94d: int3     
+  0x14020c94e: int3     
+  0x14020c94f: int3     
+  0x14020c950: mov      qword ptr [rsp + 8], rbx
+  0x14020c955: push     rdi
+  0x14020c956: sub      rsp, 0x30
+  0x14020c95a: mov      rbx, rcx
+  0x14020c95d: xor      edi, edi
+  0x14020c95f: call     0x140112cb0
+  0x14020c964: cmp      eax, 1
+  0x14020c967: je       0x14020c994
+  0x14020c969: lea      r9d, [rdi + 0x7d]
+  0x14020c96d: lea      r8, [rip + 0x74c844]  ; 'nTopIndex == 1'
+  0x14020c974: lea      rax, [rip + 0x5f4e7d]  ; 'KScriptFuncList::LuaAccountVerifyWithQRToken'
+  0x14020c97b: mov      ecx, 3
+  0x14020c980: lea      rdx, [rip + 0x7425b1]  ; 'KGLOG_PROCESS_ERROR(%s) at line %d in %s\n'
+  0x14020c987: mov      qword ptr [rsp + 0x20], rax
+  0x14020c98c: call     qword ptr [rip + 0x5abab6]  ; Engine_Lua5X64.dll!?KGLogPrintf@@YAHW4KGLOG_PRIORITY@@QEBDZZ
+  0x14020c992: jmp      0x14020c9f2
+  0x14020c994: xor      r8d, r8d
+  0x14020c997: mov      rcx, rbx
+  0x14020c99a: lea      edx, [r8 + 1]
+  0x14020c99e: call     0x140113670
+  0x14020c9a3: test     rax, rax
+  0x14020c9a6: jne      0x14020c9b7
+  0x14020c9a8: mov      r9d, 0x80
+  0x14020c9ae: lea      r8, [rip + 0x5f4e73]  ; 'cpszToken'
+  0x14020c9b5: jmp      0x14020c974
+  0x14020c9b7: cmp      byte ptr [rax], dil
+  0x14020c9ba: jne      0x14020c9cb
+  0x14020c9bc: mov      r9d, 0x81
+  0x14020c9c2: lea      r8, [rip + 0x5f4e6f]  ; 'cpszToken[0]'
+  0x14020c9c9: jmp      0x14020c974
+  0x14020c9cb: mov      rdx, rax
+  0x14020c9ce: lea      rcx, [rip + 0x868c1b]
+  0x14020c9d5: call     0x140186720
+  0x14020c9da: test     eax, eax
+  0x14020c9dc: jne      0x14020c9ed
+  0x14020c9de: mov      r9d, 0x84
+  0x14020c9e4: lea      r8, [rip + 0x744aad]  ; 'bRetCode'
+  0x14020c9eb: jmp      0x14020c974
+  0x14020c9ed: mov      edi, 1
+  0x14020c9f2: mov      edx, edi
+  0x14020c9f4: mov      rcx, rbx
+  0x14020c9f7: call     0x140112e90
+  0x14020c9fc: mov      rbx, qword ptr [rsp + 0x40]
+  0x14020ca01: mov      eax, 1
+  0x14020ca06: add      rsp, 0x30
+  0x14020ca0a: pop      rdi
+  0x14020ca0b: ret      
+  0x14020ca0c: int3     
+

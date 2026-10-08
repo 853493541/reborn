@@ -57,6 +57,14 @@ JX3UIX64.dll (scheme/Lua host) ──► KGUIX64.dll / KGUICocosX64.dll (control
 Client build used for RE: `KGUIX64.dll` 1.0.0.6122, `JX3UIX64.dll` 1.0.0.6116
 (**VERIFIED**).
 
+**Live control layer (added 2026-09-30):** this install runs the **Cocos UI**
+(`config/cocos_config.ini [Main] KGUIUseCocos=1`; gray `Percent=5`;
+`IsUseCocos` remains 1; `ui/Script/base.lua` `USE_COCOS=true`), i.e.
+`KGUICocosX64.dll` renders the controls/text while `KGUIX64.dll` is the legacy
+renderer. Both share the same INI/string/font-scheme data and semantics; the
+Cocos layer carries a 1:1 `KFontSchemeMgr` port and the `ccui.KGUIText` API —
+see `docs/ui/FONT_SCHEME_SYSTEM.md` §2.4.
+
 ---
 
 ## 2. Finding any UI: the discovery chain
@@ -149,8 +157,13 @@ this table (plus per-window string tables). Inline color/rich-text markup is
 
 ### 3.5 Fonts (VERIFIED)
 
-- `fontpathlist.ini` → families (`fzht_GBK.ttf`, `fzxk.ttf`, `fzjz.ttf`, ...);
-  files are loose at `<game>\ui\Font\`.
+- `fontpathlist.ini` → 3 families: 方正黑体 `fzht_GBK.ttf`, 行楷 `fzxk.ttf`,
+  剪纸 `fzjz.ttf`; `fontlist.ini` additionally references `FangZhengKaiTi-GBK.ttf`
+  (方正楷体). The install also ships `MSJH.TTF` (Microsoft JhengHei, not referenced
+  by the UI tables) — the complete client UI font set is these **5 loose files**
+  in `<game>\ui\Font\` (verified 2026-09-30; `caption.ini` `FontFile` uses
+  `fzht_GBK.TTF`). Prepared for the renderer by `tools/prepare_ui_fonts.py`
+  (→ `ui-process-app/assets/ui/Font/`).
 - `fontlist.ini` → FontID → `IsMipmap, IsAntiAlias, Size, Border, Vertical,
   Projection, Dpi, Name, File` (36 entries; `Chat=1` marks a chat-only face).
 - `font.ini` → **421 named FontSchemes**:
@@ -412,10 +425,29 @@ numerals for counters.
 `ShowModeID` values are defined in `ui/Scheme/Case/showmode.txt` (0–38, full
 list in `notes/system-tables.md`): e.g. `6` Cloud (mobile-stream mode),
 `12` Homeland building, `1` DesertStorm OB, `27` StoryMode, `28` DungeonOB,
-`36–38` GooseDuckKill. Windows are shown when the current mode id is in their
-list (`ShowModeID=1,4,5,17` etc.); `IsShowModeIdLegal` exists natively
-(**VERIFIED**). Canvas is 1280×960 with `MaxScale=2`; the exact screen-fit
-formula is **UNKNOWN**.
+`36–38` GooseDuckKill.
+
+Decoder + render-pass decode (2026-09-30, KGUIX64; annotated dumps
+`proof/ui/evidence/battle_hud/re/kgui_showmode/` + `window_mask_uses.txt`):
+
+- The window decoder (`0x1800CD780`, key read at `0x1800CDE77`) parses the value
+  as a comma-separated list (up to 128 ids, each ≤127) into a **128-bit mask** at
+  `window+0xC58`. Bit 0 is then set/cleared from `ShowWhenHideUI != 0`
+  (`or/and qword [rbx+0xC58],1` at `0x1800CE034`).
+- Render-pass visibility (`0x180131E6F`, `0x18015737F`):
+  `if (KWndStation+0xCB24 == 0) → visible` (no special show mode active, i.e.
+  **normal play ignores the list**);
+  else with the active mode id at `KWndStation+0xCB28`:
+  `bit = 1 << (mode & 63)`, `word = mode >> 6`; the window is drawn iff its mask
+  bit is set — **except** windows with flag `0x800` (`ShowWhenHideUI`), which
+  bypass the gate entirely (always drawn, also while the UI is hidden).
+- So `ShowModeID` is an **allow-list for special modes**: it does not restrict
+  normal play; it decides which windows remain in the listed modes (StoryMode 27,
+  Dungeon OB 28, GuildLeague OB 17, GooseDuckKill 36-38, …). `ShowWhenHideUI=1`
+  windows are the persistent HUD (minimap, buffs) that stay in every mode.
+  `[Balloon] ShowModeID` (config) uses the same mask format (fn `0x18020E250`).
+- `IsShowModeIdLegal` exists natively (**VERIFIED**). Canvas is 1280×960 with
+  `MaxScale=2`; the exact screen-fit formula is **UNKNOWN**.
 
 ---
 
@@ -427,7 +459,7 @@ Source matrix (**VERIFIED** by experiment):
 |---|---|---|
 | `ui/**` (INI, Lua, images, atlases, scheme tables) | PakV4 (`bin64\PakV4SfxExtract.exe`) | exact path, no leading `\`, case-insensitive |
 | `data/source/other/**/Pss/*.pss` (UI effects) | CDN `.hpkg` | `tools/netcode/extract_hpkg_member.py` |
-| fonts | loose `<game>\ui\Font\*.ttf` | copy directly |
+| fonts | loose `<game>\ui\Font\*.ttf` (5 files) | copy directly — `tools/prepare_ui_fonts.py` → `ui-process-app/assets/ui/Font/` (verifies fontlist/fontpathlist coverage) |
 | loading art/config | loose `<game>\ui\Loading\` | documented in `JX3_MODE_UI_FLOW.md` |
 
 Facts and caveats:

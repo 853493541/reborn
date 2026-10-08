@@ -1,0 +1,10 @@
+
+===== function 0/6 | line 63-65 | params=0 nups=1 stack=2 =====
+pc=   0 L0     GETGLOBAL A=0   B=0    C=0    'Hotkey_IsRMouseEnabled'
+pc=   1 L0     CALL      A=0   B=1    C=2    args=0 ret=1
+pc=   2 L0     TEST      A=0   B=0    C=0    
+pc=   3 L0     JMP       A=0   B=256  C=1    to pc 6
+pc=   4 L0     GETUPVAL  A=0   B=0    C=0    
+pc=   5 L0     GETTABLE  A=0   B=0    C=257  R0 K1('bRDown')
+pc=   6 L0     RETURN    A=0   B=2    C=0    
+pc=   7 L0     RETURN    A=0   B=1    C=0    

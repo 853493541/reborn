@@ -1,0 +1,48 @@
+# needle: g_pUI->m_WndStation.IsShowModeIdLegal(smShowMode.nId)
+# string VAs: ['0x1805d91b0']
+# xrefs: 1
+
+## xref 0x1801bf4bc  fn_start 0x1801bf460
+0x01801bf460: mov	qword ptr [rsp + 0x10], rbx
+0x01801bf465: push	rdi
+0x01801bf466: sub	rsp, 0xd0
+0x01801bf46d: mov	rax, qword ptr [rip + 0x490834]
+0x01801bf474: xor	rax, rsp
+0x01801bf477: mov	qword ptr [rsp + 0xc0], rax
+0x01801bf47f: mov	rax, qword ptr [rip + 0x4af3ca]
+0x01801bf486: lea	rdx, [rsp + 0x30]
+0x01801bf48b: mov	rdi, rcx
+0x01801bf48e: lea	rbx, [rip + 0x3ea383]
+0x01801bf495: mov	r8d, dword ptr [rax + 0xcb28]
+0x01801bf49c: lea	rcx, [rax + 0x66d0]
+0x01801bf4a3: call	0x18015aa90
+0x01801bf4a8: cmp	dword ptr [rsp + 0x30], 0x7f
+0x01801bf4ad: jbe	0x1801bf4dc
+0x01801bf4af: lea	rax, [rip + 0x419d32]	; 0x1805d91e8 -> "UI::KWndClassScriptTable::LuaStation_GetNameOfCurShowMode"
+0x01801bf4b6: mov	r9d, 0x76e
+0x01801bf4bc: lea	r8, [rip + 0x419ced]	; 0x1805d91b0 -> "g_pUI->m_WndStation.IsShowModeIdLegal(smShowMode.nId)"
+0x01801bf4c3: mov	qword ptr [rsp + 0x20], rax
+0x01801bf4c8: lea	rdx, [rip + 0x3ea3a9]
+0x01801bf4cf: mov	ecx, 3
+0x01801bf4d4: call	qword ptr [rip + 0x327d3e]
+0x01801bf4da: jmp	0x1801bf4e1
+0x01801bf4dc: lea	rbx, [rsp + 0x34]
+0x01801bf4e1: mov	rdx, rbx
+0x01801bf4e4: mov	rcx, rdi
+0x01801bf4e7: call	0x180233b00
+0x01801bf4ec: mov	eax, 1
+0x01801bf4f1: mov	rcx, qword ptr [rsp + 0xc0]
+0x01801bf4f9: xor	rcx, rsp
+0x01801bf4fc: call	0x1804ca730
+0x01801bf501: mov	rbx, qword ptr [rsp + 0xe8]
+0x01801bf509: add	rsp, 0xd0
+0x01801bf510: pop	rdi
+0x01801bf511: ret	
+0x01801bf512: int3	
+0x01801bf513: int3	
+0x01801bf514: int3	
+0x01801bf515: int3	
+0x01801bf516: int3	
+0x01801bf517: int3	
+0x01801bf518: int3	
+0x01801bf519: int3	

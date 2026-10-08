@@ -4,6 +4,8 @@ UI system report + map/minimap research. Interactive viewer: `ui-process-app/`.
 
 | Doc | Title |
 |---|---|
+| `BATTLE_FLOATING_UI.md` | Battle floating UI catalog — nameplates, combat text, cast bar, buff/target/feedback HUD (client-sourced, 2026-09-30) |
+| `FONT_SCHEME_SYSTEM.md` | KGUI font/color code system — `FontScheme=#<id>`/`FontColor=<name>` resolution chain, 421 schemes / 36 slots / 106 colors, usage census |
 | `MAP_MINIMAP_RESEARCH.md` | Map & Minimap research — how the game does it, and how 龙门绝境 maps |
 | `UI_SYSTEM_REPORT.md` | JX3 Client UI System — Reproduction Report |
 | `BASIC_UI_INVENTORY.md` | Basic UI scope register — all 1,210 client `ui/Config/Default` INIs (extracted 2026-10-03), classes, tiers, exclusions |
@@ -30,3 +32,6 @@ UI system report + map/minimap research. Interactive viewer: `ui-process-app/`.
 | `tools/ui/replay_server.lua` | Interactive replay server (same shim): keeps the window loaded and dispatches the scripts' own event handlers on `EVENT <section> <handler>` with `MOUSE x y` / `CLIENT w h` environment lines; the viewer's click/hover/drag/typing layer and `--click`/`--drag` drive it. |
 | `tools/ui/replay_all.py` | Replays every scripted window through `replay_harness.lua` and writes `Data/runtime_state/replay_summary.tsv` (the OK/ERR/NOENTRY gate; only OK windows' state is applied by the viewer). |
 | `tools/ui/scan_window_aliases.py` | Scans the window scripts' own `SETGLOBAL` opener definitions (`OpenBankPanel` → `BigBankPanel`) into `Data/ui_window_aliases.tsv`, so recorded popup chains resolve to catalog windows. |
+| `tools/ui_scheme_lookup.py` | Resolve `FontScheme=#<id>`/`FontColor=<name>` against the shipped `uifontscheme.ini`/`font.ini`/`fontlist.ini` chain; prints slot sizes/colors and usage rows. |
+| `tools/prepare_ui_fonts.py` | Stage the shipped font/color-ini inputs into the local (ignored) work dir for offline comparison. |
+| `tools/pvp/dump_fn_disasm.py` | Annotate RIP-relative string references in disasm dumps (`@addr` labels) — used for the represent-call/markup analysis. |

@@ -68,7 +68,7 @@ Evidence: `docs/movement/JX3_CHARACTER_MOVEMENT_RESEARCH.md` §2,
 | `TOGGLESITDOWN` | `V` / `X` | sit / stand |
 | `FOLLOWTARGET` | Ctrl+G | auto-follow target |
 | `AUTOINTERACT` | `F` | interact with nearest object |
-| — | double-tap `W` | sprint (host addition; real client sprint is a 轻功/skill state) [MED] |
+| — | double-tap `W` | sprint (host addition; real client sprint is a 轻功/skill state) [MED] — **removed 2026-09-30** |
 | — | mouse click on ground | click-to-move (`AutoMoveToPoint` / `AutoMoveToTarget`) |
 
 Model behind the keys: server-authoritative, client-predicted. The logic
@@ -155,11 +155,11 @@ Evidence: `proof/movement/extracted/ui_hotkey_default.txt`,
 
 | Area | State |
 |---|---|
-| Input | hardcoded `KeyDown/KeyUp` if-chain — **no hotkey table, no rebinding, no contexts** |
-| Movement | WASD camera-relative, Shift debug ×10, `Space` jump, `/` walk-run, W-double-tap sprint, `1` skill, `C` debug teleport; world-dir held while keys unchanged |
-| Turn | body turns instantly to the move direction / RMB camera direction (**no turn-rate model**) |
+| Input | movement command set dispatched from the real hotkey table (`client/HotkeyTable.cs`, C1/C2, 2026-09-30); remaining keys hardcoded — no rebinding/contexts yet |
+| Movement | WASD camera-relative, Shift debug ×10, `Space` jump with horizontal takeoff, `Numpad /` walk-run, ←/→ turn-in-place, G autorun (2026-09-30 `agent/move-controls`), `1` skill, `C` debug teleport |
+| Turn | heading/facing turn-rate model + >112.5° penalty (S6, 2026-09-29); turn keys turn in place; server `+0x48` step undecoded → π rad/s fallback |
 | Camera | LMB/RMB drag, wheel ×0.9/×1.1, F11, Home/End; JX3 sphere offset; per-frame aim sync (`00f1237`); **no wall obstruction**, no FOV/modes/shake; settings read from `custom.dat` (3 keys) |
-| Jump | continuous approximation tuned to the table numbers (integer 15 Hz model **not ported**) |
+| Jump | continuous approximation tuned to the table numbers (integer 15 Hz model **not ported**); takeoff XY + 500 u landing branch live (2026-09-30) |
 | Combat | one skill key (`1`), no targeting, no action bars, no cast model |
 | UI | HUD label + `I` toggle only; no panels, no customization |
 | Settings | read-only `custom.dat`; `config.ini`/广角 ignored; engine caps not probed |
@@ -170,11 +170,11 @@ Evidence: `proof/movement/extracted/ui_hotkey_default.txt`,
 |---|---|---|
 | Camera drag/aim | ~95% | ~85% (walls/FOV/caps/modes missing) |
 | Camera settings | ~80% | ~40% |
-| Movement | ~90% | ~50% |
-| Input/hotkeys | ~95% | ~10% |
+| Movement | ~90% | ~60% (turn keys/autorun/air takeoff landed 2026-09-30) |
+| Input/hotkeys | ~95% | ~25% (table loaded + movement dispatch; rebinding/contexts open) |
 | Combat controls | ~85% | ~5% |
 | UI customization | ~70% | ~5% |
-| Jump/轻功 | ~90% | ~40% |
+| Jump/轻功 | ~90% | ~50% (takeoff XY + landing branch added) |
 | Netcode | ~85% | 0% |
 
 Open gaps for the full control system are consolidated in

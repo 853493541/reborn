@@ -16,13 +16,56 @@ internal sealed class CameraSettings
     public double WidAngleDeg = 0.0;        // 广角 VideoSetting_WidAngle (deg, 0=unset)
     public double SpringResetSpeed = 1.0;   // fSpringResetSpeed (read-only for now)
     public double CameraResetSpeed = 1.0;   // fCameraResetSpeed (read-only for now)
-    public int CameraMode = 0;              // nCameraMode: 0 classic, 1 joystick
+    public int CameraMode = 0;              // tCameraStatic.nCameraMode (follow mode 0..3)
+    public int OperationMode = CameraOperationMode.Joystick;  // default joystick (current focus; RC_MODE / userprefs override)
+    public int FollowModeClassic = 0;       // nCameraModeInClassicMode (per-mode follow mode)
+    public int FollowModeJoystick = 0;      // nCameraModeInJoystickMode
     public bool CameraSmoothing = true;     // bCameraSmoothing
     public bool CurveCamera = false;        // bCurveCamera
     public bool EyeFollow = true;           // bEyeFollow
     public bool HasSceneInit;
     public bool HasSavedRuntime;
     public bool HasCustomSettings;
+    // Active per-mode camera values, applied on every mode switch. Clamps and
+    // field sources are verified from the represent setters
+    // (SetCameraFollowMode 0x180ace3f0 [0..3]; SetCameraSpringResetSpeed
+    // 0x180aced60 / SetCameraResetSpeed 0x180ace900 [0.01,10]; classic fields
+    // +0x78/+0x7C/+0x80, joystick +0x90/+0x94/+0x98). The per-frame consumer
+    // of follow mode [0..3] and the reset speeds is still undecoded, so the
+    // host applies/logs the active values and does not fake their behaviour
+    // (docs/controls/OPERATION_MODES_PLAN.md §7b).
+    public int ActiveFollowMode = 0;
+    public double ActiveSpringResetSpeed = 1.0;
+    public double ActiveCameraResetSpeed = 1.0;
+
+    public void ApplyOperationMode()
+    {
+        ActiveFollowMode = ClampFollowMode(
+            OperationMode == CameraOperationMode.Joystick ? FollowModeJoystick : FollowModeClassic);
+        ActiveSpringResetSpeed = ClampResetSpeed(SpringResetSpeed);
+        ActiveCameraResetSpeed = ClampResetSpeed(CameraResetSpeed);
+    }
+
+    public static int ClampFollowMode(int v)
+    {
+        if (v < 0) return 0;
+        if (v > 3) return 3;
+        return v;
+    }
+
+    public static double ClampResetSpeed(double v)
+    {
+        if (v < 0.01) return 0.01;
+        if (v > 10.0) return 10.0;
+        return v;
+    }
+
+    public string DescribeApplied()
+    {
+        return string.Format("op={0} followMode={1} springReset={2:F2} cameraReset={3:F2}",
+            CameraOperationMode.Name(OperationMode), ActiveFollowMode,
+            ActiveSpringResetSpeed, ActiveCameraResetSpeed);
+    }
 
     public static CameraSettings Load(string editorRoot, string mapPath, string appDir, Action<string> log)
     {
@@ -49,15 +92,54 @@ internal sealed class CameraSettings
             {
                 LoadCustomDat(File.ReadAllText(customPath), result);
                 result.HasCustomSettings = true;
-                log("CameraSettings: loaded real per-role camera settings");
+                log("CameraSettings: loaded real per-role camera settings: " + customPath);
             }
             catch (Exception e) { log("CameraSettings custom.dat ex: " + e.Message); }
         }
+
+        // persisted operation mode: the client's StorageServer key
+        // 'CurrentOperationMode' maps to the per-role userpreferences.jx3dat
+        // (decoded 2026-10-02: a GBK text map with "CurrentOperationMode={0|1}";
+        // 0 = classical, 1 = joystick). RC_USER_PREFS points at that file;
+        // read-only - the host never writes it back. RC_MODE overrides (tests).
+        string prefsPath = Environment.GetEnvironmentVariable("RC_USER_PREFS");
+        if (!string.IsNullOrEmpty(prefsPath) && File.Exists(prefsPath))
+        {
+            try
+            {
+                byte[] pb = File.ReadAllBytes(prefsPath);
+                byte[] key = Encoding.ASCII.GetBytes("CurrentOperationMode={");
+                int idx = -1;
+                for (int i = 0; i + key.Length <= pb.Length && idx < 0; i++)
+                {
+                    bool m = true;
+                    for (int j = 0; j < key.Length; j++)
+                        if (pb[i + j] != key[j]) { m = false; break; }
+                    if (m) idx = i + key.Length;
+                }
+                if (idx >= 0 && idx < pb.Length)
+                {
+                    int val = pb[idx] - (byte)'0';
+                    if (val == 0 || val == 1)
+                    {
+                        result.OperationMode = val == 1
+                            ? CameraOperationMode.Joystick : CameraOperationMode.Classical;
+                        log("CameraSettings: userprefs CurrentOperationMode=" + val
+                            + " (" + CameraOperationMode.Name(result.OperationMode) + ")");
+                    }
+                }
+            }
+            catch (Exception e) { log("CameraSettings userprefs ex: " + e.Message); }
+        }
+        string opEnv = Environment.GetEnvironmentVariable("RC_MODE");
+        if (!string.IsNullOrEmpty(opEnv)) result.OperationMode = CameraOperationMode.Parse(opEnv);
 
         log(string.Format("CameraSettings: mapId={0} sceneInit={1} yaw={2:F6} pitch={3:F3} max={4:F0} drag={5:F2}/{6:F2} eyeScale={7:F2}",
             result.MapId, result.HasSceneInit || result.HasSavedRuntime ? 1 : 0,
             result.InitYaw, result.InitPitch, result.MaxCameraDistance,
             result.DragSpeed, result.DragPitchSpeed, result.EyeScale));
+        log("CameraSettings: operationMode=" + CameraOperationMode.Name(result.OperationMode)
+            + " perModeFollow classic=" + result.FollowModeClassic + " joystick=" + result.FollowModeJoystick);
         log(string.Format("CameraSettings extra: mode={0} resetSpring={1:F2} resetCam={2:F2} smoothing={3} curve={4} eyeFollow={5}",
             result.CameraMode, result.SpringResetSpeed, result.CameraResetSpeed,
             result.CameraSmoothing ? 1 : 0, result.CurveCamera ? 1 : 0, result.EyeFollow ? 1 : 0));
@@ -119,8 +201,8 @@ internal sealed class CameraSettings
     static string FindLatestCustomDat(string root)
     {
         if (!Directory.Exists(root)) return null;
-        string best = null;
-        DateTime bestTime = DateTime.MinValue;
+        string best = null, bestRuntime = null;
+        DateTime bestTime = DateTime.MinValue, bestRuntimeTime = DateTime.MinValue;
         try
         {
             foreach (string path in Directory.GetFiles(root, "custom.dat", SearchOption.AllDirectories))
@@ -129,12 +211,21 @@ internal sealed class CameraSettings
                 {
                     DateTime time = File.GetLastWriteTimeUtc(path);
                     if (time > bestTime) { best = path; bestTime = time; }
+                    // prefer a role file that carries the saved camera runtime
+                    // (g_Scene_tCameraRuntime): the account/global custom.dat
+                    // files have no saved view, and the real client restores the
+                    // per-role view at first load (2026-09-30 start-angle fix)
+                    if (time > bestRuntimeTime && File.ReadAllText(path).Contains("g_Scene_tCameraRuntime"))
+                    {
+                        bestRuntime = path;
+                        bestRuntimeTime = time;
+                    }
                 }
                 catch { }
             }
         }
         catch { }
-        return best;
+        return bestRuntime != null ? bestRuntime : best;
     }
 
     static void LoadCustomDat(string text, CameraSettings settings)
@@ -164,6 +255,12 @@ internal sealed class CameraSettings
         string uiBlock = FindSection(text, "UIVideoSetting");
         if (TryNumber(uiBlock, "VideoSetting_WidAngle", out value) && value > 0)
             settings.WidAngleDeg = value;
+        // per-operation-mode follow mode (UISetting_Comprehensive)
+        string uiSetBlock = FindSection(text, "UISetting_Comprehensive");
+        if (TryNumber(uiSetBlock, "nCameraModeInClassicMode", out value))
+            settings.FollowModeClassic = (int)Math.Round(value);
+        if (TryNumber(uiSetBlock, "nCameraModeInJoystickMode", out value))
+            settings.FollowModeJoystick = (int)Math.Round(value);
         if (TryNumber(staticBlock, "fSpringResetSpeed", out value))
             settings.SpringResetSpeed = value;
         if (TryNumber(staticBlock, "fCameraResetSpeed", out value))

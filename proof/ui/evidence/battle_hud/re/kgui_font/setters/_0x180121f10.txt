@@ -1,0 +1,245 @@
+# needle: @0x180121f10
+# string VAs: []
+# xrefs: 1
+
+## xref 0x180121f10  fn_start 0x180121f10
+0x0180121f10: push	rbx
+0x0180121f12: sub	rsp, 0x20
+0x0180121f16: mov	rax, qword ptr [rcx]
+0x0180121f19: mov	rbx, rcx
+0x0180121f1c: call	qword ptr [rax + 0x350]
+0x0180121f22: test	eax, eax
+0x0180121f24: je	0x180121f2f
+0x0180121f26: mov	r8d, dword ptr [rbx + 0x30c]
+0x0180121f2d: jmp	0x180121f36
+0x0180121f2f: mov	r8d, dword ptr [rbx + 0x300]
+0x0180121f36: test	byte ptr [rbx + 0x10], 2
+0x0180121f3a: je	0x180121fb1
+0x0180121f3c: mov	ecx, dword ptr [rbx + 0x18]
+0x0180121f3f: mov	eax, 0x80808081
+0x0180121f44: imul	ecx, dword ptr [rbx + 0x14]
+0x0180121f48: mul	ecx
+0x0180121f4a: mov	rcx, qword ptr [rbx + 0x360]
+0x0180121f51: mov	rax, qword ptr [rbx + 0x358]
+0x0180121f58: shr	edx, 7
+0x0180121f5b: movd	xmm1, edx
+0x0180121f5f: cvtdq2ps	xmm1, xmm1
+0x0180121f62: divss	xmm1, dword ptr [rip + 0x4c42aa]
+0x0180121f6a: cmp	rax, rcx
+0x0180121f6d: je	0x180121fb1
+0x0180121f6f: mov	edx, r8d
+0x0180121f72: xorps	xmm0, xmm0
+0x0180121f75: shr	edx, 0x18
+0x0180121f78: and	r8d, 0xffffff
+0x0180121f7f: cvtsi2ss	xmm0, rdx
+0x0180121f84: mulss	xmm0, xmm1
+0x0180121f88: cvttss2si	rdx, xmm0
+0x0180121f8d: shl	edx, 0x18
+0x0180121f90: or	edx, r8d
+0x0180121f93: nop	dword ptr [rax]
+0x0180121f97: nop	word ptr [rax + rax]
+0x0180121fa0: mov	dword ptr [rax + 0x80], edx
+0x0180121fa6: add	rax, 0xb0
+0x0180121fac: cmp	rax, rcx
+0x0180121faf: jne	0x180121fa0
+0x0180121fb1: mov	eax, 1
+0x0180121fb6: add	rsp, 0x20
+0x0180121fba: pop	rbx
+0x0180121fbb: ret	
+0x0180121fbc: int3	
+0x0180121fbd: int3	
+0x0180121fbe: int3	
+0x0180121fbf: int3	
+0x0180121fc0: mov	r9, rcx
+0x0180121fc3: mov	ecx, 4
+0x0180121fc8: cmp	dx, cx
+0x0180121fcb: cmovbe	cx, dx
+0x0180121fcf: cmp	dword ptr [r9 + 0x304], r8d
+0x0180121fd6: jne	0x180121fe9
+0x0180121fd8: movzx	eax, byte ptr [r9 + 0x310]
+0x0180121fe0: cmp	ax, cx
+0x0180121fe3: je	0x18012208a
+0x0180121fe9: test	byte ptr [r9 + 0x10], 2
+0x0180121fee: mov	dword ptr [r9 + 0x304], r8d
+0x0180121ff5: mov	byte ptr [r9 + 0x310], cl
+0x0180121ffc: je	0x18012208a
+0x0180122002: mov	ecx, dword ptr [r9 + 0x18]
+0x0180122006: mov	eax, 0x80808081
+0x018012200b: imul	ecx, dword ptr [r9 + 0x14]
+0x0180122010: mul	ecx
+0x0180122012: mov	rcx, qword ptr [r9 + 0x360]
+0x0180122019: mov	rax, qword ptr [r9 + 0x358]
+0x0180122020: shr	edx, 7
+0x0180122023: movd	xmm1, edx
+0x0180122027: cvtdq2ps	xmm1, xmm1
+0x018012202a: divss	xmm1, dword ptr [rip + 0x4c41e2]
+0x0180122032: cmp	rax, rcx
+0x0180122035: je	0x18012208a
+0x0180122037: nop	word ptr [rax + rax]
+0x0180122040: movzx	edx, byte ptr [r9 + 0x310]
+0x0180122048: xorps	xmm0, xmm0
+0x018012204b: mov	byte ptr [rax + 0xa8], dl
+0x0180122051: mov	r8d, dword ptr [r9 + 0x304]
+0x0180122058: mov	edx, r8d
+0x018012205b: shr	edx, 0x18
+0x018012205e: and	r8d, 0xffffff
+0x0180122065: cvtsi2ss	xmm0, rdx
+0x018012206a: mulss	xmm0, xmm1
+0x018012206e: cvttss2si	rdx, xmm0
+0x0180122073: shl	edx, 0x18
+0x0180122076: or	edx, r8d
+0x0180122079: mov	dword ptr [rax + 0x84], edx
+0x018012207f: add	rax, 0xb0
+0x0180122085: cmp	rax, rcx
+0x0180122088: jne	0x180122040
+0x018012208a: mov	eax, 1
+0x018012208f: ret	
+0x0180122090: mov	r9, rcx
+0x0180122093: mov	ecx, 0xff
+0x0180122098: cmp	dx, cx
+0x018012209b: cmovbe	cx, dx
+0x018012209f: cmp	dword ptr [r9 + 0x308], r8d
+0x01801220a6: jne	0x1801220b9
+0x01801220a8: movzx	eax, byte ptr [r9 + 0x311]
+0x01801220b0: cmp	ax, cx
+0x01801220b3: je	0x18012215a
+0x01801220b9: test	byte ptr [r9 + 0x10], 2
+0x01801220be: mov	dword ptr [r9 + 0x308], r8d
+0x01801220c5: mov	byte ptr [r9 + 0x311], cl
+0x01801220cc: je	0x18012215a
+0x01801220d2: mov	ecx, dword ptr [r9 + 0x18]
+0x01801220d6: mov	eax, 0x80808081
+0x01801220db: imul	ecx, dword ptr [r9 + 0x14]
+0x01801220e0: mul	ecx
+0x01801220e2: mov	rcx, qword ptr [r9 + 0x360]
+0x01801220e9: mov	rax, qword ptr [r9 + 0x358]
+0x01801220f0: shr	edx, 7
+0x01801220f3: movd	xmm1, edx
+0x01801220f7: cvtdq2ps	xmm1, xmm1
+0x01801220fa: divss	xmm1, dword ptr [rip + 0x4c4112]
+0x0180122102: cmp	rax, rcx
+0x0180122105: je	0x18012215a
+0x0180122107: nop	word ptr [rax + rax]
+0x0180122110: movzx	edx, byte ptr [r9 + 0x311]
+0x0180122118: xorps	xmm0, xmm0
+0x018012211b: mov	byte ptr [rax + 0xa9], dl
+0x0180122121: mov	r8d, dword ptr [r9 + 0x308]
+0x0180122128: mov	edx, r8d
+0x018012212b: shr	edx, 0x18
+0x018012212e: and	r8d, 0xffffff
+0x0180122135: cvtsi2ss	xmm0, rdx
+0x018012213a: mulss	xmm0, xmm1
+0x018012213e: cvttss2si	rdx, xmm0
+0x0180122143: shl	edx, 0x18
+0x0180122146: or	edx, r8d
+0x0180122149: mov	dword ptr [rax + 0x88], edx
+0x018012214f: add	rax, 0xb0
+0x0180122155: cmp	rax, rcx
+0x0180122158: jne	0x180122110
+0x018012215a: mov	eax, 1
+0x018012215f: ret	
+0x0180122160: mov	qword ptr [rsp + 8], rbx
+0x0180122165: push	rdi
+0x0180122166: sub	rsp, 0x40
+0x018012216a: mov	r8d, dword ptr [rcx + 0x18]
+0x018012216e: mov	rdi, rdx
+0x0180122171: imul	r8d, dword ptr [rcx + 0x14]
+0x0180122176: mov	eax, 0x80808081
+0x018012217b: movss	xmm0, dword ptr [rcx + 0x2f4]
+0x0180122183: mov	rbx, rcx
+0x0180122186: addss	xmm0, dword ptr [rip + 0x4c3f16]
+0x018012218e: movaps	xmmword ptr [rsp + 0x30], xmm6
+0x0180122193: movaps	xmmword ptr [rsp + 0x20], xmm7
+0x0180122198: mul	r8d
+0x018012219b: shr	edx, 7
+0x018012219e: movd	xmm6, edx
+0x01801221a2: cvtdq2ps	xmm6, xmm6
+0x01801221a5: divss	xmm6, dword ptr [rip + 0x4c4067]
+0x01801221ad: call	0x1804db63d
+0x01801221b2: mov	rax, qword ptr [rbx]
+0x01801221b5: mov	rcx, rbx
+0x01801221b8: movaps	xmm7, xmm0
+0x01801221bb: call	qword ptr [rax + 0x350]
+0x01801221c1: test	eax, eax
+0x01801221c3: je	0x1801221cd
+0x01801221c5: mov	ecx, dword ptr [rbx + 0x30c]
+0x01801221cb: jmp	0x1801221d3
+0x01801221cd: mov	ecx, dword ptr [rbx + 0x300]
+0x01801221d3: mov	eax, dword ptr [rbx + 0x2fc]
+0x01801221d9: xorps	xmm0, xmm0
+0x01801221dc: mov	dword ptr [rdi + 0x8c], eax
+0x01801221e2: xor	edx, edx
+0x01801221e4: mov	eax, ecx
+0x01801221e6: and	ecx, 0xffffff
+0x01801221ec: shr	eax, 0x18
+0x01801221ef: cvtsi2ss	xmm0, rax
+0x01801221f4: mulss	xmm0, xmm6
+0x01801221f8: cvttss2si	rax, xmm0
+0x01801221fd: xorps	xmm0, xmm0
+0x0180122200: shl	eax, 0x18
+0x0180122203: or	eax, ecx
+0x0180122205: mov	dword ptr [rdi + 0x80], eax
+0x018012220b: mov	ecx, dword ptr [rbx + 0x304]
+0x0180122211: mov	eax, ecx
+0x0180122213: shr	eax, 0x18
+0x0180122216: and	ecx, 0xffffff
+0x018012221c: cvtsi2ss	xmm0, rax
+0x0180122221: mulss	xmm0, xmm6
+0x0180122225: cvttss2si	rax, xmm0
+0x018012222a: xorps	xmm0, xmm0
+0x018012222d: shl	eax, 0x18
+0x0180122230: or	eax, ecx
+0x0180122232: mov	dword ptr [rdi + 0x84], eax
+0x0180122238: mov	ecx, dword ptr [rbx + 0x308]
+0x018012223e: mov	eax, ecx
+0x0180122240: shr	eax, 0x18
+0x0180122243: and	ecx, 0xffffff
+0x0180122249: cvtsi2ss	xmm0, rax
+0x018012224e: mulss	xmm0, xmm6
+0x0180122252: cvttss2si	rax, xmm0
+0x0180122257: shl	eax, 0x18
+0x018012225a: or	eax, ecx
+0x018012225c: mov	dword ptr [rdi + 0x88], eax
+0x0180122262: movzx	eax, byte ptr [rbx + 0x310]
+0x0180122269: mov	byte ptr [rdi + 0xa8], al
+0x018012226f: movzx	eax, byte ptr [rbx + 0x311]
+0x0180122276: mov	byte ptr [rdi + 0xa9], al
+0x018012227c: movss	dword ptr [rdi + 0x94], xmm7
+0x0180122284: mov	eax, dword ptr [rbx + 0x314]
+0x018012228a: mov	dword ptr [rdi + 0x90], eax
+0x0180122290: mov	rax, qword ptr [rip + 0x54c5b9]
+0x0180122297: mov	dword ptr [rdi + 0x74], edx
+0x018012229a: mov	dword ptr [rdi + 0x7c], edx
+0x018012229d: mov	r8, qword ptr [rax + 0x5aa8]
+0x01801222a4: test	r8, r8
+0x01801222a7: je	0x1801222d1
+0x01801222a9: mov	eax, dword ptr [rbx + 0x2fc]
+0x01801222af: cmp	eax, 0x24
+0x01801222b2: jae	0x1801222d1
+0x01801222b4: imul	rcx, rax, 0x138
+0x01801222bb: add	rcx, r8
+0x01801222be: je	0x1801222d1
+0x01801222c0: cmp	byte ptr [rcx + 0x134], dl
+0x01801222c6: je	0x1801222d1
+0x01801222c8: test	byte ptr [rcx + 0x12c], 2
+0x01801222cf: jne	0x1801222d9
+0x01801222d1: cmp	dword ptr [rbx + 0x32c], edx
+0x01801222d7: je	0x1801222de
+0x01801222d9: mov	edx, 1
+0x01801222de: mov	dword ptr [rdi + 0xac], edx
+0x01801222e4: mov	rcx, rbx
+0x01801222e7: lea	rdx, [rdi + 0x10]
+0x01801222eb: mov	rbx, qword ptr [rsp + 0x50]
+0x01801222f0: movaps	xmm6, xmmword ptr [rsp + 0x30]
+0x01801222f5: movaps	xmm7, xmmword ptr [rsp + 0x20]
+0x01801222fa: add	rsp, 0x40
+0x01801222fe: pop	rdi
+0x01801222ff: jmp	0x1800fbe70
+0x0180122304: int3	
+0x0180122305: int3	
+0x0180122306: int3	
+0x0180122307: int3	
+0x0180122308: int3	
+0x0180122309: int3	
+0x018012230a: int3	
+0x018012230b: int3	

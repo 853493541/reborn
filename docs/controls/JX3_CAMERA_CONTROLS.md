@@ -13,7 +13,7 @@
 | Input | Command | Lua | Effect |
 |---|---|---|---|
 | LMB drag | `CAMERAORSELECTORMOVE` (code 1) | `CameraOrSelectOrMoveStart(0)/Stop(0)` | rotate camera; click without drag selects |
-| RMB drag | `CAMERAORSELECTORMOVESTICKY` (2) | `CameraOrSelectOrMoveStart(1)/Stop(1)` | rotate camera **and turn the character** |
+| RMB drag | `CAMERAORSELECTORMOVESTICKY` (2) | `Camera_BeginDrag(2.0)` + `CONTROL_OBJECT_STICK_CAMERA` (script-verified 2026-10-01); no script-level turn | rotate camera **and turn the character** (engine consumer; scripts only start the drag) |
 | wheel up | `CAMERAZOOMIN` (256) | `CameraZoomIn()` → `Camera_Zoom(0.9)` | `distance × 0.9` |
 | wheel down | `CAMERAZOOMOUT` (257) | `CameraZoomOut()` → `Camera_Zoom(1.1)` | `distance × 1.1` |
 | F11 | `CAMERARESET` (122) | `CameraReset()` → `Camera_SetForceReset(charYaw, −π/12, 1)` | behind, pitch −15°, distance 1× |

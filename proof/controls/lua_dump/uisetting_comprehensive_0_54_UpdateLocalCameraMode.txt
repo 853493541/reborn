@@ -1,0 +1,20 @@
+
+===== function 0/54 | line 356-363 | params=0 nups=1 stack=3 =====
+pc=   0 L0     GETGLOBAL A=0   B=0    C=0    'GetOperationMode'
+pc=   1 L0     CALL      A=0   B=1    C=2    args=0 ret=1
+pc=   2 L0     GETGLOBAL A=1   B=0    C=1    'CLASSICAL_MODE'
+pc=   3 L0     EQ        A=0   B=0    C=1    R0 R1
+pc=   4 L0     JMP       A=0   B=256  C=4    to pc 10
+pc=   5 L0     GETGLOBAL A=1   B=0    C=2    'UISetting_Comprehensive'
+pc=   6 L0     GETUPVAL  A=2   B=0    C=0    
+pc=   7 L0     GETTABLE  A=2   B=2    C=260  R2 K4('nCameraMode')
+pc=   8 L0     SETTABLE  A=1   B=259  C=2    K3('nCameraModeInClassicMode') R2
+pc=   9 L0     JMP       A=0   B=256  C=6    to pc 17
+pc=  10 L0     GETGLOBAL A=1   B=0    C=5    'JOYSTICK_MODE'
+pc=  11 L0     EQ        A=0   B=0    C=1    R0 R1
+pc=  12 L0     JMP       A=0   B=256  C=3    to pc 17
+pc=  13 L0     GETGLOBAL A=1   B=0    C=2    'UISetting_Comprehensive'
+pc=  14 L0     GETUPVAL  A=2   B=0    C=0    
+pc=  15 L0     GETTABLE  A=2   B=2    C=260  R2 K4('nCameraMode')
+pc=  16 L0     SETTABLE  A=1   B=262  C=2    K6('nCameraModeInJoystickMode') R2
+pc=  17 L0     RETURN    A=0   B=1    C=0    

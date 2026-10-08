@@ -1,0 +1,32 @@
+001babcc  b950020000             mov     ecx, 0x250
+001babd1  ff1529360300           call    qword ptr [rip + 0x33629]  ; imp:MSVCR110.dll!??2@YAPEAX_K@Z
+001babd7  4889442440             mov     qword ptr [rsp + 0x40], rax
+001babdc  48837c244000           cmp     qword ptr [rsp + 0x40], 0
+001babe2  7413                   je      0x1801babf7
+001babe4  33d2                   xor     edx, edx
+001babe6  488b4c2440             mov     rcx, qword ptr [rsp + 0x40]
+001babeb  e8e00cfeff             call    0x18019b8d0
+001babf0  4889442448             mov     qword ptr [rsp + 0x48], rax
+001babf5  eb09                   jmp     0x1801bac00
+001babf7  48c744244800000000     mov     qword ptr [rsp + 0x48], 0
+001bac00  488b442448             mov     rax, qword ptr [rsp + 0x48]
+001bac05  4889842438010000       mov     qword ptr [rsp + 0x138], rax
+001bac0d  488b842438010000       mov     rax, qword ptr [rsp + 0x138]
+001bac15  4889442420             mov     qword ptr [rsp + 0x20], rax
+001bac1a  e9a7000000             jmp     0x1801bacc6
+001bac1f  b958020000             mov     ecx, 0x258
+001bac24  ff15d6350300           call    qword ptr [rip + 0x335d6]  ; imp:MSVCR110.dll!??2@YAPEAX_K@Z
+001bac2a  4889442458             mov     qword ptr [rsp + 0x58], rax
+001bac2f  48837c245800           cmp     qword ptr [rsp + 0x58], 0
+001bac35  7413                   je      0x1801bac4a
+001bac37  33d2                   xor     edx, edx
+001bac39  488b4c2458             mov     rcx, qword ptr [rsp + 0x58]
+001bac3e  e8fd4bfeff             call    0x18019f840
+001bac43  4889442468             mov     qword ptr [rsp + 0x68], rax
+001bac48  eb09                   jmp     0x1801bac53
+001bac4a  48c744246800000000     mov     qword ptr [rsp + 0x68], 0
+001bac53  488b442468             mov     rax, qword ptr [rsp + 0x68]
+001bac58  48                     .byte   0x48
+001bac59  89                     .byte   0x89
+001bac5a  84                     .byte   0x84
+001bac5b  24                     .byte   0x24

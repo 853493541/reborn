@@ -1,0 +1,58 @@
+13:48:12.293 build=reborn_client_colimp.exe 2026-09-29 13:48:01 git=48ee9a6 dirty=4 camFP=True flags=(ENGINESET=1,LOOKPACK=0,RATECAP=0,LOADPACE=1,FULLLOAD=0,PATCH_D6=0,PITCH_ALIGN=1,PLAYER_HIDE=1,SNAPGUARD=0,CROSS=0,HITMIN=3.0,WALLGATE=0,SCENERAY=1,SCENEMIN=80)
+13:48:12.294 start map=data\source\maps\海岛绝境\海岛绝境.jsonmap
+13:48:12.955 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_colimp.memory
+13:48:37.190 Init3DEngine=1 err=1
+13:48:37.227 editor.Init result=0
+13:48:38.135 LoadMap result=0
+13:48:38.396 winId=12781360
+13:48:38.397 clr m_pScene=0x115E8C008 unmapped exec=0
+13:48:38.398 clr scene.vt=0x7FFF3627F278 KG_EngineEditorX64.dll+0x6F278
+13:48:38.398 clr scene: obj=0000000115E8C008 vt=00007FFF3627F278 48=00007FFF3624D5F0(0) 50=00007FFF3624D710(0) 58=00007FFF3624D7E0(0) 60=00007FFF3624D810(0)
+13:48:38.398 clr sceneCam=0x1661A18A8 unmapped exec=0
+13:48:38.398 clr cam: obj=00000001661A18A8 vt=00007FFF36281FA8 48=00007FFF362603A0(0) 50=00007FFF362603E0(0) 58=00007FFF36260440(0) 60=00007FFF362604A0(0)
+13:48:38.399 clr camGet rc=0 pos=(0.0,500.0,-800.0) tgt=(0.0,0.0,0.0) managed=(0.0,500.0,-800.0)
+13:48:38.401 TerrainSampler: size=512 regions=4x4 cell=100 origin=(0,0)
+13:48:38.949 FoliageCollision: instances=4177 meshes=249 camflag0=25 foliage=海岛绝境_foliage_collision.bin structures=海岛绝境_structure_collision.bin
+13:48:38.950 EngineRay: exports ok, waiting for engine/scene
+13:48:38.951 EngineCam bind ex: Object contains non-primitive or non-blittable data.
+13:48:38.952 CameraShim: loaded rc=0 selftest=0x53484D01 status=obj=00000001661A18A8 vt=00007FFF36281FA8 48=00007FFF362603A0(0) 50=00007FFF362603E0(0) 58=00007FFF36260440(0) 60=00007FFF362604A0(0)
+13:48:38.956 camera config: C:\SeasunGame\MovieEditor\bin64\camera.json
+13:48:39.014 CameraSettings: loaded real per-role camera settings
+13:48:39.014 CameraSettings: mapId=410 sceneInit=0 yaw=0.502262 pitch=-0.170 max=2000 drag=1.00/1.00 eyeScale=1.00
+13:48:39.015 CameraSettings extra: mode=0 resetSpring=1.00 resetCam=1.00 smoothing=1 curve=0 eyeFollow=1
+13:48:39.015 CameraSystem ready: mode=character dist=600u height=200u units/m=100
+13:48:39.015 view angle factor=1
+13:48:39.016 fov source=max-default angle=60.00 deg (1.0472 rad) factor=1.2500 [panel 30-60, default 50]
+13:48:39.017 view angle factor applied=1.250002
+13:48:39.331 spawn=(22850,530,30450) view=(0.00,1.00)
+13:48:39.893 player handle=5814348200
+13:48:39.895 clip -> data\source\player\f1\动作\f1b01ty普通待机01.ani (0)
+13:48:40.402 camera yaw init=-1.571 (view dir 0.00,1.00)
+13:48:40.405 camera init skipped mapId=410 (no scene_init_param row; keeping spawn view)
+13:48:40.408 clip -> data\source\player\f1\动作\f1b02yd小跳c.ani (0)
+13:48:40.413 EngineRay: ready scene=0x101C3A5B0 terrain+950=0x1014F2B90 terrain+A28=0x0 vtB8=True space=0x127B87DA8 spaceRay=True entity=0x11BEC8648 entityRay=True entCount=10 guardCell=0x404D49E0
+13:48:41.916 camBind rc=0 pos=(22850.0,600.2,30383.3) cam=0000000101C3A5B0 posOff=0x9E0 bound=1
+13:48:41.917 camObjDump: obj=0000000101C3A5B0 vt=00007FFEF50E5598 48=00007FFEF3893870(1) 50=00007FFEF3893A40(1) 58=00007FFEF38B8810(1) 60=00007FFEF3893C70(1)
+13:48:41.917 slot50: slot50=00007FFEF3893A40: 48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 54 41 56
+13:48:41.917 slot58: slot58=00007FFEF38B8810: 40 53 48 83 EC 30 4C 89 4C 24 20 BB 05 40 00 80 4D 8B C8 4C 8B C2 48 8B
+13:48:41.917 slot60: slot60=00007FFEF3893C70: 48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 65 48 8B 04 25 58 00 00 00
+13:48:41.917 slot68: slot68=00007FFEF3893D50: 48 89 5C 24 18 48 89 6C 24 20 56 57 41 56 48 83 EC 40 48 8B FA 48 8B F1
+13:48:42.411 hole dump -> C:\Users\ZHIBIN~1\AppData\Local\Temp\opencode\hole_ab\holes_海岛绝境_000_000.bin bytes=32768
+13:48:42.411 t=2s fps=298 pos=(22850,-4434,30450) vy=-4952 grounded=False blocked=False hits=0 colCalls=643 colBlocked=0 spd=0u/s(IDLE) clip=f1b02yd小跳c.ani
+13:48:44.410 t=4s fps=353 pos=(22850,-19296,30450) vy=-9902 grounded=False blocked=False hits=0 colCalls=1345 colBlocked=0 spd=0u/s(IDLE) clip=f1b02yd小跳c.ani
+13:48:44.426 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_00_4000ms.png
+13:48:46.410 t=6s fps=273 pos=(22850,-44059,30450) vy=-14852 grounded=False blocked=False hits=0 colCalls=1967 colBlocked=0 spd=0u/s(IDLE) clip=f1b02yd小跳c.ani
+13:48:48.411 t=8s fps=376 pos=(22850,-78761,30450) vy=-19807 grounded=False blocked=False hits=0 colCalls=2723 colBlocked=0 spd=0u/s(IDLE) clip=f1b02yd小跳c.ani
+13:48:50.412 t=10s fps=385 pos=(22850,-123357,30450) vy=-24760 grounded=False blocked=False hits=0 colCalls=3501 colBlocked=0 spd=0u/s(IDLE) clip=f1b02yd小跳c.ani
+13:48:52.423 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_01_12000ms.png
+13:48:52.427 t=12s fps=384 pos=(22850,-178221,30450) vy=-29742 grounded=False blocked=False hits=0 colCalls=4263 colBlocked=0 spd=0u/s(IDLE) clip=f1b02yd小跳c.ani
+13:48:54.426 t=14s fps=384 pos=(22850,-242697,30450) vy=-34695 grounded=False blocked=False hits=0 colCalls=5038 colBlocked=0 spd=0u/s(IDLE) clip=f1b02yd小跳c.ani
+13:48:56.429 t=16s fps=388 pos=(22850,-317122,30450) vy=-39650 grounded=False blocked=False hits=0 colCalls=5800 colBlocked=0 spd=0u/s(IDLE) clip=f1b02yd小跳c.ani
+13:48:58.430 t=18s fps=388 pos=(22850,-401468,30450) vy=-44605 grounded=False blocked=False hits=0 colCalls=6582 colBlocked=0 spd=0u/s(IDLE) clip=f1b02yd小跳c.ani
+13:49:00.433 t=20s fps=393 pos=(22850,-495733,30450) vy=-49560 grounded=False blocked=False hits=0 colCalls=7357 colBlocked=0 spd=0u/s(IDLE) clip=f1b02yd小跳c.ani
+13:49:02.433 t=22s fps=386 pos=(22850,-599863,30450) vy=-54512 grounded=False blocked=False hits=0 colCalls=8130 colBlocked=0 spd=0u/s(IDLE) clip=f1b02yd小跳c.ani
+13:49:04.434 t=24s fps=381 pos=(22850,-713904,30450) vy=-59465 grounded=False blocked=False hits=0 colCalls=8891 colBlocked=0 spd=0u/s(IDLE) clip=f1b02yd小跳c.ani
+13:49:05.427 shot -> C:\SeasunGame\MovieEditor\bin64\reborn_out\rc_02_25000ms.png
+13:49:06.435 t=26s fps=381 pos=(22850,-837855,30450) vy=-64417 grounded=False blocked=False hits=0 colCalls=9666 colBlocked=0 spd=0u/s(IDLE) clip=f1b02yd小跳c.ani
+13:49:08.437 t=28s fps=379 pos=(22850,-971715,30450) vy=-69369 grounded=False blocked=False hits=0 colCalls=10434 colBlocked=0 spd=0u/s(IDLE) clip=f1b02yd小跳c.ani
+13:49:10.409 DONE

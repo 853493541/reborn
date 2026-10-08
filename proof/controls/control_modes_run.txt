@@ -1,0 +1,647 @@
+# Operation modes — scripted engine runs (CLASSICAL vs JOYSTICK)
+
+**Date:** 2026-09-30
+**Build:** `reborn_client_control_modes.exe` (agent/move-controls, tree @ 547ba57+dirty; same sources as the
+turn-coupling fix below)
+**Namespace:** `reborn_client_control_modes.memory` (isolated)
+**Script:** `RC_DEMO_MOVE=1 RC_AUTORUN=15000` — autorun -> forward jump -> strafe L -> back-pedal -> turn
+right -> 600 u drop (roll). `RC_MODE` selects the mode.
+**Logs:** `reborn_out/reborn_20260930_232408.log` (classical, exit 0),
+`reborn_out/reborn_20260930_232519.log` (joystick, exit 0)
+
+## Clip availability pre-check (`reborn_20260930_231207.log`)
+
+The F1 authored strafe/back-pedal wrappers load and play in-engine (rc=0, no
+AV; the 二段跳a.tani wrapper AV hazard does not apply to these):
+
+```
+clip -> data\source\player\F1\动作\F1b02yd挪步左.tani (0)
+clip -> data\source\player\F1\动作\F1b02yd挪步右.tani (0)
+clip -> data\source\player\F1\动作\F1b02yd后退01.tani (0)
+clip -> data\source\player\F1\动作\F1b02yd后退02.tani (0)
+```
+
+## CLASSICAL (normal) — `op=classical`
+
+```
+movetest strafe mode=classical yaw0=2.38 yaw1=2.38 d=0.00 cam0=2.34 cam1=2.34
+movetest back   mode=classical yaw0=2.38 yaw1=2.38 d=0.00 cam0=2.34 cam1=2.34
+movetest turn   yaw0=2.38 yaw1=4.26 d=1.88 cam0=2.34 cam1=0.71 camd=-1.62
+land drop=600u roll=1 clip=f1b02yd握拳小跳c.ani rc=0
+```
+clip switches: `F1b02yd挪步左.tani` (strafe window), `F1b02yd后退01.tani` (back window).
+
+- Strafe/back input moves the character with the **facing kept** (d=0.00) and
+  selects the authored **side-step / back-pedal** clips — the classical game
+  truth (`OPERATION_MODES_PLAN.md` §1).
+- Turn keys: character +1.88 rad; camera yaw 2.34 -> 0.71 — the
+  `cameraYawBehind` reflection (behind(4.26) = 4.712-4.26 = 0.45) with the
+  15 deg `CameraAdjustYawWhenMoveTurnDisableAngle` drag lag (~0.26), so the
+  camera stays behind through the turn.
+- Landing roll branch unchanged.
+
+## JOYSTICK — `op=joystick`
+
+```
+movetest strafe mode=joystick yaw0=2.38 yaw1=0.81 d=-1.57 cam0=2.34 cam1=2.34
+movetest back   mode=joystick yaw0=0.81 yaw1=-0.77 d=-1.57 cam0=2.34 cam1=2.34
+movetest turn   yaw0=-0.77 yaw1=1.13 d=1.89 cam0=2.34 cam1=3.78 camd=1.45
+land drop=600u roll=1 clip=f1b02yd握拳小跳c.ani rc=0
+```
+
+- Strafe/back input **turns the body to the travel heading** (d = -1.57 rad per
+  1 s window at the pi rad/s turn rate) — the joystick game truth; no strafe /
+  back-pedal clips are selected.
+- Movement does not move the camera (mouse owns it in joystick mode).
+- Turn keys behave as in classical (camera drag), independent of this run's
+  mouse-driven camera.
+
+## Reproduce
+
+```powershell
+set RC_CLIENT_EXE=reborn_client_control_modes.exe
+set RC_SMOKE_EXE=camera_smoke_control_modes.exe
+client\build_client.cmd
+# classical
+$env:RC_DEMO_MOVE="1"; $env:RC_AUTORUN="15000"; $env:RC_MODE="classical"
+$p = Start-Process "C:\SeasunGame\MovieEditor\bin64\reborn_client_control_modes.exe" -WorkingDirectory "C:\SeasunGame\MovieEditor" -PassThru
+$p.WaitForExit(); $p.ExitCode   # 0
+# joystick: same with RC_MODE="joystick"
+```
+
+## Per-mode settings plumbing — switch test (2026-09-30)
+
+**Run:** RC_MODE=classical RC_MODE_SWITCH_AT=6000 RC_AUTORUN=12000, exit 0,
+log eborn_out/reborn_20260930_234456.log:
+
+`
+opmode applied: op=classical followMode=0 springReset=1.00 cameraReset=1.00
+opmode switch (test @6000ms): op=joystick followMode=0 springReset=1.00 cameraReset=1.00
+`
+
+Values are the role's custom.dat per-mode fields (this role: follow 0/0,
+speeds 1.0/1.0), clamped per the freshly disassembled setters (follow [0..3],
+Speeds [0.01, 10]). NOTE: the per-frame consumer of follow mode [0..3] and of
+the reset speeds is still undecoded — the host applies and logs the active
+values and does not fake their behaviour (OPERATION_MODES_PLAN.md §7c).
+
+## Correction 2026-10-01 — classical A/D turns (bytecode re-decode)
+
+Re-decoded the real handlers from the packed bytecode (`tools/controls/lua51_probe.py`):
+StrafeLeftStart = proto 0/76, StrafeRightStart = 0/78; forward/back/turn = 0/65-0/74.
+STRAFE is the only mode-branched movement command: CLASSICAL -> SetControl +
+TurnLeft/RightStart when Camera_IsInFreeView(); JOYSTICK -> ResponseWASDKey
+(double-tap aware). The earlier summary in OPERATION_MODES_PLAN.md (classical
+strafe keeps facing) described only the non-free-view branch — corrected.
+
+Host mapping: RC_FREEVIEW=1 (default) = A/D turn in classical (observed game
+behaviour); RC_FREEVIEW=0 = decoded side-step branch.
+
+Runs (RC_DEMO_MOVE=1 RC_AUTORUN=15000, exit 0):
+
+| run | strafe line | back line |
+|---|---|---|
+| classical, default (free view) | `movetest strafe mode=classical yaw0=2.38 yaw1=-0.76 d=-3.14 cam0=2.34 cam1=5.22` | `d=0.00` + 后退01 (back-pedal) |
+| classical, RC_FREEVIEW=0 | `movetest strafe mode=classical yaw0=2.38 yaw1=2.38 d=0.00` (side-step; 挪步 clips) | `d=0.00` |
+| joystick | `movetest strafe mode=joystick yaw0=2.38 yaw1=0.81 d=-1.57 cam0=2.34 cam1=2.34` | `d=-1.57` |
+
+d=-3.14 = 1 s hold at the host turn rate pi rad/s; classical camera follows
+(cam 2.34 -> 5.22, cameraYawBehind reflection + 15 deg drag). Landing roll
+unchanged (`land drop=600u roll=1 ... rc=0`).
+
+## Mode-matched locomotion animation (2026-10-01)
+
+Clip selected by travel direction vs facing in both modes (>45 deg = kind 6
+`挪步左/右`, >135 deg = kind 57 `后退01`, else walk/run). F1 catalog has no
+dedicated ground turn clip, so classical A/D turn-in-place rotates the model.
+
+Runs (RC_DEMO_MOVE=1 RC_AUTORUN=15000, exit 0):
+
+| run | strafe window | back window | notes |
+|---|---|---|---|
+| classical default (A/D turn) | `d=-3.14` (turn 1 s), no locomotion clip (idle + model rotation) | `后退01`, d=0.00 | face view |
+| classical RC_FREEVIEW=0 | `挪步左`, d=0.00 | `后退01`, d=0.00 | decoded side-step branch |
+| joystick | `挪步左` then `奔跑` (pivot then aligned), d=-1.57 | `挪步` then `奔跑` (90 deg pivot), d=-1.57 | turn-to-heading |
+
+Logs: `reborn_20261001_074718.log` (classical), `_074923.log` (freeview 0),
+`_074806.log` (joystick).
+
+## Classic base actions: sit + sheath (2026-10-01)
+
+Decoded from the packed hotkeys.lua bytecode: ToggleSitDown proto 0/98
+(OnUseSkill(17 打坐) / Stand()), ToggleSheath proto 0/97 (SetSheath toggle;
+gates sit/death/fight/bird/horse/tower/buff, only the sit gate modellable).
+
+Run: RC_DEMO_MOVE=1 RC_MODE=classical RC_AUTORUN=17000, exit 0
+(log reborn_20261001_081922.log):
+
+`
+sit: down (OnUseSkill 17 打坐)
+clip -> data\source\player\f1\动作\F1b02dj打坐a.tani (0)
+sit: stand (Stand)
+clip -> ...普通待机01.ani (0)
+sheath: drawn
+clip -> ...F1b02ty拔剑01_start01.ani (0)
+(800 ms later)
+clip -> ...F1b02ty拔剑01_st01_持续.tani (0)
+sheath: sheathed
+clip -> ...普通待机01.ani (0)
+DONE
+`
+
+Sit stands on any movement/jump intent (host mapping of the engine's stand-on-
+move); sheath is rejected while sitting (decoded gate). Both clips are the
+authored F1 b02 animations; no 收剑 clip ships for b02, so sheathing falls back
+to the normal idle.
+
+## Full classic movement matrix (2026-10-01)
+
+Decoded the 8-way intent system: ResponseWASDKey (hotkeys.lua proto 0/46)
+merges Forward/Backward and (TurnLeft|StrafeLeft)/(TurnRight|StrafeRight)
+into MOVE_FORWARD / MOVE_LEFTFORWARD / MOVE_BACKWARD / ... and passes them to
+ResponseDisplacementHotkey (proto 0/44, the sprint/轻功 skill dispatcher).
+Host classic matrix: A/D alone turn (camera follows); W+A / W+D run the
+camera-relative 45 deg diagonal with the character facing it (camera
+untouched); S / S+A / S+D back-pedal at walk pace (number.krl ships no back
+speed; walk 6 u/f = 96 u/s) with the facing kept; arrows always turn.
+
+Run RC_DEMO_MOVE=1 RC_MODE=classical RC_AUTORUN=20000, exit 0
+(log reborn_20261001_083417.log):
+
+`
+movetest strafe mode=classical yaw0=2.38 yaw1=-0.76 d=-3.14 cam0=2.34 cam1=5.22 dpos=(0,0)      # A alone: turn in place
+movetest back   mode=classical yaw0=-0.76 yaw1=-0.76 d=0.00  dpos=(47,-84) dist=96              # S: 96 u/s slow back-pedal, facing kept
+movetest WA     mode=classical dpos=(33,382)  dist=384 yaw=0.09 cam=3.84                        # W+A: 45 deg diagonal run, camera untouched
+movetest WD     mode=classical dpos=(383,-33) dist=384 yaw=1.66 cam=3.84                        # W+D: mirrored diagonal
+`
+
+384 u over 1.2 s = 320 u/s run speed; 96 u/s = walk pace back-pedal.
+
+## Classic free view resolved + W+A/W+D curves (2026-10-01, correction)
+
+Decoded the free-view gate from the shipped scripts:
+- Camera_IsInFreeView = mainscene.lua proto 0/1 (returns a state local).
+- CameraStatus_Animation(isOn) (proto 0/0) swaps the Turn* globals to the
+  Strafe* handlers when free view is OFF (and restores them when ON).
+- CameraStatus_Set (proto 0/3) ends with CameraStatus_Animation(mode ~=
+  'god camera'); CameraCommon.lua enters 'local camera' for the player ->
+  FREE VIEW IS ON in normal play.
+So the classical strafe handler (proto 0/76) free-view branch runs in normal
+play: A/D call TurnLeft/RightStart -> A/D TURN. W+A / W+D therefore turn the
+view while W runs: a curve. The earlier host diagonal interpretation was
+wrong and is reverted. Host keyboard turn rotates the view at the char turn
+rate (standing still the body turns with it; while moving the body follows the
+rotating heading via the turn model), and curYaw/camSys.Yaw are wrapped each
+frame (an unwrapped facing aliased dYaw across +/-pi and flipped turns).
+
+Run RC_DEMO_MOVE=1 RC_MODE=classical RC_AUTORUN=20000, exit 0
+(log reborn_20261001_085528.log):
+
+`
+movetest strafe mode=classical yaw0=-2.85 yaw1=0.29 d=3.14 cam0=1.28 cam1=-1.86   # A alone: turn (wrapped +/-pi)
+movetest back   mode=classical dpos=(-27,-92) dist=96                              # S: 96 u/s walk-pace back-pedal
+movetest turn   yaw0=0.29 yaw1=2.17 d=1.88 camd=4.40 (=-1.88 wrapped)              # arrow turn 1:1 view+body
+movetest WA     dpos=(56,185) dist=194 dyaw=-3.75 dcam=-2.51 (=+3.77 wrapped)      # W+A: left curve (dist 194 vs 384 straight)
+movetest WD     dpos=(53,186) dist=194 dyaw=3.71  dcam=2.52 (=-3.77 wrapped)       # W+D: mirrored right curve
+`
+
+Joystick sanity: strafe d=4.71 turn-to-heading cam unchanged; back dist=320
+run; WA dist=348 no camera turn.
+
+## Turn rate = local data; RMB owns the camera (2026-10-01)
+
+1. Turn rate: the keyboard turn is a LOCAL action. The camera-controller row
+   default table (.rdata 0x180d0 a table: 0.00314, 1.56, 6.28...) holds
+   RotationSpeed = 0.00314 rad/ms = pi rad/s; the host now derives
+   charTurnRate = RotationSpeed * 1000 (pi only as missing-row fallback).
+   Verified unchanged: A-alone turn d=3.14 in 1 s (log 20261001_172009).
+
+2. RMB hold: while RMB (CAMERAORSELECTORMOVESTICKY /
+   CONTROL_OBJECT_STICK_CAMERA) is held, the mouse owns the camera - keyboard
+   turn must NOT rotate the view. Verified (RC_DEMO_RMBWA=1, W+A held, RMB
+   held, no mouse motion):
+     movetest WA mode=classical rmb=1 dpos=(315,-221) dist=385 dyaw=0.00 dcam=0.00
+   i.e. no camera turn, no body turn, straight run - exactly the observed game
+   behaviour. With a simulated mouse drag (RC_DEMO_RMBWA=2) only the mouse
+   rotates the camera: dcam=-1.08 (was -3.44 before the fix, which wrongly
+   included the keyboard turn).
+
+Also corrected while digging: the number.krl field offsets are walk +0x48,
+run +0x4C, swim +0x50, **yaw turn +0x54**, yaw reset +0x58 (the movement
+research doc lists them 4 bytes high).
+
+## CORRECTION (2026-10-01, later): RMB rule is a PROVISIONAL host rule
+
+The earlier entry below claimed the RMB-held keyboard-turn suppression was
+"exactly the observed game behaviour" / decoded. It is NOT decoded. What is
+actually decoded:
+- hotkeys.lua: in classical free view, StrafeLeft/Right call
+  SetControl(CONTROL_STRAFE_*) and TurnLeftStart/RightStart; TurnLeftStart
+  calls SetControl(CONTROL_TURN_*) - the turn is a CHARACTER control.
+- No Lua gate suppresses the turn while RMB is held (searched all 1551
+  extracted ui/Script + ui/Config scripts).
+- Hotkey_EnableTurnLeft/Right are tutorial-only gates (Teaching.lua).
+- The engine consumer of CONTROL_TURN_* while CONTROL_OBJECT_STICK_CAMERA is
+  active is not decoded (Represent SetControl binding + event path; client exe
+  consumer not traced).
+
+The host therefore implements the observed behaviour (A/D inert while RMB is
+held) as a PROVISIONAL host rule (classicalMode && rmbDown), registered in
+CLASSIC_CONTROLS_AUDIT.md with re-open criteria; it is not presented as client
+truth. Host verification: with RMB held and no mouse motion, W+A gives
+dcam=0.00 dyaw=0.00 dist=384 (log 20261001_173338); without RMB, W+A curves
+and A-alone turns at the local rate.
+
+## RESOLUTION (2026-10-01, final): gate REVERTED; op-mode script layer fully decoded
+
+Commit bb91c08 reverts the provisional gate: `classicalMode && rmbDown` removed;
+A/D turn exactly as without RMB. Rebuilt `reborn_client_control_modes.exe`
+(exit 0) + `camera_smoke_control_modes.exe` ALL PASS; jx3_model 10x PASS;
+verify_model exit 0; capture selftest PASS; client relaunched.
+
+Decoded from the game client's shipped scripts (extracted with the game
+client's own PakV4 extractor; dumps under %TEMP%\opencode\modes-re\):
+
+- `mainscene.lua`: `Camera_IsInFreeView` (proto 0/1) returns the flag stored by
+  `CameraStatus_Animation` (proto 0/0); `CameraStatus_Set` (proto 0/3) calls
+  `CameraStatus_Animation(mode ~= "god camera")`. Normal play (`local camera`)
+  -> free view TRUE -> the real `TurnLeftStart/Stop` + `TurnRightStart/Stop`
+  globals are active. God camera -> FALSE -> globals swapped to `Strafe*`.
+- `hotkeys.lua`: turn handlers (protos 0/71-0/74) and forward/back (0/65-0/68)
+  have no mode branch; `StrafeLeftStart` (0/76) is the only mode-branched
+  handler: CLASSICAL -> `Camera_EnableControl(CONTROL_STRAFE_*, true)` then
+  `if Camera_IsInFreeView() then TurnLeftStart/RightStart() end`; JOYSTICK ->
+  `ResponseWASDKey("StrafeLeft", ...)`. `ResponseWASDKey` (0/46) refcounts the
+  active move actions into the 8-way MOVE_* displacement dispatch.
+- `OperationModeBase.lua`: `FreeMoveControl` (joystick vector), `RotatePlayer`
+  (0.3 smoothing + FastArcTan table = tan(i*pi/128), 64 entries),
+  `SetPlayerRotation` -> `TurnTo`; `ClearMoveState` disables the six camera
+  controls; CLASSICAL switch = `Camera_SetResetSpeed(1.0)` + `UseFullAngle(false)`
+  + `Scene_LockMouseRotation(false)`; JOYSTICK flips them true.
+- `Scene.lua`: RMB down -> `Camera_BeginDrag(2.0)` +
+  `Camera_EnableControl(CONTROL_OBJECT_STICK_CAMERA, true)` only. NO branch
+  anywhere makes turning depend on RMB.
+
+Conclusion: no script-level RMB turn gate exists; the host now follows the
+scripts. The engine consumer of `CONTROL_TURN_*` while
+`CONTROL_OBJECT_STICK_CAMERA` is active remains the next probe
+(`JX3RepresentX64.dll` commit 0x1805df660 -> applier 0x1805df7e0).
+
+## DIG (2026-10-01, later): C binding layer + engine input applier
+- JX3UIX64.dll (copy SHA256-verified 859E91C9...): Camera_EnableControl
+  luaL_Reg entry @file 0x4A1F70 -> func 0x1800AC1F0: pure control-state setter
+  (ids 6/7 also call camera vtable +0x110), returns nothing. Camera_BeginDrag
+  0x1800ABFD0 -> represent vtable +0x118, returns 2 numbers. Camera_LockControl
+  0x1800ACEE0 = timed 轻功 lock (skill 9007). MoveControlStart/Stop =
+  Scene_SetMoveControl(true/false).
+- hotkeys.lua proto 61 (wrapper): CLASSICAL -> Camera_EnableControl;
+  JOYSTICK -> Scene_EnableFreeMoveControl. proto 63 (strafe free-view guard):
+  true ONLY in IsPlayerInOBDungeon() -> the classical free-view strafe+turn
+  branch is an OB-dungeon special case, not normal play.
+- JX3RepresentX64.dll 0x1805DF7E0: 8-type input-state applier into controller
+  fields +0x7C..+0x98 via vtable [obj+0xA8] (+0x88/+0x98/+0xA0/+0xA8/+0xB0/
+  +0xB8); no RMB condition at this level. Normal classical WASD is handled by
+  the engine input layer (Lua handlers are overrides).
+- Conclusion: no RMB turn gate exists in scripts or UI bindings; host keeps
+  the reverted (ungated) behavior. Next probe: engine key->input dispatch /
+  character-controller consumer. Host model gap recorded in
+  CLASSIC_CONTROLS_AUDIT.md section 5 (run frame vs camera follow).
+
+
+## IMPLEMENTED (2026-10-01): classical = facing-frame movement + decoded camera follow
+- Host change (client/RebornClient.cs): classical movement frame = character
+  facing (spawn-synced to the initial view); A/D + arrows turn the character
+  only (no camera write); camera follows a moving FORWARD character through
+  CameraSystem.FollowYaw (row CameraAdjustYawWhenMoveTurn, 15 deg dead zone),
+  skipped while the mouse owns the camera (LMB/RMB drag / RMB body-carry).
+  Joystick unchanged (camera-relative frame, historic coupling).
+- Evidence, run reborn_20261001_214418.log (build git=2a1191e dirty=1):
+  strafe mode=classical yaw0=0.00 yaw1=3.13 d=3.13 cam0=-1.31 cam1=-1.31 dpos=(0,0)
+  back   mode=classical yaw0=3.13 yaw1=3.13 d=0.00 cam0=-1.31 cam1=-1.31 dpos=(-1,96) dist=96
+  turn   yaw0=3.13 yaw1=-1.26 d=-4.40 cam0=-1.31 cam1=-1.31 camd=0.00
+  WA mode=classical rmb=0 dpos=(0,-194) dist=194 dyaw=2.51 dcam=4.16
+  WD mode=classical dpos=(3,-194) dist=194 dyaw=-2.51 dcam=-2.54
+- Gates: camera_smoke_control_modes ALL PASS; jx3_model 10x PASS;
+  verify_model exit 0; capture selftest PASS.
+
+## A/D also turn the camera 1:1 (2026-10-01, user request; client's historic coupling)
+- Speed = the character turn rate (local RotationSpeed row, 0.00314 rad/ms =
+  pi rad/s), i.e. the camera yaw delta equals the character yaw delta; while
+  RMB holds the drag the camera is not keyboard-turned (character still turns).
+- Evidence, run reborn_20261001_220719.log (build git=4501215 dirty=1):
+  strafe (A 1 s): yaw0=0.00 yaw1=3.14 d=3.14 cam0=-1.31 cam1=1.83 (cam d=+3.14)
+  turn (0.6 s): yaw 3.14->5.02(wrapped -1.26) cam 1.83->-0.05 (d=+1.88/-1.88)
+  WA: dyaw=2.51 dcam=-2.51; WD: dyaw=-2.52 dcam=+2.52 (1:1 both signs)
+  back: cam kept (1.83), dist=96.
+- Gates: camera_smoke ALL PASS.
+
+## A/D are STRAFE-bound; RMB stick camera switches them to lateral movement (2026-10-01)
+- WHY (client data): default.txt binds A/D to STRAFELEFT/STRAFERIGHT (arrows are
+  TURN); the free-view strafe handler (hotkeys proto 76/78) delegates to
+  TurnStart, so A/D turn + carry the camera 1:1 when the camera is free. RMB
+  enables CONTROL_OBJECT_STICK_CAMERA (Scene proto 31): the heading is
+  mouse-owned, the turn intent cannot act, and the strafe intent moves the
+  character laterally -> W+D = diagonal walk, camera untouched.
+- Evidence, run reborn_20261001_222121.log (build git=9ca59b7 dirty=1):
+  WA mode=classical rmb=1 dpos=(-286,-257) dist=384 dyaw=-0.26 dcam=0.00  (diagonal, no camera turn)
+  WD mode=classical (no rmb) dpos=(68,182) dist=194 dyaw=3.77 dcam=2.51 (turn+camera curve)
+  strafe (A alone) yaw 3.14 / cam 3.14 (1:1); back dpos=(0,96) cam kept.
+- Gates: camera_smoke ALL PASS.
+
+## Forward-right animation fix (2026-10-01): camera-relative input + drag-gated RMB carry
+- Root cause: the recent facing-frame change made W+D fight (RmbTurnsBody held the
+  body to the camera; RunTo pulled to the diagonal), so the gait angle stayed
+  >45 deg and the 挪步 side-step clip played. The engine controls are CAMERA
+  controls; the body faces the TRAVEL direction (RunTo). The RMB camera->face
+  carry fires on MOUSE DELTAS, not on a held button.
+- Fix: movement frame back to the camera in both modes; RMB body-carry gated by
+  a real mouse drag (150 ms window).
+- Evidence, run reborn_20261001_223135.log (build git=27e0350 dirty=1):
+  strafe (A): yaw 3.14 / cam 3.14 (1:1); turn 1.88/1.88; back cam kept dist 96
+  WA rmb=1 dpos=(-49,-380) dist=384 dyaw=-0.79 dcam=0.00
+    (45 deg camera-frame diagonal, body turned 45 deg to the travel -> gait ~0 -> run clip)
+  WD (no rmb) dpos=(-109,164) dist=197 dyaw=4.32 dcam=-3.53 (turn+camera curve)
+- Gates: camera_smoke ALL PASS.
+
+## Animation matches the engine classification (2026-10-01): input-octant gait + LMB camera ownership
+- Decoded: the engine's locomotion states are RunForward/WalkForward/RunBackward/
+  WalkBackward (represent anim state table 0xCD88xx) with a lateral strafe blend
+  (ComputeStrafe, pnStrafeRight), i.e. the clip family follows the INPUT octant
+  (hotkeys ResponseWASDKey -> MOVE_FORWARD/RIGHTFORWARD/RIGHT/...): W = forward
+  family (run/walk), S = backward family (后退01), no W/S = 挪步 L/R.
+- Host: gait now selected from fwdAxis/latAxis (intent), not the facing angle;
+  the facing-lag no longer picks the side-step for forward-right. LMB hold also
+  owns the camera (A/D stop keyboard-turning it), same as RMB.
+- Evidence, run reborn_20261001_224006.log (build git=94662ea dirty=1):
+  t=16s WA rmb=1: spd=320u/s(RUN) dir=(-0.12,-0.99) gait=0 clip=f1b02yd跑动.ani
+  movetest WA rmb=1 dpos=(-47,-380) dist=383 dyaw=-0.79 dcam=0.00
+  strafe A: yaw/cam 3.14/3.14; back dist=96 cam kept; turn 1.88/1.88; WD no-rmb curve.
+- Gates: camera_smoke ALL PASS.
+
+## RMB+A/D = walk-tier side-step (2026-10-01): GetMoveInfo(forward,strafeRight,rotationRight) + pnStrafeRight blend
+- Decoded: KGameWorldCharacterController::GetMoveInfo (0x1805DFE90) returns
+  *fForward=[ctrl+0x50], *fStrafeRight=[ctrl+0x4C], *fRotationRight=[ctrl+0x3C];
+  the anim parameter table has pnForward/pnStrafeRight/pnRotationRight and the
+  locomotion states are RunForward/WalkForward/RunBackward/WalkBackward - the
+  side motion is a strafe BLEND parameter, so pure lateral is the walk-tier
+  挪步 clip, not a strafe-run state.
+- Host: pure lateral (no W/S) moves at walk pace; diagonal (W/S held) keeps
+  run pace + forward-family clip; joystick always run (body faces travel).
+- Evidence, run reborn_20261001_225025.log (build git=78f1e32 dirty=1):
+  strafe rmb=1 yaw0=-0.97 yaw1=-0.97 d=0.00 cam0=-0.60 cam1=-0.60 dpos=(-54,-79) dist=96
+  back dist=96 cam kept; turn yaw 1.88 / cam -1.88; WA rmb=1 dist=384 dcam=0.00
+  periodic: spd=320u/s(RUN) gait=0 clip=跑动.
+- Gates: camera_smoke ALL PASS.
+
+## RE-BASED on the decoded control table (2026-10-02): keyboard never writes the camera
+- Client code: ControlId/Ctrl (ids 0..13 as in Camera_EnableControl's store);
+  intents forward/strafeRight/rotationRight derived per frame (GetMoveInfo
+  analog); A/D free view -> rotation; RMB stick camera -> strafe; drag is the
+  only camera yaw/pitch writer; CameraAdjustYawWhenMoveTurn row follows a
+  moving forward character. The user-directed A/D->camera 1:1 coupling is
+  REMOVED (decode-faithful).
+- Evidence, run reborn_20261002_125645.log (build git=93fc3d7 dirty=1):
+  strafe rmb=1: dpos=(-55,-79) dist=96 camd=0.00
+  back: dist=96 cam kept
+  turn: yaw 1.88 camd=0.00            (keyboard camera writes gone)
+  WA rmb=1: dpos=(-312,-56) dist=317 dcam=0.00
+  WD (no rmb): dpos=(-344,171) dist=385 dcam=0.15 (row follow)
+- Gates: camera_smoke ALL PASS.
+
+## Complete real control scheme (2026-10-02): A/D habit (strafe default) + official bindings
+- Replaced the remaining ad-hoc rules with the official/decoded scheme:
+  A/D habit option (RC_ADHABIT=strafe|turn; default strafe per default.txt),
+  arrows always turn, both mouse buttons = auto-forward, RMB stick camera makes
+  the mouse own the heading (turn-habit A/D act as strafe there), row follow
+  gated on the ROTATION intent (move+turn), movement/animation from the intents.
+- Evidence, strafe habit (run reborn_20261002_131429.log):
+  A-alone: yaw 0 cam 0 dpos=(58,-77) dist=96 (side-step)
+  WA: dpos=(-44,-312) dist=315 dcam=0.00; WD: dpos=(-382,53) dist=385 dcam=0.00
+  (straight diagonals; the previous feedback spiral is gone)
+- Evidence, turn habit (run reborn_20261002_131604.log):
+  A-alone: yaw +3.14 camd=0.00 dpos=(0,0) (turn in place)
+  WA: curve dist=375 dcam=1.00 (row follow while turning)
+- Gates: camera_smoke ALL PASS. Default relaunched (strafe).
+
+## Classic default = TURN habit; moveYaw control frame (2026-10-02)
+- User: "in classic mode A/D SHOULD NOT MOVE". Default habit is now turn:
+  A/D rotate the character (no lateral movement); lateral only under the RMB
+  stick camera. The movement/control frame moveYaw carries the turn rotation
+  so W+A/D curves (previously the camera-frame travel canceled the turn).
+  RC_ADHABIT=strafe opts into the side-step habit.
+- Evidence, run reborn_20261002_133226.log (default = turn):
+  A-alone: yaw +3.13 camd=0.00 dpos=(0,0)   (no movement)
+  back: dist=96 cam kept; arrows turn camd=0.00
+  WA: dpos=(-31,-191) dist=193 dyaw=3.93 (curve); WD: dist=192 dyaw=-4.04
+- Gates: camera_smoke ALL PASS.
+
+## Turn keys rotate the camera (user: "AD should turn camera"), 2026-10-02
+- Turn-habit A/D and the arrow keys now rotate the VIEW like the mouse does
+  (right = yaw decrease, same sign as a rightward drag); the engine camera is
+  fed through the orbit-pixel path so the rotation is real, and the character
+  turns to the camera direction (the same relation as the RMB carry).
+  Strafe-habit A/D still side-step with no camera rotation.
+- Evidence, strafe habit (run reborn_20261002_134703.log):
+  A/D: dpos=(-96,0) dist=96 cam kept; TURNRIGHT 0.6s: yaw -0.33 camd=-1.89;
+  WA/WD: straight 384 dcam=0.00
+- Evidence, turn habit (run reborn_20261002_134431.log):
+  A-alone: yaw d=-3.14 camd=-3.15 dpos=(0,0) (turn in place, camera follows)
+  TURNRIGHT 0.6s: camd=-1.88 (mod 2pi; the old unwrapped log artifact fixed)
+- Gates: camera_smoke ALL PASS.
+
+## Classic A/D default = STRAFE (client truth), 2026-10-02
+- Host default flipped to strafe (default.txt binding; decoded 0/76 classical
+  branch). RC_ADHABIT=turn keeps the turn-in-place habit.
+- Evidence, run reborn_20261002_164018.log (default):
+  A-alone: d=0.00 cam kept dpos=(-96,0) dist=96 (side-step)
+  back: 96; TURNRIGHT: yaw -0.33 camd=-1.89 (arrows turn)
+  WA: dpos=(-346,169) dist=385 dcam=0.00; WD: 384 dcam=0.00
+- Gates: camera_smoke ALL PASS (incl. hotkey context/override checks).
+
+## Joystick baseline evidence (current host), 2026-10-02
+- run reborn_20261002_164838.log (RC_MODE=joystick, default habit):
+  opmode applied: followMode=0 springReset=1.00 cameraReset=1.00
+  A-alone: yaw -1.57 cam kept dpos=(-319,0) dist=319  <-- HOST BUG: joystick
+    A/D must TURN in place (client 0/76 joystick branch = free-view
+    TurnLeftStart), not run laterally.
+  TURNRIGHT: yaw 1.88 camd=-1.88  <-- host rotates the camera with turn keys;
+    client decode says the keyboard never writes the camera (mouse owns it).
+  WA: 383 dyaw=0.14 dcam=0.00; WD: 384 dyaw=1.57 dcam=0.00 (auto-face works)
+- Patch list: joystick A/D turn; turn keys character-only in joystick;
+  StartSprint (double-tap); OperationModeBase vector/atan math; G4 follow
+  mode [0..3]; G5 reset speeds; G8 UseFullAngle; morph contexts.
+
+## Joystick J1+J2 applied (A/D turn, camera untouched), 2026-10-02
+- J1: classical A/D = strafe (default.txt); joystick A/D = turn-in-place
+  (client 0/76 joystick branch). J2: joystick turn keys rotate the CHARACTER
+  only (mouse owns the camera).
+- Evidence run reborn_20261002_165421.log (joystick):
+  A-alone: yaw d=3.14 dpos=(0,0) dist=0 cam kept   (turn in place, no move)
+  TURNRIGHT: yaw -1.88 camd=0.00                   (camera untouched)
+  WA: 383 dyaw=0.00 dcam=0.00; WD: 384 dyaw=-1.31 dcam=0.00 (auto-face; the
+  turn-vs-RunTo interaction is J4 territory)
+- Classical regression reborn_20261002_165606.log: A strafe 96 d=0; arrows
+  turn camd=-1.89; WA/WD 384 dcam=0.00. Smoke ALL PASS.
+
+## Joystick corrected model (A9): turn controls = lateral vector, 2026-10-02
+- Decode: OperationModeBase FreeMoveControl (0/16) adds nX from TURN_LEFT/RIGHT
+  (and thus from A/D via the strafe handler -> TurnLeftStart), nY from
+  FORWARD/BACKWARD; SetPlayerRotation/TurnTo auto-face; camera mouse-only.
+- Correction: J1's "A/D turn in place" was wrong; joystick A/D/arrows are
+  lateral run + auto-face. Implemented: joystick turn controls fold into the
+  strafe axis, rotAxis=0, camera untouched.
+- Evidence reborn_20261002_170201.log (joystick):
+  A-alone: yaw -1.57 cam0=cam1=0.65 dpos=(-318,0) dist=318 (lateral + auto-face)
+  back: dist=319; TURNRIGHT: yaw -1.57 camd=0.00
+  WA: dist=348 dyaw=-2.36 dcam=0.00; WD: dist=383 dyaw=1.57 dcam=0.00
+- Note: the first run of this build (165931) showed an unstable camera drift
+  (camd up to 1.98) that did not reproduce (measure-sync transient); watch it.
+
+## J3 sprint input ported (double-tap 250ms), 2026-10-02
+- Decoded: IsKeyDoubleDown = Hotkey.IsKeyDoubleDown and GetKeyTimeInterval
+  < 250.0 (0/36); StartSprint 0/164 = skill 6754 (non-GAI_BANG) + Sprint(true);
+  CheckEndSprint 0/165 -> EndSprint 0/166 = SetSprintTopPoint + Sprint(false).
+- Host: fresh-press double-tap detection on the six movement commands (250ms),
+  StartSprint/EndSprint logged, sprint= telemetry; engine Sprint state + skill
+  cast not modeled (open, no invented speed).
+- Evidence reborn_20261002_170648.log (RC_SPRINT_TEST=1):
+  12.150s down (150ms after the first press) -> "sprint: StartSprint"
+  12.650s release -> "sprint: EndSprint"; smoke ALL PASS.
+
+## Joystick remaining items: property-system boundary, 2026-10-02
+- Follow-mode setter (game client 0x180ACE3F0) confirmed: clamp(value,0,3)
+  written to camera-node +0x80 (classic) or +0x98 (joystick, [node+0x34]==0).
+- No direct [node+0x80/0x98] reads found in the camera region
+  (0x180AC8000-0x180AE8000): consumer goes through the property system
+  (same boundary as P3).
+- 'FullAngle' has zero plaintext strings in Represent/exe: UseFullAngle is
+  hash-registered (G11); consumer open.
+- Status table: docs/controls/OPERATION_MODES_PLAN.md 7h.
+
+## J5 SOLVED: CAMERA_MODE pipe + host follow gating, 2026-10-02
+- Enum (enum_ui.lua pc2977-2987): NEVER_FOLLOW=0, AUTO_FOLLOW=1, ALWAYS_FOLLOW=2.
+- Pipe: SetCameraMode (UISetting_Comprehensive 0/53) -> UI_Camera_SetParams_S
+  (native) -> Camera_SetFollowMode wrapper (gc 0x1802EB1C0, L179) -> thunk
+  0x18000D909 -> node setter 0x180ACE3F0 (clamp 0..3; +0x80/+0x98).
+- Host: follow gated by mode; joystick follows the travel direction (decoded
+  RotatePlayer per-frame Camera_SetResetSpeed behavior), classical the control
+  frame; RC_FOLLOW_MODE=0|1|2 override.
+- Evidence: 173504 (joystick ALWAYS: A dcam=1.06, TURNRIGHT camd=1.57, WD
+  dcam=-1.05); 173637 (classical default 0: fingerprints unchanged). Smoke PASS.
+
+## Mode HUD + default joystick + "/" switch + joystick instant turn, 2026-10-02
+- Top-left always-visible label "CONTROL: JOYSTICK|CLASSICAL  [/] switch".
+- Default operation mode = JOYSTICK (RC_MODE / RC_USER_PREFS override).
+- "/" and F7 both switch the control mode (the old "/" run-toggle convenience
+  removed; Num/ remains the run toggle).
+- Joystick facing is INSTANT: the Lua SetPlayerRotation -> KCharacter::TurnTo
+  (exe 0x14031E7C0) writes the target heading [char+0x44] directly (clamped),
+  no RunTo rate/hard-turn penalty. The display blends the visual turn via
+  tabCGAni KeepTurningFrame/TurningEpsilon (no ground turn clip - F1 negative).
+- Evidence run reborn_20261002_180750.log (joystick): A-alone yaw -1.57 instant
+  dist=320 cam kept; back yaw 3.14; WA 383 dyaw=-2.36; WD 383 dyaw=1.57
+  (full distance, no penalty); classical regression 180923 unchanged.
+
+## Merge verification: main 765c357 into agent/move-controls, 2026-10-03
+- Merge commit b872d79: 11 RebornClient.cs hunks resolved (branch control
+  semantics ported into main's 15 Hz integer tick model) + EXPERIENCES.md union;
+  build exit=0; camera_smoke ALL PASS; jx3_model/gravity/loot gates PASS.
+- Post-merge fixes: removed main's per-tick `if (moving) curYaw = atan2(mvx,mvz)`
+  snap (facing is joystick-instant / classical RunTo per tick), turn-key block
+  dt -> pdt, mode label moved from the old WinForms Label into HudOverlay
+  (SetModeText; hint 22 + gap 6 + mode text, brush 255,220,120).
+- RC_HUD_DUMP=<png path>: new HUD diagnostic (HudOverlay.cs) - layered windows
+  cannot be captured with PrintWindow (flag 2) or CopyFromScreen under DPI
+  virtualization, so the switch saves the rendered overlay buffer directly.
+- Runs (final build git=b872d79 dirty=3):
+  - reborn_20261003_203918.log classical RC_DEMO_MOVE: strafe dist=90 yaw/cam
+    unchanged; turn d=-0.33 camd=-1.88 (A13); WA/WD 362; summary yaw=0.45.
+  - reborn_20261003_204046.log joystick: strafe/back instant yaw -1.57 dist=304;
+    turn camd=0; WA/WD 367.
+  - reborn_20261003_205138.log joystick final: strafe -1.57 dist=300; back
+    +4.71; turn -1.57 camd=0; WA/WD 356; summary yaw=0.79.
+- HUD label fingerprints (proof/controls/hud_mode_label_joystick_20261003.png,
+  hud_mode_label_classical_20261003.png): rendered buffers 318x33 / 327x33 with
+  651 / 675 mode-brush pixels at x=38..306 / x=38..315 ("CONTROL: ...").
+
+## Fix: A/D strafe clip flicker at 15 Hz (merge regression), 2026-10-03
+- Symptom (user): pressing A/D plays the wrong animation - the clip alternated
+  run<->strafe (and idle) every ~65 ms while pure-lateral input was held.
+- Cause: the merge resolution placed the gait octant computation INSIDE the
+  15 Hz tick loop while `int gait = 0` stayed per render frame; frames without
+  a logic tick (most frames) reset gait to 0 -> run clip. The pre-merge branch
+  computed gait once per frame (no tick loop), so this was merge-introduced.
+- Fix: compute gait per render frame next to `moving` (client/RebornClient.cs),
+  remove the in-tick-loop assignment.
+- Numeric fingerprint (clip transitions in the 1.2 s pure-strafe window,
+  RC_DEMO_MOVE classical): merged-buggy reborn_20261003_203918.log = 32;
+  merged-fixed reborn_20261003_210457.log = 3 (enter/exit + one boundary
+  blip); W+A window stable in both (2) - flicker only affected pure A/D.
+- Verified: build exit=0, camera_smoke ALL PASS; classical demo fingerprints
+  unchanged (strafe/back/turn dists); WA/WD 329/339 (same method as 203918).
+
+## Fix: joystick mouse = drag-only camera, cursor stays visible, 2026-10-03
+- User report: joystick mode hides the mouse cursor (no hover); game behavior
+  is a normal visible cursor, camera turns only while LMB/RMB held.
+- Decode (game client JX3RepresentX64.dll, hash in PROVENANCE.txt):
+  - Scene_LockMouseRotation (Lua proto 0/61) -> rlcmd 'lock input control mouse
+    object rotation 0/1' -> handler 0x180b00950 parses the int and sets/clears
+    bit 0x10 in the flags (+0x20) of the type-8 input-control entry (list at
+    g_managers[0]+0x20, accessor 0x180b35bd0). No camera rotation and no cursor
+    visibility effect.
+  - Cursor hide/show is a separate script API (0x1802f7aa0 sets [KRL+0x25bb8];
+    ShowCursor(TRUE) restore in the window-message handler 0x1803ddd60).
+  - Scene.lua starts Camera_BeginDrag on LMB/RMB down in both modes; there is
+    no always-rotate mouse path.
+- Host fix: removed MouseRotatesWithoutButtons/KeepsCursorLocked; onMouseMove
+  requires a held button + drag; mouse-up and mode switch always release the
+  cursor lock. Build exit=0; camera_smoke ALL PASS (gating checks updated);
+  joystick demo reborn_20261003_214620.log fingerprints unchanged (strafe
+  -1.57 dist=300, back +4.71, turn -1.57 camd=0, summary yaw=0.79).
+
+## UI: single Esc information panel (info + mode + COPY LOG), 2026-10-03
+- Request: merge the three on-screen panels (I info box, joystick mode label,
+  COPY LOG button) into one information panel opened with Esc; no panel hints
+  are shown while it is closed.
+- HudOverlay.cs rewritten: hidden by default, Esc toggles it; content = mode
+  line (yellow) + run info text + clickable COPY LOG row (clipboard). The
+  overlay is no longer click-through, but it only exists while open, so it
+  never blocks input when closed. CopyLogOverlay class removed; the copy
+  action is wired through hud.OnCopyLog. I remains an alias toggle; Esc also
+  keeps the decoded unlock + target clear.
+- Test switches: RC_HUD_OPEN=1 starts with the panel open (no input driving
+  allowed in tests); RC_HUD_DUMP saves the rendered buffer.
+- Fingerprint (proof/controls/hud_info_panel_open_20261003.png): 633x222 RGBA
+  buffer with 621 mode-brush (yellow) px, 1817 white (info) px, 335 light-blue
+  (COPY LOG text) px, 3380 copy-box px. Closed run writes no dump (nothing is
+  rendered or shown). Build exit=0; camera_smoke ALL PASS.
+
+## Esc toggles the panel open/closed, 2026-10-03
+- Added a key-repeat guard (`escDown`, one toggle per press, cleared on KeyUp)
+  so a held/duplicated Esc cannot open+close in one press.
+- Verified without global input injection (direct window messages to our own
+  client): WM_KEYDOWN/WM_KEYUP VK_ESCAPE posted to the form ->
+  - before: no HUD window visible;
+  - Esc #1: HudOverlay window 18940254 visible, 633x222, RC_HUD_DUMP written;
+  - Esc #2: same window visible=False (panel closed).
+  Build exit=0; camera_smoke ALL PASS.
+
+## Esc reliability fix + COPY POS button, 2026-10-03
+- User report: "not every Esc will close" - the form's KeyPreview only sees
+  keys routed through WinForms controls; when the engine's native child window
+  has focus (it does after clicking the viewport), Esc goes there and the
+  toggle silently does not fire.
+- Fix: `EscKeyFilter` (IMessageFilter, `Application.AddMessageFilter`) sees
+  WM_KEYDOWN for every window in the process, consumes Esc, and ignores
+  auto-repeat via lParam bit 30 (one toggle per physical press). The form
+  KeyDown/KeyUp escDown guard was removed.
+- Added a COPY POS button next to COPY LOG in the info panel; it copies the
+  live position line ("pos X,Y,Z").
+- Verified (window messages only, no global input injection):
+  - Esc posted to the ENGINE CHILD window (class WindowsForms10.Window...,
+    1280x720) -> panel 633x222 visible;
+  - repeat Esc with lParam bit 30 -> panel still visible (no double toggle);
+  - WM_LBUTTONDOWN/UP at the COPY POS rect (226,201) -> log
+    "copied pos to clipboard: pos 18991,962,33853";
+  - second normal Esc -> panel visible=False (closed).
+  Build exit=0; camera_smoke ALL PASS.

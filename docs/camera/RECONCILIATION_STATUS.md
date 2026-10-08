@@ -21,7 +21,7 @@ Disposition of the other agent's "Camera notes vs client" report. Branch
 | B move-reactive camera (`CameraMovePitch*`, `CameraAdjustYawWhenMoveTurn`) | mechanism done, opt-in | `CameraSystem.AdjustPitch` + `FollowYaw`, fed to the engine; `RC_MOVE_PITCH=1` because the current build's real table is 0.0 (`6e1d1b2`) |
 | B remaining settings (reset speeds, `nCameraMode`, smoothing/curve/eye-follow) | read + joystick mode applied | `CameraSettings.cs`; reset-speed/curve/eye-follow semantics remain read-only (`11b2168`) |
 | B verification (S1/S2/S5 smoke, per-run logs, camdbg fields) | partial, stated honestly | only the **S5 clamp helper** is smoke-covered; S1/S2 (EyeScale/re-pin) are client-side and have no unit test; per-run logs + `camdbg eff=/clamp=` exist (`11b2168`) |
-| B pitch limit + sprint trigger | done | orbit pitch clamp is the engine's pi/2 - 0.0157 (was -0.05); sprint camera mode follows `wSprint` (double-tap W), not the Shift test-speed modifier |
+| B pitch limit + sprint trigger | done, trigger removed | orbit pitch clamp is the engine's pi/2 - 0.0157 (was -0.05); the sprint camera mode followed `wSprint` (double-tap W) — the WW trigger was **removed 2026-09-30** (sprint row reachable via `RC_CAM_MODE` only); placement smoothing now uses the shared CharacterCameraSmoothTime in every mode (camera-wwdrag fix) |
 
 ## Still open (data-gated or native-interface work)
 

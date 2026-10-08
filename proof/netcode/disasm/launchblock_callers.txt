@@ -1,0 +1,34 @@
+# JX3ClientX64.exe xrefs to 0x140101dc0
+
+## ref @ 0x140104bad -> 0x140101dc0
+  0x140104b71: mov      dword ptr [rsp + 0x10], ebx
+  0x140104b75: mov      qword ptr [rsp + 0x18], rbp
+  0x140104b7a: mov      qword ptr [rsp + 0x20], rsi
+  0x140104b7f: push     rdi
+  0x140104b80: push     r12
+  0x140104b82: push     r13
+  0x140104b84: push     r14
+  0x140104b86: push     r15
+  0x140104b88: sub      rsp, 0xa0
+  0x140104b8f: mov      rax, qword ptr [rip + 0x92f862]
+  0x140104b96: xor      rax, rsp
+  0x140104b99: mov      qword ptr [rsp + 0x90], rax
+  0x140104ba1: mov      r13, rcx
+  0x140104ba4: xor      esi, esi
+  0x140104ba6: mov      rdx, qword ptr [rcx + 0x100]
+  0x140104bad: call     0x140101dc0
+  0x140104bb2: test     eax, eax
+  0x140104bb4: je       0x140104f18
+  0x140104bba: mov      rbp, qword ptr [r13 + 0x100]
+  0x140104bc1: test     rbp, rbp
+  0x140104bc4: je       0x140104f18
+  0x140104bca: mov      eax, dword ptr [rbp + 8]
+  0x140104bcd: mov      dword ptr [r13 + 0x108], eax
+  0x140104bd4: mov      eax, dword ptr [rbp + 0xc]
+  0x140104bd7: cmp      eax, 0x14
+  0x140104bda: jle      0x140104be4
+  0x140104bdc: mov      eax, 0x14
+  0x140104be1: mov      dword ptr [rbp + 0xc], eax
+  0x140104be4: test     eax, eax
+  0x140104be6: jns      0x140104bed
+  0x140104be8: .byte    0x89

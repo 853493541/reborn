@@ -33,12 +33,26 @@ MAGIC = 0x4C4F4346  # 'FCOL'
 
 
 def _read_list(path):
+    # The engine's list files are GB18030 (the carpet entry
+    # "wj_dcy地毯001_001_hd" is invalid UTF-8); decoding them as UTF-8 used to
+    # mojibake every Chinese stem, silently skipping the black-list filter for
+    # most models (carpets/props kept colliding).
+    raw = Path(path).read_bytes()
+    text = None
+    for enc in ('utf-8-sig', 'gb18030'):
+        try:
+            text = raw.decode(enc)
+            break
+        except UnicodeDecodeError:
+            continue
+    if text is None:
+        text = raw.decode('utf-8', errors='replace')
     out = set()
-    for line in Path(path).read_text(encoding='utf-8', errors='replace').splitlines():
+    for line in text.splitlines():
         s = line.strip().lower()
         if not s or s.startswith('#') or s.startswith('--'):
             continue
-        if '文件' in s or '文件夹' in s:   # list headers
+        if '文件' in s:   # list headers
             continue
         out.add(s)
     return out
@@ -97,8 +111,14 @@ def load_objects(region_dir, physic=None):
             if not model or not m or len(m) != 16:
                 continue
             ext = Path(model).suffix.lower()
+            cand = []
             if ext == '.mesh':
                 coll = model
+                # engine file-selection chain: a proxymesh / CollisionMesh
+                # sibling overrides the render mesh as the obstacle geometry
+                base = model[:-len('.mesh')]
+                cand = [base + '_proxymesh.mesh', base + '.proxymesh',
+                        base + '.CollisionMesh', base + '.collisionmesh']
             elif ext == '.srt':
                 # SpeedTree: the physics engine builds "<base>.CollisionMesh"
                 # from the .srt name (PhysicsEngine::_GetCollisionGeometryFilesFromFile)
@@ -120,6 +140,7 @@ def load_objects(region_dir, physic=None):
                 'm': [float(v) for v in m],
                 'bmin': b.get('actorBoundBoxMin'),
                 'bmax': b.get('actorBoundBoxMax'),
+                'cand': cand,
             })
     return objs, rejected
 
@@ -173,6 +194,13 @@ def trunk_prism_from_mesh(mesh_obj, world_thresh=250.0, scale=1.0):
 
     The tree meshes are in local units; the player is ~170 world units tall, so
     the collider only needs the trunk up to ~250 world units above the base.
+
+    REGISTERED HOST DEVIATION (comparison doc §8.1): for trees whose shipped
+    `.CollisionMesh` is degenerate (62 of 68 in 龙门寻宝) this prism is measured
+    from the VISUAL mesh - it is not game collision data. Kept because deleting
+    it makes those trees walk-through (a gameplay hole). Recovery path: decode
+    the SpeedTree `.srt` collision geometry, or use the engine's own obstacle
+    production (KG3D_LoaderNoRenderX64), then drop this helper.
     """
     v = mesh_obj.positions
     if v.size == 0:
@@ -251,6 +279,9 @@ def main():
     for o in objs:
         p = norm_pak_path(o['model'])
         models[p] = models.get(p, 0) + 1
+        for c in o.get('cand', []):
+            cp = norm_pak_path(c)
+            models[cp] = models.get(cp, 0) + 1
         if o.get('srt'):
             vis = p[:-len('.CollisionMesh')] + '.mesh'
             visual_of[p] = vis
@@ -295,6 +326,7 @@ def main():
     import numpy as np
     extra = {}      # synthetic mesh key -> (verts, tris)
     placed = []     # (object, mesh key) pairs to write
+    flag_of = {}    # geometry key -> render model path (camera-flag lookup)
     degenerate = 0
     measured = 0
     for o in objs:
@@ -303,6 +335,14 @@ def main():
         if m is None:
             continue
         if not o.get('srt'):
+            orig = p
+            for c in o.get('cand', []):
+                cp = norm_pak_path(c)
+                if cp in meshes:
+                    p = cp          # authored obstacle geometry wins
+                    o['model'] = c
+                    break
+            flag_of[p] = norm_pak_path(orig)
             placed.append((o, p))
             continue
         v = m.positions
@@ -363,6 +403,15 @@ def main():
     dest.write_bytes(out)
     print('wrote %s (%d bytes, %d meshes, %d instances)' % (dest, len(out), len(mesh_index), written))
 
+    # Mesh-index -> source model path sidecar (runtime diagnostics: names the
+    # exact model that blocks the player, so selection rules can be checked
+    # against the live game instead of guessing).
+    names = '\n'.join('%d\t%s' % (mesh_index[p], p) for p in sorted(mesh_index)) + '\n'
+    Path(str(dest) + '.meshes.txt').write_text(names, encoding='utf-8')
+    if args.copy_to:
+        Path(str(Path(args.copy_to) / dest.name) + '.meshes.txt').write_text(names, encoding='utf-8')
+    print('wrote %s.meshes.txt (%d entries)' % (dest.name, len(mesh_index)))
+
     # Per-mesh camera flag sidecar (game: KG3DMesh [Display] bObscatleCamera,
     # default 1). The runtime gates camera obstruction rays on it.
     cflags = bytearray()
@@ -374,7 +423,8 @@ def main():
                 base = visual_of.get(key.split('#', 1)[0], '')
                 f = int(fmap.get(base.replace('/', '\\').lower(), 1))
             else:
-                f = int(fmap.get(key.replace('/', '\\').lower(), 1))
+                fk = flag_of.get(key, key)
+                f = int(fmap.get(fk.replace('/', '\\').lower(), 1))
             if f == 0:
                 zeros += 1
             cflags.append(f)

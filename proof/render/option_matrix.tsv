@@ -1,0 +1,491 @@
+key	group	section	tier_distinct	default	tier1	tier2	tier3	tier4	tier5	tier6	tier7	tier8	tier9	bd:config_bd_1_zuijian	bd:config_bd_2_jianyue	bd:config_bd_3_junheng	bd:config_bd_6_dianying	bd:config_bd_7_jizhi	bd:config_bd_7_tansuo	editor
+3DEngineDebugInfo	other	Debug	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+828SceneSetting	other	UIVideoSetting	0											1	1	1	1	1	1	
+AAOPTION_DLSSOption	other	KG3DENGINE	1		0	0	0	0	0	0	0		0	0	0	0	0	0	0	0
+AAOPTION_DLSSParam	other	KG3DENGINE	1		0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000		0.500000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+AAOPTION_EnableSMAA	other	KG3DENGINE	2		0	0	1	1	1	1	1		1	0	0	1	1	1	1	1
+AAOPTION_EnableTXAA	other	KG3DENGINE	1		0	0	0	0	0	0	0		0	0	0	0	0	0	0	0
+Accept	other	EULA	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+Account	other	Login	0																	
+ActiveColorCurve	other	KG3DENGINE	1	7								7		7	7	7	7	7	7	7
+AmibentShaderOnly	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+AniEnableInterpolate	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+AniInterpolateFPS	other	KG3DENGINE	1	25								25		25	25	25	25	25	25	25
+AniLimitMemSize	other	KG3DENGINE	1	30								30		30	30	30	30	30	30	30
+AniMemExpireTime	other	KG3DENGINE	1	5								5		5	5	5	5	5	5	5
+BDInvalidSceneSetting	other	UIVideoSetting	0											1	1	1	1	1	1	
+BackBorderColor	other	Caption	1	-1	-1	-1	-1	-1	-1	-1	-1	-1	-1	-1	-1	-1	-1	-1	-1	-1
+BackBorderColorScale	other	Caption	1	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000
+BackTexture	other	Caption	1	data\public\hitpointspanback.tga	data\public\hitpointspanback.tga	data\public\hitpointspanback.tga	data\public\hitpointspanback.tga	data\public\hitpointspanback.tga	data\public\hitpointspanback.tga	data\public\hitpointspanback.tga	data\public\hitpointspanback.tga	data\public\hitpointspanback.tga	data\public\hitpointspanback.tga	data\public\hitpointspanback.tga	data\public\hitpointspanback.tga	data\public\hitpointspanback.tga	data\public\hitpointspanback.tga	data\public\hitpointspanback.tga	data\public\hitpointspanback.tga	data\public\hitpointspanback.tga
+BasePath	other	WwiseSetting	1										data/wwiseaudio/GeneratedSoundBanks/Windows	data/Wwiseaudio/GeneratedSoundBanks/Windows	data/Wwiseaudio/GeneratedSoundBanks/Windows	data/Wwiseaudio/GeneratedSoundBanks/Windows	data/Wwiseaudio/GeneratedSoundBanks/Windows	data/Wwiseaudio/GeneratedSoundBanks/Windows	data/Wwiseaudio/GeneratedSoundBanks/Windows	data/wwiseaudio/GeneratedSoundBanks/Windows
+BgLoop	other	SoundSetting	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+BgMUsic	other	SoundSetting	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+BgMusic	other	SoundSetting	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+BgVolume	other	SoundSetting	1	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000
+BloomCriticalAngel_max	other	ENGINEOPTION	1	10.000000								10.000000		10.000000	10.000000	10.000000	10.000000	10.000000	10.000000	10.000000
+BloomCriticalAngel_min	other	ENGINEOPTION	1	-10.000000								-10.000000		-10.000000	-10.000000	-10.000000	-10.000000	-10.000000	-10.000000	-10.000000
+BloomDelay	other	ENGINEOPTION	1	700.000000								700.000000		700.000000	700.000000	700.000000	700.000000	700.000000	700.000000	700.000000
+BloomEnable	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+BloomGate	other	ENGINEOPTION	1	0.300000								0.300000		0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000
+BloomMaxExposure	other	ENGINEOPTION	1	0.200000								0.200000		0.200000	0.200000	0.200000	0.200000	0.200000	0.200000	0.200000
+BloomMinExposure	other	ENGINEOPTION	1	0.100000								0.100000		0.100000	0.100000	0.100000	0.100000	0.100000	0.100000	0.100000
+BloomRate	other	ENGINEOPTION	1	0.000000								0.000000		0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+CacheMode	other	CacheSettings	0											3	3	3	3	3	3	
+CameraShake	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+CammeraAngle	other	KG3DENGINE	1	0.837757								0.837757		0.837757	0.837757	0.837757	0.837757	0.837757	0.837757	0.837757
+CammeraDistance	other	KG3DENGINE	1	80000.000000								80000.000000		80000.000000	80000.000000	80000.000000	80000.000000	80000.000000	80000.000000	80000.000000
+CampUniform	other	UIVideoSetting	1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
+CanvasHeight	other	Main	2	1017	1080	1080	1080	1080	1080	1080	1080	1080	1377	1080	1080	1080	1080	1080	1080	1058
+CanvasWidth	other	Main	2	1920	1920	1920	1920	1920	1920	1920	1920	1920	2560	1920	1920	1920	1920	1920	1920	1920
+CaptionHeight	other	Caption	1	20.000000	20.000000	20.000000	20.000000	20.000000	20.000000	20.000000	20.000000	20.000000	20.000000	20.000000	20.000000	20.000000	20.000000	20.000000	20.000000	20.000000
+ChSound	other	SoundSetting	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+ChVolume	other	SoundSetting	1	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000
+ClientSFXLimit	limits	KG3DENGINE	5	1000	20	30	60	1000	100	1000	1000	1000	1000	1000	1000	1000	1000	1000	1000	1000
+ColorDepth	other	KG3DENGINE	1	32	32	32	32	32	32	32	32	32	32	32	32	32	32	32	32	32
+Combi	other	UIVideoSetting	1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
+Console	other	Debug	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+CpuProcessModelThreadLock	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+CpuSkin	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+CurveCMYKEnable	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+DefaultFont	other	Caption	1	黑体	黑体	黑体	黑体	黑体	黑体	黑体	黑体	黑体	黑体	黑体	黑体	黑体	黑体	黑体	黑体	榛戜綋
+DefautColorCast0	other	KG3DENGINE	1	0.000000,0.000000,0.000000,0.000000								0.000000,0.000000,0.000000,0.000000		0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000
+DefautColorCast1	other	KG3DENGINE	1	0.000000,0.000000,0.000000,0.000000								0.000000,0.000000,0.000000,0.000000		0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000
+DefautColorCast2	other	KG3DENGINE	1	0.000000,0.000000,0.000000,0.000000								0.000000,0.000000,0.000000,0.000000		0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000
+DefautColorCast3	other	KG3DENGINE	1	0.000000,0.000000,0.000000,0.000000								0.000000,0.000000,0.000000,0.000000		0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000
+DefautColorCast4	other	KG3DENGINE	1	0.000000,0.000000,0.000000,0.000000								0.000000,0.000000,0.000000,0.000000		0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000
+DefautColorCast5	other	KG3DENGINE	1	0.000000,0.000000,0.000000,0.000000								0.000000,0.000000,0.000000,0.000000		0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000
+DefautColorCast6	other	KG3DENGINE	1	0.000000,0.000000,0.000000,0.000000								0.000000,0.000000,0.000000,0.000000		0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000
+DefautColorCast7	other	KG3DENGINE	1	0.000000,0.000000,0.000000,0.000000								0.000000,0.000000,0.000000,0.000000		0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000	0.000000,0.000000,0.000000,0.000000
+DetailEnable	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+DisableDriverMgr	other	ENGINEOPTION	1	1								1		1	1	1	1	1	1	1
+DungeonSceneSetting	other	UIVideoSetting	0											1	1	1	1	1	1	
+Enable	other	UIEditor	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+EnableAllUseDefaultMaterial	other	KG3DENGINE	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+EnableAniShadow	other	UIVideoSetting	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+EnableAntiPortal	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+EnableBladesSmoot	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+EnableDX11_1Version	other	ENGINEOPTION	1	0	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1
+EnableDebugBBox	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+EnableDebugBreakCheck	other	Debug	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+EnableDefaultDynamicWeather	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+EnableDynamicConverMap	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+EnableDynamicUnload	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+EnableFSR	other	KG3DENGINE	0											0	0	0	0	0	0	
+EnableFSR2	other	KG3DENGINE	0											0	0	0	0	0	0	
+EnableFSR3Interpolation	other	KG3DENGINE	0											0	0	0	0	0	0	
+EnableFaceDeform	other	ENGINEOPTION	1	1								1		1	1	1	1	1	1	1
+EnableFur	other	KG3DENGINE	2	1	0	0	0	1	0	0	1	1	1	0	0	0	0	1	1	1
+EnableGroundNormalMap	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+EnableMDLUseDefaultMaterial	other	KG3DENGINE	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+EnableModelCullMax	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+EnableNIS	other	KG3DENGINE	0											0	0	0	0	0	0	
+EnableNV_AfterMathPlugin	other	ENGINEOPTION	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
+EnableNormalMap	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+EnableOITRuntimeOptimise	other	KG3DENGINE	2	1	0	0	0	0	0	0	0	1		1	1	1	1	1	1	1
+EnablePhysics	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+EnablePointLight	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+EnableProfile	other	Debug	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+EnableRecord	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+EnableReloadFont	other	Main	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+EnableResourceAnalize	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	0
+EnableScaleOutput	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	0
+EnableScreenWeather	other	UIVideoSetting	2	1	0	0	0	1	1	1	1	1	0	0	0	0	1	1	1	1
+EnableSpeedTreeNormalMap	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+EnableTerrainMedium	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+EnableTextureLOD	other	ENGINEOPTION	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+EnableTimeOptimizeLog	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+EnableTressFX	other	KG3DENGINE	0											0	0	0	1	1	1	
+EnableTressFXMainPlayerOnly	other	KG3DENGINE	0											0	0	0	1	1	1	
+EnableWaterDrop	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+EnableWeather	other	UIVideoSetting	2	1	0	0	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+EnableWwise	other	WwiseSetting	0											1	1	1	1	1	1	
+Encoder	other	MovieRecord	1	mpeg2	mpeg2	mpeg2	mpeg2	mpeg2	mpeg2	mpeg2	mpeg2	mpeg2	mpeg2	mpeg2	mpeg2	mpeg2	mpeg2	mpeg2	mpeg2	mpeg2
+EnvironmentSetting	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+ErrorSound	other	SoundSetting	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+ErrorVolume	other	SoundSetting	1	0.700000	0.700000	0.700000	0.700000	0.700000	0.700000	0.700000	0.700000	0.700000	0.700000	0.700000	0.700000	0.700000	0.700000	0.700000	0.700000	0.700000
+ExclusiveMode	other	Main	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+FSR2Option	other	KG3DENGINE	0											0	0	0	0	0	0	
+FSR2Sharpnees	other	KG3DENGINE	0											0.200000	0.200000	0.200000	0.200000	0.200000	0.200000	
+FSR3Sharpness	other	KG3DENGINE	0											0.200000	0.200000	0.200000	0.200000	0.200000	0.200000	
+FSR3UpscaleOption	other	KG3DENGINE	0											0	0	0	0	0	0	
+FXAALevel	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+Fabric	other	UIVideoSetting	2		1	1	1	1	1	1	1	0	1	0	0	0	0	1	1	
+Filter	other	MovieRecord	1	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3	3
+FlexBodySmooth	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+FontBold	other	Caption	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+FontFile	other	Caption	1	ui/font/fzht_GBK.ttf	ui/font/fzht_GBK.ttf	ui/font/fzht_GBK.ttf	ui/font/fzht_GBK.ttf	ui/font/fzht_GBK.ttf	ui/font/fzht_GBK.ttf	ui/font/fzht_GBK.ttf	ui/font/fzht_GBK.ttf	ui/font/fzht_GBK.ttf	ui/font/fzht_GBK.ttf	ui/font/fzht_GBK.ttf	ui/font/fzht_GBK.ttf	ui/font/fzht_GBK.ttf	ui/font/fzht_GBK.ttf	ui/font/fzht_GBK.ttf	ui/font/fzht_GBK.ttf	ui/font/鏂规榛戜綋_GBK.ttf
+FontItalic	other	Caption	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+FontSize	other	Caption	1	28	28	28	28	28	28	28	28	28	28	28	28	28	28	28	28	28
+ForceSamplerMaxAnisotropic	other	ENGINEOPTION	1	-1	-1	-1	-1	-1	-1	-1	-1	-1	-1	-1	-1	-1	-1	-1	-1	-1
+ForceSamplerType	other	ENGINEOPTION	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+ForceShaderModel	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+Fps	other	MovieRecord	1	25	25	25	25	25	25	25	25	25	25	25	25	25	25	25	25	25
+FrontTexture	other	Caption	1	data\public\hitpointspan.tga	data\public\hitpointspan.tga	data\public\hitpointspan.tga	data\public\hitpointspan.tga	data\public\hitpointspan.tga	data\public\hitpointspan.tga	data\public\hitpointspan.tga	data\public\hitpointspan.tga	data\public\hitpointspan.tga	data\public\hitpointspan.tga	data\public\hitpointspan.tga	data\public\hitpointspan.tga	data\public\hitpointspan.tga	data\public\hitpointspan.tga	data\public\hitpointspan.tga	data\public\hitpointspan.tga	data\public\hitpointspan.tga
+FullScreen	other	Main	2	0	1	1	1	1	1	1	1	0	0	1	1	1	1	1	1	0
+GrassActorAffect	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+GrassAlphaBlend	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+GrassAnimation	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+HDRepresent	other	UIVideoSetting	2		0	0	0	0	1	1	1	1	1							1
+HSIEnable	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+HueBias	other	ENGINEOPTION	1	-0.000000								-0.000000		-0.000000	-0.000000	-0.000000	-0.000000	-0.000000	-0.000000	-0.000000
+HueScale	other	ENGINEOPTION	1	1.000000								1.000000		1.000000	1.000000	1.000000	1.000000	1.000000	1.000000	1.000000
+ImportOldScene	other	ENGINEOPTION	1	1								1		1	1	1	1	1	1	1
+IntensityBias	other	ENGINEOPTION	1	-0.000000								-0.000000		-0.000000	-0.000000	-0.000000	-0.000000	-0.000000	-0.000000	-0.000000
+IsProfile	other	WwiseSetting	1										0							0
+Language	other	WwiseSetting	1										English(US)	English(US)	English(US)	English(US)	English(US)	English(US)	English(US)	English(US)
+Level	other	Log	2	255	255	255	255	255	255	255	72	255	255							255
+LoadBinMesh	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	0
+LoadOptiVerAni	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	0
+LogTracing	other	ENGINEOPTION	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+MDLRenderLimit	limits	ENGINEOPTION	5	1000	20	30	50	100	50	80	100	100	100	5	10	40	80	100	100	100
+MDLRenderNpcLimit	limits	ENGINEOPTION	5		20	30	50	100	50	80	100	100	100	20	50	50	80	100	100	100
+MUICacheMode	other	CacheSettings	0											3	3	3	3	3	3	
+MaxAnisotropy	other	KG3DENGINE	1	16								16		16	16	16	16	16	16	16
+MaxCharactorPerLine	other	Caption	1	10	10	10	10	10	10	10	10	10	10	10	10	10	10	10	10	10
+MaxFPS	other	ENGINEOPTION	1		67	67	67	67	67	67	67	67	67	67	67	67	67	67	67	
+MaxWorkSet	other	ENGINEOPTION	1	1400								1400		1400	1400	1400	1400	1400	1400	1400
+Maximize	other	Main	2	1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	1
+MeshScale	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+MinSoundRange	other	KG3DENGINE	1	10.000000								10.000000		10.000000	10.000000	10.000000	10.000000	10.000000	10.000000	10.000000
+MinWorkSet	other	ENGINEOPTION	1	600								600		600	600	600	600	600	600	600
+ModelEditorLODDistance	other	MODLEEDITOR	1	300.000000	300.000000	300.000000	300.000000	300.000000	300.000000	300.000000	300.000000	300.000000	300.000000	300.000000	300.000000	300.000000	300.000000	300.000000	300.000000	300.000000
+ModelLODSwitchGates	other	KG3DENGINE	1	100000000.000000,400000000.000000								100000000.000000,400000000.000000		100000000.000000,400000000.000000	100000000.000000,400000000.000000	100000000.000000,400000000.000000	100000000.000000,400000000.000000	100000000.000000,400000000.000000	100000000.000000,400000000.000000	100000000.000000,400000000.000000
+ModelShadowParams	other	KG3DENGINE	1	0.800000,1.000000,1.000000,32.000000,1000.000000,2500.000000,20000.000000,0.450000								0.800000,1.000000,1.000000,32.000000,1000.000000,2500.000000,20000.000000,0.450000		0.800000,1.000000,1.000000,32.000000,1000.000000,2500.000000,20000.000000,0.450000	0.800000,1.000000,1.000000,32.000000,1000.000000,2500.000000,20000.000000,0.450000	0.800000,1.000000,1.000000,32.000000,1000.000000,2500.000000,20000.000000,0.450000	0.800000,1.000000,1.000000,32.000000,1000.000000,2500.000000,20000.000000,0.450000	0.800000,1.000000,1.000000,32.000000,1000.000000,2500.000000,20000.000000,0.450000	0.800000,1.000000,1.000000,32.000000,1000.000000,2500.000000,20000.000000,0.450000	0.800000,1.000000,1.000000,32.000000,1000.000000,2500.000000,20000.000000,0.450000
+ModelShadowType	other	KG3DENGINE	1	3								3		3	3	3	3	3	3	3
+MotionBlurEnable	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+MouseScale	other	Main	0											1.000000	1.000000	1.000000	1.000000	1.000000	1.000000	
+MultiSampleQuality	other	KG3DENGINE	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+MultiSampleType	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+MultiTextureRender	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+MultiThread	other	Main	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+MyEffect	other	UIVideoSetting	2		2	2	2	0	0	0	0	0	0	3	3	0	0	0	0	0
+MyEffectAlpha	other	ENGINEOPTION	1		0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	1.000000	1.000000	
+MyEffectLight	other	ENGINEOPTION	1		0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	
+NISSharpness	other	KG3DENGINE	0											0.200000	0.200000	0.200000	0.200000	0.200000	0.200000	
+NVRTX_bEnable	other	KG3DENGINE	1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+NVRTX_bEnable_PointLightShadow	other	KG3DENGINE	1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+NVRTX_nSamplePerPixel	other	KG3DENGINE	1		1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+NewIniLoad	other	Debug	0											1	1	1	1	1	1	
+NewWaterLevel	other	KG3DENGINE	0																	0
+NumCpuThread	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+NumMultiThreadAni	other	ENGINEOPTION	1	1								1		1	1	1	1	1	1	1
+OptimizeQiChang	other	UIVideoSetting	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+OptimizeRide	other	UIVideoSetting	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+OptimizeSkill	other	UIVideoSetting	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	0
+OptimizeUniform	other	UIVideoSetting	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+OtherEffect	other	UIVideoSetting	2		2	2	2	0	0	0	0	0	0	3	3	0	0	0	0	0
+OtherEffectAlpha	other	ENGINEOPTION	1		0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	
+OtherEffectLight	other	ENGINEOPTION	1		0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	0.400000	
+OutputUsedResource	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+P3DSound	other	SoundSetting	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+PackMeshVertex	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	0
+PakFirst	other	Debug	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Panauision	other	Main	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+ParticleLimitedFPS	other	ParticleEditor	1	60	60	60	60	60	60	60	60	60	60	60	60	60	60	60	60	60
+Path	other	UIEditor	1	plugin\UiEditor	plugin\UiEditor	plugin\UiEditor	plugin\UiEditor	plugin\UiEditor	plugin\UiEditor	plugin\UiEditor	plugin\UiEditor	plugin\UiEditor	plugin\UiEditor	plugin\UiEditor	plugin\UiEditor	plugin\UiEditor	plugin\UiEditor	plugin\UiEditor	plugin\UiEditor	plugin\UiEditor
+PercentageBackColor	other	Caption	1	-16777216	-16777216	-16777216	-16777216	-16777216	-16777216	-16777216	-16777216	-16777216	-16777216	-16777216	-16777216	-16777216	-16777216	-16777216	-16777216	-16777216
+PercentageBorderXWidth	other	Caption	1	1.000000	1.000000	1.000000	1.000000	1.000000	1.000000	1.000000	1.000000	1.000000	1.000000	1.000000	1.000000	1.000000	1.000000	1.000000	1.000000	1.000000
+PercentageBorderYWidth	other	Caption	1	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000
+PercentageHeight	other	Caption	1	8.000000	8.000000	8.000000	8.000000	8.000000	8.000000	8.000000	8.000000	8.000000	8.000000	8.000000	8.000000	8.000000	8.000000	8.000000	8.000000	8.000000
+PercentageWidth	other	Caption	1	80.000000	80.000000	80.000000	80.000000	80.000000	80.000000	80.000000	80.000000	80.000000	80.000000	80.000000	80.000000	80.000000	80.000000	80.000000	80.000000	80.000000
+PostRenderEffect	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+PrecomputeMeteor	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+ProgressX	other	Loading	1	35	35	35	35	35	35	35	35	35	35	35	35	35	35	35	35	35
+ProgressY	other	Loading	1	297	297	297	297	297	297	297	297	297	297	297	297	297	297	297	297	297
+Quality	other	MovieRecord	1	11000000	11000000	11000000	11000000	11000000	11000000	11000000	11000000	11000000	11000000	11000000	11000000	11000000	11000000	11000000	11000000	11000000
+RLCacheMode	other	CacheSettings	0											3	3	3	3	3	3	
+RUNNERANI	other	SCENEEDITOR	1	Data\public\scenerunner\scenerunner.Ani	Data\public\scenerunner\scenerunner.Ani	Data\public\scenerunner\scenerunner.Ani	Data\public\scenerunner\scenerunner.Ani	Data\public\scenerunner\scenerunner.Ani	Data\public\scenerunner\scenerunner.Ani	Data\public\scenerunner\scenerunner.Ani	Data\public\scenerunner\scenerunner.Ani	Data\public\scenerunner\scenerunner.Ani	Data\public\scenerunner\scenerunner.Ani	Data\public\scenerunner\scenerunner.Ani	Data\public\scenerunner\scenerunner.Ani	Data\public\scenerunner\scenerunner.Ani	Data\public\scenerunner\scenerunner.Ani	Data\public\scenerunner\scenerunner.Ani	Data\public\scenerunner\scenerunner.Ani	Data\public\scenerunner\scenerunner.Ani
+RUNNERFACEMODEL	other	SCENEEDITOR	0																	
+RUNNERFACEMTL	other	SCENEEDITOR	0																	
+RUNNERMODEL	other	SCENEEDITOR	1	Data\public\scenerunner\scenerunner.Mesh	Data\public\scenerunner\scenerunner.Mesh	Data\public\scenerunner\scenerunner.Mesh	Data\public\scenerunner\scenerunner.Mesh	Data\public\scenerunner\scenerunner.Mesh	Data\public\scenerunner\scenerunner.Mesh	Data\public\scenerunner\scenerunner.Mesh	Data\public\scenerunner\scenerunner.Mesh	Data\public\scenerunner\scenerunner.Mesh	Data\public\scenerunner\scenerunner.Mesh	Data\public\scenerunner\scenerunner.Mesh	Data\public\scenerunner\scenerunner.Mesh	Data\public\scenerunner\scenerunner.Mesh	Data\public\scenerunner\scenerunner.Mesh	Data\public\scenerunner\scenerunner.Mesh	Data\public\scenerunner\scenerunner.Mesh	Data\public\scenerunner\scenerunner.Mesh
+RUNNERMTL	other	SCENEEDITOR	1	Data\public\scenerunner\scenerunner.Mtl	Data\public\scenerunner\scenerunner.Mtl	Data\public\scenerunner\scenerunner.Mtl	Data\public\scenerunner\scenerunner.Mtl	Data\public\scenerunner\scenerunner.Mtl	Data\public\scenerunner\scenerunner.Mtl	Data\public\scenerunner\scenerunner.Mtl	Data\public\scenerunner\scenerunner.Mtl	Data\public\scenerunner\scenerunner.Mtl	Data\public\scenerunner\scenerunner.Mtl	Data\public\scenerunner\scenerunner.Mtl	Data\public\scenerunner\scenerunner.Mtl	Data\public\scenerunner\scenerunner.Mtl	Data\public\scenerunner\scenerunner.Mtl	Data\public\scenerunner\scenerunner.Mtl	Data\public\scenerunner\scenerunner.Mtl	Data\public\scenerunner\scenerunner.Mtl
+RefreshRate	other	Main	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+RememberAccount	other	Login	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+RemoteControl	other	Represent	0											0	0	0	0	0	0	
+RenderGrass	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+RenderGround	other	ENGINEOPTION	1	1								1		1	1	1	1	1	1	1
+RenderTerrain	other	ENGINEOPTION	1	1								1		1	1	1	1	1	1	1
+RenderTextureSFX	other	ENGINEOPTION	1	1								1		1	1	1	1	1	1	1
+ReplaceFmodAR	other	WwiseSetting	0											6800	6800	6800	6800	6800	6800	
+RepresentSFX	other	Represent	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+SampMagFilter	other	KG3DENGINE	1	2								2		2	2	2	2	2	2	2
+SampMinFilter	other	KG3DENGINE	1	3								3		3	3	3	3	3	3	3
+SampMipFilter	other	KG3DENGINE	1	2								2		2	2	2	2	2	2	2
+SaturationBias	other	ENGINEOPTION	1	0.000000								0.000000		0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+SaturationScale	other	ENGINEOPTION	1	1.000000								1.000000		1.000000	1.000000	1.000000	1.000000	1.000000	1.000000	1.000000
+ScaleOutputSize	other	ENGINEOPTION	1	768								768		768	768	768	768	768	768	768
+ScaleOutputSmooth	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	0
+SceneSetting	other	UIVideoSetting	0											1	1	1	1	1	1	
+SceneSound	other	SoundSetting	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+SceneVolume	other	SoundSetting	1	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000	0.900000
+ScreenSizeLimitedRate	other	ENGINEOPTION	2	1.000000	1.500000	1.500000	2.000000	2.000000	1.500000	2.000000	2.000000	2.000000	2.000000	2.000000	2.000000	2.000000	2.000000	2.000000	2.000000	2.000000
+SelectorScale	other	KG3DENGINE	1	2								2		2	2	2	2	2	2	2
+ShaderDirectory	other	KG3DENGINE	0																	C:\SeasunGame\MovieEditor\shaders\
+ShockWaveEnable	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+ShockWavePower	other	ENGINEOPTION	1	0.110000								0.110000		0.110000	0.110000	0.110000	0.110000	0.110000	0.110000	0.110000
+ShowLogo	other	Login	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+ShowOutline	other	UIVideoSetting	2	1	1	1	1	1	1	1	1	0	1	0	0	0	0	0	0	0
+ShowTestDialog	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	0
+Silence	other	SoundSetting	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+SimpleSkillSfx	other	UIVideoSetting	1										0	1	1	1	1	1	1	
+Size	other	MovieRecord	1	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2
+SpecialSceneSetting	other	UIVideoSetting	0											1	1	1	1	1	1	
+StandardCanvasHeight	other	Main	1	960	960	960	960	960	960	960	960	960	960	960	960	960	960	960	960	960
+StandardCanvasWidth	other	Main	1	1280	1280	1280	1280	1280	1280	1280	1280	1280	1280	1280	1280	1280	1280	1280	1280	1280
+SwapMouseButton	other	Mouse	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+TerrDynamic	other	ENGINEOPTION	1	1								1		1	1	1	1	1	1	1
+TerrainDetail	terrain	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+TerrainLODGates	terrain	KG3DENGINE	1	11200,16000,22400								11200,16000,22400		11200,16000,22400	11200,16000,22400	11200,16000,22400	11200,16000,22400	11200,16000,22400	11200,16000,22400	11200,16000,22400
+TextureScale	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+TextureScaleCheck	other	ENGINEOPTION	1	1								1		1	1	1	1	1	1	1
+TopPoint	other	Debug	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+TotalVolume	other	SoundSetting	1	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000
+TransitionEnable	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+TressFXOtherPlayerDensity	other	KG3DENGINE	0											0.000000	0.000000	0.000000	1.000000	1.000000	1.000000	
+TripleBuffering	other	KG3DENGINE	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+UIVolume	other	SoundSetting	1	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000
+UiSound	other	SoundSetting	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+UseHighShadow	other	ENGINEOPTION	1	1								1		1	1	1	1	1	1	1
+UseLogical	other	ENGINEOPTION	1	1								1		1	1	1	1	1	1	1
+UseLogicalObject	other	ENGINEOPTION	1	1								1		1	1	1	1	1	1	1
+UseMultiThreadAni	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	0
+UseMultiThreadCull	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	0
+UseMultiThreadLoad	other	ENGINEOPTION	1	1								1		1	1	1	1	1	1	1
+UseNew	other	Caption	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+UseOtherWorkDirectory	other	SCENEEDITOR	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+UseProgressMeshLOD	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	0
+UseRenderTwiceAlpha	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+UseSpeedTreeLod	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+UseTerrainLOD	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+UseVIM3D	other	VIM3D	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+UseWaterNewStruct	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	0
+UseWwise	other	WwiseSetting	1										1							1
+VSync	other	KG3DENGINE	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+VegetationDensity	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+WaterConfigFile	other	ENGINEOPTION	1	data\public\defaultscene\waterconfig.wfx								data\public\defaultscene\waterconfig.wfx		data\public\defaultscene\waterconfig.wfx	data\public\defaultscene\waterconfig.wfx	data\public\defaultscene\waterconfig.wfx	data\public\defaultscene\waterconfig.wfx	data\public\defaultscene\waterconfig.wfx	data\public\defaultscene\waterconfig.wfx	data\public\defaultscene\waterconfig.wfx
+WaterDetail	other	KG3DENGINE	1	3								3		3	3	3	3	3	3	3
+WaterReflectEntity	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+WaterReflectEnvironment	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+WaterReflectGround	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+WaterReflectNPC	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+WaterReflection	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+WaterRefraction	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+WorkDirectory	other	SCENEEDITOR	1	F:\JX3\sword3-products\trunk\client\	F:\JX3\sword3-products\trunk\client\	F:\JX3\sword3-products\trunk\client\	F:\JX3\sword3-products\trunk\client\	F:\JX3\sword3-products\trunk\client\	F:\JX3\sword3-products\trunk\client\	F:\JX3\sword3-products\trunk\client\	F:\JX3\sword3-products\trunk\client\	F:\JX3\sword3-products\trunk\client\	F:\JX3\sword3-products\trunk\client\	F:\JX3\sword3-products\trunk\client\	F:\JX3\sword3-products\trunk\client\	F:\JX3\sword3-products\trunk\client\	F:\JX3\sword3-products\trunk\client\	F:\JX3\sword3-products\trunk\client\	F:\JX3\sword3-products\trunk\client\	F:\JX3\sword3-products\trunk\client\
+WwiseEnableProfile	other	WwiseSetting	0											0	0	0	0	0	0	
+X	other	Main	3	1912	1920	1920	1920	1920	1920	1920	1920	134	2552	1920	1920	1920	1920	1920	1920	1912
+Y	other	Main	3	-8	0	0	0	0	0	0	0	172	-8	0	0	0	0	0	0	-8
+__desc	other	CacheSettings	0											"缓存模式{0:关闭, 1:按需加载, 2:缓存复用, 3:组合(缓存复用且按需加载)}"	"缓存模式{0:关闭, 1:按需加载, 2:缓存复用, 3:组合(缓存复用且按需加载)}"	"缓存模式{0:关闭, 1:按需加载, 2:缓存复用, 3:组合(缓存复用且按需加载)}"	"缓存模式{0:关闭, 1:按需加载, 2:缓存复用, 3:组合(缓存复用且按需加载)}"	"缓存模式{0:关闭, 1:按需加载, 2:缓存复用, 3:组合(缓存复用且按需加载)}"	"缓存模式{0:关闭, 1:按需加载, 2:缓存复用, 3:组合(缓存复用且按需加载)}"	
+b3DVision	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	0
+bAutoConvertModelLoading	other	KG3DENGINE	0											0	0	0	0	0	0	0
+bCameraShake	other	KG3DENGINE	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
+bCaptionNew	other	MobileDebug	0											0	0	0	0	0	0	
+bColorGrade	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+bCreateInternalPhysXScene	other	KG3DENGINE	1		0	0	0	0	0	0	0		0	1	1	1	1	1	1	
+bDOF	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+bDisableDynamicScale	other	KG3DENGINE	1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
+bDisableWeather	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+bEnableAnimationPrecompute	other	KG3DENGINE	1		0	0	0	0	0	0	0		0	0	0	0	0	0	0	
+bEnableApexClothing	other	KG3DENGINE	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+bEnableAsyncParticleSimulate	other	KG3DENGINE	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+bEnableAutoReLoadTexture	other	ENGINEOPTION	1	1								1		1	1	1	1	1	1	1
+bEnableBlastDestruction	other	KG3DENGINE	0											1	1	1	1	1	1	
+bEnableCASSharper	other	KG3DENGINE	1		0	0	0	0	0	0	0		0	0	0	0	0	0	0	0
+bEnableClearResourceEveryFrame	other	KG3DENGINE	0											1	1	1	1	1	1	
+bEnableClusterBasedRenderDeferred	other	KG3DENGINE	0											0	0	0	0	0	0	
+bEnableDayNightCycle	daynight	KG3DENGINE	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+bEnableDynamicEnvironment	other	KG3DENGINE	0											0	0	0	0	0	0	
+bEnableFeedback	other	KG3DENGINE	0																	1
+bEnableFluxSimulation	other	KG3DENGINE	0																	0
+bEnableFluxWater	other	KG3DENGINE	0																	1
+bEnableFoliageRegionCull	foliage	KG3DENGINE	0																	True
+bEnableFoliageShadowRender	foliage	KG3DENGINE	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	
+bEnableGPUCrashDumper	other	KG3DENGINE	0																	0
+bEnableIndirectLightVolume	other	KG3DENGINE	2		0	0	0	0	0	0	0		1	0	0	0	0	0	0	1
+bEnableInteractFluids	other	KG3DENGINE	0											1	1	1	1	1	1	
+bEnableLensLightGlobal	other	KG3DENGINE	0											1	1	1	1	1	1	
+bEnableModelLod	lod	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+bEnableModelLodRadius	lod	KG3DENGINE	0																	0
+bEnableModelLodViewAngle	lod	KG3DENGINE	1		1	1	1	1	1	1	1		1	1	1	1	1	1	1	
+bEnableNVFlex	other	KG3DENGINE	1		1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+bEnableNVFlexDebugRender	other	KG3DENGINE	0											0	0	0	0	0	0	
+bEnableOfflineIndirectLightVolume	other	KG3DENGINE	0											1	1	1	1	1	1	1
+bEnableRC_AmbientOcclusion	postfx	KG3DENGINE	2	1	0	0	0	1	1	1	1	1	1	0	0	1	1	1	1	1
+bEnableRC_AtmosphericFog	postfx	KG3DENGINE	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+bEnableRC_Bloom	postfx	KG3DENGINE	2	1	0	0	1	1	0	1	1	1	1	0	0	1	1	1	1	1
+bEnableRC_CheckBoardBlur	postfx	KG3DENGINE	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+bEnableRC_Depth	postfx	KG3DENGINE	2	1	0	0	0	0	0	1	0	0	0	0	0	1	1	1	1	1
+bEnableRC_DirectionLight	postfx	KG3DENGINE	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+bEnableRC_DirectionLightShadow	postfx	KG3DENGINE	1	1	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1
+bEnableRC_EnvProbe	postfx	KG3DENGINE	2	1	0	0	0	1	1	1	1	1	1	1	1	1	1	1	1	1
+bEnableRC_EyeProtectionMode	postfx	KG3DENGINE	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+bEnableRC_FoliageBlur	postfx	KG3DENGINE	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+bEnableRC_ForceOitToSoftMask2	postfx	KG3DENGINE	1		0	0	0	0	0	0	0		0	0	0	0	0	0	0	
+bEnableRC_ForceSkyCubeTex	postfx	KG3DENGINE	2		1	1	0	0	0	0	0		0	0	0	0	0	0	0	
+bEnableRC_ForwardRender	postfx	KG3DENGINE	2	0	1	1	1	0	1	0	0	0	0	0	0	0	0	0	0	0
+bEnableRC_HeightFog	postfx	KG3DENGINE	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+bEnableRC_HighEnvironmentRender	postfx	KG3DENGINE	2		0	0	0	1	0	1	1		1	1	1	1	1	1	1	
+bEnableRC_LightShaftBloom	postfx	KG3DENGINE	2	1	0	0	1	1	1	1	1	1	1	0	0	1	1	1	1	1
+bEnableRC_LightShaftOcclusion	postfx	KG3DENGINE	2	1	0	0	1	1	1	1	1	1	1	0	0	1	1	1	1	1
+bEnableRC_LowReflection	postfx	KG3DENGINE	2	0	0	0	1	0	1	0	0	0	0	0	0	0	0	0	0	0
+bEnableRC_PointLight	postfx	KG3DENGINE	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+bEnableRC_PointLightShadow	postfx	KG3DENGINE	1	1	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1
+bEnableRC_SMAA	postfx	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+bEnableRC_SSR	postfx	KG3DENGINE	2		0	0	0	0	0	0	0		1	0	0	0	0	0	1	1
+bEnableRC_SSS	postfx	KG3DENGINE	2	1	0	0	0	0	1	1	1	1	1	1	1	1	1	1	1	1
+bEnableRC_ShockWave	postfx	KG3DENGINE	2	1	0	0	0	1	0	1	1	1	1	0	0	1	1	1	1	1
+bEnableRC_SkyLight	postfx	KG3DENGINE	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+bEnableRC_SpotLight	postfx	KG3DENGINE	2	1	0	0	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+bEnableRC_SpotLightShadow	postfx	KG3DENGINE	1	1	0	0	0	0	0	0	0	0	0	1	1	1	1	1	1	1
+bEnableRC_StingRayVolumetircCloud	postfx	KG3DENGINE	2	1	0	0	0	1	0	1	1	1	1	0	0	1	1	1	1	1
+bEnableRC_SunLensflare	postfx	KG3DENGINE	2	1	0	1	1	1	1	1	1	1	1	0	0	1	1	1	1	1
+bEnableRC_Vignette	postfx	KG3DENGINE	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+bEnableRealOIT	other	KG3DENGINE	0											0	0	0	0	0	0	
+bEnableRealTimeTerrainBake	other	KG3DENGINE	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	0
+bEnableRuntimeBake	other	KG3DENGINE	0																	0
+bEnableSSPR	other	KG3DENGINE	2		0	0	1	1	1	1	1		1	0	0	1	1	1	1	
+bEnableSSPRFix	other	KG3DENGINE	0											0	0	0	0	0	0	
+bEnableSceneCollision	other	KG3DENGINE	0											1	1	1	1	1	1	
+bEnableSceneNodeAngleCull	other	KG3DENGINE	0											1	1	1	1	1	1	
+bEnableSeasonalVariation	other	KG3DENGINE	1										0	0	0	0	0	0	0	0
+bEnableSubFoliageGMRender	foliage	KG3DENGINE	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+bEnableSubFoliageHCRender	foliage	KG3DENGINE	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+bEnableSubFoliageSTRender	foliage	KG3DENGINE	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+bEnableSubFoliageTWRender	foliage	KG3DENGINE	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+bEnableSubFoliageWJRender	foliage	KG3DENGINE	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+bEnableVXGI	other	KG3DENGINE	1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+bEnableViewProbe	other	KG3DENGINE	0											1	1	1	1	1	1	
+bEnableViewProbeColor	other	KG3DENGINE	0											0	0	0	0	0	0	
+bEnableViewProbeShadow	other	KG3DENGINE	0											0	0	0	0	0	0	
+bEnableVolumetricHeightFog	other	KG3DENGINE	2		0	0	0	0	0	0	0		1	0	0	0	0	0	0	1
+bEnableWaterRipple	other	KG3DENGINE	0																	1
+bEnable_SSR	other	KG3DENGINE	2	1	0	0	0	0	0	0	0	1	1	0	0	0	0	0	1	0
+bEnabledAreaShadow	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	0
+bFXAA	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+bForceEnableHDDecal	other	KG3DENGINE	0											0	0	0	0	0	0	
+bGM	other	MobileDebug	0											0	0	0	0	0	0	
+bGlobalFog	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+bGodRay	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+bHDR	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+bHasCheckAndWriteDLSSOption	other	KG3DENGINE	0											0	0	0	0	0	0	
+bIsCEVer	other	Mobile	0											0	0	0	0	0	0	
+bLogShader	other	MobileDebug	0											1	1	1	1	1	1	
+bMinConfig	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+bMovieEditor	other	KG3DENGINE	0											0	0	0	0	0	0	
+bMultiThreadLoadAnimation	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	0
+bNewMethod_TerrainLOD	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+bOpenLightOITShadow	other	KG3DENGINE	0											1	1	1	1	1	1	1
+bOpenLightShadowSharpen	other	KG3DENGINE	0											1	1	1	1	1	1	
+bOpenSunLightShadowSharpen	other	KG3DENGINE	0											0	0	0	0	0	0	0
+bOptickLuaSample	other	Mobile	0											1	1	1	1	1	1	
+bPostCloud	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+bReleaseVerPrintUILog	other	Mobile	0											0	0	0	0	0	0	
+bRenderPointLightLimit	other	KG3DENGINE	1		0	0	0	0	0	0	0		0	1	1	1	1	0	0	
+bSDKLogin	other	MobileDebug	0											1	1	1	1	1	1	
+bSSAO	other	KG3DENGINE	1	0								0		0	0	0	0	0	0	0
+bShow3DEngineDebugInfo	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	0
+bShowTrueSky	daynight	KG3DENGINE	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+bTAA	other	KG3DENGINE	1									0								
+bTerrainEnableTessellation	other	KG3DENGINE	1		0	0	0	0	0	0	0		0							
+bTerrainEnableVirtualTexture	other	KG3DENGINE	1		0	0	0	0	0	0	0		0							
+bTexAsync	other	ENGINEOPTION	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
+bTexDynUpgrade	other	ENGINEOPTION	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
+bTexLodSetFixed0	other	ENGINEOPTION	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
+bUseCullSystem	other	KG3DENGINE	0																	1
+bUseModelBsp	other	KG3DENGINE	1	1								1		1	1	1	1	1	1	1
+bUseOldCSMMethod	other	KG3DENGINE	0											1	1	1	1	0	0	
+bVkValidation	other	MobileDebug	0											0	0	0	0	0	0	
+background	other	Loading	1	UI\Loading\background.bmp	UI\Loading\background.bmp	UI\Loading\background.bmp	UI\Loading\background.bmp	UI\Loading\background.bmp	UI\Loading\background.bmp	UI\Loading\background.bmp	UI\Loading\background.bmp	UI\Loading\background.bmp	UI\Loading\background.bmp	UI\Loading\background.bmp	UI\Loading\background.bmp	UI\Loading\background.bmp	UI\Loading\background.bmp	UI\Loading\background.bmp	UI\Loading\background.bmp	UI\Loading\background.bmp
+fAngleCull	culling	KG3DENGINE	4	0.000000	9.500000	9.500000	5.000000	3.000000	5.000000	4.500000	3.000000	3.000000	3.000000	5.000000	5.000000	5.000000	4.500000	3.000000	3.000000	3.000000
+fBillBoardCloudInureDistance	other	KG3DENGINE	1	100000000.000000								100000000.000000		100000000.000000	100000000.000000	100000000.000000	100000000.000000	100000000.000000	100000000.000000	100000000.000000
+fBloomExposure1	other	ENGINEOPTION	1	0.800000								0.800000		0.800000	0.800000	0.800000	0.800000	0.800000	0.800000	0.800000
+fBloomExposure2	other	ENGINEOPTION	1	0.150000								0.150000		0.150000	0.150000	0.150000	0.150000	0.150000	0.150000	0.150000
+fBloomGaussCoefficient	other	ENGINEOPTION	1	3.000000								3.000000		3.000000	3.000000	3.000000	3.000000	3.000000	3.000000	3.000000
+fBlurWeight	other	ENGINEOPTION	1	0.500000								0.500000		0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000
+fCameraDistanceHD	other	KG3DENGINE	4	80000.000000	40000.000000	40000.000000	80000.000000	800000.000000	100000.000000	100000.000000	800000.000000	800000.000000	800000.000000	20000.000000	20000.000000	100000.000000	100000.000000	800000.000000	800000.000000	200000.000000
+fDLSSParam	other	KG3DENGINE	1									1.000000								
+fFoliageCullDist	foliage	KG3DENGINE	4	80000.000000	0.000000	10000.000000	10000.000000	80000.000000	10000.000000	20000.000000	80000.000000	80000.000000	80000.000000	10000.000000	10000.000000	10000.000000	20000.000000	80000.000000	80000.000000	400000
+fFoliageShadowCullDist	foliage	KG3DENGINE	0																	0.0
+fGodRayDecay	other	ENGINEOPTION	1	1.000000								1.000000		1.000000	1.000000	1.000000	1.000000	1.000000	1.000000	1.000000
+fGodRayDensity	other	ENGINEOPTION	1	0.380000								0.380000		0.380000	0.380000	0.380000	0.380000	0.380000	0.380000	0.380000
+fGodRayExposure	other	ENGINEOPTION	1	0.270000								0.270000		0.270000	0.270000	0.270000	0.270000	0.270000	0.270000	0.270000
+fGodRayWeight	other	ENGINEOPTION	1	0.100000								0.100000		0.100000	0.100000	0.100000	0.100000	0.100000	0.100000	0.100000
+fIntensityScale	other	ENGINEOPTION	1	1.000000								1.000000		1.000000	1.000000	1.000000	1.000000	1.000000	1.000000	1.000000
+fLimitAngle	other	ENGINEOPTION	1	6.283185								6.283185		6.283185	6.283185	6.283185	6.283185	6.283185	6.283185	6.283185
+fLod0Percent	other	KG3DENGINE	0											0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+fLod1Percent	other	KG3DENGINE	0											0.090000	0.090000	0.090000	0.090000	0.090000	0.090000	
+fModelLodRadius	lod	KG3DENGINE	3	2000.000000,4000.000000,4000.000000,11000.000000	6850.000000,8000.000000,10000.000000,27400.000000	6850.000000,8000.000000,10000.000000,27400.000000	17125.000000,20000.000000,25000.000000,68500.000000	20000.000000,25000.000000,30000.000000,80000.000000	17125.000000,20000.000000,25000.000000,68500.000000	17125.000000,20000.000000,25000.000000,68500.000000	20000.000000,25000.000000,30000.000000,80000.000000	20000.000000,25000.000000,30000.000000,80000.000000	20000.000000,25000.000000,30000.000000,80000.000000	17125.000000,20000.000000,25000.000000,68500.000000	17125.000000,20000.000000,25000.000000,68500.000000	17125.000000,20000.000000,25000.000000,68500.000000	17125.000000,20000.000000,25000.000000,68500.000000	20000.000000,25000.000000,30000.000000,80000.000000	20000.000000,25000.000000,30000.000000,80000.000000	20000,25000,30000,80000
+fModelLodViewAngle	lod	KG3DENGINE	2		12.000000,9.000000,7.000000	12.000000,9.000000,7.000000	12.000000,9.000000,7.000000	10.000000,8.000000,5.000000	10.000000,8.000000,5.000000	10.000000,8.000000,5.000000	10.000000,8.000000,5.000000		10.000000,8.000000,5.000000	10.000000,8.000000,5.000000	10.000000,8.000000,5.000000	10.000000,8.000000,5.000000	10.000000,8.000000,5.000000	10.000000,8.000000,5.000000	10.000000,8.000000,5.000000	
+fModelViewAngleLodSizeLimit	lod	KG3DENGINE	1		0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000		0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+fNodeLodHighLimit	lod	KG3DENGINE	4	720.000000	72.000000	72.000000	72.000000	720.000000	120.000000	640.000000	720.000000	720.000000	720.000000	120.000000	120.000000	120.000000	640.000000	720.000000	720.000000	720
+fNodeLodLowLimit	lod	KG3DENGINE	6	90.000000	9.000000	9.000000	15.000000	30.000000	40.000000	80.000000	90.000000	90.000000	90.000000	40.000000	40.000000	40.000000	80.000000	90.000000	90.000000	90
+fParticleSystemCullDist	culling	KG3DENGINE	4	80000.000000	10000.000000	10000.000000	40000.000000	80000.000000	60000.000000	60000.000000	80000.000000	80000.000000	80000.000000	10000.000000	10000.000000	60000.000000	60000.000000	80000.000000	80000.000000	80000
+fParticleSystemShadowCullDist	culling	KG3DENGINE	4	80000.000000	0.000000	0.000000	10000.000000	20000.000000	10000.000000	16000.000000	20000.000000	20000.000000	20000.000000	0.000000	0.000000	10000.000000	16000.000000	20000.000000	20000.000000	80000
+fPointLightCullDist	culling	KG3DENGINE	4	80000.000000	4000.000000	4000.000000	6000.000000	12000.000000	10000.000000	10000.000000	12000.000000	12000.000000	12000.000000	10000.000000	10000.000000	10000.000000	10000.000000	12000.000000	48000.000000	12000
+fPointLightShadowCullDist	culling	KG3DENGINE	1	80000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	80000
+fRC_EyeProtectBrightness	other	KG3DENGINE	1	1.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	1.000000	1.000000	1.000000	1.000000	1.000000	0.000000
+fSSAODarkFact	other	ENGINEOPTION	1	0.500000								0.500000		0.500000	0.500000	0.500000	0.500000	0.500000	0.500000	0.500000
+fSSAOSampleRadius	other	ENGINEOPTION	1	20.000000								20.000000		20.000000	20.000000	20.000000	20.000000	20.000000	20.000000	20.000000
+fSceneNodeClusterLoadDistance	streaming	KG3DENGINE	3		8000.000000	8000.000000	8000.000000	10000.000000	8000.000000	8000.000000	12000.000000		12000.000000	8000.000000	8000.000000	8000.000000	8000.000000	12000.000000	12000.000000	
+fSceneNodeClusterUnLoadDistance	streaming	KG3DENGINE	3		7000.000000	7000.000000	7000.000000	9000.000000	7000.000000	7000.000000	11000.000000		11000.000000	7000.000000	7000.000000	7000.000000	7000.000000	11000.000000	11000.000000	
+fSeasonEffectIntensity	other	KG3DENGINE	1										0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+fSeasonVariationTimer	other	KG3DENGINE	1										0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+fSimpleModelCullDist	culling	KG3DENGINE	5	80000.000000	16000.000000	32000.000000	56000.000000	200000.000000	70000.000000	70000.000000	200000.000000	200000.000000	200000.000000	70000.000000	70000.000000	70000.000000	70000.000000	200000.000000	200000.000000	200000
+fSimpleModelShadowCullDist	culling	KG3DENGINE	5	80000.000000	0.000000	0.000000	15000.000000	40000.000000	15000.000000	30000.000000	300000.000000	300000.000000	300000.000000	5000.000000	5000.000000	15000.000000	30000.000000	300000.000000	300000.000000	80000
+fSpeedTreeAngleCull	speedtree	KG3DENGINE	6	0.000000	6.500000	6.500000	5.500000	0.500000	3.000000	2.500000	0.000000	0.000000	0.000000	3.000000	3.000000	3.000000	2.500000	0.000000	0.000000	0.000000
+fSpeedTreeCullDist	speedtree	KG3DENGINE	3	80000.000000	32000.000000	32000.000000	32000.000000	560000.000000	70000.000000	70000.000000	560000.000000	560000.000000	560000.000000	70000.000000	70000.000000	70000.000000	70000.000000	560000.000000	560000.000000	560000
+fSpeedTreeGlobalLodScaleTimes	speedtree	KG3DENGINE	4	1.000000	0.600000	0.700000	0.800000	0.900000	0.800000	0.800000	0.900000	0.900000	0.900000	0.800000	0.800000	0.800000	0.800000	0.900000	0.900000	0.800000
+fSpeedTreeShadowCullDist	speedtree	KG3DENGINE	5	80000.000000	0.000000	0.000000	15000.000000	40000.000000	15000.000000	30000.000000	300000.000000	300000.000000	300000.000000	5000.000000	5000.000000	15000.000000	30000.000000	300000.000000	300000.000000	80000
+fTreeOptimizeDistance	other	KG3DENGINE	1		0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000
+fVideoMemoryUsageControlInPercent	other	ENGINEOPTION	1	0.000000								0.000000		0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+fViewProbeBlendEnd	other	KG3DENGINE	0											0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+fViewProbeBlendStart	other	KG3DENGINE	0											0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+fViewProbeShadowEnd	other	KG3DENGINE	0											0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+fViewProbeShadowStart	other	KG3DENGINE	0											0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+fWaterAlphaMin	other	KG3DENGINE	1	0.300000								0.300000		0.300000	0.300000	0.300000	0.300000	0.300000	0.300000	0.300000
+fWaterReduHeight	other	KG3DENGINE	1	400.000000								400.000000		400.000000	400.000000	400.000000	400.000000	400.000000	400.000000	400.000000
+nBloomSampleNum	other	ENGINEOPTION	1	8								8		8	8	8	8	8	8	8
+nBlurMaxRenderCount	other	KG3DENGINE	0											20	20	20	20	20	20	
+nDLSSOption	other	KG3DENGINE	1									0								
+nDynamicTextureDetailReductionMax	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	
+nEngineGraphicsLevel	selector	ENGINEOPTION	9		1	2	3	4	5	6	7	8	9	1	2	4	6	7	7	7
+nFoliageDensity	foliage	KG3DENGINE	4	100	10	10	25	100	50	50	100	100	100	10	10	50	50	100	100	100
+nGodRaySampleNum	other	ENGINEOPTION	1	3								3		3	3	3	3	3	3	3
+nMinimumModelLod	lod	KG3DENGINE	1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
+nModelInstanceThreshold	other	KG3DENGINE	1		16	16	16	16	16	16	16		16	16	16	16	16	16	16	
+nPackFile	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	0
+nRC_CloudLevel	other	KG3DENGINE	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+nRC_EnvProbeLevel	other	KG3DENGINE	4	0	3	3	2	0	1	0	0	0	0	0	0	0	0	0	0	0
+nRC_ForwardPlayer	other	KG3DENGINE	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+nRayMarchFogQuality	other	KG3DENGINE	0											1	3	3	1	2	3	
+nReduceTextureSize	other	ENGINEOPTION	1		0,0,0,0,0,0,0,0	0,0,0,0,0,0,0,0	0,0,0,0,0,0,0,0	0,0,0,0,0,0,0,0	0,0,0,0,0,0,0,0	0,0,0,0,0,0,0,0	0,0,0,0,0,0,0,0	0,0,0,0,0,0,0,0	0,0,0,0,0,0,0,0	0,0,0,0,0,0,0,0	0,0,0,0,0,0,0,0	0,0,0,0,0,0,0,0	0,0,0,0,0,0,0,0	0,0,0,0,0,0,0,0	0,0,0,0,0,0,0,0	
+nRenderLevel	other	KG3DENGINE	1		200	200	200	200	200	200	200	200	200	250	250	250	250	250	275	250
+nRenderPointLightLimitCount	other	KG3DENGINE	1		90	90	90	90	90	90	90		90	0	0	40	90	100	100	
+nSSAOLevel	other	ENGINEOPTION	1	1								1		1	1	1	1	1	1	1
+nScaleUpMode	other	KG3DENGINE	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+nSfxLodDist1	other	ENGINEOPTION	3		3000	3000	4000	5000	4000	5000	5000	5000	5000	3000	3000	4000	5000	5000	5000	
+nSfxLodDist2	other	ENGINEOPTION	3		4000	4000	5000	6000	5000	6000	6000	6000	6000	4000	4000	5000	6000	6000	6000	
+nSfxLodDist3	other	ENGINEOPTION	1		8000	8000	8000	8000	8000	8000	8000	8000	8000	8000	8000	8000	8000	8000	8000	
+nShadowCullOpt	shadow	KG3DENGINE	1		1	1	1	1	1	1	1		1	0	0	0	0	0	0	1
+nShadowType	shadow	KG3DENGINE	4	0	0	1	1	3	1	2	3	3	3	0	7	1	2	3	3	3
+nShowLayer	other	KG3DENGINE	3		1	1	1	3	2	2	3	3	3	3	3	3	3	3	3	3
+nSpeedTreeDensity	speedtree	KG3DENGINE	4	100	50	60	80	100	60	80	100	100	100	15	15	60	80	100	100	100
+nSpeedTreeLeafScale	speedtree	KG3DENGINE	3		70	70	70	100	90	100	100	100	100	70	70	90	100	100	100	
+nSpeedTreeLodLevelOption	speedtree	KG3DENGINE	0																	0
+nStartLodLevelInAutoLodMode	lod	KG3DENGINE	2	0	1	1	1	0	1	1	0	0	0	1	1	1	1	0	0	1
+nStaticTextureDetailReductionMax	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	
+nStochasitcSSRQualityLevel	other	ENGINEOPTION	1		0	0	0	0	0	0	0		0	0	0	0	0	0	0	0
+nTerrainBakeMethod	other	KG3DENGINE	1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
+nTerrainBakeScaleRate	other	KG3DENGINE	2	2	4	4	4	1	1	1	1	1	1	4	4	1	1	1	1	1
+nTexDynUpgradeMin	other	ENGINEOPTION	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
+nTexLODLimit	other	ENGINEOPTION	2	0	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+nTexLodMipmapConfigId	other	ENGINEOPTION	1		0	0	0	0	0	0	0		0	0	0	0	0	0	0	
+nTexLodSetMinimum	other	ENGINEOPTION	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
+nVideoMemoryUsageControlInMB	other	ENGINEOPTION	1	0								0		0	0	0	0	0	0	
+nWaterEffectLevel	water	KG3DENGINE	3	0	3	3	3	0	1	1	0	0	0	3	3	1	1	0	0	1
+nWaterReflTextSize	water	KG3DENGINE	1	1024								1024		1024	1024	1024	1024	1024	1024	1024
+nWaterRefrTextSize	water	KG3DENGINE	1	1024								1024		1024	1024	1024	1024	1024	1024	1024
+progress	other	Loading	1	UI\Loading\progress.bmp	UI\Loading\progress.bmp	UI\Loading\progress.bmp	UI\Loading\progress.bmp	UI\Loading\progress.bmp	UI\Loading\progress.bmp	UI\Loading\progress.bmp	UI\Loading\progress.bmp	UI\Loading\progress.bmp	UI\Loading\progress.bmp	UI\Loading\progress.bmp	UI\Loading\progress.bmp	UI\Loading\progress.bmp	UI\Loading\progress.bmp	UI\Loading\progress.bmp	UI\Loading\progress.bmp	UI\Loading\progress.bmp
+sprite	other	Loading	1	UI\Loading\sprite.bmp	UI\Loading\sprite.bmp	UI\Loading\sprite.bmp	UI\Loading\sprite.bmp	UI\Loading\sprite.bmp	UI\Loading\sprite.bmp	UI\Loading\sprite.bmp	UI\Loading\sprite.bmp	UI\Loading\sprite.bmp	UI\Loading\sprite.bmp	UI\Loading\sprite.bmp	UI\Loading\sprite.bmp	UI\Loading\sprite.bmp	UI\Loading\sprite.bmp	UI\Loading\sprite.bmp	UI\Loading\sprite.bmp	UI\Loading\sprite.bmp
+szFolder	other	CacheSettings	0											cache	cache	cache	cache	cache	cache	
+szSimulateDeviceModel	other	Mobile	0											--iPhone13,3	--iPhone13,3	--iPhone13,3	--iPhone13,3	--iPhone13,3	--iPhone13,3	
+uVolumetricHeightFogGridZDepth	other	KG3DENGINE	1		128	128	128	128	128	128	128		128	128	128	128	128	128	128	128

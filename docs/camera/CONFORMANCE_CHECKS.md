@@ -9,6 +9,60 @@ Status: `PASS` · `PARTIAL` · `FAIL` · `N/A`
 
 ---
 
+## 2026-09-30 re-audit — status summary
+
+Code: `main` after the camera merges (`d450ba6` camera-wall-clip, `18885a1` cam-wwdrag).
+The tables below are the 2026-09-25 baseline; this section records what changed and the
+current counts. Live per-item detail: `HOST_DEVIATIONS.md`.
+
+**Landed since the baseline (now implemented):**
+
+- Drag/aim A2–A9: per-frame sync, engine look-at (`D3` closed), `postdbg moved=0.0`.
+- S1–S6/S8/S9: zoom/sprint re-pin, `EyeScale` in the aim math, max clamp on every
+  writer, rate-limited RMB turn (S6), 广角 read (custom.dat `WidAngle` else config.ini,
+  panel 30–60), full obstruction (bake + engine terrain/scene rays + 18 u clearance +
+  50/100 hysteresis + flex return).
+- E3 (rate-limited turn), E12 (CLASSICAL/JOYSTICK operation modes, F7 + gating + smoke),
+  E19 (wall/structure obstruction with the per-mesh `bObscatleCamera` gate from extracted
+  content), E20/E24 (move-pitch + shake models exist; opt-in / not triggered).
+- B6/D3 closed: engine position setter `cam->vt[+0x50](pos,0)` + look-at
+  `cam->vt[+0x58](anchor,0)`, absolute Y; B14 double-sided probes; B15 `rSm` uses the
+  character-row `SmoothTime` (60 ms) in every mode.
+- D6 root cause (lazy `RCPI_Scene` hash) + `RC_D6Seed` fix default-on; VEH diagnostic,
+  minidump reader, input driver.
+- custom.dat reader: 13 keys (yaw/pitch/max/drag×2/EyeScale/WidAngle/spring/reset/curve/
+  follow/smoothing/eye-follow) + saved-runtime view preference (E6).
+
+**Counts** (over the E1–E29 list plus the A/S/C groups):
+
+| Group | Implemented | Partial | Missing |
+|---|---|---|---|
+| Core follow camera (orbit, drag, smoothing, clamps, obstruction, look-at, engine set) | 12 | 2 | 0 |
+| Data-fidelity parameters (anchor, footprint, caps, mode rows, FOV default, near plane, flex, per-mode caps, initial distance) | 3 | 6 | 5 |
+| Extra camera families & controls (E1–E29) | 5 | 3 | 21 |
+
+**Quality assessment:**
+
+- **Core follow camera: engine-faithful.** Position + look-at go through the engine's own
+  camera object; the model comes from recovered IL/data; invariants verified (smoke ALL
+  PASS; T2 `206/188`; T4 `186/168`; T1 sweep 0 flips; route aim 125/125; sprint drag
+  constant-orbit 1.15%).
+- **Data layer: the weak part.** C1 anchor (chest+90 vs head/socket), C2 footprint
+  (invented 22 u), C3 min distance (100 u guess), C4 per-mode rows (placeholders), C6 FOV
+  default (60 = panel max, game panel default 50), C7 near plane (unread), C8 flex
+  hardcoded, C9 per-mode caps not re-clamped on switch, C10 initial distance unproven
+  (start-at-max is a user decision).
+- **Feature breadth: low-medium.** The extra camera families (carrier/glider/air-combat/
+  NPC-dialog/dynamic-follow), skill-move camera, cinematic/track camera, spectator/god,
+  follow-action look-at, free view, shake triggers are not implemented (most need
+  data/triggers that are not in the host yet).
+- **Registered host deviations still shipped:** B1 (park-below hide), B8 (crossing guard),
+  B9 (degenerate-hit guard), B12 (scene near floor), B13 (flag-0 structures block), B15
+  (host fix), plus user-decision bindings A12 (zoom on `+/-`) and C10 (start at max).
+  B5/B7/B10 and the A1–A9 aim emulation are obsolete/default-off deletion candidates.
+
+---
+
 ## A. Drag / aim (the proven model)
 
 | # | Requirement | Status | Code / evidence | Acceptance |

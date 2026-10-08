@@ -1,0 +1,39 @@
+== CommitInput 0x1805E3270
+   code refs (1): 0x18000E9B2
+   data ptr slots (0): 
+== GetMoveInfo 0x1805DFE90
+   code refs (1): 0x18001AC8F
+   data ptr slots (0): 
+== ApplyQueuedInput 0x1805DF7E0
+   code refs (1): 0x18001622F
+   data ptr slots (0): 
+== MoveSetter 0x1805E0010
+   code refs (1): 0x18000569B
+   data ptr slots (0): 
+== JumpSetter 0x1805DFFF0
+   code refs (1): 0x1800099E9
+   data ptr slots (0): 
+== ClearInput 0x1805E0030
+   code refs (1): 0x18000759A
+   data ptr slots (0): 
+== AjustCtrlInput 0x1805E1ED0
+   code refs (1): 0x1800164D7
+   data ptr slots (0): 
+== ControllerApply 0x1805DF350
+   code refs (1): 0x1800214DB
+   data ptr slots (0): 
+== EnableControlCamera 0x1805E36F0
+   code refs (1): 0x18001BB99
+   data ptr slots (0): 
+== BeginDragCamera 0x1805E2640
+   code refs (1): 0x180005344
+   data ptr slots (0): 
+== EndDragCamera 0x1805E3B20
+   code refs (1): 0x18001F82A
+   data ptr slots (0): 
+== SetCameraDragParams 0x1805F9B30
+   code refs (1): 0x18000D8F0
+   data ptr slots (0): 
+== ForceResetCamera 0x1805E4680
+   code refs (1): 0x1800217F1
+   data ptr slots (0): 

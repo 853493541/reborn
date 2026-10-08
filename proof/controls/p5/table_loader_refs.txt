@@ -1,0 +1,253 @@
+hits: 6
+
+##### ref to 0x26466 at 0x18031861D
+0x1803185DD  int3 
+0x1803185DE  int3 
+0x1803185DF  int3 
+0x1803185E0  sub rsp, 0x38
+0x1803185E4  mov rax, qword ptr [rip + 0xb81aed]
+0x1803185EB  xor rax, rsp
+0x1803185EE  mov qword ptr [rsp + 0x28], rax
+0x1803185F3  lea r8, [rsp + 0x20]
+0x1803185F8  mov dword ptr [rsp + 0x20], 0
+0x180318600  lea rdx, [rip + 0x96b28d]
+0x180318607  call 0x180010113
+0x18031860C  cmp dword ptr [rsp + 0x20], 0
+0x180318611  mov rax, qword ptr [rip + 0xbc59c8]
+0x180318618  setne cl
+0x18031861B  mov byte ptr [rax + 0x26466], cl
+0x180318621  mov rcx, qword ptr [rsp + 0x28]
+0x180318626  xor rcx, rsp
+0x180318629  call 0x18000bf9b
+0x18031862E  add rsp, 0x38
+0x180318632  ret 
+0x180318633  int3 
+0x180318634  int3 
+0x180318635  int3 
+0x180318636  int3 
+0x180318637  int3 
+0x180318638  int3 
+0x180318639  int3 
+0x18031863A  int3 
+0x18031863B  int3 
+0x18031863C  int3 
+0x18031863D  int3 
+0x18031863E  int3 
+0x18031863F  int3 
+0x180318640  int3 
+0x180318641  int3 
+0x180318642  int3 
+0x180318643  int3 
+0x180318644  int3 
+0x180318645  int3 
+0x180318646  int3 
+0x180318647  int3 
+0x180318648  int3 
+0x180318649  int3 
+0x18031864A  int3 
+0x18031864B  int3 
+0x18031864C  int3 
+0x18031864D  int3 
+
+##### ref to 0x1E2B8 at 0x180812E0F
+0x180812DCF  retf 
+0x180812DD0  call 0x18000a907
+0x180812DD5  add rsp, 0x190
+0x180812DDC  pop rbx
+0x180812DDD  ret 
+0x180812DDE  int3 
+0x180812DDF  int3 
+0x180812DE0  int3 
+0x180812DE1  int3 
+0x180812DE2  int3 
+0x180812DE3  int3 
+0x180812DE4  int3 
+0x180812DE5  int3 
+0x180812DE6  int3 
+0x180812DE7  int3 
+0x180812DE8  int3 
+0x180812DE9  int3 
+0x180812DEA  int3 
+0x180812DEB  int3 
+0x180812DEC  int3 
+0x180812DED  int3 
+0x180812DEE  int3 
+0x180812DEF  int3 
+0x180812DF0  int3 
+0x180812DF1  int3 
+0x180812DF2  int3 
+0x180812DF3  int3 
+0x180812DF4  int3 
+0x180812DF5  int3 
+0x180812DF6  int3 
+0x180812DF7  int3 
+0x180812DF8  int3 
+0x180812DF9  int3 
+0x180812DFA  int3 
+0x180812DFB  int3 
+0x180812DFC  int3 
+0x180812DFD  int3 
+0x180812DFE  int3 
+0x180812DFF  int3 
+0x180812E00  push rbx
+0x180812E02  sub rsp, 0x60
+0x180812E06  mov r10d, edx
+0x180812E09  mov r11d, r8d
+0x180812E0C  mov r8, qword ptr [rcx + 0x1e2b8]
+0x180812E13  movabs rax, 0xc30c30c30c30c30d
+0x180812E1D  imul rcx, qword ptr [rcx + 0x1e2c0], 0x54
+0x180812E25  imul rcx
+0x180812E28  lea rbx, [rcx + r8]
+0x180812E2C  add rdx, rcx
+0x180812E2F  sar rdx, 6
+0x180812E33  mov rax, rdx
+0x180812E36  shr rax, 0x3f
+0x180812E3A  add rdx, rax
+0x180812E3D  test rdx, rdx
+
+##### ref to 0x1E2C0 at 0x180812E20
+0x180812DE0  int3 
+0x180812DE1  int3 
+0x180812DE2  int3 
+0x180812DE3  int3 
+0x180812DE4  int3 
+0x180812DE5  int3 
+0x180812DE6  int3 
+0x180812DE7  int3 
+0x180812DE8  int3 
+0x180812DE9  int3 
+0x180812DEA  int3 
+0x180812DEB  int3 
+0x180812DEC  int3 
+0x180812DED  int3 
+0x180812DEE  int3 
+0x180812DEF  int3 
+0x180812DF0  int3 
+0x180812DF1  int3 
+0x180812DF2  int3 
+0x180812DF3  int3 
+0x180812DF4  int3 
+0x180812DF5  int3 
+0x180812DF6  int3 
+0x180812DF7  int3 
+0x180812DF8  int3 
+0x180812DF9  int3 
+0x180812DFA  int3 
+0x180812DFB  int3 
+0x180812DFC  int3 
+0x180812DFD  int3 
+0x180812DFE  int3 
+0x180812DFF  int3 
+0x180812E00  push rbx
+0x180812E02  sub rsp, 0x60
+0x180812E06  mov r10d, edx
+0x180812E09  mov r11d, r8d
+0x180812E0C  mov r8, qword ptr [rcx + 0x1e2b8]
+0x180812E13  movabs rax, 0xc30c30c30c30c30d
+0x180812E1D  imul rcx, qword ptr [rcx + 0x1e2c0], 0x54
+0x180812E25  imul rcx
+0x180812E28  lea rbx, [rcx + r8]
+0x180812E2C  add rdx, rcx
+0x180812E2F  sar rdx, 6
+0x180812E33  mov rax, rdx
+0x180812E36  shr rax, 0x3f
+0x180812E3A  add rdx, rax
+0x180812E3D  test rdx, rdx
+0x180812E40  jle 0x180812e8c
+0x180812E42  nop dword ptr [rax]
+0x180812E46  nop word ptr [rax + rax]
+0x180812E50  mov rcx, rdx
+
+##### ref to 0x1E2C0 at 0x18082C434
+
+##### ref to 0x1E2B8 at 0x18082C43C
+0x18082C3FC  mov ecx, 0xea2
+0x18082C401  lea rax, [rip + 0x4a3e98]
+0x18082C408  mov ecx, 3
+0x18082C40D  lea r8, [rip + 0x454774]
+0x18082C414  mov qword ptr [rsp + 0x20], rax
+0x18082C419  lea rdx, [rip + 0x454730]
+0x18082C420  call qword ptr [rip + 0x86dbda]
+0x18082C426  mov eax, r13d
+0x18082C429  add rsp, 0x58
+0x18082C42D  pop r13
+0x18082C42F  pop rbx
+0x18082C430  ret 
+0x18082C431  imul r9, qword ptr [rbx + 0x1e2c0], 0x54
+0x18082C439  mov rcx, qword ptr [rbx + 0x1e2b8]
+0x18082C440  movabs rax, 0xc30c30c30c30c30d
+0x18082C44A  imul r9
+0x18082C44D  lea r8, [r9 + rdx]
+0x18082C451  sar r8, 6
+0x18082C455  lea rdx, [r9 + rcx]
+0x18082C459  movzx r9d, byte ptr [rsp + 0x30]
+0x18082C45F  mov rax, r8
+0x18082C462  shr rax, 0x3f
+0x18082C466  add r8, rax
+0x18082C469  call 0x180004f52
+
+##### ref to 0x26466 at 0x18085CE72
+0x18085CE32  int3 
+0x18085CE33  int3 
+0x18085CE34  int3 
+0x18085CE35  int3 
+0x18085CE36  int3 
+0x18085CE37  int3 
+0x18085CE38  int3 
+0x18085CE39  int3 
+0x18085CE3A  int3 
+0x18085CE3B  int3 
+0x18085CE3C  int3 
+0x18085CE3D  int3 
+0x18085CE3E  int3 
+0x18085CE3F  int3 
+0x18085CE40  int3 
+0x18085CE41  int3 
+0x18085CE42  int3 
+0x18085CE43  int3 
+0x18085CE44  int3 
+0x18085CE45  int3 
+0x18085CE46  int3 
+0x18085CE47  int3 
+0x18085CE48  int3 
+0x18085CE49  int3 
+0x18085CE4A  int3 
+0x18085CE4B  int3 
+0x18085CE4C  int3 
+0x18085CE4D  int3 
+0x18085CE4E  int3 
+0x18085CE4F  int3 
+0x18085CE50  int3 
+0x18085CE51  int3 
+0x18085CE52  int3 
+0x18085CE53  int3 
+0x18085CE54  int3 
+0x18085CE55  int3 
+0x18085CE56  int3 
+0x18085CE57  int3 
+0x18085CE58  int3 
+0x18085CE59  int3 
+0x18085CE5A  int3 
+0x18085CE5B  int3 
+0x18085CE5C  int3 
+0x18085CE5D  int3 
+0x18085CE5E  int3 
+0x18085CE5F  int3 
+0x18085CE60  mov eax, edx
+0x18085CE62  mov edx, ecx
+0x18085CE64  mov rcx, qword ptr [rip + 0x681175]
+0x18085CE6B  test r9b, r9b
+0x18085CE6E  je 0x18085ce8e
+0x18085CE70  cmp byte ptr [rcx + 0x26466], 0
+0x18085CE77  je 0x18085ce8e
+0x18085CE79  mov r9d, r8d
+0x18085CE7C  add rcx, 0x1a0
+0x18085CE83  mov r8d, 0x3e7
+0x18085CE89  jmp 0x180005204
+0x18085CE8E  mov r9d, r8d
+0x18085CE91  add rcx, 0x1a0
+0x18085CE98  mov r8d, eax
+0x18085CE9B  jmp 0x180005204
+0x18085CEA0  int3 
+0x18085CEA1  int3 
+0x18085CEA2  int3 

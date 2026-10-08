@@ -1,0 +1,13 @@
+# Cast/channel bar follow-up: `CastingPanel` turned out to be the metal-casting/refine
+# window (Btn_StartRefine, Box_Diamond), not a spell cast bar. `ProgressBar` is the
+# load=false module driven by the native CASTINGBAR_START/END events (verified after
+# extraction). Plus the General/PQ progress bars for completeness. 2026-09-30.
+ui/Config/Default/ProgressBar.lua
+ui/Config/Default/ProgressBar.ini
+ui/Config/Default/GeneralProgressBar.lua
+ui/Config/Default/GeneralProgressBar.ini
+ui/Config/Default/PQprogressbar.lua
+ui/Config/Default/PQprogressbar.ini
+ui/Scheme/Case/ProgressBar.tab
+ui/Scheme/Case/AutoProgressBarInfo.txt
+ui/Scheme/Case/ProgressBarPlus.txt

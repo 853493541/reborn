@@ -1,0 +1,69 @@
+0x14031E7C0  sub rsp, 0x28
+0x14031E7C4  movsxd r10, dword ptr [rcx + 0x1f4]
+0x14031E7CB  mov r8, rcx
+0x14031E7CE  cmp r10d, 0x21
+0x14031E7D2  ja 0x14031e7e4
+0x14031E7D4  movabs rcx, 0x386c001fe
+0x14031E7DE  bt rcx, r10
+0x14031E7E2  jb 0x14031e7f7
+0x14031E7E4  cmp r10d, 0x11
+0x14031E7E8  je 0x14031e7fd
+0x14031E7EA  lea eax, [r10 - 0x23]
+0x14031E7EE  cmp eax, 2
+0x14031E7F1  ja 0x14031e902
+0x14031E7F7  cmp r10d, 0x11
+0x14031E7FB  jne 0x14031e80b
+0x14031E7FD  cmp dword ptr [r8 + 0x218], 0
+0x14031E805  je 0x14031e902
+0x14031E80B  cmp r10d, 0x1a
+0x14031E80F  jne 0x14031e81f
+0x14031E811  cmp dword ptr [r8 + 0x1f8], 0
+0x14031E819  je 0x14031e902
+0x14031E81F  cmp dword ptr [r8 + 0x388], 0
+0x14031E827  jne 0x14031e902
+0x14031E82D  and edx, 0x800000ff
+0x14031E833  jge 0x14031e83f
+0x14031E835  dec edx
+0x14031E837  or edx, 0xffffff00
+0x14031E83D  inc edx
+0x14031E83F  test edx, edx
+0x14031E841  lea r9d, [rdx + 0x100]
+0x14031E848  cmovns r9d, edx
+0x14031E84C  cmp r9d, dword ptr [r8 + 0x44]
+0x14031E850  je 0x14031e902
+0x14031E856  mov r11d, dword ptr [r8 + 0x380]
+0x14031E85D  mov qword ptr [rsp + 0x20], rbx
+0x14031E862  mov ebx, dword ptr [r8 + 0x384]
+0x14031E869  cmp ebx, r11d
+0x14031E86C  jg 0x14031e880
+0x14031E86E  cmp r9d, r11d
+0x14031E871  cmovle r11d, r9d
+0x14031E875  cmp r11d, ebx
+0x14031E878  cmovge ebx, r11d
+0x14031E87C  mov edx, ebx
+0x14031E87E  jmp 0x14031e8a0
+0x14031E880  mov edx, r9d
+0x14031E883  cmp r9d, r11d
+0x14031E886  jle 0x14031e8a0
+0x14031E888  cmp r9d, ebx
+0x14031E88B  jge 0x14031e8a0
+0x14031E88D  mov ecx, r9d
+0x14031E890  mov eax, ebx
+0x14031E892  sub ecx, r11d
+0x14031E895  sub eax, r9d
+0x14031E898  cmp ecx, eax
+0x14031E89A  mov edx, ebx
+0x14031E89C  cmovle edx, r11d
+0x14031E8A0  cmp dword ptr [r8 + 0x224], 0
+0x14031E8A8  mov rbx, qword ptr [rsp + 0x20]
+0x14031E8AD  mov dword ptr [r8 + 0x44], edx
+0x14031E8B1  je 0x14031e8ba
+0x14031E8B3  mov dword ptr [r8 + 0x278], edx
+0x14031E8BA  cmp r10d, 8
+0x14031E8BE  jne 0x14031e8f8
+0x14031E8C0  mov ecx, dword ptr [r8 + 0x10]
+0x14031E8C4  lea edx, [r10 - 7]
+0x14031E8C8  mov dword ptr [r8 + 0x2a0], ecx
+0x14031E8CF  mov ecx, dword ptr [r8 + 0x14]
+0x14031E8D3  mov dword ptr [r8 + 0x2a4], ecx
+0x14031E8DA  mov rcx, r8

@@ -1,0 +1,133 @@
+
+===== function 0/16 | line 367-436 | params=2 nups=7 stack=5 =====
+pc=   0 L0     GETGLOBAL A=2   B=0    C=0    'CONTROL_FORWARD'
+pc=   1 L0     EQ        A=0   B=0    C=2    R0 R2
+pc=   2 L0     JMP       A=0   B=256  C=25   to pc 29
+pc=   3 L0     TEST      A=1   B=0    C=0    
+pc=   4 L0     JMP       A=0   B=256  C=11   to pc 17
+pc=   5 L0     GETUPVAL  A=2   B=0    C=0    
+pc=   6 L0     TEST      A=2   B=0    C=1    
+pc=   7 L0     JMP       A=0   B=256  C=6    to pc 15
+pc=   8 L0     GETGLOBAL A=2   B=0    C=1    'AddDirectionVector'
+pc=   9 L0     LOADK     A=3   B=0    C=2    0.0
+pc=  10 L0     LOADK     A=4   B=0    C=3    1.0
+pc=  11 L0     CALL      A=2   B=3    C=1    args=2 ret=0
+pc=  12 L0     LOADBOOL  A=2   B=1    C=0    
+pc=  13 L0     SETUPVAL  A=2   B=0    C=0    
+pc=  14 L0     JMP       A=0   B=256  C=99   to pc 115
+pc=  15 L0     RETURN    A=0   B=1    C=0    
+pc=  16 L0     JMP       A=0   B=256  C=97   to pc 115
+pc=  17 L0     GETUPVAL  A=2   B=0    C=0    
+pc=  18 L0     TEST      A=2   B=0    C=0    
+pc=  19 L0     JMP       A=0   B=256  C=6    to pc 27
+pc=  20 L0     GETGLOBAL A=2   B=0    C=1    'AddDirectionVector'
+pc=  21 L0     LOADK     A=3   B=0    C=2    0.0
+pc=  22 L0     LOADK     A=4   B=0    C=4    -1.0
+pc=  23 L0     CALL      A=2   B=3    C=1    args=2 ret=0
+pc=  24 L0     LOADBOOL  A=2   B=0    C=0    
+pc=  25 L0     SETUPVAL  A=2   B=0    C=0    
+pc=  26 L0     JMP       A=0   B=256  C=87   to pc 115
+pc=  27 L0     RETURN    A=0   B=1    C=0    
+pc=  28 L0     JMP       A=0   B=256  C=85   to pc 115
+pc=  29 L0     GETGLOBAL A=2   B=0    C=5    'CONTROL_BACKWARD'
+pc=  30 L0     EQ        A=0   B=0    C=2    R0 R2
+pc=  31 L0     JMP       A=0   B=256  C=25   to pc 58
+pc=  32 L0     TEST      A=1   B=0    C=0    
+pc=  33 L0     JMP       A=0   B=256  C=11   to pc 46
+pc=  34 L0     GETUPVAL  A=2   B=1    C=0    
+pc=  35 L0     TEST      A=2   B=0    C=1    
+pc=  36 L0     JMP       A=0   B=256  C=6    to pc 44
+pc=  37 L0     GETGLOBAL A=2   B=0    C=1    'AddDirectionVector'
+pc=  38 L0     LOADK     A=3   B=0    C=2    0.0
+pc=  39 L0     LOADK     A=4   B=0    C=4    -1.0
+pc=  40 L0     CALL      A=2   B=3    C=1    args=2 ret=0
+pc=  41 L0     LOADBOOL  A=2   B=1    C=0    
+pc=  42 L0     SETUPVAL  A=2   B=1    C=0    
+pc=  43 L0     JMP       A=0   B=256  C=70   to pc 115
+pc=  44 L0     RETURN    A=0   B=1    C=0    
+pc=  45 L0     JMP       A=0   B=256  C=68   to pc 115
+pc=  46 L0     GETUPVAL  A=2   B=1    C=0    
+pc=  47 L0     TEST      A=2   B=0    C=0    
+pc=  48 L0     JMP       A=0   B=256  C=6    to pc 56
+pc=  49 L0     GETGLOBAL A=2   B=0    C=1    'AddDirectionVector'
+pc=  50 L0     LOADK     A=3   B=0    C=2    0.0
+pc=  51 L0     LOADK     A=4   B=0    C=3    1.0
+pc=  52 L0     CALL      A=2   B=3    C=1    args=2 ret=0
+pc=  53 L0     LOADBOOL  A=2   B=0    C=0    
+pc=  54 L0     SETUPVAL  A=2   B=1    C=0    
+pc=  55 L0     JMP       A=0   B=256  C=58   to pc 115
+pc=  56 L0     RETURN    A=0   B=1    C=0    
+pc=  57 L0     JMP       A=0   B=256  C=56   to pc 115
+pc=  58 L0     GETGLOBAL A=2   B=0    C=6    'CONTROL_TURN_LEFT'
+pc=  59 L0     EQ        A=0   B=0    C=2    R0 R2
+pc=  60 L0     JMP       A=0   B=256  C=25   to pc 87
+pc=  61 L0     TEST      A=1   B=0    C=0    
+pc=  62 L0     JMP       A=0   B=256  C=11   to pc 75
+pc=  63 L0     GETUPVAL  A=2   B=2    C=0    
+pc=  64 L0     TEST      A=2   B=0    C=1    
+pc=  65 L0     JMP       A=0   B=256  C=6    to pc 73
+pc=  66 L0     GETGLOBAL A=2   B=0    C=1    'AddDirectionVector'
+pc=  67 L0     LOADK     A=3   B=0    C=4    -1.0
+pc=  68 L0     LOADK     A=4   B=0    C=2    0.0
+pc=  69 L0     CALL      A=2   B=3    C=1    args=2 ret=0
+pc=  70 L0     LOADBOOL  A=2   B=1    C=0    
+pc=  71 L0     SETUPVAL  A=2   B=2    C=0    
+pc=  72 L0     JMP       A=0   B=256  C=41   to pc 115
+pc=  73 L0     RETURN    A=0   B=1    C=0    
+pc=  74 L0     JMP       A=0   B=256  C=39   to pc 115
+pc=  75 L0     GETUPVAL  A=2   B=2    C=0    
+pc=  76 L0     TEST      A=2   B=0    C=0    
+pc=  77 L0     JMP       A=0   B=256  C=6    to pc 85
+pc=  78 L0     GETGLOBAL A=2   B=0    C=1    'AddDirectionVector'
+pc=  79 L0     LOADK     A=3   B=0    C=3    1.0
+pc=  80 L0     LOADK     A=4   B=0    C=2    0.0
+pc=  81 L0     CALL      A=2   B=3    C=1    args=2 ret=0
+pc=  82 L0     LOADBOOL  A=2   B=0    C=0    
+pc=  83 L0     SETUPVAL  A=2   B=2    C=0    
+pc=  84 L0     JMP       A=0   B=256  C=29   to pc 115
+pc=  85 L0     RETURN    A=0   B=1    C=0    
+pc=  86 L0     JMP       A=0   B=256  C=27   to pc 115
+pc=  87 L0     GETGLOBAL A=2   B=0    C=7    'CONTROL_TURN_RIGHT'
+pc=  88 L0     EQ        A=0   B=0    C=2    R0 R2
+pc=  89 L0     JMP       A=0   B=256  C=24   to pc 115
+pc=  90 L0     TEST      A=1   B=0    C=0    
+pc=  91 L0     JMP       A=0   B=256  C=11   to pc 104
+pc=  92 L0     GETUPVAL  A=2   B=3    C=0    
+pc=  93 L0     TEST      A=2   B=0    C=1    
+pc=  94 L0     JMP       A=0   B=256  C=6    to pc 102
+pc=  95 L0     GETGLOBAL A=2   B=0    C=1    'AddDirectionVector'
+pc=  96 L0     LOADK     A=3   B=0    C=3    1.0
+pc=  97 L0     LOADK     A=4   B=0    C=2    0.0
+pc=  98 L0     CALL      A=2   B=3    C=1    args=2 ret=0
+pc=  99 L0     LOADBOOL  A=2   B=1    C=0    
+pc= 100 L0     SETUPVAL  A=2   B=3    C=0    
+pc= 101 L0     JMP       A=0   B=256  C=12   to pc 115
+pc= 102 L0     RETURN    A=0   B=1    C=0    
+pc= 103 L0     JMP       A=0   B=256  C=10   to pc 115
+pc= 104 L0     GETUPVAL  A=2   B=3    C=0    
+pc= 105 L0     TEST      A=2   B=0    C=0    
+pc= 106 L0     JMP       A=0   B=256  C=6    to pc 114
+pc= 107 L0     GETGLOBAL A=2   B=0    C=1    'AddDirectionVector'
+pc= 108 L0     LOADK     A=3   B=0    C=4    -1.0
+pc= 109 L0     LOADK     A=4   B=0    C=2    0.0
+pc= 110 L0     CALL      A=2   B=3    C=1    args=2 ret=0
+pc= 111 L0     LOADBOOL  A=2   B=0    C=0    
+pc= 112 L0     SETUPVAL  A=2   B=3    C=0    
+pc= 113 L0     JMP       A=0   B=256  C=0    to pc 115
+pc= 114 L0     RETURN    A=0   B=1    C=0    
+pc= 115 L0     GETUPVAL  A=2   B=5    C=0    
+pc= 116 L0     GETTABLE  A=2   B=2    C=264  R2 K8('nX')
+pc= 117 L0     EQ        A=0   B=2    C=258  R2 K2(0.0)
+pc= 118 L0     JMP       A=0   B=256  C=4    to pc 124
+pc= 119 L0     GETUPVAL  A=2   B=5    C=0    
+pc= 120 L0     GETTABLE  A=2   B=2    C=265  R2 K9('nY')
+pc= 121 L0     EQ        A=0   B=2    C=258  R2 K2(0.0)
+pc= 122 L0     JMP       A=0   B=256  C=0    to pc 124
+pc= 123 L0     LOADBOOL  A=2   B=0    C=1    
+pc= 124 L0     LOADBOOL  A=2   B=1    C=0    
+pc= 125 L0     SETUPVAL  A=2   B=4    C=0    
+pc= 126 L0     GETGLOBAL A=2   B=0    C=10   'Camera_EnableControl'
+pc= 127 L0     GETUPVAL  A=3   B=6    C=0    
+pc= 128 L0     GETUPVAL  A=4   B=4    C=0    
+pc= 129 L0     CALL      A=2   B=3    C=1    args=2 ret=0
+pc= 130 L0     RETURN    A=0   B=1    C=0    

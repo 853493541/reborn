@@ -18,7 +18,7 @@ lands, keep the evidence column pointing at real file:line.
 | S3 | Terrain ground-clamp guard for the aim loop | **OPEN** | `camY = camGround` breaks the orbit ray | none — small |
 | S4 | Unify pitch controllers / deadband | **PARTIAL** | residual now fractional + 10 ms low-pass; feed-forward still separate, no deadband | S1–S3 |
 | S5 | Max-distance clamp on every distance writer | **OPEN** | only `ZoomBy` clamps; F11/sprint bypass; `SetMaxDistance` misnamed | none |
-| S6 | RMB character turn uses the turn-rate model | **OPEN** | instant snap at `RebornClient.cs:929` | movement turn model |
+| S6 | RMB character turn uses the turn-rate model | **DONE** (2026-09-29) | movement direction now recomputed camera-relative per frame (no held world dir) + heading/facing turn model with the >112.5° speed/turn-step penalty (`client/RebornClient.cs`; run `proof/controls/steering_run.txt`). Server `+0x48` turn step still undecoded — host fallback π rad/s | — |
 | S7 | LMB click vs drag (select on click) | **OPEN** | press always locks; no threshold/timestamp | targeting |
 | S8 | 广角/FOV + engine caps | **OPEN (mapping DONE)** | panel = 30–60°, default 50° → `Set3DEngineOption(fCameraAngle)`; caps unprobed (`RESEARCH_RESOLVED_GAPS.md` §3) | `docs/camera/DISTANCE_FOV_SPEC.md` |
 | S9 | Wall/structure obstruction (camera clips through walls) | **OPEN** | terrain-only march `RebornClient.cs:1058-1080`; native rules in `docs/camera/WALL_OBSTRUCTION.md` | baked bins; native interface optional |
@@ -33,18 +33,18 @@ persistence, bridges) with complete decoded annexes.
 
 | ID | Item | Status | Evidence / note | Dependency |
 |---|---|---|---|---|
-| C1 | Hotkey table (`default.txt` + `bindings.ini`) loaded at runtime | **OPEN** | hardcoded `KeyDown/KeyUp` | none |
-| C2 | Key encoding (VK + Ctrl/Shift/Alt + mouse/wheel) | **OPEN (research DONE)** | `JX3_HOTKEY_SYSTEM.md` §3 | C1 |
+| C1 | Hotkey table (`default.txt` + `bindings.ini`) loaded at runtime | **PARTIAL** (2026-09-30, `agent/move-controls`) | `client/HotkeyTable.cs` loads both files (embedded snapshot; `RC_HOTKEY_DIR` live override), key decode + match; movement command set dispatched, other commands parsed/counted as unhandled; `proof/controls/movement_controls_run.txt`. Rebinding/contexts still open | — |
+| C2 | Key encoding (VK + Ctrl/Shift/Alt + mouse/wheel) | **DONE** (2026-09-30) | `HotkeyTable.cs` low16 VK / high16 mods (Ctrl 1 / Shift 2 / Alt 4) + mouse 1/2/256/257; Shift ignored for the movement set only (host debug ×10 note) | C1 |
 | C3 | Rebinding UI + `SetCapture` semantics | **OPEN (research DONE)** | `HotkeyPanel` flow decoded (`RESEARCH_RESOLVED_GAPS.md` §2) | C1 |
-| C4 | Per-role override save/load (`hotkey_newlast.txt` + backups + `hotkey.data`) | **OPEN (research DONE)** | grammar + real files decoded (§1) | C1 |
+| C4 | Per-role override save/load (`hotkey_newlast.txt` + backups + `hotkey.data`) | **OPEN (research DONE)** | grammar + real files decoded (§1); `RC_HOTKEY_DIR` is the intended loading path | C1 |
 | C5 | Contexts (dynamic/BR/rogue/mobile) | **OPEN (research DONE)** | `context` column + `contextgroup` tabs (§1/§2) | C1 |
-| C6 | Key repeat (`EnableKeyDownLoop`) | **OPEN** | API recovered | C1 |
+| C6 | Key repeat (`EnableKeyDownLoop`) | **OPEN** | API recovered; movement keys use host debounce booleans | C1 |
 | C7 | Action bars/pages/dynamic bars + skill assignment | **OPEN (research DONE)** | custom data + `StorageServer('ActionBar')` + anchors (§6) | C1, targeting |
 | C8 | Targeting (Tab/Ctrl+Tab/F1–F5/target-of-target/filters) | **OPEN (partially researched)** | bodies located in `b03/target.lua`, not decoded | C1 |
 | C9 | Cast input: keydown, `Alt+WASD` direction, ground aim | **OPEN (partially researched)** | `CastSkillByKeyDown` defined in `hotkeys.lua`; body pending | C7/C8 |
-| C10 | Movement fidelity: turn keys, autorun, sit/mount/sheath, click-to-move, follow/interact | **OPEN (research DONE)** | command bodies decoded (§5); engine `ResponseWASDKey` is C-side | C1 |
-| C11 | Integer 15/16 Hz movement model + turn-rate + penalty | **OPEN** | spec complete (`REBORN_JUMP_FALL_SPEC.md`) | C10 |
-| C12 | Operation modes (classic/joystick, `CAMERAUP/DOWN`) | **OPEN (research DONE)** | `SetOperationMode` + `Camera_EnableControl`/`Scene_EnableFreeMoveControl` (§4) | C1 |
+| C10 | Movement fidelity: turn keys, autorun, sit/mount/sheath, click-to-move, follow/interact | **PARTIAL** (2026-09-30, `agent/move-controls`) | turn-in-place (←/→, camera follows) + autorun (G/NumLock) landed; sit/mount/sheath/click-to-move/follow/interact open; `proof/controls/movement_controls_run.txt` | C1 |
+| C11 | Integer 15/16 Hz movement model + turn-rate + penalty | **PARTIAL** (2026-09-30) | turn model + penalty already live (S6); tick truth recorded: character logic 15 Hz, combat tables 16 fps (`JX3_COLLISION_SYSTEM.md:190-191`); integer port still open — host integrates continuous dt with 15 Hz jump conversions (`JX3_MOVEMENT_CONTROLS.md` §3) | C10 |
+| C12 | Operation modes (classic/joystick, `CAMERAUP/DOWN`) | **PARTIAL** (M0+M3 landed 2026-09-30, corrected 2026-10-01; M1/M2 plumbing landed) | bytecode (protos 0/76, 0/78): STRAFE is the only mode-branched handler — classical `SetControl` + free-view `TurnLeft/RightStart`, joystick `ResponseWASDKey`; host classical A/D **turn** by default (`RC_FREEVIEW=1`, observed game), `0` = decoded side-step branch with the `挪步左/右` clips; classical S back-pedal; joystick A/D/S turn-to-heading; turn camera drag via `cameraYawBehind` + 15° dead zone; per-mode follow mode + reset speeds clamped and applied at switch. Open: free-view state itself, per-frame consumer of follow mode `[0..3]` / reset speeds (`OPERATION_MODES_PLAN.md` §7b/§7c) | C1 |
 | C13 | UI customization (panels, layout `custom.dat`, settings panels) | **OPEN (research DONE)** | `UICustomModePanel` + window anchors (§7) | C1 |
 
 ## Combat / netcode (server-owned)

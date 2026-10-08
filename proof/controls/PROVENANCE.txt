@@ -1,0 +1,39 @@
+# Control-decode provenance (which binary every evidence file came from)
+
+Recorded 2026-10-02 because the two Represent builds have identical names and
+must never be confused.
+
+## Game client = THE source of truth for all decode
+
+- Path: C:\SeasunGame\Game\JX3\bin\zhcn_hd\bin64\JX3RepresentX64.dll
+- Version: JX3 1.5.0.9975 (GameInfo.dat; installed 2026-09-27)
+- SHA256: 174D76725E1A2AFC2596BA97B0F0FCBC0FD8DF73A2FD03DBD74C21F0ABF0ABD9
+- Used by: P1 (Lua scripts from the client paks), P2 (constants), P3 static
+  (thunk/wrapper/apply chain), P5 (animation selection/lookup), the P4
+  camera-manager field scans (game-client section), this session's
+  follow-mode setter (0x180ACE3F0), follow-mode read scan, and the spring
+  function dump (0x180B11E40).
+- Evidence files: proof/controls/p3/*, p5/*, lua_dump/*, lua_index_control.txt,
+  tool outputs whose commands used the zhcn_hd path.
+
+## MovieEditor build = HOST only (never used as decode evidence)
+
+- Path: C:\SeasunGame\MovieEditor\bin64\JX3RepresentX64.dll
+- Build: 2026-09-14
+- SHA256: BE047929A761FABA411DFC44BA3CECBEFA6FD3342AE583959F22845A09F762CE
+- Used ONLY for:
+  1. proof/controls/p4/host_build_diff.txt - the host-vs-game RVA table, so
+     `RC_PROBE_CONTROL` reads the right addresses in the process we can
+     actually run (our sandbox client loads the MovieEditor engine).
+  2. The probe run itself (reborn_20261002_155820.log) - the host does not
+     instantiate the JX3 game world (singleton null), which is why that
+     runtime probe path was closed.
+- MovieEditor is the rendering/host engine per AGENTS 4; it is not the
+  authority for any mechanism claim.
+
+## Why a host build exists at all
+
+The reborn client is a host app that loads the MovieEditor engine DLLs to run
+the sandbox. Writing/reading memory in the game client is forbidden (AGENTS 4/
+8), and the game client needs an account; therefore runtime probing is only
+possible in our own host - which is why the host build diff table exists.

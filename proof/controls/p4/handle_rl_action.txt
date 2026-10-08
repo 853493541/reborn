@@ -1,0 +1,166 @@
+0x1802F54B0  mov qword ptr [rsp + 8], rbx
+0x1802F54B5  push rdi
+0x1802F54B6  sub rsp, 0x30
+0x1802F54BA  mov edi, edx
+0x1802F54BC  mov rbx, rcx
+0x1802F54BF  test rcx, rcx
+0x1802F54C2  je 0x1802f54fe
+0x1802F54C4  test edx, edx
+0x1802F54C6  jle 0x1802f54fe
+0x1802F54C8  mov ecx, dword ptr [rcx]
+0x1802F54CA  call 0x18002221e
+0x1802F54CF  test rax, rax
+0x1802F54D2  jne 0x1802f54e1
+0x1802F54D4  lea r9d, [rax + 0x13]
+0x1802F54D8  lea r8, [rip + 0x98ce19]
+0x1802F54DF  jmp 0x1802f550b
+0x1802F54E1  lea edx, [rdi - 1]
+0x1802F54E4  lea rcx, [rbx + 0x10]
+0x1802F54E8  call rax
+0x1802F54EA  test eax, eax
+0x1802F54EC  je 0x1802f5529
+0x1802F54EE  mov eax, 1
+0x1802F54F3  mov rbx, qword ptr [rsp + 0x40]
+0x1802F54F8  add rsp, 0x30
+0x1802F54FC  pop rdi
+0x1802F54FD  ret 
+0x1802F54FE  mov r9d, 0xe
+0x1802F5504  lea r8, [rip + 0x98c01d]
+0x1802F550B  lea rcx, [rip + 0x98cdce]
+0x1802F5512  mov qword ptr [rsp + 0x20], rcx
+0x1802F5517  lea rdx, [rip + 0x98b632]
+0x1802F551E  mov ecx, 3
+0x1802F5523  call qword ptr [rip + 0xda4ad7]
+0x1802F5529  xor eax, eax
+0x1802F552B  mov rbx, qword ptr [rsp + 0x40]
+0x1802F5530  add rsp, 0x30
+0x1802F5534  pop rdi
+0x1802F5535  ret 
+0x1802F5536  int3 
+0x1802F5537  int3 
+0x1802F5538  int3 
+0x1802F5539  int3 
+0x1802F553A  int3 
+0x1802F553B  int3 
+0x1802F553C  int3 
+0x1802F553D  int3 
+0x1802F553E  int3 
+0x1802F553F  int3 
+0x1802F5540  int3 
+0x1802F5541  int3 
+0x1802F5542  int3 
+0x1802F5543  int3 
+0x1802F5544  int3 
+0x1802F5545  int3 
+0x1802F5546  int3 
+0x1802F5547  int3 
+0x1802F5548  int3 
+0x1802F5549  int3 
+0x1802F554A  int3 
+0x1802F554B  int3 
+0x1802F554C  int3 
+0x1802F554D  int3 
+0x1802F554E  int3 
+0x1802F554F  int3 
+0x1802F5550  int3 
+0x1802F5551  int3 
+0x1802F5552  int3 
+0x1802F5553  int3 
+0x1802F5554  int3 
+0x1802F5555  int3 
+0x1802F5556  int3 
+0x1802F5557  int3 
+0x1802F5558  int3 
+0x1802F5559  int3 
+0x1802F555A  int3 
+0x1802F555B  int3 
+0x1802F555C  int3 
+0x1802F555D  int3 
+0x1802F555E  int3 
+0x1802F555F  int3 
+0x1802F5560  sub rsp, 0x38
+0x1802F5564  cmp r8d, 1
+0x1802F5568  je 0x1802f559b
+0x1802F556A  lea rcx, [rip + 0x98cd97]
+0x1802F5571  mov r9d, 0xc
+0x1802F5577  mov qword ptr [rsp + 0x20], rcx
+0x1802F557C  lea r8, [rip + 0x98b825]
+0x1802F5583  lea rdx, [rip + 0x98b5c6]
+0x1802F558A  lea ecx, [r9 - 9]
+0x1802F558E  call qword ptr [rip + 0xda4a6c]
+0x1802F5594  xor eax, eax
+0x1802F5596  add rsp, 0x38
+0x1802F559A  ret 
+0x1802F559B  movzx eax, byte ptr [rdx + 0xc]
+0x1802F559F  cmp al, 8
+0x1802F55A1  je 0x1802f55f5
+0x1802F55A3  cmp al, 9
+0x1802F55A5  jne 0x1802f55be
+0x1802F55A7  movsd xmm1, qword ptr [rdx]
+0x1802F55AB  cvtpd2ps xmm1, xmm1
+0x1802F55AF  call 0x18000adc6
+0x1802F55B4  mov eax, 1
+0x1802F55B9  add rsp, 0x38
+0x1802F55BD  ret 
+0x1802F55BE  cmp al, 2
+0x1802F55C0  jne 0x1802f55d8
+0x1802F55C2  movd xmm1, dword ptr [rdx]
+0x1802F55C6  cvtdq2ps xmm1, xmm1
+0x1802F55C9  call 0x18000adc6
+0x1802F55CE  mov eax, 1
+0x1802F55D3  add rsp, 0x38
+0x1802F55D7  ret 
+0x1802F55D8  cmp al, 1
+0x1802F55DA  jne 0x1802f55f5
+0x1802F55DC  movzx eax, byte ptr [rdx]
+0x1802F55DF  movd xmm1, eax
+0x1802F55E3  cvtdq2ps xmm1, xmm1
+0x1802F55E6  call 0x18000adc6
+0x1802F55EB  mov eax, 1
+0x1802F55F0  add rsp, 0x38
+0x1802F55F4  ret 
+0x1802F55F5  movss xmm1, dword ptr [rdx]
+0x1802F55F9  call 0x18000adc6
+0x1802F55FE  mov eax, 1
+0x1802F5603  add rsp, 0x38
+0x1802F5607  ret 
+0x1802F5608  int3 
+0x1802F5609  int3 
+0x1802F560A  int3 
+0x1802F560B  int3 
+0x1802F560C  int3 
+0x1802F560D  int3 
+0x1802F560E  int3 
+0x1802F560F  int3 
+0x1802F5610  int3 
+0x1802F5611  int3 
+0x1802F5612  int3 
+0x1802F5613  int3 
+0x1802F5614  int3 
+0x1802F5615  int3 
+0x1802F5616  int3 
+0x1802F5617  int3 
+0x1802F5618  int3 
+0x1802F5619  int3 
+0x1802F561A  int3 
+0x1802F561B  int3 
+0x1802F561C  int3 
+0x1802F561D  int3 
+0x1802F561E  int3 
+0x1802F561F  int3 
+0x1802F5620  int3 
+0x1802F5621  int3 
+0x1802F5622  int3 
+0x1802F5623  int3 
+0x1802F5624  int3 
+0x1802F5625  int3 
+0x1802F5626  int3 
+0x1802F5627  int3 
+0x1802F5628  int3 
+0x1802F5629  int3 
+0x1802F562A  int3 
+0x1802F562B  int3 
+0x1802F562C  int3 
+0x1802F562D  int3 
+0x1802F562E  int3 
+0x1802F562F  int3 

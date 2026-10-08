@@ -361,6 +361,16 @@ internal static class CameraShim
         try { return Str(RC_PatchD6Info()); } catch { return "?"; }
     }
 
+    [DllImport("camera_shim.dll", CallingConvention = CallingConvention.Cdecl)]
+    static extern IntPtr RC_D6SeedInfo();
+
+    // D6 lazy-hash seed status of the LOADED shim ("seed slot=0x... value=0x..." or
+    // "n/a" when the shim is a stale build without RC_D6Seed - the D6 AV returns then).
+    public static string D6SeedInfo()
+    {
+        try { return Str(RC_D6SeedInfo()); } catch { return "n/a"; }
+    }
+
     public static string FindAll(float x, float z)
     {
         try { return Str(RC_Probe_FindAll(x, z)); }
@@ -410,8 +420,8 @@ internal static class CameraShim
             }
             int self = RC_Shim_AbiSelfTest();
             Available = self == 0x53484D01;
-            log(string.Format("CameraShim: loaded rc=0 selftest=0x{0:X} status={1}",
-                self, Status));
+            log(string.Format("CameraShim: loaded rc=0 selftest=0x{0:X} status={1} d6={2}",
+                self, Status, D6SeedInfo()));
         }
         catch (DllNotFoundException)
         {

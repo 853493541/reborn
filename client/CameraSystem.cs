@@ -98,7 +98,7 @@ public sealed class CameraSystem
         Rows[MODE_NPC_DIALOG] = DefaultRow(MODE_NPC_DIALOG);
         Rows[MODE_GOD] = DefaultRow(MODE_GOD);
         Pitch = Rows[MODE_CHARACTER].F("InitCameraPitch", -20.0 * DEG);
-        Distance = Rows[MODE_CHARACTER].F("InitCameraDistance", 6.0) * UnitsPerMeter;
+        Distance = Rows[MODE_CHARACTER].F("InitCameraDistance", 12.45) * UnitsPerMeter;
     }
 
     public CameraParams Row { get { return Rows[Mode]; } }
@@ -126,7 +126,10 @@ public sealed class CameraSystem
         {
             case MODE_CHARACTER:
                 p.Set("CameraHeight", 2.0);
-                p.Set("TargetDistance", 6.0);
+                // default follow distance = the client-truth max: user panel
+                // fMaxCameraDistance clamps at 2000 u (20 m) and the engine cap
+                // is 2000; user decision 2026-09-29 (see HOST_DEVIATIONS C10).
+                p.Set("TargetDistance", 12.45);
                 // real zoom limits, world units (NOT meters). The client's
                 // VideoSettingPanel.tCameraStatic default fMaxCameraDistance is
                 // 2000 (userdata/<account>/<role>/custom.dat, 68/92 roles;
@@ -139,7 +142,7 @@ public sealed class CameraSystem
                 p.Set("MaxDragSpeed", 0.00314);             // verified loader default
                 p.Set("RotationSpeed", 0.00314);            // verified loader default
                 p.Set("InitCameraPitch", -0.35);        // real client default (custom.dat)
-                p.Set("InitCameraDistance", 6.0);
+                p.Set("InitCameraDistance", 12.45);    // client number 1245 u (number.krl CameraMaxDistance)
                 // Host placeholders (docs/camera/REAL_VALUES.md §7/§8 item 6):
                 // the real per-mode move-pitch rows are CDN-only. The DLL
                 // loader defaults are 0, but the model needs non-zero pivots
@@ -154,12 +157,15 @@ public sealed class CameraSystem
                 break;
             case MODE_SPRINT:
                 p.Set("CameraHeight", 2.2);
-                p.Set("TargetDistance", 6.0);               // per-mode row unavailable
+                // sprint base = the same client-truth max as the character row:
+                // a 6 m sprint base made Shift+W ramp 2000->660->2000 (the
+                // "camera zooms in while running" report, 2026-09-29)
+                p.Set("TargetDistance", 12.45);
                 p.Set("SmoothTime", 0.5);
                 p.Set("MaxDragSpeed", 0.0025);
                 p.Set("RotationSpeed", 0.0025);
                 p.Set("InitCameraPitch", -0.35);
-                p.Set("InitCameraDistance", 6.0);
+                p.Set("InitCameraDistance", 12.45);
                 p.Set("SprintCameraAngle", 0.3);
                 p.Set("SprintCameraPitch", -0.35);
                 p.Set("SprintCameraMaxDistance", 60.0);     // unit/consumer unresolved; not an absolute target
@@ -322,11 +328,13 @@ public sealed class CameraSystem
         return units;
     }
 
-    // JX3 wheel zoom, from the real UI binding (ui/script/hotkeys.lua):
+    // JX3 zoom, from the real UI binding (ui/script/hotkeys.lua):
     //   CAMERAZOOMIN  -> CameraZoomIn()  = Camera_Zoom(0.9)   (distance * 0.9)
     //   CAMERAZOOMOUT -> CameraZoomOut() = Camera_Zoom(1.1)   (distance * 1.1)
     // clamped to [fMinCameraDistance, fMaxCameraDistance]; units: world units.
     // (The DLL's ZoomCharacterCamera_Step is a different path, not the wheel.)
+    // Host binding 2026-09-30 (user decision): the wheel is inert; the host
+    // maps these to the +/- keys in RebornClient.
     public void ZoomBy(double direction)
     {
         double td = Row.F("TargetDistance", 6.0) * UnitsPerMeter;
@@ -402,7 +410,11 @@ public sealed class CameraSystem
         double[] desired = new double[3];
         DesiredOffset(Yaw, Pitch, distance, height, desired);
 
-        double smoothTime = Math.Max(row.F("SmoothTime", 0.1), 1e-3);
+        // placement smoothing is shared across modes (CharacterCameraSmoothTime,
+        // 60 ms; PENETRATION_PLAN C1): the sprint row's SmoothTime is the sprint
+        // pull-back constant, not the orbit placement constant - using it made
+        // a sprint (WW) drag collapse the orbit radius (the "false zoom-in")
+        double smoothTime = Math.Max(Rows[MODE_CHARACTER].F("SmoothTime", 0.06), 1e-3);
         for (int i = 0; i < 3; i++)
         {
             double delta = desired[i] - Offset[i];
@@ -796,4 +808,31 @@ internal static class MiniJson
     {
         while (i < s.Length && char.IsWhiteSpace(s[i])) i++;
     }
+}
+
+// JX3 operation modes (docs/controls/OPERATION_MODES_PLAN.md). Pure gating
+// model so the smoke exe can test it without the engine. CLASSICAL rotates
+// only while LMB/RMB is held and RMB also turns the body; JOYSTICK rotates on
+// mouse move without buttons, keeps the cursor locked, and the body follows
+// the movement heading (no RMB body turn).
+public static class CameraOperationMode
+{
+    public const int Classical = 0;
+    public const int Joystick = 1;
+
+    public static string Name(int mode)
+    {
+        return mode == Joystick ? "joystick" : "classical";
+    }
+
+    public static int Parse(string s)
+    {
+        if (string.IsNullOrEmpty(s)) return Classical;
+        string t = s.Trim().ToLowerInvariant();
+        if (t == "joystick" || t == "1") return Joystick;
+        return Classical;
+    }
+
+    public static bool RmbTurnsBody(int mode) { return mode == Classical; }
+    public static bool BodyFollowsHeading(int mode) { return mode == Joystick; }
 }

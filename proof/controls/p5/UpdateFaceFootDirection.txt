@@ -1,0 +1,61 @@
+##### UpdateFaceFootDirection 0x180534639
+0x180534639  pop rsp
+0x18053463A  shr eax, 0x4d
+0x18053463D  jb 0x1805345ed
+0x18053463F  dec dword ptr [rdi]
+0x180534641  sub al, cl
+0x180534643  lea rcx, [rbx + 0x70]
+0x180534647  call 0x180003b9d
+0x18053464C  lea rcx, [rbx + 0x70]
+0x180534650  call 0x180004732
+0x180534655  test eax, eax
+0x180534657  jne 0x1805346c9
+0x180534659  lea rcx, [rbx + 0x70]
+0x18053465D  call 0x18000f75e
+0x180534662  test eax, eax
+0x180534664  jne 0x1805346c9
+0x180534666  lea rcx, [rbx + 0x70]
+0x18053466A  call 0x18001f9fb
+0x18053466F  test eax, eax
+0x180534671  jne 0x1805346c9
+0x180534673  movss xmm0, dword ptr [rbx + 0x4c]
+0x180534678  movaps xmm1, xmm8
+0x18053467C  movss xmm3, dword ptr [rsp + 0x30]
+0x180534682  mov rcx, rbx
+0x180534685  movss xmm2, dword ptr [rbx + 0x30]
+0x18053468A  movss dword ptr [rsp + 0x20], xmm0
+0x180534690  call 0x1800236d7
+0x180534695  test eax, eax
+0x180534697  jne 0x1805346c9
+0x180534699  lea rax, [rip + 0x77f2a8]
+0x1805346A0  mov r9d, 0x1c1
+0x1805346A6  lea r8, [rip + 0x74c4db]
+0x1805346AD  mov qword ptr [rsp + 0x20], rax
+0x1805346B2  lea rdx, [rip + 0x74c497]
+0x1805346B9  mov ecx, 3
+0x1805346BE  call qword ptr [rip + 0xb6593c]
+0x1805346C4  mov eax, r15d
+0x1805346C7  jmp 0x1805346f1
+0x1805346C9  mov ecx, dword ptr [rbx + 0x20]
+0x1805346CC  mov eax, 1
+0x1805346D1  movss xmm0, dword ptr [rsp + 0x30]
+0x1805346D7  mov dword ptr [rbx + 0x2c], ecx
+0x1805346DA  mov ecx, dword ptr [rbx + 0x34]
+0x1805346DD  mov dword ptr [rbx + 0x40], ecx
+0x1805346E0  mov ecx, dword ptr [rbx + 0x4c]
+0x1805346E3  mov dword ptr [rbx + 0x54], ecx
+0x1805346E6  movss dword ptr [rbx + 0x20], xmm8
+0x1805346EC  movss dword ptr [rbx + 0x34], xmm0
+0x1805346F1  mov rcx, qword ptr [rsp + 0x38]
+0x1805346F6  xor rcx, rsp
+0x1805346F9  call 0x18000bf9b
+0x1805346FE  movaps xmm6, xmmword ptr [rsp + 0x60]
+0x180534703  movaps xmm8, xmmword ptr [rsp + 0x40]
+0x180534709  add rsp, 0x70
+0x18053470D  pop r15
+0x18053470F  pop r14
+0x180534711  pop rdi
+0x180534712  pop rbp
+0x180534713  pop rbx
+0x180534714  ret 
+0x180534715  nop dword ptr [rax]
