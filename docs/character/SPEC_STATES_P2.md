@@ -390,3 +390,24 @@ Implemented per the acceptance criteria above; proofs in
   floor), `p2_jump_deep.txt` (`swim: jump state=5` -> re-entry state 7),
   `p2_jump_shallow.txt` (normal jump). Gates: build 0, smoke ALL PASS, collision
   36/36.
+
+## Water visibility - engine lead (2026-10-07)
+
+The user's "walk into water like no water exists" is literal: the host renders no water.
+`scene.EnableFluxWaterSimulation(1)` returns E_FAIL (0x80004005) and there is no render
+path for the shipped surfaces.
+
+Engine evidence (MovieEditor `KG3DEngineDX11EX64.dll`, image base 0x180000000):
+- The flux-water subsystem ships: strings `FluxWater.Enable`, water material
+  `data\material\Shader\Mtl_Water\FluxWaterDefault_BWater.JsonIns`, components
+  `KG3D_FluxWaterVolumeComponent` / `KG3D_FluxWaterMeshBakeComponent` /
+  `KG3D_FluxWaterMaskExtractComponent`, solver `KG3D_FluxWaterDataSolver`.
+- Entry points: `KG3D_CreateFluxModel` @0x180c04b50 and `KG3D_FluxDomainModel::Init`
+  @0x180c05250 (string xrefs at 0x180c04f37 / 0x180c05431).
+
+Next probe (owner: E/states or camera/engine host): disassemble 0x180c04b50 /
+0x180c05250 to find which precondition returns E_FAIL from the CLR
+`EnableFluxWaterSimulation` path (likely a missing flux asset/world that the editor
+loads with the map), then drive the same init the MovieEditor editor does. Do NOT fake
+water with a procedural quad; if the engine path stays unreachable, register it as a
+named boundary with the exact failing precondition.
