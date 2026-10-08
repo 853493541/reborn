@@ -19,6 +19,7 @@ internal sealed class AbilityBar : Form
 
     string[] names = new string[0];
     int selected = -1;
+    long cdRemain = 0, cdTotal = 0;   // cooldown of the selected slot (ms)
     bool dirty = true;
     Bitmap buffer;
 
@@ -77,6 +78,17 @@ internal sealed class AbilityBar : Form
         if (selected != i) { selected = i; dirty = true; }
     }
 
+    // cooldown of the selected slot (remaining/total ms); 0 = ready.
+    public void SetCooldown(long remainMs, long totalMs)
+    {
+        if (remainMs != cdRemain || totalMs != cdTotal)
+        {
+            cdRemain = remainMs < 0 ? 0 : remainMs;
+            cdTotal = totalMs;
+            dirty = true;
+        }
+    }
+
     public void UpdateLayered()
     {
         if (names.Length == 0) { if (Visible) Hide(); return; }
@@ -125,12 +137,27 @@ internal sealed class AbilityBar : Form
                     g.DrawString(names[i], font, textBrush,
                         new Rectangle(row.X + KeyW + Gap, row.Y, row.Width - KeyW - Gap, RowH), sf);
                 }
+                if (i == selected && cdRemain > 0 && cdTotal > 0)
+                {
+                    float frac = (float)cdRemain / cdTotal;
+                    if (frac > 1f) frac = 1f;
+                    using (SolidBrush cd = new SolidBrush(Color.FromArgb(150, 0, 0, 0)))
+                        g.FillRectangle(cd, row.X, row.Y, (int)(row.Width * frac), row.Height);
+                    using (StringFormat sf = new StringFormat())
+                    {
+                        sf.Alignment = StringAlignment.Center;
+                        sf.LineAlignment = StringAlignment.Center;
+                        g.DrawString(((cdRemain + 999) / 1000) + "s", font, textBrush, row, sf);
+                    }
+                }
             }
         }
         if (ClientSize.Width != w || ClientSize.Height != h) ClientSize = new Size(w, h);
 
         string dump = Environment.GetEnvironmentVariable("RC_BAR_DUMP");
-        if (!string.IsNullOrEmpty(dump)) { try { buffer.Save(dump, ImageFormat.Png); } catch { } }
+        if (!string.IsNullOrEmpty(dump) &&
+            (cdRemain > 0 || Environment.GetEnvironmentVariable("RC_BAR_DUMP_ALL") == "1"))
+        { try { buffer.Save(dump, ImageFormat.Png); } catch { } }
 
         IntPtr screenDc = GetDC(IntPtr.Zero);
         IntPtr memDc = CreateCompatibleDC(screenDc);

@@ -1,0 +1,14 @@
+# skill v6 — P5: ability-bar cooldown sweep (2026-10-08)
+# Build: reborn_client_skillv6.exe (git ec782c1, dirty)
+# Change: AbilityBar.SetCooldown(remain,total) draws a dark sweep over the selected slot
+#   (fraction = remain/total) + the remaining seconds; the client feeds it the active
+#   ability's per-skill cooldown each frame (cdReady/cdTotalBySkill). RC_BAR_DUMP now saves
+#   a cooldown frame (RC_BAR_DUMP_ALL=1 for every frame).
+
+## Driven run: RC_SLOTS=65029 RC_CAST_AT=40000:1 RC_BAR_DUMP=proof\netcode\skillv6_bar_cd.png
+cast chain 65029 (cd row 1 = 5 s)
+# bar buffer: proof/netcode/skillv6_bar_cd.png 120x38 sha256=0146b9116fc3120c (darkened slot)
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open (P5): target-frame buff/CC icons; world-projected floating numbers; per-icon cooldown
+#   on the ability panel.

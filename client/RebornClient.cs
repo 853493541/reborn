@@ -461,6 +461,7 @@ internal static class RebornClient
         long castReadyAt = 0;   // post-cast cooldown (rapid casts AV the engine tag manager)
         long gcdUntil = 0;      // public cooldown (CoolDownList row 16 = 1.5 s)
         var cdReady = new System.Collections.Generic.Dictionary<string, long>();  // per-skill cooldown
+        var cdTotalBySkill = new System.Collections.Generic.Dictionary<string, long>();  // total cd (ms)
         float manaMax = 10000f;
         float.TryParse(Env("RC_MANA_MAX", "10000"), out manaMax);
         float mana = manaMax;
@@ -3370,6 +3371,7 @@ internal static class RebornClient
                     castReadyAt = now + skillCast.TotalMs() + 1200;   // cooldown
                     gcdUntil = now + (long)gcdMs;                     // public cooldown (row 16)
                     cdReady[selAbility] = now + (long)cdMs;           // per-skill cooldown
+                    cdTotalBySkill[selAbility] = (long)cdMs;
                     mana -= costMana;
                     curClip = null;
                     setClip(selAnimPath);
@@ -5196,6 +5198,11 @@ internal static class RebornClient
             combatText.UpdateLayered();
             // v6 numbered ability bar (top-right): key number + ability name
             abilityBar.SetSelected(activeSlot);
+            {
+                long cdr; cdReady.TryGetValue(selAbility, out cdr);
+                long cdTot; cdTotalBySkill.TryGetValue(selAbility, out cdTot);
+                abilityBar.SetCooldown(cdr > now ? cdr - now : 0, cdTot);
+            }
             abilityBar.PlaceTopRight(form);
             abilityBar.UpdateLayered();
             // target frame (Targeting.cs): real client UI composited over the viewport

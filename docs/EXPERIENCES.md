@@ -8148,3 +8148,14 @@ if the cache/host frames appear.
   loot selftest PASS.
 - **Open:** other `Apply` effects (CreateDoodad/CreateNpc/Dash/heal); buff durations/levels;
   Lua 5.1 VM for arbitrary bodies.
+
+### 2026-10-08 — v6 — P5: ability-bar cooldown sweep
+
+- **Did:** `AbilityBar.SetCooldown(remain,total)` draws a dark sweep over the selected slot
+  (fraction = remain/total) + remaining seconds; the client feeds it the active ability's
+  per-skill cooldown each frame.
+- **Verified:** cast 65029 (cd 5 s) → bar buffer `120×38 sha256=0146b9116fc3120c` (darkened
+  slot); `proof/netcode/skillv6_bar_cd.png`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Open (P5):** target-frame buff/CC icons; world-projected floating numbers; per-icon cooldown
+  on the ability panel.
