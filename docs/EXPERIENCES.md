@@ -8126,3 +8126,14 @@ if the cache/host frames appear.
   Gates: jx3_model 10 PASS, gravity PASS, loot selftest PASS.
 - **Open:** apply the passive buffs to a self-buff list (not only log); other Apply effects
   (DelBuff/CreateDoodad/CreateNpc/Dash/heal); Lua 5.1 VM for arbitrary bodies.
+
+### 2026-10-08 — v6 — passive self-buffs applied + surfaced
+
+- **Did:** the client keeps a **self-buff list**; a passive's `Apply` buffs (`AddBuff`/`DelBuff`
+  ids) are added at commit, and the combat-overlay status shows `buffs N`.
+- **Verified:** 27892 → `passive 27892 -> buffs=[3479;20359;20354;20357;20356]`, status line grew
+  to include `buffs 5` (overlay `515×30 sha256=9cc642f8d88ad2c6`); clean `DONE`. Proof
+  `proof/netcode/skillv6_selfbuffs_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Open:** other `Apply` effects (DelBuff/CreateDoodad/CreateNpc/Dash/heal); buff
+  durations/levels; Lua 5.1 VM for arbitrary bodies.

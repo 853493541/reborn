@@ -1,0 +1,14 @@
+# skill v6 — passive self-buffs applied + surfaced (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 9eed9bb, dirty)
+# Change: the client keeps a self-buff list; a passive's Apply buffs (AddBuff/DelBuff ids)
+#   are added to it at commit, and the combat-overlay status line shows "buffs N".
+
+## Driven run: RC_SLOTS=27892 RC_CAST_AT=40000:1 RC_CT_DUMP=proof\netcode\skillv6_selfbuffs.png RC_CT_DUMP_ALL=1
+passive 27892 -> child=[] buffs=[3479;20359;20354;20357;20356]
+DONE
+# overlay buffer: proof/netcode/skillv6_selfbuffs.png 515x30 sha256=9cc642f8d88ad2c6
+#   (width grew from the status-only 425 -> the "buffs 5" field is present)
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open: other Apply effects (DelBuff/CreateDoodad/CreateNpc/Dash/heal); buff durations/levels;
+#   Lua 5.1 VM for arbitrary Apply bodies.

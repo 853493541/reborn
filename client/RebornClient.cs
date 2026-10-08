@@ -464,6 +464,7 @@ internal static class RebornClient
         float manaMax = 10000f;
         float.TryParse(Env("RC_MANA_MAX", "10000"), out manaMax);
         float mana = manaMax;
+        var selfBuffs = new System.Collections.Generic.List<string>();   // passive self-buffs
         // abilities whose cast AVs the engine (per-tani): skip in the sweep
         var skipIds = new System.Collections.Generic.HashSet<string>();
         foreach (string s in Env("RC_SKIP_IDS", "").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -3925,6 +3926,9 @@ internal static class RebornClient
                                 string children = pv.Length > 2 ? pv[2] : "";
                                 string pvBuffs = pv.Length > 3 ? pv[3] : "";
                                 Log("passive " + skillCast.Name + " -> child=[" + children + "] buffs=[" + pvBuffs + "]");
+                                string[] bids = pvBuffs.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                                for (int bi = 0; bi < bids.Length; bi++)
+                                    if (!selfBuffs.Contains(bids[bi])) selfBuffs.Add(bids[bi]);
                                 combatText.Push("passive " + skillCast.Name + (children.Length > 0 ? (" -> " + children) : ""),
                                     System.Drawing.Color.FromArgb(180, 220, 255));
                                 string[] cids = children.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
@@ -5181,7 +5185,8 @@ internal static class RebornClient
             combatText.SetStatus("HP " + (targetSelector.Current != null
                     ? (targetSelector.Current.Hp + "/" + targetSelector.Current.MaxHp) : "-")
                 + "  mana " + mana.ToString("F0")
-                + "  gcd " + (gcdUntil > now ? (gcdUntil - now) + "ms" : "ready"));
+                + "  gcd " + (gcdUntil > now ? (gcdUntil - now) + "ms" : "ready")
+                + "  buffs " + selfBuffs.Count);
             combatText.SetCast(skillCast.Active ? skillCast.Name : "",
                 skillCast.Active ? skillCast.ElapsedPct(now) : 0f);
             combatText.PlaceTop(form);
