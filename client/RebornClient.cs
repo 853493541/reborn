@@ -3235,9 +3235,22 @@ internal static class RebornClient
                 {
                     // v6 full chain: face the target, play the authored anim,
                     // dash to the target while it plays, then the one-shot effect.
+                    // P3: the mechanic program's self-move (DASH family, u/frame) is
+                    // the cast movement when the cast-chain dash is 0.
+                    float planMove = 0f;
+                    {
+                        string[] mrow;
+                        if (mechanics.TryGetValue(selAbility, out mrow))
+                        {
+                            string[] rrow; string ftype = "";
+                            if (roster.TryGetValue(selAbility, out rrow) && rrow.Length > 12) ftype = rrow[12];
+                            planMove = MechanicProgram.Resolve(mrow, ftype).SelfMovePerFrame;
+                        }
+                    }
+                    float effDash = selDash > 0f ? selDash : planMove;
                     skillCast.Begin(now, selAbility, selAnimPath, selFxPath,
                         px, pz, ctg.X, ctg.Y, ctg.Z, lyAnimMs, lyFxAt, selPrepareMs,
-                        selChannelMs, lyStop, selDash);
+                        selChannelMs, lyStop, effDash);
                     curYaw = skillCast.FaceYaw();
                     skillUntil = now + skillCast.TotalMs();
                     castReadyAt = now + skillCast.TotalMs() + 1200;   // cooldown
@@ -3250,7 +3263,7 @@ internal static class RebornClient
                         + " animMs=" + lyAnimMs + " prepareMs=" + selPrepareMs
                         + " channelMs=" + selChannelMs
                         + " commitMs=" + skillCast.CommitMs() + " totalMs=" + skillCast.TotalMs()
-                        + " fxAt=" + lyFxAt + " dash=" + selDash
+                        + " fxAt=" + lyFxAt + " dash=" + effDash
                         + "u/f ->" + skillCast.DashMs() + "ms stop=" + lyStop
                         + " dashTo=(" + ctg.X.ToString("F0") + "," + ctg.Z.ToString("F0") + ")");
                 }

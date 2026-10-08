@@ -1,0 +1,16 @@
+# skill v6 — P3: mechanic self-movement applied (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 273a972, dirty)
+# Change: at cast start the client resolves the mechanic plan and, when the
+#   cast-chain dash is 0, uses the plan's self-move (DASH / DASH_FORWARD /
+#   DASH_TO_POINT / SKILL_MOVE arg, u/frame) as the cast movement.
+#   Target knock/pull/repel are logged only (units ambiguous: KNOCKED_BACK_RATE is a
+#   rate, not a distance) — not applied, to avoid inventing magnitudes.
+
+## Driven run: RC_SLOTS=39494,27869 RC_CAST_AT=40000:1,52000:2
+04:58:35.993 cast chain 39494: ... dash=120u/f ->104ms          (DASH_TO_POINT|120)
+04:58:36.511 mechanic 39494 -> 初级试炼木桩 dmg=0.0 selfMove=120 [script]
+04:58:47.992 cast chain 27869: ... dash=43u/f ->80ms            (SKILL_MOVE|43)
+04:58:48.511 mechanic 27869 -> 初级试炼木桩 dmg=0.0 buff-=3 selfMove=43
+DONE
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

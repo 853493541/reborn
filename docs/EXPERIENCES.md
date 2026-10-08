@@ -8009,3 +8009,15 @@ if the cache/host frames appear.
   gravity PASS, loot selftest PASS.
 - **Open (P3 rest):** apply self/target displacement from move ops; weapon%/attack-power scaling
   + mitigation; AoE/multi-target (P2); buff/CC UI (P5).
+
+### 2026-10-08 — v6 — P3: mechanic self-movement applied
+
+- **Did:** at cast start the client resolves the mechanic plan and, when the cast-chain dash is 0,
+  uses the plan's self-move (`DASH`/`DASH_FORWARD`/`DASH_TO_POINT`/`SKILL_MOVE` arg, u/frame) as
+  the cast movement. Target knock/pull/repel are **logged only** (units ambiguous —
+  `KNOCKED_BACK_RATE` is a rate, not a distance) to avoid inventing magnitudes.
+- **Verified:** 39494 → `dash=120u/f` (DASH_TO_POINT|120); 27869 → `dash=43u/f` (SKILL_MOVE|43);
+  clean `DONE`. Proof `proof/netcode/skillv6_movement_20261008.txt`. Gates: jx3_model 10 PASS,
+  gravity PASS, loot selftest PASS.
+- **Open:** target displacement semantics (ground the units from IL/scripts); weapon%/attack-power
+  scaling + mitigation; AoE (P2); buff/CC UI (P5).
