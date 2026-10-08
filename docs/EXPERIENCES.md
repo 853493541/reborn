@@ -8333,6 +8333,15 @@ if the cache/host frames appear.
   loot selftest PASS.
 - **Note:** 15 abilities explicitly verified now; the Apply-at-cast + ops model holds across them.
 
+### 2026-10-08 — v6 — 5 more abilities verified (batch 4)
+
+- **Verified:** 65026 (child 65027 + buff 51296 + dmg 2.2), 65036 (dmg 64.7), 65087 (buffs
+  4528,51341 + dispel + selfMove 90 + child 65088), 65120 (buff 51367;51366 + child 65122),
+  27926 (child 21716 + buffs 11261;14928;14926). Proof
+  `proof/netcode/skillv6_batch4_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Note:** 20 abilities explicitly verified; the model holds.
+
 ### 2026-10-08 — v6 — P7 server-spec reconciliation (documented)
 
 - **Did:** recorded P7 in `ABILITY_MECHANICS_PLAN.md`: the v6 ability runtime is a **local

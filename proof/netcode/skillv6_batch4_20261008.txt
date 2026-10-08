@@ -1,0 +1,9 @@
+# skill v6 — 5 more abilities verified (batch 4, 2026-10-08)
+# Build: reborn_client_skillv6.exe
+## Verified (RC_ABILITY=<id> RC_CAST_AT=38000:1)
+#  65026 三环套月 -> apply child 65027 + buff 51296; dmg=2.2
+#  65036 绝境_龙吟 -> dmg=64.7
+#  65087 绝境_净世破魔击 -> buff+=4528,51341 buff-=4 selfMove=90 child=65088
+#  65120 绝境_渊 -> apply buff 51367;51366 + child 65122
+#  27926 戳极八卦 -> apply child 21716 + buff 11261;14928;14926
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
