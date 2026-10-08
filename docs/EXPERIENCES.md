@@ -5248,3 +5248,25 @@ if the cache/host frames appear.
   open item 6.
 - Env: the cropped sandbox map AVs at startup (KG3DEngineDX11EX64+0x12282b3)
   while other agents' clients run; use the full map for ability tests.
+
+### 2026-10-07 - v5 - v6 reconciliation: why v6 plays once while v5.2 still loops
+
+- v6 (`agent/skillv6-sandbox`) is a separate single-skill cast chain on main
+  (`client/SkillCast.cs`), not the ability system: it has no `AbilitySystem.cs`
+  and no ability_picker dataset. Its 绝境·龙牙 effect is the played tani's
+  embedded tags only (`setClip(lyAnim)` = `PlayAnimation(path,0,1,0)`,
+  RebornClient.cs:3038/1205); it never calls `AddDummyModel` for the effect (its
+  `.Sfx` engine path is opt-in and faults rc=7, sfx_shim.cpp:380).
+- v5 loops because `AbilitySystem.cs:667` stages the PSS as an `AddDummyModel`
+  dummy; the engine sets the dummy model's `AniLoop` -> ~1.6 s re-burst. The
+  character anim itself is `loop=0` (one-shot) in both branches.
+- Why v5.1 did not fix it: `avoid_tani_pss_dup` (`build_candidates.py:387`) kept
+  the looping dummy and dropped the tani - it fixed the *duplicate source*, not
+  the engine loop; the loop lives inside the engine dummy model and no managed
+  API clears it (v5.2 root-caused it, fix still unimplemented).
+- Reconciliation: `tani_pss_tags.json` shows the tani embeds the exact staged PSS
+  (龙牙 `t_天策龙牙_狼头版.pss`; 如意法 `m_明教清净心01.pss`), so v5's premise
+  "the tani tags are partial / the dummy is the main layer" conflicts with the
+  scan data. Needs an A/B (tani-only vs dummy) on the 龙牙 ring probe before the
+  dummy can be dropped (user directive: keep the dummies).
+- Verified (read-only): `git show` of v6 code + v5 data; no client run this entry.
