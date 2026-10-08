@@ -802,7 +802,21 @@ namespace UiProcessApp
                 bool hasOverride = _itemChecks.TryGetValue(ItemCheckStore.Key(_currentWindow.Id, item.Name), out var ov);
                 bool isChecked = hasOverride ? ov : string.IsNullOrEmpty(issue);
                 if (isChecked) checkedCount++;
-                var row = new System.Windows.Controls.DockPanel { Margin = new Thickness(0, 1, 0, 1) };
+                var row = new System.Windows.Controls.DockPanel
+                {
+                    Margin = new Thickness(0, 1, 0, 1),
+                    Tag = item.Name,
+                    Cursor = System.Windows.Input.Cursors.Hand,
+                    // Transparent (not null) so the whole row is hit-testable, not just the text.
+                    Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0)),
+                    LastChildFill = true,
+                };
+                // The full row highlights the item in the canvas (the checkbox still toggles).
+                row.MouseLeftButtonUp += (o, e) =>
+                {
+                    if (e.OriginalSource is System.Windows.Controls.CheckBox) return;
+                    HighlightItem(item.Name);
+                };
                 var cb = new System.Windows.Controls.CheckBox
                 {
                     IsChecked = isChecked,
@@ -822,13 +836,9 @@ namespace UiProcessApp
                         : new SolidColorBrush(Color.FromRgb(0xFF, 0x9A, 0x50)),
                     VerticalAlignment = VerticalAlignment.Center,
                     Tag = item.Name,
-                    Cursor = System.Windows.Input.Cursors.Hand,
+                    // 20% larger than the 12px default (checklist readability).
+                    FontSize = 14.4,
                     TextTrimming = TextTrimming.CharacterEllipsis,
-                };
-                label.MouseLeftButtonUp += (o, e) =>
-                {
-                    var tb = o as System.Windows.Controls.TextBlock;
-                    if (tb != null) HighlightItem(tb.Tag as string);
                 };
                 row.Children.Add(label);
                 ItemCheckList.Children.Add(row);
