@@ -5101,3 +5101,17 @@ if the cache/host frames appear.
   _3x_mini, started 17:50) are running. The same exe ran clean at 17:43. Shared
   engine root caveat (AGENTS 2.6) - a clean-window re-test is needed for the
   天绝地灭 tani (item 3); the blacklist stays.
+
+### 2026-10-07 - v5 - item 3 FIXED: 天绝地灭 tani does not AV the client (blacklist removed)
+
+- The TANI_BLACKLIST entry came from the *ME Skill.exe* host (2026-10-06,
+  Skill_20261006_213454.log, AV in KGEngineCLR.FrameMove). Re-tested on the
+  client (the product): single + back-to-back 天绝地灭 casts with the tani
+  complete cleanly (reborn_20261007_180820.log / _181004.log; verified with the
+  built dataset in _181151.log) - no AV. TANI_BLACKLIST emptied; 天绝地灭 plays
+  its authored tani (22 abilities play a tani now).
+- Env note: the cropped sandbox map (C:\jx3tmp\...龙门寻宝_s) started crashing the
+  client at startup in KGEngineCLR.Render() (KG3DEngineDX11EX64.dll+0x12282b3,
+  WER APPCRASH) while other agents' clients ran; the full map runs clean. Used
+  the full map for the item-3 runs. Not a code issue (same exe ran the sandbox
+  clean at 17:43).

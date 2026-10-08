@@ -451,11 +451,14 @@ def apply_tani_anim(steps: list, matched: str, tanis: list) -> list:
 
 
 # tanis whose playback AVs the engine (FrameMove) - keep the base .ani + PSS.
-# 2026-10-06: F1stm09机关攻击03七煞毒.tani (天绝地灭) crashed with
-# System.AccessViolationException in KGEngineCLR.FrameMove (repro log
-# Skill_20261006_213454.log). Re-open when the tag-system AV cause is found.
+# 2026-10-06: F1stm09机关攻击03七煞毒.tani (天绝地灭) crashed the *ME Skill.exe*
+# host (System.AccessViolationException in KGEngineCLR.FrameMove,
+# Skill_20261006_213454.log). Re-tested 2026-10-07 on the client (the product):
+# single and back-to-back casts of 天绝地灭 with this tani complete cleanly
+# (reborn_20261007_180820.log / _181004.log, no AV) -> the ME-host AV does not
+# reproduce on the client, so the blacklist is empty. Re-add an entry if a tani
+# AVs the client (repro log + cast context).
 TANI_BLACKLIST = {
-    "f1stm09机关攻击03七煞毒.tani",
 }
 
 

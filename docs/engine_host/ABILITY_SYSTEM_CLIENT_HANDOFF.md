@@ -30,13 +30,13 @@ with no AV and no cross-cast replay observed).
 
 - Cast: `reborn_20261007_064153.log` — 如意法: tani + PSS + sound, process survives.
 - Warm-up: `sfx warm: 61/61 cached` (fixes the engine's first-time tag-create AV).
-- 81 abilities load; **21 anim steps play the authored tani** (the other 58 whose
+- 81 abilities load; **22 anim steps play the authored tani** (the other 58 whose
   tani already carries the staged PSS play the base `.ani` — see open item 1);
   122 PSS dummies.
 - Abilities whose tani does NOT duplicate a staged PSS additionally spawn the
   engine's own tag effects from their tani (e.g. 五蕴皆空, 凌太虚, 剑主天地,
   圣明佑, 徐如林, 抱残式, 极乐引, 烈日斩, 百足, 花语酥心, 蛇影, 蛊虫献祭,
-  银月斩, 雷震子, 驱夜断愁).
+  银月斩, 雷震子, 驱夜断愁, 天绝地灭).
 
 ## Open work (priority order)
 
@@ -77,11 +77,13 @@ with no AV and no cross-cast replay observed).
    entry is the only authored animation, so it is the correct match, not a
    movement-layer mistake. The other ~65 diffs are v2 name-guesses vs v5
    unmatched/table matches.
-3. **天绝地灭**: its tani AVs the engine → `TANI_BLACKLIST` (plays base anim).
-   Live re-test 2026-10-07 blocked: the client currently AVs at startup in
-   `KGEngineCLR.Render()` (`KG3DEngineDX11EX64.dll+0x12282b3`, WER APPCRASH) while
-   other agents' clients are running (shared engine root — AGENTS §2.6); earlier
-   the same exe ran clean. Keep the blacklist until a clean-window re-test.
+3. **天绝地灭**: its tani AV'd the **ME Skill.exe** host (2026-10-06) → was
+   `TANI_BLACKLIST`. **Fixed 2026-10-07**: re-tested on the client (the product)
+   — single and back-to-back casts of 天绝地灭 with its tani complete cleanly
+   (`reborn_20261007_180820.log`, `_181004.log`, no AV), so the ME-host AV does
+   not reproduce on the client; `TANI_BLACKLIST` is now empty and 天绝地灭 plays
+   its authored tani (verified `reborn_20261007_181151.log`). Re-add an entry
+   only if a tani AVs the client (with repro log + cast context).
 4. **Sequential-tani AV**: casting many different abilities in a row AVs the
    engine's tag manager (cast guard + restart exists; root cause unfixed).
 5. **Keep the PSS dummy**: the tani's tags render only part of the effects
@@ -111,6 +113,11 @@ Copy-Item ability_picker\data\ability_candidates.json C:\SeasunGame\MovieEditor\
 
 - Logs: `C:\SeasunGame\MovieEditor\bin64\reborn_out\reborn_<ts>.log` (client),
   `MovieEditor\bin64\Skill\out\Skill_*.log` (parked ME sandbox).
+- **Env caveat 2026-10-07**: the cropped sandbox map (`C:\jx3tmp\...龙门寻宝_s`)
+  started crashing the client at startup in `KGEngineCLR.Render()`
+  (`KG3DEngineDX11EX64.dll+0x12282b3`, WER APPCRASH) while other agents' clients
+  ran; the **full map** (`RC_MAP` unset) runs clean, so ability work can be
+  tested there. Not a code issue (same exe ran the sandbox clean at 17:43).
 - Shim: `bin64\sfx_shim.dll` (source `native/sfx_shim.cpp`, build
   `native/build_sfx_shim.cmd`) — the warm-up path.
 - Scripted key post: PostMessage WM_KEYDOWN/UP to the client window (the capture
