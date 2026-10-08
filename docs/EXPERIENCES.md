@@ -7571,3 +7571,28 @@ if the cache/host frames appear.
   is still upstream and not cheaply resolvable statically; needs a live/replay
   `OnSkillCast` skill id or a longer trace. Recorded in `JX3_SKILL_CAST_FLOW.md` §5.1.
 - Verified: read-only disasm (pefile+capstone); docs updated.
+
+### 2026-10-07 — Skills v6 — assumption audit of `JX3_SKILL_CAST_FLOW.md`
+
+- **Did:** re-checked every claim in the cast-flow doc against shipped client data and
+  added an evidence-tag legend (`[DATA]/[DISASM]/[REPO-SPEC]/[UNVERIFIED]/[NOT DECODED]/
+  [SERVER-INF]`) + a §6 verification log.
+- **Corrections made (were assumptions in the first draft):**
+  1. **School** — 65029 `BelongSchool=13`, a **shared 绝境/generic bucket** (7907 rows:
+     `TestSkill`, potions, 162 `绝境*` skills), *not* 天策. 天策 = `BelongSchool=1`.
+     Class is only via base 415.
+  2. **MapBanMask** — 65029's cell is **empty** ⇒ the 绝境 mode bit 512 does *not* ban it.
+  3. **"silence" gates** — 4053 = `明教_怖畏暗刑_沉默`, 12321 = `霞流宝石缴械目标`
+     (both `FunctionType=Silence, atDisarm`); 51371 = `绝境_裂苍穹` (no FunctionType);
+     `AddSlowCheckSelfBuff` semantics marked `[NOT DECODED]`.
+  4. **buff 28557** — confirmed all Begin/Active/EndTime attribute cells empty.
+  5. **`nChannelInterval`** — dropped the "(ms)" guess; unit `[NOT DECODED]`.
+  6. **child 65030** — dropped "forward/toward target"; `DASH(120,0)` direction
+     `[NOT DECODED]`; `CAST_SKILL_TARGET_DST` 3rd arg is a skill id (all client usages).
+  7. **conclusion reworded** — "the client plays base 415" is now stated as a leading
+     **unverified** hypothesis (two options), not fact.
+- **Method note:** the audit is repeatable (see the doc's §6 + Reproduce). Key checks:
+  `skills.tab` BelongSchool/MapBanMask membership, `Buff.tab` FunctionType/atDisarm/
+  attribute cells, `CAST_SKILL_TARGET_DST` usage pattern across 20+ scripts.
+- Verified: all claims re-read from `skills.tab`/`Buff.tab`/`Skill.lh`/scripts; no gate
+  code touched (docs-only).

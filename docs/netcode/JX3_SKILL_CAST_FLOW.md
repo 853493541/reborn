@@ -10,6 +10,21 @@ committed netcode/combat disassembly reports. No live run, no client mods.
 does the client itself do? This doc maps the whole chain (input → client state →
 C2S intent → server → S2C → presentation) and pins the 绝境·龙牙 data.
 
+**Evidence discipline (0 assumptions):** every factual line below is either
+(a) read directly from a shipped client table/script (path cited), (b) read from
+client disassembly (address cited), or (c) a draft spec in this repo (cited as
+`[REPO-SPEC]`, not client truth). Anything not yet pinned is explicitly marked
+`[UNVERIFIED]` / `[NOT DECODED]` / `[SERVER-INF]`. No inference is stated as fact.
+
+| Tag | Meaning |
+|---|---|
+| `[DATA]` | shipped table/script cell (client install) |
+| `[DISASM]` | client binary disassembly (RVA cited) |
+| `[REPO-SPEC]` | our own spec/proposal in this repo (not client truth) |
+| `[UNVERIFIED]` | not yet confirmed against the client |
+| `[NOT DECODED]` | field exists but its value/meaning is not decoded |
+| `[SERVER-INF]` | server-side behaviour, inferred from protocol/absence |
+
 ---
 
 ## 0. TL;DR
@@ -17,22 +32,28 @@ C2S intent → server → S2C → presentation) and pins the 绝境·龙牙 data
 1. **Target choice is 100 % client-local.** There is *no* select-target opcode —
    the client keeps the target and puts it in the next cast intent
    (`proof/pvp/combat_netcode.md:93`, `docs/controls/JX3_TARGET_SELECTION.md`).
-2. **Casting = send a C→S intent.** `DoCastProfessionSkill` `0x49` (profession
-   skills; the "pressed a skill" builder) or `DoCharacterSkill` `0x1B`, carrying
-   skill id + target id. The client performs **no** range/angle/LOS validation —
-   that is server-only (`docs/pvp/JX3_PVP_BATTLE_RESEARCH.md:404-407`).
+2. **Casting = send a C→S intent.** `DoCastProfessionSkill` `0x49` or
+   `DoCharacterSkill` `0x1B` `[DISASM]`; the client sends the skill id, and the
+   target/aim dword is **`[NOT DECODED]`**. The client performs **no** range/angle/LOS
+   validation — that is server-only (`docs/pvp/JX3_PVP_BATTLE_RESEARCH.md:404-407`).
 3. **The server is authoritative** and replies `OnSkillPrepare` / `OnSkillCast` /
    `OnSkillChannel` / `OnSkillEffectResult`. **Only `OnSkillEffectResult` changes
    HP**; every other event is presentational
    (`proof/pvp/combat_netcode.md:194-215`).
-4. **The client predicts presentation only:** cast/channel animation, caster SFX,
-   cast bar, cooldown sweep. Animation is resolved client-side from the Represent
-   tables (`skill_tag.txt` → `player_animation_f*.txt` → `.tani`).
-5. **绝境·龙牙** = skill **65029** (`绝境_龙牙`), a 绝境战场 天策 melee: single **enemy**
-   target, instant, **20 尺 / 180°**, **100 % weapon damage + adaptive 外功**, GCD
-   **1.5 s**, and it fires the child **绝境龙牙冲刺技能 (65030, `DASH 120`)** at the target.
-6. The buff **绝境·龙牙 (28557)** is only the "you possess this move" marker
-   (`拥有的招式`), not a damage buff.
+4. **The client predicts presentation only** `[REPO-SPEC]`: cast/channel animation,
+   caster SFX, cast bar, cooldown sweep. The animation for a cast is picked by the
+   represent from a per-skill animation array (see §2.5); the only shipped
+   skill-id→animation table is `skill_tag.txt` `[DATA]`.
+5. **绝境·龙牙** = skill **65029** (`绝境_龙牙`, `[DATA]`): `CastMode=TargetSingle`,
+   `TargetRelationEnemy=1`, `CommonSkillActiveMode=Melee`, `[DATA]` instant
+   (`nPrepareFrames=0`), **20 尺 / 180°**, **100 % weapon** (`nWeaponDamagePercent=1024`)
+   + adaptive physics damage, GCD row 16 (`[REPO-SPEC]` 1.5 s), and its script casts
+   child skill **65030** (`绝境龙牙冲刺技能`) whose script sets `DASH 120`. Its
+   `BelongSchool` is **13** (a shared 绝境/generic bucket, §3.1) — the class is 天策
+   only via the base skill 415 (`BelongSchool=1`).
+6. The buff **绝境·龙牙 (28557)** carries **no attribute cells** `[DATA]`
+   (BeginAttrib*/Active*/EndTime* all empty; only MoveStateMask/MapBanMask), desc
+   `拥有的招式` — a UI marker, not a stat buff.
 
 ---
 
@@ -77,12 +98,13 @@ Units: **1 engine unit = 1 cm**, **1 尺 = 64 u = 0.64 m**, **GAME_FPS = 16**
 * The action-bar key / click runs `CastSkillByKeyDown(...)` or `ActionBar_Cast`
   (`docs/controls/JX3_COMBAT_CONTROLS.md` §3, `proof/controls/ui_lua/hotkeys_script.dump.txt`).
 * `Alt+W/A/S/D` = forced-direction casts (`SKILL_CAST_FORWARD/…`).
-* The client **auto-faces** the target (`LuaTurnToCharacter`; turn speed
-  `SkillTurningToTargetSpeed 0.01`, `SkillTurningTime 1500` in `number.krl`).
-  Note: `skills.tab` also carries a per-skill `IsAutoTurn` (65029 = 0).
-* The client starts its **local prediction**: cast/channel animation + caster
-  effect + cast bar + GCD/cooldown sweep. Cooldown state is only *rendered*
-  client-side; the server owns the clocks.
+* The client **auto-faces** the target in the general combat model (`LuaTurnToCharacter`;
+  turn speed `SkillTurningToTargetSpeed 0.01`, `SkillTurningTime 1500` in `number.krl`)
+  `[REPO-SPEC]`/`docs/controls/JX3_COMBAT_CONTROLS.md`. Whether 65029 does so is
+  **`[UNVERIFIED]`**: its `skills.tab` row has `IsAutoTurn=0` `[DATA]` (base 415 is also 0).
+* The client starts **presentation prediction** `[REPO-SPEC]`: animation + caster
+  effect + cast bar + cooldown sweep. Cooldown state is only *rendered* client-side;
+  the server owns the clocks (`proof/pvp/combat_netcode.md` §4.3).
 
 ### 2.3 Send the cast intent (C→S)
 
@@ -93,14 +115,14 @@ Two builders (disassembled, IDs/sizes HIGH):
 | `DoCastProfessionSkill` | `0x49` | `0x20` | `u32@+0xB, u32@+0xF, u8@+0x13, u32@+0x14, u32@+0x18, u32@+0x1C` |
 | `DoCharacterSkill` | `0x1B` | `0x1D` | `u32@+0xB, u8@+0xF, u8@+0x10, u32@+0x11, u32@+0x15, u8@+0x19` |
 
-`0x49` is the profession-skill cast (the one an action-bar skill press uses);
-the target id / aim is one of its dwords. Ground/aim skills send the point
-instead (`proof/pvp/combat_netcode.md` §1).
+`0x49` is the client's skill-cast builder `[DISASM]`; **which dword carries the
+target id / aim is `[NOT DECODED]`** (the builder writes 4 dwords + a byte; the
+call-site arguments were not traced — `proof/pvp/combat_netcode.md` §1).
 
 ### 2.4 Server validation + events (S2C)
 
-Server checklist (server-owned; evidence in `JX3_COMBAT_CONTROLS.md` §5,
-`combat_netcode.md` §6):
+Server checklist `[SERVER-INF]` — the client carries only the rejection enums
+(`docs/controls/JX3_COMBAT_CONTROLS.md` §5, `combat_netcode.md` §6):
 
 ```
 alive → mode ban (MapBanMask × MapList.BanSkillMask; 绝境 BanSkillMask = 512)
@@ -109,7 +131,7 @@ alive → mode ban (MapBanMask × MapList.BanSkillMask; 绝境 BanSkillMask = 51
       → move-state masks → apply result
 ```
 
-Then the server broadcasts (fields HIGH, meaning MED):
+Then the server broadcasts `[DISASM]` (fields HIGH, meaning MED):
 
 ```
 OnSkillPrepare  {caster, skill, level, cast_time, kind}      (only if cast time > 0)
@@ -122,7 +144,7 @@ OnSkillBeatBack / OnSkillRayEffect / OnSkillChainEffect / OnPointChainSkillEffec
 Cooldowns come back as server clocks: `OnResetCooldown` / `OnPauseCDTimer` /
 `OnAccelerateCDTimer` / `OnCoolDownOverDraftNotify`.
 
-### 2.5 Client presentation (prediction only)
+### 2.5 Client presentation (represent layer)
 
 Represent layer (`combat_netcode.md` §4.2):
 
@@ -140,32 +162,33 @@ Animation resolution (client-side tables + the represent cast path, disasm
 `proof/netcode/JX3RepresentX64_all_strings.txt` / local disasm 2026-10-07):
 
 ```
-skill id ──skill_tag.txt──▶ AnimationID ──player_animation_<body>.txt──▶ .tani
+skill id ──skill_tag.txt──▶ AnimationID ──player_animation_<body>.txt──▶ .tani   [DATA]
                  (skill_dash.txt for dash anims)
 
-KRLCharacter::CastSkill(char, skillAnimParam, skillId, …)
+KRLCharacter::CastSkill(char, skillAnimParam, skillId, …)                        [DISASM]
    ├─ skillId == 0x8b4b (35659): cycle a hardcoded 4-entry anim array (m_nPerSkillAniIndex)
    └─ else: GetSkillNextAnimationID(char.pRLSkillSequence @+0x47ac, skillAnimParam[4], &animID)
-             → plays the animation id in [0x18001934e]
+             → plays the animation id via [0x18001934e]
      InitSkillSequence sets a global per-skill sequence length (config +0x3c,
-     `SEQUENCE_ANIMATION_CONFIG_FILE_NAME`) — this only varies repeat-cast animations,
+     `SEQUENCE_ANIMATION_CONFIG_FILE_NAME`) — varies repeat-cast animations,
      it is NOT the skill→anim map.
 ```
 
-The `skillAnimParam[4]` (up to 4 animation ids) is supplied by the cast event
-layer from the skill's data, so the skill-id→animation binding happens **upstream**
-of `CastSkill` (event adaptor / skill model mgr), not inside it. See §5.1.
+The argument order above is **read from the disassembly** (`[DISASM]`); the claim
+that `skillAnimParam[4]` is filled by the cast-event layer from the skill's data is
+**`[UNVERIFIED]`** (it is the next probe, §5.1). The only shipped skill-id→animation
+table is `skill_tag.txt` `[DATA]`.
 
 Legend for §5: `skill_tag.txt` is the only skill-id→animation table; the
 per-skill sequence config only varies the animation across repeat casts.
 
 ### 2.6 Motion / dash
 
-Displacement is not client physics: it is either a `SkillMove.tab` row (start
-`0x14031C4A0`, per-frame update `0x140315390`) or a script `DASH*` attribute
+Displacement is not client physics `[REPO-SPEC]`: it is either a `SkillMove.tab` row
+(start `0x14031C4A0`, per-frame update `0x140315390`) or a script `DASH*` attribute
 applied by the skill runtime (`docs/movement/JX3_GRAVITY_RESEARCH.md` §3.10,
 `SKILL_DATA_RESEARCH.md` §3). The server may also push forced motion
-(`OnSkillBeatBack`, `HitStiffSkillMoveID`).
+(`OnSkillBeatBack`, `HitStiffSkillMoveID`) `[DISASM]`.
 
 ---
 
@@ -176,56 +199,62 @@ applied by the skill runtime (`docs/movement/JX3_GRAVITY_RESEARCH.md` §3.10,
 | Thing | Value | Source |
 |---|---|---|
 | Skill | **65029** `绝境_龙牙` | `skills.tab` |
-| Buff | **28557** `绝境·龙牙`, desc `拥有的招式` (possess-move marker) | `Buff.tab`, `Buff.txt` |
+| Buff | **28557** `绝境·龙牙`, desc `拥有的招式`; `Buff.tab` Begin/Active/EndTime attribute cells all empty (no stat effect) | `Buff.tab`, `Buff.txt` |
 | Engine tooltip | `(65029) 绝境_龙牙 — 对目标造成<SKILL PhysicsDamage>(+<SKILLEx {D0} {SkillPhysicsAP}>)点伤害。` | `ui/Scheme/Case/Skill.txt` |
-| School / kungfu | 天策 (BelongSchool 13, BelongKungfu 64888) | `skills.tab` |
-| Base skill | 415 `龙牙` (29 levels), base tooltip 41216 `对4尺内目标造成大量伤害…` | `SkillRealization.tab`, `Skill.txt` |
+| Class | **not encoded in the 65029 row**: base 龙牙 415 is 天策 (`BelongSchool=1`; `SkillRealization.tab` School=天策). 65029 sets `BelongSchool=13`, a shared 绝境/generic bucket (7907 rows incl. `TestSkill`, potions, 162 `绝境*` skills) | `skills.tab` |
+| Kungfu ids | 65029 `BelongKungfu=64888`; base 415 `BelongKungfu=10017` | `skills.tab` |
+| Base skill | **415** `龙牙` (29 levels; `Skill.txt` 415 tooltip = "消耗3点战意…"). A separate id **41216** is also named `龙牙` (tooltip "对4尺内目标造成大量伤害…"). | `SkillRealization.tab`, `Skill.txt` |
 | Extraction folder | `pakv4-probe\skill-65029-65672` (`scripts-out`, `extra-out`) | cache-extraction |
 
 ### 3.2 Client skill row (`skills.tab` 65029)
 
-`KindType=Adaptive`, `FunctionType=Damage`, `CastMode=TargetSingle`,
-`MaxLevel=1`, `TargetTypePlayer=1`, `TargetTypeNpc=1`,
-`TargetRelationEnemy=1`, `IsChannelSkill=0`, `IsAutoTurn=0`,
-`IsBindCombatTag=1`, `EffectPlayType=AniAndSfx`, `Use3DObstacle=1`,
-`IsCheckStealth=1`, `CauseBeatBack=1`, `HasCriticalStrike=1`,
+`[DATA] skills.tab` row 65029: `KindType=Adaptive`, `FunctionType=Damage`,
+`CastMode=TargetSingle`, `CommonSkillActiveMode=Melee`, `MaxLevel=1`,
+`TargetTypePlayer=1`, `TargetTypeNpc=1`, `TargetRelationEnemy=1`,
+`IsChannelSkill=0`, `IsAutoTurn=0`, `IsBindCombatTag=1`, `EffectPlayType=AniAndSfx`,
+`Use3DObstacle=1`, `IsCheckStealth=1`, `CauseBeatBack=1`, `HasCriticalStrike=1`,
 `IgnorePositiveShield=1`, `HorseMask=6145`, `BelongDynamicGroupID=10002`,
 `ScriptFile=绝境战场\绝境_龙牙.lua`.
+`MapBanMask` (col 67), `IgnoreSilence` (92), `IgnoreControl` (111),
+`IgnoreImmunityCast` (110), `PlatformType` (100) are **empty** → 65029 is **not**
+gated by the 绝境 mode's `BanSkillMask` (the mode bit is 512, but the skill's
+`MapBanMask` has no bit set; the pair test is `skill.MapBanMask & map.BanSkillMask`).
 
 ### 3.3 Script values (`绝境战场\绝境_龙牙.lua`, plaintext)
 
 | Field | Value | Meaning |
 |---|---|---|
-| `skill.nPrepareFrames` | `0` | **instant** (no cast bar / no `OnSkillPrepare`) |
-| `skill.nMaxRadius` | `20 * LENGTH_BASE` = 1280 u | max cast range **20 尺 = 12.8 m** |
-| `skill.nMinRadius` | `0` | no dead zone |
-| `skill.nAngleRange` | `128` | **180°** cone (256 = 360°) |
-| `skill.nChannelInterval` | `1267 * HDJueJingSkillCoe_130` = `1267 * 1.2` = **1520.4** | post-cast skill lock / action length (ms) |
-| `skill.nWeaponDamagePercent` | `1024` | **100 % weapon damage** |
-| `SKILL_PHYSICS_DAMAGE` | `nDamage * 1.1` | 外功 (physics) component |
-| `CALL_ADAPTIVE_DAMAGE(1,0)` | — | adaptive (skill-coefficient) component |
-| silence checks | `AddSlowCheckSelfBuff(4053/12321/51371 …)` | can't cast while silenced |
-| GCD | `SetPublicCoolDown(16)` | **1.5 s** (`CoolDownList` row 16) |
-| skill CD | `SetNormalCoolDown(1, 7101)` | CD row 7101 |
-| check CD | `SetCheckCoolDown(1, 444)` | gate only |
-| child | `ATTRIBUTE_TYPE.CAST_SKILL_TARGET_DST = 65030` | fires the dash child at the target |
+| `skill.nPrepareFrames` | `0` | no prepare phase (**instant**) `[DATA]` |
+| `skill.nMaxRadius` | `20 * LENGTH_BASE` = 1280 u | max cast range **20 尺 = 12.8 m** (`LENGTH_BASE=64` `[REPO-SPEC]`) |
+| `skill.nMinRadius` | `0` | no dead zone `[DATA]` |
+| `skill.nAngleRange` | `128` | `256 = 360°` `[REPO-SPEC]` ⇒ **180°** |
+| `skill.nChannelInterval` | `1267 * HDJueJingSkillCoe_130` = `1267 * 1.2` = **1520.4** | value `[DATA]`; **unit `[NOT DECODED]`** (not asserted as ms) |
+| `skill.nWeaponDamagePercent` | `1024` | **100 % weapon damage** (`1024 = 100%` `[REPO-SPEC]`) |
+| `SKILL_PHYSICS_DAMAGE` / `_RAND` | `nDamage * 1.1` / `nDamageRand * 1.1` | physics (外功) component `[DATA]` |
+| `CALL_ADAPTIVE_DAMAGE(1,0)` | — | adaptive (skill-coefficient) component `[DATA]` |
+| self-buff gates | `AddSlowCheckSelfBuff(4053, 0, EQUAL, 0, EQUAL)`, `(12321, 0, EQUAL, 0, EQUAL)`, `(51371, 0, EQUAL, 0, GREATER_EQUAL)` | `[DATA]`. Buff names: `4053` = `明教_怖畏暗刑_沉默`, `12321` = `霞流宝石缴械目标` — both `FunctionType=Silence`, `atDisarm`; `51371` = `绝境_裂苍穹` (no FunctionType). The exact `AddSlowCheckSelfBuff` gate semantics is **`[NOT DECODED]`** |
+| GCD | `SetPublicCoolDown(16)` | row 16 = 江湖_技能公共CD, 1.5 s `[REPO-SPEC]` (`proof/pvp`) |
+| skill CD | `SetNormalCoolDown(1, 7101)` | CD row 7101 `[DATA]` (duration not read) |
+| check CD | `SetCheckCoolDown(1, 444)` | gate only `[DATA]` |
+| child | `AddAttribute(EFFECT_TO_SELF_NOT_ROLLBACK, ATTRIBUTE_TYPE.CAST_SKILL_TARGET_DST, 65030, 1)` | `[DATA]`. 3rd arg is a **skill id**; every client usage of this attribute passes a skill id there. 65030's script = the 冲刺 (DASH). The attribute's exact engine semantic is **`[NOT DECODED]`** |
 
 Resolved tuning globals (`scripts/Include/Skill.lh` main proto, instructions
 27755-27762; extracted via official `PakV4SfxExtract.exe`):
 
 | Global | Value | Definition |
 |---|---|---|
-| `HDJueJingSkillCoe_130` | **1.2** | base 绝境 coefficient (used by `nChannelInterval`) |
-| `HDJueJingSkillCoe` | **7.2** | `= HDJueJingSkillCoe_130 * 6` |
-| `HDJueJingSkillCoe_Heal` | **8.4** | healing variant |
+| `HDJueJingSkillCoe_130` | **1.2** | value read from bytecode; appears in 65029's `nChannelInterval` formula |
+| `HDJueJingSkillCoe` | **7.2** | `= HDJueJingSkillCoe_130 * 6` (instr: `MUL`) |
+| `HDJueJingSkillCoe_Heal` | **8.4** | separate constant |
 
 ### 3.4 Child — 绝境龙牙冲刺技能 (65030)
 
-`绝境战场\绝境_绝境龙牙冲刺技能.lua` (plaintext): `ATTRIBUTE_TYPE.DASH = 120`
-(a **120-unit forward dash** toward the target), `nMaxRadius = 25 * LENGTH_BASE`,
+`绝境战场\绝境_绝境龙牙冲刺技能.lua` `[DATA]`: `ATTRIBUTE_TYPE.DASH = 120`
+(a 120-unit displacement attribute; **direction is `[NOT DECODED]`** — the arg is
+`(120, 0)` and no direction field is present), `nMaxRadius = 25 * LENGTH_BASE`,
 `nAngleRange = 128`, `nWeaponDamagePercent = 1024`, `nTargetCountLimit = 1`,
-`nCostRage = 10`, 28 levels. This is the "龙牙冲刺" motion the base 龙牙 also has
-(`SKILL_DATA_RESEARCH.md:67`).
+`nCostRage = 10`, 28 levels. The `DASH(distance, ?)` primitive is documented in
+`SKILL_DATA_RESEARCH.md` §3 (`龙牙冲刺 (120, 0)`).
 
 ### 3.5 Animation / effects (client represent)
 
@@ -241,22 +270,25 @@ Resolved tuning globals (`scripts/Include/Skill.lh` main proto, instructions
 ### 3.6 The exact sequence (客户端实际会做什么)
 
 ```
-[client] selected target T (enemy), facing auto-turned to T
-[client] key → CastSkillByKeyDown → local predict:
-             play 龙牙 cast anim + caster SFX + start GCD sweep, dash 120 u toward T
-[client] send C→S DoCastProfessionSkill { skill=65029, target=T }   (0x49, 32 B)
-[server] validate: alive · 绝境 MapBanMask(512) · GCD · 战意/资源 · silence(4053/12321/51371)
-                   · target = player-or-npc, enemy relation, not stealthed
-                   · 0 ≤ dist2D ≤ 1280 u (20 尺) · |angle| ≤ 90° · 3D LOS
-[server] accept → broadcast:
-             OnSkillCast {caster, skill, level, has_aim, …}
-             OnSkillEffectResult {caster, target, KSKILL_RESULT[9·n]}  ← HP change
-         (no OnSkillPrepare/Channel: nPrepareFrames = 0, IsChannelSkill = 0)
-[client] play hit reaction on T (BeHitted / damage number); cooldown corrected by CD sync
+[client] target T selected locally (enemy filter); no packet is sent        [DATA]
+[client] key → CastSkillByKeyDown → build C→S cast intent                    [DISASM]
+[client] presentation prediction (animation + caster SFX + cooldown sweep)   [REPO-SPEC, MED]
+[client] send DoCastProfessionSkill { skill=65029, target/aim dword } (0x49) [DISASM]
+[server] validate (order not decoded; server-side)                          [SERVER-INF]
+         alive · move-state · GCD/cooldown · resource · control/silence
+         · target type/relation/stealth · range 1280 u · angle · 3D LOS
+         (65029 MapBanMask is empty ⇒ the 绝境 mode bit 512 does not ban it) [DATA]
+[server] accept → OnSkillCast {caster, skill, level, …}; then
+         OnSkillEffectResult {caster, target, KSKILL_RESULT[9·n]}  ← only HP change
+         (no OnSkillPrepare/Channel: nPrepareFrames=0, IsChannelSkill=0)     [DISASM/REPO-SPEC]
+[client] plays hit reaction on T (BeHitted / damage number); CD corrected on sync [REPO-SPEC]
 ```
 
-If the server rejects, it returns a reason and **consumes nothing**; the client
-gets a `MOVE_STATE_*` / CD / silence error and its predicted animation is
+(Client casts at a distance up to 20 尺 are legal; whether the client itself
+auto-turns and whether it predicts a dash are `[UNVERIFIED]` — see §2.2 / §5.)
+
+If the server rejects, it returns a reason and **consumes nothing** `[SERVER-INF]`;
+the client gets a `MOVE_STATE_*` / CD / silence error and its predicted animation is
 corrected by the next server state.
 
 ---
@@ -269,9 +301,9 @@ corrected by the next server state.
   playback, PSS follow, warm-up) exists only on the **unmerged**
   `agent/skillv5-sandbox` branch (handoff: commit `4203f56`,
   `docs/engine_host/ABILITY_SYSTEM_CLIENT_HANDOFF.md`).
-* The `ability_picker` dataset already resolves `龙牙` → `F1s04tc技能13_龙牙hd*`
-  animations (`ability_candidates.json`, entries `绝境:65029:skill` /
-  `绝境:28557:buff`).
+* `ability_picker` maps `龙牙` → `F1s04tc技能13_龙牙hd_狼皮肤.tani` for entry
+  `绝境:65029:skill` (`ability_candidates.json`), but with `matchSource="dig"` —
+  a **manual** match, not a table-derived one (consistent with §5.1).
 
 ## 5. Open items (next probes)
 
@@ -292,19 +324,20 @@ corrected by the next server state.
      upstream of `CastSkill`, and only `skill_tag.txt` provides it. The global
      per-skill sequence config only varies repeat-cast animations.
 
-   ⇒ The client cannot select a 绝境-specific animation from shipped data, so the
-   visible animation/effects must be those of the **base skill 龙牙 (415)**. This means
-   either the server's `OnSkillCast` carries the **display skill id** (415) for 绝境
-   skills, or the action bar holds the base skill and 65029 is the server-side
-   replacement. **Next probe:** trace `krlEventAdaptor::HandleCastSkill` /
-   `KGameWorldHandler::OnCharacterCastSkill` to find who fills `skillAnimParam` from the
-   skill id (the `skill_tag` lookup), and read the S2C `OnSkillCast` skill id for a
-   绝境 cast (arena/replay record); also confirm the id the 绝境 action bar holds
-   (`szDropSkillRemoteCall`). Addresses pinned this pass (JX3RepresentX64.dll):
-   `krlEventAdaptor::HandleCastSkill` `0x180600660` (reads caster@+8, skill@+0x20 from
-   the event struct, forwards via vtable `+0x8e0`); `KGameWorldHandler::OnCharacterCastSkill`
-   `0x1805ED0B0` (dispatches to `0x1804D2950`); `KRLCharacter::CastSkill` `0x1804D2090`.
-   Still blocked on the skill-data→anim source (or a live/replay cast event).
+   ⇒ Shipped client data contains **no 绝境-specific animation binding** for 65029.
+   Two explanations remain, and **which holds is `[UNVERIFIED]`**:
+   (a) the server's `OnSkillCast` carries the **display skill id** (base 415) for 绝境
+   skills, so the client plays 415's animation; or (b) the action bar holds the base
+   skill and 65029 is the server-side replacement. **Next probe:** trace
+   `krlEventAdaptor::HandleCastSkill` / `KGameWorldHandler::OnCharacterCastSkill` to
+   find who fills `skillAnimParam` from the skill id (the `skill_tag` lookup), and read
+   the S2C `OnSkillCast` skill id for a 绝境 cast (arena/replay record); also confirm the
+   id the 绝境 action bar holds (`szDropSkillRemoteCall`). Addresses pinned this pass
+   (JX3RepresentX64.dll): `krlEventAdaptor::HandleCastSkill` `0x180600660` (reads
+   caster@+8, skill@+0x20 from the event struct, forwards via vtable `+0x8e0`);
+   `KGameWorldHandler::OnCharacterCastSkill` `0x1805ED0B0` (dispatches to `0x1804D2950`);
+   `KRLCharacter::CastSkill` `0x1804D2090`. Blocked on the skill-data→anim source
+   (or a live/replay cast event).
 2. ~~`HDJueJingSkillCoe_130` numeric value~~ — **RESOLVED (2026-10-07)**:
    `HDJueJingSkillCoe_130 = 1.2`, `HDJueJingSkillCoe = 7.2` (`1.2*6`),
    `HDJueJingSkillCoe_Heal = 8.4`, decoded from `scripts/Include/Skill.lh` main proto
@@ -318,6 +351,24 @@ corrected by the next server state.
    `消耗3点战意` (that is the base 415 text). Confirm whether 绝境 龙牙 costs 战意.
 5. Whether the 120 u dash (65030) is applied client-side (predicted) or via a
    server `SkillMove` push.
+
+## 6. Verification log (assumption audit, 2026-10-07)
+
+Every non-`[DATA]`/`[DISASM]` statement above was re-checked; the following were
+corrected from an earlier draft:
+
+| Claim (earlier draft) | Verified fact | Evidence |
+|---|---|---|
+| "65029 is 天策 (BelongSchool 13)" | 65029 `BelongSchool=13`, a **shared 绝境/generic bucket** (7907 rows: `TestSkill`, potions, 162 `绝境*` skills). 天策 = `BelongSchool=1` (samples `天策-穿云`…). Class comes from base 415. | `skills.tab` |
+| "绝境 mode bans 65029 (MapBanMask 512)" | 65029 `MapBanMask` cell is **empty** → no bit set → `skill.MapBanMask & map.BanSkillMask == 0`. | `skills.tab` |
+| "silence checks (4053/12321/51371)" | 4053 = `明教_怖畏暗刑_沉默`, 12321 = `霞流宝石缴械目标` (both `FunctionType=Silence`, `atDisarm`); 51371 = `绝境_裂苍穹` marker (no FunctionType). | `Buff.tab` |
+| "buff 28557 is not a damage buff" | Confirmed: all `BeginAttrib*/Active*/EndTime*` cells empty. | `Buff.tab` |
+| "nChannelInterval = 1520.4 ms" | Value `1520.4` confirmed (`1267 × HDJueJingSkillCoe_130=1.2`); **unit not in the data** → downgraded to `[NOT DECODED]`. | `Skill.lh` decode |
+| "child 65030 dash toward target / forward" | `CAST_SKILL_TARGET_DST` slot is a skill id (all client usages); **direction of `DASH(120,0)` not decoded**. | scripts |
+| "Coefficient candidate 8.4" | Correct values: `_130=1.2`, `=7.2`, `_Heal=8.4` (instruction decode). | `Skill.lh` |
+
+Still open (unchanged): §5.1 animation binding, §5.3 auto-turn, §5.4 战意 cost,
+§5.5 dash timing/authority.
 
 ---
 
