@@ -31,3 +31,26 @@ water source (`RC_WATER` boxes), swim-jump impulse (J0 triple), swim buoyancy ho
 | `seed_off_race_clean_222616.txt` | seed off, same spot (race variance) | `RC_SEED_RCPISCENE=0` | clean `DONE` — the guard race is timing-dependent (3 of 4 seed-off attempts crashed) |
 | `seed_on_final_222651.txt` | final build, seed default on | `RC_SPAWN=64293,-125,55238` | `lazyseed ... seeded=121`, `DONE` |
 | `seed_rcpiscene_slots.txt` | evidence | — | crash site disasm, FNV validation, all 129 slot RVAs, A/B summary |
+
+## P3 water region (real RegionInfo) — driven proof (2026-10-07, `agent/3x-integration`)
+
+Build `reborn_client_3x.exe` (git f4c59cb+, `RC_STARTUP=nodb`, map 龙门寻宝). The water
+source is now the shipped RegionInfo region tree (`client/WaterRegions.cs`, one region at
+world (0,0)..(102400), surface 150) instead of the 4096\*Scale P1 heuristic.
+
+| log (captured) | env | what it shows |
+|---|---|---|
+| `p3_walkin.txt` | `RC_SPAWN=67040,936,65000 RC_DEMO_COLLIDE=1 RC_DEMO_DIR=0,-1 RC_SWIM_LOG=1` | grounded run from the shore (ground 969 -> -471): `swim: enter state=6 surface=150 depth=634 T=627`, then `state=6 ... y=150` float + swim clip; depth grows to 1061 as it swims into the basin |
+| `p3_idle_jump.txt` | `RC_SPAWN=67040,150,60000 RC_DEMO_JUMP=1` | spawn in the lake -> `swim: enter state=7 ... depth=962` (idle float, y=150, swim-idle clip); `swim: jump state=5 ... vy=702`; re-entry `enter state=7` (fall-in float) |
+| `p3_exit.txt` | `RC_SPAWN=67040,150,60000 RC_DEMO_COLLIDE=1 RC_DEMO_DIR=0,1` | swim north, depth falls 960 -> 650: `swim: exit state=6->0 depth=625 T=627 y=150 ground=-475`, then grounded land run (y 150 -> 719 -> 959) |
+
+Screenshots + numeric fingerprint (`tools/proof/image_stats.py --grid 4x4`): the in-water
+frames are dark low-luma (walkin 14 s mean `#333035`, 20 s `#313544`; exit 3 s `#353640`,
+8 s `#322D2E`) vs the brown land frames (walkin 3 s `#765E41`, exit 12 s `#775E3C`,
+16 s `#7B6342`) - land vs in-water is separable numerically.
+
+Water **rendering** is still the known asset boundary (`FluxWaterDefault_BWater.JsonIns`
+absent from the MovieEditor host -> `EnableFluxWaterSimulation` E_FAIL); these runs prove
+the interaction region/state, not the flux render. The engine's region hole/normal masks
+(which narrow the shoreline) are not decoded, so the host floods the region AABB wherever
+`ground < surface` - registered below.

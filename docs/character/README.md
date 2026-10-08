@@ -44,13 +44,14 @@ dives, all read-only against `C:\SeasunGame\Game\JX3\bin\zhcn_hd` + `C:\SeasunGa
 | `SPEC_STATES.md` | **redefined states spec** (E re-task): 轻功 grant (passive skill 18 踏云 `MAX_JUMP_COUNT+1`), per-map water surfaces, waterline correction, water AV root cause, fly/bird triggers, acceptance criteria |
 | `SPEC_MOTION_P2.md` | **addendum (client truth)**: per-skill motion - 太阴指 = `DASH_BACKWARD` primitive (960 u / 16 f, `KCharacter::Dash`), 风来吴山 = channel with walk allowed (no displacement); camera = positional follow only, yaw dead-zone 0.45 |
 | `SPEC_STATES_P2.md` | **addendum (client truth)**: water entry - no swim key; walk/fall/jump in; depth gate ~627 u (shallow = wade); jump = state 5; region = terrain cell flag (replace radius heuristic) |
-| `SPEC_STATES_P3.md` | **focused water-interaction spec (client truth)**: no swim key; grounded entry -> states 6/7 at depth >= 627; wade below; float at cell surface; jump = state 5; auto exit; real water source = engine static water manager (`_GetWaterHeightData` 0x180297c70) / terrain cell layer |
+| `SPEC_STATES_P3.md` | **focused water-interaction spec (client truth) + region decode**: no swim key; grounded entry -> states 6/7 at depth >= 627; wade below; float at cell surface; jump = state 5; auto exit; real water region = `water/regiondata/RegionInfo.json` tree, `ReferNode` key -> world origin decoded (`KG3D_LoaderNoRenderX64.dll` 0x1800245b0), baked in `client/WaterRegions.cs` (region 102400 u, height from `watersurfacelist.json`) |
 
 ## Tools
 
 | Tool | Content |
 |---|---|
 | `tools/character/motion_tag.py` | `.tani` GATA container parser + MotionTag stream dump (selftest 11/11; `--tsv`/`--json`) |
+| `tools/character/water_region.py` | decode `water\regiondata\RegionInfo.json` (ReferNode key -> world origin, leaf grid) + `watersurfacelist.json` height; emits `client/WaterRegions.cs` |
 
 ## Corrections applied to older docs (2026-10-06)
 

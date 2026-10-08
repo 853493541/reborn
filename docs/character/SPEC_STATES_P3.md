@@ -113,3 +113,46 @@ query directly (the engine loads the correct water):
 Alternative (data-only): finish the `ReferNode`->origin decode in
 `KG3D_LoaderNoRenderX64.dll` @0x1800245b0 (block grid decoded: 16x16 blocks x 32 cells x
 100 u = 3200 u; region 512 cells).
+
+---
+
+## Region decode SOLVED + baked (2026-10-07, `agent/3x-integration`)
+
+The `ReferNode` key -> world origin is decoded; the alternative above is taken and the P1
+provisional is replaced. **The earlier "16x16 blocks x 32 cells = 51200-u region" guess is
+corrected: the water region is 16x16 leaves x 64 cells = 1024 cells = 102400 u.**
+
+**Key -> world origin (HIGH).** `KG3D_LoaderNoRenderX64.dll` fn `0x1800245b0` reads
+`%s\regiondata\RegionInfo.json` and, per terrain region, builds the key with
+`"%d%03d_%d%03d"` (`0x180024854`) from `V = trunc(minWorld / (RegionSize*UnitScale))`:
+`minWorldX` / `minWorldZ` are the region descriptor's `+0xc` / `+0x14`
+(`_InitializeAreaRegions` `0x18002f300`: `minWorldX = N*col*UnitScale + WorldOriginX`,
+`desc+8 = N = RegionSize`). The first format field is `1` when `V >= 0` else `0`, the next
+three are `abs(V)`. `RegionSize = 512` (`cmp eax,0x200` at `0x180024702`, `N*100/100`), so
+`V = worldOrigin / 51200`. Decoded key `1000_1000` => world origin **(0,0)**.
+
+**Region extent (HIGH).** The leaf grid is 16x16 (`LeafNodeIndex & 0xF`, `>> 4`, 256
+entries). Shipped `landscapeinfo.json`: `RegionSize 512`, `LeafNodeSize 64`, `UnitScale
+100`. So a water region is **1024 cells = 102400 u** (16 leaves x 64 cells x 100 u), i.e.
+2x2 terrain regions. Cross-check: the shipped 龙门寻宝 water body (67039,58548) falls inside
+the decoded `1000_1000` AABB (0..102400) but *outside* a 51200 one, and the shipped UGC
+`water\regiondata\Regionlist.json` = `{RegionCount:1, Region0:[0,0]}` agrees.
+
+**Height.** The region's `WaterSurfaceID` selects a water surface; the shipped
+`watersurfacelist.json` body inside the region AABB supplies the height (**150** for
+龙门寻宝). Tool: `tools/character/water_region.py` (decodes the key, resolves the height,
+emits `client/WaterRegions.cs`); `client/WaterField.cs` samples it (no P1 for maps with a
+region); `RC_WATER` boxes remain a test-only override.
+
+**Interaction semantics implemented** (`client/RebornClient.cs`, post-move): grounded
+walk/run -> state 6 (moving) / 7 (idle) at `depth >= T` (627), float `y = max(ground,
+surface)`, airborne descent -> state 7 (fall-in), Space -> state 5, automatic exit ->
+`swimState = 0` at `depth < T`. Proof: `proof/character/3x_states/p3_*.txt` +
+`p3_*_*.png` (fingerprints: in-water dark `#313544` vs land brown `#775E3C`).
+
+**Registered remaining (AGENTS §6):** the RegionInfo `HasNorMask`/`HasHoleMask` masks
+(which narrow the shoreline inside a block) are not decoded, so the host floods the region
+AABB wherever `ground < surface`. Re-open: decode the `%s.data` / `*.mwdata` per-leaf mask
+and apply it in `WaterField.Sample`. Water **rendering** stays the separate asset boundary
+(`FluxWaterDefault_BWater.JsonIns` absent in MovieEditor). `WaterRegions.cs` ships region
+data only for 龙门寻宝 / 龙门寻宝_夜晚 (the maps with a decoded RegionInfo copy).

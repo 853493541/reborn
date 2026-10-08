@@ -5290,3 +5290,29 @@ power-pool values remain undecoded (re-open criteria in the doc).
 - True region remains the terrain-cell water layer (SPEC_STATES_P3); re-open when the
   cell-stream writer is traced.
 - Gates: build 0.
+
+### 2026-10-07 - Water region decoded from RegionInfo; P1 provisional replaced + P3 interaction baked
+
+- Decoded the missing `ReferNode`->world-origin link in `KG3D_LoaderNoRenderX64.dll`
+  fn 0x1800245b0: the key `"%d%03d_%d%03d"` encodes `trunc(minWorld/(RegionSize*UnitScale))`
+  (sign digit + 3 magnitude digits); `RegionSize=512`, `UnitScale=100` => key unit 51200 u.
+  The descriptor is built by `_InitializeAreaRegions` 0x18002f300 (`minWorldX = N*col*UnitScale
+  + WorldOriginX`, `desc+8 = N = RegionSize`). Key `1000_1000` => world origin (0,0).
+- Corrected the earlier "3200-u block / 51200-u region" guess: the region is 16x16 leaves x
+  64 cells (`LeafNodeSize=64`) = 1024 cells = **102400 u**. Cross-checks: the shipped
+  龙门寻宝 body (67039,58548) is inside the 102400 AABB but outside a 51200 one; the shipped
+  UGC `Regionlist.json` for 龙门寻宝 = `{RegionCount:1, Region0:[0,0]}`.
+- Baked it: `tools/character/water_region.py` -> `client/WaterRegions.cs` (region AABB,
+  surface id, height resolved from `watersurfacelist.json` = 150); `client/WaterField.cs`
+  uses the region for maps that have one (P1 kept only as fallback), `RC_WATER` still a
+  test-only override. Added `WaterRegions.cs` to `client\build_client.cmd`.
+- SPEC_STATES_P3 semantics verified by driven runs (post-move eval): walk-in from the shore
+  -> `enter state=6 surface=150 depth=634 T=627` + float; idle -> state 7; Space -> state 5;
+  fall-in -> state 7; swim out -> `exit state=6->0 depth=625` + land run. Proof
+  `proof/character/3x_states/p3_*.txt` + `p3_*_*.png` (in-water fingerprint `#313544` vs
+  land `#775E3C`).
+- Registered remaining (AGENTS section 6): the region hole/normal masks (which narrow the
+  shoreline inside a block) are not decoded, so the host floods the AABB where ground <
+  surface; re-open with the per-leaf `*.mwdata` mask. Water rendering stays the asset
+  boundary.
+- Gates: build 0; camera_smoke_3x ALL PASS; collision_selftest_reborn_client_3x 36/36.
