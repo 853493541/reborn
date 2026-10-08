@@ -370,6 +370,23 @@ internal static class RebornClient
             if (Env("RC_LY_FXE", "") != "1") selFxPath = "";
         };
         selectSlot(activeSlot);
+        // RC_SWEEP=<ms>: coverage sweep - select+cast each roster ability in turn
+        // (RC_SWEEP_N limits the count). Used to verify every ability casts
+        // correctly (authored clip + cast time) with no AV.
+        long sweepMs = 0;
+        long.TryParse(Env("RC_SWEEP", "0"), out sweepMs);
+        int sweepCount = rosterOrder.Count;
+        {
+            int sc;
+            if (int.TryParse(Env("RC_SWEEP_N", "0"), out sc) && sc > 0 && sc < sweepCount)
+                sweepCount = sc;
+        }
+        long sweepNext = -1;
+        int sweepIdx = 0;
+        // abilities whose cast AVs the engine (per-tani): skip in the sweep
+        var skipIds = new System.Collections.Generic.HashSet<string>();
+        foreach (string s in Env("RC_SKIP_IDS", "").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            skipIds.Add(s.Trim());
         // short visible tag from the exe name: reborn_client_collision.exe ->
         // "collision" (canonical reborn_client.exe -> "canonical"); shown in
         // the window title and the HUD's first line so parallel clients are
@@ -4952,6 +4969,31 @@ internal static class RebornClient
                 if (cslot >= 0) { selectSlot(cslot); Log("RC_CAST_AT -> slot " + (cslot + 1)); }
                 else Log("RC_CAST_AT -> skill press");
                 skillPressed = true;
+            }
+            // RC_SWEEP coverage: select+cast each roster ability in turn
+            if (sweepMs > 0 && sweepIdx < sweepCount)
+            {
+                if (sweepNext < 0) sweepNext = now + 1500;
+                if (now >= sweepNext)
+                {
+                    sweepNext = now + sweepMs;
+                    string sid = rosterOrder[sweepIdx];
+                    sweepIdx++;
+                    if (skipIds.Contains(sid))
+                    {
+                        Log("sweep skip -> " + sid);
+                    }
+                    else
+                    {
+                        string[] rr;
+                        roster.TryGetValue(sid, out rr);
+                        slotIds[0] = sid;
+                        selectSlot(0);
+                        skillPressed = true;
+                        Log("sweep " + sweepIdx + "/" + sweepCount + " -> " + sid
+                            + " " + (rr != null && rr.Length > 1 ? rr[1] : ""));
+                    }
+                }
             }
             while (clickAt.Count > 0 && now >= clickAt[0][0])
             {

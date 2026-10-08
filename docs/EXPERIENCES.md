@@ -7906,3 +7906,21 @@ if the cache/host frames appear.
   (prepare only); `nChannelInterval` expressions using `HDJueJingSkillCoe` resolve to -1
   (the coefficient is a documented global, not yet folded in); GCD (cooldown row 16) still
   to come.
+
+### 2026-10-08 — v6 — coverage sweep (Phase D) — cast-accumulation AV
+
+- **Did:** `RC_SWEEP=<ms>` (+ `RC_SWEEP_N`, `RC_SKIP_IDS`) selects+casts each roster ability
+  in turn — the coverage harness. SelectSlot-prefer-roster keeps each ability's own
+  anim/prepare. (Also fixed `selectSlot` to prefer the roster row, which carries
+  `prepareFrames`.)
+- **Finding (BLOCKER):** the engine **AVs after ~5–7 rapid sequential casts**
+  (`KGEngineCLR.Render()` / `FrameMove()`), independent of the specific ability (run1 died
+  on 27895, run2 on 27863). Same class as v5's "rapid re-casts AV the engine tag manager"
+  (handoff item 4/6). The sweep harness is correct; the **guard/warm-up** (per-cast
+  cooldown + sfx warm-up + per-tani blacklist, as in v5 `AbilitySystem`) is not yet ported
+  to v6 → Phase D full-coverage is blocked on it.
+- **Verified:** sweep selects+casts each ability (run2 cast 7 in a row before the AV);
+  proof `proof/netcode/skillv6_sweep_finding_20261008.txt`. Gates: jx3_model 10 PASS,
+  gravity PASS, loot selftest PASS.
+- **Next:** port v5's cast guard/cooldown + sfx warm-up into v6, then re-run the full 154
+  sweep to build the coverage report and blacklist any AVing tanis.
