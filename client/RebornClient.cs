@@ -383,6 +383,7 @@ internal static class RebornClient
         }
         long sweepNext = -1;
         int sweepIdx = 0;
+        long castReadyAt = 0;   // post-cast cooldown (rapid casts AV the engine tag manager)
         // abilities whose cast AVs the engine (per-tani): skip in the sweep
         var skipIds = new System.Collections.Generic.HashSet<string>();
         foreach (string s in Env("RC_SKIP_IDS", "").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -3185,7 +3186,7 @@ internal static class RebornClient
                 skillPressed = false;
                 bool chained = false;
                 TargetEntity ctg = targetSelector.Current;
-                if (ctg != null && !skillCast.Active)
+                if (ctg != null && !skillCast.Active && now >= castReadyAt)
                 {
                     // v6 full chain: face the target, play the authored anim,
                     // dash to the target while it plays, then the one-shot effect.
@@ -3193,6 +3194,7 @@ internal static class RebornClient
                         px, pz, ctg.X, ctg.Y, ctg.Z, lyAnimMs, lyFxAt, selPrepareMs, lyStop, selDash);
                     curYaw = skillCast.FaceYaw();
                     skillUntil = now + skillCast.TotalMs();
+                    castReadyAt = now + skillCast.TotalMs() + 1200;   // cooldown
                     curClip = null;
                     setClip(selAnimPath);
                     camShake.Start(2.0, 0.5, 0.8, 3);
@@ -4974,7 +4976,7 @@ internal static class RebornClient
             if (sweepMs > 0 && sweepIdx < sweepCount)
             {
                 if (sweepNext < 0) sweepNext = now + 1500;
-                if (now >= sweepNext)
+                if (now >= sweepNext && !skillCast.Active && now >= castReadyAt)
                 {
                     sweepNext = now + sweepMs;
                     string sid = rosterOrder[sweepIdx];

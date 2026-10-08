@@ -1,0 +1,24 @@
+# skill v6 — cast guard / cooldown did NOT fix the coverage AV (2026-10-08)
+# Build: reborn_client_skillv6.exe (git bb082ae, dirty)
+# Guard added: post-cast cooldown castReadyAt = now + totalMs + 1200; a cast is
+# only started when !skillCast.Active && now >= castReadyAt (the sweep waits for it).
+
+## Run: RC_TAB_AT=1000 RC_SWEEP=200 RC_SWEEP_N=60 (cooldown-limited spacing)
+00:49:xx sweep 1/60 -> 27844 听风吹雪 (cast)
+...
+00:49:27.699 sweep 7/60 -> 27863 碎风震 (cast)
+(process dies)
+stderr: Unhandled Exception: System.AccessViolationException ... at
+        MovieEngineCLR.KGEngineCLR.FrameMove() ... at RebornClient.Main
+
+# CONCLUSION: the cooldown did not prevent the AV. With casts starting at sweep 1,
+# the crash lands on cast #7 (27863); without a target early (run1) it landed on
+# cast #5 (27895). Different ability, ~5-7 casts in -> engine tag-manager state
+# accumulation (the v5 handoff's "rapid re-casts AV the engine tag manager",
+# docs/engine_host/ABILITY_SYSTEM_CLIENT_HANDOFF.md item 4/6), NOT per-tani and NOT
+# pacing. Phase D full coverage needs the deeper fix: engine-level tag lifecycle
+# (v5's RE plan: KG3DModel vtable / dwPlayType; or the v5 sfx warm-up + per-tani
+# blacklist, which only mitigated, did not solve). The sweep harness itself is
+# correct.
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
