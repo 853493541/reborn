@@ -1,0 +1,12 @@
+# skill v6 — 8 more abilities verified (batch 11, 2026-10-08)
+# Build: reborn_client_skillv6.exe
+## Verified (RC_ABILITY=<id> RC_CAST_AT=38000:1)
+#  28045 CasterSingle -> buff-=4 + child 21144,7276
+#  28046 CasterArea   -> repel=15f
+#  30023 CasterSingle -> dmg 0.0
+#  30024 CasterSingle -> dmg 0.0
+#  30025 CasterSingle -> apply buff 22171;22172 + buff-=6 + child
+#  30082 CasterSingle -> apply buff 22302;22303 + buff-=2
+#  30123 CasterSingle -> apply buff 22282;21163;20098 + mechanic buff+=22311
+#  30226 CasterSingle -> child 30227
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
