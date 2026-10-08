@@ -364,11 +364,11 @@ internal static class RebornClient
             else Log("cooldowns: missing " + cdPath);
         }
         catch (Exception e) { Log("cooldowns load ex: " + e.Message); }
-        // passive abilities (ability_picker/tools/build_passives.py): the 39 script-only
-        // abilities whose Apply() triggers child casts / buffs (self, no target).
-        var passives = new System.Collections.Generic.Dictionary<string, string[]>();
-        string pvPath = Env("RC_PASSIVES",
-            Path.Combine(Application.StartupPath, "ability_picker", "passives_f1.tsv"));
+        // Apply() actions (ability_picker/tools/build_passives.py): for every ability whose
+        // script defines Apply() -- the EXECUTE_SCRIPT runtime fn the engine runs at cast.
+        var applyActions = new System.Collections.Generic.Dictionary<string, string[]>();
+        string pvPath = Env("RC_APPLY",
+            Path.Combine(Application.StartupPath, "ability_picker", "apply_f1.tsv"));
         try
         {
             if (File.Exists(pvPath))
@@ -378,13 +378,13 @@ internal static class RebornClient
                 {
                     if (pl++ == 0) continue;
                     string[] p = line.Split('\t');
-                    if (p.Length >= 5 && p[0].Length > 0) passives[p[0]] = p;
+                    if (p.Length >= 5 && p[0].Length > 0) applyActions[p[0]] = p;
                 }
-                Log("passives: " + passives.Count + " abilities from " + pvPath);
+                Log("apply actions: " + applyActions.Count + " abilities from " + pvPath);
             }
-            else Log("passives: missing " + pvPath);
+            else Log("apply actions: missing " + pvPath);
         }
-        catch (Exception e) { Log("passives load ex: " + e.Message); }
+        catch (Exception e) { Log("apply actions load ex: " + e.Message); }
         // hotkey slots (RC_SLOTS overrides); keys 1..N select + cast a slot.
         // single active ability (key 1 casts it); the P panel click changes it.
         string[] slotIds = new string[] { Env("RC_SLOTS", "65029").Split(',')[0].Trim() };
@@ -3330,7 +3330,10 @@ internal static class RebornClient
                         if (mrow.Length > 7 && int.TryParse(mrow[7], out nrow) && cooldowns.TryGetValue(nrow.ToString(), out cr)) { float d; if (float.TryParse(cr[1], out d)) cdMs = d * 1000f; }
                     }
                 }
-                if ((ctg != null || passives.ContainsKey(selAbility)) && !skillCast.Active
+                string gateMode = "";
+                { string[] grr; if (roster.TryGetValue(selAbility, out grr) && grr.Length > 6) gateMode = grr[6]; }
+                bool needTarget = gateMode == "TargetSingle" || gateMode == "PointArea" || gateMode == "TargetArea";
+                if ((ctg != null || !needTarget) && !skillCast.Active
                     && now >= castReadyAt && now >= gcdUntil
                     && now >= cdForSkill && mana >= costMana && !skipIds.Contains(selAbility))
                 {
@@ -3912,12 +3915,12 @@ internal static class RebornClient
                             MechanicPlan plan = MechanicProgram.Resolve(mr, funcType);
                             // passive: run the Apply()-derived actions (child casts / buffs)
                             string[] pv;
-                            if (passives.TryGetValue(skillCast.Name, out pv))
+                            if (applyActions.TryGetValue(skillCast.Name, out pv))
                             {
                                 string children = pv.Length > 2 ? pv[2] : "";
                                 string addBuffs = pv.Length > 3 ? pv[3] : "";
                                 string delBuffs = pv.Length > 4 ? pv[4] : "";
-                                Log("passive " + skillCast.Name + " -> child=[" + children + "] +buff=[" + addBuffs + "] -buff=[" + delBuffs + "] n=" + pv.Length);
+                                Log("apply " + skillCast.Name + " -> child=[" + children + "] +buff=[" + addBuffs + "] -buff=[" + delBuffs + "] n=" + pv.Length);
                                 string[] bids = addBuffs.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                                 for (int bi = 0; bi < bids.Length; bi++)
                                     if (!selfBuffs.Contains(bids[bi])) selfBuffs.Add(bids[bi]);
@@ -3983,7 +3986,7 @@ internal static class RebornClient
                                     }
                                     catch (Exception de) { Log("doodad ex: " + de.Message); }
                                 }
-                                combatText.Push("passive " + skillCast.Name + (children.Length > 0 ? (" -> " + children) : ""),
+                                combatText.Push("apply " + skillCast.Name + (children.Length > 0 ? (" -> " + children) : ""),
                                     System.Drawing.Color.FromArgb(180, 220, 255));
                                 string[] cids = children.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                                 for (int ci = 0; ci < cids.Length; ci++)
@@ -4005,7 +4008,7 @@ internal static class RebornClient
                                             if (cp.CcType.Length > 0) { ct.CcType = cp.CcType; ct.CcUntil = now + 2000; }
                                             if (cp.Knockdown) { ct.CcType = "Knockdown"; ct.CcUntil = now + 1500; }
                                         }
-                                        Log("passive child " + cids[ci] + " " + cp.Summary());
+                                        Log("apply child " + cids[ci] + " " + cp.Summary());
                                     }
                                 }
                             }
@@ -5857,3 +5860,5 @@ internal sealed class EscKeyFilter : System.Windows.Forms.IMessageFilter
         return true;
     }
 }
+
+

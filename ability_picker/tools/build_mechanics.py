@@ -76,6 +76,12 @@ def call_arg(text, name):
     return int(m.group(1)) if m else -1
 
 
+def call_arg2(text, name):
+    """second numeric arg (SetNormalCoolDown(posi, id) -> id)."""
+    m = re.search(name + r"\s*\(\s*[0-9]+\s*,\s*([0-9]+)", text)
+    return int(m.group(1)) if m else -1
+
+
 LENGTH_BASE = 64.0   # 1 尺 = 64 units (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md)
 
 
@@ -111,7 +117,7 @@ def parse_script(data):
         "dmgRand": first_num(t, "nDamageRand"),
         "weaponPct": first_num(t, "nWeaponDamagePercent"),
         "gcdRow": call_arg(t, "SetPublicCoolDown"),
-        "normalCd": call_arg(t, "SetNormalCoolDown"),
+        "normalCd": call_arg2(t, "SetNormalCoolDown"),
         "prepareFrames": first_num(t, "nPrepareFrames"),
         "channelFrame": first_num(t, "nChannelFrame"),
         "channelInterval": first_num(t, "nChannelInterval"),

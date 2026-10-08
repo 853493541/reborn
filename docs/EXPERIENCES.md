@@ -8280,6 +8280,21 @@ if the cache/host frames appear.
 - **Implication:** the client-side interpretable ability mechanics are complete; the residual is
   characterized, not silently missing.
 
+### 2026-10-08 — v6 — Apply() runs at cast + normalCd fix; 5 abilities verified
+
+- **Finding:** for skills with `EXECUTE_SCRIPT(self)`, the engine runs the skill script's `Apply()`
+  **at cast** — it is the runtime effect function, not a passive-only hook. So Apply actions must
+  run for ALL such abilities, not just the 39 script-only ones.
+- **Fixed:** `SetNormalCoolDown(posi, id)` — the cooldown row is the **2nd** arg (id), not posi
+  (65029→7101, 65116→197). `build_passives.py` now emits Apply actions for every roster ability
+  with an `Apply` fn → `apply_f1.tsv` (137 abilities; 61 child casts, 137 add-buffs, 3 heals, 8
+  summons, 1 doodad). The client loads `apply_f1.tsv` and runs the actions at cast; self-centered
+  castModes (CasterSingle/CasterArea) may cast without a target.
+- **5 abilities verified:** 65029 (damage+child+dash), 65076 (prepare 1500 + Apply child 65077),
+  65116 (Daze+knockdown+child), 30081 (pull + Apply buff 22300), 27844 (Apply heal 20%). Proof
+  `proof/netcode/skillv6_apply_at_cast_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+
 ### 2026-10-08 — v6 — P7 server-spec reconciliation (documented)
 
 - **Did:** recorded P7 in `ABILITY_MECHANICS_PLAN.md`: the v6 ability runtime is a **local

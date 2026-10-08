@@ -1,0 +1,32 @@
+# skill v6 — Apply() at cast + normalCd fix; 5 abilities verified (2026-10-08)
+# Build: reborn_client_skillv6.exe
+# Research finding: for skills with EXECUTE_SCRIPT(self), the engine runs the skill script's
+#   Apply() at CAST -- it is the runtime effect function (not a passive-only hook). So the Apply
+#   actions must run for ALL such abilities, not just the 39 script-only ones.
+# Also fixed: SetNormalCoolDown(posi, id) -> the cooldown row is the 2nd arg (id), not posi.
+
+## Changes
+#  - build_mechanics.py: normalCd = 2nd arg of SetNormalCoolDown (65029->7101, 65116->197).
+#  - build_passives.py: extract Apply() actions for EVERY roster ability with an Apply function
+#    -> apply_f1.tsv (137 abilities; 61 child casts, 137 add-buffs, 3 heals, 8 summons, 1 doodad).
+#  - client: loads apply_f1.tsv and runs the Apply actions at cast (in addition to the mechanic
+#    ops); self-centered castModes (CasterSingle/CasterArea) may cast without a target.
+
+## 5 abilities, verified (RC_ABILITY=<id> RC_CAST_AT=38000:1)
+#  65029 绝境_龙牙   TargetSingle: damage 127.3 + child 65030 + dash 120
+#  65076 绝境_云飞玉皇 TargetSingle: prepareMs=1500 + damage + Apply child 65077
+#  65116 绝境_剑意   TargetSingle: Daze + knockdown + child 65117
+#  30081 绝境_裂伤   CasterArea:   pull + Apply buff 22300
+#  27844 听风吹雪    TargetSingle: Apply heal self+target 20% max life
+
+## sample run (65076)
+cast chain 65076: target=初级试炼木桩(131) ...
+apply 65076 -> child=[65077] +buff=[] -buff=[] n=9
+## sample run (30081)
+apply 30081 -> child=[] +buff=[22300] -buff=[] n=9
+mechanic 30081 mode=CasterArea -> 1 target(s) dmg=0.0 pull=100 knockRate=1024 [script]
+## sample run (27844)
+apply 27844 -> child=[] +buff=[] -buff=[] n=9
+heal 27844 self+100000 (hp=500000) tgt=500000000
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

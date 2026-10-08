@@ -70,7 +70,8 @@ def main():
         if len(c) > 57 and c[1].isdigit():
             sfmap[c[1]] = c[57]
 
-    ids = [l.split("\t")[0] for l in open(os.path.join(DATA, "script_only_f1.tsv"),
+    # every roster ability whose script defines Apply() (the EXECUTE_SCRIPT runtime fn).
+    ids = [l.split("\t")[0] for l in open(os.path.join(DATA, "roster_f1.tsv"),
                                           encoding="utf-8").read().splitlines()[1:] if l.strip()]
     rows = []
     tot_child = tot_buff = 0
@@ -78,9 +79,10 @@ def main():
         sf = sfmap.get(sid)
         p = script_path(sf) if sf else None
         if not p:
-            rows.append((sid, "", "", "", "", "", "", "", ""))
             continue
         t = open(p, "rb").read().decode("gb18030", "replace")
+        if not re.search(r"function\s+Apply\b", t):
+            continue
         body = apply_body(t)
         child = re.findall(r"CastSkill(?:XYZ|ByXYZ|ByDirection)?\s*\(\s*(\d+)", body)
         adds, dels = [], []
@@ -108,7 +110,7 @@ def main():
                      ";".join(dict.fromkeys(adds)), ";".join(dict.fromkeys(dels)), heal,
                      ";".join(dict.fromkeys(npcs)), ";".join(dict.fromkeys(doodads)), str(attrs)))
 
-    tsv = os.path.join(DATA, "passives_f1.tsv")
+    tsv = os.path.join(DATA, "apply_f1.tsv")
     with open(tsv, "w", encoding="utf-8", newline="\n") as f:
         f.write("skillId\tname\tchildCasts\taddBuffs\tdelBuffs\thealPct\tnpcs\tdoodads\tattrs\n")
         for r in rows:
@@ -116,7 +118,7 @@ def main():
     heals = sum(1 for r in rows if r[5])
     summons = sum(1 for r in rows if r[6])
     dood = sum(1 for r in rows if r[7])
-    print("passives: %d rows (%d child casts, %d add-buffs, %d heals, %d summons, %d doodads) -> %s"
+    print("apply actions: %d abilities (%d child casts, %d add-buffs, %d heals, %d summons, %d doodads) -> %s"
           % (len(rows), tot_child, tot_buff, heals, summons, dood, tsv))
     for r in rows[:8]:
         print("  %s child=%s add=%s del=%s heal=%s npc=%s" % (r[0], r[2] or "-", r[3] or "-", r[4] or "-", r[5] or "-", r[6] or "-"))
