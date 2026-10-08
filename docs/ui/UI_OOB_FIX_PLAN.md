@@ -27,6 +27,12 @@ viewer bugs from script-faithful overhang. After the P3 fixes (below), **oob=6,8
 | `placed-wrong` | **0** | rendered ≠ the script's own position — real viewer bugs (A), all fixed |
 | `clone` | 2 | runtime item clone (`__lt_*`) |
 
+**`edge-pos` review queue (374).** None of these carry a script `SetRelPos`/`SetAbsPos` (checked:
+0/374), so they are authored/anchor-driven placements with no independent verifier — the placement
+detector deliberately skips PosType 3/4/5/9-12 (their final position is the engine's anchor math).
+Reviewing them would require reimplementing that math (circular) or a GT capture, so they stay a
+documented review queue, not a fix step.
+
 **P3 first fix (2026-10-07): `FormatAllItemPos` no-runtime-items guard.** `UiLayout` flowed a
 `$FormatItems` container's *authored* children when no runtime items were appended (the engine's
 list is empty, so the call is a no-op). BigBagPanel's `Handle_Bg` decoration images were stacked
