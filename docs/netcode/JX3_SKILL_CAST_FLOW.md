@@ -361,22 +361,26 @@ corrected by the next server state.
    `PakV4SfxExtract.exe` (temp output, not committed). ⇒ 65029 `nChannelInterval =
    1267 * 1.2 = 1520.4`. Repro:
    `python -c "..."` on the extracted `Skill.lh` (SETGLOBAL/LOADK decode; see §3.3).
-3. **`IsAutoTurn=0` vs. client auto-face** — client data: `skills.tab` 65029 and base
-   415 both have `IsAutoTurn=0`. No per-skill turn value exists in
-   `skill_caster_<body>.txt` (checked the 51-col schema). So the client carries no
-   65029-specific turn directive; the actual facing behaviour is `[UNVERIFIED]`
-   (general combat turn: `LuaTurnToCharacter` + server `OnSetTurnRange`, §2.2).
-4. **战意 cost** — client data: 65029's script has no `nCostRage`, and its
-   `skill.nCostMana = tSkillData[...]` line is **commented out** (the `tSkillData`
-   table lists mana numbers but they are not applied); the client tooltip
-   (`Skill.txt` 65029) omits `消耗3点战意` (that text is base 415's). So the client
-   carries no 65029 cost; any 战意 charge is **`[SERVER-INF]`**. Re-open on a server
-   cost table/capture.
-5. **Dash authority** — client data: 65030 has **no** `skill_caster_*` row and base 龙牙
-   is absent too; the displacement is the script `ATTRIBUTE_TYPE.DASH = 120`. Whether the
-   client applies it locally (prediction) or the server drives it via `SkillMove`/
-   `OnSyncMoveState` is **`[UNVERIFIED]`** (needs the skill-runtime `ApplyAttribute` path;
-   `docs/movement/JX3_GRAVITY_RESEARCH.md` §3.10 documents the SkillMove side).
+3. ~~`IsAutoTurn=0` vs. client auto-face~~ — **RESOLVED (client truth)**: the client
+   carries **no 65029 turn directive**. `skills.tab` `IsAutoTurn=0` for 65029 (and base
+   415); **no** skill script sets `bAutoTurnOnCast`/`bDisableAutoTurn`; and 龙牙 does not
+   call `player:TurnToCharacter` (13 other client scripts do). The engine can auto-turn
+   during a cast (`KRLCharacter::PlaySplitAnimation` consults
+   `PlayerAnimationAutoTurningToTargetKind` with the logic skill id at `[char+0x47F0]`),
+   and the server sends `OnSetTurnRange` — so facing is logic/server-driven, *not* gated
+   by the client `IsAutoTurn` flag alone. ⇒ 65029's client row requests no turn.
+4. ~~战意 cost~~ — **RESOLVED (client truth)**: base 415's tooltip says `消耗3点战意`
+   (and its script sets `nNeedRage`), but 65029's script applies **no** rage cost
+   (`nCostRage` absent; the `skill.nCostMana = tSkillData[...]` line is commented out)
+   and the 65029 tooltip omits `消耗`. ⇒ the 绝境 version has **no client-side 战意
+   cost**; any server-side charge is invisible client-side.
+5. ~~Dash authority~~ — **RESOLVED (client truth)**: skill displacement is applied by
+   the **client** engine — `SkillMove` start `0x14031C4A0`, `KGJumpList::GetSkillMoveSetting`
+   `0x1403A2490` (`docs/movement/JX3_GRAVITY_RESEARCH.md` §3.10). Base 龙牙 drives its
+   motion via that system (`SetDelaySubSkill` + `NPCSKILLMOVESJBX=9987`, `TC_MOVE_LY`,
+   `TC_YC_LY`), while 65030 uses the `DASH` attribute; both are client-side skill-runtime
+   motion ⇒ the client applies the 120 u dash (prediction) and the server reconciles via
+   `OnSyncMoveState`/`OnMoveCharacter`. (Frame-by-frame path not decoded.)
 
 ## 6. Verification log (assumption audit, 2026-10-07)
 
@@ -397,8 +401,10 @@ corrected from an earlier draft:
 Method note: the incomplete-extraction trap — always enumerate the represent
 tables from `Represent/filepath.ini`, not from a prior partial cache folder.
 
-Still open: §5.3 auto-turn, §5.4 战意 cost, §5.5 dash authority
-(§5.1 animation binding and §5.2 coefficient are **resolved**).
+All five §5 items are now **resolved at the client-truth level** (§5.1 animation
+source, §5.2 coefficient, §5.3 turn, §5.4 战意 cost, §5.5 dash authority). Residuals
+that are genuinely **server-authoritative** (not in shipped client data): the exact
+server cost/validation values and the frame-by-frame reconcile timing.
 
 ---
 

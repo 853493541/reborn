@@ -7617,3 +7617,24 @@ if the cache/host frames appear.
   (ini + `skill_caster_f1.txt` header + rows 65029/41216/455; ~2 KB, not the asset).
 - Verified: extraction via official `PakV4SfxExtract.exe` (temp output, nothing written
   under `C:\SeasunGame`); disasm read-only (pefile+capstone). No gate code touched.
+
+### 2026-10-07 — Skills v6 — resolve the last three items (turn / cost / dash)
+
+- **All §5 items now resolved at client-truth level:**
+  1. **Turn** — client carries no 65029 turn directive: `skills.tab IsAutoTurn=0`
+     (and base 415), no script sets `bAutoTurnOnCast`/`bDisableAutoTurn`, 龙牙 does not
+     call `player:TurnToCharacter` (13 other scripts do). Engine auto-turn path is
+     `KRLCharacter::PlaySplitAnimation` + `PlayerAnimationAutoTurningToTargetKind`
+     (logic skill id at `[char+0x47F0]`) — logic/server-driven, not the `IsAutoTurn` flag.
+  2. **战意** — base 415 tooltip `消耗3点战意` + script `nNeedRage`; 65029 script has no
+     rage cost (`nCostMana` assignment commented out) and its tooltip omits 消耗 ⇒ no
+     client-side cost.
+  3. **Dash** — client-applied: `SkillMove` start `0x14031C4A0` /
+     `KGJumpList::GetSkillMoveSetting` `0x1403A2490`; base 龙牙 uses `SetDelaySubSkill`
+     (`NPCSKILLMOVESJBX=9987`,`TC_MOVE_LY`,`TC_YC_LY`) while 65030 uses `DASH`; client
+     predicts, server reconciles via `OnSyncMoveState`.
+- **Residual (server-authoritative, not client data):** server cost/validation values
+  and frame-by-frame reconcile timing.
+- Verified: decoded bytecode (`NewSkill.lh` → `NPCSKILLMOVESJBX=9987`; base 龙牙
+  `nNeedRage`), grepped client strings (`IsAutoTurn` 0x80C1B0, `bAutoTurnOnCast`,
+  `PlayerAnimationAutoTurningToTargetKind` 0xCB05F8), disasm read-only. Docs-only.
