@@ -30,6 +30,20 @@ internal static class AbilitySystem
         public string N = "";
     }
 
+    // double-buffered, opaque timeline surface: a plain Panel with a translucent
+    // BackColor repaints the engine surface behind it and flickers; this control
+    // paints itself in one buffered pass and keeps an opaque background.
+    internal class TimelineControl : Control
+    {
+        public TimelineControl()
+        {
+            SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint
+                     | ControlStyles.OptimizedDoubleBuffer, true);
+            SetStyle(ControlStyles.ResizeRedraw, true);
+            BackColor = Color.Black;
+        }
+    }
+
     [DllImport("winmm.dll", CharSet = CharSet.Auto)]
     static extern bool PlaySound(string pszSound, IntPtr hmod, uint fdwSound);
     const uint SND_ASYNC = 0x0001;
@@ -83,7 +97,7 @@ internal static class AbilitySystem
     // live process timeline overlay (top of the window): shows the current
     // cast's steps (anim/sound/dummy/sfx) on a time bar + playhead, the last
     // event and the PSS re-add count, so repeats/restarts are visible live.
-    static Panel tlPanel;
+    static TimelineControl tlPanel;
     static string tlName = "";
     static string tlEvent = "";
     static List<ProcStep> tlSteps;
@@ -243,6 +257,7 @@ internal static class AbilitySystem
         }
         soundBox.Location = new Point(6, panel.Height - 28);
         soundBox.Font = new Font("Microsoft YaHei", 9f * s);
+        LayoutTimeline();
     }
 
     static void BuildPanel()
@@ -317,11 +332,9 @@ internal static class AbilitySystem
     // last event + PSS re-add count). T toggles it.
     static void BuildTimeline()
     {
-        tlPanel = new Panel();
-        tlPanel.BackColor = Color.FromArgb(200, 0, 0, 0);
-        tlPanel.Height = 76;
-        tlPanel.Width = panelHost.ClientSize.Width;
-        tlPanel.Location = new Point(0, 0);
+        tlPanel = new TimelineControl();
+        tlPanel.Location = new Point(8, 8);
+        LayoutTimeline();
         tlPanel.Visible = tlVisible;
         tlPanel.Paint += delegate(object s, PaintEventArgs e)
         {
@@ -330,6 +343,20 @@ internal static class AbilitySystem
         };
         panelHost.Controls.Add(tlPanel);
         if (tlPanel.Visible) tlPanel.BringToFront();
+    }
+
+    // compact box (not full width): scales with the window, capped
+    static void LayoutTimeline()
+    {
+        if (tlPanel == null || panelHost == null) return;
+        int w = (int)(560 * uiScale);
+        int maxw = panelHost.ClientSize.Width - 16;
+        if (maxw < 200) maxw = 200;
+        if (w > maxw) w = maxw;
+        int h = (int)(64 * uiScale);
+        if (h < 44) h = 44;
+        tlPanel.Size = new Size(w, h);
+        tlPanel.Invalidate();
     }
 
     static Color KindColor(string kind)
@@ -354,11 +381,11 @@ internal static class AbilitySystem
     {
         if (tlPanel == null) return;
         int w = tlPanel.ClientSize.Width, h = tlPanel.ClientSize.Height;
-        g.Clear(Color.FromArgb(205, 0, 0, 0));
+        g.Clear(Color.FromArgb(24, 24, 24));
         g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-        float fs = 8.5f * uiScale;
+        float fs = 8.0f * uiScale;
         using (var f = new Font("Consolas", fs))
-        using (var fb = new Font("Consolas", fs + 1.5f, FontStyle.Bold))
+        using (var fb = new Font("Consolas", fs + 1.0f, FontStyle.Bold))
         using (var white = new SolidBrush(Color.White))
         using (var gray = new SolidBrush(Color.FromArgb(175, 175, 175)))
         using (var yellow = new SolidBrush(Color.Yellow))
@@ -369,21 +396,28 @@ internal static class AbilitySystem
             long el = tlElapsed; if (el < 0) el = 0; if (el > total) el = total;
             int nsteps = (tlSteps != null) ? tlSteps.Count : 0;
             int fired = stepIdx; if (fired > nsteps) fired = nsteps;
-            string head = (active ? "CAST" : "idle") + " " + tlName;
-            g.DrawString(head, fb, active ? yellow : white, 8, 2);
-            float hw = g.MeasureString(head, fb).Width;
-            string sub = "  t=" + el + "/" + total + "ms   step " + fired + "/" + nsteps
-                + "   PSS re-adds=" + tlReadds + (pss ? "  [PSS on]" : "");
-            g.DrawString(sub, f, cyan, 8 + hw, 3);
+            string head = (active ? "CAST " : "idle ") + tlName;
+            g.DrawString(head, fb, active ? yellow : white, 5, 1);
+            string rt = el + "/" + total + "ms";
+            float rtw = g.MeasureString(rt, f).Width;
+            g.DrawString(rt, f, cyan, w - 5 - rtw, 2);
+            string sub = "step " + fired + "/" + nsteps + "  PSS re-adds=" + tlReadds
+                + (pss ? "  [PSS on]" : "");
+            g.DrawString(sub, f, gray, 5, 2 + (int)(fs * 1.5f));
             if (tlEvent.Length > 0)
-                g.DrawString(tlEvent, f, gray, 8, 2 + (int)(fs * 1.6f));
+            {
+                string ev = tlEvent;
+                float maxw = w - 10;
+                if (g.MeasureString(ev, f).Width > maxw)
+                {
+                    while (ev.Length > 4 && g.MeasureString(ev + "..", f).Width > maxw)
+                        ev = ev.Substring(0, ev.Length - 1);
+                    ev = ev + "..";
+                }
+                g.DrawString(ev, f, gray, 5, 2 + (int)(fs * 3.0f));
+            }
 
-            // legend
-            string legend = "A anim   S sound   D dummy";
-            float lw = g.MeasureString(legend, f).Width;
-            g.DrawString(legend, f, gray, w - 8 - lw, 2);
-
-            int x0 = 8, x1 = w - 8, y = h - 16, bh = 8;
+            int x0 = 5, x1 = w - 5, y = h - 15, bh = 7;
             if (x1 <= x0) return;
             using (var baseBr = new SolidBrush(Color.FromArgb(55, 55, 55)))
                 g.FillRectangle(baseBr, x0, y, x1 - x0, bh);
@@ -403,14 +437,13 @@ internal static class AbilitySystem
                     }
                     using (var b = new SolidBrush(kc))
                     {
-                        g.FillRectangle(b, sx - 1, y - 5, 3, bh + 10);
-                        string tag = KindTag(st.Kind);
-                        g.DrawString(tag, f, b, sx - 2, y + bh + 1);
+                        g.FillRectangle(b, sx - 1, y - 4, 3, bh + 8);
+                        g.DrawString(KindTag(st.Kind), f, b, sx - 2, y + bh);
                     }
                 }
             }
             int phx = x0 + (int)((x1 - x0) * (double)el / total);
-            g.FillRectangle(yellow, phx - 1, y - 8, 2, bh + 16);
+            g.FillRectangle(yellow, phx - 1, y - 6, 2, bh + 12);
         }
     }
 
@@ -520,7 +553,8 @@ internal static class AbilitySystem
             ScaleUi();
             panel.Location = new Point(Math.Max(0, lastFormW - panel.Width - 12), 36);
             if (panel.Visible) panel.BringToFront();
-            if (tlPanel != null) { tlPanel.Width = lastFormW; tlPanel.Invalidate(); }
+            LayoutTimeline();
+            if (tlPanel != null && tlPanel.Visible) tlPanel.BringToFront();
         }
         // live process timeline (top overlay): playhead + repaint throttle
         if (active) tlElapsed = now - startMs;
