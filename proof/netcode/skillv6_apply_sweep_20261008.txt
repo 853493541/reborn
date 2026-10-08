@@ -1,0 +1,13 @@
+# skill v6 — Apply-at-cast coverage sweep (2026-10-08)
+# Build: reborn_client_skillv6.exe (git be56fbc, dirty)
+# Verifies the Apply-at-cast generalization across the whole roster.
+
+## Full sweep: RC_SWEEP_N=154 RC_SWEEP_START=0 (GCD-gated), reborn_20261008_093138.log
+casts = 115 ; skips (per-tani AV) = 39 ; total = 154 ; reached last entry ; clean DONE
+apply-action lines ("apply <id> ->") = 102   (Apply actions ran for 102 cast abilities)
+
+## behavior matrix (ability_behavior_f1.tsv) after the generalization:
+#   dmg 31, cc 6, child 59, buff 28, buff+ 63, buff- 11, move 4, heal 3, summon 8
+#   '-' 32 (was 48)  -> the remaining are mostly no-op/template passives.
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

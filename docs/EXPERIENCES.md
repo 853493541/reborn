@@ -8295,6 +8295,16 @@ if the cache/host frames appear.
   `proof/netcode/skillv6_apply_at_cast_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
   loot selftest PASS.
 
+### 2026-10-08 — v6 — Apply-at-cast coverage sweep
+
+- **Did:** ran the full 154 sweep to verify the Apply-at-cast generalization; regenerated the
+  behavior matrix.
+- **Result:** 115 casts + 39 skips = 154, **102 apply-action lines**, clean `DONE`. Behavior
+  matrix improved: buff+ 26→63, child 49→59, heal 1→3, summon 3→8, buff- 5→11, `-` 48→32.
+- **Verified:** proof `proof/netcode/skillv6_apply_sweep_20261008.txt`; gates jx3_model 10 PASS,
+  gravity PASS, loot selftest PASS.
+- **Open:** the 32 `-` are mostly no-op/template passives; the rest are blocked/large.
+
 ### 2026-10-08 — v6 — P7 server-spec reconciliation (documented)
 
 - **Did:** recorded P7 in `ABILITY_MECHANICS_PLAN.md`: the v6 ability runtime is a **local
