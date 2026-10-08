@@ -8383,6 +8383,15 @@ if the cache/host frames appear.
   `proof/netcode/skillv6_addbuff_fix_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
   loot selftest PASS.
 
+### 2026-10-08 — v6 — 8 more abilities verified (batch 9)
+
+- **Verified:** 27846 (dispel), 27855 (buff 20191;20192 + dispel), 27862 (child 27881,27880),
+  27869 (dispel + selfMove 43), 27872 (child 27934), 27874 (child 27996 + buffs), 27878 (child
+  22875;7276;22615 + buffs), 27888 (child 27898,27899). Proof
+  `proof/netcode/skillv6_batch9_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Note:** ~50 abilities explicitly verified; 73 castables remain.
+
 ### 2026-10-08 — v6 — abilities verified (batch 7, partial)
 
 - **Verified (run interrupted):** 65108 (dispel buff-=8), 65109 (child 65110;65111;65112), 65118
