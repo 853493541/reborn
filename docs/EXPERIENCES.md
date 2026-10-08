@@ -2678,3 +2678,27 @@ solved it, and what is still open. **Newest at the bottom.**
   parked 1,597 / edge-pos 374 / clone 2; `--selftest` 1240/0/0. All measured viewer placement bugs
   (class A) are now fixed; the remaining oob is clipped (D), script-parked/authored overhang (C),
   and the edge-pos review queue.
+
+### 2026-10-07 — UI — checklist becomes a visibility toggle + frame-clipped render
+
+- **Frame-clipped render** (`f0ed554`): the GUI expanded the canvas by the overhang
+  (`ComputeOverhang`), so the scripts' parked popups/slide bars and the INIs' authored overhang
+  rendered outside the frame — the reviewer's "many components outside the window". The GUI now
+  sizes the canvas to the window rect and sets `ClipToBounds`; headless `--render`/`--click` keep
+  the expansion for inspection, and `--audit` still measures/classes the off-window content.
+- **`超出窗口` flag uses the audit classifier** (`b0ad21f`): the checklist's out-of-window flag was
+  a crude geometric test that flagged engine-faithful overhang (about half the windows). It now
+  fires only on a rendered-vs-script mismatch, reusing `App.ClassifyOutOfBounds` /
+  `App.RenderedMismatchesScript` (made `internal`, taking `Dictionary<string, IniSection>` so both
+  the audit and the viewer can call them).
+- **Checklist rows** (`21fb8c8`): 20% larger text (`FontSize=14.4`) and the whole row clickable
+  (transparent hit-testable background + hand cursor), not just the label.
+- **Checkbox = visibility** (`d90ac8e`): repurposed from the 已核对 review tick to hide/unhide —
+  checked (default) = shown, unchecked = hidden from the render (merged into `ApplyHide`); clicking
+  the row text toggles it and highlights. Header/buttons renamed 显示 / 全显示 / 全隐藏.
+- **Rows persist when hidden** (`af34f5c`): two bugs — (a) the item list was built from
+  `buildResult.Elements`, so a hidden item lost its row; it now also includes checklist-hidden
+  sections (rows stay, re-check re-shows); (b) the layout cache key did not include the
+  checklist-hidden set, so toggling returned the stale canvas; the cache is invalidated on toggle
+  (once per batch).
+- Verified: build 0 warnings; `--selftest` 1240/0/0; viewer relaunched for review.

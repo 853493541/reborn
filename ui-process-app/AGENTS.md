@@ -17,13 +17,14 @@ in `docs/ui/BASIC_UI_HUD.md`.
   rejected window to restore it to its original stage. State is a side file `Data/rejected.tsv`
   (windowId TAB originalStageId) — the catalog JSON stays clean; headless equivalent:
   `UiProcessApp.exe --reject <windowId>` (toggles, no selection).
-- **清单 (per-item checklist)**: the 布局 tab's right panel lists every rendered item (section) of
-  the current window in INI order with a checkbox, beside the displayed UI. Items with a detected
-  issue (placeholder art / unresolved string / out-of-window outside scrolls) default to
-  **unchecked** with the reason shown (⚠ 缺图/文案缺失/超出窗口); everything else defaults to
-  checked (it is displayed). Clicking an item name outlines its element in the canvas (yellow
-  overlay). Explicit ticks are remembered as overrides in `Data/item_checks.tsv` (windowId TAB
-  section TAB 1/0); 全选/清除 buttons; the header shows `已核对 X / Y`.
+- **清单 (per-item checklist / visibility toggle)**: the 布局 tab's right panel lists every item
+  (section) of the current window in INI order with a checkbox, beside the displayed UI. The
+  checkbox is a **visibility toggle**: checked (default) = the item is shown; unchecked = it is
+  hidden from the window render (merged with the 隐藏 box) while its row stays in the list, so it
+  can be re-checked and reappear. Clicking anywhere on a row toggles it and highlights the item in
+  the canvas (yellow overlay). Detected issues are labelled (⚠ 缺图/文案缺失/超出窗口). State is
+  remembered in `Data/item_checks.tsv` (windowId TAB section TAB 1/0); 全显示/全隐藏 buttons; the
+  header shows `显示 X / Y`.
 - **Render status (P1)**: `UiProcessApp.exe --status` writes `Data/render_status.tsv` (per window:
   size/sections/elements/leaves/placeholders/unresolved/outOfBounds/pages/page/lsh/runtime-hosts/
   flags) + stage totals; the viewer shows `status: ph=.. str=.. oob=.. flags` in the AssetNote line
