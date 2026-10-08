@@ -202,6 +202,44 @@ internal static class RebornClient
         // plays the effect through the animation by default; the standalone .Sfx
         // path stays opt-in (RC_LY_FXE=1) until the engine SFX path is wired.
         if (Env("RC_LY_FXE", "") != "1") lyFx = "";
+        // v6 cast-chain dataset (ability_picker/tools/build_cast_chain.py):
+        //   skillId -> name / animTani / effectSfx / effectBone, from the client
+        //   tables (skill_caster + player_animation + skill_result + skill_effect).
+        var castChain = new System.Collections.Generic.Dictionary<string, string[]>();
+        string chainPath = Env("RC_CHAIN",
+            Path.Combine(Application.StartupPath, "ability_picker", "cast_chain_f1.tsv"));
+        try
+        {
+            if (File.Exists(chainPath))
+            {
+                int ln = 0;
+                foreach (string line in File.ReadAllLines(chainPath))
+                {
+                    if (ln++ == 0) continue;
+                    string[] p = line.Split('\t');
+                    if (p.Length >= 5 && p[0].Length > 0) castChain[p[0]] = p;
+                }
+                Log("cast chain: " + castChain.Count + " abilities from " + chainPath);
+            }
+            else Log("cast chain: missing " + chainPath);
+        }
+        catch (Exception e) { Log("cast chain load ex: " + e.Message); }
+        string selAbility = Env("RC_ABILITY", "65029");
+        string selAnimPath = lyAnim, selFxPath = lyFx;
+        {
+            string[] ab;
+            if (castChain.TryGetValue(selAbility, out ab))
+            {
+                if (ab[2].Length > 0) selAnimPath = ab[2];
+                selFxPath = ab[3];
+                Log("cast chain ability: " + selAbility + " " + ab[1]
+                    + " anim=" + ab[2] + " fx=" + ab[3] + " bone=" + ab[4]);
+            }
+            else Log("cast chain: ability " + selAbility + " not in dataset (longya defaults)");
+        }
+        // standalone .Sfx is opt-in: the engine factory is not wired in this host
+        // yet; the tani renders the authored effect by default.
+        if (Env("RC_LY_FXE", "") != "1") selFxPath = "";
         long lyAnimMs = 1500;
         long.TryParse(Env("RC_LY_ANIM_MS", "1500"), out lyAnimMs);
         long lyFxAt = 520;
@@ -3030,16 +3068,16 @@ internal static class RebornClient
                 {
                     // v6 full chain: face the target, play the authored anim,
                     // dash to the target while it plays, then the one-shot effect.
-                    skillCast.Begin(now, "longya", lyAnim, lyFx,
+                    skillCast.Begin(now, selAbility, selAnimPath, selFxPath,
                         px, pz, ctg.X, ctg.Y, ctg.Z, lyAnimMs, lyFxAt, lyStop);
                     curYaw = skillCast.FaceYaw();
                     skillUntil = now + lyAnimMs;
                     curClip = null;
-                    setClip(lyAnim);
+                    setClip(selAnimPath);
                     camShake.Start(2.0, 0.5, 0.8, 3);
                     chained = true;
-                    Log("cast chain longya: target=" + ctg.ToString()
-                        + " anim=" + lyAnim + " fx=" + lyFx
+                    Log("cast chain " + selAbility + ": target=" + ctg.ToString()
+                        + " anim=" + selAnimPath + " fx=" + selFxPath
                         + " animMs=" + lyAnimMs + " fxAt=" + lyFxAt
                         + " dashTo=(" + ctg.X.ToString("F0") + "," + ctg.Z.ToString("F0") + ")");
                 }
@@ -3549,8 +3587,8 @@ internal static class RebornClient
                     skillCast.EffectPoint(out ex, out ey, out ez);
                     try
                     {
-                        int frc = SfxShim.Play(lyFx, ex, ey + 90f, ez);
-                        Log("cast chain fx(engine) -> " + lyFx + " rc=" + frc
+                        int frc = SfxShim.Play(skillCast.EffectPath, ex, ey + 90f, ez);
+                        Log("cast chain fx(engine) -> " + skillCast.EffectPath + " rc=" + frc
                             + " at (" + ex.ToString("F0") + "," + (ey + 90f).ToString("F0")
                             + "," + ez.ToString("F0") + ") " + SfxShim.Status());
                     }

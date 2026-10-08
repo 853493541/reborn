@@ -7712,3 +7712,26 @@ if the cache/host frames appear.
   the engine factory args resolved — tracked separately.)
 - Proof: `proof/netcode/skillv6_effect_tani_fingerprint_20261007.txt`.
 - Verified: default chain run + `tools/proof/image_stats.py --grid 8x8` (PIL via .venv).
+
+### 2026-10-07 — v6 — cast-chain dataset (generalize beyond 龙牙)
+
+- **Did:** `ability_picker/tools/build_cast_chain.py` builds
+  `ability_picker/data/cast_chain_f1.{json,tsv}` from the shipped client tables:
+  `skill_caster_<body>` (extracted via the official `PakV4SfxExtract.exe` when
+  absent) → `CastSkillAnimationID0` → `player_animation_<body>` → `.tani`;
+  `PhysicsDamageEffectResultID` → `skill_result` → `skill_effect` → `.Sfx` + bone;
+  names from `skills.tab`. Result: **3491 abilities** (e.g. 65029 →
+  `F1s04tc技能13_龙牙hd.tani`, `被击_闪光01_龙牙.Sfx`, bone `S_fxmid`; 41216 → 龙牙8尺).
+- **Client:** loads the TSV at startup; `RC_ABILITY=<skillId>` selects the ability
+  (default 65029); the chain uses that ability's `animTani`/`effectSfx`. Verified the
+  dataset loader parses 3491 rows (log line).
+- **BLOCKER (environment, not code):** the rebuilt `reborn_client_skillv6.exe` now AVs
+  at startup (`0xc0000005`, unnamed module) consistently while the v5 client is running
+  — reproduced with the dataset loader **disabled** (`RC_CHAIN`→nonexistent) too, so the
+  fault is before any per-run log is written (shared engine root / repeated forced
+  kills; the documented §2.6 concurrency caveat). Naming the conflicting session:
+  `reborn_client_skillv5` PID 39660, started 21:24:11, ns `reborn_client_skillv5.memory`.
+- **Next:** re-verify the generalization with a clean engine root (no other client
+  active), then per-ability dash/spans.
+- Verified: dataset generated + 65029 row matches the represent tables; runtime
+  generalization pending the clean-window re-test.
