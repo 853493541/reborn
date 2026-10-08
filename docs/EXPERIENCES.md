@@ -7765,3 +7765,20 @@ if the cache/host frames appear.
   (`RC_ABILITY=65029/65076`); no v5 code touched. Only the human merge into `main`
   remains.
 - Verified: gates above + driven runs (`proof/netcode/skillv6_*`).
+
+### 2026-10-07 — v6 — dash uses the ability's authored speed (not a slow lerp)
+
+- **User report:** "the dash is wrong, that's just a slowly moving" — the chain moved the
+  200 u gap over the whole 1500 ms cast (~133 u/s).
+- **Client data:** the ability's dash is the child skill's `ATTRIBUTE_TYPE.DASH` value
+  (`绝境龙牙冲刺技能` 65030 = `DASH 120`); the base 龙牙 authors its motion via
+  `SetDelaySubSkill(NPCSKILLMOVESJBX.TC_MOVE_LY, NPCSKILLMOVESJBX.TC_YC_LY, 1.0)` where
+  `NPCSKILLMOVESJBX = { TC_MOVE_LY = 41570, TC_YC_LY = 12 }` (decoded from `NewSkill.lh`;
+  41570 resolves to skill `重攻击`). So the dash is an authored, fast move.
+- **Fix:** `SkillCast` now dashes at the authored **speed in engine u/frame**
+  (child `DASH` value, 120 u/frame = 1920 u/s at GAME_FPS 16), covering the gap and then
+  holding while the anim finishes: `dashMs = clamp(travel / speed, 80 ms, animMs)`.
+- **Verified (driven):** log `cast chain 65029: … dash=120u/f ->104ms stop=200`; the
+  player covers the gap in ~0.1 s (`t=12s z=33868 → t=14s z=34053`), face + anim + no
+  crash. Knob `RC_LY_DASH` (u/frame, default 120).
+- Verified: `client\build_client.cmd` exit=0; driven run alive.

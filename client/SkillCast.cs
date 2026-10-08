@@ -6,16 +6,21 @@
 //   * plays the skill's authored animation (skill_caster_f1.txt
 //     CastSkillAnimationID0 -> player_animation_f1.txt -> .tani),
 //   * DASHES toward the target WHILE that animation plays (the skill's child
-//     DASH attribute; e.g. LongYa dash child 65030 = DASH 120), and
+//     DASH attribute; the value is a speed in engine units per frame — e.g.
+//     65030 DASH 120 -> 120 u/frame = 1920 u/s at GAME_FPS 16), and
 //   * plays the skill's effect (skill_effect, PhysicsDamageEffectResultID) once.
 //
-// This class is pure state/maths (no engine types) so RebornClient owns the
-// engine calls (setClip / AddDummyModel). The goal is a faithful chain, not a
-// per-frame stand-in: the renderer is driven from the client's own cast data.
+// The dash is a fast, authored-speed move to the target (not a slow lerp over
+// the whole cast): it covers the gap at dashSpeedPerFrame and then holds while
+// the animation finishes.
+//
+// Pure state/maths (no engine types) so RebornClient owns the engine calls.
 using System;
 
 internal sealed class SkillCast
 {
+    public const int GameFps = 16;   // GAME_FPS (docs/netcode/README.md)
+
     public bool Active;
     public string Name = "";
     public string AnimPath = "";
@@ -23,6 +28,7 @@ internal sealed class SkillCast
 
     long startMs;
     long animMs;
+    long dashMs;
     long effectAtMs;
     bool effectPending;
 
@@ -31,12 +37,12 @@ internal sealed class SkillCast
     float fxX, fxY, fxZ;       // effect anchor (the target)
     float faceYaw;
 
-    // Begin a cast. selfX/selfZ = caster ground pos; tgtX/tgtZ/tgtY = target;
-    // stopDistance = how close the dash stops to the target (u, engine cm).
+    // dashSpeedPerFrame = engine units per frame (the child skill's DASH value).
     public void Begin(long now, string name, string anim, string effect,
                       float selfX, float selfZ,
                       float tgtX, float tgtY, float tgtZ,
-                      long animMs, long effectAtMs, float stopDistance)
+                      long animMs, long effectAtMs, float stopDistance,
+                      float dashSpeedPerFrame)
     {
         Active = true;
         Name = name;
@@ -68,6 +74,15 @@ internal sealed class SkillCast
         fxY = tgtY;
         fxZ = tgtZ;
 
+        // dash timing from the authored speed (u/frame -> u/s) over the gap
+        float speedUpS = dashSpeedPerFrame > 1f ? dashSpeedPerFrame * GameFps : 1f;
+        float travel = (float)Math.Sqrt((endX - fromX) * (endX - fromX) +
+                                        (endZ - fromZ) * (endZ - fromZ));
+        long dash = travel > 0.5f ? (long)(travel / speedUpS * 1000f) : 0;
+        if (dash < 80) dash = 80;             // never instant
+        if (dash > this.animMs) dash = this.animMs;
+        dashMs = dash;
+
         // the client's forward is (-cos(yaw), -sin(yaw)); face the target.
         if (d > 0.01f)
             faceYaw = (float)Math.Atan2(-(tgtZ - selfZ), -(tgtX - selfX));
@@ -76,6 +91,7 @@ internal sealed class SkillCast
     }
 
     public float FaceYaw() { return faceYaw; }
+    public long DashMs() { return dashMs; }
 
     // Advance; returns true while the cast is running and sets the render pos.
     public bool Tick(long now, out float x, out float z)
@@ -84,9 +100,14 @@ internal sealed class SkillCast
         z = fromZ;
         if (!Active) return false;
         long el = now - startMs;
-        float f = (float)el / animMs;
-        if (f > 1f) f = 1f;
-        if (f < 0f) f = 0f;
+        float f;
+        if (dashMs > 0)
+        {
+            f = (float)el / dashMs;
+            if (f > 1f) f = 1f;
+            if (f < 0f) f = 0f;
+        }
+        else f = 1f;
         x = fromX + (endX - fromX) * f;
         z = fromZ + (endZ - fromZ) * f;
         if (el >= animMs) Active = false;

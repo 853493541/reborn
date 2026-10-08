@@ -210,6 +210,10 @@ internal static class RebornClient
         long.TryParse(Env("RC_LY_FX_AT", "520"), out lyFxAt);
         float lyStop = 200f;   // stop this close to the target (u, engine cm)
         float.TryParse(Env("RC_LY_STOP", "200"), out lyStop);
+        // dash speed in engine units per frame, from the skill's child DASH
+        // attribute (e.g. 绝境龙牙冲刺技能 65030 = DASH 120 -> 120 u/frame).
+        float lyDash = 120f;
+        float.TryParse(Env("RC_LY_DASH", "120"), out lyDash);
         long lyFxLife = 2500;
         long.TryParse(Env("RC_LY_FX_LIFE", "2500"), out lyFxLife);
         SkillCast skillCast = new SkillCast();
@@ -3071,7 +3075,7 @@ internal static class RebornClient
                     // v6 full chain: face the target, play the authored anim,
                     // dash to the target while it plays, then the one-shot effect.
                     skillCast.Begin(now, selAbility, selAnimPath, selFxPath,
-                        px, pz, ctg.X, ctg.Y, ctg.Z, lyAnimMs, lyFxAt, lyStop);
+                        px, pz, ctg.X, ctg.Y, ctg.Z, lyAnimMs, lyFxAt, lyStop, lyDash);
                     curYaw = skillCast.FaceYaw();
                     skillUntil = now + lyAnimMs;
                     curClip = null;
@@ -3080,7 +3084,8 @@ internal static class RebornClient
                     chained = true;
                     Log("cast chain " + selAbility + ": target=" + ctg.ToString()
                         + " anim=" + selAnimPath + " fx=" + selFxPath
-                        + " animMs=" + lyAnimMs + " fxAt=" + lyFxAt
+                        + " animMs=" + lyAnimMs + " fxAt=" + lyFxAt + " dash=" + lyDash
+                        + "u/f ->" + skillCast.DashMs() + "ms stop=" + lyStop
                         + " dashTo=(" + ctg.X.ToString("F0") + "," + ctg.Z.ToString("F0") + ")");
                 }
                 else
