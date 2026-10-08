@@ -804,6 +804,11 @@ internal static class RebornClient
         {
             try
             {
+                // The flux water sim is NVIDIA Flex; the editor's flux checkbox
+                // path initializes the Flex body module. Preload the shipped Flex
+                // modules (host cwd = MovieEditor) so the E_FAIL can be
+                // attributed: module missing vs device missing.
+                Log("watersim: flex preload " + FlexProbe.Preload());
                 int wsEn = scene.EnableFluxWaterSimulation(1);
                 scene.ResetFluxWaterSimulation();
                 scene.UpdateFluxCollisionHeightMap();
@@ -6234,9 +6239,34 @@ internal static class RebornClient
     }
 
     // Native sound probe loader (RC_SOUND_HOOK=1): see native/sound_probe.cpp.
-    internal static class SoundProbe
+    // NVIDIA Flex module preload probe (water render investigation): the flux
+    // water sim E_FAILs without the Flex body module/device; the editor's flux
+    // checkbox path initializes it. Loading the shipped modules tells module
+    // missing from device missing.
+    internal static class FlexProbe
     {
         [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+        static extern IntPtr LoadLibraryExA(string path, IntPtr hFile, uint flags);
+
+        public static string Preload()
+        {
+            string[] mods = new string[] {
+                "KG3D_NVFlexBodyX64.dll", "KG3D_FlexibleBodyX64.dll",
+                "NvFlexReleaseD3D_x64.dll", "NvFlexExtReleaseD3D_x64.dll"
+            };
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            for (int i = 0; i < mods.Length; i++)
+            {
+                IntPtr h = LoadLibraryExA(mods[i], IntPtr.Zero, 0x8);
+                if (sb.Length > 0) sb.Append(",");
+                sb.Append(mods[i]).Append("=").Append(h == IntPtr.Zero ? 0 : 1);
+            }
+            return sb.ToString();
+        }
+    }
+
+    internal static class SoundProbe
+    {        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
         static extern IntPtr LoadLibraryA(string name);
         [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
         static extern IntPtr GetProcAddress(IntPtr h, string name);

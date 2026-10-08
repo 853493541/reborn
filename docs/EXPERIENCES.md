@@ -5199,3 +5199,13 @@ power-pool values remain undecoded (re-open criteria in the doc).
   p2_jump_deep (`swim: jump state=5` -> re-entry 7), p2_jump_shallow (normal
   jump). Gates: build 0, smoke ALL PASS, collision 36/36.
 
+### 2026-10-07 - Water visibility: Flex module preload probe (E_FAIL is not module-missing)
+
+- Added `FlexProbe.Preload()` before `EnableFluxWaterSimulation`: all four shipped Flex
+  modules load (`KG3D_NVFlexBodyX64=1, KG3D_FlexibleBodyX64=1, NvFlexReleaseD3D_x64=1,
+  NvFlexExtReleaseD3D_x64=1`) yet the call still returns E_FAIL (0x80004005).
+- Conclusion: the failure is NOT a missing Flex module - it is a device/world/CLR
+  precondition. Next probe: the CLR `KGSceneCLR.EnableFluxWaterSimulation` wrapper and
+  the engine's flux enable path (`KG3D_CreateFluxModel` 0x180c04b50 /
+  `KG3D_FluxDomainModel::Init` 0x180c05250).
+- Gates: build 0, camera_smoke_3x_states ALL PASS, collision 36/36.
