@@ -72,6 +72,7 @@ internal static class AbilitySystem
     static string castName = "";
     static bool soundOn = true;
     static int tickN = 0;   // frame counter (jitter diagnostic)
+    static long castCycleMs = 0;   // RC_CAST_CYCLE sweep interval (0 = off)
     // PSS follow mode (diagnostic): "move" = re-add when the caster moved >32u
     // (default), "off" = never re-add, "always" = re-add every tick.
     static string followMode = "move";
@@ -100,6 +101,7 @@ internal static class AbilitySystem
         string fm = Environment.GetEnvironmentVariable("RC_PSS_FOLLOW");
         if (fm != null && (fm == "off" || fm == "always" || fm == "move" || fm == "jitter")) followMode = fm;
         skipPss = Environment.GetEnvironmentVariable("RC_PSS_SKIP") == "1";
+        long.TryParse(Environment.GetEnvironmentVariable("RC_CAST_CYCLE"), out castCycleMs);
         log("abilities: " + names.Count + " loaded (P panel, 1 casts) selected=" + sel
             + " pssFollow=" + followMode + (skipPss ? " pssSkip=1" : ""));
     }
@@ -144,6 +146,8 @@ internal static class AbilitySystem
                     foreach (object t in (object[])tv) if (t != null) tl.Add(t.ToString());
                 tanisByName[nm] = tl;
                 names.Add(nm);
+                foreach (ProcStep ps in steps)
+                    if (ps.Kind == "anim" && ps.V.ToLower().EndsWith(".tani")) { taniNames.Add(nm); break; }
             }
         }
         catch (Exception e) { log("abilities: dataset ex " + e.Message); }
@@ -306,6 +310,13 @@ internal static class AbilitySystem
 
     public static void RequestCast() { castReq = true; }
 
+    // RC_CAST_CYCLE=<ms>: test sweep - select + cast the next tani-playing
+    // ability every <ms> (ported from the ability sandbox; the cast guard still
+    // serializes casts). Used to probe cross-cast effect state.
+    static readonly List<string> taniNames = new List<string>();
+    static long cycleNext = 0;
+    static int cycleIdx = 0;
+
     public static void SelectNext(int dir)
     {
         if (names.Count == 0) return;
@@ -377,6 +388,16 @@ internal static class AbilitySystem
             ScaleUi();
             panel.Location = new Point(Math.Max(0, lastFormW - panel.Width - 12), 36);
             if (panel.Visible) panel.BringToFront();
+        }
+        // RC_CAST_CYCLE=<ms>: select + cast the next tani-playing ability every
+        // <ms> (test sweep; the cast guard serializes casts)
+        if (castCycleMs > 0 && taniNames.Count > 0 && now >= cycleNext)
+        {
+            cycleNext = now + castCycleMs;
+            sel = taniNames[cycleIdx % taniNames.Count];
+            cycleIdx++;
+            log("cast cycle -> " + sel + " (" + cycleIdx + "/" + taniNames.Count + ")");
+            castReq = true;
         }
         if (castReq)
         {
