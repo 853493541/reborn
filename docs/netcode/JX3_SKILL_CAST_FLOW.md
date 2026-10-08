@@ -406,6 +406,31 @@ source, §5.2 coefficient, §5.3 turn, §5.4 战意 cost, §5.5 dash authority).
 that are genuinely **server-authoritative** (not in shipped client data): the exact
 server cost/validation values and the frame-by-frame reconcile timing.
 
+## 7. v6 client implementation (branch `agent/skillv6-sandbox`)
+
+Implemented from a clean start off `main` (not a v5 patch), driven by the client
+tables above:
+
+| Piece | What |
+|---|---|
+| `client/SkillCast.cs` | cast state: turn to the target → play the authored anim → **dash to the target while it plays** → schedule the effect; pure logic, no engine types |
+| `client/RebornClient.cs` | target-aware skill press (uses `Targeting.Selector.Current`); persistent `px/pz` dash; per-ability anim/effect from the dataset; knobs `RC_ABILITY`, `RC_CAST_AT`, `RC_CHAIN`, `RC_LY_*` |
+| `ability_picker/tools/build_cast_chain.py` | builds `ability_picker/data/cast_chain_f1.{json,tsv}` (**3265** skills): `skill_caster_<body>` `CastSkillAnimationID0` → `player_animation` → `.tani`; `PhysicsDamageEffectResultID` → `skill_result` → `skill_effect` → `.Sfx` + bone |
+| `native/sfx_shim.cpp` + `SfxShim` | the engine's own SFX factory path (opt-in; faults in this host — see below) |
+
+**Chain:** select target → cast → face target → play the skill's own `.tani`
+(which carries the authored **ability effect**) → dash to the target while the anim
+plays → return to idle. No free-standing dummy ⇒ none of v5's duplicate/loop.
+
+**Verified (driven, `reborn_client_skillv6.exe`):**
+`RC_ABILITY=65029` → `F1s04tc技能13_龙牙hd.tani`, dash `z 33853→34053`; `RC_ABILITY=65076`
+→ `F1s07cj重剑技能11b_云飞HD.tani`, dash +200 u; face target, revert to idle at +1.5 s,
+no AV. The effect renders via the tani (numeric fingerprint, §5.1/proofs).
+
+**Open (refinements):** per-ability dash distance/duration from data (child `DASH` /
+tani length) instead of the fixed 200 u / 1500 ms; the standalone `.Sfx` engine factory
+(the v5 shim faults in this host — owner/context unresolved).
+
 ---
 
 ## Reproduce

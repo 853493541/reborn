@@ -7753,3 +7753,15 @@ if the cache/host frames appear.
 - **Lesson:** `Log` is not available before its delegate assignment; only reference it
   after. (The v5 client is untouched.)
 - Verified: both driven runs alive + log; `jx3_model.py` 10 PASS / 0 FAIL.
+
+### 2026-10-07 — v6 — chain documented; gates green; merge-ready
+
+- **Docs:** added `JX3_SKILL_CAST_FLOW.md` §7 (v6 client implementation: files, chain,
+  knobs, verified runs, open refinements) — the branch is self-documenting for review.
+- **Gates (must-stay-green):** `jx3_model.py` 10 PASS / 0 FAIL; `gravity\verify_model.py`
+  all checks; `loot\capture.py selftest` PASS; `client\build_client.cmd` exit=0.
+- **State:** the requested v6 full chain (target → face → authored anim + dash-to-target
+  → effect via the tani) is implemented and verified for multiple abilities
+  (`RC_ABILITY=65029/65076`); no v5 code touched. Only the human merge into `main`
+  remains.
+- Verified: gates above + driven runs (`proof/netcode/skillv6_*`).
