@@ -5199,3 +5199,15 @@ power-pool values remain undecoded (re-open criteria in the doc).
   p2_jump_deep (`swim: jump state=5` -> re-entry 7), p2_jump_shallow (normal
   jump). Gates: build 0, smoke ALL PASS, collision 36/36.
 
+### 2026-10-07 - Camera anchor fix: FLWS spin killed (rest-offset anchor)
+
+- Problem: a standing FLWS cast swayed the camera +/-26 u because the anchor used the
+  ANIMATED head-bone matrix (the in-place spin clip fed the camera position).
+- Fix: cache the head bone's REST local translation once (while the idle clip is active,
+  `t=(1.6,69.4,-0.6)` for 花萝) and compose it as a CONSTANT offset from the logic
+  position (`modelPlace`) - a spin clip can no longer move the anchor, while a real dash
+  still translates it with the model.
+- Proof (`proof/character/3x_motion/`): FLWS standing cast -> `camPos=(18993,1582,33111)`
+  byte-identical across every sample of the clip (was +/-26 u); 太阴指 228 ->
+  `moved=960` backward, camPos follows positionally (33112->32152).
+- Gates: build 0, camera_smoke_3x_motion ALL PASS, collision 36/36.
