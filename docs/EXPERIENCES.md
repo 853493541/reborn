@@ -7638,3 +7638,42 @@ if the cache/host frames appear.
 - Verified: decoded bytecode (`NewSkill.lh` → `NPCSKILLMOVESJBX=9987`; base 龙牙
   `nNeedRage`), grepped client strings (`IsAutoTurn` 0x80C1B0, `bAutoTurnOnCast`,
   `PlayerAnimationAutoTurningToTargetKind` 0xCB05F8), disasm read-only. Docs-only.
+
+### 2026-10-07 — v6 — full cast chain (target -> face -> anim + dash -> effect)
+
+- **Did:** implemented the v6 full-chain cast for 绝境·龙牙 (`65029`) in main's client
+  (fresh start, not a v5 patch): new `client/SkillCast.cs` + wiring in
+  `client/RebornClient.cs`; added `client/SkillCast.cs` to `build_client.cmd`; and a
+  deterministic cast hook `RC_CAST_AT=ms` (alongside `RC_TAB_AT`).
+- **Chain:** with a target selected, skill press → face the target (yaw toward it) →
+  play the authored tani (`skill_caster_f1` 65029 `CastSkillAnimationID0=455` →
+  `F1s04tc技能13_龙牙hd.tani`) → **dash toward the target while the anim plays**
+  (persistent `px/pz` move, stop 200 u short) → return to idle; effect scheduled at
+  the impact frame.
+- **Verified (driven):** `RC_TAB_AT=10000 RC_CAST_AT=14000` on
+  `reborn_client_skillv6.exe` → log: `cast chain longya: target=初级试炼木桩(131) …
+  dashTo=(18991,34253)`, `cast chain started`; `pos z 33853 → 34053` (dash +200 u
+  toward the target at 34253), clip reverts to idle at +1.5 s, no AV.
+  Proof: `proof/netcode/skillv6_cast_chain_20261007.txt`.
+- **Finding (effect):** the authored skill effect (`skill_effect` 415 →
+  `…被击_闪光01_龙牙.Sfx`) played via `AddDummyModel` **AVs the host** (ntdll
+  0xc0000005 right after the cast; `RC_LY_NOFX`-style effect-off run is clean). So the
+  chain plays the effect through the animation by default (the tani carries the authored
+  tags); the standalone `.Sfx` path is opt-in (`RC_LY_FXE=1`). The engine's own SFX path
+  (cf. `native/sfx_shim.cpp`: `KG3D_CreateSFXFromFile` → model play) is the next step.
+- **Scope note:** first pass on main; the v5 sandbox was NOT touched (its looping-PSS
+  issue is v5's). This chain starts from the v6 client truth.
+- Verified: `client\build_client.cmd` exit=0; driven run alive after the cast.
+
+### 2026-10-07 — v6 — effect path probe (why `AddDummyModel(.Sfx)` AVs)
+
+- **Finding:** `.pss` dummy models work (`AddDummyModel` for the target-selection ring
+  `选择特效a002_hd.pss` succeeds), but the compiled skill effect `.Sfx`
+  (`PhysicsDamageEffectResultID`→`skill_effect`→`…_龙牙.Sfx`) **AVs** the MovieEditor
+  host when passed to `AddDummyModel` (first-create, ntdll 0xc0000005). The shipped
+  client plays `.Sfx` through the engine SFX factory, not a dummy model.
+- **Chain default is safe:** effect via the tani's authored tags; `.Sfx` opt-in.
+- Next: a native shim (`native/`) that creates the `.Sfx` via the engine factory and
+  plays it once at the anchor (bone `S_fxmid`), reproducing the client's tag path
+  (this is the client-truth effect, not a looping dummy).
+- Verified: crash isolated by disabling the effect (clean run) vs enabling (AV).

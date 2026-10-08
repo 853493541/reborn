@@ -1,0 +1,18 @@
+# skill v6 cast chain - driven reproduction (2026-10-07)
+# exe reborn_client_skillv6.exe (branch agent/skillv6-sandbox)
+# run: RC_TAB_AT=10000 RC_CAST_AT=14000 (target then cast)
+# source log: reborn_20261007_212420.log  (C:\\SeasunGame\\MovieEditor\\bin64\\reborn_out)
+# chain: select target -> cast -> face target -> play LongYa tani -> dash to target while anim -> idle
+# result: pos z 33853 -> 34053 (dash +200u toward the target at 34253, stop 200u), clip reverts at +1.5s, no AV
+
+21:24:20.665 InitPath=0 InitMemory=0 InitPak=0 ns=reborn_client_skillv6.memory ms=(15,0,422)
+21:24:45.222 sound: skill wav C:\SeasunGame\MovieEditor\bin64\flws_sound.wav
+21:24:59.742 RC_TAB_AT -> Tab (target next)
+21:24:59.744 target=初级试炼木桩 lv131 zone=MidAxis dist=400u axis=0u
+21:25:03.743 RC_CAST_AT -> skill press
+21:25:03.745 cast chain longya: target=初级试炼木桩(131) anim=data\source\player\f1\动作\F1s04tc技能13_龙牙hd.tani fx= animMs=1500 fxAt=520 dashTo=(18991,34253)
+21:25:03.747 sound: skill wav play rc=True
+21:25:03.747 cast chain started
+21:25:03.820 t=14s fps=257 pos=(18991,962,33862) vy=0 grounded=True blocked=False hits=0 colCalls=210 colBlocked=0 spd=0u/s(IDLE) yaw=-1.57 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=33 clip=...
+21:25:05.818 t=16s fps=210 pos=(18991,964,34053) vy=0 grounded=True blocked=False hits=0 colCalls=240 colBlocked=0 spd=0u/s(IDLE) yaw=-1.57 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=69 clip=...
+21:25:07.820 t=18s fps=242 pos=(18991,964,34053) vy=0 grounded=True blocked=False hits=0 colCalls=270 colBlocked=0 spd=0u/s(IDLE) yaw=-1.57 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=11 clip=...

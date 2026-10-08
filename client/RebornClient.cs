@@ -186,6 +186,32 @@ internal static class RebornClient
         float.TryParse(Env("RC_SCALE", "1"), out scale);
         long skillMs = 8000;
         long.TryParse(Env("RC_SKILL_MS", "8000"), out skillMs);
+        // v6 full cast chain, JueJing LongYa (skill 65029), from the client tables:
+        //   anim   skill_caster_f1 65029 CastSkillAnimationID0=455 ->
+        //          player_animation_f1 455 -> F1s04tc<技能>13_<龙牙>hd.tani
+        //   effect skill_caster PhysicsDamageEffectResultID=415 -> skill_effect 415 ->
+        //          data\source\other\<特效>\<技能>\SFX\<被击>\<被击>_<闪光>01_<龙牙>.Sfx
+        //   dash   child 65030 DASH 120: dash toward the target WHILE the anim plays.
+        string lyAnim = Env("RC_LY_ANIM", f1 + "F1s04tc\u6280\u80FD13_\u9F99\u7259hd.tani");
+        string lyFx = Env("RC_LY_FX",
+            "data\\source\\other\\\u7279\u6548\\\u6280\u80FD\\SFX\\\u88AB\u51FB\\\u88AB\u51FB_\u95EA\u5149" +
+            "01_\u9F99\u7259.Sfx");
+        // The authored skill effect is a .Sfx; playing it via AddDummyModel AVs
+        // the host (verified 2026-10-07, ntdll 0xc0000005 right after the cast).
+        // The 龙牙 tani already carries the authored effect tags, so the chain
+        // plays the effect through the animation by default; the standalone .Sfx
+        // path stays opt-in (RC_LY_FXE=1) until the engine SFX path is wired.
+        if (Env("RC_LY_FXE", "") != "1") lyFx = "";
+        long lyAnimMs = 1500;
+        long.TryParse(Env("RC_LY_ANIM_MS", "1500"), out lyAnimMs);
+        long lyFxAt = 520;
+        long.TryParse(Env("RC_LY_FX_AT", "520"), out lyFxAt);
+        float lyStop = 200f;   // stop this close to the target (u, engine cm)
+        float.TryParse(Env("RC_LY_STOP", "200"), out lyStop);
+        long lyFxLife = 2500;
+        long.TryParse(Env("RC_LY_FX_LIFE", "2500"), out lyFxLife);
+        SkillCast skillCast = new SkillCast();
+        long castFxUntil = 0;
         long autoRunMs = 0;
         long.TryParse(Env("RC_AUTORUN", "0"), out autoRunMs);
         var tabAt = new System.Collections.Generic.List<long>();
@@ -193,6 +219,13 @@ internal static class RebornClient
         {
             long tt;
             if (long.TryParse(s.Trim(), out tt)) tabAt.Add(tt);
+        }
+        // RC_CAST_AT=ms[,ms...]  scripted skill press (deterministic cast-chain test)
+        var castAt = new System.Collections.Generic.List<long>();
+        foreach (string s in Env("RC_CAST_AT", "").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            long tt;
+            if (long.TryParse(s.Trim(), out tt)) castAt.Add(tt);
         }
         // RC_CLICK_AT=ms,x,y[;ms,x,y...]  smoke: left click at panel pixel (x,y)
         // (same path as the real LMB click: pick under cursor, else deselect)
@@ -2981,12 +3014,34 @@ internal static class RebornClient
             if (skillPressed)
             {
                 skillPressed = false;
-                skillUntil = now + skillMs;
-                curClip = null;
-                setClip(clipSkill);
-                // camera shake on the cast (host default; per-skill shake rows
-                // are data-gated)
-                camShake.Start(2.0, 0.5, 0.8, 3);
+                bool chained = false;
+                TargetEntity ctg = targetSelector.Current;
+                if (ctg != null && !skillCast.Active)
+                {
+                    // v6 full chain: face the target, play the authored anim,
+                    // dash to the target while it plays, then the one-shot effect.
+                    skillCast.Begin(now, "longya", lyAnim, lyFx,
+                        px, pz, ctg.X, ctg.Y, ctg.Z, lyAnimMs, lyFxAt, lyStop);
+                    curYaw = skillCast.FaceYaw();
+                    skillUntil = now + lyAnimMs;
+                    curClip = null;
+                    setClip(lyAnim);
+                    camShake.Start(2.0, 0.5, 0.8, 3);
+                    chained = true;
+                    Log("cast chain longya: target=" + ctg.ToString()
+                        + " anim=" + lyAnim + " fx=" + lyFx
+                        + " animMs=" + lyAnimMs + " fxAt=" + lyFxAt
+                        + " dashTo=(" + ctg.X.ToString("F0") + "," + ctg.Z.ToString("F0") + ")");
+                }
+                else
+                {
+                    skillUntil = now + skillMs;
+                    curClip = null;
+                    setClip(clipSkill);
+                    // camera shake on the cast (host default; per-skill shake rows
+                    // are data-gated)
+                    camShake.Start(2.0, 0.5, 0.8, 3);
+                }
                 bool playedNative = false;
                 if (soundNative)
                 {
@@ -3009,7 +3064,7 @@ internal static class RebornClient
                         SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
                     Log("sound: skill wav play rc=" + played);
                 }
-                Log("skill cast");
+                Log(chained ? "cast chain started" : "skill cast");
             }
 
             // input -> direction (camera controls in both modes; the body faces
@@ -3471,6 +3526,36 @@ internal static class RebornClient
                 walkMode ? clipWalk : clipRun);
             else if (sheathOn && (long)Environment.TickCount < sheathDrawUntil) setClip(clipSheathDraw);
             else setClip(sheathOn ? clipSheathHold : clipIdle);
+
+            // v6 cast chain: dash-to-target while the authored anim plays, then
+            // the skill effect once. The dash overrides the render position.
+            if (skillCast.Active)
+            {
+                float cpx, cpz;
+                if (skillCast.Tick(now, out cpx, out cpz)) { px = cpx; pz = cpz; rpx = cpx; rpz = cpz; }
+                if (skillCast.TakeEffect(now))
+                {
+                    float ex, ey, ez;
+                    skillCast.EffectPoint(out ex, out ey, out ez);
+                    try
+                    {
+                        var fxr = new CLRfloat4(); fxr.x = 0f; fxr.y = 0f; fxr.z = 0f; fxr.w = 1f;
+                        var fxs = new CLRfloat3(); fxs.x = 1f; fxs.y = 1f; fxs.z = 1f;
+                        var fxp = new CLRfloat3(); fxp.x = ex; fxp.y = ey + 90f; fxp.z = ez;
+                        long fh = scene.AddDummyModel("skill_fx", lyFx, fxp, fxr, fxs);
+                        castFxUntil = now + lyFxLife;
+                        Log("cast chain fx -> " + lyFx + " h=" + fh
+                            + " at (" + ex.ToString("F0") + "," + (ey + 90f).ToString("F0")
+                            + "," + ez.ToString("F0") + ")");
+                    }
+                    catch (Exception e) { Log("cast chain fx ex: " + e.Message); }
+                }
+            }
+            if (castFxUntil != 0 && now >= castFxUntil)
+            {
+                castFxUntil = 0;
+                try { scene.RemoveDummyModel("skill_fx"); Log("cast chain fx removed"); } catch { }
+            }
 
             // model update (only when changed; keeps animation alive).
             // Y must be part of the gate: a standing jump changes py only, and
@@ -4676,6 +4761,12 @@ internal static class RebornClient
                 tabAt.RemoveAt(0);
                 Log("RC_TAB_AT -> Tab (target next)");
                 targetSelector.Cycle(px, pz, curYaw, false, Log);
+            }
+            while (castAt.Count > 0 && now >= castAt[0])
+            {
+                castAt.RemoveAt(0);
+                Log("RC_CAST_AT -> skill press");
+                skillPressed = true;
             }
             while (clickAt.Count > 0 && now >= clickAt[0][0])
             {
