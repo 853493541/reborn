@@ -5145,3 +5145,17 @@ if the cache/host frames appear.
   a 300 s sweep: all 20 tani-playing abilities cast (46 casts), clean shutdown,
   no AV (reborn_20261007_183524.log). With 花语酥心 + 雷震子 in TANI_BLACKLIST the
   sequential sweep is fully clean; the cast guard stays for rapid re-casts.
+
+### 2026-10-07 - v5 - live process-timeline overlay (top) + T toggle
+
+- AbilitySystem.cs: a top overlay shows the current cast live: CAST <name>,
+  t=elapsed/total ms, step k/n, PSS re-adds, the last event (anim/sound/dummy/
+  re-add/done) and a time bar with per-step ticks (A anim blue, S sound green,
+  D dummy purple), effect spans and a playhead. `T` toggles it (RebornClient
+  key handler). Repaint throttled ~25 Hz; hidden-safe (paint try/catch).
+- Verified: build ok; client runs (reborn_20261007_190127.log, alive).
+- 龙牙 check (user: "animation plays multiple times"): the dataset stages ONE
+  anim step (base .ani F1s04tc技能13.ani, IsLoop=0) + sound + ONE one-shot PSS
+  (t_天策龙牙_狼头版.pss, 28 emitters all RepeatTimes=1); the client log plays the
+  clip once (reborn_20261007_185745.log). The multiple-looking visuals are the
+  authored PSS's staged wolf/claw emitters, not a repeated character animation.
