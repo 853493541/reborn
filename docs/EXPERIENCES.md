@@ -7558,3 +7558,16 @@ if the cache/host frames appear.
 - **Also fixed:** the doc's earlier `GetConvertedAnimationID`-style dead ends were
   0x18001b2d4/thunk tables misread as functions; the real resolver is above.
 - Verified: represent + logic disasm read-only; `jx3_model.py` gate re-run 10x PASS.
+
+### 2026-10-07 — Skills v6 — represent cast path pinned to addresses
+
+- **Did:** traced the represent cast path one level further and pinned addresses so the
+  remaining probe is cheap for the next session: `krlEventAdaptor::HandleCastSkill`
+  `0x180600660` (event struct: caster @+8, skill @+0x20; forwards via `KGameWorldHandler`
+  vtable `+0x8e0`) → `KGameWorldHandler::OnCharacterCastSkill` `0x1805ED0B0` (dispatches
+  to `0x1804D2950`) → `KRLCharacter::CastSkill` `0x1804D2090` →
+  `GetSkillNextAnimationID` (`0x1805A3600`, via thunk `0x18001B2D4`).
+- **Not closed:** the skill-id→`skillAnimParam[4]` source (the actual `skill_tag` lookup)
+  is still upstream and not cheaply resolvable statically; needs a live/replay
+  `OnSkillCast` skill id or a longer trace. Recorded in `JX3_SKILL_CAST_FLOW.md` §5.1.
+- Verified: read-only disasm (pefile+capstone); docs updated.

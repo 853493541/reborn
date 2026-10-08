@@ -300,7 +300,11 @@ corrected by the next server state.
    `KGameWorldHandler::OnCharacterCastSkill` to find who fills `skillAnimParam` from the
    skill id (the `skill_tag` lookup), and read the S2C `OnSkillCast` skill id for a
    绝境 cast (arena/replay record); also confirm the id the 绝境 action bar holds
-   (`szDropSkillRemoteCall`).
+   (`szDropSkillRemoteCall`). Addresses pinned this pass (JX3RepresentX64.dll):
+   `krlEventAdaptor::HandleCastSkill` `0x180600660` (reads caster@+8, skill@+0x20 from
+   the event struct, forwards via vtable `+0x8e0`); `KGameWorldHandler::OnCharacterCastSkill`
+   `0x1805ED0B0` (dispatches to `0x1804D2950`); `KRLCharacter::CastSkill` `0x1804D2090`.
+   Still blocked on the skill-data→anim source (or a live/replay cast event).
 2. ~~`HDJueJingSkillCoe_130` numeric value~~ — **RESOLVED (2026-10-07)**:
    `HDJueJingSkillCoe_130 = 1.2`, `HDJueJingSkillCoe = 7.2` (`1.2*6`),
    `HDJueJingSkillCoe_Heal = 8.4`, decoded from `scripts/Include/Skill.lh` main proto
