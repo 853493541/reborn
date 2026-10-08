@@ -12,15 +12,16 @@ labelled rather than "fixed" by invention.
 **P0 is DONE** — `--audit` now writes every flagged element with its class
 (`oob[class] name (x,y wxh)`) and a `TOTAL oob classes:` line (no more 40/window cap), and the
 `placed-wrong` detector (rendered vs the script's own `SetRelPos`/`SetAbsPos`) separates real
-viewer bugs from script-faithful overhang. After the first P3 fix (below), **oob=6,877**:
+viewer bugs from script-faithful overhang. After the P3 fixes (below), **oob=6,897** and
+**placed-wrong=0**:
 
 | class | count | meaning |
 |---|---|---|
-| `overhang` | 3,233 | expected placement outside the frame; the engine draws it (C) |
-| `clipped` | 1,679 | under a `WndScroll` viewport / `$Clip` — the viewer clips it (D) |
-| `parked` | 1,591 | authored/script off-window (C after the Selfie finding) |
-| `edge-pos` | 366 | edge-anchored PosType 3/4/5/9-12 (review) |
-| `placed-wrong` | 6 | rendered ≠ the script's own position — **real viewer bugs (A)** |
+| `overhang` | 3,241 | expected placement outside the frame; the engine draws it (C) |
+| `clipped` | 1,683 | under a `WndScroll` viewport / `$Clip` — the viewer clips it (D) |
+| `parked` | 1,597 | authored/script off-window (C after the Selfie finding) |
+| `edge-pos` | 374 | edge-anchored PosType 3/4/5/9-12 (review) |
+| `placed-wrong` | **0** | rendered ≠ the script's own position — real viewer bugs (A), all fixed |
 | `clone` | 2 | runtime item clone (`__lt_*`) |
 
 **P3 first fix (2026-10-07): `FormatAllItemPos` no-runtime-items guard.** `UiLayout` flowed a
@@ -38,14 +39,12 @@ observed pattern:
   CreditsPanel `Image_CreditsPanelBg` (`SetAbsPos 0 0`, parent `Handle_All` at -300,-28) at
   (-300,-28). Fix: `LayoutPlan` stores `$AbsPos=x,y`; `UiLayout.Attach` resolves it against the
   window root. 59 `SetAbsPos` calls across 43 windows. `placed-wrong` 6 → 4.
-- **SetRelPos with one axis mismatched (4, open)** — Album `Wnd_Thumb` (script -399.5,-110 →
-  rendered 0,-110), Coinshop_CheckOut `PageSet_CheckOut` (-385.5,-360 → 0,-360), Coinshop_CantBuy
-  `Wnd_Warning` (-206,-157.5 → -206,0), ExteriorBoxError `Wnd_Error` (-248.5,-93 → 0,-93). All are
-  `WndWindow`/`WndPageSet` with no `PosType`/`AnchorArgs` and no inventory override, and the script
-  has no later `SetRelX`/`SetRelY` — so one axis of the applied `SetRelPos` is being overwritten to
-  0 after `ApplyRuntimeState`. **P3 follow-up: trace the plan's `Left`/`Top` for one section
-  (plan-dump before `UiLayout.Build`) to find the overwrite; candidates are the `$FormatItems`
-  list pass or `Clear` on the container.**
+- **SetRelPos with one axis mismatched — FIXED (2026-10-07).** The plan held the right value
+  (`Wnd_Thumb plan=-399.5,-110`) but the render showed 0 on the fractional axis: `UiLayout.Attach`
+  read `Left`/`Top` with `GetInt`, whose `int.TryParse` fails on `-399.5` and returns 0. All 4 cases
+  had one fractional coordinate (`-399.5`, `-385.5`, `-157.5`, `-248.5`); 12 fractional position
+  calls exist corpus-wide. Fix: position reads (`Left`/`Top`/`ImageRelX`/`ImageRelY`, incl. the
+  list first-item origin and tab strip) now use `GetDouble`. `Wnd_Thumb` renders at (-400,-110).
 
 The earlier capped analysis (first 40/window, 6,254 elements) gave scroll 1,194 · parked 1,347 ·
 negative-pos 457 · edge 149 · other 2,903, and the post-filter container 1,548 / leaf 1,204 /
@@ -178,7 +177,7 @@ ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --selftest   # 1240/0
 parent-chain walk, WndScroll clip HIGH from prior evidence); engine AutoSize default MED
 (DecodeItem 0x1800b86df; P1 confirms); A-vs-C split MED (needs P3 engine-rules review or GT).
 
-Last verified: 2026-10-07 (`--audit` oob=6,879 → overhang=3,241 clipped=1,679 parked=1,579
-edge-pos=374 placed-wrong=4 clone=2; the flow-guard fix removed 813 and the SetAbsPos fix removed
-2 placed-wrong; 1,123 root frames without AutoSize; 66 script-sized roots; `--selftest`
-1240/0/0).
+Last verified: 2026-10-07 (`--audit` oob=6,897 → overhang=3,241 clipped=1,683 parked=1,597
+edge-pos=374 clone=2, **placed-wrong=0**; the flow-guard fix removed 813, then the SetAbsPos and
+fractional-position fixes cleared all 14 A bugs; 1,123 root frames without AutoSize; 66
+script-sized roots; `--selftest` 1240/0/0).

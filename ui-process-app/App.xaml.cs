@@ -369,7 +369,12 @@ namespace UiProcessApp
                         try
                         {
                             var point = element.TransformToAncestor(build.Root).Transform(new Point(0, 0));
-                            lines.Add($"{pair.Key}\tx={point.X:F0}\ty={point.Y:F0}\tw={element.ActualWidth:F0}\th={element.ActualHeight:F0}\t{text ?? ""}");
+                            plan.Filtered.ByName.TryGetValue(pair.Key, out var dumpSec);
+                            var planNote = dumpSec == null ? "" :
+                                $"plan={dumpSec.Get("Left")},{dumpSec.Get("Top")} pt={dumpSec.GetInt("PosType")}" +
+                                (dumpSec.Get("$FormatItems") == "1" ? " F" : "") +
+                                (dumpSec.Get("$AbsPos") != null ? " A=" + dumpSec.Get("$AbsPos") : "");
+                            lines.Add($"{pair.Key}\tx={point.X:F0}\ty={point.Y:F0}\tw={element.ActualWidth:F0}\th={element.ActualHeight:F0}\t{planNote}\t{text ?? ""}");
                         }
                         catch
                         {

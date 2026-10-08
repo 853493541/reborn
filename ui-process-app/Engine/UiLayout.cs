@@ -118,8 +118,8 @@ namespace MapUiApp.Engine
                             if (childSize.W <= 0) childSize.W = measured.W;
                             if (childSize.H <= 0) childSize.H = measured.H;
                         }
-                        double childLeft = child.GetInt("Left");
-                        double childTop = child.GetInt("Top");
+                        double childLeft = child.GetDouble("Left");
+                        double childTop = child.GetDouble("Top");
                         maxX = Math.Max(maxX, childLeft + childSize.W);
                         maxY = Math.Max(maxY, childTop + childSize.H);
                     }
@@ -192,7 +192,7 @@ namespace MapUiApp.Engine
                     if (!string.Equals(child.Get("._Parent"), pageSet.Name, StringComparison.OrdinalIgnoreCase)) continue;
                     if (!string.Equals(child.Get("._WndType"), "WndCheckBox", StringComparison.OrdinalIgnoreCase)) continue;
                     if (child.Get("TabFixed") != null) continue;
-                    if (x < 0) x = child.GetInt("Left");
+                    if (x < 0) x = child.GetDouble("Left");
                     tabX[child.Name] = x;
                     x += SizeOf(child).W;
                 }
@@ -270,8 +270,8 @@ namespace MapUiApp.Engine
                 switch (list.GetInt("FirstItemPosType", -1))
                 {
                     case 0:
-                        originX = firstItem.GetInt("Left");
-                        originY = firstItem.GetInt("Top");
+                        originX = firstItem.GetDouble("Left");
+                        originY = firstItem.GetDouble("Top");
                         break;
                     case 1:
                     case 10:
@@ -996,8 +996,8 @@ namespace MapUiApp.Engine
                     else host.Width = visual.Width;
                     if (height > 0) host.Height = height;
                     else host.Height = visual.Height;
-                    Canvas.SetLeft(visual, section.GetInt("ImageRelX"));
-                    Canvas.SetTop(visual, section.GetInt("ImageRelY"));
+                    Canvas.SetLeft(visual, section.GetDouble("ImageRelX"));
+                    Canvas.SetTop(visual, section.GetDouble("ImageRelY"));
                     host.Children.Add(visual);
                     return host;
                 }
@@ -1357,9 +1357,9 @@ namespace MapUiApp.Engine
         private static void Attach(Canvas parent, IniSection parentSection, FrameworkElement element, IniSection section, HashSet<string> buttonSlots, double rootWidth, double rootHeight, Func<IniSection, (double W, double H)> sizeOf, Dictionary<string, double> tabX = null, Dictionary<string, (double X, double Y)> listPos = null, (double X, double Y) parentAbs = default, Dictionary<string, string> prevSibling = null, UiBuildResult build = null, Dictionary<string, (double X, double Y)> absPos = null)
         {
             if (ReferenceEquals(parent, element)) return; // guard against aliased self-parents
-            double left = section.GetInt("Left");
+            double left = section.GetDouble("Left");
             if (tabX != null && tabX.TryGetValue(section.Name, out var tabLeft)) left = tabLeft;
-            double top = section.GetInt("Top");
+            double top = section.GetDouble("Top");
             var parentSize = sizeOf(parentSection);
             double parentWidth = parentSize.W;
             double parentHeight = parentSize.H;

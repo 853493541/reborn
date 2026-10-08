@@ -2664,3 +2664,17 @@ solved it, and what is still open. **Newest at the bottom.**
 - `--audit`: placed-wrong 6 -> 4; oob 6,877 -> 6,879; `--selftest` 1240/0/0. The 4 remaining are
   SetRelPos with one axis overwritten to 0 (no later SetRelX/Y, no inventory override) — next P3
   item (trace the plan's Left/Top before UiLayout.Build).
+
+### 2026-10-07 — UI — oob P3 complete: fractional positions were truncated (placed-wrong 0)
+
+- Plan-dump trace (added `plan=Left,Top pt=... F/A` columns to `--render --dump`) showed the plan
+  held the correct value (`Wnd_Thumb plan=-399.5,-110`) but the render showed x=0: `UiLayout.Attach`
+  read `Left`/`Top` with `GetInt`, and `int.TryParse("-399.5")` fails -> 0. All 4 remaining A bugs
+  had one fractional coordinate (-399.5/-385.5/-157.5/-248.5); 12 fractional SetRelPos/SetAbsPos
+  calls exist corpus-wide.
+- Fix: position reads now use `GetDouble` (`Left`, `Top`, `ImageRelX`, `ImageRelY`, the list
+  first-item origin and the tab strip). `Wnd_Thumb` renders at (-400,-110).
+- `--audit`: **placed-wrong 0** (was 14), oob 6,897, classes overhang 3,241 / clipped 1,683 /
+  parked 1,597 / edge-pos 374 / clone 2; `--selftest` 1240/0/0. All measured viewer placement bugs
+  (class A) are now fixed; the remaining oob is clipped (D), script-parked/authored overhang (C),
+  and the edge-pos review queue.
