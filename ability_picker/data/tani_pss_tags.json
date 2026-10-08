@@ -1,0 +1,876 @@
+{
+ "万剑归宗": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s03cy剑技能13.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_纯阳蓄01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_纯阳归01.pss",
+   "her\\hd特效\\技能\\pss\\发招\\c_纯阳归01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s03cy剑技能13_万剑HD.tani"
+ },
+ "三才化生": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s03cy气技能18.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_纯阳攻击范围圈z_01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_纯阳单体剑_03.pss",
+   "her\\hd特效\\技能\\pss\\发招\\c_纯阳单体剑_03.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s03cy气技能18_三才hd.tani"
+ },
+ "三环套月": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s03cy剑技能11b.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_纯阳三环套月.pss",
+   "her\\hd特效\\技能\\pss\\发招\\c_纯阳三环套月.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s03cy剑技能11b_三环HD.tani"
+ },
+ "临时飞爪": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s16lxg链技能03_释放.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\l_凌雪阁出链带01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\l_凌雪阁出链02.pss",
+   "her\\hd特效\\技能\\pss\\发招\\l_凌雪阁出链02.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s16lxg链技能03_释放HD.tani"
+ },
+ "九转归一": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1scy03气攻击01.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_纯阳气攻击02.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_纯阳气攻击01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_纯阳气攻击03.pss",
+   "her\\hd特效\\技能\\pss\\发招\\c_纯阳气攻击03.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1scy03气攻击01_九转HD.tani"
+ },
+ "九霄风雷": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1h唐门弩车001b_技能02a.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_唐门弩车大弩蓄力_01.pss",
+   "her\\hd特效\\技能\\pss\\发招\\t_唐门弩车大弩蓄力_01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1h唐门弩车001b_技能02a_HD.tani"
+ },
+ "云栖松": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s07cj内功重剑18.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_藏剑buff_a01.pss",
+   "her\\hd特效\\技能\\pss\\发招\\c_藏剑buff_a01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1s07cj内功重剑18_云栖松hd.tani"
+ },
+ "云飞玉皇": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能11a.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_藏剑蓄力01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_藏剑剑光01.pss",
+   "her\\hd特效\\技能\\pss\\发招\\c_藏剑剑光01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s07cj重剑技能11a_云飞HD.tani"
+ },
+ "五方行尽": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s03cy气技能13.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_纯阳蓄06.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_纯阳气01.pss",
+   "her\\hd特效\\技能\\pss\\发招\\c_纯阳气01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s03cy气技能13_五方HD.tani"
+ },
+ "五蕴皆空": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1ssl04袈裟攻击05.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_袈裟03_01.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_袈裟03_03.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_袈裟03_04.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_袈裟03_02.sfx",
+   "other\\特效\\技能\\sfx\\释放\\释放_袈裟03_02.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\F1ssl04袈裟攻击05.tani"
+ },
+ "人剑合一": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s03cy剑技能15.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_纯阳剑蓄力02.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_纯阳单体剑曝气_01.pss",
+   "her\\hd特效\\技能\\pss\\发招\\c_纯阳单体剑曝气_01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1s03cy剑技能15_人剑合一hd.tani"
+ },
+ "傍花随柳": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s01wh点穴13a.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_万花蓄力脚下.pss",
+   "her\\hd特效\\技能\\pss\\发招\\w_万花蓄力脚下.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s01wh点穴13a_兰摧玉折hd.tani"
+ },
+ "净世破魔击": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1smj10双刀攻击06b.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\m_明教_净世破魔击_月_刀光01_悟.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\m_明教_净世破魔击_月_爆点02_悟.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\m_明教_净世破魔击_月_刀光02_悟.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\m_明教_净世破魔击_月_爆点01_悟.pss",
+   "source\\other\\hd特效\\技能\\pss\\发招\\m_明教_净世破魔击_月_爆点01_悟.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1smj10双刀攻击06b_净世破魔击_月_悟.tani"
+ },
+ "凌太虚": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1scy03技能05.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_纯阳攻击32b.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_纯阳攻击32a.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_纯阳攻击36c.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\F1scy03技能05-05.tani"
+ },
+ "凌然天风": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s18yz凌然天风01.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\y_yz药宗卷轴_起跳_01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\y_yz药宗卷轴_起跳_02.pss",
+   "her\\hd特效\\技能\\pss\\发招\\y_yz药宗卷轴_起跳_02.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1s18yz凌然天风01.tani"
+ },
+ "剑主天地": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1sqx05双剑攻击04.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_七秀攻击02_01.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_七秀攻击02_03.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_七秀攻击02_02.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\F1sqx05双剑攻击04.tani"
+ },
+ "剑破虚空": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s05qx剑技能13.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\q_七秀剑破虚空_蓄力.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\q_七秀剑破虚空_释放.pss",
+   "her\\hd特效\\技能\\pss\\发招\\q_七秀剑破虚空_释放.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1s05qx剑技能13_剑破虚空hd.tani"
+ },
+ "十方玄机": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s16lxg技能02a.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\lxg_玄机蓄力01.pss",
+   "her\\hd特效\\技能\\pss\\发招\\lxg_玄机蓄力01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s16lxg技能02a_hd.tani"
+ },
+ "千蝶吐瑞": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1swd08飞行01.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_五毒补天.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_五毒补天扩散.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_五毒补天上升.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_五毒补天气场.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_五毒补天爆发.pss",
+   "her\\hd特效\\技能\\pss\\发招\\w_五毒补天爆发.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1swd08飞行01.tani"
+ },
+ "听雷": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s07cj内功轻剑12.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_藏剑听雷轻剑.pss",
+   "her\\hd特效\\技能\\pss\\发招\\c_藏剑听雷轻剑.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1s07cj内功轻剑12_听雷hd.tani"
+ },
+ "听风吹雪": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s01wh针灸16.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_万花听风01.pss",
+   "her\\hd特效\\技能\\pss\\发招\\w_万花听风01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s01wh针灸16_听风HD.tani"
+ },
+ "圣明佑": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1smj10乾坤大法buff01.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教袖子01.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教袖子02.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\m明教元素17.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教刀光06.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\m明教元素16.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\F1smj10乾坤大法buff01_01.tani"
+ },
+ "大狮子吼": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1ssl04技能06.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\s_少林聚气z02.pss",
+   "her\\hd特效\\技能\\pss\\发招\\s_少林聚气z02.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1ssl04技能06_hd01.tani"
+ },
+ "天地低昂": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s05qx剑技能20.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\q_七秀手部拖尾_02.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\q_七秀丝绸包裹.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\q_七秀丝绸包裹月亮.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\q_七秀减伤技能.pss",
+   "her\\hd特效\\技能\\pss\\发招\\q_七秀减伤技能.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1s05qx剑技能20_天地低昂hd.tani"
+ },
+ "天绝地灭": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1stm09机关攻击03.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_唐门七煞毒02.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_唐门七煞毒03.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_唐门七煞毒04.sfx",
+   "other\\特效\\技能\\sfx\\释放\\释放_唐门七煞毒04.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\F1stm09机关攻击03七煞毒.tani"
+ },
+ "太阴指": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s01wh点穴19.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_万花太阴01_重置.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_万花墨迹01_重置.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_万花笔粒子01_重置_01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_万花跟随01_重置.pss",
+   "her\\hd特效\\技能\\pss\\发招\\w_万花跟随01_重置.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s01wh点穴19_太阴HD.tani"
+ },
+ "如意法": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1smj10双刀buff04.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\m_明教清净心01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\m_明教圣火_落地.pss"
+  ],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\m明教元素19.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\g光晕02.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\m明教元素18.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_气场聚集03.sfx",
+   "her\\特效\\技能\\sfx\\释放\\释放_气场聚集03.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\F1smj10双刀buff04_清净心01.tani"
+ },
+ "孔雀翎": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1stm09针攻击02.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_唐门_孔雀翎_聚气_悟.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_唐门_孔雀翎_扩散_悟.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_唐门_孔雀翎_爆_悟.pss",
+   "other\\hd特效\\技能\\pss\\发招\\t_唐门_孔雀翎_爆_悟.pss",
+   "her\\hd特效\\技能\\pss\\发招\\t_唐门_孔雀翎_爆_悟.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1stm09针攻击02_孔雀翎_悟.tani"
+ },
+ "守缺式": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04sl爪技能15a.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\z_爪击少林02.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\z_爪击少林03.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\h_灰层02.pss",
+   "her\\hd特效\\技能\\pss\\发招\\h_灰层02.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s04sl爪技能15a_hd01.tani"
+ },
+ "帝骖龙翔": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s05qx剑技能23.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\q_七秀帝骖龙翔002.pss",
+   "her\\hd特效\\技能\\pss\\发招\\q_七秀帝骖龙翔002.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1s05qx剑技能23_帝骖龙翔hd.tani"
+ },
+ "幻蛊": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1swd08蛊攻击02.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_五毒幻蛊01.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_五毒幻蛊03.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_五毒幻蛊04.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\F1swd08蛊攻击02_幻蛊.tani"
+ },
+ "徐如林": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1stc04技能01.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_徐如林_林字01.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_枪01.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\F1stc04技能01-02.tani"
+ },
+ "心诤": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04sl棍技能18a.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\s_少林_扫击蓄力01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\s_少林_扫击蓄力02.pss",
+   "her\\hd特效\\技能\\pss\\发招\\s_少林_扫击蓄力02.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s04sl棍技能18a_扫击蓄力01.tani"
+ },
+ "怖畏暗刑": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1smj10双刀攻击07a.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教月轮03.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教月轮07.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教刀光03.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教月轮10.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\m明教元素03.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\F1smj10双刀攻击07a.tani"
+ },
+ "抢珠式": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04sl爪技能12.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\f_佛珠.pss",
+   "her\\hd特效\\技能\\pss\\发招\\f_佛珠.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s04sl爪技能12_hd01.tani"
+ },
+ "抱残式": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1ssl04爪攻击02.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_少林攻击02_03.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_少林攻击02_01.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_少林攻击02_02.sfx",
+   "other\\特效\\技能\\sfx\\释放\\释放_少林攻击02_01.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\F1ssl04爪攻击02.tani"
+ },
+ "拿云式": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04sl爪技能13.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\s_手动画少林01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\z_爪击少林04.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\s_少林爆发01.pss",
+   "her\\hd特效\\技能\\pss\\发招\\s_少林爆发01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s04sl爪技能13_hd01.tani"
+ },
+ "捉影式": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04sl爪技能14a.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\j_聚气少林02.pss",
+   "her\\hd特效\\技能\\pss\\发招\\j_聚气少林02.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s04sl爪技能14a_hd01.tani"
+ },
+ "捕风式": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04sl爪技能11.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\j_聚气少林01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\j_聚气少林01_a.pss",
+   "her\\hd特效\\技能\\pss\\发招\\j_聚气少林01_a.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s04sl爪技能11_hd01.tani"
+ },
+ "摩诃无量": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04sl棍技能14.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\h_灰层.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\s_少林刀光地裂.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\s_少林刀光z01.pss",
+   "her\\hd特效\\技能\\pss\\发招\\s_少林刀光z01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s04sl棍技能14_hd03.tani"
+ },
+ "撼如雷": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04tc技能22.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策撼如雷02_重制.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策撼如雷01_重制.pss",
+   "her\\hd特效\\技能\\pss\\发招\\t_天策撼如雷01_重制.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s04tc技能22_撼HD.tani"
+ },
+ "散流霞": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s14bd双刀技能08.ani",
+  "pss": [
+   "data\\source\\other\\新特效\\技能\\pss\\发招\\b_霸刀翻周身01.pss",
+   "data\\source\\other\\新特效\\技能\\pss\\发招\\b_霸刀拖尾01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s14bd双刀技能08_01.tani"
+ },
+ "斗转星移": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s17ytz星相技01.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\y_衍天宗_斗转星_释放01_悟.pss",
+   "her\\hd特效\\技能\\pss\\发招\\y_衍天宗_斗转星_释放01_悟.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s17ytz星相技01_斗转星_悟.tani"
+ },
+ "无相诀": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04sl技能12.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\s_少林拖尾.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\j_聚气少林03.pss",
+   "her\\hd特效\\技能\\pss\\发招\\j_聚气少林03.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s04sl技能12_hd01.tani"
+ },
+ "无间狱": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s16lxg链技能08.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\lxg_修罗释放02.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\lxg_修罗释放01.pss",
+   "her\\hd特效\\技能\\pss\\发招\\lxg_修罗释放01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s16lxg链技能08_hd.tani"
+ },
+ "星楼月影": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s01wh技能12.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_万花水墨晕开_重置_01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_万花水墨晕开_重置_02.pss",
+   "her\\hd特效\\技能\\pss\\发招\\w_万花水墨晕开_重置_02.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1s01wh技能12_星楼月影hd.tani"
+ },
+ "春泥护花": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s01wh技能15.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_万花春泥01_重置.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_万花笔粒子03_重置.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_万花春泥02_重置.pss",
+   "her\\hd特效\\技能\\pss\\发招\\w_万花春泥02_重置.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s01wh技能15_春泥HD.tani"
+ },
+ "极乐引": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1smj10圣火诀buff02.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教圣火06.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教圣火14.sfx",
+   "other\\特效\\技能\\sfx\\释放\\释放_明教圣火14.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\F1smj10圣火诀buff02.tani"
+ },
+ "横扫六合": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04sl棍技能13.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\h_灰层.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\s_少林旋转刀光.pss",
+   "her\\hd特效\\技能\\pss\\发招\\s_少林旋转刀光.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s04sl棍技能13_hd01.tani"
+ },
+ "洞烛机微": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1h唐门弩车001b_技能02a.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_唐门弩车大弩蓄力_01.pss",
+   "her\\hd特效\\技能\\pss\\发招\\t_唐门弩车大弩蓄力_01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1h唐门弩车001b_技能02a_HD.tani"
+ },
+ "渊": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04tc技能18a.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_冲刺_渊飘带_重制.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_冲刺_渊3_重制.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_冲刺_渊2_重制.pss",
+   "her\\hd特效\\技能\\pss\\发招\\c_冲刺_渊2_重制.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1s04tc技能18a_渊hd.tani"
+ },
+ "灭": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04tc技能17.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策灭02.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策灭03.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策灭01.pss",
+   "her\\hd特效\\技能\\pss\\发招\\t_天策灭01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1s04tc技能17_灭hd.tani"
+ },
+ "烈日斩": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1smj10组合刀攻击04.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教刀光04.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\g光晕01.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教刀光05.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\m明教元素07.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\m明教元素06.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教刀光06.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\F1smj10组合刀攻击04_日斩.tani"
+ },
+ "玄水蛊": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1swd08蛊攻击01.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_五毒攻击13.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\F1swd08蛊攻击01_万蛊蚀心.tani"
+ },
+ "疾": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04tc技能16.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策轻功转身_疾_重制.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策轻功转身_疾02.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策轻功冲刺飘带_疾_重制.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策轻功枪_疾_重制.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策轻功冲刺_疾_重制.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策轻功冲刺气浪_疾_重制.pss",
+   "her\\hd特效\\技能\\pss\\发招\\t_天策轻功冲刺气浪_疾_重制.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s04tc技能16_疾HD.tani"
+ },
+ "百足": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1swd08毒攻击03.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_五毒千丝01.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_五毒百足03.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\f1swd08毒攻击03_百足.tani"
+ },
+ "破风": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04tc技能11b.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策圆形刀光01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策刀光甩出去.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\h_灰层02.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策尖刺01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\h_灰层03.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策尖刺.pss",
+   "her\\hd特效\\技能\\pss\\发招\\t_天策尖刺.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s04tc技能11b_穿云hd.tani"
+ },
+ "穹隆化生": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s03cy气技能15a.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_纯阳_七星_聚气01_悟.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_纯阳_七星_北斗01_悟.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_纯阳_七星_手01_悟.pss",
+   "her\\hd特效\\技能\\pss\\发招\\c_纯阳_七星_手01_悟.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s03cy气技能15a_穹窿化生01_悟.tani"
+ },
+ "穿": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04tc技能11a.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策尖刺04.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\h_灰层03.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策尖刺03.pss",
+   "her\\hd特效\\技能\\pss\\发招\\t_天策尖刺03.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1s04tc技能11a_穿云hd.tani"
+ },
+ "绛唇珠袖": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s05qx剑技能26.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\q_七秀绛唇珠袖手.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\q_七秀绛唇珠袖.pss",
+   "a\\source\\other\\hd特效\\技能\\pss\\发招\\q_七秀绛唇珠袖.pss",
+   "her\\hd特效\\技能\\pss\\发招\\q_七秀绛唇珠袖.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s05qx剑技能26_绛唇珠袖hd.tani"
+ },
+ "翔极碧落": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s15pl伞技能空04c.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\p_蓬莱打飞02.pss",
+   "her\\hd特效\\技能\\pss\\发招\\p_蓬莱打飞02.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s15pl伞技能空04c_人雕合一HD.tani"
+ },
+ "舍身诀": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04sl技能11.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\f_佛像_02.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\s_少林快速起手.pss",
+   "her\\hd特效\\技能\\pss\\发招\\s_少林快速起手.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s04sl技能11_hd01.tani"
+ },
+ "花语酥心": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1swh01辅助技能03.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_笔攻击05_02.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_笔攻击05_01.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\F1swh01辅助技能03.tani"
+ },
+ "蛇影": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1swd08毒攻击02.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_五毒千丝03_k.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_五毒蛇影01.sfx",
+   "other\\特效\\技能\\sfx\\释放\\释放_五毒蛇影01.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\f1swd08毒攻击02_蛇影.tani"
+ },
+ "蛊虫献祭": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1swd08牺牲01.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_五毒攻击20.sfx",
+   "data\\source\\other\\特效\\系统\\sfx\\其他\\抖动1.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\F1swd08牺牲01_粉身碎骨.tani"
+ },
+ "蝶弄足": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s05qx扇技能18.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\q_七秀手部拖尾_01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\q_七秀蝶弄足_01.pss",
+   "her\\hd特效\\技能\\pss\\发招\\q_七秀蝶弄足_01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1s05qx扇技能18_蝶弄足hd.tani"
+ },
+ "跃潮斩波": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s15pl掌技能空03a.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\pl_下坠手拖尾01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\pl_下坠02.pss",
+   "her\\hd特效\\技能\\pss\\发招\\pl_下坠02.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s15PL掌技能空03a_掌法HD.tani"
+ },
+ "踏星行": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s17ytz乘灯01.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\武器\\y_衍天宗踏星行_魂灯附魔01.pss",
+   "her\\hd特效\\技能\\pss\\武器\\y_衍天宗踏星行_魂灯附魔01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s17ytz乘灯01.tani"
+ },
+ "追命箭": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1stm09弩攻击03.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_唐门_追命箭_释放01_悟.pss",
+   "ta\\source\\other\\hd特效\\技能\\pss\\发招\\t_唐门_追命箭_释放01_悟.pss",
+   "other\\hd特效\\技能\\pss\\发招\\t_唐门_追命箭_释放01_悟.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1stm09弩攻击03夺命01_追命箭_悟.tani"
+ },
+ "银月斩": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1smj10双刀攻击04.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_聚气05.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\m明教元素03.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\m明教元素21.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\m明教元素23.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教刀光03加强.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教刀光01.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教刀光03.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\F1smj10双刀攻击04_月斩.tani"
+ },
+ "锻骨诀": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04sl技能16.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\s_少林解印.pss",
+   "her\\hd特效\\技能\\pss\\发招\\s_少林解印.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s04sl技能16_hd01.tani"
+ },
+ "长针": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s01wh针灸13b.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_万花长针吟唱01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_万花长针01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\w_万花长针02.pss",
+   "her\\hd特效\\技能\\pss\\发招\\w_万花长针02.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s01wh针灸13b长针hd.tani"
+ },
+ "雷霆震怒": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s05qx剑技能25.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\q_七秀江海_蓄力01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\q_七秀雷霆_刀光01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\q_七秀雷霆_缠绕01.pss",
+   "her\\hd特效\\技能\\pss\\发招\\q_七秀雷霆_缠绕01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1s05qx剑技能25_雷霆震怒hd.tani"
+ },
+ "雷震子": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1stm09控制03.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_唐门雷震子01.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_唐门雷震子03.sfx",
+   "\\释放_唐门雷震子03.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\F1stm09控制03雷震子.tani"
+ },
+ "雾暗迷云": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s21ds技能04b.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\ds_段氏_雾海蓄力_01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\ds_段氏_雾海发招_01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\ds_段氏挥_02.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\ds_段氏_雾海发招_02.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\ds_段氏雾暗迷云_01.pss",
+   "her\\hd特效\\技能\\pss\\发招\\ds_段氏雾暗迷云_01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s21ds技能04b.tani"
+ },
+ "韦陀献杵": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04sl棍技能12.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\h_灰层.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\j_聚气少林慢.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\s_少林棍子.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\s_少林刀光z05.pss",
+   "her\\hd特效\\技能\\pss\\发招\\s_少林刀光z05.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1s04sl棍技能12_hd02.tani"
+ },
+ "风来吴山": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能15.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_藏剑刀光01b.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\状态\\c_藏剑风车范围.pss",
+   "her\\hd特效\\技能\\pss\\状态\\c_藏剑风车范围.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能15_风来吴山hd.tani"
+ },
+ "驱夜断愁": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1smj10双刀攻击10.ani",
+  "pss": [],
+  "sfx": [
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教刀光03加强.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教砸地01.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教刀光_月击.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教刀光_月.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\m明教元素21.sfx",
+   "data\\source\\other\\特效\\技能\\sfx\\释放\\释放_明教刀光03.sfx"
+  ],
+  "tani": "data\\source\\player\\f1\\动作\\F1smj10双刀攻击10连杀.tani"
+ },
+ "魂压怒涛": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1h唐门弩车001b_技能02a.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_唐门弩车大弩蓄力_01.pss",
+   "her\\hd特效\\技能\\pss\\发招\\t_唐门弩车大弩蓄力_01.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1h唐门弩车001b_技能02a_HD.tani"
+ },
+ "鹤归孤山": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能14.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_藏剑手部拖尾.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_藏剑起跳烟雾.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_藏剑冲刺_04.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_藏剑空中向下.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\c_藏剑砸地.pss",
+   "her\\hd特效\\技能\\pss\\发招\\c_藏剑砸地.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能14_鹤归孤山hd.tani"
+ },
+ "龙吟": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04tc技能12.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策爆发.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策圆形刀光01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策圆形刀光04.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策刀光甩出去.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策爆发01.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\h_灰层02.pss",
+   "her\\hd特效\\技能\\pss\\发招\\h_灰层02.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1s04tc技能12_龙吟hd.tani"
+ },
+ "龙战于野": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1sgb11掌法攻击05b.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\g_丐帮_亢龙有悔_挥拳01_悟.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\g_丐帮_蛟龙翻江_攻击03_悟.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\g_丐帮_蛟龙翻江_攻击02_悟.pss",
+   "other\\hd特效\\技能\\pss\\发招\\g_丐帮_蛟龙翻江_攻击02_悟.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\F1sgb11掌法攻击05b.tani"
+ },
+ "龙牙": {
+  "baseAni": "data\\source\\player\\f1\\动作\\f1s04tc技能13.ani",
+  "pss": [
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策龙牙_狼头版.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策地裂_狼头版.pss",
+   "data\\source\\other\\hd特效\\技能\\pss\\发招\\t_天策尖刺02_狼头版.pss",
+   "her\\hd特效\\技能\\pss\\发招\\t_天策尖刺02_狼头版.pss"
+  ],
+  "sfx": [],
+  "tani": "data\\source\\player\\f1\\动作\\f1s04tc技能13_龙牙hd_狼皮肤.tani"
+ }
+}

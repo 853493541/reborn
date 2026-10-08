@@ -359,6 +359,65 @@ except Exception:
 APPLY_SFX_TAGS = False
 
 
+# tani-embedded effect records (ability_picker/data/tani_pss_tags.json, built by
+# tools/scan_tani_tags.py): per ability, the matched tani's base .ani and the
+# .pss effect paths its records carry. When the staged process also has a dummy
+# PSS that the tani already carries, playing the tani makes the engine spawn
+# that PSS a second time (tag instance) next to the dummy -> the effect
+# visibly restarts/replays (user report 2026-10-07). Those abilities fall back
+# to the tani's base .ani: the staged PSS stays the single visible layer; the
+# tani's partial .Sfx tags (sparks/trail) are dropped for them.
+TANI_PSS_TAGS = {}
+try:
+    TANI_PSS_TAGS = json.load(open(
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "tani_pss_tags.json"),
+        encoding="utf-8"))
+except Exception:
+    pass
+
+
+# OFF (2026-10-07, pending user verification): when the staged dummy PSS is
+# also carried by the matched tani, playing the tani makes the engine spawn it
+# a second time (tag instance). The tag instance is what renders the authored
+# early burst (verified: without the dummy it still bursts, then dies with the
+# animation); the dummy is the long tail. Removing the tani loses the authored
+# burst, so this stays off until the user confirms the duplicate is the
+# "effect replays" report. Flip to True to play the base .ani for those
+# abilities (single PSS source, no authored burst).
+AVOID_TANI_PSS_DUP = False
+
+
+def _base_name(p: str) -> str:
+    return os.path.basename(str(p).replace("/", "\\")).lower()
+
+
+def avoid_tani_pss_dup(steps: list, name: str, matched: str) -> list:
+    if not AVOID_TANI_PSS_DUP:
+        return steps
+    info = TANI_PSS_TAGS.get(name)
+    if not info or not steps:
+        return steps
+    dummies = {_base_name(s.get("v", "")) for s in steps if s.get("kind") == "dummy"}
+    if not dummies:
+        return steps
+    tani_pss = {_base_name(p) for p in (info.get("pss") or [])}
+    if not (dummies & tani_pss):
+        return steps
+    base_ani = info.get("baseAni") or ""
+    if not base_ani:
+        return steps
+    out = []
+    for s in steps:
+        if s.get("kind") == "anim" and _base_name(s.get("v", "")) == _base_name(matched):
+            s = dict(s)
+            s["v"] = base_ani
+            note = s.get("n", "")
+            s["n"] = (note + " | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)" if note
+                      else "tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)").strip(" |")
+        out.append(s)
+    return out
+
+
 def apply_tani_anim(steps: list, matched: str, tanis: list) -> list:
     """Play the matched tani instead of its base .ani.
 
@@ -1861,8 +1920,10 @@ def apply_overrides(all_entries: list) -> None:
         # staged process is its own authored timeline).
         steps = PROCESS.get(name, []) if name not in seen_proc else []
         if steps:
-            steps = apply_tani_anim(apply_sfx_tags(steps, name), e.get("matched", ""),
-                                    e.get("tanis", []))
+            steps = avoid_tani_pss_dup(
+                apply_tani_anim(apply_sfx_tags(steps, name), e.get("matched", ""),
+                                e.get("tanis", [])),
+                name, e.get("matched", ""))
         e["process"] = steps
         if e["process"]:
             seen_proc.add(name)

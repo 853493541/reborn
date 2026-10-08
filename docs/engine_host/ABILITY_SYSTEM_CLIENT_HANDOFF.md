@@ -14,10 +14,14 @@ MovieEditor `Skill.exe` sandbox line — do not revive it; the target is this cl
 | Build | `client/build_client.cmd` includes `AbilitySystem.cs`; build with `RC_CLIENT_EXE=reborn_client_skillv5.exe` |
 | Launcher | `tools/sandbox/run_skillv5.cmd` (RC_MAP + `RC_STARTUP=nodb` + title; optional `RC_ABILITY=<name>`) |
 | Runtime data | `bin64\ability_picker\`: `ability_candidates.json` (processes), `skill_data.json`+`icons`, `sound\*.wav`, `sfx\*.sfx` (61 staged tags), `sfx_tags.json` |
-| Data generator | `ability_picker/tools/build_candidates.py` (authoritative chain skills.tab→skill_tag/dash→player_animation_f1 + curated dig layer; `apply_tani_anim`; `TANI_BLACKLIST`) |
+| Data generator | `ability_picker/tools/build_candidates.py` (authoritative chain skills.tab→skill_tag/dash→player_animation_f1 + curated dig layer; `apply_tani_anim`; `TANI_BLACKLIST`; dormant `avoid_tani_pss_dup`) |
+| Tani tag scan | `ability_picker/tools/scan_tani_tags.py` → `ability_picker/data/tani_pss_tags.json` (per ability: tani base `.ani` + embedded `.pss`/`.sfx` paths) |
 
 Controls: **P** = picker panel (scales with the window), **1** = cast selected,
 click an icon = select + cast. `RC_ABILITY=<name>` preselects (testing).
+Diagnostics: `RC_PSS_FOLLOW=move|off|always|jitter` (PSS follow mode; default
+`move` = re-add when the caster moved >32 u), `RC_PSS_SKIP=1` (skip the staged
+PSS dummy — inspect what the tani's own tags render).
 
 ## Verified working
 
@@ -30,10 +34,30 @@ click an icon = select + cast. `RC_ABILITY=<name>` preselects (testing).
 
 ## Open work (priority order)
 
-1. **"Effects replay wrong"** — user report, no specific ability named. Trace for a
-   named ability: staged process (`ability_candidates.json`) vs the game's own files
-   (`character_sfx.txt` for cast effects, the tani's tag records, `skill_chain.txt`
-   for buff chains). The user has the real game running to compare.
+1. **"Effects replay wrong"** (named ability: **如意法**; user: "特效反复从头重放 /
+   整个特效期间一直重放"). Status 2026-10-07: **not reproduced** on the current build.
+   Full-density engine captures (200 ms sampling across the whole 12.5 s effect,
+   standing/moving/W-taps) show one smooth play (rise -> steady -> decay), no
+   restart; an A/B of the PSS follow (`RC_PSS_FOLLOW=move` vs `always`, i.e. 1 vs
+   3468 re-adds) is pixel-identical; a transform-jitter probe (`jitter`, dummy
+   re-added at alternating +/-40u every frame) also does not restart the PSS.
+   What the trace DID find (new, verified):
+   - The matched tani carries the effect records itself: `F1smj10双刀buff04_清净心01.tani`
+     embeds `m_明教清净心01.pss` **and** `m_明教圣火_落地.pss` plus the 4 `.Sfx` tags.
+     The dataset also stages `m_明教清净心01.pss` as a dummy -> the engine's tag
+     path and the dummy are two sources of the same PSS (58 of 61 dummy-carrying
+     abilities have this). With the dummy present the tag burst is suppressed
+     (shared PSS instance); without the dummy the tag burst renders for ~1 s and
+     dies with the animation (the dummy is the long tail).
+   - `ability_picker/data/tani_pss_tags.json` (built by
+     `ability_picker/tools/scan_tani_tags.py`) records every ability's tani base
+     `.ani` + embedded `.pss`/`.sfx` paths.
+   - A dormant builder pass `avoid_tani_pss_dup` (`AVOID_TANI_PSS_DUP=False`)
+     can drop the tani (play the base `.ani`) for those abilities to remove the
+     duplicate — off because it also loses the authored early burst.
+   Next probe needs the user: which ability + interaction (does it need movement,
+   or casting a second ability?) and a capture at the moment the restart is seen;
+   the report may predate the 2026-10-07 PSS revert (`9a536eb`).
 2. **70 animation matches changed** vs the v2-era dataset (the "wrong moves"
    report): diff against `agent/skillv2-sandbox`'s
    `ability_picker/data/ability_candidates.json`. The 7 dash-sourced matches are

@@ -5025,3 +5025,34 @@ if the cache/host frames appear.
 - Open: "effects replay wrong" (needs a named ability), the 70 changed animation
   matches vs the v2-era dataset, 天绝地灭 tani AV (blacklisted), sequential-tani
   engine AV (guard only).
+
+### 2026-10-07 - v5 - "effects replay wrong" (如意法): not reproduced; the tani embeds the PSS twice-source
+
+- User named 如意法 and said the effect "replays from the beginning during the whole
+  effect". Reproduced? No. Scripted casts (RC_ABILITY=如意法, posted `1`/W) with
+  engine screenshots: full-density 200 ms sampling across the whole 12.5 s effect
+  (standing, moving, W-taps) shows one smooth play (rise -> steady -> decay), no
+  restart. A/B `RC_PSS_FOLLOW=move` (1 re-add) vs `always` (3468 re-adds) is
+  pixel-identical; a `jitter` probe (dummy re-added at alternating +/-40 u every
+  frame) also does not restart the PSS. So the follow re-add is not a restart
+  source. The earlier "effect vanished while moving" read was a timing error (that
+  frame was after `cast done`).
+- Real finding: the matched tani carries the effect records itself.
+  `F1smj10双刀buff04_清净心01.tani` embeds `m_明教清净心01.pss` AND
+  `m_明教圣火_落地.pss` plus 4 `.Sfx` tags; the dataset also stages the first PSS as
+  a dummy -> two sources of the same PSS (58 of 61 dummy-carrying abilities).
+  With the dummy present the tag burst is suppressed (shared PSS instance); with
+  `RC_PSS_SKIP=1` (dummy off) the tag burst renders ~1 s then dies with the
+  animation (the dummy is the long tail). `scan_tani_tags.py` +
+  `tani_pss_tags.json` record each ability's tani base `.ani` and embedded
+  `.pss`/`.sfx` paths.
+- Dormant fix `avoid_tani_pss_dup` (`AVOID_TANI_PSS_DUP=False` in
+  build_candidates.py): play the base `.ani` for those abilities -> one PSS source,
+  but it also drops the authored early burst (verified visually), so it is off
+  pending the user. Next probe: the user's exact ability + interaction (movement?
+  second ability?) and a capture at the moment of the replay; the report may
+  predate the 2026-10-07 PSS revert `9a536eb`.
+- Client diagnostics added: `RC_PSS_FOLLOW=move|off|always|jitter`, `RC_PSS_SKIP=1`
+  (log line `abilities: ... pssFollow=...`). Note: the shared runtime
+  `bin64\ability_picker\ability_candidates.json` was found holding a stale
+  2026-09-28 copy at one point (1 ability loaded) - re-copy before each run.

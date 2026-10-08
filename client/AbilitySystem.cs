@@ -71,6 +71,13 @@ internal static class AbilitySystem
     static float lastX = 1e9f, lastZ = 1e9f;
     static string castName = "";
     static bool soundOn = true;
+    static int tickN = 0;   // frame counter (jitter diagnostic)
+    // PSS follow mode (diagnostic): "move" = re-add when the caster moved >32u
+    // (default), "off" = never re-add, "always" = re-add every tick.
+    static string followMode = "move";
+    // skip the staged PSS dummy entirely (diagnostic: check what the played
+    // tani's own tag records already render)
+    static bool skipPss = false;
 
     public static string Selected { get { return sel; } }
     public static bool Active { get { return active; } }
@@ -90,7 +97,11 @@ internal static class AbilitySystem
         if (names.Count > 0) sel = names[0];
         string pre = Environment.GetEnvironmentVariable("RC_ABILITY");
         if (pre != null && pre.Length > 0 && names.Contains(pre)) sel = pre;
-        log("abilities: " + names.Count + " loaded (P panel, 1 casts) selected=" + sel);
+        string fm = Environment.GetEnvironmentVariable("RC_PSS_FOLLOW");
+        if (fm != null && (fm == "off" || fm == "always" || fm == "move" || fm == "jitter")) followMode = fm;
+        skipPss = Environment.GetEnvironmentVariable("RC_PSS_SKIP") == "1";
+        log("abilities: " + names.Count + " loaded (P panel, 1 casts) selected=" + sel
+            + " pssFollow=" + followMode + (skipPss ? " pssSkip=1" : ""));
     }
 
     static void LoadDataset()
@@ -347,6 +358,7 @@ internal static class AbilitySystem
 
     public static void Tick(long now, float px, float py, float pz, float yaw)
     {
+        tickN++;
         // one-time .Sfx warm-up (the engine AVs the FIRST create of ~27 of the
         // staged tags once the scene has settled; creating them once far from
         // the player caches the resources so cast-time spawns succeed - the
@@ -405,8 +417,13 @@ internal static class AbilitySystem
                 }
                 else if (st.Kind == "dummy")
                 {
-                    pss = true; pssPath = st.V;
-                    log("cast dummy -> " + st.V);
+                    if (skipPss)
+                        log("cast dummy skipped (RC_PSS_SKIP) -> " + st.V);
+                    else
+                    {
+                        pss = true; pssPath = st.V;
+                        log("cast dummy -> " + st.V);
+                    }
                 }
             }
             catch (Exception e) { log("cast step ex (" + st.Kind + "): " + e.Message); }
@@ -425,15 +442,19 @@ internal static class AbilitySystem
                 long h = scene.AddDummyModel("cast_pss", pssPath, pp, pr, ps);
                 log("cast pss -> " + pssPath + " handle=" + h + " (follows caster)");
             }
-            else if (Math.Abs(px - lastX) > 32f || Math.Abs(pz - lastZ) > 32f)
+            else if (followMode == "always" || followMode == "jitter" ||
+                     (followMode == "move" &&
+                      (Math.Abs(px - lastX) > 32f || Math.Abs(pz - lastZ) > 32f)))
             {
                 lastX = px; lastZ = pz;
-                var pp = new CLRfloat3(); pp.x = px; pp.y = py + 2f; pp.z = pz;
+                var pp = new CLRfloat3();
+                pp.x = px + (followMode == "jitter" && (tickN & 1) == 0 ? 40f : 0f);
+                pp.y = py + 2f; pp.z = pz;
                 float half = yaw * 0.5f;
                 var pr = new CLRfloat4(); pr.y = (float)Math.Sin(half); pr.w = (float)Math.Cos(half);
                 var ps = new CLRfloat3(); ps.x = 1f; ps.y = 1f; ps.z = 1f;
                 long h = scene.AddDummyModel("cast_pss", pssPath, pp, pr, ps);
-                log("cast pss re-added handle=" + h + " (effect restarted)");
+                log("cast pss re-added handle=" + h + " (follow " + followMode + ")");
             }
         }
         if (now >= untilMs)
