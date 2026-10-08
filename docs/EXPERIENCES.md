@@ -3695,3 +3695,36 @@ HIGH-confidence findings:
 - Evidence: host_exe262/263.out; static disasm.
 - Evidence: host_exe187-193.out; commits 70b9154, a53d874, c947771; the state
   map + next probes are in docs/engine_host/NEXT_AGENT_HANDOFF.md section 0.
+
+## 2026-10-07 - BRANCH DEAD END: Gate 4 actor path blocked on a nondeterministic heap corruption (paused)
+
+- This branch (`agent/skillv2-sandbox`) has reached a dead end and is **paused waiting
+  for more time** if work continues. No merge to main.
+- What was achieved (kept): Gates 1-3 (real `CreateRLScene`, char chain,
+  `[KRLScene+0xF29E8]` set); **Gate 4 milestone `RLActorMgrNT::Init -> 1`** (manager is
+  an embedded singleton member at `singleton+0x25150`; the engine's own Init caller is
+  `rep+0x3E44C1`; the async delegate registry at `rep_main+0x262C0` needs
+  `InitAsyncTask`; the line-86 failure root cause was the host's `void` hooks clobbering
+  the engine's `Register` return). Three instances of the "void hook clobbers engine
+  return" bug class were fixed (`hookTableBuilder`, `hookTableWrapper`,
+  `hookEventRegister`/`hookEventRegister2`).
+- The dead end: `CreateRLActorNT(mgr, representID, type)` enters the engine's actor path
+  (loads `represent/scripts/dummy/behavior_base.lua`, `OnSceneActorLoaded` fires) but the
+  process dies with `STATUS_HEAP_CORRUPTION` (0xC0000374), **nondeterministic** - and the
+  BASELINE (no actor block) is now ALSO flaky (run 273 did not reach `frame loop done`).
+  So the corruption is a **pre-existing host defect** in the engine's jemalloc heap, not
+  caused by the actor block. Ruled out by explicit tests: `shadowDescFix`
+  (`RC_HOST_NOSHADOWDESC`), the diagnostic hooks (`RC_HOST_NODIAG`), the `CreateHangPet`
+  sites (`RC_HOST_NOHANGPET`), the `rep+0x815827` recursion, the `hookActorLoaded`
+  signature, the file hooks (bounded buffers), `MALLOC_CONF` debug fill. `logf` was made
+  thread-safe (real fix).
+- Why it cannot advance here: the overwrite is delayed (jemalloc detects it later than it
+  happens); localizing it needs **WinDbg with the engine's jemalloc symbols** (or a debug
+  jemalloc build). A rebuilt INT3 tracer armed the actor/async breakpoints but the fault
+  preceded them. Blind iteration from the frame loop is exhausted; fabricating a fix
+  would violate the "no invented fixes" rule.
+- Next probe (when resumed, with a debugger): break on the jemalloc corruption site /
+  allocator, catch the overwrite; also confirm whether the baseline flakiness predates
+  this branch (compare against main's host). Then supply `InitAsyncTask`'s task-list array
+  and re-run `CreateRLActorNT` + `RLActorNT::LoadModel` F1 + `tools/proof/image_stats.py`.
+- Evidence: host_exe247-273.out; commits adca9cc..b089c00; NEXT_AGENT_HANDOFF.md section 0.
