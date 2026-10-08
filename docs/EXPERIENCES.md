@@ -7539,3 +7539,22 @@ if the cache/host frames appear.
 - **Boundary:** no files under `C:\SeasunGame` were written; extraction output went to
   `%TEMP%`. Read-only research (no gate run needed).
 - Verified: `docs/netcode/JX3_SKILL_CAST_FLOW.md` §5 + Reproduce updated.
+
+### 2026-10-07 — Skills v6 — HDJueJingSkillCoe_130 = 1.2 (decoded) + cast-path disasm
+
+- **Resolved:** extracted the include headers from the paks with the official
+  `PakV4SfxExtract.exe` (temp output, nothing written under `C:\SeasunGame`), then
+  decoded `scripts/Include/Skill.lh` main-proto instructions 27755-27762:
+  `HDJueJingSkillCoe_130 = 1.2`; `HDJueJingSkillCoe = 7.2` (`1.2*6`);
+  `HDJueJingSkillCoe_Heal = 8.4`. ⇒ 65029 `nChannelInterval = 1267*1.2 = 1520.4`.
+  (The earlier guess `8.4` was `_Heal`, not `_130` — instruction decode was needed.)
+- **Cast path (disasm, `JX3RepresentX64.dll`):** `KRLCharacter::CastSkill` (0x1804D2090)
+  → `GetSkillNextAnimationID(char.pRLSkillSequence @+0x47ac, skillAnimParam[4], &animID)`
+  → play `0x18001934e`; skill `0x8b4b` is special-cased (hardcoded 4-entry cycle).
+  So the skill-id→animation binding is upstream of `CastSkill`, and only `skill_tag.txt`
+  provides a skill-id→anim map. Still no 65029 row anywhere ⇒ leading conclusion stands
+  (client plays base 415's animation; server must carry the display id). Next probe:
+  `krlEventAdaptor::HandleCastSkill` / `KGameWorldHandler::OnCharacterCastSkill` param fill.
+- **Also fixed:** the doc's earlier `GetConvertedAnimationID`-style dead ends were
+  0x18001b2d4/thunk tables misread as functions; the real resolver is above.
+- Verified: represent + logic disasm read-only; `jx3_model.py` gate re-run 10x PASS.

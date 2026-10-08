@@ -136,16 +136,25 @@ Represent layer (`combat_netcode.md` §4.2):
 * **No rollback/resim** — the client trusts the next server message
   (`combat_netcode.md` §4.3).
 
-Animation resolution (client-side tables):
+Animation resolution (client-side tables + the represent cast path, disasm
+`proof/netcode/JX3RepresentX64_all_strings.txt` / local disasm 2026-10-07):
 
 ```
-skills.tab skill id ──skill_tag.txt──▶ AnimationID ──player_animation_<body>.txt──▶ .tani
-                                            (Represent/skill/skill_dash.txt for dash anims)
+skill id ──skill_tag.txt──▶ AnimationID ──player_animation_<body>.txt──▶ .tani
+                 (skill_dash.txt for dash anims)
 
-KRLCharacter::GetAnimationID / GetNextPerSkillAniID  ←  per-skill animation cycle
-        (InitSkillSequence/GetSkillNextAnimationID; cycle count from a global
-         config at +0x3c, `SEQUENCE_ANIMATION_CONFIG_FILE_NAME`) — NOT keyed by skill id
+KRLCharacter::CastSkill(char, skillAnimParam, skillId, …)
+   ├─ skillId == 0x8b4b (35659): cycle a hardcoded 4-entry anim array (m_nPerSkillAniIndex)
+   └─ else: GetSkillNextAnimationID(char.pRLSkillSequence @+0x47ac, skillAnimParam[4], &animID)
+             → plays the animation id in [0x18001934e]
+     InitSkillSequence sets a global per-skill sequence length (config +0x3c,
+     `SEQUENCE_ANIMATION_CONFIG_FILE_NAME`) — this only varies repeat-cast animations,
+     it is NOT the skill→anim map.
 ```
+
+The `skillAnimParam[4]` (up to 4 animation ids) is supplied by the cast event
+layer from the skill's data, so the skill-id→animation binding happens **upstream**
+of `CastSkill` (event adaptor / skill model mgr), not inside it. See §5.1.
 
 Legend for §5: `skill_tag.txt` is the only skill-id→animation table; the
 per-skill sequence config only varies the animation across repeat casts.
@@ -191,7 +200,7 @@ applied by the skill runtime (`docs/movement/JX3_GRAVITY_RESEARCH.md` §3.10,
 | `skill.nMaxRadius` | `20 * LENGTH_BASE` = 1280 u | max cast range **20 尺 = 12.8 m** |
 | `skill.nMinRadius` | `0` | no dead zone |
 | `skill.nAngleRange` | `128` | **180°** cone (256 = 360°) |
-| `skill.nChannelInterval` | `1267 * HDJueJingSkillCoe_130` | post-cast skill lock / anim length |
+| `skill.nChannelInterval` | `1267 * HDJueJingSkillCoe_130` = `1267 * 1.2` = **1520.4** | post-cast skill lock / action length (ms) |
 | `skill.nWeaponDamagePercent` | `1024` | **100 % weapon damage** |
 | `SKILL_PHYSICS_DAMAGE` | `nDamage * 1.1` | 外功 (physics) component |
 | `CALL_ADAPTIVE_DAMAGE(1,0)` | — | adaptive (skill-coefficient) component |
@@ -200,6 +209,15 @@ applied by the skill runtime (`docs/movement/JX3_GRAVITY_RESEARCH.md` §3.10,
 | skill CD | `SetNormalCoolDown(1, 7101)` | CD row 7101 |
 | check CD | `SetCheckCoolDown(1, 444)` | gate only |
 | child | `ATTRIBUTE_TYPE.CAST_SKILL_TARGET_DST = 65030` | fires the dash child at the target |
+
+Resolved tuning globals (`scripts/Include/Skill.lh` main proto, instructions
+27755-27762; extracted via official `PakV4SfxExtract.exe`):
+
+| Global | Value | Definition |
+|---|---|---|
+| `HDJueJingSkillCoe_130` | **1.2** | base 绝境 coefficient (used by `nChannelInterval`) |
+| `HDJueJingSkillCoe` | **7.2** | `= HDJueJingSkillCoe_130 * 6` |
+| `HDJueJingSkillCoe_Heal` | **8.4** | healing variant |
 
 ### 3.4 Child — 绝境龙牙冲刺技能 (65030)
 
@@ -267,31 +285,29 @@ corrected by the next server state.
      empty), `SurplusSkill`, or `WeaponMapSkill` row resolves it; a byte scan for
      `65029`/`65030` across `...\pakv4-probe` hits only `skills.tab`, `Skill.txt`,
      and the derived ability-matcher caches.
-   * The represent resolver architecture is `skill_tag.txt` (skill id → AnimationID →
-     `player_animation_<body>.txt` → `.tani`) plus a separate global per-skill
-     animation cycle (`KRLCharacter::GetNextPerSkillAniID` / `GetSkillNextAnimationID`
-     → `InitSkillSequence`, count from a config at `+0x3c`), which is **not** keyed on
-     the skill id.
+   * The represent cast path is `KRLCharacter::CastSkill` →
+     `GetSkillNextAnimationID(char.pRLSkillSequence @+0x47ac, skillAnimParam[4], &animID)`
+     → play `[0x18001934e]` (skill `0x8b4b` special-cased). `skillAnimParam[4]` is
+     supplied by the **cast event layer**, so the skill-id→animation binding is
+     upstream of `CastSkill`, and only `skill_tag.txt` provides it. The global
+     per-skill sequence config only varies repeat-cast animations.
 
    ⇒ The client cannot select a 绝境-specific animation from shipped data, so the
    visible animation/effects must be those of the **base skill 龙牙 (415)**. This means
    either the server's `OnSkillCast` carries the **display skill id** (415) for 绝境
    skills, or the action bar holds the base skill and 65029 is the server-side
-   replacement. **Next probe:** read the S2C `OnSkillCast` skill id for a 绝境 cast
-   (arena/replay record) or trace `KRLCharacter::CastSkill`'s animation fetch and its
-   missing-`skill_tag` fallback; also confirm the id the 绝境 action bar holds
+   replacement. **Next probe:** trace `krlEventAdaptor::HandleCastSkill` /
+   `KGameWorldHandler::OnCharacterCastSkill` to find who fills `skillAnimParam` from the
+   skill id (the `skill_tag` lookup), and read the S2C `OnSkillCast` skill id for a
+   绝境 cast (arena/replay record); also confirm the id the 绝境 action bar holds
    (`szDropSkillRemoteCall`).
-2. **`HDJueJingSkillCoe_130` numeric value** (scales 65029's `nChannelInterval`, and
-   the whole 绝境 skill set). The token exists **only** in `scripts/Include/Skill.lh`
-   (symbol identified: `proof/pvp/cast/skill_lh_globals.txt:83`,
-   `proof/netcode/skill_data/skill_lh_constants.json`). The include headers
-   (`LogicConst.lh`, `CommonFunction.lh`, `Table.lh`, `NewSkill.lh`, `GlobalParam.lua`,
-   `MasterScript.lua`) were extracted from the paks (official
-   `PakV4SfxExtract.exe`, output to temp — not committed) and none contains the
-   definition, so it is bound inside `Skill.lh`; the constant table holds a candidate
-   `8.4` adjacent to the three `HDJueJingSkillCoe*` names but the binding is
-   instruction-level and not yet decoded. Re-open with a `Skill.lh` main-proto
-   instruction dump.
+2. ~~`HDJueJingSkillCoe_130` numeric value~~ — **RESOLVED (2026-10-07)**:
+   `HDJueJingSkillCoe_130 = 1.2`, `HDJueJingSkillCoe = 7.2` (`1.2*6`),
+   `HDJueJingSkillCoe_Heal = 8.4`, decoded from `scripts/Include/Skill.lh` main proto
+   (instructions 27755-27762) after extracting the include headers with the official
+   `PakV4SfxExtract.exe` (temp output, not committed). ⇒ 65029 `nChannelInterval =
+   1267 * 1.2 = 1520.4`. Repro:
+   `python -c "..."` on the extracted `Skill.lh` (SETGLOBAL/LOADK decode; see §3.3).
 3. **`IsAutoTurn=0` vs. client auto-face** — does the client still turn 65029 to the
    target, or is `IsAutoTurn` the binding gate? (base 415 is also 0).
 4. **战意 cost**: the 65029 plaintext sets no `nCostRage`; the tooltip does not say
@@ -325,6 +341,15 @@ python -c "import os;B=r'...\skill-tables-out\Represent\skill';[print(f,b'65029'
 # NEVER to C:\SeasunGame; GBK, CRLF pathlist):
 #   PakV4SfxExtract.exe <pathlist.txt> <out_dir>
 #   pathlist: scripts/Include/LogicConst.lh, .../CommonFunction.lh, Table.lh, NewSkill.lh
+
+# decode the Skill.lh globals (SETGLOBAL/LOADK; resolves HDJueJingSkillCoe*):
+#   import tools/netcode/lua51_dump.py, read_proto() the main chunk, then for each
+#   SETGLOBAL whose name starts HDJueJingSkillCoe print the last LOADK into its
+#   register -> 1.2 / 7.2 / 8.4 (Skill.lh instr 27755-27762)
+
+# represent cast-path disasm (needs pefile+capstone):
+python tools\pvp\dump_fn_disasm.py "<bin64>\JX3RepresentX64.dll" `
+  --names cast_names.txt --out-dir <tmp>\cast_disasm    # KRLCharacter::CastSkill, RLSkillModelMgr::CastSkill
 ```
 
 Last verified: 2026-10-07.
