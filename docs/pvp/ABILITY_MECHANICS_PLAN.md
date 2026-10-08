@@ -62,4 +62,29 @@ Evidence base: `docs/pvp/JX3_PVP_BATTLE_RESEARCH.md` (synthesis),
 #   ops: CAST_SKILL_TARGET_DST(65030); SKILL_PHYSICS_DAMAGE; SKILL_PHYSICS_DAMAGE_RAND; CALL_ADAPTIVE_DAMAGE
 ```
 
+## Status (2026-10-08)
+
+Done (v6 client, branch `agent/skillv6-sandbox`):
+- **P0/P1** model + `build_mechanics.py` (level table, AddAttribute program, weapon%, cooldown
+  rows, prepare/channel frames, AoE geometry) → `mechanics_f1.tsv`.
+- **P2** target/AoE resolution (castMode + `nAreaRadius`×64) with `RC_DUMMY_N` multi-target.
+- **P3** effect runtime: damage (flat base+rand), CC (functionType), buffs add/remove, child
+  casts, self-move (DASH family). `SkillDamage` + `MechanicProgram`.
+- **P4** resources/GCD/cooldowns: `build_cooldowns.py` (`CoolDownList.tab`), GCD row 16 = 1.5 s,
+  per-skill cooldown, mana.
+- **P5** feedback: combat-text overlay (status + events), cast bar (prepare/channel), ability-bar
+  cooldown sweep, target CC/buff in the status line.
+- **P6/P6b** coverage: full 154 sweep (115 ok + 39 av) → `coverage_mechanics_f1.tsv`; the 39 are
+  passives (`function Apply`) → `script_only_f1.tsv`.
+- **Passive path**: `build_passives.py` extracts each `Apply()` child casts + AddBuff/DelBuff ids
+  → `passives_f1.tsv`; the client applies self-buffs and child casts.
+
+Open:
+- `EXECUTE_SCRIPT` bodies beyond the static patterns (69 abilities touch them; 39 are passives
+  whose Apply is partly parsed) → a **Lua 5.1 VM + engine-API shim** is the remaining path.
+- weapon% / attack-power scaling + mitigation (needs a character attribute model).
+- target-displacement units (PULL/KNOCKED_BACK_RATE); other Apply effects (heal/summon/doodad).
+- world-projected floating numbers; buff durations (Buff.tab has no duration column).
+- **P7** server-spec reconciliation.
+
 Last verified: 2026-10-08.
