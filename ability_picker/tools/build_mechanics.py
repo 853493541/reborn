@@ -125,6 +125,8 @@ def parse_script(data):
         "maxRadius": length_units(t, "nMaxRadius"),
         "areaRadius": length_units(t, "nAreaRadius"),
         "height": length_units(t, "nHeight"),
+        "knockSpeed": first_num(t, "nKnockedBackSpeed"),
+        "knockDis": length_units(t, "nKnockedBackDis"),
         "ops": parse_ops(t),
     }
     return rec
@@ -166,21 +168,23 @@ def main():
         r = rec or {"costMana": -1, "dmg": -1, "dmgRand": -1, "weaponPct": -1,
                     "gcdRow": -1, "normalCd": -1, "prepareFrames": -1,
                     "channelFrame": -1, "channelInterval": -1, "ops": [],
-                    "minRadius": -1, "maxRadius": -1, "areaRadius": -1, "height": -1}
+                    "minRadius": -1, "maxRadius": -1, "areaRadius": -1, "height": -1,
+                    "knockSpeed": -1, "knockDis": -1}
         rows.append((sid, name, r))
 
     tsv = os.path.join(DATA, "mechanics_f1.tsv")
     with open(tsv, "w", encoding="utf-8", newline="\n") as f:
         f.write("skillId\tname\tcostMana\tdmg\tdmgRand\tweaponPct\tgcdRow\tnormalCd\t"
                 "prepareFrames\tchannelFrame\tchannelInterval\tops\t"
-                "minRadius\tmaxRadius\tareaRadius\theight\n")
+                "minRadius\tmaxRadius\tareaRadius\theight\tknockSpeed\tknockDis\n")
         for sid, name, r in rows:
             f.write("\t".join([sid, name, str(r["costMana"]), str(r["dmg"]), str(r["dmgRand"]),
                                str(r["weaponPct"]), str(r["gcdRow"]), str(r["normalCd"]),
                                str(r["prepareFrames"]), str(r["channelFrame"]),
                                str(r["channelInterval"]), ";".join(r["ops"]),
                                str(r["minRadius"]), str(r["maxRadius"]),
-                               str(r["areaRadius"]), str(r["height"])]) + "\n")
+                               str(r["areaRadius"]), str(r["height"]),
+                               str(r["knockSpeed"]), str(r["knockDis"])]) + "\n")
     print("mechanics: %d abilities (%d text, %d bytecode, %d missing) -> %s"
           % (len(rows), textn, bcn, missn, tsv))
     for sid in ("65029", "65076"):

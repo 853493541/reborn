@@ -4071,6 +4071,25 @@ internal static class RebornClient
                                             + tgt.X.ToString("F0") + "," + tgt.Z.ToString("F0") + ")");
                                     }
                                 }
+                                if (plan.KnockDis > 0f)
+                                {
+                                    float kdx = tgt.X - px, kdz = tgt.Z - pz;
+                                    float kd = (float)Math.Sqrt(kdx * kdx + kdz * kdz);
+                                    if (kd < 1f) { kdx = 1f; kdz = 0f; kd = 1f; }
+                                    tgt.X += kdx / kd * plan.KnockDis;
+                                    tgt.Z += kdz / kd * plan.KnockDis;
+                                    try
+                                    {
+                                        var kp = new CLRfloat3(); kp.x = tgt.X; kp.y = tgt.Y; kp.z = tgt.Z;
+                                        var kr = new CLRfloat4(); kr.w = 1f;
+                                        var ks = new CLRfloat3(); ks.x = 1f; ks.y = 1f; ks.z = 1f;
+                                        if (tgt.ModelName.Length > 0 && tgt.ModelPath.Length > 0)
+                                            scene.AddDummyModel(tgt.ModelName, tgt.ModelPath.Replace('/', '\\'), kp, kr, ks);
+                                    }
+                                    catch { }
+                                    Log("knockback " + skillCast.Name + " -> " + tgt.Name + " to ("
+                                        + tgt.X.ToString("F0") + "," + tgt.Z.ToString("F0") + ")");
+                                }
                             }
                             if (plan.Damage > 0f)
                                 combatText.Push("-" + plan.Damage.ToString("F0") + " " + skillCast.Name,

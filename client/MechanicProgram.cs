@@ -17,6 +17,7 @@ internal sealed class MechanicPlan
     public float TargetPullPerFrame;                 // PULL (u/frame; arg commented 速度)
     public float RepelFrames;                        // CALL_REPULSED (duration, frames)
     public float KnockRate;                          // KNOCKED_BACK_RATE (rate; base unknown)
+    public float KnockDis;                           // nKnockedBackDis (units, away from caster)
     public bool Knockdown;                           // CALL_KNOCKED_DOWN
     public List<string> ChildCasts = new List<string>();
     public bool HasScript;                           // EXECUTE_SCRIPT (not executed)
@@ -31,6 +32,7 @@ internal sealed class MechanicPlan
         if (TargetPullPerFrame > 0f) s += " pull=" + TargetPullPerFrame.ToString("F0");
         if (RepelFrames > 0f) s += " repel=" + RepelFrames.ToString("F0") + "f";
         if (KnockRate > 0f) s += " knockRate=" + KnockRate.ToString("F0");
+        if (KnockDis > 0f) s += " knockDis=" + KnockDis.ToString("F0");
         if (Knockdown) s += " knockdown";
         if (ChildCasts.Count > 0) s += " child=" + string.Join(",", ChildCasts.ToArray());
         if (HasScript) s += " [script]";
@@ -57,6 +59,7 @@ internal static class MechanicProgram
         if (mechRow == null) return p;
         p.Damage = SkillDamage.Base(mechRow);
         if (IsCc(funcType)) p.CcType = funcType;
+        { float kd; if (mechRow.Length > 17 && float.TryParse(mechRow[17], out kd) && kd > 0f) p.KnockDis = kd; }
         string ops = mechRow.Length > 11 ? mechRow[11] : "";
         string[] parts = ops.Split(';');
         for (int i = 0; i < parts.Length; i++)

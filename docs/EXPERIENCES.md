@@ -8305,6 +8305,17 @@ if the cache/host frames appear.
   gravity PASS, loot selftest PASS.
 - **Open:** the 32 `-` are mostly no-op/template passives; the rest are blocked/large.
 
+### 2026-10-08 — v6 — knockback applied (nKnockedBackSpeed/Dis)
+
+- **Did:** `build_mechanics.py` extracts `nKnockedBackSpeed` + `nKnockedBackDis` (× `LENGTH_BASE`);
+  `MechanicProgram` carries `KnockDis`; the client moves the affected target(s) **away** from the
+  caster by `nKnockedBackDis` (and moves the model).
+- **Verified:** 65116 → `knockback 65116 -> 木桩 to (18991,35533)` (from z 34253 → +1280 away);
+  `mechanic 65116 … cc=Daze knockDis=1280 knockdown child=65117`; clean `DONE`. Proof
+  `proof/netcode/skillv6_knockback_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Open:** the 32 `-` are mostly no-op/template passives; the rest are blocked/large.
+
 ### 2026-10-08 — v6 — P7 server-spec reconciliation (documented)
 
 - **Did:** recorded P7 in `ABILITY_MECHANICS_PLAN.md`: the v6 ability runtime is a **local

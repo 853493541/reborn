@@ -1,0 +1,15 @@
+# skill v6 — knockback (nKnockedBackSpeed/Dis) applied (2026-10-08)
+# Build: reborn_client_skillv6.exe
+# Change: build_mechanics.py extracts nKnockedBackSpeed + nKnockedBackDis (x LENGTH_BASE) from
+#   the skill script; MechanicProgram carries KnockDis; the client moves the affected target(s)
+#   AWAY from the caster by nKnockedBackDis (and moves the model).
+
+## Driven run: RC_ABILITY=65116 RC_CAST_AT=38000:1
+cast chain 65116: target=初级试炼木桩(131)
+knockback 65116 -> 初级试炼木桩 to (18991,35533)      (from z 34253 -> +1280 away)
+mechanic 65116 mode=TargetSingle -> 1 target(s) dmg=0.0 cc=Daze knockDis=1280 knockdown child=65117
+DONE
+
+# extracted: 65116 knockSpeed=100 knockDis=1280 (nKnockedBackDis = 20 * LENGTH_BASE)
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
