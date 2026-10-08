@@ -230,6 +230,9 @@ SHIM_EXPORT int RC_Shim_SfxPlay(const char* path, float x, float y, float z)
     }
 
     if (owner == NULL) owner = scene;   // client build: fall back to the scene
+    // v6 host: the engine's tag-spawn singleton chain is build-specific; the
+    // scene is a valid owner for KG3D_CreateSFXFromFile (tested path).
+    owner = scene;
     if (owner == NULL) { sprintf_s(g_status, "sfx play: owner chain failed exc=0x%08X scene=0x%p", (unsigned)oexc, scene); return 6; }
 
     // SFX pool global (written by KG3D_CreateSFXPoolManager @0x197FA0, called

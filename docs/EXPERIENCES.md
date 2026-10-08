@@ -7696,3 +7696,19 @@ if the cache/host frames appear.
 - **Next probe:** resolve the correct owner/context for `KG3D_CreateSFXFromFile` in the
   ME host (or use the host's own tag-spawn context), then play once at the anchor.
 - Verified: driven run alive with the shim enabled; fault confined by the shim's SEH.
+
+### 2026-10-07 — v6 — the tani already renders the ability effect (no dummy needed)
+
+- **Scene-owner retry:** forcing `owner = scene` in `sfx_shim.cpp` still faults
+  (`rc=7`); the v5 shim's `KG3D_CreateSFXFromFile` args are wrong for this host build,
+  so the standalone `.Sfx` path stays opt-in (`RC_LY_FXE=1`) and unused by default.
+- **Decisive check (numeric fingerprint):** the default chain (tani only, no dummy)
+  rendered during the cast shows a **distinct effect region** absent at idle — rc_02
+  (cast) has plate cells `6C3830 8F5B4C 9E523D B57353 AC7656 ...` vs rc_00 (idle)
+  uniform `B39F86...`. So the LongYa tani itself renders the authored ability effect.
+- **Conclusion (client truth):** the chain's effect IS the animation's own authored
+  tags — playing the tani once = the effect once. No separate dummy, so none of v5's
+  duplicate/looping. (The real client also uses the compiled `.Sfx`; that route needs
+  the engine factory args resolved — tracked separately.)
+- Proof: `proof/netcode/skillv6_effect_tani_fingerprint_20261007.txt`.
+- Verified: default chain run + `tools/proof/image_stats.py --grid 8x8` (PIL via .venv).
