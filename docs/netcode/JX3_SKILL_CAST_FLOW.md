@@ -414,7 +414,8 @@ tables above:
 | Piece | What |
 |---|---|
 | `client/SkillCast.cs` | cast state: turn to the target → play the authored anim → **dash to the target while it plays** → schedule the effect; pure logic, no engine types |
-| `client/RebornClient.cs` | target-aware skill press (uses `Targeting.Selector.Current`); persistent `px/pz` dash; per-ability anim/effect from the dataset; knobs `RC_ABILITY`, `RC_CAST_AT`, `RC_CHAIN`, `RC_LY_*` |
+| `client/AbilityBar.cs` | always-visible top-right numbered ability bar (per-pixel-alpha layered window, `WS_EX_NOACTIVATE`): list of `key → ability name`, selected slot highlighted. Mirrors `HudOverlay.cs`; `RC_BAR_DUMP=<png>` saves the buffer |
+| `client/RebornClient.cs` | target-aware skill press (uses `Targeting.Selector.Current`); persistent `px/pz` dash; per-ability anim/effect from the dataset; **hotkey slots** `RC_SLOTS` (default `65029,65120,65087,65076,65036,65026`) selected by keys `1..N`; knobs `RC_ABILITY`, `RC_CAST_AT` (`ms[:slot]`), `RC_CHAIN`, `RC_LY_*` |
 | `ability_picker/tools/build_cast_chain.py` | builds `ability_picker/data/cast_chain_f1.{json,tsv}` (**3265** skills): `skill_caster_<body>` `CastSkillAnimationID0` → `player_animation` → `.tani`; `PhysicsDamageEffectResultID` → `skill_result` → `skill_effect` → `.Sfx` + bone |
 | `native/sfx_shim.cpp` + `SfxShim` | the engine's own SFX factory path (opt-in; faults in this host — see below) |
 
@@ -422,10 +423,22 @@ tables above:
 (which carries the authored **ability effect**) → dash to the target while the anim
 plays → return to idle. No free-standing dummy ⇒ none of v5's duplicate/loop.
 
+**Hotkey slots / ability bar:** each slot resolves its own anim/effect/dash from the
+dataset when selected; keys `1..N` select + cast. The bar lists the slot number and the
+ability's own name; the selected slot is highlighted. Same per-slot chain ⇒ adding an
+ability is a data/`RC_SLOTS` change, no new code.
+
 **Verified (driven, `reborn_client_skillv6.exe`):**
 `RC_ABILITY=65029` → `F1s04tc技能13_龙牙hd.tani`, dash `z 33853→34053`; `RC_ABILITY=65076`
 → `F1s07cj重剑技能11b_云飞HD.tani`, dash +200 u; face target, revert to idle at +1.5 s,
 no AV. The effect renders via the tani (numeric fingerprint, §5.1/proofs).
+
+**Verified (6 slots in one run, `RC_CAST_AT=34000:1,…,54000:6`, 2026-10-07):** each slot
+switched `clip=` to its own `.tani` and returned to idle, no AV:
+`1` 65029 `F1s04tc技能13_龙牙hd.tani` dash120 · `2` 65120 `F1s04tc技能18a_渊HD.tani` dash120 ·
+`3` 65087 `F1smj10…06_杀戮.tani` dash90 · `4` 65076 `F1s07cj…11b_云飞HD.tani` ·
+`5` 65036 `F1s04tc技能12_龙吟HD.tani` · `6` 65026 `F1s03cy…11b_三环HD.tani`.
+The bar rendered (buffer `168×188`, `sha256=8fac109136253991`; `proof/netcode/skillv6_bar.png`).
 
 **Open (refinements):** per-ability dash distance/duration from data (child `DASH` /
 tani length) instead of the fixed 200 u / 1500 ms; the standalone `.Sfx` engine factory

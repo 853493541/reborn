@@ -7833,3 +7833,20 @@ if the cache/host frames appear.
   **120 u/frame = 1920 u/s at GAME_FPS 16** — exactly what `SkillCast` implements
   (`dashSpeedPerFrame`, `speedUpS = value * GameFps`). **The dash speed is correct.**
 - Verified: raw byte decode of the script comment; consistent across 4+ dash scripts.
+
+### 2026-10-07 — v6 — hotkey slots + numbered ability bar (5 more abilities)
+
+- **Did:** `RebornClient` now resolves a **slot list** (`RC_SLOTS`, default
+  `65029,65120,65087,65076,65036,65026`); keys `1..N` select a slot and cast it, each
+  slot carrying its own anim/effect/dash from the cast-chain dataset. Added
+  `client/AbilityBar.cs` — an always-visible top-right numbered panel (per-pixel-alpha
+  layered window, `WS_EX_NOACTIVATE`, mirrors `HudOverlay.cs`), showing `key → ability
+  name` with the selected slot highlighted. `RC_CAST_AT` grew `ms[:slot]` so one run can
+  exercise several slots; `RC_BAR_DUMP=<png>` saves the buffer for fingerprints.
+- **Verified:** one driven run (`RC_CAST_AT=34000:1,…,54000:6`) cast all 6 slots; each
+  switched `clip=` to its own authored `.tani` (龙牙/渊/净世破魔击/云飞玉皇/龙吟/三环套月,
+  dash 120/120/90/0/0/0), returned to idle, no AV, clean shutdown. Bar buffer `168×188`
+  `sha256=8fac109136253991` (`proof/netcode/skillv6_bar.png`). Proof:
+  `proof/netcode/skillv6_slots_and_bar_20261007.txt`.
+- **Note:** no new mechanism — adding an ability stays a data/`RC_SLOTS` change; the bar
+  is presentation only.

@@ -1,0 +1,40 @@
+# skill v6 — 6 hotkey slots + numbered ability bar (2026-10-07)
+# Build: reborn_client_skillv6.exe (git d0ba50f) — title sandbox-skillv6 (auto from exe name)
+# Dataset: ability_picker/data/cast_chain_f1.tsv (3265 skills) -> bin64\ability_picker\
+# Namespace: reborn_client_skillv6.memory   Map: default (8x8 regions), target = 初级试炼木桩(131)
+
+# Driven: RC_TAB_AT=30000, RC_CAST_AT=34000:1,38000:2,42000:3,46000:4,50000:5,54000:6,
+#         RC_AUTORUN=60000, RC_BAR_DUMP=proof\netcode\skillv6_bar.png
+# Result: all 6 slots selected+cast their own authored clip, returned to idle, no AV,
+#         clean shutdown ("shutdown sound/log/memory ok", "DONE").
+
+## run log: bin64\reborn_out\reborn_20261007_225823.log
+22:59:27.193 cast chain 65029: target=初级试炼木桩(131) anim=...F1s04tc技能13_龙牙hd.tani animMs=1500 fxAt=520 dash=120u/f ->104ms stop=200 dashTo=(18991,34253)
+22:59:27.271 t=34s ... pos=(18991,965,34001) ... yaw=-1.57 ... clip=F1s04tc技能13_龙牙hd.tani
+22:59:29.273 t=36s ... pos=(18991,964,34053) ... clip=f1b01ty普通攻击01.ani   (idle; moved 33853->34053)
+22:59:31.193 slot 2 -> 65120 绝境_渊 anim=...F1s04tc技能18a_渊HD.tani dash=120
+22:59:31.195 cast chain 65120: animMs=1500 dash=120u/f ->80ms
+22:59:35.192 slot 3 -> 65087 绝境_净世破魔击 anim=...F1smj10内功·外功06_杀戮.tani dash=90
+22:59:39.191 slot 4 -> 65076 绝境_云飞玉皇 anim=...F1s07cj重剑技能11b_云飞HD.tani dash=0
+22:59:43.192 slot 5 -> 65036 绝境_龙吟 anim=...F1s04tc技能12_龙吟HD.tani dash=0
+22:59:47.193 slot 6 -> 65026 绝境_三环套月 anim=...F1s03cy外功11b_三环HD.tani dash=0
+22:59:53.192 shutdown sound ok / log ok / memory ok
+22:59:53.193 DONE
+
+## slot table (RC_SLOTS default)
+1 65029 绝境_龙牙        F1s04tc技能13_龙牙hd.tani          dash 120 u/f
+2 65120 绝境_渊          F1s04tc技能18a_渊HD.tani           dash 120 u/f
+3 65087 绝境_净世破魔击  F1smj10内功·外功06_杀戮.tani       dash 90 u/f
+4 65076 绝境_云飞玉皇    F1s07cj重剑技能11b_云飞HD.tani     dash 0
+5 65036 绝境_龙吟        F1s04tc技能12_龙吟HD.tani          dash 0
+6 65026 绝境_三环套月    F1s03cy外功11b_三环HD.tani         dash 0
+
+## ability bar render (buffers, layered window)
+proof/netcode/skillv6_bar.png  size=168x188 mode=RGB bytes=4013 sha256=8fac109136253991
+mean=#1F242A (translucent dark box) ; per-row content present (no blank buffer)
+command: .venv\Scripts\python.exe tools\proof\image_stats.py proof\netcode\skillv6_bar.png --grid 6x1
+
+## gates (must stay green)
+tools/netcode/reference/jx3_model.py   10x PASS
+tools/gravity/verify_model.py          PASS
+tools/netcode/loot/capture.py selftest 9 checks PASS

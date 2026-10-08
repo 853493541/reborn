@@ -228,10 +228,20 @@ internal static class RebornClient
         }
         // RC_CAST_AT=ms[,ms...]  scripted skill press (deterministic cast-chain test)
         var castAt = new System.Collections.Generic.List<long>();
+        var castSlotAt = new System.Collections.Generic.List<int>();   // -1 = current slot; else 0-based slot
         foreach (string s in Env("RC_CAST_AT", "").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
         {
+            string e = s.Trim();
+            int slot = -1;
+            int ci = e.IndexOf(':');
+            if (ci >= 0)
+            {
+                int si;
+                if (int.TryParse(e.Substring(ci + 1).Trim(), out si)) slot = si - 1;
+                e = e.Substring(0, ci).Trim();
+            }
             long tt;
-            if (long.TryParse(s.Trim(), out tt)) castAt.Add(tt);
+            if (long.TryParse(e, out tt)) { castAt.Add(tt); castSlotAt.Add(slot); }
         }
         // RC_CLICK_AT=ms,x,y[;ms,x,y...]  smoke: left click at panel pixel (x,y)
         // (same path as the real LMB click: pick under cursor, else deselect)
@@ -285,30 +295,38 @@ internal static class RebornClient
             else Log("cast chain: missing " + chainPath);
         }
         catch (Exception e) { Log("cast chain load ex: " + e.Message); }
-        string selAbility = Env("RC_ABILITY", "65029");
+        // hotkey slots (RC_SLOTS overrides); keys 1..N select + cast a slot.
+        string[] slotIds = Env("RC_SLOTS", "65029,65120,65087,65076,65036,65026").Split(',');
+        int activeSlot = 0;
+        {
+            string want = Env("RC_ABILITY", slotIds[0].Trim());
+            for (int i = 0; i < slotIds.Length; i++) if (slotIds[i].Trim() == want) activeSlot = i;
+        }
+        string selAbility = slotIds[0].Trim();
         string selAnimPath = lyAnim, selFxPath = lyFx;
         float selDash = lyDash;
+        Action<int> selectSlot = null;
+        selectSlot = delegate(int i)
         {
+            if (i < 0 || i >= slotIds.Length) return;
+            activeSlot = i;
+            selAbility = slotIds[i].Trim();
+            selAnimPath = lyAnim; selFxPath = lyFx; selDash = lyDash;
             string[] ab;
             if (castChain.TryGetValue(selAbility, out ab))
             {
                 if (ab[2].Length > 0) selAnimPath = ab[2];
                 selFxPath = ab[3];
                 selDash = 0f;   // dataset is authoritative: dash 0 = no dash
-                if (ab.Length >= 6)
-                {
-                    float dd;
-                    if (float.TryParse(ab[5], out dd)) selDash = dd;
-                }
-                Log("cast chain ability: " + selAbility + " " + ab[1]
-                    + " anim=" + ab[2] + " fx=" + ab[3] + " bone=" + ab[4]
-                    + " dash=" + selDash);
+                if (ab.Length >= 6) { float dd; if (float.TryParse(ab[5], out dd)) selDash = dd; }
+                Log("slot " + (i + 1) + " -> " + selAbility + " " + ab[1]
+                    + " anim=" + ab[2] + " fx=" + ab[3] + " dash=" + selDash);
             }
-            else Log("cast chain: ability " + selAbility + " not in dataset (longya defaults)");
-        }
-        // standalone .Sfx is opt-in: the engine factory is not wired in this host
-        // yet; the tani renders the authored effect by default.
-        if (Env("RC_LY_FXE", "") != "1") selFxPath = "";
+            else Log("slot " + (i + 1) + " -> " + selAbility + " (not in dataset)");
+            // standalone .Sfx is opt-in: the tani renders the authored effect by default.
+            if (Env("RC_LY_FXE", "") != "1") selFxPath = "";
+        };
+        selectSlot(activeSlot);
         // short visible tag from the exe name: reborn_client_collision.exe ->
         // "collision" (canonical reborn_client.exe -> "canonical"); shown in
         // the window title and the HUD's first line so parallel clients are
@@ -402,6 +420,19 @@ internal static class RebornClient
         if (Env("RC_HUD_OPEN", "0") == "1") hud.ShowInfo = true;   // test: start open
         form.Show();
         hud.PlaceOver(form);
+        // v6 numbered ability bar (top-right): key 1..N + ability name.
+        var abilityBar = new AbilityBar();
+        {
+            string[] slotNames = new string[slotIds.Length];
+            for (int i = 0; i < slotIds.Length; i++)
+            {
+                string[] ab;
+                slotNames[i] = castChain.TryGetValue(slotIds[i].Trim(), out ab) ? ab[1] : slotIds[i].Trim();
+            }
+            abilityBar.SetSlots(slotNames);
+            abilityBar.SetSelected(activeSlot);
+        }
+        abilityBar.PlaceTopRight(form);
         // Loading overlay (D4): WinForms controls sit behind the engine's child window,
         // so the loading text is a separate top-level window; RC_NOLOADING=1 disables.
         LoadingOverlay loading = null;
@@ -1607,6 +1638,7 @@ internal static class RebornClient
         bool f9Fired = false;
         long.TryParse(Env("RC_CAM_F9AT", ""), out f9At);
         bool jumpPressed = false, skillPressed = false, spaceDown = false, oneDown = false;
+        bool[] slotKeyDown = new bool[6];
         bool walkMode = false;   // real default is run; "/" (TOGGLERUN) switches to walk
         // C1/C2 input core: the real binding table (ui/hotkey/default.txt +
         // bindings.ini) is decoded at startup; movement commands below are
@@ -2009,7 +2041,10 @@ internal static class RebornClient
                 hotkeys.Match((int)e.KeyCode, e.Control, e.Shift, e.Alt);
             for (int hi = 0; hi < hcmds.Count; hi++) keyCommand(hcmds[hi], true);
             // host/test keys outside the movement command set
-            if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; skillPressed = true; }
+            // hotkey ability slots: keys 1..N select + cast
+            int dkey = (int)e.KeyCode - (int)Keys.D1;
+            if (dkey >= 0 && dkey < slotIds.Length && !slotKeyDown[dkey])
+            { slotKeyDown[dkey] = true; selectSlot(dkey); skillPressed = true; }
             else if (e.KeyCode == Keys.C && !cDown) { cDown = true; teleportToStructure = true; }
             else if (e.KeyCode == Keys.I && !iDown) { iDown = true; hud.ToggleInfo(); hud.UpdateLayered(); }
             else if (e.KeyCode == Keys.F7 || e.KeyCode == Keys.OemQuestion)
@@ -2102,8 +2137,8 @@ internal static class RebornClient
             System.Collections.Generic.List<string> hcmds =
                 hotkeys.Match((int)e.KeyCode, e.Control, e.Shift, e.Alt);
             for (int hi = 0; hi < hcmds.Count; hi++) keyCommand(hcmds[hi], false);
-            if (e.KeyCode == Keys.D1) oneDown = false;
-            else if (e.KeyCode == Keys.C) cDown = false;
+            { int dk = (int)e.KeyCode - (int)Keys.D1; if (dk >= 0 && dk < slotKeyDown.Length) slotKeyDown[dk] = false; }
+            if (e.KeyCode == Keys.C) cDown = false;
             else if (e.KeyCode == Keys.I) iDown = false;
         };
         panel.Focus();
@@ -4765,6 +4800,10 @@ internal static class RebornClient
                 hud.PlaceOver(form);
                 hud.UpdateLayered();
             }
+            // v6 numbered ability bar (top-right): key number + ability name
+            abilityBar.SetSelected(activeSlot);
+            abilityBar.PlaceTopRight(form);
+            abilityBar.UpdateLayered();
             // target frame (Targeting.cs): real client UI composited over the viewport
             if (targetFrame != null && targetHudOn)
             {
@@ -4823,8 +4862,11 @@ internal static class RebornClient
             }
             while (castAt.Count > 0 && now >= castAt[0])
             {
+                int cslot = castSlotAt[0];
                 castAt.RemoveAt(0);
-                Log("RC_CAST_AT -> skill press");
+                castSlotAt.RemoveAt(0);
+                if (cslot >= 0) { selectSlot(cslot); Log("RC_CAST_AT -> slot " + (cslot + 1)); }
+                else Log("RC_CAST_AT -> skill press");
                 skillPressed = true;
             }
             while (clickAt.Count > 0 && now >= clickAt[0][0])
