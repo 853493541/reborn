@@ -5188,3 +5188,19 @@ if the cache/host frames appear.
 - So the user's "pink part" = the PSS effect's authored lifetime, not extra
   animations. The effect pulsing ~1.6 s (earlier lag-matrix) is the authored PSS
   stages / engine PSS playback, with no client restart (restarts=0, re-adds=0).
+
+### 2026-10-07 - v5 - ROOT CAUSE: the PSS dummy effect re-bursts ~every 1.6 s (engine loop)
+
+- User: "repeatedly plays the sfx in the pink (D) area". Verified: the effect
+  intensity (ring mean, 100 ms sampling) dips sharply every ~1.6 s
+  (dips at cast+0.5/2.1/3.6/5.2 s) over the 6.24 s span. With `RC_PSS_SKIP=1`
+  (no PSS dummy) the ring is perfectly flat -> the periodic re-burst is entirely
+  the PSS dummy. The client adds it once (`restarts=0`, `re-adds=0`), and the PSS
+  data is one-shot (28 emitters, all `RepeatTimes=1`, `ParticleForever=0`, no
+  `ParticleCreateMode`) -> it is the **engine's dummy-model animation looping**
+  (~1.6 s), not a client restart.
+- Fix attempt (dead end): attaching a `KGModelCLR` to the dummy and calling
+  `PlayAnimation(pssPath, 0, 1.0f, 0)` returns rc=0 and stops the dips, but the
+  engine screenshots come out blank (1609-byte solid frames) -> it breaks the
+  render. Reverted. Next: engine-level control of the dummy-model loop (or play
+  the PSS through the engine's tag/represent path instead of a dummy model).
