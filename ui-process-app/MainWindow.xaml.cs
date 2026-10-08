@@ -749,33 +749,28 @@ namespace UiProcessApp
                 double height = rootFe != null && rootFe.ActualHeight > 0 ? rootFe.ActualHeight : 0;
                 if (width <= 0 || height <= 0) return;
                 var issues = _pendingOobIssues ?? new System.Collections.Generic.Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                // Out-of-window content is engine-faithful unless the render disagrees with
+                // the script's own position (docs/ui/UI_OOB_FIX_PLAN.md): the engine has no
+                // frame clip, so script-parked popups, authored overhang and WndScroll content
+                // are not review errors. Only a rendered-vs-script mismatch is flagged.
+                var lastPos = App.LoadRuntimePositions(_currentWindow != null
+                    ? Path.GetFileNameWithoutExtension(_currentWindow.Path) : null);
                 foreach (var pair in build.Elements)
                 {
                     var el = pair.Value;
                     if (el.Visibility != Visibility.Visible) continue;
                     if (el.ActualWidth <= 0 && el.ActualHeight <= 0) continue;
-                    // Scroll content legitimately overflows its viewport (the engine clips
-                    // it); only flag items outside the window on a non-scroll path.
-                    bool underScroll = false;
-                    var cursor = pair.Key;
-                    var guard = 0;
-                    while (!string.IsNullOrWhiteSpace(cursor) && guard++ < 64)
-                    {
-                        if (!build.Sections.TryGetValue(cursor, out var sec)) break;
-                        if (string.Equals(sec.Get("._WndType"), "WndScroll", StringComparison.OrdinalIgnoreCase))
-                        {
-                            underScroll = true;
-                            break;
-                        }
-                        cursor = sec.Get("._Parent");
-                    }
-                    if (underScroll) continue;
                     try
                     {
                         var p = el.TransformToAncestor(build.Root).Transform(new Point(0, 0));
                         double w = el.ActualWidth, h = el.ActualHeight;
                         if (p.X < -1 || p.Y < -1 || p.X + w > width + 1 || p.Y + h > height + 1)
-                            if (!issues.ContainsKey(pair.Key)) issues[pair.Key] = "超出窗口";
+                        {
+                            var cls = App.ClassifyOutOfBounds(build.Sections, pair.Key);
+                            bool wrong = (cls == "overhang" || cls == "parked" || cls == "edge-pos") &&
+                                         App.RenderedMismatchesScript(build.Sections, pair.Key, build, p, lastPos);
+                            if (wrong && !issues.ContainsKey(pair.Key)) issues[pair.Key] = "超出窗口";
+                        }
                     }
                     catch { }
                 }

@@ -588,9 +588,9 @@ namespace UiProcessApp
                                 double w = element.ActualWidth, h = element.ActualHeight;
                                 if (p.X < -1 || p.Y < -1 || p.X + w > width + 1 || p.Y + h > height + 1)
                                 {
-                                    var cls = ClassifyOutOfBounds(plan.Filtered, pair.Key);
+                                    var cls = ClassifyOutOfBounds(plan.Filtered.ByName, pair.Key);
                                     if ((cls == "overhang" || cls == "parked" || cls == "edge-pos") &&
-                                        RenderedMismatchesScript(plan.Filtered, pair.Key, build, p, lastPos))
+                                        RenderedMismatchesScript(plan.Filtered.ByName, pair.Key, build, p, lastPos))
                                         cls = "placed-wrong";
                                     outOfBounds.Add((pair.Key, cls, $"({p.X:F0},{p.Y:F0} {w:F0}x{h:F0})"));
                                     oobClass[cls] = (oobClass.TryGetValue(cls, out var n) ? n : 0) + 1;
@@ -641,7 +641,7 @@ namespace UiProcessApp
         /// it, so it is not visible outside), `parked` (authored negative Left/Top),
         /// `clone` (runtime item clone), `edge-pos` (edge-anchored PosType), else
         /// `overhang` (expected placement outside the frame; the engine draws it).</summary>
-        private static string ClassifyOutOfBounds(IniFile ini, string sectionName)
+        internal static string ClassifyOutOfBounds(Dictionary<string, IniSection> byName, string sectionName)
         {
             if (sectionName.StartsWith("__lt_", StringComparison.OrdinalIgnoreCase)) return "clone";
             var cursor = sectionName;
@@ -649,7 +649,7 @@ namespace UiProcessApp
             bool parked = false, edge = false;
             while (!string.IsNullOrWhiteSpace(cursor) && guard++ < 64)
             {
-                if (!ini.ByName.TryGetValue(cursor, out var sec)) break;
+                if (!byName.TryGetValue(cursor, out var sec)) break;
                 var type = sec.Get("._WndType") ?? "";
                 // The viewer only clips WndScroll viewports (and inventory $Clip): the
                 // bar control (WndNewScrollBar) is not a clipping parent.
@@ -668,7 +668,7 @@ namespace UiProcessApp
         /// <summary>Last script-recorded position per section (SetRelPos/SetAbsPos) from the
         /// window's replay TSV, used to separate viewer placement bugs (rendered != script)
         /// from authored/script-faithful overhang (docs/ui/UI_OOB_FIX_PLAN.md).</summary>
-        private static Dictionary<string, (string Kind, double X, double Y)> LoadRuntimePositions(string stem)
+        internal static Dictionary<string, (string Kind, double X, double Y)> LoadRuntimePositions(string stem)
         {
             var map = new Dictionary<string, (string, double, double)>(StringComparer.Ordinal);
             if (string.IsNullOrWhiteSpace(stem)) return map;
@@ -688,12 +688,12 @@ namespace UiProcessApp
         /// <summary>True when the rendered absolute position disagrees with the script's own last
         /// SetRelPos/SetAbsPos (PosType 0 only; anchored placements are computed by the engine).
         /// A mismatch is a viewer placement bug (class A), a match is script-faithful (class C).</summary>
-        private static bool RenderedMismatchesScript(IniFile ini, string sectionName, UiBuildResult build,
-                                                     Point abs,
-                                                     Dictionary<string, (string Kind, double X, double Y)> lastPos)
+        internal static bool RenderedMismatchesScript(Dictionary<string, IniSection> byName, string sectionName,
+                                                      UiBuildResult build, Point abs,
+                                                      Dictionary<string, (string Kind, double X, double Y)> lastPos)
         {
             if (!lastPos.TryGetValue(sectionName, out var rp)) return false;
-            if (!ini.ByName.TryGetValue(sectionName, out var sec)) return false;
+            if (!byName.TryGetValue(sectionName, out var sec)) return false;
             if (sec.GetInt("PosType") != 0) return false;
             double ex = rp.X, ey = rp.Y;
             if (rp.Kind == "SetRelPos")
