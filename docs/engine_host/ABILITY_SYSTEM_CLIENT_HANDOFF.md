@@ -104,7 +104,27 @@ with no AV and no cross-cast replay observed).
 5. **Keep the PSS dummy**: the tani's tags render only part of the effects
    (sparks/trail); the PSS is the main visible layer. Dropping it (2026-10-07
    regression) removed the visible effects — reverted.
-6. The ME `Skill.exe` sandbox = parked (user rejected); `ability_sandbox/*`
+6. **PSS effect re-bursts ~every 1.6 s (OPEN — engine-level)**. User: "repeatedly
+   plays the sfx in the pink (D) area". Verified on 龙牙 with 100 ms ring
+   sampling: the effect intensity dips sharply every ~1.6 s (cast+0.5/2.1/3.6/5.2)
+   over the authored 6.24 s span. `RC_PSS_SKIP=1` (no dummy) → perfectly flat, so
+   it is entirely the PSS dummy. The client adds it once (`restarts=0`,
+   `re-adds=0`) and the PSS data is one-shot (28 emitters, all `RepeatTimes=1`,
+   `ParticleForever=0`; the referenced mesh `.ani` `l_狼头.ani` is 5.2 MB, not
+   1.6 s) → it is the **engine's own dummy-model PSS playback looping**
+   (`AniLoop` set at `AddDummyModel` time), not authored data.
+   - Client fixes all failed (measured, reverted): `KGModelCLR.PlayAnimation(pssPath,
+     0,1.0f,0)` stops the loop but **blanks the render**; playing the tani (tag
+     PSS) is cut at ~1.7 s; extending `animMs` does not extend the tag life;
+     `RC_PSS_FOLLOW=always` still loops; `AddStateMachineModel` returns E_FAIL.
+   - **Next (engine RE):** resolve the `KG3DModel` vtable (RTTI `.?AVKG3DModel@@`
+     RVA `0x82DF88`; `KG3DModel::_PlayAnimation` RVA `0x6A1170` in
+     `proof/netcode/engine_strings.txt`), then add a `sfx_shim`-style native
+     `RC_Shim_DummyNoLoop(handle)` that clears the dummy model's
+     `AniLoop`/`dwPlayType` after `AddDummyModel`, or register the PSS as a scene
+     tag so the engine plays it once for its authored life. Verify with the same
+     100 ms ring-sampling probe (expect no ~1.6 s dips, full 6.24 s effect).
+7. The ME `Skill.exe` sandbox = parked (user rejected); `ability_sandbox/*`
    leftovers = WIP only.
 
 ## User directives (must honor)
@@ -143,9 +163,18 @@ Copy-Item ability_picker\data\ability_candidates.json C:\SeasunGame\MovieEditor\
 
 ## Branch / commits
 
-`agent/skillv5-sandbox` (main `066c6c8` merged in). Latest ability commits:
+`agent/skillv5-sandbox` (main `066c6c8` merged in). Ability commits:
 `244790e` (port), `a40cf4e` (warm-up/guards/panel), `9644d83` (panel host),
-`9a536eb` (PSS kept), `ebb978a` (panel scaling). Never push; merge to main only
-when the subject is complete (`merge-finalize` skill).
+`9a536eb` (PSS kept), `ebb978a` (panel scaling), `9e09419` (avoid duplicate PSS =
+如意法 replay fix), `91359e3` (天绝地灭 un-blacklist), `f3997b9`+`331beb4`
+(花语酥心/雷震子 blacklist), `613ce11` (cycle full coverage), `896791d`+`c7ec960`
+(timeline overlay + span labels/clip readout), `6dfccf7`/`7c7cf26` (diagnostics +
+tani scan), docs commits. Never push; merge to main only when the subject is
+complete (`merge-finalize` skill).
+
+Runtime-data caveat: the shared `C:\SeasunGame\MovieEditor\bin64\ability_picker\ability_candidates.json`
+was once found holding a stale 2026-09-28 copy (only 1 ability loaded) — re-copy
+the repo JSON to the runtime dir before a test run, and confirm
+`abilities: 81 loaded` in the log.
 
 Last verified: 2026-10-07.

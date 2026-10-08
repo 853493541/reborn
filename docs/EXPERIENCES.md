@@ -5229,3 +5229,22 @@ if the cache/host frames appear.
 - Next probe: control the loop at engine level (the model's AniLoop/dwPlayType
   at AddDummyModel time, via a native shim), or extract/inspect `l_狼头.ani` to
   confirm whether the loop is authored (then it is the game's own behaviour).
+
+### 2026-10-07 - v5 - session handoff (timeline UI + PSS-loop root cause + engine-fix plan)
+
+- Done this session: (1) 如意法 "effects replay" fixed (avoid duplicate staged PSS:
+  the tani already carries the PSS -> play the base .ani for 58 abilities);
+  (2) "70 changed matches" verified = game table values; (3) 天绝地灭 tani
+  un-blacklisted (client-safe); (4) sequential-tani AV resolved (花语酥心/雷震子
+  blacklisted; 20/20 sweep clean); (5) live process-timeline overlay (compact,
+  opaque, double-buffered, labelled spans, live engine `clip=`, re-adds/restarts
+  counters, T toggle).
+- Open (engine-level): the PSS dummy effect re-bursts ~every 1.6 s (engine
+  `AniLoop` on the dummy model). All client fixes failed (PlayAnimation loop=0
+  blanks the render; tani tag cut at ~1.7 s; always re-add still loops;
+  AddStateMachineModel E_FAIL). Next: native shim to clear the dummy model's
+  AniLoop (RTTI `.?AVKG3DModel@@` RVA 0x82DF88; `_PlayAnimation` RVA 0x6A1170),
+  or the scene-tag path. Full detail in `docs/engine_host/ABILITY_SYSTEM_CLIENT_HANDOFF.md`
+  open item 6.
+- Env: the cropped sandbox map AVs at startup (KG3DEngineDX11EX64+0x12282b3)
+  while other agents' clients run; use the full map for ability tests.
