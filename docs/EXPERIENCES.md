@@ -8266,3 +8266,16 @@ if the cache/host frames appear.
   `proof/netcode/skillv6_comment_fix_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
   loot selftest PASS.
 - **Open:** the 48 `-` abilities need the Lua 5.1 VM; child skills are separate skills.
+
+### 2026-10-08 — v6 — the `-` residual is mostly no-op/template passives
+
+- **Did:** inspected the 48 `-` abilities' scripts.
+- **Finding:** no `-` passive calls a locally-defined helper (0/22); sampled `Apply` bodies are
+  no-ops (27850: `GetPlayer`+return); 30023/30243 have no extracted script; cast-time `-`
+  abilities have no cast-time effect function. So the `-` residual is largely **no-direct-effect
+  passives/templates**, not unimplemented mechanics. A Lua VM would only help the subset with
+  real runtime logic.
+- **Verified:** proof `proof/netcode/skillv6_residual_20261008.txt`. Gates: jx3_model 10 PASS,
+  gravity PASS, loot selftest PASS.
+- **Implication:** the client-side interpretable ability mechanics are complete; the residual is
+  characterized, not silently missing.

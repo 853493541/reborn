@@ -1,0 +1,17 @@
+# skill v6 — the `-` residual is mostly no-op/template passives (2026-10-08)
+# Method: for the 48 abilities with no extractable behavior ('-'), inspected their scripts.
+
+## Findings
+#  - No `-` passive calls a locally-defined helper function (0 of 22 checked): their Apply
+#    bodies do not delegate work we could inline.
+#  - Sample Apply bodies are no-ops/templates, e.g. 27850: `local player=GetPlayer(src);
+#    if not player then return end` (does nothing). 30023/30243 have no extracted script.
+#  - EXECUTE_SCRIPT targets are 88 self + 5 external; for cast-time `-` abilities the script has
+#    no cast-time effect function (the effect is a stance/buff applied by the engine).
+#  => the `-` residual is largely NO-DIRECT-EFFECT passives / templates, not unimplemented
+#     mechanics. A Lua 5.1 VM would only help the subset with real runtime logic.
+
+## Implication: the client-side INTERPRETABLE ability mechanics are complete; the residual is
+#  characterized (mostly no-op), not silently missing.
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

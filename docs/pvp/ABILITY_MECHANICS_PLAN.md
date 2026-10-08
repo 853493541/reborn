@@ -83,8 +83,9 @@ Done (v6 client, branch `agent/skillv6-sandbox`):
 
 Open:
 - `EXECUTE_SCRIPT` bodies beyond the static patterns (88 self-reference + 5 external across the
-  roster; the 48 `-` abilities are mostly passives whose Apply is template/runtime) → a
-  **Lua 5.1 VM + engine-API shim** is the remaining path.
+  roster; the 48 `-` abilities are mostly **no-op/template passives** — 0 call local helpers,
+  sampled Apply bodies are no-ops, e.g. 27850) → a **Lua 5.1 VM + engine-API shim** would only
+  help the subset with real runtime logic. See `proof/netcode/skillv6_residual_20261008.txt`.
 - weapon% / attack-power scaling + mitigation (needs a character attribute model).
 - target-displacement units (PULL/KNOCKED_BACK_RATE); other Apply effects (heal/summon/doodad).
 - world-projected floating numbers; buff durations (Buff.tab has no duration column; buff 20359
