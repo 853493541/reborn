@@ -87,10 +87,17 @@ def main():
         child = re.findall(r"CastSkill(?:XYZ|ByXYZ|ByDirection)?\s*\(\s*(\d+)", body)
         adds, dels = [], []
         for m in re.finditer(r"\.?(AddBuff|DelBuff\w*)\s*\(([^)]*)\)", body):
-            b = first_numeric_arg(m.group(2))
-            if not b:
-                continue
-            (adds if m.group(1) == "AddBuff" else dels).append(b)
+            parts = [p.strip() for p in m.group(2).split(",")]
+            if m.group(1) == "AddBuff":
+                # AddBuff(owner, level, buffID, stack, ...) -> id is arg index 2;
+                # 2-arg form AddBuff(id, ...) -> index 0.
+                b = parts[2] if len(parts) > 2 and parts[2].isdigit() else first_numeric_arg(m.group(2))
+                if b:
+                    adds.append(b)
+            else:
+                b = parts[0] if parts and parts[0].isdigit() else first_numeric_arg(m.group(2))
+                if b:
+                    dels.append(b)
         # heal: PCustomTherapy(...) with a `* <fraction>` amount (e.g. nMaxLife * 0.2)
         heal = ""
         for m in re.finditer(r"PCustomTherapy\s*\(([^)]*)\)", body):

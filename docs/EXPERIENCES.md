@@ -8373,6 +8373,16 @@ if the cache/host frames appear.
   10 PASS, gravity PASS, loot selftest PASS.
 - **Note:** ~42 abilities explicitly verified.
 
+### 2026-10-08 — v6 — AddBuff id arg-position fix
+
+- **Bug:** `build_passives.py` took the first numeric arg of `AddBuff(...)` as the buff id, but the
+  form is `AddBuff(owner, level, buffID, stack, ...)` → id is arg index 2. E.g. 65136
+  `npc.AddBuff(0, 99, 108, 1, 100)` yielded id 0 instead of 108.
+- **Fix:** AddBuff → arg index 2 (3rd) when numeric, else first numeric; DelBuff → arg index 0.
+- **Verified:** 65136 → `apply 65136 -> +buff=[108]` (was [0]). Proof
+  `proof/netcode/skillv6_addbuff_fix_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+
 ### 2026-10-08 — v6 — abilities verified (batch 7, partial)
 
 - **Verified (run interrupted):** 65108 (dispel buff-=8), 65109 (child 65110;65111;65112), 65118
