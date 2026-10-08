@@ -1,0 +1,15 @@
+# skill v6 — per-ability behavior matrix (2026-10-08)
+# Build: n/a (offline artifact)
+# Artifact: ability_picker/data/ability_behavior_f1.tsv (skillId, name, castMode, funcType,
+#   status[ok/av], behaviors). Behaviors derived from mechanics_f1 ops + passives_f1 Apply +
+#   the coverage matrix.
+
+## Counts over the 154 roster abilities:
+#   dmg 31, cc 6, child 51, buff 28, buff+ 26, buff- 5, move 4, heal 1, summon 3
+#   '-' 46  -> no extractable behavior (EXECUTE_SCRIPT-only / no ops) = the Lua-VM residual
+#   av 39   -> per-tani AV blacklist
+
+# This is the "every ability does what it was designed to do" coverage record: every roster
+# ability's implemented behaviors are listed; the 46 '-' are honestly the remaining gap.
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

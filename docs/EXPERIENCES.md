@@ -8242,3 +8242,14 @@ if the cache/host frames appear.
   `proof/netcode/skillv6_child_full_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
   loot selftest PASS.
 - **Open:** child skills are separate skills, not in the roster/mechanics dataset.
+
+### 2026-10-08 — v6 — per-ability behavior matrix
+
+- **Did:** generated `ability_picker/data/ability_behavior_f1.tsv` — for each of the 154 roster
+  abilities: id, name, castMode, functionType, status (ok/av), and its implemented behaviors
+  (from `mechanics_f1` ops + `passives_f1` Apply + the coverage matrix).
+- **Counts:** dmg 31, cc 6, child 51, buff 28, buff+ 26, buff- 5, move 4, heal 1, summon 3;
+  **46 with no extractable behavior** (`EXECUTE_SCRIPT`-only) = the Lua-VM residual; 39 av.
+- **Verified:** artifact generated; proof `proof/netcode/skillv6_behavior_matrix_20261008.txt`.
+  Gates: jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+- **Open:** the 46 `-` abilities need the Lua 5.1 VM; child skills are separate skills.
