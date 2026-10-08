@@ -65,10 +65,23 @@ with no AV and no cross-cast replay observed).
    Next: user compares against the real game (the duplicate is gone; the tani
    `.Sfx` sparks/trail for those abilities are the known cost).
 2. **70 animation matches changed** vs the v2-era dataset (the "wrong moves"
-   report): diff against `agent/skillv2-sandbox`'s
-   `ability_picker/data/ability_candidates.json`. The 7 dash-sourced matches are
-   movement-layer entries (suspect for cast animations).
+   report) — **verified 2026-10-07, no change needed**. Diff vs
+   `agent/skillv2-sandbox`: only 5 abilities changed with both sides non-empty
+   (玄水蛊, 跃潮斩波, 千蝶吐瑞, 太阴指, 蛊虫献祭); every v5 value is exactly the
+   game's own table value (skill_tag/skill_dash → player_animation_f1), while the
+   v2 values were `matchSource=name` (filename guessing — banned by AGENTS §6).
+   Example: 玄水蛊 skill 3702 -> skill_tag anim 810 =
+   `F1swd08蛊攻击01_万蛊蚀心.tani` (v5) vs the v2 name guess
+   `f1sqg08wd蛊攻击01_玄水蛊hd.tani`. The dash-sourced ones (跃潮斩波 20053,
+   千蝶吐瑞 2235, 太阴指 228, 鹤归孤山 1596) have **no skill_tag row** — the dash
+   entry is the only authored animation, so it is the correct match, not a
+   movement-layer mistake. The other ~65 diffs are v2 name-guesses vs v5
+   unmatched/table matches.
 3. **天绝地灭**: its tani AVs the engine → `TANI_BLACKLIST` (plays base anim).
+   Live re-test 2026-10-07 blocked: the client currently AVs at startup in
+   `KGEngineCLR.Render()` (`KG3DEngineDX11EX64.dll+0x12282b3`, WER APPCRASH) while
+   other agents' clients are running (shared engine root — AGENTS §2.6); earlier
+   the same exe ran clean. Keep the blacklist until a clean-window re-test.
 4. **Sequential-tani AV**: casting many different abilities in a row AVs the
    engine's tag manager (cast guard + restart exists; root cause unfixed).
 5. **Keep the PSS dummy**: the tani's tags render only part of the effects

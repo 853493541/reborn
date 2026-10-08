@@ -5084,3 +5084,20 @@ if the cache/host frames appear.
   transform probe also no restart); full-density 200 ms captures show no timer
   replay; the tani tag PSS dies with the animation (~1 s), which is why the
   dummy is the long layer.
+
+### 2026-10-07 - v5 - item 2 verified + environment blocker for item 3
+
+- Item 2 ("70 animation matches changed / wrong moves") verified against the
+  game's own tables: only 5 abilities changed with both sides non-empty
+  (玄水蛊/跃潮斩波/千蝶吐瑞/太阴指/蛊虫献祭); every v5 value is the exact
+  skill_tag/skill_dash -> player_animation_f1 value, while v2 used
+  `matchSource=name` (filename guessing, banned by AGENTS 6). The dash-sourced
+  ones (跃潮斩波 20053, 千蝶吐瑞 2235, 太阴指 228, 鹤归孤山 1596) have no
+  skill_tag row - the dash entry is the only authored animation, so it is
+  correct. No dataset change needed.
+- Environment blocker (not our change): from ~17:50 the skillv5 client AVs at
+  startup in KGEngineCLR.Render() (KG3DEngineDX11EX64.dll+0x12282b3, WER
+  APPCRASH), consistently, while other agents' clients (reborn_client_3x /
+  _3x_mini, started 17:50) are running. The same exe ran clean at 17:43. Shared
+  engine root caveat (AGENTS 2.6) - a clean-window re-test is needed for the
+  天绝地灭 tani (item 3); the blacklist stays.
