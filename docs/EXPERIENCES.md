@@ -7968,3 +7968,17 @@ if the cache/host frames appear.
 - **Open (minor):** `nChannelInterval` (tick interval) not modelled (only total channel duration);
   expression-based intervals (`HDJueJingSkillCoe`) unresolved; GCD is a `totalMs+1200` cooldown,
   not the client's cooldown row 16.
+
+### 2026-10-08 — v6 — ability mechanics plan + Phase 1 extraction
+
+- **Did:** started the next phase — make every ability **do what it was designed to do** (not just
+  animation). Wrote the full plan `docs/pvp/ABILITY_MECHANICS_PLAN.md` (P0–P7, registered in
+  `docs/pvp/README.md`). Phase 1: `ability_picker/tools/build_mechanics.py` parses each skill
+  script for the level table (cost/damage/rand), the ordered `AddAttribute` program, weapon %,
+  cooldown rows and prepare/channel frames → `ability_picker/data/mechanics_f1.tsv`.
+- **Verified:** 154 abilities (146 text, 0 bytecode, 8 no-script); 65029 绝境·龙牙 →
+  cost=36 dmg=113.42 weaponPct=1024 gcd=16 normalCd=1 prepare=0, ops =
+  `CAST_SKILL_TARGET_DST(65030); SKILL_PHYSICS_DAMAGE; SKILL_PHYSICS_DAMAGE_RAND; CALL_ADAPTIVE_DAMAGE`.
+  Gates: jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+- **Next:** P2 target/AoE resolution → P3 effect execution runtime (damage/buff/CC/move) → P4
+  resources/GCD → P5 feedback → P6 verification.
