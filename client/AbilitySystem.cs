@@ -88,12 +88,19 @@ internal static class AbilitySystem
     static bool soundOn = true;
     static int tickN = 0;   // frame counter (jitter diagnostic)
     static long castCycleMs = 0;   // RC_CAST_CYCLE sweep interval (0 = off)
+    // RC_CAST_AT=<ms>: deterministic single cast at this time since start
+    // (bracketed by RC_SHOTS for a repeatable effect A/B capture)
+    static long castAtMs = -1;
+    static bool castAtDone = false;
     // PSS follow mode (diagnostic): "move" = re-add when the caster moved >32u
     // (default), "off" = never re-add, "always" = re-add every tick.
     static string followMode = "move";
     // skip the staged PSS dummy entirely (diagnostic: check what the played
     // tani's own tag records already render)
     static bool skipPss = false;
+    // force the anim step to a specific tani (diagnostic A/B: does the tani's
+    // own tag path render the authored effect once, without the PSS dummy?)
+    static string taniOverride = "";
 
     // live process timeline overlay (top of the window): shows the current
     // cast's steps (anim/sound/dummy/sfx) on a time bar + playhead, the last
@@ -130,9 +137,14 @@ internal static class AbilitySystem
         string fm = Environment.GetEnvironmentVariable("RC_PSS_FOLLOW");
         if (fm != null && (fm == "off" || fm == "always" || fm == "move" || fm == "jitter")) followMode = fm;
         skipPss = Environment.GetEnvironmentVariable("RC_PSS_SKIP") == "1";
+        string ov = Environment.GetEnvironmentVariable("RC_TANI_OVERRIDE");
+        if (ov != null) taniOverride = ov;
         long.TryParse(Environment.GetEnvironmentVariable("RC_CAST_CYCLE"), out castCycleMs);
+        long.TryParse(Environment.GetEnvironmentVariable("RC_CAST_AT"), out castAtMs);
+        if (castAtMs <= 0) castAtMs = -1;
         log("abilities: " + names.Count + " loaded (P panel, 1 casts) selected=" + sel
-            + " pssFollow=" + followMode + (skipPss ? " pssSkip=1" : ""));
+            + " pssFollow=" + followMode + (skipPss ? " pssSkip=1" : "")
+            + (taniOverride.Length > 0 ? " taniOverride=" + taniOverride : ""));
     }
 
     static void LoadDataset()
@@ -593,6 +605,12 @@ internal static class AbilitySystem
                 + "/" + taniNames.Count + ")");
             castReq = true;
         }
+        if (castAtMs >= 0 && !castAtDone && now >= castAtMs)
+        {
+            castAtDone = true;
+            log("RC_CAST_AT -> cast " + sel);
+            castReq = true;
+        }
         if (castReq)
         {
             castReq = false;
@@ -621,7 +639,7 @@ internal static class AbilitySystem
             {
                 if (st.Kind == "anim")
                 {
-                    string path = ResolveAnim(castName, st.V);
+                    string path = taniOverride.Length > 0 ? taniOverride : ResolveAnim(castName, st.V);
                     int pr = playClip(path);
                     TlEvent("anim -> " + Path.GetFileName(path) + " (" + pr + ")");
                     log("cast anim -> " + st.V + " = " + path + " (" + pr + ")");
