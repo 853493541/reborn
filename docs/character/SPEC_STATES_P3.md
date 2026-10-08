@@ -92,3 +92,24 @@ a large water surface spanning the region's leaf grid (consistent with a real la
 terrain region grid: regions x leaves) and use it as the host water region, replacing the P1
 `4096*Scale` provisional. This is shipped data (no engine RE), so it is the tractable path to
 the true region.
+### Decisive path (2026-10-07): query the engine's own water via the shim
+
+Rather than fully decoding the RegionInfo `ReferNode`->origin, call the engine's water
+query directly (the engine loads the correct water):
+- `KG3DEngineDX11EX64.dll` `_GetWaterHeightData` @0x180297c70 (the only xref of the
+  `GetWaterHeight` string). It reads the water model at `this+0x4338` (`piModel` assert,
+  KGLOG line 0x16b) and queries it via virtual calls (`[vt+0x1a0]`, then `[vt+0x40]`),
+  returning a scaled height (double).
+- Implement `RC_WaterHeight(void* obj, float x, float z)` in `native/camera_shim.cpp`
+  (camera_shim pattern: resolve the module base, SEH-guard the call) and pass the scene
+  object (the host's `KGSceneCLR.m_pScene`, already reachable). Test at the water1 basin
+  (67039,58548, expected surface ~150) and a dry point (expect none).
+- If the scene pointer is not the right `this`, obtain the water manager the engine uses
+  (`KG3D_SceneNodeWaterManager`, `AddWater` @0x180546de0) via the scene's members.
+- This gives the exact per-position water height (surface) for the interaction; the
+  terrain-cell floor comes from the existing TerrainSampler. Then apply the P3 entry/float
+  semantics and drop the P1 provisional.
+
+Alternative (data-only): finish the `ReferNode`->origin decode in
+`KG3D_LoaderNoRenderX64.dll` @0x1800245b0 (block grid decoded: 16x16 blocks x 32 cells x
+100 u = 3200 u; region 512 cells).
