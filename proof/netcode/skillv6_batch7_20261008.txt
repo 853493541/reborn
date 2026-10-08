@@ -1,8 +1,9 @@
-# skill v6 — abilities verified (batch 7, partial — run interrupted, 2026-10-08)
+# skill v6 — 5 more abilities verified (batch 7, 2026-10-08)
 # Build: reborn_client_skillv6.exe
-## Verified before interruption (RC_ABILITY=<id> RC_CAST_AT=38000:1)
-#  65108 剑意式  TargetSingle -> dmg 0.0 buff-=8 (dispel)
-#  65109 剑影式  TargetSingle -> apply child 65110;65111;65112
-#  65118 剑心式  CasterSingle -> buff-=4 + child 7276
-# 65119 / 65133 not run (batch aborted).
+## Verified (RC_ABILITY=<id> RC_CAST_AT=38000:1)
+#  65108 -> buff-=8 (dispel)
+#  65109 -> apply child 65110;65111;65112
+#  65118 -> buff-=4 + child 7276
+#  65119 -> apply buff 51364 + del 51325;51466;51467
+#  65133 -> apply buff [0] (id 0; template/no-op)
 # gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
