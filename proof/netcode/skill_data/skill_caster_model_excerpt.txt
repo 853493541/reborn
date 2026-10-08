@@ -1,0 +1,27 @@
+# evidence excerpt - JX3 client represent skill-caster-model tables (2026-10-07)
+# Source install: C:\SeasunGame\Game\JX3\bin\zhcn_hd (read-only)
+# Tool: bin64\PakV4SfxExtract.exe (x64, official), cwd=bin64, GBK CRLF pathlist, output to temp
+# Pathlist: Represent/skill/skill_caster_model.ini, Represent/skill/skill_caster_f1.txt
+
+# ---- Represent/skill/skill_caster_model.ini (verbatim) ----
+[PLAYER_CONFIG_FILE_NAME]
+Count=7
+Item_0=skill_caster_invalid.txt
+Item_1=skill_caster_m2.txt
+Item_2=skill_caster_f2.txt
+Item_3=skill_caster_m3.txt
+Item_4=skill_caster_m3.txt
+Item_5=skill_caster_m1.txt
+Item_6=skill_caster_f1.txt
+
+[NPC_CONFIG_FILE_NAME]
+File=skill_caster_npc.txt
+
+# ---- Represent/skill/skill_caster_f1.txt (header + selected rows, tab-separated) ----
+# SkillID | SkillLevel | MoveState | MissileID | LockControlTime | PrepareCastSkillAnimationID | CastSkillAnimationID0 | CastSkillAnimationID1 | CastSkillAnimationID2 | CastSkillAnimationID3 | PhysicsBlockEffectResultID | SolarMagicBlockEffectResultID | NeutralMagicBlockEffectResultID | LunarMagicBlockEffectResultID | PoisonBlockEffectResultID | MissEffectResultID | HitEffectResultID | DodgeEffectResultID | ParryEffectResultID | CriticalStrikeEffectResultID | PhysicsDamageEffectResultID | SolarMagicDamageEffectResultID | NeutralMagicDamageEffectResultID | LunarMagicDamageEffectResultID | PoisonDamageEffectResultID | ReflectDamageEffectResultID | HealEffectResultID | StealLifeEffectResultID | AbsorbDamageEffectResultID | ShieldDamageEffectResultID | AOESelectionSFXScale | AOESelectionSFXFile | IsPlayBehitAnimation | ImmediatelyMissileID | BeHittedByF1 | BeHittedByF2 | BeHittedByM1 | BeHittedByM2 | BeHittedByNpc | BeHittedByF1_DeathAdjust | BeHittedByF2_DeathAdjust | BeHittedByM1_DeathAdjust | BeHittedByM2_DeathAdjust | BeHittedByNpc_DeathAdjust | HitstunAniByNpc | WeakAniByNpc | 被击动作播放速度 | bSkillChannel | Haste | ResetAni | HitSoundID
+65029	1	0	0		0	455														415																												1		
+41216	1	0				74161																																												
+455	1	0	0		0	0																																												
+
+# resolve: skill_caster_f1 CastSkillAnimationID0 for 65029 = 455
+#          player_animation_f1.txt row 455 = data\source\player\F1\动作\F1s04tc技能13_龙牙hd.tani

@@ -7596,3 +7596,24 @@ if the cache/host frames appear.
   attribute cells, `CAST_SKILL_TARGET_DST` usage pattern across 20+ scripts.
 - Verified: all claims re-read from `skills.tab`/`Buff.tab`/`Skill.lh`/scripts; no gate
   code touched (docs-only).
+
+### 2026-10-07 — Skills v6 — RESOLVED: 绝境·龙牙 animation source (`skill_caster_*.txt`)
+
+- **Breakthrough:** the per-skill cast animation is `Represent/skill/skill_caster_<body>.txt`
+  (config key `SkillCasterModel`, selected by `skill_caster_model.ini`), column
+  `CastSkillAnimationID0..3`. Row **65029** (`skill_caster_f1.txt`):
+  `CastSkillAnimationID0 = 455` → `player_animation_f1.txt` 455 →
+  `F1s04tc技能13_龙牙hd.tani`; also `PhysicsDamageEffectResultID = 415`.
+- **Disasm chain:** `KRLLocalCharacter::CastSkill` 0x18052D4BA → `GetCastAnimParam`
+  0x18085D890 → player/npc caster-model lookup 0x180820480/0x1808194D0 (table
+  `this+0x23FD0`, records `m_PlayerSkillCasterModel_<id>`) → record+0x18 (4 anim ids)
+  → `KRLCharacter::CastSkill` 0x1804D2090 → `GetSkillNextAnimationID` 0x1805A3600.
+- **Correction (root cause of the earlier wrong "no represent entry" negative):** the old
+  cache extraction was **incomplete** — it lacked `skill_caster_*.txt` /
+  `skill_caster_model.ini` (which `Represent/filepath.ini` names). Lesson: enumerate
+  represent tables from `filepath.ini`, not from a stale partial cache. Fixed in
+  `JX3_SKILL_CAST_FLOW.md` §2.5/§3.5/§5.1/§6.
+- **Evidence excerpt committed:** `proof/netcode/skill_data/skill_caster_model_excerpt.txt`
+  (ini + `skill_caster_f1.txt` header + rows 65029/41216/455; ~2 KB, not the asset).
+- Verified: extraction via official `PakV4SfxExtract.exe` (temp output, nothing written
+  under `C:\SeasunGame`); disasm read-only (pefile+capstone). No gate code touched.

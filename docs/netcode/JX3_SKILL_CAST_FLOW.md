@@ -41,9 +41,9 @@ client disassembly (address cited), or (c) a draft spec in this repo (cited as
    HP**; every other event is presentational
    (`proof/pvp/combat_netcode.md:194-215`).
 4. **The client predicts presentation only** `[REPO-SPEC]`: cast/channel animation,
-   caster SFX, cast bar, cooldown sweep. The animation for a cast is picked by the
-   represent from a per-skill animation array (see §2.5); the only shipped
-   skill-id→animation table is `skill_tag.txt` `[DATA]`.
+   caster SFX, cast bar, cooldown sweep. The shipped skill-id→animation tables are
+   `Represent/skill/skill_caster_<body>.txt` (per-skill cast anim, config
+   `SkillCasterModel`) and `skill_tag.txt` `[DATA]` (see §2.5/§3.5).
 5. **绝境·龙牙** = skill **65029** (`绝境_龙牙`, `[DATA]`): `CastMode=TargetSingle`,
    `TargetRelationEnemy=1`, `CommonSkillActiveMode=Melee`, `[DATA]` instant
    (`nPrepareFrames=0`), **20 尺 / 180°**, **100 % weapon** (`nWeaponDamagePercent=1024`)
@@ -158,29 +158,32 @@ Represent layer (`combat_netcode.md` §4.2):
 * **No rollback/resim** — the client trusts the next server message
   (`combat_netcode.md` §4.3).
 
-Animation resolution (client-side tables + the represent cast path, disasm
-`proof/netcode/JX3RepresentX64_all_strings.txt` / local disasm 2026-10-07):
+Animation resolution — **RESOLVED** `[DATA]` + `[DISASM]` (2026-10-07):
 
 ```
-skill id ──skill_tag.txt──▶ AnimationID ──player_animation_<body>.txt──▶ .tani   [DATA]
-                 (skill_dash.txt for dash anims)
+skill id ─┬─ Represent/skill/skill_caster_<body>.txt   (config `SkillCasterModel`)   [DATA]
+          │     CastSkillAnimationID0..3 ──▶ player_animation_<body>.txt ──▶ .tani
+          └─ Represent/skill/skill_tag.txt   (skill→AnimationID; dash/secondary)      [DATA]
 
-KRLCharacter::CastSkill(char, skillAnimParam, skillId, …)                        [DISASM]
-   ├─ skillId == 0x8b4b (35659): cycle a hardcoded 4-entry anim array (m_nPerSkillAniIndex)
+KRLCharacter::CastSkill(char, skillAnimParam, skillId, …)                              [DISASM]
+   ├─ skillId == 0x8b4b (35659): cycle a hardcoded 4-entry anim array
    └─ else: GetSkillNextAnimationID(char.pRLSkillSequence @+0x47ac, skillAnimParam[4], &animID)
-             → plays the animation id via [0x18001934e]
-     InitSkillSequence sets a global per-skill sequence length (config +0x3c,
-     `SEQUENCE_ANIMATION_CONFIG_FILE_NAME`) — varies repeat-cast animations,
-     it is NOT the skill→anim map.
+             → play via [0x18001934e]
+
+call chain: KRLLocalCharacter::CastSkill 0x18052D4BA
+   → GetCastAnimParam 0x18085D890 → skill-caster-model lookup 0x180820480 / 0x1808194D0
+     (tables `this+0x23FD0` / `this+0x24200`; records named
+      `m_PlayerSkillCasterModel_<id>` / `m_NpcSkillCasterModels`)
+   → record `+0x18` = CastSkillAnimationID0..3 (copied into skillAnimParam)
 ```
 
-The argument order above is **read from the disassembly** (`[DISASM]`); the claim
-that `skillAnimParam[4]` is filled by the cast-event layer from the skill's data is
-**`[UNVERIFIED]`** (it is the next probe, §5.1). The only shipped skill-id→animation
-table is `skill_tag.txt` `[DATA]`.
-
-Legend for §5: `skill_tag.txt` is the only skill-id→animation table; the
-per-skill sequence config only varies the animation across repeat casts.
+The per-body caster-model file is selected by `Represent/skill/skill_caster_model.ini`
+(`[PLAYER_CONFIG_FILE_NAME]` → `Item_6=skill_caster_f1.txt`, `Item_5=m1`, `Item_1=m2`,
+`Item_2=f2`, `Item_3/4=m3`, `Item_0=invalid`; `[NPC_...]` → `skill_caster_npc.txt`).
+**65029's row in `skill_caster_f1.txt` has `CastSkillAnimationID0 = 455`** →
+`player_animation_f1.txt` `455 → F1s04tc技能13_龙牙hd.tani`. `skill_tag.txt`
+(skill→AnimationID) is the other skill→anim route (e.g. 415→455). §5.1 is resolved
+(the earlier "no represent entry" was an artifact of an incomplete table extraction — see §6).
 
 ### 2.6 Motion / dash
 
@@ -258,14 +261,19 @@ Resolved tuning globals (`scripts/Include/Skill.lh` main proto, instructions
 
 ### 3.5 Animation / effects (client represent)
 
-* **Base 龙牙 415** → `skill_tag.txt` `415 → AnimationID 455` →
-  `player_animation_f1.txt` `455 → data\source\player\F1\动作\F1s04tc技能13_龙牙hd.tani`
-  (roles 1/2/6). Hit effect `skill_effect.txt` `415 → data\source\other\特效\…\龙牙_打击01_特效.Sfx`
-  bound to bone `S_fxmid`.
+* **65029's own cast animation** — `Represent/skill/skill_caster_f1.txt` row
+  65029 `[DATA]` (excerpt: `proof/netcode/skill_data/skill_caster_model_excerpt.txt`):
+  `CastSkillAnimationID0 = 455`, `PhysicsDamageEffectResultID = 415`,
+  `MoveState = 0`, `Haste = 1`, `PrepareCastSkillAnimationID = 0` (the `f1` file because
+  the character body is F1; `skill_caster_model.ini` `Item_6`).
+  → `player_animation_f1.txt` `455 → data\source\player\F1\动作\F1s04tc技能13_龙牙hd.tani`.
+* **Base 龙牙 415** → `skill_tag.txt` `415 → AnimationID 455` (same tani, roles 1/2/6).
+  Hit effect `skill_effect.txt` `415 → data\source\other\特效\…\龙牙_打击01_特效.Sfx`
+  bound to bone `S_fxmid` (65029 references the same result id via
+  `PhysicsDamageEffectResultID = 415`).
 * Sound: tani tags → Wwise events
   `skillremake_tiance_skill_s04tcjineng13_longyahd` (+`_qicheng_`), wems
   `380889589`, `382640133` (`ability_candidates.json`).
-* **65029 itself has no Represent entry** — see §5.
 
 ### 3.6 The exact sequence (客户端实际会做什么)
 
@@ -302,42 +310,27 @@ corrected by the next server state.
   `agent/skillv5-sandbox` branch (handoff: commit `4203f56`,
   `docs/engine_host/ABILITY_SYSTEM_CLIENT_HANDOFF.md`).
 * `ability_picker` maps `龙牙` → `F1s04tc技能13_龙牙hd_狼皮肤.tani` for entry
-  `绝境:65029:skill` (`ability_candidates.json`), but with `matchSource="dig"` —
-  a **manual** match, not a table-derived one (consistent with §5.1).
+  `绝境:65029:skill` (`ability_candidates.json`) with `matchSource="dig"` — a manual
+  match; it agrees with the client table (`skill_caster_f1.txt` 65029 →
+  `CastSkillAnimationID0=455` → the `龙牙hd` tani, §3.5).
 
 ## 5. Open items (next probes)
 
-1. **Which `.tani` does the client actually play for 65029?** Hard evidence (2026-10-07):
-   * 65029/65030 appear in **none** of the 16 `Represent/skill/*` tables (checked
-     every file: `skill_tag`, `skill_effect`, `skill_chain`, `skill_dash`,
-     `skill_model`, `skill_result`, `skill_caster_effect`, `skill_shadow`,
-     `skill_missile`, `skill_buff`, `missile`, `skill_user_data.krl`, …) — only the
-     base **415** is present.
-   * No `SkillRealization`, `ProxySkill`, `SkillSkins`, `DynamicSkillGroup` (10002 is
-     empty), `SurplusSkill`, or `WeaponMapSkill` row resolves it; a byte scan for
-     `65029`/`65030` across `...\pakv4-probe` hits only `skills.tab`, `Skill.txt`,
-     and the derived ability-matcher caches.
-   * The represent cast path is `KRLCharacter::CastSkill` →
-     `GetSkillNextAnimationID(char.pRLSkillSequence @+0x47ac, skillAnimParam[4], &animID)`
-     → play `[0x18001934e]` (skill `0x8b4b` special-cased). `skillAnimParam[4]` is
-     supplied by the **cast event layer**, so the skill-id→animation binding is
-     upstream of `CastSkill`, and only `skill_tag.txt` provides it. The global
-     per-skill sequence config only varies repeat-cast animations.
-
-   ⇒ Shipped client data contains **no 绝境-specific animation binding** for 65029.
-   Two explanations remain, and **which holds is `[UNVERIFIED]`**:
-   (a) the server's `OnSkillCast` carries the **display skill id** (base 415) for 绝境
-   skills, so the client plays 415's animation; or (b) the action bar holds the base
-   skill and 65029 is the server-side replacement. **Next probe:** trace
-   `krlEventAdaptor::HandleCastSkill` / `KGameWorldHandler::OnCharacterCastSkill` to
-   find who fills `skillAnimParam` from the skill id (the `skill_tag` lookup), and read
-   the S2C `OnSkillCast` skill id for a 绝境 cast (arena/replay record); also confirm the
-   id the 绝境 action bar holds (`szDropSkillRemoteCall`). Addresses pinned this pass
-   (JX3RepresentX64.dll): `krlEventAdaptor::HandleCastSkill` `0x180600660` (reads
-   caster@+8, skill@+0x20 from the event struct, forwards via vtable `+0x8e0`);
-   `KGameWorldHandler::OnCharacterCastSkill` `0x1805ED0B0` (dispatches to `0x1804D2950`);
-   `KRLCharacter::CastSkill` `0x1804D2090`. Blocked on the skill-data→anim source
-   (or a live/replay cast event).
+1. ~~Which `.tani` does the client actually play for 65029?~~ — **RESOLVED
+   (2026-10-07)**: the per-skill cast animation lives in
+   `Represent/skill/skill_caster_<body>.txt` (config key `SkillCasterModel`,
+   selected by `skill_caster_model.ini`), column `CastSkillAnimationID0..3`.
+   Row **65029** in `skill_caster_f1.txt` has `CastSkillAnimationID0 = 455` ⇒
+   `player_animation_f1.txt` `455 → F1s04tc技能13_龙牙hd.tani`. Disasm confirms the
+   lookup: `KRLLocalCharacter::CastSkill` `0x18052D4BA` → `GetCastAnimParam`
+   `0x18085D890` → player/npc caster-model lookup `0x180820480` / `0x1808194D0`
+   (table `this+0x23FD0`, records `m_PlayerSkillCasterModel_<id>`) → record `+0x18`
+   (4 anim ids) → `KRLCharacter::CastSkill` `0x1804D2090` →
+   `GetSkillNextAnimationID` `0x1805A3600`.
+   **The earlier "no represent entry" negative was an artifact of an incomplete
+   extraction** — the old cache did not include `skill_caster_*.txt` /
+   `skill_caster_model.ini` (they are in `Represent/skill/` per `filepath.ini`).
+   No server-side display-id remap is needed. Corrected in §6.
 2. ~~`HDJueJingSkillCoe_130` numeric value~~ — **RESOLVED (2026-10-07)**:
    `HDJueJingSkillCoe_130 = 1.2`, `HDJueJingSkillCoe = 7.2` (`1.2*6`),
    `HDJueJingSkillCoe_Heal = 8.4`, decoded from `scripts/Include/Skill.lh` main proto
@@ -366,9 +359,13 @@ corrected from an earlier draft:
 | "nChannelInterval = 1520.4 ms" | Value `1520.4` confirmed (`1267 × HDJueJingSkillCoe_130=1.2`); **unit not in the data** → downgraded to `[NOT DECODED]`. | `Skill.lh` decode |
 | "child 65030 dash toward target / forward" | `CAST_SKILL_TARGET_DST` slot is a skill id (all client usages); **direction of `DASH(120,0)` not decoded**. | scripts |
 | "Coefficient candidate 8.4" | Correct values: `_130=1.2`, `=7.2`, `_Heal=8.4` (instruction decode). | `Skill.lh` |
+| "65029 has no represent/cast-animation entry (base 415 only)" | **WRONG** — `skill_caster_f1.txt` row 65029 `CastSkillAnimationID0=455` → `F1s04tc技能13_龙牙hd.tani`. The "negative" was an **artifact of an incomplete table extraction** (the old cache lacked `skill_caster_*.txt`/`skill_caster_model.ini`). | extracted `skill_caster_f1.txt`; §2.5 disasm |
 
-Still open (unchanged): §5.1 animation binding, §5.3 auto-turn, §5.4 战意 cost,
-§5.5 dash timing/authority.
+Method note: the incomplete-extraction trap — always enumerate the represent
+tables from `Represent/filepath.ini`, not from a prior partial cache folder.
+
+Still open: §5.3 auto-turn, §5.4 战意 cost, §5.5 dash authority
+(§5.1 animation binding and §5.2 coefficient are **resolved**).
 
 ---
 
@@ -389,8 +386,14 @@ python tools\netcode\scan_skill_scripts.py --root "<cache>\scripts\skill" `
 #   ...\pakv4-probe\skill-tables-out\Represent\skill\skill_tag.txt
 #   ...\pakv4-probe\player-animation-out\Represent\player\player_animation_f1.txt
 
-# negative check that the 绝境 skill has no represent binding (all 16 tables):
-python -c "import os;B=r'...\skill-tables-out\Represent\skill';[print(f,b'65029' in open(os.path.join(B,f),'rb').read()) for f in os.listdir(B)]"
+# AUTHORITATIVE per-skill cast animation table (the resolved source) — extract the
+# represent skill tables the filepath.ini names, not a prior partial cache:
+#   Represent/filepath.ini: SkillCasterModel=Represent/skill/skill_caster_model.ini
+#   PakV4SfxExtract.exe <pathlist> <out>  with:
+#     Represent/skill/skill_caster_model.ini
+#     Represent/skill/skill_caster_f1.txt (and f2/m1/m2/m3/npc/invalid)
+#   then: row SkillID=65029 -> CastSkillAnimationID0=455
+#         player_animation_f1.txt: 455 -> data\source\player\F1\动作\F1s04tc技能13_龙牙hd.tani
 
 # include-header extraction (official tool; cwd = bin64, output to a temp dir,
 # NEVER to C:\SeasunGame; GBK, CRLF pathlist):
