@@ -15,7 +15,8 @@ internal sealed class MechanicPlan
     public int BuffsRemove;
     public float SelfMovePerFrame;                   // SKILL_MOVE / DASH_* (u/frame)
     public float TargetPullPerFrame;                 // PULL (u/frame; arg commented 速度)
-    public float TargetKnockPerFrame;                // REPULSED / KNOCKED_BACK_RATE (rate)
+    public float RepelFrames;                        // CALL_REPULSED (duration, frames)
+    public float KnockRate;                          // KNOCKED_BACK_RATE (rate; base unknown)
     public bool Knockdown;                           // CALL_KNOCKED_DOWN
     public List<string> ChildCasts = new List<string>();
     public bool HasScript;                           // EXECUTE_SCRIPT (not executed)
@@ -28,7 +29,8 @@ internal sealed class MechanicPlan
         if (BuffsRemove > 0) s += " buff-=" + BuffsRemove;
         if (SelfMovePerFrame > 0f) s += " selfMove=" + SelfMovePerFrame.ToString("F0");
         if (TargetPullPerFrame > 0f) s += " pull=" + TargetPullPerFrame.ToString("F0");
-        if (TargetKnockPerFrame > 0f) s += " knock=" + TargetKnockPerFrame.ToString("F0");
+        if (RepelFrames > 0f) s += " repel=" + RepelFrames.ToString("F0") + "f";
+        if (KnockRate > 0f) s += " knockRate=" + KnockRate.ToString("F0");
         if (Knockdown) s += " knockdown";
         if (ChildCasts.Count > 0) s += " child=" + string.Join(",", ChildCasts.ToArray());
         if (HasScript) s += " [script]";
@@ -68,8 +70,8 @@ internal static class MechanicProgram
             else if (t == "SKILL_MOVE" || t == "DASH" || t == "DASH_FORWARD" || t == "DASH_TO_POINT")
                 p.SelfMovePerFrame = Math.Max(p.SelfMovePerFrame, Num(arg));
             else if (t == "PULL") p.TargetPullPerFrame = Math.Max(p.TargetPullPerFrame, Num(arg));
-            else if (t == "CALL_REPULSED" || t == "KNOCKED_BACK_RATE")
-                p.TargetKnockPerFrame = Math.Max(p.TargetKnockPerFrame, Num(arg));
+            else if (t == "CALL_REPULSED") p.RepelFrames = Math.Max(p.RepelFrames, Num(arg));
+            else if (t == "KNOCKED_BACK_RATE") p.KnockRate = Math.Max(p.KnockRate, Num(arg));
             else if (t == "CALL_KNOCKED_DOWN") p.Knockdown = true;
             else if (t == "CAST_SKILL" || t == "CAST_SKILL_TARGET_DST" ||
                      t == "CAST_SKILL_TARGET_SRC" || t == "CAST_SUB_SKILL") p.ChildCasts.Add(arg);

@@ -8189,3 +8189,14 @@ if the cache/host frames appear.
   `proof/netcode/skillv6_pull_model_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
   loot selftest PASS.
 - **Open:** REPULSED/KNOCKED_BACK_RATE units (knockback away from caster).
+
+### 2026-10-08 — v6 — repel/knockback reclassified
+
+- **Did:** `MechanicProgram` splits the old `TargetKnockPerFrame` into `RepelFrames`
+  (`CALL_REPULSED`; its script arg is `持续时间(帧)` = duration in frames) and `KnockRate`
+  (`KNOCKED_BACK_RATE`; a rate). Neither is applied as a distance (the base repel speed is not
+  in the script) — logged only, to avoid inventing a magnitude.
+- **Verified:** 30081 → `knockRate=1024`; 28046 → `repel=15f`. Proof
+  `proof/netcode/skillv6_repel_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Open:** the engine's base repel speed (to turn RepelFrames+KnockRate into a distance).

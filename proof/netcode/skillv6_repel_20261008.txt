@@ -1,0 +1,14 @@
+# skill v6 — repel/knockback reclassified (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 7c39890, dirty)
+# Change: MechanicProgram splits the old TargetKnockPerFrame into:
+#   - CALL_REPULSED -> RepelFrames  (its script arg is 持续时间(帧) = duration in frames)
+#   - KNOCKED_BACK_RATE -> KnockRate (a rate; base knockback speed unknown)
+#   Neither is applied as a distance (the base repel speed is not in the script) -- logged
+#   only, to avoid inventing a magnitude.
+
+## Driven run: RC_SLOTS=30081,28046 RC_CAST_AT=40000:1,52000:2
+mechanic 30081 mode=CasterArea -> 1 target(s) dmg=0.0 pull=100 knockRate=1024 [script]
+mechanic 28046 mode=CasterArea -> 1 target(s) dmg=-1.0 repel=15f
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open: the engine's base repel speed (to turn RepelFrames+KnockRate into a distance).
