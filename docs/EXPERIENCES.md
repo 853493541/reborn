@@ -7797,3 +7797,16 @@ if the cache/host frames appear.
   abilities currently resolve `dash=0` (no dash) — a data-coverage gap, not a wrong
   value; melee dash skills get their authored speed where the script is available.
 - Verified: `client\build_client.cmd` exit=0; driven runs `65029`/`65076` alive.
+
+### 2026-10-07 — v6 — widen script extraction (dash coverage 3 -> 31)
+
+- **Did:** `build_cast_chain.py` now extracts its own scripts — every `skills.tab`
+  `ScriptFile` via the official `PakV4SfxExtract.exe` (`scripts/skill/<ScriptFile>`) to a
+  temp dir, instead of relying on the partial ability-matcher extraction. `--scripts`
+  overrides the dir. Dash coverage rose **3 -> 31** abilities (plaintext scripts parse;
+  bytecode scripts yield no dash).
+- **Verified:** `65029` dash=120, `65076` dash=0 still; 31 abilities with dash>0.
+- **Caveat:** base school skills whose scripts ship as Lua **bytecode** still resolve
+  `dash=0` (parse cannot read AddAttribute args); a bytecode-aware dash extractor
+  (lua51 instruction decode) is the next step for full coverage.
+- Verified: builder exit=0; dataset regenerated.

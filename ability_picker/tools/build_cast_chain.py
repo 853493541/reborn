@@ -107,9 +107,8 @@ def load_script_map(cache):
     return m
 
 
-def load_script_texts(cache):
-    """ScriptFile-relative path -> script text, from the ability-matcher extraction."""
-    root = os.path.join(cache, "ability-matcher", "extracted", "scripts", "skill")
+def load_script_texts(root):
+    """ScriptFile-relative path -> script text, walking a scripts/skill directory."""
     texts = {}
     if not os.path.isdir(root):
         return texts
@@ -122,6 +121,18 @@ def load_script_texts(cache):
                 except Exception:
                     pass
     return texts
+
+
+def extract_scripts(dest, script_files):
+    """Extract scripts/skill/<ScriptFile...> for every skill via the official tool."""
+    paths = sorted({"scripts/skill/" + s.replace("\\", "/") for s in script_files if s})
+    if not paths:
+        return ""
+    plist = os.path.join(dest, "pathlist_scripts.txt")
+    open(plist, "wb").write(("\r\n".join(paths) + "\r\n").encode("gb18030", "replace"))
+    subprocess.run([PKV4, plist, dest], cwd=os.path.dirname(PKV4),
+                   capture_output=True, timeout=900)
+    return os.path.join(dest, "scripts", "skill")
 
 
 def parse_dash(text):
@@ -153,14 +164,14 @@ def main():
     ap.add_argument("--cache", default=CACHE_DEFAULT)
     ap.add_argument("--body", default="f1")
     ap.add_argument("--casters", default="", help="dir containing skill_caster_<body>.txt")
+    ap.add_argument("--scripts", default="", help="dir with scripts/skill/* (else extracted from the paks)")
     ap.add_argument("--out", default=os.path.join(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "cast_chain_f1.json"))
     args = ap.parse_args()
 
+    tmp = tempfile.mkdtemp(prefix="skill_cast_")
     caster_dir = args.casters
-    tmp = None
     if not caster_dir:
-        tmp = tempfile.mkdtemp(prefix="skill_cast_")
         caster_dir = extract_casters(tmp, args.body)
     caster_file = os.path.join(caster_dir, "skill_caster_%s.txt" % args.body)
     if not os.path.exists(caster_file):
@@ -172,7 +183,12 @@ def main():
     effect = load_effect_map(args.cache)
     names = load_names(args.cache)
     script_map = load_script_map(args.cache)
-    script_texts = load_script_texts(args.cache)
+    scripts_root = args.scripts
+    if not scripts_root:
+        scripts_root = extract_scripts(tmp, script_map.values())
+    if not scripts_root:
+        scripts_root = os.path.join(args.cache, "ability-matcher", "extracted", "scripts", "skill")
+    script_texts = load_script_texts(scripts_root)
 
     def dash_for(sid):
         """Dash speed (u/frame): the skill's own script, or its CAST_SKILL_TARGET_DST child."""
@@ -230,9 +246,8 @@ def main():
             fh.write("\t".join([a["skillId"], a["name"], a["animTani"],
                                 a["effectSfx"], a["effectBone"], str(a["dash"])]) + "\n")
     print("wrote %s: %d abilities (+ %s)" % (args.out, len(abilities), os.path.basename(tsv)))
-    if tmp:
-        import shutil
-        shutil.rmtree(tmp, ignore_errors=True)
+    import shutil
+    shutil.rmtree(tmp, ignore_errors=True)
     return 0
 
 
