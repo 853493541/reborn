@@ -1201,13 +1201,21 @@ internal static class RebornClient
         bool grounded = false;
         // JX3-modeled camera (engine_host_spike/CameraSystem.cs, ported)
         CameraSystem camSys = new CameraSystem();
-        // Character 3.x camera anchor C1: head bone from the engine actor
-        // (docs/character/3_1_RIG_SOCKETS.md); RC_ANCHOR_BONE=0 -> chest+90 fallback.
+        // Character 3.x camera anchor C2 (client rule): the head-bone REST local
+        // translation is captured once (while the idle clip is active) and used as
+        // a CONSTANT offset on the character logic position. The animated bone
+        // matrix must not feed the camera (SPEC_MOTION_P2 re-open; FLWS spin sway).
+        // RC_ANCHOR_BONE=0 -> chest+90 fallback.
         bool boneAnchorOn = Env("RC_ANCHOR_BONE", "1") != "0";
         IntPtr boneActor = IntPtr.Zero;
         int boneHeadIdx = -1;
         int boneLogLast = 0;
         bool anchorDbg = Env("RC_ANCHOR_DBG", "0") == "1";
+        bool anchorOffValid = false;
+        double anchorOffX = 0.0, anchorOffY = 90.0, anchorOffZ = 0.0;
+        // per-frame camera fingerprint trace (RC_CAM_TRACE=1): anchor + actual
+        // engine camera position, for the FLWS-zero / dash-follow proof runs.
+        bool camTrace = Env("RC_CAM_TRACE", "0") == "1";
         CameraObstruction camObst = new CameraObstruction();
         double.TryParse(Env("RC_CAM_HITWIN", Env("RC_CAM_HITWINDOW", "0.4")), out camObst.HitWindow);
         CameraShake camShake = new CameraShake();
@@ -4799,28 +4807,53 @@ internal static class RebornClient
                 // teleported the camera. Only one-frame snaps (|dy| > 5 u while
                 // grounded) are eased over SmoothTime; continuous slope motion and
                 // airborne frames pass through. Kill switch RC_CAM_YFOLLOW=0.
-                // Camera anchor C1: query the engine's head-bone matrix (world =
-                // model placement x bone local); chest+90 stays the fallback.
+                // Camera anchor C2 (client rule, disasm-verified 2026-10-07):
+                // SetCharacterCameraPosition (JX3RepresentX64 0x180B0E820) anchors
+                // on the character LOGIC/entity position (+ mount-socket/custom
+                // offsets); the Y helper AdjustCharacterCameraObjectY (HD
+                // 0x180AC8980 / EXP 0x1808DCBxx, identical logic + constants)
+                // composes the camera-object Y from character fields and reads the
+                // animated "Bip01 Head" ONLY in a narrow close-camera branch:
+                //   enter only if (0.3 > ratio) AND ([ctrl+0x5C]==8 || lookup)
+                //   AND (0.5 > |[ctrl+0xD0]|)   ; else the field-composed Y stands
+                //   (constants read from both DLLs: xmm1=0.3, xmm8=0.5).
+                // Third-person distances never take the head branch, so the
+                // animated head-bone must NOT feed the camera - the in-place FLWS
+                // spin swayed it +/-26 u through the clip. Cache the head-bone REST
+                // local translation once (idle clip = the authored head height) as a
+                // CONSTANT offset: a spin cannot move the anchor; a real dash still
+                // translates it with modelPlace.
                 double ay2Raw = modelPlaceY + 90.0;
                 double ax2Raw = modelPlaceX, az2Raw = modelPlaceZ;
                 bool boneResolvedFrame = false;
                 if (boneAnchorOn && boneActor != IntPtr.Zero && boneHeadIdx != -1)
                 {
-                    float[] bmC1 = new float[16];
-                    if (CameraShim.ActorBoneMatrix(boneActor, boneHeadIdx, bmC1) == 0)
+                    if (!anchorOffValid && curClip == clipIdle)
+                    {
+                        float[] bm0 = new float[16];
+                        if (CameraShim.ActorBoneMatrix(boneActor, boneHeadIdx, bm0) == 0)
+                        {
+                            anchorOffX = bm0[12] * scale;
+                            anchorOffY = bm0[13] * scale;
+                            anchorOffZ = bm0[14] * scale;
+                            anchorOffValid = true;
+                            Log(string.Format("anchor offset cached (rest idle): t=({0:F1},{1:F1},{2:F1})",
+                                anchorOffX, anchorOffY, anchorOffZ));
+                        }
+                    }
+                    if (anchorOffValid)
                     {
                         double aC1 = curYaw + yawOffset;
-                        double txC1 = bmC1[12] * scale, tyC1 = bmC1[13] * scale, tzC1 = bmC1[14] * scale;
                         double caC1 = Math.Cos(aC1), saC1 = Math.Sin(aC1);
-                        ax2Raw = modelPlaceX + txC1 * caC1 + tzC1 * saC1;
-                        ay2Raw = modelPlaceY + tyC1;
-                        az2Raw = modelPlaceZ - txC1 * saC1 + tzC1 * caC1;
+                        ax2Raw = modelPlaceX + anchorOffX * caC1 + anchorOffZ * saC1;
+                        ay2Raw = modelPlaceY + anchorOffY;
+                        az2Raw = modelPlaceZ - anchorOffX * saC1 + anchorOffZ * caC1;
                         boneResolvedFrame = true;
                         if (anchorDbg && Environment.TickCount - boneLogLast > 2000)
                         {
                             boneLogLast = Environment.TickCount;
-                            Log(string.Format("anchorbone t=({0:F1},{1:F1},{2:F1}) yRaw={3:F1} chest={4:F1}",
-                                txC1, tyC1, tzC1, ay2Raw, modelPlaceY + 90.0));
+                            Log(string.Format("anchoroff t=({0:F1},{1:F1},{2:F1}) yRaw={3:F1} chest={4:F1}",
+                                anchorOffX, anchorOffY, anchorOffZ, ay2Raw, modelPlaceY + 90.0));
                         }
                     }
                 }
@@ -5359,6 +5392,15 @@ internal static class RebornClient
                 dbgIntX = (float)camX; dbgIntY = (float)camY; dbgIntZ = (float)camZ; dbgIntSet = true;
                 preX = (float)camX; preY = (float)camY; preZ = (float)camZ;
                 preAX = (float)ax2; preAY = (float)ay2; preAZ = (float)az2; preSet = true;
+                // frame camera fingerprint (proof harness, RC_CAM_TRACE=1): the
+                // anchor and the actual engine camera every frame; run is short.
+                if (camTrace)
+                {
+                    float tx3 = 0f, ty3 = 0f, tz3 = 0f;
+                    try { scene.GetCameraPos(ref tx3, ref ty3, ref tz3); } catch { }
+                    Log(string.Format("ctrace t={0} anchor=({1:F1},{2:F1},{3:F1}) campos=({4:F1},{5:F1},{6:F1}) cyaw={7:F5} cpitch={8:F5}",
+                        now, ax2, ay2, az2, tx3, ty3, tz3, camSys.Yaw, camSys.Pitch));
+                }
                 if (camDebug && now - lastSetLog >= 500)
                 {
                     lastSetLog = now;
