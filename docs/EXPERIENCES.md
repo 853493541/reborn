@@ -8179,3 +8179,13 @@ if the cache/host frames appear.
   `mechanic … pull=100 knock=1024`. Proof `proof/netcode/skillv6_pull_20261008.txt`. Gates:
   jx3_model 10 PASS, gravity PASS, loot selftest PASS.
 - **Open:** REPULSED/KNOCKED_BACK_RATE units; move the dummy model (entity pos updated only).
+
+### 2026-10-08 — v6 — target pull moves the model
+
+- **Did:** `TargetEntity` carries `ModelName`/`ModelPath`; on PULL the client re-adds each
+  affected dummy's model at the new position (visible displacement).
+- **Verified:** `RC_DUMMY_N=3` + 30081 → all 3 dummies pulled to ~100 u from the caster
+  (`木桩 to (18991,33953)`, `#1 to (18962,33949)`, `#2 to (18940,33939)`), clean `DONE`. Proof
+  `proof/netcode/skillv6_pull_model_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Open:** REPULSED/KNOCKED_BACK_RATE units (knockback away from caster).

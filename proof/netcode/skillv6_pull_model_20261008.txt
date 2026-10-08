@@ -1,0 +1,14 @@
+# skill v6 — target pull moves the model too (2026-10-08)
+# Build: reborn_client_skillv6.exe (git fae41b7, dirty)
+# Change: TargetEntity carries ModelName/ModelPath; on PULL the client re-adds each affected
+#   dummy's model at the new (pulled) position, so the displacement is visible.
+
+## Driven run: RC_DUMMY_N=3 RC_SLOTS=30081 RC_CAST_AT=42000:1
+pull 30081 -> 初级试炼木桩   to (18991,33953)
+pull 30081 -> 初级试炼木桩#1 to (18962,33949)
+pull 30081 -> 初级试炼木桩#2 to (18940,33939)
+mechanic 30081 mode=CasterArea -> 3 target(s) dmg=0.0 pull=100 knock=1024 [script]
+DONE
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open: REPULSED/KNOCKED_BACK_RATE units (knockback away from caster).

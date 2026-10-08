@@ -34,6 +34,8 @@ internal sealed class TargetEntity
     public System.Collections.Generic.List<string> Buffs = new System.Collections.Generic.List<string>();
     public long CcUntil;       // CC (stun/silence/...) active until this ms
     public string CcType = "";
+    public string ModelName = "";   // engine dummy name (to move the model)
+    public string ModelPath = "";   // engine model path
     public override string ToString() { return Name + "(" + Level + ")"; }
 }
 

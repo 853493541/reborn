@@ -1772,6 +1772,7 @@ internal static class RebornClient
                     if (!long.TryParse(Env("RC_DUMMY_HP", "500000000"), out tent.MaxHp)) tent.MaxHp = 500000000L;
                     tent.Hp = tent.MaxHp;
                     tent.X = tx; tent.Y = ty; tent.Z = tz;
+                    tent.ModelName = "target_dummy"; tent.ModelPath = dummyModel;
                     targetSelector.Add(tent);
                     dummyTarget = tent;
                     Log(string.Format("target entity registered: {0} lv{1} hp={2} (Tab = facing cone search)",
@@ -1823,6 +1824,7 @@ internal static class RebornClient
                         if (!int.TryParse(Env("RC_DUMMY_LEVEL", "131"), out tent.Level)) tent.Level = 131;
                         if (!long.TryParse(Env("RC_DUMMY_HP", "500000000"), out tent.MaxHp)) tent.MaxHp = 500000000L;
                         tent.Hp = tent.MaxHp; tent.X = tx; tent.Y = ty; tent.Z = tz;
+                        tent.ModelName = "target_dummy" + di; tent.ModelPath = dModel;
                         targetSelector.Add(tent);
                     }
                     if (h > 0 && dAni != null && dAni.Length > 0)
@@ -3994,6 +3996,16 @@ internal static class RebornClient
                                     {
                                         tgt.X = px - pdx / pd * 100f;
                                         tgt.Z = pz - pdz / pd * 100f;
+                                        try
+                                        {
+                                            var tp = new CLRfloat3(); tp.x = tgt.X; tp.y = tgt.Y; tp.z = tgt.Z;
+                                            float fy = (float)Math.Atan2(-(px - tgt.X), -(pz - tgt.Z)); float hf = fy * 0.5f;
+                                            var tr = new CLRfloat4(); tr.y = (float)Math.Sin(hf); tr.w = (float)Math.Cos(hf);
+                                            var ts = new CLRfloat3(); ts.x = 1f; ts.y = 1f; ts.z = 1f;
+                                            if (tgt.ModelName.Length > 0 && tgt.ModelPath.Length > 0)
+                                                scene.AddDummyModel(tgt.ModelName, tgt.ModelPath.Replace('/', '\\'), tp, tr, ts);
+                                        }
+                                        catch { }
                                         Log("pull " + skillCast.Name + " -> " + tgt.Name + " to ("
                                             + tgt.X.ToString("F0") + "," + tgt.Z.ToString("F0") + ")");
                                     }
