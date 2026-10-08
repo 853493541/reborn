@@ -5254,3 +5254,13 @@ power-pool values remain undecoded (re-open criteria in the doc).
 - Gates re-run on the canonical build (git 08a9bbc): build 0, smoke ALL PASS,
   collision 36/36.
 
+
+### 2026-10-07 - Real-input mount coverage completed (sprint + multi-heading)
+
+- Added the RIGHT-arrow turn phase to the driven rig and ran two more real-input
+  passes: (a) RC_MOUNT_SPRINT=1 - moving Space = sprint branch (44565 + triple),
+  airborne double press = DownHorse first (criterion 10) under real input;
+  (b) mounted turn phase - facing check `head dot rider=1.00` at riderYaw 0 / 3.14 /
+  1.57 with ZERO auto-flips, post-turn idle Space = 13618, T dismount clean.
+- Proofs: realinput_sprint_fix.txt, realinput_turn_fix.txt.
+
