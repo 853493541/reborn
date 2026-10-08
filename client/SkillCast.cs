@@ -32,7 +32,7 @@ internal sealed class SkillCast
     long dashMs;
     long commitMs;                 // effect/commit time = max(prepare, effect frame)
     long totalMs;                  // cast ends here = max(anim, commit)
-    bool effectPending;
+    bool commitPending;
 
     float fromX, fromZ;
     float endX, endZ;          // dash end (target pos pulled back by StopDistance)
@@ -58,7 +58,7 @@ internal sealed class SkillCast
         // prepared skills at the end of the prepare (nPrepareFrames) phase.
         commitMs = prepareMs > eff ? prepareMs : eff;
         totalMs = (this.animMs > commitMs ? this.animMs : commitMs) + (channelMs > 0 ? channelMs : 0);
-        effectPending = effect != null && effect.Length > 0;
+        commitPending = true;   // commit fires once at commitMs (effect optional)
 
         fromX = selfX;
         fromZ = selfZ;
@@ -122,11 +122,11 @@ internal sealed class SkillCast
         return true;
     }
 
-    // true exactly once, at the commit frame.
+    // true exactly once, at the commit frame (damage/buff; effect is separate).
     public bool TakeEffect(long now)
     {
-        if (!effectPending) return false;
-        if (now - startMs >= commitMs) { effectPending = false; return true; }
+        if (!commitPending) return false;
+        if (now - startMs >= commitMs) { commitPending = false; return true; }
         return false;
     }
 
@@ -136,5 +136,52 @@ internal sealed class SkillCast
     public void EffectPoint(out float x, out float y, out float z)
     {
         x = fxX; y = fxY; z = fxZ;
+    }
+}
+
+// SkillDamage — resolve an ability's authored damage program (P3 v1).
+//
+// Uses the mechanic program (mechanics_f1.tsv col 11) written by
+// ability_picker/tools/build_mechanics.py: the SKILL_<type>_DAMAGE /
+// SKILL_<type>_DAMAGE_RAND ops carry the level-table value times an authored
+// multiplier (e.g. "tSkillData[dwSkillLevel].nDamage * 1.1"). v1 returns the flat
+// base + half the random spread (a deterministic mid-roll); weapon%/attack-power
+// scaling and mitigation are not applied yet (open).
+internal static class SkillDamage
+{
+    static float Num(string[] row, int i)
+    {
+        float v;
+        return (i >= 0 && i < row.Length && float.TryParse(row[i], out v)) ? v : 0f;
+    }
+
+    static float Mult(string expr)
+    {
+        int star = expr.LastIndexOf('*');
+        if (star >= 0)
+        {
+            float m;
+            if (float.TryParse(expr.Substring(star + 1).Trim(), out m) && m > 0f) return m;
+        }
+        return 1f;
+    }
+
+    public static float Base(string[] row)
+    {
+        float dmg = Num(row, 3), rand = Num(row, 4);
+        string ops = row.Length > 11 ? row[11] : "";
+        float baseMult = 0f, randMult = 0f;
+        string[] parts = ops.Split(';');
+        for (int i = 0; i < parts.Length; i++)
+        {
+            string[] f = parts[i].Split('|');
+            if (f.Length < 2) continue;
+            string t = f[1];
+            string arg = f.Length > 2 ? f[2] : "";
+            if (t.StartsWith("SKILL_") && t.EndsWith("_DAMAGE_RAND")) randMult += Mult(arg);
+            else if (t.StartsWith("SKILL_") && t.EndsWith("_DAMAGE")) baseMult += Mult(arg);
+        }
+        if (baseMult <= 0f && randMult <= 0f) return 0f;
+        return dmg * baseMult + rand * randMult * 0.5f;
     }
 }

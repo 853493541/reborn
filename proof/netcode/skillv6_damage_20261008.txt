@@ -1,0 +1,20 @@
+# skill v6 — P3 v1: abilities apply their authored damage (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 3a4e11a, dirty)
+# Change: client loads ability_picker/mechanics_f1.tsv (build_mechanics.py) and, at
+#   cast COMMIT, applies the ability's authored damage program to the target:
+#   SkillDamage.Base() sums the SKILL_*_DAMAGE / SKILL_*_DAMAGE_RAND ops
+#   (level-table value x authored multiplier) -> base + rand/2 (deterministic mid-roll).
+#   The commit now fires at commitMs regardless of the (opt-in) visual .Sfx.
+# NOT yet: weapon%/attack-power scaling, mitigation, buffs/CC, movement (P3 later).
+
+## Driven run: RC_SLOTS=65029 RC_TAB_AT=1000 RC_CAST_AT=40000:1 RC_AUTORUN=52000
+04:47:52.921 mechanics: 154 abilities from ...\mechanics_f1.tsv
+04:48:22.945 RC_TAB_AT -> Tab (target next)
+04:49:01.948 cast chain 65029: ... commitMs=520 totalMs=1500 dash=120u/f
+04:49:02.470 damage 65029 -> 初级试炼木桩 127.3 (hp=499999873/500000000)
+04:49:13.949 DONE
+
+# expected: nDamage 106*1.07=113.42, op *1.1 = 124.76 ; nDamageRand 106*0.044=4.664,
+#           op *1.1 = 5.13 ; base + rand/2 = 124.76 + 2.57 = 127.3  ✓
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

@@ -7982,3 +7982,16 @@ if the cache/host frames appear.
   Gates: jx3_model 10 PASS, gravity PASS, loot selftest PASS.
 - **Next:** P2 target/AoE resolution → P3 effect execution runtime (damage/buff/CC/move) → P4
   resources/GCD → P5 feedback → P6 verification.
+
+### 2026-10-08 — v6 — P3 v1: abilities apply authored damage
+
+- **Did:** the client loads `ability_picker/data/mechanics_f1.tsv`; at cast **commit** it
+  applies the ability's authored damage program (`SkillDamage.Base`: SKILL_*_DAMAGE(_RAND)
+  ops × authored multiplier → base + rand/2) to the target's HP. `SkillCast`'s commit now
+  fires at `commitMs` regardless of the opt-in visual `.Sfx` (was gated on an effect path).
+- **Verified:** 65029 绝境·龙牙 → `damage 65029 -> 初级试炼木桩 127.3 (hp=499999873/500000000)`
+  (106·1.07·1.1 + 106·0.044·1.1/2 = 127.3), clean `DONE`. Proof
+  `proof/netcode/skillv6_damage_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Open (P3 next):** weapon%/attack-power scaling + mitigation; buffs/debuffs/CC ops;
+  movement ops (leap/pull/knockback); AoE/multi-target (P2).

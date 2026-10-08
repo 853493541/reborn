@@ -1,13 +1,13 @@
-// RebornClient — M1.1 scaffold: real map + animated player (dummy + KGModelCLR),
+﻿// RebornClient 鈥?M1.1 scaffold: real map + animated player (dummy + KGModelCLR),
 // walk/run/jump/fall, follow camera, one skill key, HUD stub.
 // Build: client\build_client.cmd    Run: bin64\reborn_client.exe (cwd = editor root)
 //
 // Env:
-//   RC_MAP=<vfs jsonmap>          default 龙门寻宝
+//   RC_MAP=<vfs jsonmap>          default 榫欓棬瀵诲疂
 //   RC_SPAWN=x,y,z                optional spawn (y optional -> terrain)
-//   RC_DUMMY=<representid>        spawn one 试炼木桩 near spawn (default 35901; 0 = off)
+//   RC_DUMMY=<representid>        spawn one 璇曠偧鏈ㄦ々 near spawn (default 35901; 0 = off)
 //   RC_DUMMY_DIST=<units>         dummy distance along the view dir (default 400)
-//   RC_DUMMY_NAME/LEVEL/HP        target-frame values (default 初级试炼木桩/131/500000000)
+//   RC_DUMMY_NAME/LEVEL/HP        target-frame values (default 鍒濈骇璇曠偧鏈ㄦ々/131/500000000)
 //   RC_TAB_AT=ms,ms               smoke: target-next (Tab) at these times
 //   RC_AUTORUN=ms                 exit after N ms (0 = until window closed)
 //   RC_SHOTS=2000,5000,...        screenshot times (ms)
@@ -146,7 +146,7 @@ internal static class RebornClient
         string clipJump = Env("RC_CLIP_JUMP", f1 + "f1b02yd\u5C0F\u8DF3b.ani");
         string clipFall = Env("RC_CLIP_FALL", f1 + "f1b02yd\u5C0F\u8DF3c.ani");
         // Landing branch (player_suspend.krl.txt F1 rows): FallFloorAnimation
-        // data/source/player/F1/动作/F1b02yd握拳小跳c.ani is played when the
+        // data/source/player/F1/鍔ㄤ綔/F1b02yd鎻℃嫵灏忚烦c.ani is played when the
         // landed height difference exceeds FallDownHeightFloor (500 u).
         string clipLand = Env("RC_CLIP_LAND", f1 + "f1b02yd\u63E1\u62F3\u5C0F\u8DF3c.ani");
         // Strafe / back-pedal locomotion for the operation-mode routing
@@ -157,11 +157,11 @@ internal static class RebornClient
         string clipStrafeR = Env("RC_CLIP_STRAFE_R", f1 + "F1b02yd\u632A\u6B65\u53F3.tani");
         string clipBack = Env("RC_CLIP_BACK", f1 + "F1b02yd\u540E\u900001.tani");
         // TOGGLESITDOWN (decoded: OnUseSkill(17) / Stand()): the F1 catalog's
-        // looping 打坐 clip (kind 1, loop 1) is the sit pose.
+        // looping 鎵撳潗 clip (kind 1, loop 1) is the sit pose.
         string clipSit = Env("RC_CLIP_SIT", f1 + "F1b02dj\u6253\u5750a.tani");
         // TOGGLESHEATH (decoded: SetSheath flag): the b02 draw transition
-        // (F1b02ty拔剑01_start01) and the drawn-stance loop
-        // (F1b02ty拔剑01_st01_持续, kind 31 loop 1). No 收剑 clip ships for b02;
+        // (F1b02ty鎷斿墤01_start01) and the drawn-stance loop
+        // (F1b02ty鎷斿墤01_st01_鎸佺画, kind 31 loop 1). No 鏀跺墤 clip ships for b02;
         // sheathing falls back to the normal idle.
         string clipSheathDraw = Env("RC_CLIP_SHEATH_DRAW", f1 + "F1b02ty\u62D4\u525101_start01.ani");
         string clipSheathHold = Env("RC_CLIP_SHEATH_HOLD", f1 + "F1b02ty\u62D4\u525101_st01_\u6301\u7EED.tani");
@@ -188,9 +188,9 @@ internal static class RebornClient
         long.TryParse(Env("RC_SKILL_MS", "8000"), out skillMs);
         // v6 full cast chain, JueJing LongYa (skill 65029), from the client tables:
         //   anim   skill_caster_f1 65029 CastSkillAnimationID0=455 ->
-        //          player_animation_f1 455 -> F1s04tc<技能>13_<龙牙>hd.tani
+        //          player_animation_f1 455 -> F1s04tc<鎶€鑳?13_<榫欑墮>hd.tani
         //   effect skill_caster PhysicsDamageEffectResultID=415 -> skill_effect 415 ->
-        //          data\source\other\<特效>\<技能>\SFX\<被击>\<被击>_<闪光>01_<龙牙>.Sfx
+        //          data\source\other\<鐗规晥>\<鎶€鑳?\SFX\<琚嚮>\<琚嚮>_<闂厜>01_<榫欑墮>.Sfx
         //   dash   child 65030 DASH 120: dash toward the target WHILE the anim plays.
         string lyAnim = Env("RC_LY_ANIM", f1 + "F1s04tc\u6280\u80FD13_\u9F99\u7259hd.tani");
         string lyFx = Env("RC_LY_FX",
@@ -198,7 +198,7 @@ internal static class RebornClient
             "01_\u9F99\u7259.Sfx");
         // The authored skill effect is a .Sfx; playing it via AddDummyModel AVs
         // the host (verified 2026-10-07, ntdll 0xc0000005 right after the cast).
-        // The 龙牙 tani already carries the authored effect tags, so the chain
+        // The 榫欑墮 tani already carries the authored effect tags, so the chain
         // plays the effect through the animation by default; the standalone .Sfx
         // path stays opt-in (RC_LY_FXE=1) until the engine SFX path is wired.
         if (Env("RC_LY_FXE", "") != "1") lyFx = "";
@@ -211,7 +211,7 @@ internal static class RebornClient
         float lyStop = 200f;   // stop this close to the target (u, engine cm)
         float.TryParse(Env("RC_LY_STOP", "200"), out lyStop);
         // dash speed in engine units per frame, from the skill's child DASH
-        // attribute (e.g. 绝境龙牙冲刺技能 65030 = DASH 120 -> 120 u/frame).
+        // attribute (e.g. 缁濆榫欑墮鍐插埡鎶€鑳?65030 = DASH 120 -> 120 u/frame).
         float lyDash = 120f;
         float.TryParse(Env("RC_LY_DASH", "120"), out lyDash);
         long lyFxLife = 2500;
@@ -322,6 +322,27 @@ internal static class RebornClient
             else Log("ability roster: missing " + rosterPath);
         }
         catch (Exception e) { Log("ability roster load ex: " + e.Message); }
+        // v6 mechanics (ability_picker/tools/build_mechanics.py): per-ability damage
+        // program (level table + AddAttribute ops) for the effect runtime (P3).
+        var mechanics = new System.Collections.Generic.Dictionary<string, string[]>();
+        string mechPath = Env("RC_MECHANICS",
+            Path.Combine(Application.StartupPath, "ability_picker", "mechanics_f1.tsv"));
+        try
+        {
+            if (File.Exists(mechPath))
+            {
+                int ml = 0;
+                foreach (string line in File.ReadAllLines(mechPath))
+                {
+                    if (ml++ == 0) continue;
+                    string[] p = line.Split('\t');
+                    if (p.Length >= 12 && p[0].Length > 0) mechanics[p[0]] = p;
+                }
+                Log("mechanics: " + mechanics.Count + " abilities from " + mechPath);
+            }
+            else Log("mechanics: missing " + mechPath);
+        }
+        catch (Exception e) { Log("mechanics load ex: " + e.Message); }
         // hotkey slots (RC_SLOTS overrides); keys 1..N select + cast a slot.
         string[] slotIds = Env("RC_SLOTS", "65029,65120,65087,65076,65036,65026").Split(',');
         int activeSlot = 0;
@@ -792,7 +813,7 @@ internal static class RebornClient
 
         var scene = new KGSceneCLR();
         // Recon: dump the managed wrapper API surface for the player / near-plane
-        // paths (B1 exit; docs/camera/CLOSE_RANGE_RESEARCH.md §2). Env-gated.
+        // paths (B1 exit; docs/camera/CLOSE_RANGE_RESEARCH.md 搂2). Env-gated.
         if (Env("RC_API_DUMP", "0") == "1")
         {
             DumpApi("KGEngineCLR", typeof(KGEngineCLR));
@@ -1043,7 +1064,7 @@ internal static class RebornClient
         // Prime the physics terrain loader before the engine starts streaming
         // (its first region load initialises the source reader; if the first
         // call happens after the engine's camera jump it can return all-zero
-        // heights for the spawn region on 龙门寻宝).
+        // heights for the spawn region on 榫欓棬瀵诲疂).
         if (sampler != null)
         {
             sampler.Sample(0f, 0f);
@@ -1318,7 +1339,7 @@ internal static class RebornClient
             if (double.TryParse(Env("RC_CAM_PITCH", ""), out poseOv)) camSys.Pitch = poseOv;
             if (double.TryParse(Env("RC_CAM_YAW", ""), out poseOv)) camSys.Yaw = poseOv;
             // user decision 2026-09-30: both follow rows start at the max range
-            // (fMaxCameraDistance; 广角 is already the client panel max). This
+            // (fMaxCameraDistance; 骞胯 is already the client panel max). This
             // overrides the 1245 u client-number initial (C10) - target AND
             // init distance are max, so the follow camera holds at max instead
             // of easing back to the row value.
@@ -1464,10 +1485,10 @@ internal static class RebornClient
             }
             else
             {
-                // default test spawn on 龙门寻宝 (override with RC_SPAWN=x,y,z)
+                // default test spawn on 榫欓棬瀵诲疂 (override with RC_SPAWN=x,y,z)
                 px = 18991f; py = 962f; pz = 33853f;
             }
-            // Spawn-extent validation (crash guard): on the 4x4 海岛绝境 map an
+            // Spawn-extent validation (crash guard): on the 4x4 娴峰矝缁濆 map an
             // out-of-extent actor AVs the engine render stack
             // (KG3DEngineDX11EX64+0x12282B3, reproduced 2026-10-05; see
             // docs/movement/VOID_SPAWN_CRASH_TRIAGE.md). Clamp test spawns into
@@ -1489,7 +1510,7 @@ internal static class RebornClient
                     px = cx; pz = cz;
                     // A clamped point can still land on sub-sea-level ground or a
                     // hole, where the engine render stack AVs (2026-10-06, with the
-                    // camera workstream active; see VOID_SPAWN_CRASH_TRIAGE.md §2).
+                    // camera workstream active; see VOID_SPAWN_CRASH_TRIAGE.md 搂2).
                     // Relocate to the nearest in-extent point with solid ground
                     // above sea level (bounded spiral over real loader data).
                     float g;
@@ -1579,7 +1600,7 @@ internal static class RebornClient
             // The loader can be mid-stream right after the actor appears: wait
             // until the sampled value stops changing (bounded 2 s), then accept
             // it. Waiting for a NON-zero value is wrong - a genuine 0-height
-            // spot (e.g. the low ground west of the 龙门 mesa) stalled 10 s and
+            // spot (e.g. the low ground west of the 榫欓棬 mesa) stalled 10 s and
             // never recovered (2026-10-04 run).
             float g = sampler.Sample(px, pz);
             float prev = g;
@@ -1631,8 +1652,8 @@ internal static class RebornClient
         // The game's own selection visuals come from ForceRelationCareTable
         // (represent/common/force_relation_care.txt, loaded by KRLTarget): each
         // relation row maps to
-        //   SFXFile = data/source/other/HD特效/其他/Pss/选择特效aXXX_hd.pss
-        //   SFXEn   = data/source/other/HD特效/其他/Pss/J_角色箭头面向.pss
+        //   SFXFile = data/source/other/HD鐗规晥/鍏朵粬/Pss/閫夋嫨鐗规晥aXXX_hd.pss
+        //   SFXEn   = data/source/other/HD鐗规晥/鍏朵粬/Pss/J_瑙掕壊绠ご闈㈠悜.pss
         // (relation 2 = Enemy -> a002). The engine shows them attached to the
         // target; we spawn the same client assets at the selected target via
         // AddDummyModel (the engine loads PSS + textures from the game client's
@@ -1655,13 +1676,13 @@ internal static class RebornClient
         float dummyYaw = 0f;
 
         // ---------------- target dummy (sandbox-target-dummy) ----------------
-        // One 试炼木桩 near the spawn point: RepresentID -> engine model path
+        // One 璇曠偧鏈ㄦ々 near the spawn point: RepresentID -> engine model path
         // (same actor space the editor NPC palette uses), placed RC_DUMMY_DIST
         // units along the measured view direction, standing on sampled terrain.
         // RC_DUMMY=0 disables. Idle animation via GetRepresentAniPath.
         try
         {
-            int dummyRid = 35901;   // 初级试炼木桩 (ZhuChengMuZhuang zone)
+            int dummyRid = 35901;   // 鍒濈骇璇曠偧鏈ㄦ々 (ZhuChengMuZhuang zone)
             int.TryParse(Env("RC_DUMMY", "35901"), out dummyRid);
             if (dummyRid > 0)
             {
@@ -1690,11 +1711,11 @@ internal static class RebornClient
                 if (dummyHandle > 0)
                 {
                     // Target-frame values from the shipped sNpcTemplate row
-                    // (docs/pvp/TARGET_DUMMY_RESEARCH.md: 初级试炼木桩 Lv131,
+                    // (docs/pvp/TARGET_DUMMY_RESEARCH.md: 鍒濈骇璇曠偧鏈ㄦ々 Lv131,
                     // MaxLife 500,000,000); RC_DUMMY_* overrides.
                     var tent = new TargetEntity();
                     tent.Handle = dummyHandle;
-                    tent.Name = Env("RC_DUMMY_NAME", "\u521D\u7EA7\u8BD5\u70BC\u6728\u6869"); // 初级试炼木桩
+                    tent.Name = Env("RC_DUMMY_NAME", "\u521D\u7EA7\u8BD5\u70BC\u6728\u6869"); // 鍒濈骇璇曠偧鏈ㄦ々
                     if (!int.TryParse(Env("RC_DUMMY_LEVEL", "131"), out tent.Level)) tent.Level = 131;
                     if (!long.TryParse(Env("RC_DUMMY_HP", "500000000"), out tent.MaxHp)) tent.MaxHp = 500000000L;
                     tent.Hp = tent.MaxHp;
@@ -1751,11 +1772,11 @@ internal static class RebornClient
                     HotkeyTable.Describe(hotkeys.Get(probe[hi])));
         }
         bool pTurnL = false, pTurnR = false, autorunOn = false;
-        // base character actions (decoded handlers): sit = OnUseSkill(17 打坐) /
+        // base character actions (decoded handlers): sit = OnUseSkill(17 鎵撳潗) /
         // Stand(); sheath = SetSheath flag (gates: sitting blocks it; the
         // fight/bird/horse/tower/buff gates are always false in the host).
         bool sitting = false, sheathOn = false;
-        long sheathDrawUntil = 0;   // draw transition window (拔剑 start clip)
+        long sheathDrawUntil = 0;   // draw transition window (鎷斿墤 start clip)
         int unhandledCmd = 0;
         string lastUnhandled = "";
         bool demoMove = Env("RC_DEMO_MOVE", "0") == "1";
@@ -1837,7 +1858,7 @@ internal static class RebornClient
                     if (down)
                     {
                         if (sitting) { sitting = false; Log("sit: stand (Stand)"); }
-                        else { sitting = true; Log("sit: down (OnUseSkill 17 打坐)"); }
+                        else { sitting = true; Log("sit: down (OnUseSkill 17 鎵撳潗)"); }
                     }
                     break;
                 case "TOGGLESHEATH":
@@ -2256,17 +2277,17 @@ internal static class RebornClient
         // table values converted from 15 logic frames/s into continuous seconds
         // (1 world unit = 1 cm; exact 15 Hz integer model is the next movement pass)
         // Real table values at the documented gameplay frame rate (GAME_FPS=16,
-        // "16帧等于1秒", UNIT_SCALE...md §2): walk 6 / run 20 u/frame -> 96 / 320
-        // u/s. Cross-check: the official UI shows 跑步速度 5 尺/秒 and
-        // 20 u/frame * 16 fps = 320 u/s = 5 * 64 u (1 尺 = 64 u). Host controls:
+        // "16甯х瓑浜?绉?, UNIT_SCALE...md 搂2): walk 6 / run 20 u/frame -> 96 / 320
+        // u/s. Cross-check: the official UI shows 璺戞閫熷害 5 灏?绉?and
+        // 20 u/frame * 16 fps = 320 u/s = 5 * 64 u (1 灏?= 64 u). Host controls:
         // default RUN, Num/ toggles WALK, hold Shift for a 10x testing speed.
         float pGravity = -2475f;   // school-0 J0 gravity (11 u/f2) as u/s2; J0 v0 = 1350 u/s
-        // 二段跳 / jump chain (docs/movement/JX3_DOUBLE_JUMP_RESEARCH.md): per-press
+        // 浜屾璺?/ jump chain (docs/movement/JX3_DOUBLE_JUMP_RESEARCH.md): per-press
         // takeoff triples from settings/JumpParam.tab (client/JumpTable.cs),
         // converted at the verified 15 Hz logic tick: v[u/s] = vz*15, g[u/s2] = g*225.
-        //   flip  = one extra jump with the J0 profile (the real 二段跳; provisional
+        //   flip  = one extra jump with the J0 profile (the real 浜屾璺? provisional
         //           until the J1 burst/End phase trigger is decoded)
-        //   chain = the raw J1..MaxJumpCount 轻功 rows (ballistic shortcut, high)
+        //   chain = the raw J1..MaxJumpCount 杞诲姛 rows (ballistic shortcut, high)
         string djumpMode = Env("RC_DJUMP", "flip");
         // Unit calibration (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md): 1 u = 1 cm,
         // and the movement spec's in-game jump is apex 192 u / 1.09 s air
@@ -2279,7 +2300,7 @@ internal static class RebornClient
         int jumpSchool = 0;
         int.TryParse(Env("RC_JUMP_SCHOOL", "0"), out jumpSchool);
         if (jumpSchool < 0 || jumpSchool >= JumpTable.MaxJumpCount.Length) jumpSchool = 0;
-        // Authored f1b02yd二段跳a.tani resolves but AVs the host (documented);
+        // Authored f1b02yd浜屾璺砤.tani resolves but AVs the host (documented);
         // the underlying .ani is the flip pose the client plays instead.
         string clipDJump = Env("RC_CLIP_DJUMP", f1 + "f1b02yd\u4E8C\u6BB5\u8DF3a.ani");
         if (clipDJump == "0") clipDJump = "";   // explicit: reuse RC_CLIP_JUMP
@@ -2295,15 +2316,15 @@ internal static class RebornClient
         // verified 15 Hz tick).
         float pSpeed = 90f, pRun = 300f;
         // Real character size (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md;
-        // 1 unit = 1 cm): the loaded 花萝 actor (f1_1004 head + f1_2227 dress
+        // 1 unit = 1 cm): the loaded 鑺辫悵 actor (f1_1004 head + f1_2227 dress
         // parts) measures 115.58 u = 1.16 m from the extracted bind-pose
         // meshes. Capsule radius scaled from the old adult preset (25 at 170)
         // by the same ratio.
         float playerRadius = 17f, playerHeight = 116f;
         // Body-type capsule (registered proxy): authored heights from
-        // Represent/player/player.txt ModelHeight (cm; UNIT_SCALE doc §4)
+        // Represent/player/player.txt ModelHeight (cm; UNIT_SCALE doc 搂4)
         // scaled by the host proportion r=0.136*H, h=0.928*H (125 -> 17/116,
-        // the M1 花萝 values). RC_BODY=f1|m1|f2|m2; explicit RC_RADIUS /
+        // the M1 鑺辫悵 values). RC_BODY=f1|m1|f2|m2; explicit RC_RADIUS /
         // RC_HEIGHT still win.
         {
             string body = Env("RC_BODY", "");
@@ -2327,7 +2348,7 @@ internal static class RebornClient
         // the client's own prediction has no capsule-vs-mesh blocking at all,
         // CLIENT_COLLISION_IMPROVEMENT_PLAN 8.3). 64 u = the game-side ground/landing
         // tolerance constant (KCharacter::ProcessVerticalMove 0x14031A25E,
-        // 1 尺) and the value covering the 51 u house-floor field case. The
+        // 1 灏? and the value covering the 51 u house-floor field case. The
         // PhysX PxControllerDesc ctor default (stepOffset 0.5 m = 50 u; dump
         // proof/collision/disasm/pxcontrollerdesc_ctor.txt) belongs to the
         // PhysX controller layer only - G-1: no proof the player uses a
@@ -2338,7 +2359,7 @@ internal static class RebornClient
         int blockedEvents = 0;
         long colCalls = 0, colBlockedCalls = 0;
         bool colDebug = Env("RC_COL_DEBUG", "0") == "1";
-        // host proxy: 小物件 props are solid (RC_PROP_SOLID=0 disables)
+        // host proxy: 灏忕墿浠?props are solid (RC_PROP_SOLID=0 disables)
         // Default OFF since 2026-10-02: props now collide as their mesh
         // triangles (the engine rule), so the AABB shover is redundant and
         // ejected players from empty AABB corners.
@@ -2400,7 +2421,7 @@ internal static class RebornClient
         long camProfFrames = 0;
         // camera obstruction query cadence: the native ray set costs ~1.3-2.4 ms
         // per query and up to ~10 ms on stall frames next to large buildings
-        // (RC_COL_PROF: nat+vert), which halved the frame rate at the 玉门关
+        // (RC_COL_PROF: nat+vert), which halved the frame rate at the 鐜夐棬鍏?
         // building (122 vs 240 fps). The game's camera runs at its render
         // cadence; the host caps the managed query set to 20 Hz (env
         // RC_CAM_OBSTHZ, 0 = every frame); placement smoothing/hysteresis still
@@ -2932,7 +2953,7 @@ internal static class RebornClient
                 if (now >= 6000 && !demoTurned) { demoTurned = true; orbitQueue.Enqueue(new int[] { 500, 0 }); }
                 pA = now >= 14000 && now < 18000;
                 if (now >= 12500 && !demoJumped) { demoJumped = true; jumpPressed = true; }
-                // second press while airborne (ground jump apex ~0.55 s) -> 二段跳
+                // second press while airborne (ground jump apex ~0.55 s) -> 浜屾璺?
                 if (now >= 13000 && demoJumped && !demoJumped2) { demoJumped2 = true; jumpPressed = true; }
                 // (the old demo skill cast played FLWS - removed with the FLWS default)
             }
@@ -3194,7 +3215,7 @@ internal static class RebornClient
             // frame is the camera in both modes; the BODY faces the travel
             // direction (RunTo, KRLLocalCharacter face yaw +0x30). That is why
             // W+D runs the forward clip while the body faces the diagonal, and
-            // pure D (no W) is the 挪步 side-step.
+            // pure D (no W) is the 鎸 side-step.
             bool followsHeading = CameraOperationMode.BodyFollowsHeading(cameraSettings.OperationMode);
             bool classicalMode = !followsHeading;
             // Movement frame: the control frame moveYaw (camera yaw + the turn
@@ -3240,7 +3261,7 @@ internal static class RebornClient
                     else
                     {
                         // No target: the ability system requires one. The old FLWS
-                        // (风来吴山) fallback is removed - it conflicted with abilities.
+                        // (椋庢潵鍚村北) fallback is removed - it conflicted with abilities.
                         Log("cast: no target - nothing cast (ability system needs a target)");
                     }
                 }
@@ -3403,7 +3424,7 @@ internal static class RebornClient
                 // classical S / S+A / S+D: back-pedal at walk pace (user-
                 // observed; number.krl ships no back speed - walk 6 u/f is the
                 // authored slow pace). Pure lateral (no forward/back) is the
-                // walk-tier side-step (挪步 clip cadence); a forward component
+                // walk-tier side-step (鎸 clip cadence); a forward component
                 // runs. Joystick always faces the travel -> run tier.
                 bool backPedal = classicalMode && fwdAxis < 0f;
                 bool sideOnly = classicalMode && fwdAxis == 0f && Math.Abs(latAxis) > 0.01f;
@@ -3411,7 +3432,7 @@ internal static class RebornClient
                 float ux = dirX / len, uz = dirZ / len;
                 float heading = (float)Math.Atan2(ux, uz);
                 // turn model (KCharacter::RunTo 0x14031B780; docs/movement/
-                // JX3_CHARACTER_MOVEMENT_RESEARCH.md §3.5): heading = travel
+                // JX3_CHARACTER_MOVEMENT_RESEARCH.md 搂3.5): heading = travel
                 // direction; facing turns toward it at the turn rate; a turn
                 // > 112.5 deg (0x50/0x100 of the circle) halves movement speed
                 // and the turn step that tick.
@@ -3588,7 +3609,7 @@ internal static class RebornClient
             }
 
             // grounded / step / drop - engine rules (KCharacter::ProcessVerticalMove
-            // 0x140318E73 clamps y = min(y, ground); the 64 u = 1 尺 landing
+            // 0x140318E73 clamps y = min(y, ground); the 64 u = 1 灏?landing
             // tolerance at 0x14031A25E):
             //  - higher ground raises the character (no rise-budget on terrain
             //    or steppable structures);
@@ -3603,7 +3624,7 @@ internal static class RebornClient
                 else { grounded = false; vy = 0f; }
             }
 
-            // jump + 二段跳: press 1 = J0; in the air press 2 = flip mode (one
+            // jump + 浜屾璺? press 1 = J0; in the air press 2 = flip mode (one
             // extra normal-strength jump) or chain mode (raw J1.. table rows)
             if (jumpPressed)
             {
@@ -3744,14 +3765,35 @@ internal static class RebornClient
                 {
                     float ex, ey, ez;
                     skillCast.EffectPoint(out ex, out ey, out ez);
+                    if (skillCast.EffectPath.Length > 0)
+                    {
+                        try
+                        {
+                            int frc = SfxShim.Play(skillCast.EffectPath, ex, ey + 90f, ez);
+                            Log("cast chain fx(engine) -> " + skillCast.EffectPath + " rc=" + frc
+                                + " at (" + ex.ToString("F0") + "," + (ey + 90f).ToString("F0")
+                                + "," + ez.ToString("F0") + ") " + SfxShim.Status());
+                        }
+                        catch (Exception e) { Log("cast chain fx ex: " + e.Message); }
+                    }
+                    // P3 v1: apply the ability's authored damage program to the target
                     try
                     {
-                        int frc = SfxShim.Play(skillCast.EffectPath, ex, ey + 90f, ez);
-                        Log("cast chain fx(engine) -> " + skillCast.EffectPath + " rc=" + frc
-                            + " at (" + ex.ToString("F0") + "," + (ey + 90f).ToString("F0")
-                            + "," + ez.ToString("F0") + ") " + SfxShim.Status());
+                        string[] mr;
+                        TargetEntity dmgTgt = targetSelector.Current;
+                        if (dmgTgt != null && mechanics.TryGetValue(skillCast.Name, out mr))
+                        {
+                            float dmg = SkillDamage.Base(mr);
+                            if (dmg > 0f)
+                            {
+                                dmgTgt.Hp -= (long)dmg;
+                                if (dmgTgt.Hp < 0) dmgTgt.Hp = 0;
+                                Log("damage " + skillCast.Name + " -> " + dmgTgt.Name + " "
+                                    + dmg.ToString("F1") + " (hp=" + dmgTgt.Hp + "/" + dmgTgt.MaxHp + ")");
+                            }
+                        }
                     }
-                    catch (Exception e) { Log("cast chain fx ex: " + e.Message); }
+                    catch (Exception e) { Log("damage ex: " + e.Message); }
                 }
             }
             if (castFxUntil != 0 && now >= castFxUntil)
@@ -4058,7 +4100,7 @@ internal static class RebornClient
                 }
                 // The vertical ladder is a host-authored extra (not in the
                 // recovered engine probe set); when the horizontal probes
-                // already found a wall it is skipped - next to the big 玉门关
+                // already found a wall it is skipped - next to the big 鐜夐棬鍏?
                 // building it alone cost ~1.9 ms/frame (RC_COL_PROF).
                 if (doCamQuery && hitDist < 0.0)
                 {
