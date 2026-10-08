@@ -70,6 +70,8 @@ namespace UiProcessApp
         // per layout cache key + the canvas highlight overlay.
         private readonly System.Collections.Generic.Dictionary<string, bool> _itemChecks =
             new System.Collections.Generic.Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+        // Batch guard: 全选/清除 toggle every checkbox; re-render once at the end.
+        private bool _updatingChecks;
         private readonly System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<(string Name, string Type)>> _checklistCache =
             new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<(string Name, string Type)>>(StringComparer.OrdinalIgnoreCase);
         private System.Windows.Controls.Border _checkHighlight;
@@ -791,7 +793,7 @@ namespace UiProcessApp
             ItemCheckList.Children.Clear();
             if (_currentWindow == null)
             {
-                ItemCheckSummary.Text = "已核对 0 / 0";
+                ItemCheckSummary.Text = "显示 0 / 0";
                 return;
             }
             issues = issues ?? new System.Collections.Generic.Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -800,23 +802,9 @@ namespace UiProcessApp
             {
                 issues.TryGetValue(item.Name, out var issue);
                 bool hasOverride = _itemChecks.TryGetValue(ItemCheckStore.Key(_currentWindow.Id, item.Name), out var ov);
-                bool isChecked = hasOverride ? ov : string.IsNullOrEmpty(issue);
+                // The checkbox is a visibility toggle: checked = shown (default), unchecked = hidden.
+                bool isChecked = hasOverride ? ov : true;
                 if (isChecked) checkedCount++;
-                var row = new System.Windows.Controls.DockPanel
-                {
-                    Margin = new Thickness(0, 1, 0, 1),
-                    Tag = item.Name,
-                    Cursor = System.Windows.Input.Cursors.Hand,
-                    // Transparent (not null) so the whole row is hit-testable, not just the text.
-                    Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0)),
-                    LastChildFill = true,
-                };
-                // The full row highlights the item in the canvas (the checkbox still toggles).
-                row.MouseLeftButtonUp += (o, e) =>
-                {
-                    if (e.OriginalSource is System.Windows.Controls.CheckBox) return;
-                    HighlightItem(item.Name);
-                };
                 var cb = new System.Windows.Controls.CheckBox
                 {
                     IsChecked = isChecked,
@@ -826,6 +814,22 @@ namespace UiProcessApp
                 };
                 cb.Checked += OnItemCheckToggled;
                 cb.Unchecked += OnItemCheckToggled;
+                var row = new System.Windows.Controls.DockPanel
+                {
+                    Margin = new Thickness(0, 1, 0, 1),
+                    Tag = item.Name,
+                    Cursor = System.Windows.Input.Cursors.Hand,
+                    // Transparent (not null) so the whole row is hit-testable, not just the text.
+                    Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0)),
+                    LastChildFill = true,
+                };
+                // Clicking the text toggles the checkbox (hide/unhide) and highlights the item.
+                row.MouseLeftButtonUp += (o, e) =>
+                {
+                    if (e.OriginalSource is System.Windows.Controls.CheckBox) return;
+                    cb.IsChecked = !(cb.IsChecked == true);
+                    HighlightItem(item.Name);
+                };
                 System.Windows.Controls.DockPanel.SetDock(cb, Dock.Left);
                 row.Children.Add(cb);
                 var label = new System.Windows.Controls.TextBlock
@@ -843,7 +847,7 @@ namespace UiProcessApp
                 row.Children.Add(label);
                 ItemCheckList.Children.Add(row);
             }
-            ItemCheckSummary.Text = string.Format("已核对 {0} / {1}", checkedCount, items.Count);
+            ItemCheckSummary.Text = string.Format("显示 {0} / {1}", checkedCount, items.Count);
         }
 
         private void OnItemCheckToggled(object sender, RoutedEventArgs e)
@@ -854,6 +858,8 @@ namespace UiProcessApp
             ItemCheckStore.Set(_itemChecks, _currentWindow.Id, name, cb.IsChecked == true);
             ItemCheckStore.Save(Paths.AppRoot, _itemChecks);
             UpdateItemCheckSummary();
+            // Visibility changed: re-render (suppressed during a batch toggle).
+            if (!_updatingChecks) RenderLayout(_currentWindow);
         }
 
         private void UpdateItemCheckSummary()
@@ -871,7 +877,7 @@ namespace UiProcessApp
                     }
                 }
             }
-            ItemCheckSummary.Text = string.Format("已核对 {0} / {1}", done, total);
+            ItemCheckSummary.Text = string.Format("显示 {0} / {1}", done, total);
         }
 
         private void OnItemCheckAll(object sender, RoutedEventArgs e) { SetAllChecks(true); }
@@ -880,6 +886,7 @@ namespace UiProcessApp
         private void SetAllChecks(bool value)
         {
             if (_currentWindow == null) return;
+            _updatingChecks = true;
             foreach (var child in ItemCheckList.Children)
             {
                 if (!(child is System.Windows.Controls.DockPanel row)) continue;
@@ -891,7 +898,9 @@ namespace UiProcessApp
                     }
                 }
             }
+            _updatingChecks = false;
             UpdateItemCheckSummary();
+            RenderLayout(_currentWindow);  // one re-render for the batch
         }
 
         /// <summary>Outlines the item's element in the canvas (a yellow overlay on the
@@ -1559,7 +1568,18 @@ namespace UiProcessApp
             var runtimeApplied = LayoutPlanBuilder.ApplyRuntimeState(plan.Filtered, window.Path);
             if (_runtimeOverlays.TryGetValue(window.Id, out var overlay) && overlay.Count > 0)
                 runtimeApplied += LayoutPlanBuilder.ApplyRuntimeMutations(plan.Filtered, overlay);
-            LayoutPlanBuilder.ApplyHide(plan.Filtered, hideText);
+            // The checklist checkbox is a visibility toggle: an explicitly unchecked item is
+            // hidden in the render (merged with the 隐藏 box).
+            var checklistHidden = _itemChecks
+                .Where(kv => !kv.Value && kv.Key.StartsWith(window.Id + "\u0001", StringComparison.OrdinalIgnoreCase))
+                .Select(kv => kv.Key.Substring(window.Id.Length + 1))
+                .ToList();
+            var combinedHide = hideText;
+            if (checklistHidden.Count > 0)
+                combinedHide = string.IsNullOrWhiteSpace(hideText)
+                    ? string.Join(",", checklistHidden)
+                    : hideText + "," + string.Join(",", checklistHidden);
+            LayoutPlanBuilder.ApplyHide(plan.Filtered, combinedHide);
             LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
             LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
             LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs, page ?? window.Page);

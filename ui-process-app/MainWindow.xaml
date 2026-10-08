@@ -93,15 +93,15 @@
                             <DockPanel Grid.Column="2" Background="#202020">
                                 <WrapPanel DockPanel.Dock="Top" Margin="8,6">
                                     <TextBlock x:Name="ItemCheckSummary" Foreground="#CCC" VerticalAlignment="Center"
-                                               FontWeight="Bold" Text="已核对 0 / 0"/>
-                                    <Button Content="全选" Margin="10,0,0,0" Padding="10,2"
+                                               FontWeight="Bold" Text="显示 0 / 0"/>
+                                    <Button Content="全显示" Margin="10,0,0,0" Padding="10,2"
                                             Background="#333" Foreground="#EEE" Click="OnItemCheckAll"/>
-                                    <Button Content="清除" Margin="6,0,0,0" Padding="10,2"
+                                    <Button Content="全隐藏" Margin="6,0,0,0" Padding="10,2"
                                             Background="#333" Foreground="#EEE" Click="OnItemCheckNone"/>
                                 </WrapPanel>
                                 <TextBlock DockPanel.Dock="Top" Foreground="#777" FontSize="11" Margin="8,0,8,4"
                                            TextWrapping="Wrap"
-                                           Text="默认已核对（显示的条目）；有问题的条目默认未核对并标出原因。勾选/取消会记住；点击条目名在画布中高亮。"/>
+                                           Text="勾选=显示，取消=隐藏该条目；点击条目文字也可切换显示并在画布中高亮。有问题的条目标出原因。"/>
                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                                     <StackPanel x:Name="ItemCheckList" Margin="8,4"/>
                                 </ScrollViewer>
