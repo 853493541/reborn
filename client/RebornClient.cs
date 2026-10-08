@@ -1919,6 +1919,7 @@ internal static class RebornClient
             // host/test keys outside the movement command set
             if (e.KeyCode == Keys.D1 && !oneDown) { oneDown = true; AbilitySystem.RequestCast(); }
             else if (e.KeyCode == Keys.P) AbilitySystem.Toggle();
+            else if (e.KeyCode == Keys.T) AbilitySystem.ToggleTimeline();
             else if (e.KeyCode == Keys.C && !cDown) { cDown = true; teleportToStructure = true; }
             else if (e.KeyCode == Keys.I && !iDown) { iDown = true; hud.ToggleInfo(); hud.UpdateLayered(); }
             else if (e.KeyCode == Keys.F7 || e.KeyCode == Keys.OemQuestion)

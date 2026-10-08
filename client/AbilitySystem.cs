@@ -80,6 +80,18 @@ internal static class AbilitySystem
     // tani's own tag records already render)
     static bool skipPss = false;
 
+    // live process timeline overlay (top of the window): shows the current
+    // cast's steps (anim/sound/dummy/sfx) on a time bar + playhead, the last
+    // event and the PSS re-add count, so repeats/restarts are visible live.
+    static Panel tlPanel;
+    static string tlName = "";
+    static string tlEvent = "";
+    static List<ProcStep> tlSteps;
+    static long tlStart = 0, tlUntil = 0, tlElapsed = 0;
+    static int tlReadds = 0;
+    static long tlNextPaint = 0;
+    static bool tlVisible = true;
+
     public static string Selected { get { return sel; } }
     public static bool Active { get { return active; } }
 
@@ -290,6 +302,7 @@ internal static class AbilitySystem
         soundBox.CheckedChanged += delegate { soundOn = soundBox.Checked; };
         panel.Controls.Add(soundBox);
         panelHost.Controls.Add(panel);
+        BuildTimeline();
         Action place = delegate
         {
             ScaleUi();
@@ -298,6 +311,121 @@ internal static class AbilitySystem
         panelHost.Resize += delegate { place(); };
         place();
         if (panel.Visible) panel.BringToFront();
+    }
+
+    // top overlay: the live process timeline (title + step ticks + playhead +
+    // last event + PSS re-add count). T toggles it.
+    static void BuildTimeline()
+    {
+        tlPanel = new Panel();
+        tlPanel.BackColor = Color.FromArgb(200, 0, 0, 0);
+        tlPanel.Height = 76;
+        tlPanel.Width = panelHost.ClientSize.Width;
+        tlPanel.Location = new Point(0, 0);
+        tlPanel.Visible = tlVisible;
+        tlPanel.Paint += delegate(object s, PaintEventArgs e)
+        {
+            try { PaintTimeline(e.Graphics); }
+            catch { }
+        };
+        panelHost.Controls.Add(tlPanel);
+        if (tlPanel.Visible) tlPanel.BringToFront();
+    }
+
+    static Color KindColor(string kind)
+    {
+        if (kind == "anim") return Color.FromArgb(90, 160, 255);
+        if (kind == "sound") return Color.FromArgb(90, 220, 120);
+        if (kind == "dummy") return Color.FromArgb(200, 120, 230);
+        if (kind == "sfx") return Color.FromArgb(255, 170, 60);
+        return Color.FromArgb(160, 160, 160);
+    }
+
+    static string KindTag(string kind)
+    {
+        if (kind == "anim") return "A";
+        if (kind == "sound") return "S";
+        if (kind == "dummy") return "D";
+        if (kind == "sfx") return "F";
+        return "?";
+    }
+
+    static void PaintTimeline(Graphics g)
+    {
+        if (tlPanel == null) return;
+        int w = tlPanel.ClientSize.Width, h = tlPanel.ClientSize.Height;
+        g.Clear(Color.FromArgb(205, 0, 0, 0));
+        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+        float fs = 8.5f * uiScale;
+        using (var f = new Font("Consolas", fs))
+        using (var fb = new Font("Consolas", fs + 1.5f, FontStyle.Bold))
+        using (var white = new SolidBrush(Color.White))
+        using (var gray = new SolidBrush(Color.FromArgb(175, 175, 175)))
+        using (var yellow = new SolidBrush(Color.Yellow))
+        using (var cyan = new SolidBrush(Color.FromArgb(120, 220, 255)))
+        {
+            long total = tlUntil - tlStart;
+            if (total <= 0) total = 1;
+            long el = tlElapsed; if (el < 0) el = 0; if (el > total) el = total;
+            int nsteps = (tlSteps != null) ? tlSteps.Count : 0;
+            int fired = stepIdx; if (fired > nsteps) fired = nsteps;
+            string head = (active ? "CAST" : "idle") + " " + tlName;
+            g.DrawString(head, fb, active ? yellow : white, 8, 2);
+            float hw = g.MeasureString(head, fb).Width;
+            string sub = "  t=" + el + "/" + total + "ms   step " + fired + "/" + nsteps
+                + "   PSS re-adds=" + tlReadds + (pss ? "  [PSS on]" : "");
+            g.DrawString(sub, f, cyan, 8 + hw, 3);
+            if (tlEvent.Length > 0)
+                g.DrawString(tlEvent, f, gray, 8, 2 + (int)(fs * 1.6f));
+
+            // legend
+            string legend = "A anim   S sound   D dummy";
+            float lw = g.MeasureString(legend, f).Width;
+            g.DrawString(legend, f, gray, w - 8 - lw, 2);
+
+            int x0 = 8, x1 = w - 8, y = h - 16, bh = 8;
+            if (x1 <= x0) return;
+            using (var baseBr = new SolidBrush(Color.FromArgb(55, 55, 55)))
+                g.FillRectangle(baseBr, x0, y, x1 - x0, bh);
+            if (tlSteps != null)
+            {
+                foreach (ProcStep st in tlSteps)
+                {
+                    int sx = x0 + (int)((x1 - x0) * (double)st.T / total);
+                    if (sx < x0) sx = x0; if (sx > x1) sx = x1;
+                    Color kc = KindColor(st.Kind);
+                    if (st.Dur > 0)
+                    {
+                        int ex = x0 + (int)((x1 - x0) * (double)(st.T + st.Dur) / total);
+                        if (ex > x1) ex = x1;
+                        using (var b2 = new SolidBrush(Color.FromArgb(70, kc)))
+                            g.FillRectangle(b2, sx, y, Math.Max(1, ex - sx), bh);
+                    }
+                    using (var b = new SolidBrush(kc))
+                    {
+                        g.FillRectangle(b, sx - 1, y - 5, 3, bh + 10);
+                        string tag = KindTag(st.Kind);
+                        g.DrawString(tag, f, b, sx - 2, y + bh + 1);
+                    }
+                }
+            }
+            int phx = x0 + (int)((x1 - x0) * (double)el / total);
+            g.FillRectangle(yellow, phx - 1, y - 8, 2, bh + 16);
+        }
+    }
+
+    public static void ToggleTimeline()
+    {
+        if (tlPanel == null) return;
+        tlVisible = !tlVisible;
+        tlPanel.Visible = tlVisible;
+        if (tlVisible) tlPanel.BringToFront();
+        log("abilities: timeline " + (tlVisible ? "shown" : "hidden"));
+    }
+
+    static void TlEvent(string msg)
+    {
+        tlEvent = msg;
     }
 
     public static void Toggle()
@@ -364,6 +492,10 @@ internal static class AbilitySystem
         animUntil = now + animMs + 150;
         cooldownUntil = untilMs + 2000;
         try { scene.RemoveDummyModel("cast_pss"); } catch { }
+        // timeline overlay state
+        tlName = sel; tlSteps = steps; tlStart = now; tlUntil = untilMs;
+        tlElapsed = 0; tlReadds = 0;
+        TlEvent("start steps=" + steps.Count + " animMs=" + animMs + " pssMs=" + pssMs);
         log("cast: " + sel + " steps=" + steps.Count + " animMs=" + animMs + " pssMs=" + pssMs);
     }
 
@@ -388,6 +520,14 @@ internal static class AbilitySystem
             ScaleUi();
             panel.Location = new Point(Math.Max(0, lastFormW - panel.Width - 12), 36);
             if (panel.Visible) panel.BringToFront();
+            if (tlPanel != null) { tlPanel.Width = lastFormW; tlPanel.Invalidate(); }
+        }
+        // live process timeline (top overlay): playhead + repaint throttle
+        if (active) tlElapsed = now - startMs;
+        if (tlPanel != null && tlVisible && now >= tlNextPaint)
+        {
+            tlNextPaint = now + 40;   // ~25 Hz repaint
+            tlPanel.Invalidate();
         }
         // RC_CAST_CYCLE=<ms>: select + cast the next tani-playing ability every
         // <ms> (test sweep; the cast guard serializes casts). The index advances
@@ -430,6 +570,7 @@ internal static class AbilitySystem
                 {
                     string path = ResolveAnim(castName, st.V);
                     int pr = playClip(path);
+                    TlEvent("anim -> " + Path.GetFileName(path) + " (" + pr + ")");
                     log("cast anim -> " + st.V + " = " + path + " (" + pr + ")");
                 }
                 else if (st.Kind == "sound")
@@ -439,15 +580,20 @@ internal static class AbilitySystem
                         string wav = Path.Combine(soundDir, st.V + ".wav");
                         if (File.Exists(wav)) PlaySound(wav, IntPtr.Zero, SND_ASYNC | SND_FILENAME | SND_NODEFAULT);
                     }
+                    TlEvent("sound -> " + st.V);
                     log("cast sound -> " + st.V);
                 }
                 else if (st.Kind == "dummy")
                 {
                     if (skipPss)
+                    {
+                        TlEvent("dummy skipped -> " + Path.GetFileName(st.V));
                         log("cast dummy skipped (RC_PSS_SKIP) -> " + st.V);
+                    }
                     else
                     {
                         pss = true; pssPath = st.V;
+                        TlEvent("dummy -> " + Path.GetFileName(st.V) + " (dur " + st.Dur + "ms)");
                         log("cast dummy -> " + st.V);
                     }
                 }
@@ -466,6 +612,7 @@ internal static class AbilitySystem
                 var pr = new CLRfloat4(); pr.y = (float)Math.Sin(half); pr.w = (float)Math.Cos(half);
                 var ps = new CLRfloat3(); ps.x = 1f; ps.y = 1f; ps.z = 1f;
                 long h = scene.AddDummyModel("cast_pss", pssPath, pp, pr, ps);
+                TlEvent("pss ADD handle=" + h + " (follows caster)");
                 log("cast pss -> " + pssPath + " handle=" + h + " (follows caster)");
             }
             else if (followMode == "always" || followMode == "jitter" ||
@@ -480,6 +627,8 @@ internal static class AbilitySystem
                 var pr = new CLRfloat4(); pr.y = (float)Math.Sin(half); pr.w = (float)Math.Cos(half);
                 var ps = new CLRfloat3(); ps.x = 1f; ps.y = 1f; ps.z = 1f;
                 long h = scene.AddDummyModel("cast_pss", pssPath, pp, pr, ps);
+                tlReadds++;
+                TlEvent("pss RE-ADD #" + tlReadds + " handle=" + h + " (follow " + followMode + ")");
                 log("cast pss re-added handle=" + h + " (follow " + followMode + ")");
             }
         }
@@ -491,6 +640,7 @@ internal static class AbilitySystem
                 pss = false;
                 try { scene.RemoveDummyModel("cast_pss"); } catch { }
             }
+            TlEvent("done " + castName);
             log("cast done: " + castName);
         }
     }
