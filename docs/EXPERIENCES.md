@@ -5115,3 +5115,13 @@ if the cache/host frames appear.
   WER APPCRASH) while other agents' clients ran; the full map runs clean. Used
   the full map for the item-3 runs. Not a code issue (same exe ran the sandbox
   clean at 17:43).
+
+### 2026-10-07 - v5 - item 4 probe: 花语酥心 tani AVs the client (blacklisted)
+
+- A guarded multi-ability sweep (RC_CAST_CYCLE, full map) AVed at the 3rd cast
+  during 花语酥心's tani (F1swh01辅助技能03.tani): single-cast repro AV in
+  KGEngineCLR.Render (reborn_20261007_181822.log + WER APPCRASH). So the
+  "sequential-tani AV" is at least partly *per-tani* AVs, not only accumulation.
+  Added to TANI_BLACKLIST (plays base .ani); verified clean
+  (reborn_20261007_182006.log, cast done). Sweep to be repeated to find the next
+  offending tani.

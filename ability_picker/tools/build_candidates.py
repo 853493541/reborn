@@ -459,6 +459,10 @@ def apply_tani_anim(steps: list, matched: str, tanis: list) -> list:
 # reproduce on the client, so the blacklist is empty. Re-add an entry if a tani
 # AVs the client (repro log + cast context).
 TANI_BLACKLIST = {
+    # 2026-10-07: single-cast AV on the client (System.AccessViolationException
+    # in KGEngineCLR.Render) with F1swh01辅助技能03.tani (花语酥心); deterministic
+    # (reborn_20261007_181822.log + WER APPCRASH). Play the base .ani.
+    "f1swh01辅助技能03.tani",
 }
 
 

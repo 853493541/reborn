@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-07T18:11:29",
+ "generatedAt": "2026-10-07T18:19:35",
  "cache": "C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd\\SeasunDownloaderV2.4\\jx3-web-map-viewer\\cache-extraction\\pakv4-probe\\ability-matcher\\ability-tani-sound-cache.json",
  "count": 383,
  "withTanis": 307,
@@ -3735,9 +3735,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1swh01辅助技能03.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1swh01辅助技能03.ani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制)"
     },
     {
      "t": 0,
