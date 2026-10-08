@@ -463,6 +463,9 @@ TANI_BLACKLIST = {
     # in KGEngineCLR.Render) with F1swh01辅助技能03.tani (花语酥心); deterministic
     # (reborn_20261007_181822.log + WER APPCRASH). Play the base .ani.
     "f1swh01辅助技能03.tani",
+    # 2026-10-07: same client AV with F1stm09控制03雷震子.tani (雷震子), single
+    # cast (reborn_20261007_182259.log + WER). Found by the RC_CAST_CYCLE sweep.
+    "f1stm09控制03雷震子.tani",
 }
 
 
