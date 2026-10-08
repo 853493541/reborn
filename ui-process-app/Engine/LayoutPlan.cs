@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using MapUiApp.Engine;
@@ -20,12 +21,54 @@ namespace UiProcessApp.Engine
     /// This describes one such container so a static render can show the authored
     /// row layout instead of the off-window prototype.
     /// </summary>
-    public sealed class ListTemplate
+        public sealed class ListTemplate
+        {
+            public string Container { get; set; }
+            public string Ini { get; set; }
+            public string Item { get; set; }
+            public int Count { get; set; }
+            /// <summary>Text child whose $Text gets the matching RowTexts entry (by
+            /// name suffix); when empty the first Text section in the clone is used.
+            /// The shipped list is data-driven, so the sample rows carry the values
+            /// observed in the reference capture.</summary>
+            public string TextSection { get; set; }
+            public List<string> RowTexts { get; set; }
+            /// <summary>Image child whose Frame gets the matching RowFrames entry (by
+            /// name suffix) — e.g. the NPC filter rows' checkbox states, which the
+            /// script swaps between UnCheckNormal 4 and CheckNormal 0
+            /// (MiddleMap.decompiled.lua:501-504, UpdateCheckTitle :5602-5640).</summary>
+            public string ImageSection { get; set; }
+            public List<int> RowFrames { get; set; }
+            /// <summary>Table-driven rows: when set, the rows come from the shipped
+            /// per-map tables (minimap/npc.tab + doodad.tab category rows, UTF-8
+            /// copies under Data/table) instead of Count/RowTexts — the same source
+            /// the Lua's UpdateNpcDoodad appends from (kind + defaultcheck).</summary>
+            public List<RowSource> RowSources { get; set; }
+            /// <summary>Image_NpcOption frames for the table rows' check state:
+            /// CheckNormal 0 / UnCheckNormal 4 (MiddleMap.decompiled.lua:501-504).</summary>
+            public int CheckedFrame { get; set; } = 0;
+            public int UncheckedFrame { get; set; } = 4;
+            /// <summary>"row" flows the clones left-to-right (each after the previous
+            /// sibling's measured width, PosType 9) instead of the default vertical
+            /// stack — the message line's items flow right (FormatAllItemPos).</summary>
+            public string Flow { get; set; }
+            /// <summary>Child section names dropped from every cloned item — the
+            /// script's UpdateAreaOrNpcTruckState swaps the trunk's Bg1/Bg2 art and
+            /// the capture shows no Image_ListCover/Image_Minimize in the rows, so
+            /// the viewer hides them per row state (the clone comes from the raw
+            /// INI, so the window-level `hide` list cannot reach it).</summary>
+            public List<string> Hide { get; set; }
+        }
+
+    /// <summary>One shipped table feeding list rows: category rows are selected by
+    /// `FilterColumn == FilterValue` (npc.tab npcid=0 / doodad.tab doodadid=0).</summary>
+    public sealed class RowSource
     {
-        public string Container { get; set; }
-        public string Ini { get; set; }
-        public string Item { get; set; }
-        public int Count { get; set; }
+        public string Table { get; set; }
+        public string KindColumn { get; set; }
+        public string CheckColumn { get; set; }
+        public string FilterColumn { get; set; }
+        public string FilterValue { get; set; }
     }
 
     /// <summary>
@@ -68,11 +111,129 @@ namespace UiProcessApp.Engine
     /// <summary>
     /// Runtime text override: the Lua sets specific labels after load (e.g. the
     /// mode tab handlers set Handle_Total/Text_SkillTitle to the mode's title).
+    /// When `Table` is set the text comes from a shipped data table (UTF-8 copy
+    /// under Data/table) instead of a literal — e.g. Text_Region is
+    /// WorldMap_GetRegion(regionID).szRegionName (RegionMap.tab) and
+    /// Text_SmallMap is Table_GetMiddleMap(mapID)[i] (MapList.tab MiddleMap0).
     /// </summary>
     public sealed class TextOverride
     {
         public string Section { get; set; }
         public string Text { get; set; }
+        public string Table { get; set; }
+        public string TableKey { get; set; }
+        public string TableKeyColumn { get; set; }
+        public string TableColumn { get; set; }
+
+        /// <summary>
+        /// Replays the Lua's SetFontScheme (e.g. MainMessageLine's getFPSFont/getPingFont
+        /// switch the value label between the shipped schemes 101 orange2 / 102 red2 /
+        /// 105 green2 by the live value). Null keeps the authored FontScheme.
+        /// </summary>
+        public int? FontScheme { get; set; }
+
+        /// <summary>
+        /// Replays the Lua's SetFontColor calls (e.g. the loot rows use
+        /// GetItemFontColorByQuality): a shipped color.txt name written to the
+        /// engine's own FontColor key, which overrides the scheme's fill.
+        /// </summary>
+        public string FontColor { get; set; }
+    }
+
+    /// <summary>
+    /// Runtime image override: the Lua swaps an element's atlas and/or frame after
+    /// load from live data (UpdateAnniversaryTabIcon -> FromUITex(activity icon path,
+    /// frame) for the tab badges). The inventory carries the values matching the
+    /// captured state; a null Image/Frame keeps the authored value. `Checked`
+    /// replays the script's `CheckBox:Check(true)` (the checked frame group is
+    /// painted, e.g. the MiddleMap 地图 tab).
+    /// </summary>
+    public sealed class ImageOverride
+    {
+        public string Section { get; set; }
+        public string Image { get; set; }
+        public int? Frame { get; set; }
+        public bool? Checked { get; set; }
+
+        /// <summary>
+        /// Rarity frame for item slots: the engine's `UpdateItemBoxExtend` draws a
+        /// quality-colored border around an item box; the viewer paints it around
+        /// the authored slot art. `BorderColor` is a shipped color.txt name,
+        /// `BorderWidth` the frame thickness (default 1).
+        /// </summary>
+        public string BorderColor { get; set; }
+        public int? BorderWidth { get; set; }
+
+        /// <summary>
+        /// Zoom for a WndMinimap lens background (the engine draws the map texture at
+        /// the map config's [config] scale around the player; the inventory passes the
+        /// derived factor so the lens shows a local region instead of the whole map).
+        /// </summary>
+        public double? Zoom { get; set; }
+    }
+
+    /// <summary>
+    /// Runtime appended text item: the MessageBox module builds its body with
+    /// `handleMsg:AppendItemFromString(text, font)` (there is no authored section
+    /// for it), so the static render injects a Text child into the list handle.
+    /// The inventory carries the string for the captured state.
+    /// </summary>
+    public sealed class AppendSpec
+    {
+        public string Container { get; set; }
+        public string Text { get; set; }
+        public int? Font { get; set; }
+        public double? Width { get; set; }
+        public double? Height { get; set; }
+        public double? Top { get; set; }
+        public int? HAlign { get; set; }
+        public int? VAlign { get; set; }
+        /// <summary>Horizontal flow (PosType 9, measured width, no authored box): the
+        /// runtime AppendItemFromString + FormatAllItemPos sequence in a HandleType 3
+        /// row, e.g. ACC_TreasureFinal's banishing countdown = 将在(f257) / seconds(f258)
+        /// / 秒后传出战场(f257).</summary>
+        public bool? Flow { get; set; }
+    }
+
+    /// <summary>
+    /// Runtime multi-INI append: the script pulls a subtree out of another INI and
+    /// attaches it under a handle of the open window — `Target.lua` does
+    /// `Handle_Energy:AppendItemFromIni(TargetCommonPath, &lt;kungfu handle&gt;, nil, true)`
+    /// (Target.decompiled.lua:967-989), so the target frame is TargetPlayer10.ini +
+    /// the selected class handle from TargetCommon.ini. The item keeps its authored
+    /// relative position; its `._Parent` is rewired to `container`.
+    /// </summary>
+    public sealed class AppendIniSpec
+    {
+        public string Container { get; set; }
+        /// <summary>Second INI path relative to the same root as the window's own path.</summary>
+        public string Path { get; set; }
+        /// <summary>Section whose subtree is appended (e.g. TargetCommon's Handle_TM).</summary>
+        public string Item { get; set; }
+        /// <summary>LockShowAndHide=1 sections the script shows for this state (merged
+        /// into the window's script-shown set).</summary>
+        public List<string> Show { get; set; }
+        /// <summary>Sections dropped from the appended subtree.</summary>
+        public List<string> Hide { get; set; }
+    }
+
+    /// <summary>
+    /// A viewer-defined page for windows the game switches by data instead of by
+    /// `Page_*` sections (the loading screen shows a different map per transfer).
+    /// Selecting the page replays its overrides on top of the window's own.
+    /// </summary>
+    public sealed class PageState
+    {
+        public string Id { get; set; }
+        public string Label { get; set; }
+        public List<ImageOverride> Images { get; set; }
+        public List<TextOverride> Texts { get; set; }
+        public List<AdjustSpec> Adjust { get; set; }
+        /// <summary>Sections dropped for this page on top of the window's own
+        /// hide list (e.g. the BattleFieldMap's map-suffixed team/line elements
+        /// that only exist for map 512 — the runtime looks up
+        /// Handle_Team_&lt;currentMapID&gt;_n, so other maps show none).</summary>
+        public List<string> Hide { get; set; }
     }
 
     /// <summary>
@@ -90,6 +251,31 @@ namespace UiProcessApp.Engine
         public double? Top { get; set; }
         public double? RelX { get; set; }
         public double? RelY { get; set; }
+        /// <summary>Overrides the authored ImageType (10 = nine-slice) when the
+        /// client's render proves a frame is diced but the INI omits the key.</summary>
+        public int? ImageType { get; set; }
+        /// <summary>Overrides the authored text alignment. The engine draws runtime-set
+        /// messages centred in their box even where the INI leaves HAlign at the left
+        /// default (ExitPanel's Text_ExitGame box is 241 wide for a ~150px message and
+        /// the icon+box group is centred on the dialog).</summary>
+        public int? HAlign { get; set; }
+        /// <summary>Overrides Alpha. The authored prototypes of runtime clones are often
+        /// parked invisible (RemainingTimeNotify's Image_Num is Alpha=0 in the INI) while
+        /// the script's cloned items render fully — the inventory replays the visible
+        /// state for the clone sections.</summary>
+        public int? Alpha { get; set; }
+        /// <summary>Overrides the authored PosType when the viewer's inference for it is
+        /// wrong for this section. BigBagPanel's Handle_Total authors PosType 10 but sits
+        /// at the window origin: the script's UpdateSize resizes its background children
+        /// (Handle_Bg/Image_Glassmorphism/Image_HBg) to the full frame (BigBagPanel.lua
+        /// L1525-1555, init UpdateSize call L6788-6795), so the frame cannot be offset.</summary>
+        public int? PosType { get; set; }
+        /// <summary>Clips the container's children to its authored rect. The engine clips
+        /// a scroll control's content handle: BigBagPanel registers Handle_Bag_Normal with
+        /// RegisterScrollControl (BigBagPanel.lua L6742-6752) and lays the six category
+        /// rows out with FormatAllItemPos (L1442-1455), clipping them to the 330x111
+        /// viewport.</summary>
+        public bool? Clip { get; set; }
     }
 
     /// <summary>
@@ -101,45 +287,100 @@ namespace UiProcessApp.Engine
     /// </summary>
     public static class LayoutPlanBuilder
     {
+        /// <summary>
+        /// Section lookup for inventory-supplied names: exact match first, then a
+        /// case-insensitive scan. Section identity is case-sensitive in the engine
+        /// (shipped INIs carry case-differing twins), so the plan's ByName must not
+        /// fold them together; the fallback keeps override entries authored with
+        /// sloppy casing working.
+        /// </summary>
+        private static bool TryFind(IniFile file, string name, out IniSection section)
+        {
+            if (file.ByName.TryGetValue(name, out section)) return true;
+            foreach (var candidate in file.Sections)
+            {
+                if (string.Equals(candidate.Name, name, StringComparison.OrdinalIgnoreCase))
+                {
+                    section = candidate;
+                    return true;
+                }
+            }
+            section = null;
+            return false;
+        }
+
         public static LayoutPlan Build(IniFile ini, string selectedPage)
         {
-            var pageCache = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            string PageOf(string name)
+            // Page-sets: each WndPageSet shows exactly one page. The viewer's selected
+            // page wins for its own page-set; every other page-set shows its authored
+            // default (the tab whose checkbox has CheckedWhenCreate=1, else Page_0).
+            // The mapping is authored: Page_i=<page> + CheckBox_i=<tab> on the set.
+            var pageSetPages = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
+            var shownPage = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var ps in ini.Sections)
             {
-                if (pageCache.TryGetValue(name, out var cached)) return cached;
-                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                var current = name;
-                string result = null;
-                while (!string.IsNullOrWhiteSpace(current) && seen.Add(current))
+                if (!string.Equals(ps.Get("._WndType"), "WndPageSet", StringComparison.OrdinalIgnoreCase)) continue;
+                var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                string first = null, defaultPage = null;
+                for (int i = 0; i < 64; i++)
                 {
-                    if (current.StartsWith("Page_", StringComparison.OrdinalIgnoreCase)) { result = current; break; }
-                    var parent = ini.ByName.TryGetValue(current, out var section) ? section.Get("._Parent") : null;
-                    current = parent;
+                    var page = ps.Get("Page_" + i);
+                    if (string.IsNullOrWhiteSpace(page)) break;
+                    if (first == null) first = page;
+                    map[page] = page;
+                    var tab = ps.Get("CheckBox_" + i);
+                    if (defaultPage == null && !string.IsNullOrWhiteSpace(tab) &&
+                        ini.ByName.TryGetValue(tab, out var tabSec) && tabSec.GetInt("CheckedWhenCreate") == 1)
+                        defaultPage = page;
                 }
-                pageCache[name] = result;
-                return result;
+                if (map.Count == 0) continue;
+                pageSetPages[ps.Name] = map;
+                var shown = defaultPage ?? first;
+                if (!string.IsNullOrWhiteSpace(selectedPage) && map.ContainsKey(selectedPage)) shown = selectedPage;
+                shownPage[ps.Name] = shown;
             }
 
-            var chain = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var cursor = selectedPage;
-            while (!string.IsNullOrWhiteSpace(cursor))
-            {
-                chain.Add(cursor);
-                cursor = ini.ByName.TryGetValue(cursor, out var section) ? section.Get("._Parent") : null;
-            }
-
+            // A section renders iff at every page-set ancestor it lies on the shown page.
             bool OnPage(string name)
             {
-                if (string.IsNullOrWhiteSpace(selectedPage)) return true;
-                if (chain.Contains(name)) return true;
-                var page = PageOf(name);
-                return page == null || string.Equals(page, selectedPage, StringComparison.OrdinalIgnoreCase);
+                if (pageSetPages.Count == 0) return true;
+                var cursor = name;
+                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                while (!string.IsNullOrWhiteSpace(cursor) && seen.Add(cursor))
+                {
+                    if (!ini.ByName.TryGetValue(cursor, out var sec)) break;
+                    var parent = sec.Get("._Parent");
+                    if (string.IsNullOrWhiteSpace(parent)) break;
+                    if (pageSetPages.TryGetValue(parent, out var pagesOfSet) && pagesOfSet.ContainsKey(cursor) &&
+                        shownPage.TryGetValue(parent, out var shown) &&
+                        !string.Equals(cursor, shown, StringComparison.OrdinalIgnoreCase))
+                        return false;
+                    cursor = parent;
+                }
+                return true;
             }
 
-            var pages = ini.Sections
-                .Where(s => s.Name.StartsWith("Page_", StringComparison.OrdinalIgnoreCase))
-                .Select(s => s.Name)
-                .ToList();
+            // The combo lists the top page-set's pages (the set whose parent is the root);
+            // fall back to every Page_* section for scripts without a page-set.
+            var pages = new List<string>();
+            var rootName = ini.Sections.Count > 0 ? ini.Sections[0].Name : null;
+            foreach (var ps in ini.Sections)
+            {
+                if (!string.Equals(ps.Get("._WndType"), "WndPageSet", StringComparison.OrdinalIgnoreCase)) continue;
+                if (!string.Equals(ps.Get("._Parent"), rootName, StringComparison.OrdinalIgnoreCase)) continue;
+                for (int i = 0; i < 64; i++)
+                {
+                    var page = ps.Get("Page_" + i);
+                    if (string.IsNullOrWhiteSpace(page)) break;
+                    pages.Add(page);
+                }
+                break;
+            }
+            if (pages.Count == 0)
+                pages = ini.Sections
+                    .Where(s => s.Name.StartsWith("Page_", StringComparison.OrdinalIgnoreCase))
+                    .Select(s => s.Name)
+                    .ToList();
 
             var filtered = new IniFile();
             foreach (var section in ini.Sections)
@@ -151,7 +392,57 @@ namespace UiProcessApp.Engine
                 filtered.Sections.Add(clone);
                 filtered.ByName[clone.Name] = clone;
             }
+
+            // AppendString handles (HandleType 4, AppendStringType=1): the engine appends
+            // the authored string as a text item at load (KFActionBarPanel's Handle_Text*,
+            // MobileBuffList's Handle_BuffText). Synthesize the item so it renders.
+            var appendHandles = filtered.Sections
+                .Where(s => !string.IsNullOrWhiteSpace(s.Get("$AppendString")))
+                .ToList();
+            foreach (var handle in appendHandles)
+            {
+                var itemName = handle.Name + "~Append";
+                if (filtered.ByName.ContainsKey(itemName)) continue;
+                var item = new IniSection { Name = itemName };
+                item.Values["._WndType"] = "Text";
+                item.Values["._Parent"] = handle.Name;
+                item.Values["$Text"] = handle.Get("$AppendString");
+                item.Values["Left"] = "0";
+                item.Values["Top"] = "0";
+                if (handle.Get("FontScheme") != null) item.Values["FontScheme"] = handle.Get("FontScheme");
+                if (handle.Get("FontColor") != null) item.Values["FontColor"] = handle.Get("FontColor");
+                var width = handle.Get("Width");
+                if (!string.IsNullOrWhiteSpace(width)) item.Values["Width"] = width;
+                filtered.Sections.Add(item);
+                filtered.ByName[itemName] = item;
+            }
             return new LayoutPlan { Filtered = filtered, Pages = pages };
+        }
+
+        /// <summary>The engine's default page: the top page-set's tab with
+        /// CheckedWhenCreate=1, else its first page (Page_0).</summary>
+        public static string DefaultPage(IniFile ini)
+        {
+            if (ini == null || ini.Sections.Count == 0) return null;
+            var rootName = ini.Sections[0].Name;
+            foreach (var ps in ini.Sections)
+            {
+                if (!string.Equals(ps.Get("._WndType"), "WndPageSet", StringComparison.OrdinalIgnoreCase)) continue;
+                if (!string.Equals(ps.Get("._Parent"), rootName, StringComparison.OrdinalIgnoreCase)) continue;
+                string first = null;
+                for (int i = 0; i < 64; i++)
+                {
+                    var page = ps.Get("Page_" + i);
+                    if (string.IsNullOrWhiteSpace(page)) break;
+                    if (first == null) first = page;
+                    var tab = ps.Get("CheckBox_" + i);
+                    if (!string.IsNullOrWhiteSpace(tab) && ini.ByName.TryGetValue(tab, out var tabSec) &&
+                        tabSec.GetInt("CheckedWhenCreate") == 1)
+                        return page;
+                }
+                return first;
+            }
+            return null;
         }
 
         /// <summary>Keeps only the subtrees under the listed sections (plus their ancestors).</summary>
@@ -256,7 +547,9 @@ namespace UiProcessApp.Engine
                 while (!string.IsNullOrWhiteSpace(cursor) && seen.Add(cursor))
                 {
                     // A script-shown section unlocks its whole subtree (the tab
-                    // checkboxes carry LockShowAndHide=1 and own the tab label).
+                    // checkboxes carry LockShowAndHide=1 and own the tab label; the
+                    // minimap's Wnd_Over button column is shown from the inventory in
+                    // the same way the module toggles its buttons).
                     if (keep.Contains(cursor)) return false;
                     if (filtered.ByName.TryGetValue(cursor, out var section) &&
                         section.GetInt("LockShowAndHide") == 1)
@@ -286,11 +579,997 @@ namespace UiProcessApp.Engine
             if (texts == null) return;
             foreach (var text in texts)
             {
-                if (text == null || string.IsNullOrWhiteSpace(text.Section) ||
-                    string.IsNullOrWhiteSpace(text.Text)) continue;
-                if (!filtered.ByName.TryGetValue(text.Section, out var section)) continue;
-                section.Values["$Text"] = text.Text;
+                if (text == null || string.IsNullOrWhiteSpace(text.Section)) continue;
+                string value = text.Text;
+                if (!string.IsNullOrWhiteSpace(text.Table))
+                {
+                    var table = TabTable.Load(text.Table);
+                    value = table?.Lookup(text.TableKeyColumn, text.TableKey, text.TableColumn);
+                }
+                if (!TryFind(filtered, text.Section, out var section)) continue;
+                if (!string.IsNullOrWhiteSpace(value))
+                    section.Values["$Text"] = value;
+                if (text.FontScheme.HasValue)
+                    section.Values["FontScheme"] = text.FontScheme.Value
+                        .ToString(System.Globalization.CultureInfo.InvariantCulture);
+                if (!string.IsNullOrWhiteSpace(text.FontColor))
+                    section.Values["FontColor"] = text.FontColor;
             }
+        }
+
+        /// <summary>Applies the Lua's runtime FromUITex calls (inventory `images`).</summary>
+        public static void ApplyImages(IniFile filtered, IEnumerable<ImageOverride> images)
+        {
+            if (images == null) return;
+            foreach (var image in images)
+            {
+                if (image == null || string.IsNullOrWhiteSpace(image.Section)) continue;
+                if (!TryFind(filtered, image.Section, out var section)) continue;
+                // A WndMinimap paints its texture from `defaulttexture` (no live map in
+                // the viewer), so an image override targets that key for lens sections.
+                var textureKey = string.Equals(section.Get("._WndType"), "WndMinimap",
+                    StringComparison.OrdinalIgnoreCase) ? "defaulttexture" : "Image";
+                if (!string.IsNullOrWhiteSpace(image.Image)) section.Values[textureKey] = image.Image;
+                if (image.Zoom.HasValue)
+                    section.Values["$LensZoom"] = image.Zoom.Value
+                        .ToString(System.Globalization.CultureInfo.InvariantCulture);
+                if (image.Frame.HasValue)
+                    section.Values["Frame"] = image.Frame.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                if (image.Checked.HasValue)
+                    section.Values["CheckedWhenCreate"] = image.Checked.Value ? "1" : "0";
+                if (!string.IsNullOrWhiteSpace(image.BorderColor))
+                    section.Values["$BorderColor"] = image.BorderColor;
+                if (image.BorderWidth.HasValue)
+                    section.Values["$BorderWidth"] = image.BorderWidth.Value
+                        .ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }
+        }
+
+        /// <summary>
+        /// Mirrors AppendItemFromString: injects a Text child into a list handle.
+        /// The injected item flows through the normal HandleType 3/6 layout (and is
+        /// sized by its measured text), so the MessageBox body renders where the
+        /// script would put it. A `Top` offset wraps the text in a spacer box because
+        /// list items ignore authored offsets (Wnd_Msg authors FlexMarginTop=20).
+        /// </summary>
+        public static void ApplyAppends(IniFile filtered, IEnumerable<AppendSpec> appends)
+        {
+            if (appends == null) return;
+            int index = 0;
+            foreach (var append in appends)
+            {
+                index++;
+                if (append == null || string.IsNullOrWhiteSpace(append.Container) ||
+                    string.IsNullOrWhiteSpace(append.Text)) continue;
+                if (!TryFind(filtered, append.Container, out var container)) continue;
+
+                var name = $"__append_{append.Container}_{index}";
+                if (filtered.ByName.ContainsKey(name)) continue;
+                var flow = append.Flow == true;
+                var width = append.Width ?? (flow ? 0 : container.GetInt("Width"));
+                var height = append.Height ?? 20;
+                var top = append.Top ?? 0;
+                var parent = append.Container;
+                if (top > 0)
+                {
+                    var box = new IniSection { Name = name + "_box" };
+                    box.Values["._WndType"] = "WndWindow";
+                    box.Values["._Parent"] = append.Container;
+                    if (width > 0)
+                        box.Values["Width"] = width.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    box.Values["Height"] = (height + top).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    filtered.Sections.Add(box);
+                    filtered.ByName[box.Name] = box;
+                    parent = box.Name;
+                }
+
+                var section = new IniSection { Name = name };
+                section.Values["._WndType"] = "Text";
+                section.Values["._Parent"] = parent;
+                section.Values["$Text"] = append.Text;
+                section.Values["FontScheme"] = (append.Font ?? 18)
+                    .ToString(System.Globalization.CultureInfo.InvariantCulture);
+                section.Values["Left"] = "0";
+                section.Values["Top"] = top.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                if (width > 0)
+                    section.Values["Width"] = width.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                section.Values["Height"] = height.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                section.Values["HAlign"] = (append.HAlign ?? (flow ? 0 : 1))
+                    .ToString(System.Globalization.CultureInfo.InvariantCulture);
+                section.Values["VAlign"] = (append.VAlign ?? 1)
+                    .ToString(System.Globalization.CultureInfo.InvariantCulture);
+                if (flow) section.Values["PosType"] = "9";
+                filtered.Sections.Add(section);
+                filtered.ByName[name] = section;
+            }
+        }
+
+        /// <summary>
+        /// Appends a subtree of a second INI under a container of the filtered plan
+        /// (the Lua's AppendItemFromIni). The item's `._Parent` is rewired to the
+        /// container; descendants keep their chains; names already present are skipped
+        /// (the engine clones, the viewer reuses the authored section names).
+        /// </summary>
+        public static void ApplyAppendIni(IniFile filtered, IEnumerable<AppendIniSpec> specs, Func<string, IniFile> load)
+        {
+            if (specs == null || load == null) return;
+            foreach (var spec in specs)
+            {
+                if (spec == null || string.IsNullOrWhiteSpace(spec.Container) ||
+                    string.IsNullOrWhiteSpace(spec.Path) || string.IsNullOrWhiteSpace(spec.Item)) continue;
+                if (!TryFind(filtered, spec.Container, out _)) continue;
+                var source = load(spec.Path);
+                if (source == null || !TryFind(source, spec.Item, out var item)) continue;
+
+                var hidden = new HashSet<string>(
+                    spec.Hide ?? new List<string>(), StringComparer.OrdinalIgnoreCase);
+                bool Dropped(string name)
+                {
+                    var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    var cursor = name;
+                    while (!string.IsNullOrWhiteSpace(cursor) && seen.Add(cursor))
+                    {
+                        if (hidden.Contains(cursor)) return true;
+                        cursor = source.ByName.TryGetValue(cursor, out var s) ? s.Get("._Parent") : null;
+                    }
+                    return false;
+                }
+
+                foreach (var section in source.Sections)
+                {
+                    var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    var cursor = section.Name;
+                    bool inSubtree = false;
+                    while (!string.IsNullOrWhiteSpace(cursor) && seen.Add(cursor))
+                    {
+                        if (string.Equals(cursor, item.Name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            inSubtree = true;
+                            break;
+                        }
+                        cursor = source.ByName.TryGetValue(cursor, out var s) ? s.Get("._Parent") : null;
+                    }
+                    if (!inSubtree || Dropped(section.Name)) continue;
+                    if (filtered.ByName.ContainsKey(section.Name)) continue;
+                    var clone = new IniSection { Name = section.Name };
+                    foreach (var pair in section.Values) clone.Values[pair.Key] = pair.Value;
+                    if (ReferenceEquals(section, item))
+                        clone.Values["._Parent"] = spec.Container;
+                    filtered.Sections.Add(clone);
+                    filtered.ByName[clone.Name] = clone;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Applies the runtime state recorded by tools/ui/replay_all.py
+        /// (Data/runtime_state/&lt;stem&gt;.tsv): the client's own script mutations replayed
+        /// offline (docs/ui/UI_RUNTIME_REPLAY.md). Called before the inventory overrides
+        /// so curated entries still win.
+        /// </summary>
+        public static int ApplyRuntimeState(IniFile filtered, string iniPath)
+        {
+            if (filtered == null || string.IsNullOrWhiteSpace(iniPath)) return 0;
+            var stem = Path.GetFileNameWithoutExtension(iniPath);
+            if (string.IsNullOrWhiteSpace(stem)) return 0;
+            var statePath = FindRuntimeStateFile(stem);
+            if (statePath == null) return 0;
+            // Only apply replays that completed: a partial replay's mutations stop
+            // mid-init (sections hidden before the engine shows them), which would
+            // break GT-matched windows (the minimap lost its whole subtree).
+            if (!ReplayCompleted(statePath)) return 0;
+            return ApplyRuntimeMutations(filtered, File.ReadAllLines(statePath), iniPath);
+        }
+
+        /// <summary>
+        /// Applies mutation lines (`section TAB method TAB args`, the replay TSV format) —
+        /// shared by the on-disk runtime state and the interaction overlay (viewer clicks
+        /// dispatched to tools/ui/replay_server.lua, docs/ui/UI_INTERACTION_REPLAY.md).
+        /// </summary>
+        public static int ApplyRuntimeMutations(IniFile filtered, IEnumerable<string> lines, string iniPath = null)
+        {
+            if (filtered == null || lines == null) return 0;
+            var hidden = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var rootName = filtered.Sections.Count > 0 ? filtered.Sections[0].Name : null;
+            var sourceCache = new Dictionary<string, IniFile>(StringComparer.OrdinalIgnoreCase);
+        var pendingClear = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var addedByContainer = new Dictionary<string, List<IniSection>>(StringComparer.OrdinalIgnoreCase);
+        var lastCloneByContainer = new Dictionary<string, IniSection>(StringComparer.OrdinalIgnoreCase);
+        // receiver section -> containers its appends landed in (the engine's item list)
+        var containersByReceiver = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+        // window -> its CreateItemData source (ini + prototype section)
+        var itemDataSources = new Dictionary<string, (string IniPath, string Section)>(StringComparer.OrdinalIgnoreCase);
+            int applied = 0;
+            foreach (var line in lines)
+            {
+                if (string.IsNullOrWhiteSpace(line)) continue;
+                var parts = line.Split('\t');
+                if (parts.Length < 2 || parts[0] == "section") continue;
+                if (!TryFind(filtered, parts[0], out var section)) continue;
+                switch (parts[1])
+                {
+                    case "SetSize":
+                        SetValue(section, "Width", parts, 2);
+                        SetValue(section, "Height", parts, 3);
+                        applied++;
+                        break;
+                    case "SetW":
+                        SetValue(section, "Width", parts, 2);
+                        applied++;
+                        break;
+                    case "SetH":
+                        SetValue(section, "Height", parts, 2);
+                        applied++;
+                        break;
+                    case "SetRelPos":
+                        SetValue(section, "Left", parts, 2);
+                        SetValue(section, "Top", parts, 3);
+                        applied++;
+                        break;
+                    case "SetAbsPos":
+                        // SetAbsPos is relative to the WINDOW ROOT, not the parent: the
+                        // engine's LuaWindow_SetAbsPos (KGUIX64 0x1801c36a0) subtracts the
+                        // frame origin before setting. Store it for UiLayout to resolve
+                        // against the root (a parent-relative Left/Top would be wrong for a
+                        // nested control — Collection's Image_BottomBg rendered at y=987).
+                        if (parts.Length > 3 && !string.IsNullOrWhiteSpace(parts[2]) &&
+                            !string.IsNullOrWhiteSpace(parts[3]))
+                            section.Values["$AbsPos"] = parts[2] + "," + parts[3];
+                        applied++;
+                        break;
+                    case "SetRelX":
+                        SetValue(section, "Left", parts, 2);
+                        applied++;
+                        break;
+                    case "SetRelY":
+                        SetValue(section, "Top", parts, 2);
+                        applied++;
+                        break;
+                    case "SetFrame":
+                        SetValue(section, "Frame", parts, 2);
+                        applied++;
+                        break;
+                    case "SetText":
+                        if (parts.Length > 2)
+                        {
+                            // Per-item text: the harness records the clone's Lookup+SetText
+                            // on the container (it cannot model the clone), so a SetText
+                            // right after an append lands on the newest clone's Text child.
+                            var textSection = section;
+                            if (lastCloneByContainer.TryGetValue(section.Name, out var lastClone))
+                            {
+                                var textChild = FindTextChild(filtered, lastClone.Name);
+                                if (textChild != null) textSection = textChild;
+                            }
+                            textSection.Values["$Text"] = string.Join("\t", parts.Skip(2));
+                            applied++;
+                        }
+                        break;
+                    case "SetFontScheme":
+                        SetValue(section, "FontScheme", parts, 2);
+                        applied++;
+                        break;
+                    case "SetAlpha":
+                        SetValue(section, "Alpha", parts, 2);
+                        applied++;
+                        break;
+                    case "Show":
+                        // Show(bShow): the engine's setter takes a boolean, so
+                        // Show(false) hides (TopMenu's parked dropdown list is hidden
+                        // at rest this way and must not render at its off-window spot).
+                        if (parts.Length > 2 && parts[2].Equals("false", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (!string.Equals(section.Name, rootName, StringComparison.OrdinalIgnoreCase))
+                                hidden.Add(section.Name);
+                        }
+                        else
+                            hidden.Remove(section.Name);
+                        applied++;
+                        break;
+                    case "Hide":
+                        if (!string.Equals(section.Name, rootName, StringComparison.OrdinalIgnoreCase))
+                            hidden.Add(section.Name);
+                        applied++;
+                        break;
+                    case "SetVisible":
+                        if (parts.Length > 2 && parts[2].Equals("false", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (!string.Equals(section.Name, rootName, StringComparison.OrdinalIgnoreCase))
+                                hidden.Add(section.Name);
+                        }
+                        else
+                            hidden.Remove(section.Name);
+                        applied++;
+                        break;
+                    // ---- runtime item population (the engine's list building) ----
+                    case "Clear":
+                        // The engine empties the container's item list (the authored
+                        // prototype is an item too). Defer it: remove the old items only
+                        // when the script actually appends replacements, so a replay whose
+                        // data-driven append loop under-recorded cannot blank a list.
+                        pendingClear.Add(ResolveContentTarget(filtered, section).Name);
+                        if (containersByReceiver.TryGetValue(section.Name, out var clearTargets))
+                            foreach (var c in clearTargets) pendingClear.Add(c);
+                        applied++;
+                        break;
+                    case "AppendItemFromIni":
+                    case "AppendContentFromIni":
+                    {
+                        // AppendItemFromIni(container, iniPath, item [, flag]) and
+                        // AppendContentFromIni(container, iniPath, item [, newName]) clone
+                        // the named INI subtree under the container (the engine's item).
+                        var source = FindAppendSource(filtered, iniPath, parts, sourceCache);
+                        if (source != null)
+                        {
+                            var desired = parts.Length > 4 && !string.IsNullOrWhiteSpace(parts[4]) ? parts[4] : null;
+                            AppendRuntimeItem(filtered, section, source, desired, containersByReceiver,
+                                pendingClear, addedByContainer, lastCloneByContainer, ref applied);
+                        }
+                        break;
+                    }
+                    case "AppendItemFromData":
+                    {
+                        // AppendItemFromData(data): the row prototype comes from the
+                        // window's CreateItemData source (its ini + section); the recorded
+                        // data argument is the source's tostring "[<creator>]".
+                        IniSection source = null;
+                        var creator = parts.Length > 2 && parts[2].Length > 2 &&
+                            parts[2][0] == '[' && parts[2][parts[2].Length - 1] == ']'
+                            ? parts[2].Substring(1, parts[2].Length - 2) : null;
+                        if (creator != null && itemDataSources.TryGetValue(creator, out var src))
+                            source = FindAppendSource(filtered, src.IniPath,
+                                new[] { "", "", src.IniPath, src.Section }, sourceCache);
+                        if (source == null)
+                        {
+                            foreach (var kv in itemDataSources)
+                            {
+                                source = FindAppendSource(filtered, kv.Value.IniPath,
+                                    new[] { "", "", kv.Value.IniPath, kv.Value.Section }, sourceCache);
+                                if (source != null) break;
+                            }
+                        }
+                        if (source != null)
+                            AppendRuntimeItem(filtered, section, source, null, containersByReceiver,
+                                pendingClear, addedByContainer, lastCloneByContainer, ref applied);
+                        break;
+                    }
+                    case "AppendItemFromString":
+                    {
+                        // Text-only item: a minimal Text section carrying the string.
+                        if (parts.Length > 2)
+                        {
+                            var name = UniqueName(filtered, section.Name + "~Text");
+                            var item = new IniSection { Name = name };
+                            item.Values["._WndType"] = "Text";
+                            item.Values["._Parent"] = section.Name;
+                            item.Values["$Text"] = parts[2];
+                            AddSection(filtered, item);
+                            applied++;
+                        }
+                        break;
+                    }
+                    // ---- the engine's arrangement passes ----
+                    case "FormatAllItemPos":
+                    case "FormatAllContentPos":
+                    {
+                        // Mark the container(s) the receiver's appends went into (the
+                        // engine's FormatAllItemPos arranges the receiver's item list).
+                        ResolveContentTarget(filtered, section).Values["$FormatItems"] = "1";
+                        if (containersByReceiver.TryGetValue(section.Name, out var formatTargets))
+                            foreach (var c in formatTargets)
+                                if (TryFind(filtered, c, out var t)) t.Values["$FormatItems"] = "1";
+                        applied++;
+                        break;
+                    }
+                    case "SetSizeByAllItemSize":
+                    {
+                        ResolveContentTarget(filtered, section).Values["$SizeByItems"] = "1";
+                        if (containersByReceiver.TryGetValue(section.Name, out var sizeTargets))
+                            foreach (var c in sizeTargets)
+                                if (TryFind(filtered, c, out var t)) t.Values["$SizeByItems"] = "1";
+                        applied++;
+                        break;
+                    }
+                    case "SetPoint":
+                        // SetPoint(srcSide, sx, sy, dstSide, dx, dy) -> the viewer's
+                        // AnchorArgs "dstSide,srcSide,dx,dy" (ApplyAnchors format).
+                        if (parts.Length > 7)
+                        {
+                            section.Values["AnchorArgs"] = parts[5] + "," + parts[2] + "," + parts[6] + "," + parts[7];
+                            applied++;
+                        }
+                        break;
+                    case "SetOverTextPosition":
+                        SetValue(section, "Left", parts, 2);
+                        SetValue(section, "Top", parts, 3);
+                        applied++;
+                        break;
+                    case "SetOverTextFontScheme":
+                        SetValue(section, "FontScheme", parts, 2);
+                        applied++;
+                        break;
+                    // ---- runtime render source / mode ----
+                    case "FromUITex":
+                        if (parts.Length > 2 && !string.IsNullOrWhiteSpace(parts[2]))
+                            section.Values["Image"] = parts[2];
+                        SetValue(section, "Frame", parts, 3);
+                        applied++;
+                        break;
+                    case "FromTextureFile":
+                        // Runtime image source from a file path (MonopolyCardUseConfirm's
+                        // TreasureChest1.UITex, MonopolyLandPurchaseDlg's ForSale.tga).
+                        // Stub values ("0", "") carry no path and stay authored.
+                        if (parts.Length > 2 && !string.IsNullOrWhiteSpace(parts[2]) && parts[2] != "0")
+                            section.Values["Image"] = parts[2];
+                        applied++;
+                        break;
+                    case "SetImageType":
+                        SetValue(section, "ImageType", parts, 2);
+                        applied++;
+                        break;
+                    case "SetPercentage":
+                        SetValue(section, "$Percentage", parts, 2);
+                        applied++;
+                        break;
+                    case "SetFontColor":
+                        if (parts.Length > 2) section.Values["$FontColor"] = parts[2];
+                        applied++;
+                        break;
+                    case "SetDragArea":
+                        // The window's drag region (left, top, right, bottom insets):
+                        // recorded for the viewer's window-move affordance.
+                        if (parts.Length > 4)
+                            section.Values["$DragArea"] = parts[2] + "," + parts[3] + "," + parts[4] + (parts.Length > 5 ? "," + parts[5] : "");
+                        applied++;
+                        break;
+                    case "EnableDrag":
+                        if (parts.Length > 2)
+                            section.Values["$DragEnabled"] = parts[2].Equals("false", StringComparison.OrdinalIgnoreCase) ? "0" : "1";
+                        applied++;
+                        break;
+                    case "RegisterLButtonDrag":
+                        section.Values["$DragRegistered"] = "1";
+                        applied++;
+                        break;
+                    case "RegisterScrollControl":
+                        // scroll.lua binds a bar to its content handle list (tList =
+                        // { framePath, handle, step }); the viewer maps the wheel/thumb
+                        // offset onto that handle. The first non-empty entry is the handle.
+                        if (parts.Length > 5)
+                            foreach (var target in parts[5].Split(','))
+                            {
+                                if (string.IsNullOrWhiteSpace(target)) continue;
+                                section.Values["$ScrollTarget"] = target;
+                                break;
+                            }
+                        applied++;
+                        break;
+                    case "SetAnimateGroupNormal":
+                    case "SetAnimateGroupMouseOver":
+                    case "SetAnimateGroupMouseDown":
+                    {
+                        // Animation groups (CompassPanel/GMPanel): the static render shows
+                        // the Normal group; the hover/pressed groups are recorded for the
+                        // interaction layer (hover dispatches the script's own handlers).
+                        var key = parts[1] == "SetAnimateGroupNormal" ? "$NormalGroup"
+                            : parts[1] == "SetAnimateGroupMouseOver" ? "$MouseOverGroup" : "$MouseDownGroup";
+                        SetValue(section, key, parts, 2);
+                        applied++;
+                        break;
+                    }
+                    case "SetAnimation":
+                    case "SetLoopCount":
+                    case "SetTextAutoTipEnabled":
+                        // Frame animation timeline / tooltip flag: no static layout effect
+                        // (the engine ticks frames and shows tooltips at draw time).
+                        applied++;
+                        break;
+                    // ---- control state ----
+                    case "Enable":
+                        if (parts.Length > 2)
+                            section.Values["$Disabled"] = parts[2].Equals("false", StringComparison.OrdinalIgnoreCase) ? "1" : "0";
+                        applied++;
+                        break;
+                    case "Check":
+                        if (parts.Length > 2)
+                            section.Values["$Checked"] = parts[2].Equals("false", StringComparison.OrdinalIgnoreCase) ? "0" : "1";
+                        applied++;
+                        break;
+                    case "CorrectPos":
+                        section.Values["$CorrectPos"] = "1";
+                        applied++;
+                        break;
+                    case "SetScrollPos":
+                        if (parts.Length > 2 && !string.IsNullOrWhiteSpace(parts[2]))
+                            section.Values["$ScrollPos"] = parts[2];
+                        applied++;
+                        break;
+                    case "SetStepCount":
+                        SetValue(section, "StepCount", parts, 2);
+                        applied++;
+                        break;
+                    case "EnableScroll":
+                        section.Values["$ScrollEnabled"] = "1";
+                        applied++;
+                        break;
+                    case "SetHAlign":
+                        SetValue(section, "HAlign", parts, 2);
+                        applied++;
+                        break;
+                    case "Scale":
+                    case "SetScale":
+                        SetValue(section, "Scale", parts, 2);
+                        applied++;
+                        break;
+                    case "SetOverText":
+                        if (parts.Length > 2) section.Values["$OverText"] = parts[2];
+                        applied++;
+                        break;
+                    case "SetMapPath":
+                        if (parts.Length > 2) section.Values["MapPath"] = parts[2];
+                        applied++;
+                        break;
+                    case "SetItemStartRelPos":
+                        if (parts.Length > 2) section.Values["ItemStartRelPos"] = parts[2];
+                        applied++;
+                        break;
+                    case "CreateItemData":
+                        // The window creates a data source (ini + prototype section) that
+                        // its later AppendItemFromData calls materialize rows from.
+                        if (parts.Length > 3 && !string.IsNullOrWhiteSpace(parts[3]))
+                            itemDataSources[section.Name] = (parts[2], parts[3]);
+                        applied++;
+                        break;
+                    case "SetObject":
+                    case "SetObjectIcon":
+                    case "SetObjectSelected":
+                        // Item-data bookkeeping: the visual rows come from the INI
+                        // prototypes, so these are recorded as applied without a
+                        // layout effect (an empty bag cell renders empty in game too).
+                        applied++;
+                        break;
+                    case "RemoveItem":
+                        RemoveLastChild(filtered, section.Name);
+                        applied++;
+                        break;
+                    case "Expand":
+                        section.Values["$Expanded"] = "1";
+                        applied++;
+                        break;
+                    case "ActivePage":
+                        if (parts.Length > 2 && !string.IsNullOrWhiteSpace(parts[2]))
+                            filtered.Sections[0].Values["page"] = parts[2];
+                        applied++;
+                        break;
+                }
+            }
+
+            if (hidden.Count > 0)
+            {
+                if (Environment.GetEnvironmentVariable("RC_RUNTIME_DEBUG") == "1")
+                    Console.Error.WriteLine("runtime hidden=" + hidden.Count + " containsList=" + hidden.Contains("WndContainer_List") + " keepBefore=" + filtered.Sections.Count);
+                bool Dropped(string name)
+                {
+                    var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    var cursor = name;
+                    while (!string.IsNullOrWhiteSpace(cursor) && seen.Add(cursor))
+                    {
+                        if (hidden.Contains(cursor)) return true;
+                        cursor = filtered.ByName.TryGetValue(cursor, out var s) ? s.Get("._Parent") : null;
+                    }
+                    return false;
+                }
+                // Never let the replay empty a container. Some init functions first hide
+                // every state variant / page part and then show the active one from live
+                // data; when that data is stubbed the Show never runs and the authored
+                // layout would be wiped (LuckyMeeting hid both page variants, 145 -> 3
+                // sections). A parent whose visible children would all be hidden keeps
+                // them instead - the authored state is the client's own default.
+                for (int pass = 0; pass < 4; pass++)
+                {
+                    var parentsWithVisible = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    foreach (var section in filtered.Sections)
+                    {
+                        if (Dropped(section.Name)) continue;
+                        parentsWithVisible.Add(section.Get("._Parent") ?? "");
+                    }
+                    var restore = new List<string>();
+                    foreach (var name in hidden)
+                    {
+                        if (!filtered.ByName.TryGetValue(name, out var section)) continue;
+                        var parent = section.Get("._Parent") ?? "";
+                        if (string.IsNullOrEmpty(parent) || Dropped(parent)) continue;
+                        if (!parentsWithVisible.Contains(parent)) restore.Add(name);
+                    }
+                    if (restore.Count == 0) break;
+                    foreach (var name in restore) hidden.Remove(name);
+                }
+                var keep = filtered.Sections.Where(s => !Dropped(s.Name)).ToList();
+                // Reset-like collapse (the script hid every alternative and the data-gated
+                // Show never ran): a page-set always shows one page, so restore each
+                // fully-hidden page-set's default page. Everything else stays hidden -
+                // a replay that hides on-demand popups at rest is legitimate (TopMenu
+                // hides its parked dropdowns; showing them parked is the wrong-place
+                // artifact this guard used to reintroduce).
+                if (keep.Count * 5 < filtered.Sections.Count)
+                {
+                    bool restored = false;
+                    foreach (var ps in filtered.Sections)
+                    {
+                        if (!string.Equals(ps.Get("._WndType"), "WndPageSet", StringComparison.OrdinalIgnoreCase)) continue;
+                        var pages = new List<string>();
+                        for (int i = 0; i < 64; i++)
+                        {
+                            var page = ps.Get("Page_" + i);
+                            if (string.IsNullOrWhiteSpace(page)) break;
+                            pages.Add(page);
+                        }
+                        if (pages.Count == 0) continue;
+                        bool allHidden = true;
+                        foreach (var page in pages)
+                        {
+                            if (!hidden.Contains(page) && !Dropped(page)) { allHidden = false; break; }
+                        }
+                        if (!allHidden) continue;
+                        string fallbackPage = null;
+                        for (int i = 0; i < pages.Count; i++)
+                        {
+                            var tab = ps.Get("CheckBox_" + i);
+                            if (!string.IsNullOrWhiteSpace(tab) && filtered.ByName.TryGetValue(tab, out var tabSec) &&
+                                tabSec.GetInt("CheckedWhenCreate") == 1)
+                            {
+                                fallbackPage = pages[i];
+                                break;
+                            }
+                        }
+                        fallbackPage ??= pages[0];
+                        hidden.Remove(fallbackPage);
+                        restored = true;
+                    }
+                    if (restored) keep = filtered.Sections.Where(s => !Dropped(s.Name)).ToList();
+                    // Still collapsed: only revert the hides when nothing parked was
+                    // hidden. A hidden section authored off-window (Left/Top < 0, e.g.
+                    // TopMenu's parked dropdown host) means the replay is hiding
+                    // on-demand popups at rest - legitimate, and re-showing them parked
+                    // is the wrong-place artifact. Otherwise it is the stub-session
+                    // reset (LuckyMeeting's page variants are authored inside).
+                    if (keep.Count * 5 < filtered.Sections.Count)
+                    {
+                        bool parkedHidden = false;
+                        foreach (var name in hidden)
+                        {
+                            if (!filtered.ByName.TryGetValue(name, out var hiddenSection)) continue;
+                            if (hiddenSection.GetInt("Left") < 0 || hiddenSection.GetInt("Top") < 0)
+                            {
+                                parkedHidden = true;
+                                break;
+                            }
+                        }
+                        if (!parkedHidden) keep = filtered.Sections.ToList();
+                    }
+                }
+                if (Environment.GetEnvironmentVariable("RC_RUNTIME_DEBUG") == "1")
+                    Console.Error.WriteLine("runtime keep=" + keep.Count + " droppedList=" + Dropped("WndContainer_List") + " hasByName=" + filtered.ByName.ContainsKey("WndContainer_List"));
+                // A replay whose hides collapse the window (less than a fifth of the
+                // authored sections visible) is a stub-session reset whose mode-driven
+                // Show never ran (LuckyMeeting hid both page variants, 145 -> 3).
+                // Keep the authored layout in that case; the authored INI is the
+                // client's default. A legitimate partial hide (TopMenu hides its parked
+                // dropdowns, ~half the sections) is honored.
+                if (keep.Count != filtered.Sections.Count)
+                {
+                    filtered.Sections.Clear();
+                    filtered.ByName.Clear();
+                    foreach (var section in keep)
+                    {
+                        filtered.Sections.Add(section);
+                        filtered.ByName[section.Name] = section;
+                    }
+                }
+            }
+            // A receiver whose appends landed in another container (the prototype's
+            // list) must not format its own authored children: Page_Progress's scroll
+            // would be stacked as an item by the receiver's $FormatItems.
+            foreach (var kv in containersByReceiver)
+            {
+                if (kv.Value.Count == 0) continue;
+                if (!filtered.ByName.TryGetValue(kv.Key, out var receiver)) continue;
+                var target = ResolveContentTarget(filtered, receiver);
+                if (kv.Value.Contains(target.Name)) continue;
+                target.Values.Remove("$FormatItems");
+                target.Values.Remove("$SizeByItems");
+            }
+            return applied;
+        }
+
+        private static void SetValue(IniSection section, string key, string[] parts, int index)
+        {
+            if (parts.Length <= index || string.IsNullOrWhiteSpace(parts[index])) return;
+            if (double.TryParse(parts[index], System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture, out var value))
+                section.Values[key] = value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        private static void AddSection(IniFile file, IniSection section)
+        {
+            file.Sections.Add(section);
+            file.ByName[section.Name] = section;
+        }
+
+        private static string UniqueName(IniFile file, string desired)
+        {
+            if (!file.ByName.ContainsKey(desired)) return desired;
+            for (int i = 1; i < 1000; i++)
+            {
+                var candidate = desired + "~" + i.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                if (!file.ByName.ContainsKey(candidate)) return candidate;
+            }
+            return desired + "~" + Guid.NewGuid().ToString("N");
+        }
+
+        private static IniSection CloneSection(IniSection source, string name)
+        {
+            var clone = new IniSection { Name = name };
+            foreach (var pair in source.Values) clone.Values[pair.Key] = pair.Value;
+            return clone;
+        }
+
+        /// <summary>
+        /// Removes every descendant of a container (the engine's Clear empties the
+        /// container's item list; the authored prototype is an item too).
+        /// </summary>
+        private static void RemoveDescendants(IniFile file, string rootName)        {
+            var doomed = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var stack = new Stack<string>();
+            stack.Push(rootName);
+            while (stack.Count > 0)
+            {
+                var name = stack.Pop();
+                foreach (var candidate in file.Sections.ToList())
+                {
+                    if (!string.Equals(candidate.Get("._Parent"), name, StringComparison.OrdinalIgnoreCase)) continue;
+                    if (doomed.Add(candidate.Name)) stack.Push(candidate.Name);
+                }
+            }
+            if (doomed.Count == 0) return;
+            file.Sections.RemoveAll(s => doomed.Contains(s.Name));
+            foreach (var name in doomed) file.ByName.Remove(name);
+        }
+
+        /// <summary>First Text descendant of a clone (the item's label element).</summary>
+        private static IniSection FindTextChild(IniFile file, string rootName)
+        {
+            var queue = new Queue<string>();
+            queue.Enqueue(rootName);
+            IniSection fallback = null;
+            while (queue.Count > 0)
+            {
+                var name = queue.Dequeue();
+                foreach (var candidate in file.Sections)
+                {
+                    if (!string.Equals(candidate.Get("._Parent"), name, StringComparison.OrdinalIgnoreCase)) continue;
+                    if (string.Equals(candidate.Get("._WndType"), "Text", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (candidate.Name.IndexOf("Text", StringComparison.OrdinalIgnoreCase) >= 0) return candidate;
+                        if (fallback == null) fallback = candidate;
+                    }
+                    queue.Enqueue(candidate.Name);
+                }
+            }
+            return fallback;
+        }
+
+        /// <summary>Removes a container's last item (the engine's RemoveItem).</summary>
+        private static void RemoveLastChild(IniFile file, string container)
+        {
+            IniSection last = null;
+            foreach (var candidate in file.Sections)
+            {
+                if (string.Equals(candidate.Get("._Parent"), container, StringComparison.OrdinalIgnoreCase))
+                    last = candidate;
+            }
+            if (last == null) return;
+            file.Sections.Remove(last);
+            file.ByName.Remove(last.Name);
+        }
+
+        /// <summary>
+        /// Materializes a runtime item: clones the source subtree under the container
+        /// (AppendItemFromIni / AppendContentFromIni). Descendants get unique prefixed
+        /// names so multiple clones of the same prototype can coexist.
+        /// </summary>
+        private static IniSection AppendClone(IniFile file, IniSection source, string container, string desiredName)
+        {
+            var rootName = UniqueName(file, string.IsNullOrWhiteSpace(desiredName) ? source.Name : desiredName);
+            var root = CloneSection(source, rootName);
+            root.Values["._Parent"] = container;
+            root.Values["$RuntimeItem"] = "1";
+            AddSection(file, root);
+            var stack = new Stack<(IniSection Src, string Parent)>();
+            stack.Push((source, rootName));
+            while (stack.Count > 0)
+            {
+                var (src, parent) = stack.Pop();
+                foreach (var child in file.Sections.ToList())
+                {
+                    if (ReferenceEquals(child, source)) continue;
+                    if (!string.Equals(child.Get("._Parent"), src.Name, StringComparison.OrdinalIgnoreCase)) continue;
+                    var childName = UniqueName(file, parent + "~" + child.Name);
+                    var clone = CloneSection(child, childName);
+                    clone.Values["._Parent"] = parent;
+                    AddSection(file, clone);
+                    stack.Push((child, childName));
+                }
+            }
+            return root;
+        }
+
+        /// <summary>
+        /// Resolves an append call's source section: same file first, then the named
+        /// sibling INI under the same assets root (AppendItemFromIni's iniPath arg).
+        /// </summary>
+        private static IniSection FindAppendSource(IniFile filtered, string iniPath, string[] parts,
+            Dictionary<string, IniFile> cache)
+        {
+            if (parts.Length < 4 || string.IsNullOrWhiteSpace(parts[3])) return null;
+            var item = parts[3];
+            if (TryFind(filtered, item, out var source)) return source;
+            var path = parts[2];
+            if (string.IsNullOrWhiteSpace(path)) return null;
+            var key = path.Replace('\\', '/');
+            if (!cache.TryGetValue(key, out var file))
+            {
+                file = null;
+                try
+                {
+                    var root = FindAssetsRoot(iniPath);
+                    if (root != null)
+                    {
+                        var full = Path.Combine(root, key.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+                        if (File.Exists(full)) file = IniFile.Load(full);
+                    }
+                }
+                catch
+                {
+                    file = null;
+                }
+                cache[key] = file;
+            }
+            if (file != null && file.ByName.TryGetValue(item, out source)) return source;
+            return null;
+        }
+
+        /// <summary>
+        /// The engine's WndScroll holds its items in the section named by ScrollHandle;
+        /// recorded calls on the scroll (AppendItemFromIni / FormatAllItemPos / Clear)
+        /// apply to that content handle, whose own Left/Top offsets the items.
+        /// </summary>
+        private static IniSection ResolveContentTarget(IniFile file, IniSection section)
+        {
+            if (section == null) return section;
+            var handle = section.Get("ScrollHandle");
+            if (string.IsNullOrWhiteSpace(handle)) return section;
+            return TryFind(file, handle, out var target) ? target : section;
+        }
+
+        /// <summary>
+        /// AppendItemFromIni clones the prototype into the list that owns it (the
+        /// prototype's authored parent), not into the Lua receiver; fall back to the
+        /// receiver (through its ScrollHandle) when the parent is not in this file.
+        /// </summary>
+        private static IniSection ResolveAppendContainer(IniFile file, IniSection receiver, IniSection source)
+        {
+            var parentName = source.Get("._Parent");
+            if (!string.IsNullOrWhiteSpace(parentName) && TryFind(file, parentName, out var parent))
+                return parent;
+            return ResolveContentTarget(file, receiver);
+        }
+
+        /// <summary>
+        /// Materializes one runtime item: clones the prototype into its owning list,
+        /// records the container for the receiver's later arrangement passes and drops
+        /// the previous generation on a deferred Clear.
+        /// </summary>
+        private static void AppendRuntimeItem(IniFile filtered, IniSection receiver, IniSection source,
+            string desired, Dictionary<string, List<string>> containersByReceiver, HashSet<string> pendingClear,
+            Dictionary<string, List<IniSection>> addedByContainer, Dictionary<string, IniSection> lastCloneByContainer,
+            ref int applied)
+        {
+            var container = ResolveAppendContainer(filtered, receiver, source);
+            if (!containersByReceiver.TryGetValue(receiver.Name, out var receivers))
+            {
+                receivers = new List<string>();
+                containersByReceiver[receiver.Name] = receivers;
+            }
+            if (!receivers.Contains(container.Name)) receivers.Add(container.Name);
+            if (pendingClear.Remove(container.Name) &&
+                addedByContainer.TryGetValue(container.Name, out var previous))
+            {
+                foreach (var clone in previous)
+                {
+                    RemoveDescendants(filtered, clone.Name);
+                    filtered.Sections.Remove(clone);
+                    filtered.ByName.Remove(clone.Name);
+                }
+                previous.Clear();
+                // The engine's Clear empties the list, and the authored prototype is an
+                // item too: remove it (and its subtree) so it does not render parked at
+                // its prototype coordinates once the runtime items exist.
+                var protoName = source.Name;
+                if (!string.Equals(protoName, container.Name, StringComparison.OrdinalIgnoreCase) &&
+                    filtered.ByName.TryGetValue(protoName, out var proto) &&
+                    string.Equals(proto.Get("._Parent"), container.Name, StringComparison.OrdinalIgnoreCase) &&
+                    proto.Get("$RuntimeItem") != "1")
+                {
+                    RemoveDescendants(filtered, protoName);
+                    filtered.Sections.Remove(proto);
+                    filtered.ByName.Remove(protoName);
+                }
+            }
+            var appended = AppendClone(filtered, source, container.Name, desired);
+            lastCloneByContainer[container.Name] = appended;
+            if (!addedByContainer.TryGetValue(container.Name, out var list))
+            {
+                list = new List<IniSection>();
+                addedByContainer[container.Name] = list;
+            }
+            list.Add(appended);
+            applied++;
+        }
+
+        private static string FindAssetsRoot(string iniPath)
+        {
+            if (string.IsNullOrWhiteSpace(iniPath)) return null;
+            var dir = Path.GetDirectoryName(Path.GetFullPath(iniPath));
+            while (!string.IsNullOrWhiteSpace(dir))
+            {
+                if (string.Equals(Path.GetFileName(dir), "assets", StringComparison.OrdinalIgnoreCase)) return dir;
+                var parent = Path.GetDirectoryName(dir);
+                if (parent == dir) break;
+                dir = parent;
+            }
+            return null;
+        }
+
+        private static string FindRuntimeStateFile(string stem)
+        {
+            var roots = new[]
+            {
+                Path.Combine(Paths.AppRoot ?? "", "Data", "runtime_state"),
+                Path.Combine(AppContext.BaseDirectory ?? "", "Data", "runtime_state"),
+            };
+            foreach (var root in roots)
+            {
+                if (string.IsNullOrWhiteSpace(root) || !Directory.Exists(root)) continue;
+                var exact = Path.Combine(root, stem + ".tsv");
+                if (File.Exists(exact)) return exact;
+                foreach (var file in Directory.GetFiles(root, "*.tsv"))
+                    if (string.Equals(Path.GetFileNameWithoutExtension(file), stem, StringComparison.OrdinalIgnoreCase))
+                        return file;
+            }
+            return null;
+        }
+
+        /// <summary>True when replay_summary.tsv marks this stem OK (full replay).</summary>
+        private static bool ReplayCompleted(string statePath)
+        {
+            try
+            {
+                var summary = Path.Combine(Path.GetDirectoryName(statePath), "replay_summary.tsv");
+                if (!File.Exists(summary)) return true; // no summary: trust the state file
+                var stem = Path.GetFileNameWithoutExtension(statePath);
+                foreach (var line in File.ReadAllLines(summary))
+                {
+                    var parts = line.Split('\t');
+                    if (parts.Length < 2) continue;
+                    if (string.Equals(parts[0], stem, StringComparison.OrdinalIgnoreCase))
+                        return parts[1].StartsWith("OK", StringComparison.OrdinalIgnoreCase);
+                }
+            }
+            catch
+            {
+            }
+            return true;
         }
 
         /// <summary>Applies the Lua's runtime SetSize/SetRelPos calls (inventory `adjust`).</summary>
@@ -300,7 +1579,7 @@ namespace UiProcessApp.Engine
             foreach (var adjust in adjustments)
             {
                 if (adjust == null || string.IsNullOrWhiteSpace(adjust.Section)) continue;
-                if (!filtered.ByName.TryGetValue(adjust.Section, out var section)) continue;
+                if (!TryFind(filtered, adjust.Section, out var section)) continue;
                 void Set(string key, double? value)
                 {
                     if (value.HasValue)
@@ -312,6 +1591,16 @@ namespace UiProcessApp.Engine
                 Set("Top", adjust.Top);
                 Set("RelX", adjust.RelX);
                 Set("RelY", adjust.RelY);
+                if (adjust.ImageType.HasValue)
+                    section.Values["ImageType"] = adjust.ImageType.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                if (adjust.HAlign.HasValue)
+                    section.Values["HAlign"] = adjust.HAlign.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                if (adjust.Alpha.HasValue)
+                    section.Values["Alpha"] = adjust.Alpha.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                if (adjust.PosType.HasValue)
+                    section.Values["PosType"] = adjust.PosType.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                if (adjust.Clip == true)
+                    section.Values["$Clip"] = "1";
             }
         }
 
@@ -326,7 +1615,7 @@ namespace UiProcessApp.Engine
             {
                 if (anchor == null || string.IsNullOrWhiteSpace(anchor.Section) ||
                     string.IsNullOrWhiteSpace(anchor.S) || string.IsNullOrWhiteSpace(anchor.R)) continue;
-                if (!filtered.ByName.TryGetValue(anchor.Section, out var section)) continue;
+                if (!TryFind(filtered, anchor.Section, out var section)) continue;
                 section.Values["AnchorArgs"] = string.Format(System.Globalization.CultureInfo.InvariantCulture,
                     "{0},{1},{2},{3}", anchor.R, anchor.S, anchor.X, anchor.Y);
             }
@@ -391,17 +1680,17 @@ namespace UiProcessApp.Engine
             var selectedTab = TabForPage(selectedPage);
             for (int i = 0; i < wanted.Count; i++)
             {
-                if (!filtered.ByName.TryGetValue(wanted[i], out var section)) continue;
+                if (!TryFind(filtered, wanted[i], out var section)) continue;
                 section.Values["Left"] = (strip.X0 + i * strip.Step).ToString(System.Globalization.CultureInfo.InvariantCulture);
                 section.Values["TabFixed"] = "1";
             }
 
             if (selectedTab != null && wantedSet.Contains(selectedTab) &&
-                filtered.ByName.TryGetValue(selectedTab, out var selectedSection) &&
+                TryFind(filtered, selectedTab, out var selectedSection) &&
                 selectedSection.GetInt("CheckedWhenCreate") == 0)
             {
                 foreach (var name in wanted)
-                    if (filtered.ByName.TryGetValue(name, out var tab))
+                    if (TryFind(filtered, name, out var tab))
                         tab.Values["CheckedWhenCreate"] = "0";
                 selectedSection.Values["CheckedWhenCreate"] = "1";
             }
@@ -487,6 +1776,11 @@ namespace UiProcessApp.Engine
                 {
                     var section = stack.Pop();
                     var image = section.Get("Image") ?? "";
+                    // Runtime map layers (storm-line segments) are not chrome; counting
+                    // them as old-skin art makes the whole map layer look like an old
+                    // root once the heat-map items are hidden (it then gets dropped as
+                    // a duplicate of the new-skin panel background).
+                    if (image.IndexOf("StormLine", StringComparison.OrdinalIgnoreCase) >= 0) continue;
                     if (image.IndexOf("UItimate", StringComparison.OrdinalIgnoreCase) < 0 &&
                         (image.IndexOf("ui\\Image", StringComparison.OrdinalIgnoreCase) >= 0 ||
                          image.IndexOf("ui/Image", StringComparison.OrdinalIgnoreCase) >= 0))
@@ -549,12 +1843,13 @@ namespace UiProcessApp.Engine
             {
                 if (template == null || string.IsNullOrWhiteSpace(template.Container) ||
                     string.IsNullOrWhiteSpace(template.Ini) || string.IsNullOrWhiteSpace(template.Item)) continue;
-                if (!filtered.ByName.ContainsKey(template.Container)) continue;
+                if (!filtered.ByName.ContainsKey(template.Container) &&
+                    !filtered.Sections.Any(s => string.Equals(s.Name, template.Container, StringComparison.OrdinalIgnoreCase))) continue;
 
                 IniFile source;
                 try { source = load(template.Ini); }
                 catch { continue; }
-                if (source == null || !source.ByName.TryGetValue(template.Item, out var prototype)) continue;
+                if (source == null || !TryFind(source, template.Item, out var prototype)) continue;
 
                 var byParent = new Dictionary<string, List<IniSection>>(StringComparer.OrdinalIgnoreCase);
                 foreach (var section in source.Sections)
@@ -564,14 +1859,19 @@ namespace UiProcessApp.Engine
                     siblings.Add(section);
                 }
 
-                int count = template.Count > 0 ? template.Count : 1;
+                // Table-driven rows (RowSources) come from the shipped per-map tables;
+                // otherwise the authored prototype count + RowTexts/RowFrames are used.
+                var tableRows = ReadRowSources(template.RowSources);
+                int count = tableRows.Count > 0 ? tableRows.Count : (template.Count > 0 ? template.Count : 1);
                 double rowHeight = prototype.GetInt("Height");
+                var templateHide = new HashSet<string>(template.Hide ?? new List<string>(), StringComparer.OrdinalIgnoreCase);
                 for (int row = 0; row < count; row++)
                 {
                     var prefix = $"__lt_{template.Container}_{row}_";
                     var clones = new List<IniSection>();
                     void Walk(IniSection section, string parentName)
                     {
+                        if (templateHide.Contains(section.Name)) return;
                         var clone = new IniSection { Name = prefix + section.Name };
                         foreach (var pair in section.Values) clone.Values[pair.Key] = pair.Value;
                         clone.Values["._Parent"] = parentName;
@@ -580,11 +1880,65 @@ namespace UiProcessApp.Engine
                             foreach (var child in children) Walk(child, clone.Name);
                     }
                     Walk(prototype, template.Container);
+                    if (clones.Count == 0) continue;
 
                     var root = clones[0];
-                    root.Values["PosType"] = "0";
-                    root.Values["Left"] = "0";
-                    root.Values["Top"] = (rowHeight * row).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    bool engineItemFlow = prototype.GetInt("PosType") == 10 &&
+                        filtered.ByName.TryGetValue(template.Container, out var containerSection) &&
+                        containerSection.GetInt("FirstItemPosType") != 0;
+                    if (string.Equals(template.Flow, "row", StringComparison.OrdinalIgnoreCase))
+                    {
+                        // Horizontal flow (the message line's items): PosType 9 places
+                        // each clone right after the previous sibling's measured width.
+                        root.Values["PosType"] = "9";
+                        root.Values["Left"] = "0";
+                        root.Values["Top"] = "0";
+                    }
+                    else if (engineItemFlow)
+                    {
+                        // The prototype is an engine item (PosType 10 in a handle with
+                        // FirstItemPosType != 0, e.g. LootList's rows): the view stacks
+                        // each clone below the previous item, mixing authored rows
+                        // (LootList's money row) and clones in order.
+                    }
+                    else
+                    {
+                        root.Values["PosType"] = "0";
+                        root.Values["Left"] = "0";
+                        root.Values["Top"] = (rowHeight * row).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    }
+
+                    string rowText = tableRows.Count > 0 ? tableRows[row].Text
+                        : (template.RowTexts != null && row < template.RowTexts.Count ? template.RowTexts[row] : null);
+                    if (!string.IsNullOrEmpty(rowText))
+                    {
+                        IniSection textClone = null;
+                        if (!string.IsNullOrWhiteSpace(template.TextSection))
+                        {
+                            var suffix = template.TextSection;
+                            textClone = clones.FirstOrDefault(c =>
+                                c.Name.EndsWith(suffix, StringComparison.OrdinalIgnoreCase));
+                        }
+                        if (textClone == null)
+                            textClone = clones.FirstOrDefault(c => c.Get("._WndType") == "Text");
+                        if (textClone != null) textClone.Values["$Text"] = rowText;
+                    }
+
+                    int rowFrame = tableRows.Count > 0
+                        ? (tableRows[row].Checked ? template.CheckedFrame : template.UncheckedFrame)
+                        : (template.RowFrames != null && row < template.RowFrames.Count ? template.RowFrames[row] : -1);
+                    if (rowFrame >= 0)
+                    {
+                        IniSection imageClone = null;
+                        if (!string.IsNullOrWhiteSpace(template.ImageSection))
+                        {
+                            var suffix = template.ImageSection;
+                            imageClone = clones.FirstOrDefault(c =>
+                                c.Name.EndsWith(suffix, StringComparison.OrdinalIgnoreCase));
+                        }
+                        if (imageClone != null)
+                            imageClone.Values["Frame"] = rowFrame.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    }
 
                     foreach (var clone in clones)
                     {
@@ -593,6 +1947,114 @@ namespace UiProcessApp.Engine
                     }
                 }
             }
+        }
+
+        private sealed class TableRow
+        {
+            public string Text;
+            public bool Checked;
+        }
+
+        private static List<TableRow> ReadRowSources(List<RowSource> sources)
+        {
+            var rows = new List<TableRow>();
+            if (sources == null) return rows;
+            foreach (var source in sources)
+            {
+                if (source == null || string.IsNullOrWhiteSpace(source.Table)) continue;
+                var table = TabTable.Load(source.Table);
+                if (table == null) continue;
+                int kindIndex = table.ColumnIndex(source.KindColumn ?? "kind");
+                int checkIndex = table.ColumnIndex(source.CheckColumn ?? "defaultcheck");
+                int filterIndex = string.IsNullOrWhiteSpace(source.FilterColumn)
+                    ? -1 : table.ColumnIndex(source.FilterColumn);
+                string filterValue = source.FilterValue ?? "0";
+                foreach (var row in table.Rows)
+                {
+                    if (filterIndex >= 0)
+                    {
+                        var value = filterIndex < row.Length ? row[filterIndex].Trim() : "";
+                        if (!string.Equals(value, filterValue, StringComparison.OrdinalIgnoreCase)) continue;
+                    }
+                    var kind = kindIndex >= 0 && kindIndex < row.Length ? row[kindIndex].Trim() : "";
+                    if (string.IsNullOrWhiteSpace(kind)) continue;
+                    var check = checkIndex >= 0 && checkIndex < row.Length ? row[checkIndex].Trim() : "";
+                    rows.Add(new TableRow
+                    {
+                        Text = kind,
+                        Checked = check.Length > 0 && check != "0",
+                    });
+                }
+            }
+            return rows;
+        }
+    }
+
+    /// <summary>
+    /// Reader for the shipped tab-separated data tables (UTF-8 copies under
+    /// Data/table): first row is the column header, values are matched by column
+    /// name. Mirrors KG_Table/g_tTable access for the tables the MiddleMap uses —
+    /// ui/scheme/case/MapList.tab (dwRegionID, MiddleMap0..N), RegionMap.tab
+    /// (RegionName) and each map's minimap/npc.tab + doodad.tab (kind,
+    /// defaultcheck; table_defs_dynamic.lua g_tMapNpcTitle/g_tMapDoodad).
+    /// </summary>
+    public sealed class TabTable
+    {
+        private static readonly Dictionary<string, TabTable> Cache =
+            new Dictionary<string, TabTable>(StringComparer.OrdinalIgnoreCase);
+
+        public readonly List<string> Columns = new List<string>();
+        public readonly List<string[]> Rows = new List<string[]>();
+
+        public static TabTable Load(string relative)
+        {
+            if (string.IsNullOrWhiteSpace(relative)) return null;
+            if (Cache.TryGetValue(relative, out var hit)) return hit;
+            TabTable table = null;
+            var path = Path.Combine(Paths.AppRoot ?? "", "Data", "table",
+                                    relative.Replace('/', Path.DirectorySeparatorChar));
+            if (File.Exists(path))
+            {
+                table = new TabTable();
+                var header = false;
+                foreach (var raw in File.ReadAllLines(path))
+                {
+                    var line = raw.TrimEnd('\r');
+                    if (line.Length == 0) continue;
+                    var cells = line.Split('\t');
+                    if (!header)
+                    {
+                        foreach (var cell in cells) table.Columns.Add(cell.Trim());
+                        header = true;
+                        continue;
+                    }
+                    table.Rows.Add(cells);
+                }
+            }
+            Cache[relative] = table;
+            return table;
+        }
+
+        public int ColumnIndex(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return -1;
+            for (int i = 0; i < Columns.Count; i++)
+                if (string.Equals(Columns[i], name, StringComparison.OrdinalIgnoreCase)) return i;
+            return -1;
+        }
+
+        public string Lookup(string keyColumn, string key, string valueColumn)
+        {
+            int keyIndex = ColumnIndex(string.IsNullOrWhiteSpace(keyColumn) && Columns.Count > 0 ? Columns[0] : keyColumn);
+            int valueIndex = ColumnIndex(valueColumn);
+            if (keyIndex < 0 || valueIndex < 0 || key == null) return null;
+            foreach (var row in Rows)
+            {
+                if (keyIndex >= row.Length) continue;
+                if (!string.Equals(row[keyIndex].Trim(), key.Trim(), StringComparison.OrdinalIgnoreCase)) continue;
+                return valueIndex < row.Length ? row[valueIndex].Trim() : null;
+            }
+            return null;
         }
     }
 }

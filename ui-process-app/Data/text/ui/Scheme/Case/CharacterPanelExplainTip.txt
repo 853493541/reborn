@@ -1,0 +1,3 @@
+ID	Length	String
+STR_EXPLAINATION	106	战阶提升后奖励将通过邮件发放。该奖励可以同阵营共账号角色共享，获得过共享的角色提升战阶时，不再重复获得奖励
+STR_REWARD	12	本周奖励说明

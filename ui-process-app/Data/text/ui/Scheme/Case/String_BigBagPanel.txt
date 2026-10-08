@@ -1,0 +1,19 @@
+ID	Length	String
+STR_RANDOM_CONSUMABLE	6	消耗品
+STR_RANDOM_NEW	6	新获得
+STR_CLOTHING	4	外观
+STR_CURRENCY	4	代币
+STR_BAOXIANTIP	215	<image>path="UI/Image/MiddleMap/MapWindow8.UITex" frame=70 w=20 h=20</image><text>text="保险格子\n" font=65 </text><text>text="保险格子可保护除防具、武器、首饰以外的物资在重伤后不会遗落，建议放入高价值宝藏。"</text>
+STR_LOCK	4	锁定
+STR_LOCKTIPS1	12	选择格子锁定
+STR_LOCKTIPS2	8	已选择：
+STR_CONTRASTBAG	8	对比背包
+STR_CONTRASTBAGTIPS	40	勾选后，与背包不同的物品会置灰，方便比对
+STR_SPLITTIPS	14	拆分堆叠的物品
+STR_CUTIPS	59	分类整理物品（可在游戏设置-界面开关分页，勾选背包整理确认）
+STR_STACKTIPS	14	堆叠相同的物品
+STR_LOCKTIPS	34	锁定格子里的物品，不受整理堆叠影响
+STR_DISMANTLING	114	拆解装备需消耗15点精力，当本周累计拆解的装备超过20/40件后，拆解每件装备消耗的精力提升至45/120点，每周一7点重置次数
+STR_DISMANTLINGTIPS1	10	本次拆解需
+STR_DISMANTLINGTIPS2	4	精力
+STR_CURRENCYTIP1	8	收藏设置

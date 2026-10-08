@@ -1,0 +1,1211 @@
+name	class	was_local
+ACC_BFInfo	BR mode (excluded, done)	N
+ACC_BFShowFinal	BR mode (excluded, done)	N
+ACC_DesertStormInfo	BR mode (excluded, done)	N
+ACC_Excellent	BR mode (excluded, done)	N
+ACC_JJCInfo	BR mode (excluded, done)	N
+ACC_JJCRougeInfo	BR mode (excluded, done)	N
+ACC_JJCRougeShowFinal	BR mode (excluded, done)	N
+ACC_JJCRougeShowPassData	BR mode (excluded, done)	N
+ACC_JJCShowFinal	BR mode (excluded, done)	N
+ACC_MobaAffordableEquipment	BR mode (excluded, done)	N
+ACC_MobaBattleGeneralMsg	BR mode (excluded, done)	N
+ACC_MobaBattleGeneralMsgEx	BR mode (excluded, done)	N
+ACC_MobaBattleOneSidedMsg	BR mode (excluded, done)	N
+ACC_MobaBattleTwoSidedMsg	BR mode (excluded, done)	N
+ACC_MobaLocalData	BR mode (excluded, done)	N
+ACC_MobaShowFinal	BR mode (excluded, done)	N
+ACC_MyRecord	BR mode (excluded, done)	N
+ACC_PleasantGoatFinal	BR mode (excluded, done)	N
+ACC_PleasantGoatTeamInfo	BR mode (excluded, done)	N
+ACC_PleasantGoatWinOrDefect	BR mode (excluded, done)	N
+ACC_Praise	BR mode (excluded, done)	N
+ACC_TreasureFinal	BR mode (excluded, done)	Y
+ACC_TreasureHuntFinal	BR mode (excluded, done)	N
+ACC_TreasureHuntInfo	BR mode (excluded, done)	N
+ACC_WinOrDefect	BR mode (excluded, done)	N
+AIChatPanel	other panels/dialogs	N
+AIChat_Statement	other panels/dialogs	N
+AccelerateBall	HUD	Y
+AccountException	panels: social/team/guild	N
+AccountFriendTip	panels: social/team/guild	N
+AchievementPanel	world/quest/interaction	N
+AchievementTip	world/quest/interaction	N
+ActionBar	HUD	Y
+ActionBarBind	HUD	N
+ActionSmallBar	HUD	N
+ActiveMessage0	other panels/dialogs	N
+ActivityDetail	world/quest/interaction	N
+ActivityGift	world/quest/interaction	N
+ActivityList	world/quest/interaction	Y
+ActivityPanel	world/quest/interaction	N
+ActivityPlotPanel	world/quest/interaction	N
+ActivityRewardCollection	world/quest/interaction	N
+ActivitySignIn	world/quest/interaction	N
+ActivityTipPanel	world/quest/interaction	N
+AddAccountFriend	panels: social/team/guild	N
+AddFriendPanel	panels: social/team/guild	N
+AddPartnerExterior	panels: social/team/guild	N
+AddTBMegBox	panels: social/team/guild	N
+AddonChangeLog	login/entry (excluded)	N
+AddonPanel	login/entry (excluded)	N
+Aim	BR mode (excluded, done)	N
+Album	panels: character/bag/skill	N
+AllKBAccounts	panels: social/team/guild	N
+AnimationMgr	other panels/dialogs	N
+AnniversaryWishPop	panels: social/team/guild	N
+Announce	HUD	N
+ArenaBonusPool	arena/JJC mode (excluded)	N
+ArenaCHList	arena/JJC mode (excluded)	N
+ArenaCorpsPanel	arena/JJC mode (excluded)	Y
+ArenaCorpsTipl	arena/JJC mode (excluded)	N
+ArenaGuessPool	arena/JJC mode (excluded)	N
+ArenaInheritLevels	arena/JJC mode (excluded)	N
+ArenaLivePanel	arena/JJC mode (excluded)	N
+ArenaOpponent	arena/JJC mode (excluded)	Y
+ArenaQueue	arena/JJC mode (excluded)	N
+ArenaVotingPanel	arena/JJC mode (excluded)	N
+ArtistReward	other panels/dialogs	N
+ArtistRewardAmount	other panels/dialogs	N
+ArtistRewardSure	other panels/dialogs	N
+AssassinationTaskScroll	BR mode (excluded, done)	N
+AssistNewbieDungeon	other panels/dialogs	N
+AssistNewbieInvite	other panels/dialogs	N
+AssistNewbieRelease	other panels/dialogs	N
+AsuraAssemble	other modes/minigames (excluded)	N
+AsuraBattle	other modes/minigames (excluded)	N
+AsuraPanel	other modes/minigames (excluded)	N
+AsuraSettlement	other modes/minigames (excluded)	N
+AuctionMsgBox	panels: mail/auction/bank	N
+AuctionPanel	panels: mail/auction/bank	Y
+AudienceListPanel	panels: social/team/guild	N
+AutoExitPanel	menus/settings	N
+AutoSearch	world/quest/interaction	N
+BZBossList	BR mode (excluded, done)	N
+BadaoPosture	arena/JJC mode (excluded)	N
+BalanceBar	other panels/dialogs	N
+BalanceShip	BR mode (excluded, done)	N
+Balloon	HUD	Y
+BanishPanel	panels: mail/auction/bank	N
+BanksInterface	panels: mail/auction/bank	Y
+BarMitzvah	panels: social/team/guild	N
+BatchUse	panels: character/bag/skill	N
+BattleFieldHSLHNotice	BR mode (excluded, done)	N
+BattleFieldMap	BR mode (excluded, done)	Y
+BattleFieldObjective	BR mode (excluded, done)	N
+BattleIntegral	BR mode (excluded, done)	N
+BattleMapPay	BR mode (excluded, done)	N
+BattlePass	BR mode (excluded, done)	N
+BattleTipPanel	BR mode (excluded, done)	N
+BigBagPanel	panels: character/bag/skill	Y
+BigBankPanel	panels: mail/auction/bank	Y
+BirthdayCelebrateCardPop	panels: social/team/guild	N
+BlackMarketOperate	panels: mail/auction/bank	N
+BlueSeaPanel	other modes/minigames (excluded)	N
+BlueprintsChoice	other panels/dialogs	N
+BookCopyPanel	other panels/dialogs	N
+BookExchangePanel	other panels/dialogs	N
+BookInfoPanel	other panels/dialogs	N
+BreatheBar	other modes/minigames (excluded)	N
+BubblePanel	other panels/dialogs	N
+BuffFold	HUD	Y
+BuffList	HUD	Y
+BuffMonitor	HUD	N
+BuffMonitorDaoZong	HUD	N
+BuffMonitorGeneral	HUD	N
+BuffMonitorYaoZong	HUD	Y
+BugReport	other panels/dialogs	N
+Bullet	HUD	Y
+ButlerNpcInfo	other panels/dialogs	N
+BuyNumberPanel	menus/settings	N
+BuyRule	panels: mail/auction/bank	N
+BuyTime	panels: mail/auction/bank	N
+CDProcess	HUD	N
+CGSelectPanel	other modes/minigames (excluded)	N
+CJPosture	arena/JJC mode (excluded)	N
+CMDOB	other panels/dialogs	N
+CMD_Add	other panels/dialogs	N
+CallFriendPannel	panels: social/team/guild	N
+CallGuildMemberPannel	panels: social/team/guild	N
+CampActiveTime	other panels/dialogs	N
+CampBigThings	other modes/minigames (excluded)	N
+CampBossPanel	other panels/dialogs	N
+CampFireworks	other panels/dialogs	N
+CampMaps	other modes/minigames (excluded)	N
+CampMapsTips	other panels/dialogs	N
+CampMapsWeatherTip	other panels/dialogs	N
+CampMapsYinShanPanel	other panels/dialogs	N
+CampOB	other panels/dialogs	N
+CampPanel	world/quest/interaction	Y
+CampRewardTip	other panels/dialogs	N
+CampTipPanel	other panels/dialogs	N
+CardBuy	other panels/dialogs	N
+CardSell	other panels/dialogs	N
+CastingPanel	other panels/dialogs	N
+CastleFightCleanup	other panels/dialogs	N
+Challenge	other panels/dialogs	N
+ChallengeCountDown	other panels/dialogs	N
+ChangGePosture	arena/JJC mode (excluded)	N
+ChangGeShadow	other panels/dialogs	N
+ChangeVoice	other panels/dialogs	N
+ChannelPanel	other panels/dialogs	N
+Chapters	other panels/dialogs	N
+CharInfo	panels: character/bag/skill	N
+CharInfoMore	panels: character/bag/skill	N
+CharacterPanel	panels: character/bag/skill	Y
+CharacterPanelAwardTip	panels: character/bag/skill	N
+CharacterPanelExplainTip	panels: character/bag/skill	N
+CharacterPanel_Homeland	panels: character/bag/skill	N
+Charge	other panels/dialogs	N
+ChatButton	HUD	N
+ChatPanel_Bg	HUD	N
+ChatPanel_Game	HUD	N
+ChatPanel_Normal	HUD	N
+ChatPanel_Recent	HUD	N
+ChatSettingPanel	HUD	N
+CheatWarningPanel	other panels/dialogs	N
+CheckBaiZhanInfo	other panels/dialogs	N
+ChooseGift	other panels/dialogs	N
+ChooseGiftMessage	other panels/dialogs	N
+ChooseGiftSFX	other panels/dialogs	N
+ChooseReward	other panels/dialogs	N
+ChooseVoiceRoom	other panels/dialogs	N
+CityBelong	other modes/minigames (excluded)	N
+CleanDxPanel	other panels/dialogs	N
+CloakColorChange	other panels/dialogs	N
+ClueShowList	other panels/dialogs	N
+Cohabitation	other panels/dialogs	N
+CoinShop	other panels/dialogs	N
+CoinShop_AiFace	other panels/dialogs	N
+CoinShop_BodyShop	other panels/dialogs	N
+CoinShop_BoxMod	other panels/dialogs	N
+CoinShop_Center	other panels/dialogs	N
+CoinShop_ChangeHairColor	other panels/dialogs	N
+CoinShop_CheckOut	other panels/dialogs	N
+CoinShop_CustomEffects	other panels/dialogs	N
+CoinShop_Cutscene	other panels/dialogs	N
+CoinShop_DyeingCheckOut	other panels/dialogs	N
+CoinShop_DyeingHair	other panels/dialogs	N
+CoinShop_Entrance	other panels/dialogs	N
+CoinShop_Exterior	other panels/dialogs	N
+CoinShop_FaceSave	other panels/dialogs	N
+CoinShop_GeneralSetList	other panels/dialogs	N
+CoinShop_GoodsIntroduce	other panels/dialogs	N
+CoinShop_Groupon	other panels/dialogs	N
+CoinShop_HairShop	other panels/dialogs	N
+CoinShop_HairdyeSave	other panels/dialogs	N
+CoinShop_Home	other panels/dialogs	N
+CoinShop_MyBody	other panels/dialogs	N
+CoinShop_MyExterior	other panels/dialogs	N
+CoinShop_MyHair	other panels/dialogs	N
+CoinShop_MyNewFace	other panels/dialogs	N
+CoinShop_MyPosture	other panels/dialogs	N
+CoinShop_MySpecialEffects	other panels/dialogs	N
+CoinShop_NewFaceShop	other panels/dialogs	N
+CoinShop_NewHairShop	other panels/dialogs	N
+CoinShop_News	other panels/dialogs	N
+CoinShop_Outfit	other panels/dialogs	N
+CoinShop_PackTip	other panels/dialogs	N
+CoinShop_PointsAward	other panels/dialogs	N
+CoinShop_PreviewBox	other panels/dialogs	N
+CoinShop_RemoveSure	other panels/dialogs	N
+CoinShop_SchoolExterior	other panels/dialogs	N
+CoinShop_Search	other panels/dialogs	N
+CoinShop_SetList	other panels/dialogs	N
+CoinShop_SetTip	other panels/dialogs	N
+CoinShop_ShareStation	other panels/dialogs	N
+CoinShop_ShowHide	other panels/dialogs	N
+CoinShop_SortSetting	other panels/dialogs	N
+CoinShop_TradeCenter	other panels/dialogs	N
+CoinShop_TuoyinRule	other panels/dialogs	N
+CoinShop_UnPayRel	other panels/dialogs	N
+CoinShop_Video	other panels/dialogs	N
+CoinShop_View	other panels/dialogs	N
+CoinShop_Weapons	other panels/dialogs	N
+CoinShop_Welfare	other panels/dialogs	N
+CoinShop_ZhouBianRule	other panels/dialogs	N
+Coinshop_CantBuy	other panels/dialogs	N
+Coinshop_SpecialEffectPart	other panels/dialogs	N
+Collection	other panels/dialogs	N
+Collection_Bag	other panels/dialogs	N
+Collection_DeleteSure	other panels/dialogs	N
+Collection_Message	other panels/dialogs	N
+Collection_MiniBag	other panels/dialogs	N
+Collection_OpenBox	other panels/dialogs	N
+Collection_Orange	other panels/dialogs	N
+Collection_View	other panels/dialogs	N
+ColorPalette	other panels/dialogs	N
+ColorTablePanel	other panels/dialogs	N
+CombatText	other panels/dialogs	N
+ComboPanel	HUD	Y
+ComboWinEffect	BR mode (excluded, done)	N
+CommandAddGang	other panels/dialogs	N
+CommandAddMoney	other panels/dialogs	N
+CommandAuction	other panels/dialogs	N
+CommandBuySure	other panels/dialogs	N
+CommandChangeCommander	other panels/dialogs	N
+CommandDataPanel	other panels/dialogs	N
+CommandDistribute	other panels/dialogs	N
+CommandDistributeSure	other panels/dialogs	N
+CommandElection	other panels/dialogs	N
+CommandKickPlayer	other panels/dialogs	N
+CommandPlayerList	other panels/dialogs	N
+CommandSetting	other panels/dialogs	N
+CommandSignup	other panels/dialogs	N
+CommandVoteOnline	other panels/dialogs	N
+CommonBlankPanel	other panels/dialogs	N
+CompassPanel	HUD	Y
+ConfirmTime	other panels/dialogs	N
+ConflatePanel	other panels/dialogs	N
+ContactsList	other panels/dialogs	N
+CraftIntroduce	other panels/dialogs	N
+CraftManagePanelnew	panels: character/bag/skill	N
+CraftPanel	panels: character/bag/skill	Y
+CraftReadComparePanel	panels: character/bag/skill	N
+CraftReadManagePanel	panels: character/bag/skill	N
+CraftReaderPanel	panels: character/bag/skill	N
+CraftStuffPanel	other panels/dialogs	N
+CreateVoiceRoom	other panels/dialogs	N
+CreditsPanel	login/entry (excluded)	N
+CrossMap	other panels/dialogs	N
+Crosshair	other panels/dialogs	N
+CrossingChoosePanel	other modes/minigames (excluded)	N
+CrossingFinishPanel	other panels/dialogs	N
+CrossingProcessPanel	other panels/dialogs	N
+CurrencyBagPanel	other panels/dialogs	N
+CustomEffects	menus/settings	Y
+CustomMessage	other panels/dialogs	N
+CustomTrackList	other panels/dialogs	N
+Cyclopaedia	other panels/dialogs	N
+Cyclopaedia_Active	other panels/dialogs	N
+Cyclopaedia_Career	other panels/dialogs	N
+Cyclopaedia_FAQ	other panels/dialogs	N
+Cyclopaedia_JX3Library	other panels/dialogs	N
+Cyclopaedia_Log	other panels/dialogs	N
+DBMPanel	other panels/dialogs	N
+DLCPanel	other panels/dialogs	N
+DaTangJiaYuan	other panels/dialogs	N
+DailySignIn	other panels/dialogs	N
+Danmaku	other panels/dialogs	N
+DanmakuSetting	other panels/dialogs	N
+DaoZongInjuryRecord	BR mode (excluded, done)	Y
+DashBoard	other panels/dialogs	N
+DdzIconPanel	other panels/dialogs	N
+DdzPanel	other panels/dialogs	N
+DdzSettlementPanel	other panels/dialogs	N
+DeBuffList	HUD	Y
+Debug	debug/gm (excluded)	N
+DebugNpcPortrait	other panels/dialogs	N
+DelphisGift	other panels/dialogs	N
+DesertEquipmentChoose	other panels/dialogs	N
+DesertItemBuySure	other panels/dialogs	N
+DesertItemNumSure	other panels/dialogs	N
+DesertPreset	other panels/dialogs	N
+DesertQuickPack	other panels/dialogs	N
+DesertSell	other panels/dialogs	N
+DesertStormInfoPanel	other panels/dialogs	N
+DesertStormOB	other panels/dialogs	N
+DesertStormOBList	other panels/dialogs	N
+DesertStormSkillPanel	other panels/dialogs	N
+DesertSuit	other panels/dialogs	N
+DesertWarehouse	other panels/dialogs	N
+DesertWeaponChoose	other panels/dialogs	N
+DesertWeaponSkill	other panels/dialogs	N
+DesignationPanelNew	other panels/dialogs	N
+DialoguePanel	world/quest/interaction	Y
+Direction	other panels/dialogs	N
+DisableCompositionTip	other panels/dialogs	N
+Dismantle	panels: character/bag/skill	Y
+DivinationPanel	other panels/dialogs	N
+DomesticatePanel	other panels/dialogs	N
+DramaAnnouncement	other panels/dialogs	N
+DramaBuyingTip	other panels/dialogs	N
+DramaCluePanel	other panels/dialogs	N
+DramaDetailPanel	other panels/dialogs	N
+DramaHall	other panels/dialogs	N
+DramaHallFilterMenu	other panels/dialogs	N
+DramaJieSan	other panels/dialogs	N
+DramaLabelFilter	other panels/dialogs	N
+DramaLinkSwitch	other panels/dialogs	N
+DramaMoreMessageCard	other panels/dialogs	N
+DramaNewClueCard	other panels/dialogs	N
+DramaOperation	other panels/dialogs	N
+DramaPassWord	other panels/dialogs	N
+DramaPlayerList	other panels/dialogs	N
+DramaPlayerTip	other panels/dialogs	N
+DramaScore	other panels/dialogs	N
+DramaSelectRole	other panels/dialogs	N
+DramaStoryPanel	other panels/dialogs	N
+DramaTeamBuilding	other panels/dialogs	N
+DramaTitle	other panels/dialogs	N
+DramaVotePanel	other panels/dialogs	N
+DramaVotingResults	other panels/dialogs	N
+DropDownWnd	other panels/dialogs	N
+DropLinePanel	other panels/dialogs	N
+DurabilityPanel	other panels/dialogs	N
+DyeingQualityTips	other panels/dialogs	N
+DynamicActionBar	HUD	N
+DynamicBattleRoyale	BR mode (excluded, done)	Y
+DynamicBeastBar	other panels/dialogs	N
+DynamicCarrierBar	other modes/minigames (excluded)	N
+DynamicMutualBar	HUD	Y
+DynamicNpcMorphPhoto	other panels/dialogs	N
+DynamicPetBar	other panels/dialogs	N
+DynamicRougeActionBar	other modes/minigames (excluded)	Y
+DynamicRougeActionBarSetting	other modes/minigames (excluded)	Y
+DynamicSkillBar	other panels/dialogs	N
+DynamicWeatherSetting	other panels/dialogs	N
+EULAPanel	login/entry (excluded)	N
+EYaShaEmergency	other panels/dialogs	N
+EYaShaEventPlay	other panels/dialogs	N
+EYaShaGameTeach	other panels/dialogs	N
+EYaShaHelper	other panels/dialogs	N
+EYaShaInterlude	other panels/dialogs	N
+EYaShaLeaveButton	other panels/dialogs	N
+EYaShaMeetingOperate	other panels/dialogs	N
+EYaShaMeetingRoom	other panels/dialogs	N
+EYaShaMeetingStage	other panels/dialogs	N
+EYaShaOpenMeetingConfirm	other panels/dialogs	N
+EYaShaPlayer	other panels/dialogs	N
+EYaShaPlayerCard	other panels/dialogs	N
+EYaShaQuestWatchList	other panels/dialogs	N
+EYaShaQuickMsgPanel	other panels/dialogs	N
+EYaShaReport	other panels/dialogs	N
+EYaShaSetting	other panels/dialogs	N
+EYaShaShowFinal	other panels/dialogs	N
+EYaShaTopMenu	other panels/dialogs	N
+EditBox	menus/settings	Y
+EmergencyChoose	other panels/dialogs	N
+EmotionManagePanel	other panels/dialogs	N
+EmotionPanel	menus/settings	Y
+EndOfBattle	BR mode (excluded, done)	Y
+EnterAreaTip	HUD	Y
+EquipCopy	other panels/dialogs	N
+EquipInquire	other panels/dialogs	N
+EquipRecommend	other panels/dialogs	N
+Equip_Distance	other panels/dialogs	N
+EquipmentDIY	other panels/dialogs	N
+EquipmentDIYChoose	other panels/dialogs	N
+EquipmentDIYExport	other panels/dialogs	N
+EquipmentDIYImport	other panels/dialogs	N
+EquipmentDIYMgr	other panels/dialogs	N
+EquipmentDIYModify	other panels/dialogs	N
+EquipmentDIYPic	other panels/dialogs	N
+EquipmentDIYPlan	other panels/dialogs	N
+EquipmentShare	panels: character/bag/skill	Y
+ExaminationPanel	panels: character/bag/skill	Y
+ExitPanel	menus/settings	Y
+ExpLine	HUD	Y
+ExteriorAction	panels: character/bag/skill	Y
+ExteriorBoxError	other panels/dialogs	N
+ExteriorSellBag	other panels/dialogs	N
+ExteriorView	other panels/dialogs	N
+Exterior_Operator	other panels/dialogs	N
+FBBossPanel	other panels/dialogs	N
+FBCountDown	other panels/dialogs	N
+FBCountNum	other panels/dialogs	N
+FBShowPanel	other panels/dialogs	N
+FBShowTeam	other panels/dialogs	N
+FBTimeRank	other panels/dialogs	Y
+FBlist	other panels/dialogs	Y
+FBlistBossKillTip	other panels/dialogs	N
+FEActivationPanel	other panels/dialogs	N
+FEEquipExtractPanel	other panels/dialogs	N
+FPS	other panels/dialogs	N
+FamePanel	other panels/dialogs	N
+FameTeach	other panels/dialogs	N
+FameUpgrade	other panels/dialogs	N
+FancySkating	other panels/dialogs	N
+Fellowship	other panels/dialogs	N
+FellowshipChoose	other panels/dialogs	N
+FellowshipQuest	other panels/dialogs	N
+FieldPQPanel	other panels/dialogs	N
+FightProgress	other panels/dialogs	N
+FightingNum	BR mode (excluded, done)	Y
+FightingStatistic	BR mode (excluded, done)	Y
+FightingWarning	BR mode (excluded, done)	N
+FilterInviteMsg	other panels/dialogs	N
+FilterMask	other panels/dialogs	N
+FilterPanel	menus/settings	Y
+FindBugGame	other modes/minigames (excluded)	N
+FindTeamPQObjective	other panels/dialogs	N
+FindingYouShang	other panels/dialogs	N
+FireCardSFX	other panels/dialogs	N
+FishPanel	other panels/dialogs	N
+FiveAttributeDetailsPop	other panels/dialogs	N
+FiveAttributePop	other panels/dialogs	N
+FixRoomNum	other panels/dialogs	N
+FlowerDayPs	other panels/dialogs	N
+FlowerInfoPanel	other panels/dialogs	N
+FlowerPanel	other panels/dialogs	N
+FormationPanel	panels: social/team/guild	N
+FriendBack	other panels/dialogs	N
+FriendPraise	other panels/dialogs	N
+FriendPraiseTip	other panels/dialogs	N
+FriendRecruit	other panels/dialogs	N
+FriendTip	other panels/dialogs	N
+FullScreenSFX	other panels/dialogs	N
+FullScreenWarning	HUD	N
+FullShop	other panels/dialogs	N
+FullShop_BG	other panels/dialogs	N
+FullShop_Detail	other panels/dialogs	N
+FullShop_ItemImage	other panels/dialogs	N
+FullShop_Left	other panels/dialogs	N
+FullShop_List	other panels/dialogs	N
+FullShop_Money	other panels/dialogs	N
+FullShop_View	other panels/dialogs	N
+FurnitureSetCollect	other panels/dialogs	N
+GMAnnouncePanel	other panels/dialogs	N
+GMCheck	debug/gm (excluded)	N
+GMPanel	other panels/dialogs	N
+GameGuideCPLevelAwards	other panels/dialogs	N
+GameTeach	other panels/dialogs	Y
+GasMonitorCY	other panels/dialogs	Y
+GeneralAttributePop	other panels/dialogs	N
+GeneralCounterSFX	other panels/dialogs	N
+GeneralInvitation	other panels/dialogs	N
+GeneralProgressBar	HUD	N
+GetNamePanel	other panels/dialogs	N
+GetNew	other panels/dialogs	N
+GetNewHomelandSkin	other panels/dialogs	N
+GetNewPartner	other panels/dialogs	N
+GetNumberPanel	menus/settings	N
+GetPercentagePanel	other panels/dialogs	N
+GetPricePanel	other panels/dialogs	N
+GlobalEventHandler	other panels/dialogs	N
+GoldPresetPanel	other panels/dialogs	N
+GoldTeam	panels: social/team/guild	Y
+GoldTeamAddMoney	panels: social/team/guild	N
+GoldTeamDistribution	panels: social/team/guild	N
+GoldTeamLootList	panels: social/team/guild	N
+GoldTeamPartialPayment	panels: social/team/guild	N
+GoldTeamPrice	panels: social/team/guild	N
+GoldTeamSetSubsidy	panels: social/team/guild	N
+GoldTeamTotalLootList	BR mode (excluded, done)	Y
+GongZhan	other panels/dialogs	N
+GoodFanWorks	other panels/dialogs	N
+GrouponConfirm	other panels/dialogs	N
+GrouponRemind	other panels/dialogs	N
+GrouponRule	other panels/dialogs	N
+GuardInfo	other panels/dialogs	N
+GuardList	other panels/dialogs	N
+GuardPanelSure	other panels/dialogs	N
+GuardPanelSureInfo	other panels/dialogs	N
+GuidePerson_MengXin	other panels/dialogs	N
+GuildAddMember	panels: social/team/guild	Y
+GuildBankPanel	panels: social/team/guild	N
+GuildCampReverse	panels: social/team/guild	N
+GuildCastleWarPoints	panels: social/team/guild	N
+GuildCastleWarRule	panels: social/team/guild	N
+GuildLeagueMatches	panels: social/team/guild	N
+GuildLeagueMatchesSheet	panels: social/team/guild	N
+GuildLeagueMatches_BattleInfo	panels: social/team/guild	N
+GuildLeagueMatches_EnterTip	panels: social/team/guild	N
+GuildLeagueShowPanel	panels: social/team/guild	N
+GuildLeagueShowPanelTips	panels: social/team/guild	N
+GuildLeagueSignHint	panels: social/team/guild	N
+GuildListPanel	panels: social/team/guild	N
+GuildMainPanel	panels: social/team/guild	Y
+GuildMemberDragPanel	panels: social/team/guild	N
+GuildRename	panels: social/team/guild	N
+GuildRenameEX	panels: social/team/guild	N
+GuilderPanel	panels: social/team/guild	N
+HLBOp_Main	other panels/dialogs	N
+HLBView_AreaManagement	other panels/dialogs	N
+HLBView_Blueprint	other panels/dialogs	N
+HLBView_BlueprintExport	other panels/dialogs	N
+HLBView_BlueprintImport	other panels/dialogs	N
+HLBView_BlueprintLoadBar	other panels/dialogs	N
+HLBView_Blueprint_SerialNum	other panels/dialogs	N
+HLBView_BuildingStats	other panels/dialogs	N
+HLBView_CamSpeed	other panels/dialogs	N
+HLBView_CellarLayers	other panels/dialogs	N
+HLBView_CustomBrush	other panels/dialogs	N
+HLBView_DeleteSure	other panels/dialogs	N
+HLBView_DigitalBlueprintExport	other panels/dialogs	N
+HLBView_ErrorItemList	other panels/dialogs	N
+HLBView_ExtractFurniture	other panels/dialogs	N
+HLBView_ExtractPanel	other panels/dialogs	N
+HLBView_Filters	other panels/dialogs	N
+HLBView_GenuineIcons	other panels/dialogs	N
+HLBView_Help	other panels/dialogs	N
+HLBView_ItemList	other panels/dialogs	N
+HLBView_ItemOpColor	other panels/dialogs	N
+HLBView_ItemOpHeight	other panels/dialogs	N
+HLBView_ItemOpMain	other panels/dialogs	N
+HLBView_ItemOpRotate	other panels/dialogs	N
+HLBView_ItemOpScale	other panels/dialogs	N
+HLBView_ItemRotateDirection	other panels/dialogs	N
+HLBView_Main	other panels/dialogs	N
+HLBView_MatchItemList	other panels/dialogs	N
+HLBView_Message	other panels/dialogs	N
+HLBView_NormalItemList	other panels/dialogs	N
+HLBView_PendantBuy	other panels/dialogs	N
+HLBView_RClick	other panels/dialogs	N
+HLBView_Recycle	other panels/dialogs	N
+HLBView_ReplaceList	other panels/dialogs	N
+HLBView_Saveusage	other panels/dialogs	N
+HLBView_SomeInfo	other panels/dialogs	N
+HLBView_WeatherSetting	other panels/dialogs	N
+HLBView_Welfare	other panels/dialogs	N
+HatredPanel	other panels/dialogs	Y
+HelpPanel	other panels/dialogs	N
+HelpSound	other panels/dialogs	N
+HideOtherHomeTip	other panels/dialogs	N
+HomelandAddFriends	housing (excluded)	N
+HomelandAddOthers	housing (excluded)	N
+HomelandArchBuyConfirm	housing (excluded)	N
+HomelandCoinBuyConfirm	housing (excluded)	N
+HomelandEasyBuy	housing (excluded)	N
+HomelandEasyBuySearch	housing (excluded)	N
+HomelandEventHandler	housing (excluded)	N
+HomelandGetHouse	housing (excluded)	N
+HomelandGroupBuy	housing (excluded)	N
+HomelandInvitation	housing (excluded)	N
+HomelandLocker	housing (excluded)	N
+HomelandOverview	housing (excluded)	N
+HomelandOverviewMenu	housing (excluded)	N
+HomelandOverviewTips	housing (excluded)	N
+HomelandPVP	housing (excluded)	N
+HomelandSeasonDistance	housing (excluded)	N
+HomelandSpecialBuyConfirm	housing (excluded)	N
+HomelandStorageArea	housing (excluded)	N
+HomelandTeamSure	housing (excluded)	N
+HomelandUnlockArea	housing (excluded)	N
+HonorChallengePanel	other panels/dialogs	N
+HonorChallengeReward	other panels/dialogs	N
+HorseEquip	other panels/dialogs	N
+HorseExterior	other panels/dialogs	N
+HorseExterior_CheckOut	other panels/dialogs	N
+HorsePanel	panels: character/bag/skill	Y
+HorseStable	other panels/dialogs	N
+HotSpot	other panels/dialogs	Y
+HotkeyPanel	menus/settings	Y
+HouseFastPanel	other panels/dialogs	N
+HouseFastPanel_Vistor	other panels/dialogs	N
+HouseFastPanel_Wander	other panels/dialogs	N
+HouseFrameLicense	other panels/dialogs	N
+HouseKeeper	other panels/dialogs	N
+HouseLinkTip	other panels/dialogs	N
+HouseMovingGuide	other panels/dialogs	N
+HousePlayPanel	other panels/dialogs	N
+HouseUpgrade	other panels/dialogs	N
+HuaZhaoPhoto	other panels/dialogs	N
+Identity	other panels/dialogs	N
+IdentityDynActBar	other panels/dialogs	N
+IdentityDynamicBar	other panels/dialogs	N
+IdentityPanel	other panels/dialogs	N
+IdentityUpGrade	other panels/dialogs	N
+IllusionPanel	other panels/dialogs	N
+InstanceInfo	other panels/dialogs	N
+InstrumentStatement	other panels/dialogs	N
+Instrument_File	other panels/dialogs	N
+Instrument_Main	other panels/dialogs	N
+Instrument_Op	other panels/dialogs	N
+Instrument_Play	other panels/dialogs	N
+InterludeHSLHPanel	other panels/dialogs	N
+InterludePanel	other panels/dialogs	N
+InternetExplorer	login/entry (excluded)	N
+InviteFriends	other panels/dialogs	N
+IrrigatePanel	other panels/dialogs	N
+ItemBox	other panels/dialogs	N
+ItemBuySure	other panels/dialogs	N
+ItemBuy_MoneyTrace	other panels/dialogs	N
+JJCEquipmentDIY	arena/JJC mode (excluded)	N
+JJCQiXuePanel	arena/JJC mode (excluded)	N
+JJCRougeChallengePop	arena/JJC mode (excluded)	N
+JJCRougeChooseCards	arena/JJC mode (excluded)	N
+JJCRougeInsideEnhanced	arena/JJC mode (excluded)	N
+JJCRougeInsideShop	arena/JJC mode (excluded)	N
+JJCRougeObtainCards	arena/JJC mode (excluded)	N
+JJCRougePanel	arena/JJC mode (excluded)	N
+JiangHuMatrix	other panels/dialogs	N
+JigsawDragPiece	other panels/dialogs	N
+JoinCamp	other panels/dialogs	N
+JoinHousePVP	other panels/dialogs	N
+KFActionBarPanel	other panels/dialogs	N
+KeyPanel	menus/settings	N
+Keyboard	other panels/dialogs	N
+KillInformation	other panels/dialogs	N
+KillMessage	other panels/dialogs	N
+KoreaLogo	login/entry (excluded)	Y
+KungFuPanel	panels: character/bag/skill	Y
+LXGMonitor	other panels/dialogs	Y
+LeftMessage	other panels/dialogs	N
+LevelUpAward	other panels/dialogs	N
+LevelUpMax	other panels/dialogs	N
+LightingCityPanel	other panels/dialogs	N
+LimitedSalePanel	other panels/dialogs	N
+LoadingPanel	other panels/dialogs	Y
+LoadingPlay	other panels/dialogs	N
+LoadingWaiting	login/entry (excluded)	N
+LockPanel	other panels/dialogs	N
+LoginCustomRole	login/entry (excluded)	N
+LoginCustomRoleMode	login/entry (excluded)	N
+LoginCustomRoleName	login/entry (excluded)	N
+LoginCustomRoleNext	login/entry (excluded)	N
+LoginDeleteRole	login/entry (excluded)	N
+LoginLogo	login/entry (excluded)	N
+LoginMessage	login/entry (excluded)	N
+LoginPassword	login/entry (excluded)	N
+LoginPayFor	login/entry (excluded)	N
+LoginQuestPanel	login/entry (excluded)	N
+LoginRename	login/entry (excluded)	N
+LoginRoleList	login/entry (excluded)	N
+LoginScene	login/entry (excluded)	N
+LoginServerList	login/entry (excluded)	N
+LoginServerPanel	login/entry (excluded)	N
+LoginSwordLogo	login/entry (excluded)	N
+LoginTokenPanel	login/entry (excluded)	N
+LoginWaitServerList	login/entry (excluded)	N
+LoginWaiting	login/entry (excluded)	N
+LootList	BR mode (excluded, done)	Y
+LootRoll	other panels/dialogs	N
+LootRollMini	other panels/dialogs	N
+LootShowList	other panels/dialogs	N
+LuckyMeeting	other modes/minigames (excluded)	Y
+LuckyMeetingDialogue	other modes/minigames (excluded)	N
+LuckyMeetingGet	other modes/minigames (excluded)	N
+LuckyMeetingInfo	other modes/minigames (excluded)	N
+LuckyMeetingTrace	other modes/minigames (excluded)	N
+LuckyPerson	other panels/dialogs	N
+MacroSettingPanel	other panels/dialogs	N
+MahjongIconPanel	other panels/dialogs	N
+MahjongPanel	other panels/dialogs	N
+MahjongSettlementPanel	other panels/dialogs	N
+MailPanel	panels: mail/auction/bank	Y
+MainBarPanel	HUD	Y
+MainMessageLine	HUD	Y
+MainPlotPanel	other panels/dialogs	N
+MainStoryPanel	other panels/dialogs	N
+MapCopyList	other panels/dialogs	N
+MapQueue	BR mode (excluded, done)	Y
+MasterEquipRecommend	other panels/dialogs	N
+MasterNote	other panels/dialogs	N
+Match3Game	other panels/dialogs	N
+MaterialInfoMore	other panels/dialogs	N
+Matrix	panels: character/bag/skill	Y
+MentorFindMessage	other panels/dialogs	N
+MentorMessage	other panels/dialogs	N
+MentorPanel	panels: social/team/guild	N
+MentorPanelTip	panels: social/team/guild	N
+MentorTask	other panels/dialogs	N
+MentorTransform	other panels/dialogs	N
+MessageBoard	other panels/dialogs	N
+MiddleMap	HUD	Y
+MiddleMapFlagEditor	other panels/dialogs	N
+MiddleMapSimple	other panels/dialogs	N
+MilitaryRanking	world/quest/interaction	N
+MindControlActionBar	HUD	N
+MingJiaoSkill	panels: character/bag/skill	Y
+MiniGameDescription	other modes/minigames (excluded)	Y
+MiniGameGuide	other modes/minigames (excluded)	N
+MiniGameJigsaw	other modes/minigames (excluded)	N
+MiniGamePoetry	other modes/minigames (excluded)	N
+MiniGameResult	other modes/minigames (excluded)	N
+MiniGameSelectLevel	other modes/minigames (excluded)	N
+MiniGameStart	other modes/minigames (excluded)	N
+MiniGameStatusBar	other modes/minigames (excluded)	N
+Minimap	HUD	Y
+MinimizeEffect	other panels/dialogs	N
+MoGaoKuPanel	other panels/dialogs	N
+MobaControlPanel	other modes/minigames (excluded)	N
+MobaEnemyPanel	other modes/minigames (excluded)	Y
+MobaInformationPanel	other modes/minigames (excluded)	N
+MobaPVPInput	other modes/minigames (excluded)	N
+MobaPVPList	other modes/minigames (excluded)	N
+MobaShop	other modes/minigames (excluded)	N
+MobaShowPanel	other modes/minigames (excluded)	N
+MobileBuffList	other panels/dialogs	N
+MobileSkillGrandPanel	login/entry (excluded)	Y
+MobileSkillGrandPanelTip	other panels/dialogs	N
+MobileSkillIntroduce	other panels/dialogs	N
+MobileSkillTip	other panels/dialogs	N
+MoneyBuy	other panels/dialogs	N
+MoneySell	other panels/dialogs	N
+MonopolyAuctionInfoPanel	other modes/minigames (excluded)	N
+MonopolyBg	other modes/minigames (excluded)	N
+MonopolyCardCast	other modes/minigames (excluded)	N
+MonopolyCardList	other modes/minigames (excluded)	N
+MonopolyCardShop	other modes/minigames (excluded)	N
+MonopolyCardUseConfirm	other modes/minigames (excluded)	N
+MonopolyChangeBuffRequest	other modes/minigames (excluded)	N
+MonopolyDaLeTouPanel	other modes/minigames (excluded)	N
+MonopolyDice	other modes/minigames (excluded)	N
+MonopolyFateEvent	other modes/minigames (excluded)	N
+MonopolyGameNotice	other modes/minigames (excluded)	N
+MonopolyGameOverFinal	other modes/minigames (excluded)	N
+MonopolyGamePanel	other modes/minigames (excluded)	N
+MonopolyGodNotify	other modes/minigames (excluded)	N
+MonopolyInfo	other modes/minigames (excluded)	N
+MonopolyLandExchangeRequest	other modes/minigames (excluded)	N
+MonopolyLandPurchaseDlg	other modes/minigames (excluded)	N
+MonopolyLogList	other modes/minigames (excluded)	N
+MonopolyMenuBar	other modes/minigames (excluded)	N
+MonopolyMoneyNotify	other modes/minigames (excluded)	N
+MonopolyNotify	other modes/minigames (excluded)	N
+MonopolyOutShow	other modes/minigames (excluded)	N
+MonopolyPlayerList	other modes/minigames (excluded)	N
+MonopolyQueue	other modes/minigames (excluded)	N
+MonopolyReadyArea	other modes/minigames (excluded)	N
+MonopolyRemoveObstacles	other modes/minigames (excluded)	N
+MonopolyRoundCountdown	other modes/minigames (excluded)	N
+MonopolySelectDirection	other modes/minigames (excluded)	N
+MonopolyShowFinal	other modes/minigames (excluded)	N
+MonopolyStep	other modes/minigames (excluded)	N
+MonopolyTargetSelectPanel	other modes/minigames (excluded)	N
+MonopolyTip	other modes/minigames (excluded)	N
+MonopolyWarning	other modes/minigames (excluded)	N
+MonsterBuffChoose	other panels/dialogs	N
+MonsterBuffPanel	other panels/dialogs	N
+MonsterDistribute	other panels/dialogs	N
+MonsterEntrance	other panels/dialogs	N
+MonsterLocker	other panels/dialogs	N
+MonsterPanel	other panels/dialogs	N
+MonsterSettlement	other panels/dialogs	N
+MonsterSkillPreset	other panels/dialogs	Y
+MonsterSpiritEnduranceData	other panels/dialogs	N
+MoviePanel	other panels/dialogs	N
+MultiItemSelect	other panels/dialogs	N
+MvpShowPanel	other panels/dialogs	N
+MyAward	other panels/dialogs	N
+MyCloudInstrument	other panels/dialogs	N
+NPCFeeling	other panels/dialogs	N
+NPCGuidelines	world/quest/interaction	N
+NPCRoster	other panels/dialogs	N
+NPCSpeechSounds	other panels/dialogs	Y
+Navigator	world/quest/interaction	N
+NetbarAd	other panels/dialogs	N
+NetworkVideo	other panels/dialogs	N
+NetworkVideoWaiting	other panels/dialogs	N
+NewAchievement	other panels/dialogs	N
+NewAddFriendPanel	other panels/dialogs	N
+NewBag	other panels/dialogs	N
+NewBattleFieldQueue	BR mode (excluded, done)	Y
+NewBattleFieldRull	other panels/dialogs	N
+NewChargeGiftMonthly	other panels/dialogs	N
+NewEmotionAction	other panels/dialogs	N
+NewEquip	other panels/dialogs	N
+NewEquipRecommend	other panels/dialogs	N
+NewHomelandChangeSkin	other panels/dialogs	N
+NewHorse	other panels/dialogs	N
+NewJYPlayReward	other panels/dialogs	N
+NewOperationActivity	other panels/dialogs	N
+NewPartnerEquipment	other panels/dialogs	N
+NewPet	panels: character/bag/skill	N
+NewPetInfo	panels: character/bag/skill	N
+NewPetSkill	panels: character/bag/skill	Y
+NewPlayerBF	other panels/dialogs	N
+NewQuestPanel	other panels/dialogs	N
+NewRecipeTip	panels: character/bag/skill	N
+NewSafePanel	other panels/dialogs	N
+NewSkillBar	other panels/dialogs	N
+NewSkillGuidePanel	panels: character/bag/skill	Y
+NewSkillPanel	panels: character/bag/skill	Y
+NewTrialValley	other panels/dialogs	N
+NewYearPanel	other panels/dialogs	N
+NoticeBoard	other panels/dialogs	Y
+NpcExteriorView	other panels/dialogs	N
+NpcMorphBar	other panels/dialogs	N
+NumericalPanel	other panels/dialogs	N
+OTActionBar	other modes/minigames (excluded)	N
+OTGCDBar	other panels/dialogs	N
+OTPetActionBar	other panels/dialogs	N
+OldQuestAcceptPanel	other panels/dialogs	N
+OperatPreOrder	other panels/dialogs	N
+OperationCenter	other panels/dialogs	N
+OperationMode	other panels/dialogs	N
+OperationRules	other panels/dialogs	N
+OptionPanel	menus/settings	Y
+OrangeWeaponUpg	other panels/dialogs	N
+OutMap	other panels/dialogs	N
+OutfitModList	other panels/dialogs	N
+PKLeavePanel	arena/JJC mode (excluded)	N
+PLActionBar	HUD	Y
+PQNextStage	other panels/dialogs	N
+PQTeach	other panels/dialogs	N
+PQTimePanel	other panels/dialogs	N
+PQprogressbar	HUD	Y
+PQwarning	other panels/dialogs	N
+PVPInput	other panels/dialogs	N
+PVPMessageBoard	other panels/dialogs	N
+PVPQiXueList	other panels/dialogs	N
+PVPRandomForce	other panels/dialogs	N
+PVPReplayAnnouncement	other panels/dialogs	N
+PVPReplayBar	other panels/dialogs	N
+PVPSelectMap	other panels/dialogs	N
+PVPSetting	other panels/dialogs	N
+PVPSetting_Last	other panels/dialogs	N
+PVPShowFinal	BR mode (excluded, done)	Y
+PVPShowHarm	BR mode (excluded, done)	N
+PVPShowPanel	BR mode (excluded, done)	Y
+PVPShowSFX	BR mode (excluded, done)	N
+PVPShowSetting	BR mode (excluded, done)	N
+PZZ_Buildings	other panels/dialogs	N
+PZZ_ChoosePage	other panels/dialogs	N
+PZZ_SpecialBuildings	other panels/dialogs	N
+PZZ_VillageManage	other panels/dialogs	N
+PZZ_Villagers	other panels/dialogs	N
+PakV4DownloadInfo	other panels/dialogs	N
+PakV4Info	other panels/dialogs	N
+PakV4Loading	other panels/dialogs	Y
+PanelChargeHintPop	other panels/dialogs	N
+PanzhazhaiPanel	other panels/dialogs	N
+PanzhazhaiTime	other panels/dialogs	N
+Partner	other panels/dialogs	N
+PartnerAttribute	other panels/dialogs	N
+PartnerBag	other panels/dialogs	N
+PartnerBreak	other panels/dialogs	N
+PartnerBuyConfirm	other panels/dialogs	N
+PartnerDefaultPlan	other panels/dialogs	N
+PartnerEquipmentUpgrade	other panels/dialogs	N
+PartnerExterior	other panels/dialogs	N
+PartnerLockLink	other panels/dialogs	N
+PartnerMeetbyChance	other panels/dialogs	N
+PartnerMessage	other panels/dialogs	N
+PartnerScence	other panels/dialogs	N
+PartnerSelect	other panels/dialogs	N
+PartnerTaskAwards	other panels/dialogs	N
+PartnerTaskCheck	other panels/dialogs	N
+PartnerTaskList	other panels/dialogs	N
+PartnerTaskSetting	other panels/dialogs	N
+PartnerTeam	other panels/dialogs	N
+PartnerTeamSetting	other panels/dialogs	N
+PartnerTip	other panels/dialogs	N
+PartnerUpGrade	other panels/dialogs	N
+PartnerVoiceAndStory	other panels/dialogs	N
+PartyRecruitPanel	other panels/dialogs	Y
+PayPathPanel	other panels/dialogs	N
+PendantBase	other panels/dialogs	N
+PendantChoiceColor	other panels/dialogs	N
+PendantUpgrade	other panels/dialogs	N
+PendantUpgradeSelect	other panels/dialogs	N
+PerformanceCollect	other panels/dialogs	N
+PersonalCard_BirthdaySetPop	panels: social/team/guild	N
+PersonalCard_CheckOut	panels: social/team/guild	N
+PersonalCard_Cut	panels: social/team/guild	N
+PersonalCard_DataEdit	panels: social/team/guild	N
+PersonalCard_Decorate	panels: social/team/guild	N
+PersonalCard_Mine	panels: social/team/guild	N
+PersonalCard_ShowData	panels: social/team/guild	Y
+PersonalCard_Tip	panels: social/team/guild	N
+PetActionBar	HUD	Y
+PetPanel	panels: character/bag/skill	Y
+PhotoShop	other panels/dialogs	N
+Player	HUD	Y
+PlayerKillMessage	other panels/dialogs	N
+PlayerMode	other panels/dialogs	N
+PlayerReturn	other panels/dialogs	N
+PlayerReturnTip	other panels/dialogs	N
+PlayerView	other panels/dialogs	N
+PlayerViewJJC	other panels/dialogs	N
+PlayerVisitCard	other panels/dialogs	N
+Playerbar	other panels/dialogs	N
+PlotDialoguePanel	other panels/dialogs	N
+PlotExplain	other panels/dialogs	N
+PlotSound	other panels/dialogs	N
+PluginSingle	other panels/dialogs	N
+PluginTotal	other panels/dialogs	N
+PluginsWarning	login/entry (excluded)	N
+PopupBuffList	other panels/dialogs	N
+PopupRemind	other panels/dialogs	N
+PreSetComment	other panels/dialogs	N
+PresetMusicList	other panels/dialogs	N
+PrestigePanel	other panels/dialogs	N
+ProgressBar	HUD	Y
+ProgressSaveData	other panels/dialogs	N
+PuppetActionBar	HUD	Y
+QCSword	BR mode (excluded, done)	Y
+QGJump	other panels/dialogs	N
+QMSoulPanel	other panels/dialogs	N
+QTEPanel	other panels/dialogs	N
+QiXiuPosture	arena/JJC mode (excluded)	N
+QixiAlbumPop	other panels/dialogs	N
+QixiPicturePop	other panels/dialogs	N
+QixueLookup	other panels/dialogs	N
+QixueTeachBy	other panels/dialogs	N
+QuestAcceptPanel	world/quest/interaction	N
+QuestBar	world/quest/interaction	N
+QuestContrastPanel	world/quest/interaction	N
+QuestGuide	world/quest/interaction	N
+QuestItem	world/quest/interaction	N
+QuestRewardTip	world/quest/interaction	N
+QuestTraceList	HUD	Y
+Questionnaire_FresherExitGame	world/quest/interaction	N
+Queue	login/entry (excluded)	N
+QuickConsumePanel	other panels/dialogs	N
+QuickConsumeShare	other panels/dialogs	N
+QuitCohabitMessage	other panels/dialogs	N
+RaidDragPanel	other panels/dialogs	N
+RaidPanel	panels: social/team/guild	Y
+RandomReward	other panels/dialogs	N
+RankingPanel	panels: social/team/guild	Y
+ReadMailPanel	other panels/dialogs	N
+RealBP	other panels/dialogs	N
+RealFirstCharge	other panels/dialogs	N
+RealNameCertify	other panels/dialogs	N
+RechargeRemind	other panels/dialogs	N
+RecipeOpenSure	panels: character/bag/skill	N
+RecordClientData	other panels/dialogs	N
+RecoverEquipment	other panels/dialogs	N
+RedEnvelope	other panels/dialogs	N
+RedEnvelopeInfo	other panels/dialogs	N
+RefinePanel	other panels/dialogs	N
+RegressionPanel	other panels/dialogs	N
+RemainingTimeNotify	other panels/dialogs	Y
+RemoteCDProcess	other panels/dialogs	N
+RenewRule	other panels/dialogs	N
+ReputationPanelNew	panels: social/team/guild	Y
+Resourcebar	other panels/dialogs	N
+RevivePanel	other panels/dialogs	Y
+RoadChivalrous	other panels/dialogs	N
+RoadChivalrousDetail	other panels/dialogs	N
+RoadChivalrousPopup	other panels/dialogs	N
+RoadChivalrousTips	other panels/dialogs	N
+RoleRename	other panels/dialogs	N
+RoomLinkTip	other panels/dialogs	N
+RoomPanel	other panels/dialogs	N
+RoomRaidReset	other panels/dialogs	N
+RoommateDragPanel	other panels/dialogs	N
+RoommateTeam	other panels/dialogs	N
+RougeLikeDataPanel	other modes/minigames (excluded)	N
+RougeLikeFinal	other modes/minigames (excluded)	N
+RougeLikeIntro	other modes/minigames (excluded)	N
+RougeLikeKillCount	other modes/minigames (excluded)	N
+RougeLikeQueue	other modes/minigames (excluded)	N
+RougeLikeTimeEvent	other modes/minigames (excluded)	N
+SFXPanel	other panels/dialogs	N
+SMPopupMenu	other panels/dialogs	N
+SafeModifyPwd	other panels/dialogs	N
+SafePanel	other panels/dialogs	Y
+SafeReminder	menus/settings	N
+SafeTip	other panels/dialogs	N
+SanFangShaQueue	other panels/dialogs	N
+SavePreset	other panels/dialogs	N
+SaveSharePreset	other panels/dialogs	N
+Scene	other panels/dialogs	N
+SceneBlackMask	other panels/dialogs	N
+SceneCampTip	other panels/dialogs	N
+SceneMini	other panels/dialogs	N
+ScreenLock	other panels/dialogs	N
+ScreenShotPanel	login/entry (excluded)	N
+ScrollDisplay	other panels/dialogs	N
+SearchWnd	other panels/dialogs	N
+SeasonDistance	other panels/dialogs	N
+SeasonFurniture	other panels/dialogs	N
+SeasonFurnitureFragment	other panels/dialogs	N
+SeasonFurnitureInfo	other panels/dialogs	N
+SeasonLetter	other panels/dialogs	N
+SeasonRankPanel	other panels/dialogs	N
+SeasonRewardPanel	other panels/dialogs	N
+SecurityCard	other panels/dialogs	N
+SelectCampPlanes	other panels/dialogs	N
+SelectEnchantment	other panels/dialogs	N
+SelectGround	other panels/dialogs	N
+SelectMacroIconPanel	other panels/dialogs	N
+Selfie	other panels/dialogs	N
+SelfieEmotion	other panels/dialogs	N
+SelfieExportDetails	other panels/dialogs	N
+SelfieMovieRecordLogo	other panels/dialogs	N
+SelfieNav	other panels/dialogs	N
+SelfieOneClick	other panels/dialogs	N
+SelfieOneClickPreview	other panels/dialogs	N
+SelfieOneClickRecording	other panels/dialogs	N
+SelfiePosture	other panels/dialogs	N
+SelfieRecord	other panels/dialogs	N
+SelfieSaveAI	other panels/dialogs	N
+SelfieSaveMusic	other panels/dialogs	N
+SelfieSizeBox	other panels/dialogs	N
+SelfieStatement	other panels/dialogs	N
+SelfieStudio	other panels/dialogs	N
+SelfieTemplateExport	other panels/dialogs	N
+SelfieTemplateImport	other panels/dialogs	N
+SelfieTemplatePop	other panels/dialogs	N
+SellBag	other panels/dialogs	N
+SellSure	other panels/dialogs	N
+ServantDismiss	other panels/dialogs	Y
+ServerReconnect	other panels/dialogs	N
+SetMusic	other panels/dialogs	N
+SetPersonalVolume	other panels/dialogs	N
+SetTeamLootMode	other panels/dialogs	N
+ShareBagBindingPanel	other panels/dialogs	N
+ShareBagPanel	panels: character/bag/skill	N
+ShareStation	other panels/dialogs	N
+ShareStation_DyeDetails	other panels/dialogs	N
+ShareStation_EditInfo	other panels/dialogs	N
+ShareStation_Expression	other panels/dialogs	N
+ShareStation_ExteriorChoose	other panels/dialogs	N
+ShareStation_ExteriorFilter	other panels/dialogs	N
+ShareStation_Filter	other panels/dialogs	N
+ShareStation_ImportExterior	other panels/dialogs	N
+ShareStation_Report	other panels/dialogs	N
+ShareStation_Rules	other panels/dialogs	N
+ShareStation_Shoot	other panels/dialogs	N
+ShareStation_Statement	other panels/dialogs	N
+ShareStation_UploadCut	other panels/dialogs	N
+ShareStation_UploadInfo	other panels/dialogs	N
+ShareStation_WorkLinkTip	other panels/dialogs	N
+ShenJianXin	other panels/dialogs	N
+ShortcutInturn	other panels/dialogs	N
+SidePanel	other panels/dialogs	N
+SignIn	other panels/dialogs	N
+SimpleDLCPanel	other panels/dialogs	N
+SingleFStatistic	BR mode (excluded, done)	N
+SituationMap	other panels/dialogs	N
+SkillBanEdit	other panels/dialogs	N
+SkillCDJingYuJue	other panels/dialogs	N
+SkillFormulaPanel	panels: character/bag/skill	Y
+SkillGlossaryPanel	other panels/dialogs	N
+SkillGuidePanel	other panels/dialogs	N
+SkillGuidePanelTips	other panels/dialogs	N
+SkillGuideSettingPanel	panels: character/bag/skill	Y
+SkillIntroduce	panels: character/bag/skill	Y
+SkillPanelTeaching	other panels/dialogs	N
+SkillRemind	other panels/dialogs	N
+SkillTipPanel	other panels/dialogs	N
+Skill_SkinVideo	panels: character/bag/skill	N
+Skill_TalentComment	panels: character/bag/skill	Y
+SmallBagPanel	other panels/dialogs	N
+SmallCalender	other panels/dialogs	N
+SniperPanel	BR mode (excluded, done)	N
+SnsPanel	other modes/minigames (excluded)	N
+SocialPanel	panels: social/team/guild	Y
+SoundSettingPanel	menus/settings	Y
+SpeedEffect	other panels/dialogs	N
+SpeedRankPanel	other panels/dialogs	N
+SpiritEndurancePanel	other panels/dialogs	N
+SprintPanel	other panels/dialogs	N
+SprintPower	BR mode (excluded, done)	Y
+StampPlay	other panels/dialogs	N
+StartTask	other panels/dialogs	N
+StoryDisplay	other panels/dialogs	N
+StoryMode	other panels/dialogs	N
+StrangeBox	other panels/dialogs	N
+SummonBar	other panels/dialogs	Y
+SuperRoom	other panels/dialogs	N
+SurpriseFreeAd	other panels/dialogs	N
+SwitchCenter	other panels/dialogs	N
+SwitchServerDLC	other panels/dialogs	N
+SwitchServerInfoTip	other panels/dialogs	N
+SwitchServerMemorabilia	other panels/dialogs	N
+SwitchServerQueue	other panels/dialogs	N
+SwitchServerStandHoldTip	other panels/dialogs	N
+SwitchSword	other panels/dialogs	N
+SystemMenu_Left	menus/settings	Y
+SystemMenu_List	menus/settings	N
+SystemMenu_Right	menus/settings	Y
+TapTapAdvice	other panels/dialogs	N
+TapTapFeedback	other panels/dialogs	N
+TargetBuff	HUD	Y
+TargetDeBuff	HUD	Y
+TargetFaceSet	HUD	N
+TargetResourcebar	HUD	N
+TargetSkill	HUD	N
+TargetTarget	HUD	Y
+Teaching	other panels/dialogs	N
+TeachingAim	other panels/dialogs	N
+TeachingMove	other panels/dialogs	N
+TeachingPanel	other panels/dialogs	N
+TeamBuff	HUD	Y
+TeamBuildMessage	panels: social/team/guild	Y
+TeamBuildTip	panels: social/team/guild	N
+TeamBuilding	panels: social/team/guild	Y
+TeamBuildingPlayerSet	panels: social/team/guild	N
+TeamCountdown	other panels/dialogs	N
+TeamEditPlayerTags	other panels/dialogs	N
+TeamNumList	other panels/dialogs	N
+TeamNumListLong	other panels/dialogs	N
+TeamPlayerTagList	other panels/dialogs	N
+TeamStatePop	other panels/dialogs	N
+TeamSwitchBtn	HUD	Y
+TeamTagPlayers	other panels/dialogs	N
+Teammate	HUD	Y
+TestGuild	debug/gm (excluded)	N
+TheFlopPanel	other panels/dialogs	N
+ThermometerPanel	other panels/dialogs	N
+TimeBuff	other panels/dialogs	N
+TitleRankReward	other panels/dialogs	N
+TongArena	other panels/dialogs	N
+TongBaoGift	other panels/dialogs	N
+TongBaoPanel	other panels/dialogs	N
+TongBattleTips	other panels/dialogs	N
+TongBattledragonTips	other panels/dialogs	N
+TongFarmPanel	other panels/dialogs	N
+TopBuff	HUD	N
+TopBuffSet	other panels/dialogs	N
+TopMenu	menus/settings	Y
+TopMenuOther	other panels/dialogs	N
+TopMenuSaleList	other panels/dialogs	N
+ToyBox	panels: character/bag/skill	Y
+TraceButton	other panels/dialogs	N
+TrackingTip	world/quest/interaction	N
+TradePanel	menus/settings	N
+TradingPanels	menus/settings	Y
+TradingSellers	menus/settings	N
+TradingSure	menus/settings	Y
+TrafficSure	other panels/dialogs	N
+TrafficSurePanel	other panels/dialogs	N
+TreasureHuntBP	other panels/dialogs	N
+Treasure_GetRewardNew	other panels/dialogs	N
+Treasure_PreviewNew	other panels/dialogs	N
+TrialValleyReward	other panels/dialogs	N
+TurnCard	other panels/dialogs	N
+TwoDimensionalLogin	login/entry (excluded)	N
+UIComfirm	other panels/dialogs	N
+UICursor	other panels/dialogs	N
+UICustomModePanel	menus/settings	Y
+UILock	other panels/dialogs	N
+UIMovie	other panels/dialogs	N
+UISetting	menus/settings	Y
+UpGradeEffect	other panels/dialogs	N
+UserActionChoose	other panels/dialogs	N
+VagabondCraftManage	other panels/dialogs	N
+VagabondCrossMap	other panels/dialogs	N
+VagabondPanel	other panels/dialogs	N
+VagabondReward	other panels/dialogs	N
+VampireCountPanel	other panels/dialogs	N
+VampireInfoPanel	other panels/dialogs	N
+VideoCustomPanel	other panels/dialogs	N
+VideoSettingDetails	other panels/dialogs	N
+VideoSettingPanel	menus/settings	Y
+ViewEquip	panels: character/bag/skill	Y
+VkActionBar	other panels/dialogs	N
+VoiceHall	other panels/dialogs	N
+VoiceHallAgreement	other panels/dialogs	N
+VoiceMessage	other panels/dialogs	N
+VoiceRoomMessage	other panels/dialogs	N
+VoiceRoomNotice	other panels/dialogs	N
+VoiceRoomPassword	other panels/dialogs	N
+VoiceRoomUpGrade	other panels/dialogs	N
+WantedPanel	panels: mail/auction/bank	Y
+Wanted_Publish	other panels/dialogs	N
+WarningTipPanel	other panels/dialogs	N
+WeaponBag	other panels/dialogs	N
+WeaponSkillBar	HUD	N
+WeaponSwitcher	other panels/dialogs	N
+WeaponsDisplay	other panels/dialogs	N
+WelcomeSignIn	other panels/dialogs	N
+WelfareReturn	other panels/dialogs	N
+WhoIsUndercover	other panels/dialogs	N
+WhoSeeMe	panels: social/team/guild	Y
+WinterFestivalNpcInfo	other panels/dialogs	N
+WinterFestivalSkillMsg	other panels/dialogs	N
+WishPanel	other panels/dialogs	N
+WishingBar	other panels/dialogs	N
+WishingTemplePanel	other modes/minigames (excluded)	Y
+WithdrawGold	other panels/dialogs	N
+WndLock	other panels/dialogs	N
+WoodCardSFX	other panels/dialogs	N
+WorldMap	world/quest/interaction	Y
+WorldMark	HUD	N
+WulinShenghuiDuizhen	other panels/dialogs	N
+XiangQiPanel	other panels/dialogs	N
+XuanSuQingMaiMonitor	other panels/dialogs	N
+YanTianZongSoullamp	other panels/dialogs	N
+YangDaoCardItem	other panels/dialogs	N
+YaoZCultivateBar	BR mode (excluded, done)	Y
+YaoZongSkillHint	other panels/dialogs	N
+ZombieFightFinal	other panels/dialogs	N
+friendrank	panels: social/team/guild	N
+regionPQPanel	other panels/dialogs	N
+regionPQreward	other panels/dialogs	N

@@ -1,0 +1,12 @@
+Basic UI INI extraction (2026-10-03)
+source: C:\SeasunGame\Game\JX3\bin\zhcn_hd\Pakv4 (read-only, via official PakV4SfxExtract.exe)
+tool: tools/netcode/extract_pak_paths.py --batch 250 (run with .venv python)
+candidates: proof/netcode/ui_lua_probe/out/ui/module_info.xml -> ui/Config/Default/<rel>.ini
+result: 1210 HIT / 155 MISS (see extract.log)
+dest: ui-process-app/assets/ui/Config/Default (ignored viewer asset root)
+evidence: extracted_inis.tsv (name/class/was_local), missing_inis.txt, candidate_inis.txt
+
+Session 2 additions (2026-10-03):
+- HUD group Lua: 54 files ui/Config/Default/**.lua (HUD class + Target.lua) -> extracted to temp, decompiled with unluac; corpus kept local-ignored at proof/ui/basic_ui/decompiled/
+- Target family INIs: 29 paths ui/config/default/Target*.ini (TargetCommon, TargetPlayer10/11{,S}, Target10..42{,S}) -> ui-process-app/assets/ui/Config/Default/
+

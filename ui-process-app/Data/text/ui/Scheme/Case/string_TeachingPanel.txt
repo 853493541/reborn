@@ -1,0 +1,5 @@
+ID	Length	String
+STR_TITLE	4	简介
+STR_I_KNOW	8	我知道了
+STR_PRODUCT	4	产物
+STR_SKILL	8	相关技艺

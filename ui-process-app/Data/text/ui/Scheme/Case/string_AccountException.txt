@@ -1,0 +1,10 @@
+ID	Length	String
+STR_ACCOUNTEXCEPTIONTITLE	12	风控状态解除
+STR_ACCOUNTEXCEPTION1	111	1、当前角色存在利用脚本/同步器/多开器进行高频次打金行为、多次规律性的打金、脚本代练行为，已被限制获取系统金币。
+STR_ACCOUNTEXCEPTION2	135	2、处于限制状态下的角色，通过游戏任务、出售装备/道具给商店、拾取掉落金币途径获得的系统金币将变为0，且限制状态下的角色无法上架至万宝楼。
+STR_ACCOUNTEXCEPTION3	107	3、处于限制状态下的角色，能够正常获得角色交易、邮寄、拍团、交易行出售、万宝楼购买金币等玩家之间的交易金币。
+STR_ACCOUNTEXCEPTION4	134	 4、侠士可扣除一定金币，来解除限制状态。解除所需金额将根据角色打金、代练行为的严重程度和触发次数而定。解除风控后则不再留下黑历史记录。
+STR_CANCEL	8	暂不解除
+STR_UNBUNDLE	4	解除
+STR_ACCOUNTEXCEPTION	34	角色存在工作室行为，进入风控状态！
+STR_KNOW	8	我已知晓

@@ -1,0 +1,21 @@
+ID	Length	String
+STR_VagabondTitle	6	浪客行
+STR_VagabondTitle2	14	请选择远行历程
+STR_VagabondDesc	5	1-5人
+STR_DESCTITLE	8	玩法介绍
+STR_CONDITION	8	限制条件
+STR_REWARD	7	奖   励
+STR_CONDITION1	16	仅满级成员可进入
+STR_CONDITION2	16	仅攻击心法可进入
+STR_TIP	28	开始游戏将删除所有模式的存档
+STR_TIP2	10	浪客行说明
+STR_NAMELIST	9	成员列表:
+STR_TIP3	8	上次挑战
+STR_TIP4	10	确定并退出
+STR_WEEK	14	（本周还可获得
+STR_WEEKTIPS	8	份浪客笺
+STR_NEWFIGHT	8	新的历程
+STR_CONTINUE	8	继续历程
+STR_FINDTEAM	8	快捷组队
+STR_LANGKEJIAN	7	浪客笺:
+STR_BENZHOU2	2	）

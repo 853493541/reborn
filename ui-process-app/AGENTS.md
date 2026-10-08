@@ -1,16 +1,53 @@
 # ui-process-app — agent notes
 
-WPF (`net5.0-windows`) explorer for the recovered 绝境战场 UI surfaces, rendered from
-the real KGUI layout INIs and official string tables.
+WPF (`net5.0-windows`) explorer for the recovered JX3 UI surfaces (绝境战场 mode + the
+default 基础界面), rendered from the real KGUI layout INIs and official string tables.
+The basic-UI scope register is `docs/ui/BASIC_UI_INVENTORY.md`; HUD deep research lives
+in `docs/ui/BASIC_UI_HUD.md`.
 
 - Run: `dotnet run --project ui-process-app`. Release binary:
   `ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe`.
-- Gate: `UiProcessApp.exe --selftest` must report **15/15 windows** (writes
-  `ui_process_selftest.txt` next to the exe).
+- **Render speed**: the resolver/`UiTexCache` is shared per app session, built layouts are cached
+  per (window, page, wireframe, hide) with a 6-entry cap, and the NEXT catalog window is pre-built on
+  the dispatcher's Background priority after each render — the X sweep renders from cache. The
+  `AssetNote` line shows `build=NNN ms` (or `(cached)`).
+- **不需要 (not needed): press `X`** in the viewer to move the currently shown window into a
+  `不需要` stage at the bottom of the tree and advance the selection to the NEXT window in the list
+  (previous one at the end) so a run can be rejected without scrolling back; press `X` again on a
+  rejected window to restore it to its original stage. State is a side file `Data/rejected.tsv`
+  (windowId TAB originalStageId) — the catalog JSON stays clean; headless equivalent:
+  `UiProcessApp.exe --reject <windowId>` (toggles, no selection).
+- **清单 (per-item checklist / visibility toggle)**: the 布局 tab's right panel lists every item
+  (section) of the current window in INI order with a checkbox, beside the displayed UI. The
+  checkbox is a **visibility toggle**: checked (default) = the item is shown; unchecked = it is
+  hidden from the window render (merged with the 隐藏 box) while its row stays in the list, so it
+  can be re-checked and reappear. Clicking anywhere on a row toggles it and highlights the item in
+  the canvas (yellow overlay). Detected issues are labelled (⚠ 缺图/文案缺失/超出窗口). State is
+  remembered in `Data/item_checks.tsv` (windowId TAB section TAB 1/0); 全显示/全隐藏 buttons; the
+  header shows `显示 X / Y`.
+- **Render status (P1)**: `UiProcessApp.exe --status` writes `Data/render_status.tsv` (per window:
+  size/sections/elements/leaves/placeholders/unresolved/outOfBounds/pages/page/lsh/runtime-hosts/
+  flags) + stage totals; the viewer shows `status: ph=.. str=.. oob=.. flags` in the AssetNote line
+  and the tree tooltip. Plan/retrospective: `docs/ui/UI_RENDER_FIDELITY_PLAN.md`.
+- **Contact sheet (P2)**: `UiProcessApp.exe --contact-sheet <stageId|title|number> [--out sheet.png]
+  [--cols N] [--max N]` renders a labeled thumbnail grid for batch review; numbering is
+  rejection-aware (matches the viewer, rejected count in the title).
+- **appendIni (P3)**: inventory `appendIni` appends a second INI's subtree under a handle at runtime
+  (`TargetCommon` -> target-frame `Handle_Energy`, sample kungfu 唐门 `Handle_TM`); `show` merges into
+  the script-shown set.
+- **Working on a catalog item → set it as the default**: when a session works on
+  one of the windows in the list (the user's "5.x"), update the root
+  `defaultWindow` in `Data/ui_inventory.json` to that window id (the viewer opens
+  on it; `MainWindow` falls back to the first window when it is missing). Leave it
+  pointing at the last item worked on so the user never has to switch manually.
+- Gate: `UiProcessApp.exe --selftest` must report **0 failed** (currently 1,240
+  rendered / 0 skipped; writes `ui_process_selftest.txt` next to the exe).
 - `Data/ui_inventory.json` is generated from `docs/netcode/JX3_MODE_UI_INVENTORY.md` —
   update the doc first, then regenerate; keep the evidence paths in the inventory.
 - Text assets in `Data/text/` are UTF-8 copies of the game files (see
-  `tools/prepare_ui_text.py`); never point the renderer at the game install directly.
+  `tools/prepare_ui_text.py`) or decoded string libs (the global `g_tStrings`
+  table, `tools/ui/extract_lua_string_table.py`); never point the renderer at the
+  game install directly.
 - Textures come from the git-ignored `proof/minimap/ui` extraction when present;
   missing art is expected and must render as placeholder/wireframe, not invented.
 - Desktop only — no web tooling. Root `AGENTS.md` rules apply.

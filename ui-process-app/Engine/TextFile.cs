@@ -19,6 +19,21 @@ namespace MapUiApp.Engine
 
         public static string ReadAll(string path) => Decode(File.ReadAllBytes(path));
 
+        /// <summary>Decode a fixed-width GBK byte field (game text: atlas texture names,
+        /// INI string fields) with the client's own encoding (GB18030/936).</summary>
+        public static string DecodeGameText(byte[] bytes, int offset, int count)
+        {
+            try
+            {
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                return Encoding.GetEncoding(936).GetString(bytes, offset, count);
+            }
+            catch
+            {
+                return Encoding.ASCII.GetString(bytes, offset, count);
+            }
+        }
+
         private static string Decode(byte[] bytes)
         {
             if (bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF)

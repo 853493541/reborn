@@ -1,0 +1,108 @@
+# KGUIX64.dll — KItemHandle list arrangement (FormatAllItemPos)
+# image base 0x180000000
+# Captured 2026-10-05 with tools/dump_va.py + a skip-invalid linear scanner
+# (pefile + capstone). Sources: KGUIX64.dll (client bin64), read-only.
+#
+# 1) Lua binding table (name -> function), found via the 'FormatAllItemPos'
+#    string data pointers at .rdata 0x1805d0490 / 0x1805d0db0:
+#      FormatAllItemPos -> 0x1801a32e0   (LuaItemHandle_FormatAllItemPos)
+#      InsertItemFromString 0x1801a2a90, InsertItemFromIni 0x1801a2ec0,
+#      SetHandleStyle 0x1801a34b0, SetMinRowHeight 0x1801a3560,
+#      SetMaxRowHeight 0x1801a3640, SetRowHeight 0x1801a3720,
+#      SetRowSpacing 0x1801a3800, RemoveItem 0x1801a3980, Clear 0x1801a3bd0,
+#      GetItemStartRelPos 0x1801a3e10, SetItemStartRelPos 0x1801a3f00,
+#      SetSizeByAllItemSize 0x1801a3c60, GetAllItemSize 0x1801a3fe0
+#
+# 2) Config parser (INI key -> config struct offset), function containing
+#    0x1800ba2c2 ('HandleType'):
+#      HandleType        -> config + 0x5b8
+#      FirstItemPosType  -> config + 0x5bc
+#      PixelScroll       -> config + 0x5c0
+#      RowSpacing        -> config + 0x5e8  (float)
+#      MinRowHeight      -> config + 0x5ec  (float)
+#      MaxRowHeight      -> config + 0x5f0  (float)
+#
+# 3) Config -> runtime copy (fn 0x180105950), scaled by [rdi+0x534]:
+#      HandleType       -> runtime + 0x2f4
+#      FirstItemPosType -> runtime + 0x2f8
+#      MinRowHeight*s   -> runtime + 0x2fc
+#      MaxRowHeight*s   -> runtime + 0x300
+#      RowSpacing*s     -> runtime + 0x304
+#      previous extent  -> runtime + 0x308 / + 0x30c
+#
+# 4) Arrangement dispatcher (fn start ~0x1801063xx, dispatch @ 0x1801064f5):
+#      eax = [rbx+0x2f4] (HandleType)
+#      cmp eax,3 ; jbe common      ; HandleType 0,1,2,3 -> common row/list path
+#      cmp eax,4 ; je  0x180106574  ; HandleType 4 -> special (calls 0x180107e20)
+#      cmp eax,5 ; je  0x18010655a  ; HandleType 5 -> special (calls 0x180107410)
+#      cmp eax,6 ; jne done        ; HandleType 6 -> common row/list path
+#      common: call 0x1801065c0 (per-child extent, vtable [rax+0x2c0])
+#              call 0x180106cc0 (post pass)
+#
+# 5) Post pass (fn 0x180106cc0) second dispatch @ 0x180106d25:
+#      lea eax,[rcx-1] ; cmp eax,2 ; jbe 0x180106e68  ; HandleType 1,2,3 -> list path
+#      cmp ecx,6 ; je 0x180106e68                       ; HandleType 6 -> list path
+#      others (0,4,5) -> the general extent loop @ 0x180106d3a
+#
+# Conclusion used by the viewer: HandleType 1 and 2 are the same row/list flow
+# as 3 and 6 (shared dispatcher + shared post-pass list path); 4 and 5 are
+# distinct arrangement modes (still unhandled).
+
+## dispatcher excerpt
+  0x1801064f5: mov eax, dword ptr [rbx + 0x2f4]
+  0x1801064fb: cmp eax, 3
+  0x1801064fe: jbe 0x18010650f
+  0x180106500: cmp eax, 4
+  0x180106503: je 0x180106574
+  0x180106505: cmp eax, 5
+  0x180106508: je 0x18010655a
+  0x18010650a: cmp eax, 6
+  0x18010650d: jne 0x180106545
+  0x18010650f: movaps xmm2, xmm6
+  0x180106512: movaps xmm1, xmm7
+  0x180106515: subss xmm2, dword ptr [rbx + 0x308]
+  0x18010651d: subss xmm1, dword ptr [rbx + 0x30c]
+  0x180106525: mov rcx, rbx
+  0x180106528: call 0x1801065c0
+  0x18010652d: mov rcx, rbx
+  0x180106530: movss dword ptr [rbx + 0x30c], xmm7
+  0x180106538: movss dword ptr [rbx + 0x308], xmm6
+  0x180106540: call 0x180106cc0
+
+## post-pass dispatch excerpt
+  0x180106d0b: mov ecx, dword ptr [rcx + 0x2f4]
+  0x180106d25: lea eax, [rcx - 1]
+  0x180106d28: cmp eax, 2
+  0x180106d2b: jbe 0x180106e68
+  0x180106d31: cmp ecx, 6
+  0x180106d34: je 0x180106e68
+
+# 6) FirstItemPosType consumer (fn 0x180108600): jump table at 0x180108964
+#    (13 entries, value -> case VA), dispatch @ 0x18010867c (read [rcx+0x2f8],
+#    cmp 0xc, ja skip). Case bodies align the first item inside the container
+#    ([rdi+0x2c]/[rdi+0x30] = handle W/H, [rdx+0x2c]/[rdx+0x30] = item W/H,
+#    xmm10 = 0.5):
+#      0  -> 0x1801086a3  origin + item's own offsets ([rdx+0x1c]/[rdx+0x20])
+#      1  -> 0x18010873f  y += (H-h)              (bottom)
+#      2  -> 0x18010874d  origin
+#      3  -> 0x1801086b2  y += (H-h)*0.5          (v-center)
+#      4  -> 0x18010874d  origin
+#      5  -> 0x1801086c6  x += (W-w)              (right)
+#      6  -> 0x1801086d6  x += (W-w)*0.5          (h-center)
+#      7  -> 0x1801086c6  right
+#      8  -> 0x1801086eb  x += (W-w); y += (H-h)  (bottom-right)
+#      9  -> 0x180108709  x += (W-w); y += (H-h)*0.5 (right-center)
+#      10 -> 0x18010873f  bottom
+#      11 -> 0x1801086eb  bottom-right
+#      12 -> 0x18010872c  x += (W-w)*0.5; y += (H-h) (bottom-center)
+
+# 7) Per-item PosType flow (fn 0x180108600, jump table 0x180108998): each item is
+#    placed relative to the previous item's rect (px/py/pw/ph) by its own PosType
+#    (item config PosType -> config+0x508, runtime item +0x220):
+#      0  new line at container origin + item offsets
+#      1  left, bottom-aligned      2  left            3  left, v-centered
+#      4  above                     5  right, bottom   6  above, h-centered
+#      7/11 right                   8  right, bottom   9/12 below, h-centered
+#      10 below
+#    Implemented in UiLayout.TryFlowAfterPrevious (used when the parent has
+#    FirstItemPosType != 0).

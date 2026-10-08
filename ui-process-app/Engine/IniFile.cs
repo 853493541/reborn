@@ -25,7 +25,11 @@ namespace MapUiApp.Engine
     public sealed class IniFile
     {
         public readonly List<IniSection> Sections = new List<IniSection>();
-        public readonly Dictionary<string, IniSection> ByName = new Dictionary<string, IniSection>(StringComparer.OrdinalIgnoreCase);
+        // Section identity is case-sensitive in the engine: shipped INIs carry
+        // case-differing twins (ACC_TreasureFinal's Text_playerName header vs its
+        // Text_PlayerName row prototype, EndOfBattle's Text_JiFen_1 vs Text_Jifen_1),
+        // and the client renders/addresses them separately.
+        public readonly Dictionary<string, IniSection> ByName = new Dictionary<string, IniSection>(StringComparer.Ordinal);
 
         public static IniFile Load(string path)
         {
@@ -69,7 +73,18 @@ namespace MapUiApp.Engine
                     else if (name.EndsWith("!", StringComparison.OrdinalIgnoreCase)) baseName = name.Substring(0, name.Length - 1);
                     if (baseName == null) break;
                     name = baseName;
-                    if (!ini.ByName.TryGetValue(baseName, out var baseSection)) continue;
+                    if (!ini.ByName.TryGetValue(baseName, out var baseSection))
+                    {
+                        // The suffix chain is derived from the section name, but the
+                        // base definition may still differ in case; scan as fallback.
+                        foreach (var candidate in ini.Sections)
+                            if (string.Equals(candidate.Name, baseName, StringComparison.OrdinalIgnoreCase))
+                            {
+                                baseSection = candidate;
+                                break;
+                            }
+                        if (baseSection == null) continue;
+                    }
                     bool hasSize = section.Values.ContainsKey("Width") || section.Values.ContainsKey("Height");
                     bool autoSize = section.GetBool("AutoSize") || (!hasSize && baseSection.GetBool("AutoSize"));
                     foreach (var pair in baseSection.Values)

@@ -1,0 +1,7 @@
+ID	Length	String
+STR_TITLE	8	入队申请
+STR_AGREE	4	接受
+STR_DISAGREE	4	拒绝
+STR_CHECK	8	查看装备
+STR_TEXTTIP	13	点击输入文本~
+STR_TITLETIP	13	点击输入标题~

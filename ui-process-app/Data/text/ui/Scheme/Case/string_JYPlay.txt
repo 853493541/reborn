@@ -1,0 +1,36 @@
+ID	Length	String
+STR_EQUIP	10	装备技能：
+STR_RESIDENT	10	常驻技能：
+STR_GFNAME	10	好感等级：
+STR_PAGETIP	427	<text>text="管家培养\n" font=65 </text><text>text="管家等级：每个等级对应相应的装备技能栏数量，等级越高，管家可装备的技能越多；管家阅历值满足升级所需条件后，可以点击按钮升级管家，阅历值由使用技能获取。\n\n好感等级：每天与管家互动、送礼物，均会加深玩家与管家的感情，会有更多互动对白。\n\n天赋：每个管家固有的天赋，可以通过天赋道具对天赋进行重置。\n\n技能：管家学习的技能，玩家可以通过技能书让管家学习技能或升级已有技能。"</text>
+STR_EQUIP_TIP	287	<text>text="装备技能栏\n" font=65 </text><text>text="技能栏用于装备已学习技能，左键点击技能栏，可选择装备，替换，使用或升级技能；每天只能卸载或替换一个技能，已装备的技能才可使用，并且仅主管家的技能生效，其中升级技能需要使用对应技能书。管家等级越高，对应拥有的装备技能栏数量越多。"</text>
+STR_GF	28	好感值满后升至下一好感等级。
+STR_UPGRADE_POINT	12	消耗阅历值：
+STR_UPGRADE_TIP	44	阅历值：管家每天使用技能即可获得一定阅历值。
+STR_UPGRADE	24	管家升级消耗一定阅历值。
+STR_TALENT	4	天赋
+STR_BIGTITLE	8	管家培养
+STR_RESIDENT_TITLE	44	点击图标使用常驻技能（仅主管家的技能生效）。
+STR_UPGRADE_LIMIT	16	已升至最高等级。
+STR_UPGRADE_LIMIT2	18	已经是最棒的管家！
+STR_MARK	8	必选道具
+STR_BTNTIP	59	请勿点击界面以外地方，否则F快捷键失灵，需点击按钮执行操作。
+STR_ATTRIBUTE	8	管家属性
+STR_SKILL	8	管家技能
+STR_WEAPONTIPS	22	请选择想要展示的武器。
+STR_WEAPONDISPLAY	6	武器架
+STR_WEAPONTIPS2	22	请选择想要展示的轻剑。
+STR_WEAPONTIPS3	22	请选择想要展示的重剑。
+STR_LOCKSETTING	8	设置密钥
+STR_LOCKOPENTITLE	8	机关解密
+STR_XIANGLU	4	香露
+STR_TIAOZHIZHONG	6	调制中
+STR_FENGLA	4	蜂蜡
+STR_KAISHITIAOZHI	8	开始调制
+STR_ZAICITIAOZHI	8	再次调制
+STR_XGTITLE	8	香膏调制
+STR_CHAKANGAO	8	查看香膏
+STR_CISHU	2	次
+STR_ANPEIFANG	14	按当前配方调制
+STR_XHJINGLI	8	消耗精力
+STR_DABAO	8	打包物品

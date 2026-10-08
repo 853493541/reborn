@@ -4,7 +4,8 @@
         Title="JX3 绝境战场 — UI Process Explorer"
         Width="1520" Height="960"
         Background="#1E1E1E"
-        Loaded="OnLoaded">
+        Loaded="OnLoaded"
+        PreviewKeyDown="OnWindowKeyDown">
     <DockPanel>
         <Border DockPanel.Dock="Top" Background="#252526" Padding="10,8">
             <DockPanel>
@@ -45,48 +46,77 @@
 
                 <StackPanel Grid.Row="0" Margin="12,10,12,6">
                     <TextBlock x:Name="WindowTitle" Foreground="#FFFFFF" FontSize="18" FontWeight="Bold"/>
-                    <TextBlock x:Name="WindowMeta" Foreground="#9A9A9A" FontSize="12" Margin="0,3,0,0" TextWrapping="Wrap"/>
                 </StackPanel>
 
                 <TabControl Grid.Row="1" Margin="12,0,12,10" Background="#252526" BorderBrush="#333333"
-                            SelectedIndex="1">
-                    <TabItem Header="详情 Details">
+                            SelectedIndex="0">
+                    <TabItem Header="布局">
+                        <Grid Background="#1B1B1B">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="4"/>
+                                <ColumnDefinition Width="330"/>
+                            </Grid.ColumnDefinitions>
+                            <DockPanel Grid.Column="0">
+                                <WrapPanel DockPanel.Dock="Top" Margin="8,6">
+                                    <TextBlock Text="缩放" Foreground="#BBB" VerticalAlignment="Center"/>
+                                    <Slider x:Name="ZoomSlider" Width="220" Minimum="0.25" Maximum="2.5"
+                                            Value="1" TickFrequency="0.25" IsSnapToTickEnabled="False"
+                                            Margin="8,0,12,0" ValueChanged="OnZoomChanged"/>
+                                    <TextBlock Text="页面" Foreground="#BBB" VerticalAlignment="Center" Margin="14,0,0,0"/>
+                                    <ComboBox x:Name="PageBox" Width="210" Margin="6,0,0,0"
+                                              SelectionChanged="OnPageChanged"/>
+                                    <TextBlock Text="隐藏" Foreground="#BBB" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                                    <TextBox x:Name="HideBox" Width="230" Margin="6,0,0,0"
+                                             Background="#1B1B1B" Foreground="#EAEAEA" BorderBrush="#3C3C3C"
+                                             ToolTip="Hidden sections (comma separated), e.g. Handle_PartyRecruit"
+                                             KeyDown="OnHideKeyDown"/>
+                                    <CheckBox x:Name="WireframeBox" Content="结构/名称" IsChecked="False"
+                                              Foreground="#BBB" VerticalAlignment="Center" Margin="14,0,0,0"
+                                              Checked="OnWireframeChanged" Unchecked="OnWireframeChanged"/>
+                                    <TextBlock x:Name="AssetNote" Foreground="#8A8A8A" FontSize="11"
+                                               VerticalAlignment="Center" Margin="12,0,0,0"/>
+                                </WrapPanel>
+                                <ScrollViewer x:Name="LayoutScroll" Background="#141414"
+                                              SizeChanged="OnLayoutViewportChanged"
+                                              HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Border x:Name="LayoutHost" Padding="24"
+                PreviewMouseLeftButtonDown="OnLayoutClick"
+                PreviewMouseLeftButtonUp="OnLayoutMouseUp"
+                MouseMove="OnLayoutMouseMove"
+                PreviewMouseWheel="OnLayoutMouseWheel"
+                                        HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                </ScrollViewer>
+                            </DockPanel>
+                            <GridSplitter Grid.Column="1" Width="4" HorizontalAlignment="Stretch"
+                                          Background="#333333"/>
+                            <DockPanel Grid.Column="2" Background="#202020">
+                                <WrapPanel DockPanel.Dock="Top" Margin="8,6">
+                                    <TextBlock x:Name="ItemCheckSummary" Foreground="#CCC" VerticalAlignment="Center"
+                                               FontWeight="Bold" Text="显示 0 / 0"/>
+                                    <Button Content="全显示" Margin="10,0,0,0" Padding="10,2"
+                                            Background="#333" Foreground="#EEE" Click="OnItemCheckAll"/>
+                                    <Button Content="全隐藏" Margin="6,0,0,0" Padding="10,2"
+                                            Background="#333" Foreground="#EEE" Click="OnItemCheckNone"/>
+                                </WrapPanel>
+                                <TextBlock DockPanel.Dock="Top" Foreground="#777" FontSize="11" Margin="8,0,8,4"
+                                           TextWrapping="Wrap"
+                                           Text="勾选=显示，取消=隐藏该条目；点击条目文字也可切换显示并在画布中高亮。有问题的条目标出原因。"/>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <StackPanel x:Name="ItemCheckList" Margin="8,4"/>
+                                </ScrollViewer>
+                            </DockPanel>
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem Header="详情">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Background="#1B1B1B">
                             <StackPanel x:Name="DetailsPanel" Margin="14"/>
                         </ScrollViewer>
                     </TabItem>
 
-                    <TabItem Header="布局 Layout">
-                        <DockPanel Background="#1B1B1B">
-                            <WrapPanel DockPanel.Dock="Top" Margin="8,6">
-                                <TextBlock Text="Zoom" Foreground="#BBB" VerticalAlignment="Center"/>
-                                <Slider x:Name="ZoomSlider" Width="220" Minimum="0.25" Maximum="2.5"
-                                        Value="1" TickFrequency="0.25" IsSnapToTickEnabled="False"
-                                        Margin="8,0,12,0" ValueChanged="OnZoomChanged"/>
-                                <TextBlock Text="Page" Foreground="#BBB" VerticalAlignment="Center" Margin="14,0,0,0"/>
-                                <ComboBox x:Name="PageBox" Width="210" Margin="6,0,0,0"
-                                          SelectionChanged="OnPageChanged"/>
-                                <TextBlock Text="隐藏" Foreground="#BBB" VerticalAlignment="Center" Margin="12,0,0,0"/>
-                                <TextBox x:Name="HideBox" Width="230" Margin="6,0,0,0"
-                                         Background="#1B1B1B" Foreground="#EAEAEA" BorderBrush="#3C3C3C"
-                                         ToolTip="Hidden sections (comma separated), e.g. Handle_PartyRecruit"
-                                         KeyDown="OnHideKeyDown"/>
-                                <CheckBox x:Name="WireframeBox" Content="结构/名称 Wireframe" IsChecked="False"
-                                          Foreground="#BBB" VerticalAlignment="Center" Margin="14,0,0,0"
-                                          Checked="OnWireframeChanged" Unchecked="OnWireframeChanged"/>
-                                <TextBlock x:Name="AssetNote" Foreground="#8A8A8A" FontSize="11"
-                                           VerticalAlignment="Center" Margin="12,0,0,0"/>
-                            </WrapPanel>
-                            <ScrollViewer x:Name="LayoutScroll" Background="#141414"
-                                          SizeChanged="OnLayoutViewportChanged"
-                                          HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                                <Border x:Name="LayoutHost" Padding="24"
-                                        HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                            </ScrollViewer>
-                        </DockPanel>
-                    </TabItem>
 
-                    <TabItem Header="文案 Labels">
+                    <TabItem Header="文案">
                         <DataGrid x:Name="LabelsGrid" Background="#1B1B1B" Foreground="#E0E0E0"
                                   RowBackground="#1B1B1B" AlternatingRowBackground="#212121"
                                   BorderThickness="0" AutoGenerateColumns="False" IsReadOnly="True">

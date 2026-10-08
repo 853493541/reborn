@@ -1,0 +1,20 @@
+ID	Length	String
+STR_BATTLEFIELD	8	阵营战场
+STR_JJC	8	名剑大会
+STR_LMJJ	8	龙门绝境
+STR_GF	8	大小攻防
+STR_TITLE	4	信誉
+STR_PRESTIGE	8	个人信誉
+STR_TIPS	420	1.被举报且系统复查生效时，会扣除对应信誉分。\n2.“绝境战场”玩法信誉分低于70分、其余玩法信誉分低于60分时，将会被禁止参与该玩法。\n3.信誉分可以通过正常的游戏行为回复：\n    a.每场战场胜利所有信誉+4分\n    b.每场名剑大会胜利所有信誉+2分\n    c.李渡城/龙门、沧溟绝境根据排名增加0~3分\n    d.每次阵营矿车日常所有信誉+3（攻防信誉2倍）\n    e.每次据点贸易日常所有信誉+1（攻防信誉2倍）\n    f.每次列星虚境玩法正常结算所有信誉+1
+STR_LDGY	8	李渡鬼域
+STR_LXXJ	8	列星虚境
+STR_GAMEONLINE1	10	演武棋在线
+STR_GAMEONLINE2	12	指尖对弈在线
+STR_FRIENDRANK	8	好友排名
+STR_FRIENDRANKTIPS	22	参与好友排名即点亮图标
+STR_GIVEALIKE	8	获赞状态
+STR_LEVEL	2	级
+STR_SHANGJIAOCHENGGONG	8	上交成功
+STR_CHENGGSHANGJIAO	58	成功上交帮会订单！待订单完成后，别忘了到帮会领地领取奖励！
+STR_SERVER	6	服务器
+STR_PLACE	6	所在地

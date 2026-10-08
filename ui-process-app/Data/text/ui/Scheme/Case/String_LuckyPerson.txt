@@ -1,0 +1,20 @@
+ID	Length	String
+STR_HISTORY	8	历史记录
+STR_HISTORY_2	36	查看活动期间每日中奖情况以及自己的ID
+STR_TIME_1	21	20:30-21:12\n不可选号
+STR_RULE	54	活动期间内累计充消达300元即可选取抽奖号码（需每日领取)
+STR_PICKNUM	8	选取号码
+STR_TIP	204	活动期间每个账号全区全服累计充值时间和消耗通宝总金额达300元，即有资格在活动界面点击选择一个5位数抽奖号码，活动7天每天都需操作选择一次，每次选择的号码仅对当次开奖有效。不操作选号码视为主动放弃当天的开奖。
+STR_BEST_WARD	6	锦鲤奖
+STR_TIME_2	28	领奖时间\n21:12至\n次日20:30
+STR_WARDS	64	二等奖 与开奖号最后两位尾数相同\n三等奖 与开奖号最后一位尾数相同
+STR_TODAYNUM	6	开奖号
+STR_WARDS_2	40	二等奖（尾号两位相同）三等奖（尾号相同）
+STR_BIGFISH	6	开奖号
+STR_PEOPLE	8	领奖人数
+STR_MYNUMS	10	我的抽奖号
+STR_PLEASE	4	请在
+STR_NUM	11	00001-50000
+STR_PICK	18	中选择你的抽奖号码
+STR_TIME_3	4	次数
+STR_TIP2	26	查看往日中奖号和我的抽奖号

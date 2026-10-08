@@ -138,7 +138,9 @@ namespace MapUiApp.Engine
         }
     }
 
-    /// <summary>Dispatches atlas texture decoding by file magic (TGA or DDS).</summary>
+    /// <summary>Dispatches texture decoding by file magic: DDS/TGA use the custom
+    /// decoders, PNG/BMP go through WPF's decoder (the CDN `_mb` art and the
+    /// native loading backgrounds ship in those formats).</summary>
     public static class TextureLoader
     {
         public static BitmapSource Load(string path)
@@ -146,6 +148,18 @@ namespace MapUiApp.Engine
             var b = File.ReadAllBytes(path);
             if (b.Length >= 4 && b[0] == 'D' && b[1] == 'D' && b[2] == 'S' && b[3] == ' ')
                 return Dds.Load(path);
+            bool png = b.Length >= 8 && b[0] == 0x89 && b[1] == 'P' && b[2] == 'N' && b[3] == 'G';
+            bool bmp = b.Length >= 2 && b[0] == 'B' && b[1] == 'M';
+            if (png || bmp)
+            {
+                using var stream = new MemoryStream(b);
+                var frame = System.Windows.Media.Imaging.BitmapFrame.Create(
+                    stream,
+                    System.Windows.Media.Imaging.BitmapCreateOptions.None,
+                    System.Windows.Media.Imaging.BitmapCacheOption.OnLoad);
+                frame.Freeze();
+                return frame;
+            }
             return Tga.Load(path);
         }
     }

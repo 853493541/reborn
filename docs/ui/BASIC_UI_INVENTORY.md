@@ -1,0 +1,555 @@
+# Basic UI inventory — the client's `ui/Config/Default` window register
+
+**Status: extraction DONE (2026-10-03); classification is a working heuristic.** This is the scope register for the BASIC UI deep-research pass (full default client UI, HUD + panels + menus + world/interaction; login, mode-specific (BR/arena/minigames), housing and debug windows excluded).
+
+## Provenance / reproduce
+
+- Window names: `proof/netcode/ui_lua_probe/out/ui/module_info.xml` (tracked manifest) — every `ui\Config\Default\**.lua` entry was converted to its candidate INI path (`ui/Config/Default/<same rel>.ini`).
+- Candidate list (1,365 paths): `proof/ui/basic_ui/candidate_inis.txt`.
+- Extraction (2026-10-03, official PakV4 extractor via `tools/netcode/extract_pak_paths.py --batch 250`): **1,210 HIT / 155 MISS** — log `proof/ui/basic_ui/extract.log`. Extracted INIs live in the ignored `ui-process-app/assets/ui/Config/Default/` (viewer asset root).
+- 155 candidates have no same-path INI (script-only/helper entries) — `proof/ui/basic_ui/missing_inis.txt`.
+- Path table reference: `ui/filepath.txt` (extracted) declares `ConfigDefault=\UI\Config\Default`; fonts/strings at `\UI\Scheme\Elem\*`, `\UI\Scheme\Case\String.txt`.
+
+## Coverage summary
+
+| | count |
+|---|---|
+| candidate INI paths probed | 1,365 |
+| INIs in the client (`HIT`) | **1210** |
+| script-only entries (no same-path INI, `MISS`) | 155 |
+| previously local (before this pass) | 131 |
+| newly extracted this pass | **1079** |
+
+`was-local` marks rows whose INI already existed locally before this pass (assets/ui + the map-era extraction).
+
+## Scope classes
+
+### HUD (tier 1 - always-on elements) — 53 windows
+
+| window (INI) | was-local |
+|---|---|
+| `AccelerateBall` | yes |
+| `ActionBar` | yes |
+| `ActionBarBind` | **new** |
+| `ActionSmallBar` | **new** |
+| `Announce` | **new** |
+| `Balloon` | yes |
+| `BuffFold` | yes |
+| `BuffList` | yes |
+| `BuffMonitor` | **new** |
+| `BuffMonitorDaoZong` | **new** |
+| `BuffMonitorGeneral` | **new** |
+| `BuffMonitorYaoZong` | yes |
+| `Bullet` | yes |
+| `CDProcess` | **new** |
+| `ChatButton` | **new** |
+| `ChatPanel_Bg` | **new** |
+| `ChatPanel_Game` | **new** |
+| `ChatPanel_Normal` | **new** |
+| `ChatPanel_Recent` | **new** |
+| `ChatSettingPanel` | **new** |
+| `ComboPanel` | yes |
+| `CompassPanel` | yes |
+| `DeBuffList` | yes |
+| `DynamicActionBar` | **new** |
+| `DynamicMutualBar` | yes |
+| `EnterAreaTip` | yes |
+| `ExpLine` | yes |
+| `FullScreenWarning` | **new** |
+| `GeneralProgressBar` | **new** |
+| `MainBarPanel` | yes |
+| `MainMessageLine` | yes |
+| `MiddleMap` | yes |
+| `MindControlActionBar` | **new** |
+| `Minimap` | yes |
+| `PetActionBar` | yes |
+| `PLActionBar` | yes |
+| `Player` | yes |
+| `PQprogressbar` | yes |
+| `ProgressBar` | yes |
+| `PuppetActionBar` | yes |
+| `QuestTraceList` | yes |
+| `TargetBuff` | yes |
+| `TargetDeBuff` | yes |
+| `TargetFaceSet` | **new** |
+| `TargetResourcebar` | **new** |
+| `TargetSkill` | **new** |
+| `TargetTarget` | yes |
+| `TeamBuff` | yes |
+| `Teammate` | yes |
+| `TeamSwitchBtn` | yes |
+| `TopBuff` | **new** |
+| `WeaponSkillBar` | **new** |
+| `WorldMark` | **new** |
+
+### Panels: character / bag / skill (tier 2) — 38 windows
+
+| window (INI) | was-local |
+|---|---|
+| `Album` | **new** |
+| `BatchUse` | **new** |
+| `BigBagPanel` | yes |
+| `CharacterPanel` | yes |
+| `CharacterPanel_Homeland` | **new** |
+| `CharacterPanelAwardTip` | **new** |
+| `CharacterPanelExplainTip` | **new** |
+| `CharInfo` | **new** |
+| `CharInfoMore` | **new** |
+| `CraftManagePanelnew` | **new** |
+| `CraftPanel` | yes |
+| `CraftReadComparePanel` | **new** |
+| `CraftReaderPanel` | **new** |
+| `CraftReadManagePanel` | **new** |
+| `Dismantle` | yes |
+| `EquipmentShare` | yes |
+| `ExaminationPanel` | yes |
+| `ExteriorAction` | yes |
+| `HorsePanel` | yes |
+| `KungFuPanel` | yes |
+| `Matrix` | yes |
+| `MingJiaoSkill` | yes |
+| `NewPet` | **new** |
+| `NewPetInfo` | **new** |
+| `NewPetSkill` | yes |
+| `NewRecipeTip` | **new** |
+| `NewSkillGuidePanel` | yes |
+| `NewSkillPanel` | yes |
+| `PetPanel` | yes |
+| `RecipeOpenSure` | **new** |
+| `ShareBagPanel` | **new** |
+| `Skill_SkinVideo` | **new** |
+| `Skill_TalentComment` | yes |
+| `SkillFormulaPanel` | yes |
+| `SkillGuideSettingPanel` | yes |
+| `SkillIntroduce` | yes |
+| `ToyBox` | yes |
+| `ViewEquip` | yes |
+
+### Panels: social / team / guild (tier 2) — 59 windows
+
+| window (INI) | was-local |
+|---|---|
+| `AccountException` | **new** |
+| `AccountFriendTip` | **new** |
+| `AddAccountFriend` | **new** |
+| `AddFriendPanel` | **new** |
+| `AddPartnerExterior` | **new** |
+| `AddTBMegBox` | **new** |
+| `AllKBAccounts` | **new** |
+| `AnniversaryWishPop` | **new** |
+| `AudienceListPanel` | **new** |
+| `BarMitzvah` | **new** |
+| `BirthdayCelebrateCardPop` | **new** |
+| `CallFriendPannel` | **new** |
+| `CallGuildMemberPannel` | **new** |
+| `FormationPanel` | **new** |
+| `friendrank` | **new** |
+| `GoldTeam` | yes |
+| `GoldTeamAddMoney` | **new** |
+| `GoldTeamDistribution` | **new** |
+| `GoldTeamLootList` | **new** |
+| `GoldTeamPartialPayment` | **new** |
+| `GoldTeamPrice` | **new** |
+| `GoldTeamSetSubsidy` | **new** |
+| `GuildAddMember` | yes |
+| `GuildBankPanel` | **new** |
+| `GuildCampReverse` | **new** |
+| `GuildCastleWarPoints` | **new** |
+| `GuildCastleWarRule` | **new** |
+| `GuilderPanel` | **new** |
+| `GuildLeagueMatches` | **new** |
+| `GuildLeagueMatches_BattleInfo` | **new** |
+| `GuildLeagueMatches_EnterTip` | **new** |
+| `GuildLeagueMatchesSheet` | **new** |
+| `GuildLeagueShowPanel` | **new** |
+| `GuildLeagueShowPanelTips` | **new** |
+| `GuildLeagueSignHint` | **new** |
+| `GuildListPanel` | **new** |
+| `GuildMainPanel` | yes |
+| `GuildMemberDragPanel` | **new** |
+| `GuildRename` | **new** |
+| `GuildRenameEX` | **new** |
+| `MentorPanel` | **new** |
+| `MentorPanelTip` | **new** |
+| `PersonalCard_BirthdaySetPop` | **new** |
+| `PersonalCard_CheckOut` | **new** |
+| `PersonalCard_Cut` | **new** |
+| `PersonalCard_DataEdit` | **new** |
+| `PersonalCard_Decorate` | **new** |
+| `PersonalCard_Mine` | **new** |
+| `PersonalCard_ShowData` | yes |
+| `PersonalCard_Tip` | **new** |
+| `RaidPanel` | yes |
+| `RankingPanel` | yes |
+| `ReputationPanelNew` | yes |
+| `SocialPanel` | yes |
+| `TeamBuilding` | yes |
+| `TeamBuildingPlayerSet` | **new** |
+| `TeamBuildMessage` | yes |
+| `TeamBuildTip` | **new** |
+| `WhoSeeMe` | yes |
+
+### Panels: mail / auction / bank (tier 2) — 10 windows
+
+| window (INI) | was-local |
+|---|---|
+| `AuctionMsgBox` | **new** |
+| `AuctionPanel` | yes |
+| `BanishPanel` | **new** |
+| `BanksInterface` | yes |
+| `BigBankPanel` | yes |
+| `BlackMarketOperate` | **new** |
+| `BuyRule` | **new** |
+| `BuyTime` | **new** |
+| `MailPanel` | yes |
+| `WantedPanel` | yes |
+
+### Menus / settings (tier 3) — 24 windows
+
+| window (INI) | was-local |
+|---|---|
+| `AutoExitPanel` | **new** |
+| `BuyNumberPanel` | **new** |
+| `CustomEffects` | yes |
+| `EditBox` | yes |
+| `EmotionPanel` | yes |
+| `ExitPanel` | yes |
+| `FilterPanel` | yes |
+| `GetNumberPanel` | **new** |
+| `HotkeyPanel` | yes |
+| `KeyPanel` | **new** |
+| `OptionPanel` | yes |
+| `SafeReminder` | **new** |
+| `SoundSettingPanel` | yes |
+| `SystemMenu_Left` | yes |
+| `SystemMenu_List` | **new** |
+| `SystemMenu_Right` | yes |
+| `TopMenu` | yes |
+| `TradePanel` | **new** |
+| `TradingPanels` | yes |
+| `TradingSellers` | **new** |
+| `TradingSure` | yes |
+| `UICustomModePanel` | yes |
+| `UISetting` | yes |
+| `VideoSettingPanel` | yes |
+
+### World / quest / interaction (tier 4) — 25 windows
+
+| window (INI) | was-local |
+|---|---|
+| `AchievementPanel` | **new** |
+| `AchievementTip` | **new** |
+| `ActivityDetail` | **new** |
+| `ActivityGift` | **new** |
+| `ActivityList` | yes |
+| `ActivityPanel` | **new** |
+| `ActivityPlotPanel` | **new** |
+| `ActivityRewardCollection` | **new** |
+| `ActivitySignIn` | **new** |
+| `ActivityTipPanel` | **new** |
+| `AutoSearch` | **new** |
+| `CampPanel` | yes |
+| `DialoguePanel` | yes |
+| `MilitaryRanking` | **new** |
+| `Navigator` | **new** |
+| `NPCGuidelines` | **new** |
+| `QuestAcceptPanel` | **new** |
+| `QuestBar` | **new** |
+| `QuestContrastPanel` | **new** |
+| `QuestGuide` | **new** |
+| `Questionnaire_FresherExitGame` | **new** |
+| `QuestItem` | **new** |
+| `QuestRewardTip` | **new** |
+| `TrackingTip` | **new** |
+| `WorldMap` | yes |
+
+### Other panels / dialogs (tier 5, unclassified) — 790 windows
+
+In scope for the full default UI; classification refined per session when a group is researched. Compact list:
+
+- `ActiveMessage0` · `AIChat_Statement` · `AIChatPanel` · `AnimationMgr` · `ArtistReward` · `ArtistRewardAmount`
+- `ArtistRewardSure` · `AssistNewbieDungeon` · `AssistNewbieInvite` · `AssistNewbieRelease` · `BalanceBar` · `BlueprintsChoice`
+- `BookCopyPanel` · `BookExchangePanel` · `BookInfoPanel` · `BubblePanel` · `BugReport` · `ButlerNpcInfo`
+- `CampActiveTime` · `CampBossPanel` · `CampFireworks` · `CampMapsTips` · `CampMapsWeatherTip` · `CampMapsYinShanPanel`
+- `CampOB` · `CampRewardTip` · `CampTipPanel` · `CardBuy` · `CardSell` · `CastingPanel`
+- `CastleFightCleanup` · `Challenge` · `ChallengeCountDown` · `ChangeVoice` · `ChangGeShadow` · `ChannelPanel`
+- `Chapters` · `Charge` · `CheatWarningPanel` · `CheckBaiZhanInfo` · `ChooseGift` · `ChooseGiftMessage`
+- `ChooseGiftSFX` · `ChooseReward` · `ChooseVoiceRoom` · `CleanDxPanel` · `CloakColorChange` · `ClueShowList`
+- `CMD_Add` · `CMDOB` · `Cohabitation` · `CoinShop` · `CoinShop_AiFace` · `CoinShop_BodyShop`
+- `CoinShop_BoxMod` · `Coinshop_CantBuy` · `CoinShop_Center` · `CoinShop_ChangeHairColor` · `CoinShop_CheckOut` · `CoinShop_CustomEffects`
+- `CoinShop_Cutscene` · `CoinShop_DyeingCheckOut` · `CoinShop_DyeingHair` · `CoinShop_Entrance` · `CoinShop_Exterior` · `CoinShop_FaceSave`
+- `CoinShop_GeneralSetList` · `CoinShop_GoodsIntroduce` · `CoinShop_Groupon` · `CoinShop_HairdyeSave` · `CoinShop_HairShop` · `CoinShop_Home`
+- `CoinShop_MyBody` · `CoinShop_MyExterior` · `CoinShop_MyHair` · `CoinShop_MyNewFace` · `CoinShop_MyPosture` · `CoinShop_MySpecialEffects`
+- `CoinShop_NewFaceShop` · `CoinShop_NewHairShop` · `CoinShop_News` · `CoinShop_Outfit` · `CoinShop_PackTip` · `CoinShop_PointsAward`
+- `CoinShop_PreviewBox` · `CoinShop_RemoveSure` · `CoinShop_SchoolExterior` · `CoinShop_Search` · `CoinShop_SetList` · `CoinShop_SetTip`
+- `CoinShop_ShareStation` · `CoinShop_ShowHide` · `CoinShop_SortSetting` · `Coinshop_SpecialEffectPart` · `CoinShop_TradeCenter` · `CoinShop_TuoyinRule`
+- `CoinShop_UnPayRel` · `CoinShop_Video` · `CoinShop_View` · `CoinShop_Weapons` · `CoinShop_Welfare` · `CoinShop_ZhouBianRule`
+- `Collection` · `Collection_Bag` · `Collection_DeleteSure` · `Collection_Message` · `Collection_MiniBag` · `Collection_OpenBox`
+- `Collection_Orange` · `Collection_View` · `ColorPalette` · `ColorTablePanel` · `CombatText` · `CommandAddGang`
+- `CommandAddMoney` · `CommandAuction` · `CommandBuySure` · `CommandChangeCommander` · `CommandDataPanel` · `CommandDistribute`
+- `CommandDistributeSure` · `CommandElection` · `CommandKickPlayer` · `CommandPlayerList` · `CommandSetting` · `CommandSignup`
+- `CommandVoteOnline` · `CommonBlankPanel` · `ConfirmTime` · `ConflatePanel` · `ContactsList` · `CraftIntroduce`
+- `CraftStuffPanel` · `CreateVoiceRoom` · `Crosshair` · `CrossingFinishPanel` · `CrossingProcessPanel` · `CrossMap`
+- `CurrencyBagPanel` · `CustomMessage` · `CustomTrackList` · `Cyclopaedia` · `Cyclopaedia_Active` · `Cyclopaedia_Career`
+- `Cyclopaedia_FAQ` · `Cyclopaedia_JX3Library` · `Cyclopaedia_Log` · `DailySignIn` · `Danmaku` · `DanmakuSetting`
+- `DashBoard` · `DaTangJiaYuan` · `DBMPanel` · `DdzIconPanel` · `DdzPanel` · `DdzSettlementPanel`
+- `DebugNpcPortrait` · `DelphisGift` · `DesertEquipmentChoose` · `DesertItemBuySure` · `DesertItemNumSure` · `DesertPreset`
+- `DesertQuickPack` · `DesertSell` · `DesertStormInfoPanel` · `DesertStormOB` · `DesertStormOBList` · `DesertStormSkillPanel`
+- `DesertSuit` · `DesertWarehouse` · `DesertWeaponChoose` · `DesertWeaponSkill` · `DesignationPanelNew` · `Direction`
+- `DisableCompositionTip` · `DivinationPanel` · `DLCPanel` · `DomesticatePanel` · `DramaAnnouncement` · `DramaBuyingTip`
+- `DramaCluePanel` · `DramaDetailPanel` · `DramaHall` · `DramaHallFilterMenu` · `DramaJieSan` · `DramaLabelFilter`
+- `DramaLinkSwitch` · `DramaMoreMessageCard` · `DramaNewClueCard` · `DramaOperation` · `DramaPassWord` · `DramaPlayerList`
+- `DramaPlayerTip` · `DramaScore` · `DramaSelectRole` · `DramaStoryPanel` · `DramaTeamBuilding` · `DramaTitle`
+- `DramaVotePanel` · `DramaVotingResults` · `DropDownWnd` · `DropLinePanel` · `DurabilityPanel` · `DyeingQualityTips`
+- `DynamicBeastBar` · `DynamicNpcMorphPhoto` · `DynamicPetBar` · `DynamicSkillBar` · `DynamicWeatherSetting` · `EmergencyChoose`
+- `EmotionManagePanel` · `Equip_Distance` · `EquipCopy` · `EquipInquire` · `EquipmentDIY` · `EquipmentDIYChoose`
+- `EquipmentDIYExport` · `EquipmentDIYImport` · `EquipmentDIYMgr` · `EquipmentDIYModify` · `EquipmentDIYPic` · `EquipmentDIYPlan`
+- `EquipRecommend` · `Exterior_Operator` · `ExteriorBoxError` · `ExteriorSellBag` · `ExteriorView` · `EYaShaEmergency`
+- `EYaShaEventPlay` · `EYaShaGameTeach` · `EYaShaHelper` · `EYaShaInterlude` · `EYaShaLeaveButton` · `EYaShaMeetingOperate`
+- `EYaShaMeetingRoom` · `EYaShaMeetingStage` · `EYaShaOpenMeetingConfirm` · `EYaShaPlayer` · `EYaShaPlayerCard` · `EYaShaQuestWatchList`
+- `EYaShaQuickMsgPanel` · `EYaShaReport` · `EYaShaSetting` · `EYaShaShowFinal` · `EYaShaTopMenu` · `FamePanel`
+- `FameTeach` · `FameUpgrade` · `FancySkating` · `FBBossPanel` · `FBCountDown` · `FBCountNum`
+- `FBlist` · `FBlistBossKillTip` · `FBShowPanel` · `FBShowTeam` · `FBTimeRank` · `FEActivationPanel`
+- `FEEquipExtractPanel` · `Fellowship` · `FellowshipChoose` · `FellowshipQuest` · `FieldPQPanel` · `FightProgress`
+- `FilterInviteMsg` · `FilterMask` · `FindingYouShang` · `FindTeamPQObjective` · `FireCardSFX` · `FishPanel`
+- `FiveAttributeDetailsPop` · `FiveAttributePop` · `FixRoomNum` · `FlowerDayPs` · `FlowerInfoPanel` · `FlowerPanel`
+- `FPS` · `FriendBack` · `FriendPraise` · `FriendPraiseTip` · `FriendRecruit` · `FriendTip`
+- `FullScreenSFX` · `FullShop` · `FullShop_BG` · `FullShop_Detail` · `FullShop_ItemImage` · `FullShop_Left`
+- `FullShop_List` · `FullShop_Money` · `FullShop_View` · `FurnitureSetCollect` · `GameGuideCPLevelAwards` · `GameTeach`
+- `GasMonitorCY` · `GeneralAttributePop` · `GeneralCounterSFX` · `GeneralInvitation` · `GetNamePanel` · `GetNew`
+- `GetNewHomelandSkin` · `GetNewPartner` · `GetPercentagePanel` · `GetPricePanel` · `GlobalEventHandler` · `GMAnnouncePanel`
+- `GMPanel` · `GoldPresetPanel` · `GongZhan` · `GoodFanWorks` · `GrouponConfirm` · `GrouponRemind`
+- `GrouponRule` · `GuardInfo` · `GuardList` · `GuardPanelSure` · `GuardPanelSureInfo` · `GuidePerson_MengXin`
+- `HatredPanel` · `HelpPanel` · `HelpSound` · `HideOtherHomeTip` · `HLBOp_Main` · `HLBView_AreaManagement`
+- `HLBView_Blueprint` · `HLBView_Blueprint_SerialNum` · `HLBView_BlueprintExport` · `HLBView_BlueprintImport` · `HLBView_BlueprintLoadBar` · `HLBView_BuildingStats`
+- `HLBView_CamSpeed` · `HLBView_CellarLayers` · `HLBView_CustomBrush` · `HLBView_DeleteSure` · `HLBView_DigitalBlueprintExport` · `HLBView_ErrorItemList`
+- `HLBView_ExtractFurniture` · `HLBView_ExtractPanel` · `HLBView_Filters` · `HLBView_GenuineIcons` · `HLBView_Help` · `HLBView_ItemList`
+- `HLBView_ItemOpColor` · `HLBView_ItemOpHeight` · `HLBView_ItemOpMain` · `HLBView_ItemOpRotate` · `HLBView_ItemOpScale` · `HLBView_ItemRotateDirection`
+- `HLBView_Main` · `HLBView_MatchItemList` · `HLBView_Message` · `HLBView_NormalItemList` · `HLBView_PendantBuy` · `HLBView_RClick`
+- `HLBView_Recycle` · `HLBView_ReplaceList` · `HLBView_Saveusage` · `HLBView_SomeInfo` · `HLBView_WeatherSetting` · `HLBView_Welfare`
+- `HonorChallengePanel` · `HonorChallengeReward` · `HorseEquip` · `HorseExterior` · `HorseExterior_CheckOut` · `HorseStable`
+- `HotSpot` · `HouseFastPanel` · `HouseFastPanel_Vistor` · `HouseFastPanel_Wander` · `HouseFrameLicense` · `HouseKeeper`
+- `HouseLinkTip` · `HouseMovingGuide` · `HousePlayPanel` · `HouseUpgrade` · `HuaZhaoPhoto` · `Identity`
+- `IdentityDynActBar` · `IdentityDynamicBar` · `IdentityPanel` · `IdentityUpGrade` · `IllusionPanel` · `InstanceInfo`
+- `Instrument_File` · `Instrument_Main` · `Instrument_Op` · `Instrument_Play` · `InstrumentStatement` · `InterludeHSLHPanel`
+- `InterludePanel` · `InviteFriends` · `IrrigatePanel` · `ItemBox` · `ItemBuy_MoneyTrace` · `ItemBuySure`
+- `JiangHuMatrix` · `JigsawDragPiece` · `JoinCamp` · `JoinHousePVP` · `Keyboard` · `KFActionBarPanel`
+- `KillInformation` · `KillMessage` · `LeftMessage` · `LevelUpAward` · `LevelUpMax` · `LightingCityPanel`
+- `LimitedSalePanel` · `LoadingPanel` · `LoadingPlay` · `LockPanel` · `LootRoll` · `LootRollMini`
+- `LootShowList` · `LuckyPerson` · `LXGMonitor` · `MacroSettingPanel` · `MahjongIconPanel` · `MahjongPanel`
+- `MahjongSettlementPanel` · `MainPlotPanel` · `MainStoryPanel` · `MapCopyList` · `MasterEquipRecommend` · `MasterNote`
+- `Match3Game` · `MaterialInfoMore` · `MentorFindMessage` · `MentorMessage` · `MentorTask` · `MentorTransform`
+- `MessageBoard` · `MiddleMapFlagEditor` · `MiddleMapSimple` · `MinimizeEffect` · `MobileBuffList` · `MobileSkillGrandPanelTip`
+- `MobileSkillIntroduce` · `MobileSkillTip` · `MoGaoKuPanel` · `MoneyBuy` · `MoneySell` · `MonsterBuffChoose`
+- `MonsterBuffPanel` · `MonsterDistribute` · `MonsterEntrance` · `MonsterLocker` · `MonsterPanel` · `MonsterSettlement`
+- `MonsterSkillPreset` · `MonsterSpiritEnduranceData` · `MoviePanel` · `MultiItemSelect` · `MvpShowPanel` · `MyAward`
+- `MyCloudInstrument` · `NetbarAd` · `NetworkVideo` · `NetworkVideoWaiting` · `NewAchievement` · `NewAddFriendPanel`
+- `NewBag` · `NewBattleFieldRull` · `NewChargeGiftMonthly` · `NewEmotionAction` · `NewEquip` · `NewEquipRecommend`
+- `NewHomelandChangeSkin` · `NewHorse` · `NewJYPlayReward` · `NewOperationActivity` · `NewPartnerEquipment` · `NewPlayerBF`
+- `NewQuestPanel` · `NewSafePanel` · `NewSkillBar` · `NewTrialValley` · `NewYearPanel` · `NoticeBoard`
+- `NpcExteriorView` · `NPCFeeling` · `NpcMorphBar` · `NPCRoster` · `NPCSpeechSounds` · `NumericalPanel`
+- `OldQuestAcceptPanel` · `OperationCenter` · `OperationMode` · `OperationRules` · `OperatPreOrder` · `OrangeWeaponUpg`
+- `OTGCDBar` · `OTPetActionBar` · `OutfitModList` · `OutMap` · `PakV4DownloadInfo` · `PakV4Info`
+- `PakV4Loading` · `PanelChargeHintPop` · `PanzhazhaiPanel` · `PanzhazhaiTime` · `Partner` · `PartnerAttribute`
+- `PartnerBag` · `PartnerBreak` · `PartnerBuyConfirm` · `PartnerDefaultPlan` · `PartnerEquipmentUpgrade` · `PartnerExterior`
+- `PartnerLockLink` · `PartnerMeetbyChance` · `PartnerMessage` · `PartnerScence` · `PartnerSelect` · `PartnerTaskAwards`
+- `PartnerTaskCheck` · `PartnerTaskList` · `PartnerTaskSetting` · `PartnerTeam` · `PartnerTeamSetting` · `PartnerTip`
+- `PartnerUpGrade` · `PartnerVoiceAndStory` · `PartyRecruitPanel` · `PayPathPanel` · `PendantBase` · `PendantChoiceColor`
+- `PendantUpgrade` · `PendantUpgradeSelect` · `PerformanceCollect` · `PhotoShop` · `Playerbar` · `PlayerKillMessage`
+- `PlayerMode` · `PlayerReturn` · `PlayerReturnTip` · `PlayerView` · `PlayerViewJJC` · `PlayerVisitCard`
+- `PlotDialoguePanel` · `PlotExplain` · `PlotSound` · `PluginSingle` · `PluginTotal` · `PopupBuffList`
+- `PopupRemind` · `PQNextStage` · `PQTeach` · `PQTimePanel` · `PQwarning` · `PreSetComment`
+- `PresetMusicList` · `PrestigePanel` · `ProgressSaveData` · `PVPInput` · `PVPMessageBoard` · `PVPQiXueList`
+- `PVPRandomForce` · `PVPReplayAnnouncement` · `PVPReplayBar` · `PVPSelectMap` · `PVPSetting` · `PVPSetting_Last`
+- `PZZ_Buildings` · `PZZ_ChoosePage` · `PZZ_SpecialBuildings` · `PZZ_VillageManage` · `PZZ_Villagers` · `QGJump`
+- `QixiAlbumPop` · `QixiPicturePop` · `QixueLookup` · `QixueTeachBy` · `QMSoulPanel` · `QTEPanel`
+- `QuickConsumePanel` · `QuickConsumeShare` · `QuitCohabitMessage` · `RaidDragPanel` · `RandomReward` · `ReadMailPanel`
+- `RealBP` · `RealFirstCharge` · `RealNameCertify` · `RechargeRemind` · `RecordClientData` · `RecoverEquipment`
+- `RedEnvelope` · `RedEnvelopeInfo` · `RefinePanel` · `regionPQPanel` · `regionPQreward` · `RegressionPanel`
+- `RemainingTimeNotify` · `RemoteCDProcess` · `RenewRule` · `Resourcebar` · `RevivePanel` · `RoadChivalrous`
+- `RoadChivalrousDetail` · `RoadChivalrousPopup` · `RoadChivalrousTips` · `RoleRename` · `RoomLinkTip` · `RoommateDragPanel`
+- `RoommateTeam` · `RoomPanel` · `RoomRaidReset` · `SafeModifyPwd` · `SafePanel` · `SafeTip`
+- `SanFangShaQueue` · `SavePreset` · `SaveSharePreset` · `Scene` · `SceneBlackMask` · `SceneCampTip`
+- `SceneMini` · `ScreenLock` · `ScrollDisplay` · `SearchWnd` · `SeasonDistance` · `SeasonFurniture`
+- `SeasonFurnitureFragment` · `SeasonFurnitureInfo` · `SeasonLetter` · `SeasonRankPanel` · `SeasonRewardPanel` · `SecurityCard`
+- `SelectCampPlanes` · `SelectEnchantment` · `SelectGround` · `SelectMacroIconPanel` · `Selfie` · `SelfieEmotion`
+- `SelfieExportDetails` · `SelfieMovieRecordLogo` · `SelfieNav` · `SelfieOneClick` · `SelfieOneClickPreview` · `SelfieOneClickRecording`
+- `SelfiePosture` · `SelfieRecord` · `SelfieSaveAI` · `SelfieSaveMusic` · `SelfieSizeBox` · `SelfieStatement`
+- `SelfieStudio` · `SelfieTemplateExport` · `SelfieTemplateImport` · `SelfieTemplatePop` · `SellBag` · `SellSure`
+- `ServantDismiss` · `ServerReconnect` · `SetMusic` · `SetPersonalVolume` · `SetTeamLootMode` · `SFXPanel`
+- `ShareBagBindingPanel` · `ShareStation` · `ShareStation_DyeDetails` · `ShareStation_EditInfo` · `ShareStation_Expression` · `ShareStation_ExteriorChoose`
+- `ShareStation_ExteriorFilter` · `ShareStation_Filter` · `ShareStation_ImportExterior` · `ShareStation_Report` · `ShareStation_Rules` · `ShareStation_Shoot`
+- `ShareStation_Statement` · `ShareStation_UploadCut` · `ShareStation_UploadInfo` · `ShareStation_WorkLinkTip` · `ShenJianXin` · `ShortcutInturn`
+- `SidePanel` · `SignIn` · `SimpleDLCPanel` · `SituationMap` · `SkillBanEdit` · `SkillCDJingYuJue`
+- `SkillGlossaryPanel` · `SkillGuidePanel` · `SkillGuidePanelTips` · `SkillPanelTeaching` · `SkillRemind` · `SkillTipPanel`
+- `SmallBagPanel` · `SmallCalender` · `SMPopupMenu` · `SpeedEffect` · `SpeedRankPanel` · `SpiritEndurancePanel`
+- `SprintPanel` · `StampPlay` · `StartTask` · `StoryDisplay` · `StoryMode` · `StrangeBox`
+- `SummonBar` · `SuperRoom` · `SurpriseFreeAd` · `SwitchCenter` · `SwitchServerDLC` · `SwitchServerInfoTip`
+- `SwitchServerMemorabilia` · `SwitchServerQueue` · `SwitchServerStandHoldTip` · `SwitchSword` · `TapTapAdvice` · `TapTapFeedback`
+- `Teaching` · `TeachingAim` · `TeachingMove` · `TeachingPanel` · `TeamCountdown` · `TeamEditPlayerTags`
+- `TeamNumList` · `TeamNumListLong` · `TeamPlayerTagList` · `TeamStatePop` · `TeamTagPlayers` · `TheFlopPanel`
+- `ThermometerPanel` · `TimeBuff` · `TitleRankReward` · `TongArena` · `TongBaoGift` · `TongBaoPanel`
+- `TongBattledragonTips` · `TongBattleTips` · `TongFarmPanel` · `TopBuffSet` · `TopMenuOther` · `TopMenuSaleList`
+- `TraceButton` · `TrafficSure` · `TrafficSurePanel` · `Treasure_GetRewardNew` · `Treasure_PreviewNew` · `TreasureHuntBP`
+- `TrialValleyReward` · `TurnCard` · `UIComfirm` · `UICursor` · `UILock` · `UIMovie`
+- `UpGradeEffect` · `UserActionChoose` · `VagabondCraftManage` · `VagabondCrossMap` · `VagabondPanel` · `VagabondReward`
+- `VampireCountPanel` · `VampireInfoPanel` · `VideoCustomPanel` · `VideoSettingDetails` · `VkActionBar` · `VoiceHall`
+- `VoiceHallAgreement` · `VoiceMessage` · `VoiceRoomMessage` · `VoiceRoomNotice` · `VoiceRoomPassword` · `VoiceRoomUpGrade`
+- `Wanted_Publish` · `WarningTipPanel` · `WeaponBag` · `WeaponsDisplay` · `WeaponSwitcher` · `WelcomeSignIn`
+- `WelfareReturn` · `WhoIsUndercover` · `WinterFestivalNpcInfo` · `WinterFestivalSkillMsg` · `WishingBar` · `WishPanel`
+- `WithdrawGold` · `WndLock` · `WoodCardSFX` · `WulinShenghuiDuizhen` · `XiangQiPanel` · `XuanSuQingMaiMonitor`
+- `YangDaoCardItem` · `YanTianZongSoullamp` · `YaoZongSkillHint` · `ZombieFightFinal`
+
+## Excluded classes
+
+**login/entry (excluded) — 31:**
+
+- `AddonChangeLog` · `AddonPanel` · `CreditsPanel` · `EULAPanel` · `InternetExplorer` · `KoreaLogo` · `LoadingWaiting` · `LoginCustomRole`
+- `LoginCustomRoleMode` · `LoginCustomRoleName` · `LoginCustomRoleNext` · `LoginDeleteRole` · `LoginLogo` · `LoginMessage` · `LoginPassword` · `LoginPayFor`
+- `LoginQuestPanel` · `LoginRename` · `LoginRoleList` · `LoginScene` · `LoginServerList` · `LoginServerPanel` · `LoginSwordLogo` · `LoginTokenPanel`
+- `LoginWaiting` · `LoginWaitServerList` · `MobileSkillGrandPanel` · `PluginsWarning` · `Queue` · `ScreenShotPanel` · `TwoDimensionalLogin`
+
+**BR mode (excluded - already reproduced) — 57:**
+
+- `ACC_BFInfo` · `ACC_BFShowFinal` · `ACC_DesertStormInfo` · `ACC_Excellent` · `ACC_JJCInfo` · `ACC_JJCRougeInfo` · `ACC_JJCRougeShowFinal` · `ACC_JJCRougeShowPassData`
+- `ACC_JJCShowFinal` · `ACC_MobaAffordableEquipment` · `ACC_MobaBattleGeneralMsg` · `ACC_MobaBattleGeneralMsgEx` · `ACC_MobaBattleOneSidedMsg` · `ACC_MobaBattleTwoSidedMsg` · `ACC_MobaLocalData` · `ACC_MobaShowFinal`
+- `ACC_MyRecord` · `ACC_PleasantGoatFinal` · `ACC_PleasantGoatTeamInfo` · `ACC_PleasantGoatWinOrDefect` · `ACC_Praise` · `ACC_TreasureFinal` · `ACC_TreasureHuntFinal` · `ACC_TreasureHuntInfo`
+- `ACC_WinOrDefect` · `Aim` · `AssassinationTaskScroll` · `BalanceShip` · `BattleFieldHSLHNotice` · `BattleFieldMap` · `BattleFieldObjective` · `BattleIntegral`
+- `BattleMapPay` · `BattlePass` · `BattleTipPanel` · `BZBossList` · `ComboWinEffect` · `DaoZongInjuryRecord` · `DynamicBattleRoyale` · `EndOfBattle`
+- `FightingNum` · `FightingStatistic` · `FightingWarning` · `GoldTeamTotalLootList` · `LootList` · `MapQueue` · `NewBattleFieldQueue` · `PVPShowFinal`
+- `PVPShowHarm` · `PVPShowPanel` · `PVPShowSetting` · `PVPShowSFX` · `QCSword` · `SingleFStatistic` · `SniperPanel` · `SprintPower`
+- `YaoZCultivateBar`
+
+**arena/JJC mode (excluded) — 23:**
+
+- `ArenaBonusPool` · `ArenaCHList` · `ArenaCorpsPanel` · `ArenaCorpsTipl` · `ArenaGuessPool` · `ArenaInheritLevels` · `ArenaLivePanel` · `ArenaOpponent`
+- `ArenaQueue` · `ArenaVotingPanel` · `BadaoPosture` · `ChangGePosture` · `CJPosture` · `JJCEquipmentDIY` · `JJCQiXuePanel` · `JJCRougeChallengePop`
+- `JJCRougeChooseCards` · `JJCRougeInsideEnhanced` · `JJCRougeInsideShop` · `JJCRougeObtainCards` · `JJCRougePanel` · `PKLeavePanel` · `QiXiuPosture`
+
+**other modes / minigames (excluded) — 77:**
+
+- `AsuraAssemble` · `AsuraBattle` · `AsuraPanel` · `AsuraSettlement` · `BlueSeaPanel` · `BreatheBar` · `CampBigThings` · `CampMaps`
+- `CGSelectPanel` · `CityBelong` · `CrossingChoosePanel` · `DynamicCarrierBar` · `DynamicRougeActionBar` · `DynamicRougeActionBarSetting` · `FindBugGame` · `LuckyMeeting`
+- `LuckyMeetingDialogue` · `LuckyMeetingGet` · `LuckyMeetingInfo` · `LuckyMeetingTrace` · `MiniGameDescription` · `MiniGameGuide` · `MiniGameJigsaw` · `MiniGamePoetry`
+- `MiniGameResult` · `MiniGameSelectLevel` · `MiniGameStart` · `MiniGameStatusBar` · `MobaControlPanel` · `MobaEnemyPanel` · `MobaInformationPanel` · `MobaPVPInput`
+- `MobaPVPList` · `MobaShop` · `MobaShowPanel` · `MonopolyAuctionInfoPanel` · `MonopolyBg` · `MonopolyCardCast` · `MonopolyCardList` · `MonopolyCardShop`
+- `MonopolyCardUseConfirm` · `MonopolyChangeBuffRequest` · `MonopolyDaLeTouPanel` · `MonopolyDice` · `MonopolyFateEvent` · `MonopolyGameNotice` · `MonopolyGameOverFinal` · `MonopolyGamePanel`
+- `MonopolyGodNotify` · `MonopolyInfo` · `MonopolyLandExchangeRequest` · `MonopolyLandPurchaseDlg` · `MonopolyLogList` · `MonopolyMenuBar` · `MonopolyMoneyNotify` · `MonopolyNotify`
+- `MonopolyOutShow` · `MonopolyPlayerList` · `MonopolyQueue` · `MonopolyReadyArea` · `MonopolyRemoveObstacles` · `MonopolyRoundCountdown` · `MonopolySelectDirection` · `MonopolyShowFinal`
+- `MonopolyStep` · `MonopolyTargetSelectPanel` · `MonopolyTip` · `MonopolyWarning` · `OTActionBar` · `RougeLikeDataPanel` · `RougeLikeFinal` · `RougeLikeIntro`
+- `RougeLikeKillCount` · `RougeLikeQueue` · `RougeLikeTimeEvent` · `SnsPanel` · `WishingTemplePanel`
+
+**housing (excluded) — 20:**
+
+- `HomelandAddFriends` · `HomelandAddOthers` · `HomelandArchBuyConfirm` · `HomelandCoinBuyConfirm` · `HomelandEasyBuy` · `HomelandEasyBuySearch` · `HomelandEventHandler` · `HomelandGetHouse`
+- `HomelandGroupBuy` · `HomelandInvitation` · `HomelandLocker` · `HomelandOverview` · `HomelandOverviewMenu` · `HomelandOverviewTips` · `HomelandPVP` · `HomelandSeasonDistance`
+- `HomelandSpecialBuyConfirm` · `HomelandStorageArea` · `HomelandTeamSure` · `HomelandUnlockArea`
+
+**debug/gm (excluded) — 3:**
+
+- `Debug` · `GMCheck` · `TestGuild`
+
+## Script-only entries (no same-path INI) — 155
+
+These manifest scripts have no INI at `ui/Config/Default/<rel>.ini`; they are helpers/data/logic files (e.g. `CharInfoData`, `QuestData`) or windows whose INI lives elsewhere (probe variants when a session needs one).
+
+- `AccountFriend` · `ActivityList_BattlePass` · `ActivityProgress` · `AddonDownload` · `Asura_Base` · `AutoSelectDiamond` · `BankLock` · `BlackMarket`
+- `CampOBBase` · `ChargeGiftMonthly` · `ChatPanelTab` · `ChatPanel_Base` · `ChatPanel_Center` · `ChatPanel_Data` · `ChatPanel_Main` · `ChatPanel_Other`
+- `ChatPanel_SpecialMode` · `CoinShopAct` · `CoinShop_Main` · `CoinShop_PendantPetPos` · `CoinShop_Rewards` · `CoinShop_Shop` · `CommandBase` · `Comment`
+- `CountDownPanel` · `CounterOperatAct` · `CouresPanel` · `CueWords` · `Cyclopaedia_Home` · `Desert_Base` · `DynamicActionBar_Base` · `DynamicOriginalActionBar`
+- `EYaShaMinimapMark` · `EYaShaMinimapUI` · `EYaShaQuestList` · `EYaShaWatchList` · `EquipInquireCommon` · `ExteriorLottery` · `FaceLift` · `FameAndPunishEvil`
+- `Filter_Base` · `FriendsRecruit` · `FullLevelHelpPanel` · `GMMessagePanel` · `GuildDiplomacy` · `GuildFightQueue` · `GuildTree` · `HLBOp_Amount`
+- `HLBOp_Blueprint` · `HLBOp_Bottom` · `HLBOp_Brush` · `HLBOp_Camera` · `HLBOp_Check` · `HLBOp_CustomBrush` · `HLBOp_Enter` · `HLBOp_Exit`
+- `HLBOp_Group` · `HLBOp_MultiItemOp` · `HLBOp_Other` · `HLBOp_Place` · `HLBOp_Rotate` · `HLBOp_Save` · `HLBOp_Select` · `HLBOp_SingleItemOp`
+- `HLBOp_Step` · `HLBView_Blueprint_Local` · `HLBView_Blueprint_Web` · `HLBView_ExportTip` · `HLBView_FurnitureList` · `HLBView_ImportTip` · `HLBView_Operations` · `HorseExterior_Equip`
+- `HorseExterior_Horse` · `IdleActionSet` · `InstrumentData` · `InstrumentPreset` · `LeagueNote` · `LeyouJi` · `LoginCustomRoleView` · `LoginPreview`
+- `MOBA_BattleMsgManager` · `MainBar_MacroPattern` · `MainBar_ModeSwitch` · `MainBar_SkillSetting` · `ManualDropList` · `MapCircle` · `MessageBox` · `MiddleMapCommand`
+- `MiniGame` · `MiniGame_Base` · `Monopoly_GridHighlight` · `MonsterBook_Base` · `MonsterBook_Skill` · `MovieManager` · `NewFirstCharge` · `NormalShop`
+- `OnePhoto` · `OperatPreOrderMsg` · `OperationActivity` · `OperationAdventureDisplay` · `OperationChargeGift` · `OperationFlowerBP` · `OperationRewardPreview` · `OperationShop`
+- `OperationSignIn` · `OrangeWeapon` · `PakV4Common` · `PakV4LimitSpeed` · `PakV4SimpleInfo` · `PartnerView` · `PendantPanelNew` · `PopupMenuPanel`
+- `QuestionnairePanel` · `RemotePanel` · `ReputationBase` · `RoadChivalrousBase` · `RoleChangeNew` · `SeasonGongZhan` · `SeasonPrize` · `SeasonReturnGift`
+- `SeasonUpdateOverview` · `SellBag_Blueprint` · `SellBag_Exterior` · `ShareStation_Confirm` · `ShareStation_WorkDetails` · `ShopPanel_Main` · `Similar2Double11Day` · `Similar2Double11Lottery`
+- `Similar2FirstCharge` · `Simple5Host` · `SimpleOperation` · `SimpleReward` · `SimpleTip` · `SimpleWebPage` · `SimulationClientData` · `SimulationEnv`
+- `Target` · `TaskList` · `TestGuildBase` · `TestGuildOverview` · `TestGuildProgress` · `UINotifyMessage` · `UIPlugin` · `UISetting_ActionBar`
+- `UISetting_Addon` · `UISetting_BuffList` · `UISetting_Combat` · `UISetting_Comprehensive` · `UISetting_Display` · `UISetting_Efficiency` · `UISetting_HeadTop` · `UISetting_Interface_Switch`
+- `UISetting_Operation_Switch` · `UISetting_Special_Sect` · `UISetting_StatusBar`
+
+## Bulk bring-in (2026-10-03) — all entries grouped by stage
+
+The full in-scope set is catalogued as authored-state entries, split across stages by group
+(user request: "catalogize them by 2.x 3.x 4.x; keeping 备用 as last"):
+
+| stage | windows | content |
+|---|---|---|
+| 1. 推荐 | 25 | curated review shortlist (HUD core + main panels + settings) |
+| 2. 基础HUD | 68 | HUD class + the 28 target-frame variants (TargetCommon/Target10..42/S, lua-less) |
+| 3. 功能面板 | 97 | character/bag/skill + social/team/guild + mail/auction/bank (+ ReputationPanel) |
+| 4. 菜单与交互 | 41 | menus/settings + world/quest/interaction |
+| 5. 其他界面 | 781 | the remaining default windows (activities/operations/tools) |
+| 6. 其他模式与入口 | 211 | the previously-excluded classes: login/entry, BR sub-panels, arena/JJC, other modes/minigames, housing, debug (user request: catalog everything) |
+| 7. 备用 (last) | 4 | unchanged |
+
+## Coverage (2026-10-04) — all local INIs catalogued
+
+Catalog: **1,240 windows** = every locally extracted `ui/Config/Default` INI except one bare script
+host (`HomelandEventHandler.ini` — a single 0x0 `LockShowAndHide=1` section with no content; dropped
+rather than rendered empty). The previously excluded classes (login/BR sub-panels/arena/minigames/
+housing/debug) are now in stage 6 其他模式与入口, on user request ("keep getting more UI").
+
+Still out of reach: the **155 manifest script entries with no same-path INI**
+(`proof/ui/basic_ui/missing_inis.txt` — helper/data files like CharInfoData/QuestData, not windows;
+a few may carry differently-named INIs, probed per need), and any further lua-less INI families (the
+pak has no enumerable INI listing — the Target family was found by probing; new families get probed
+when a session needs them).
+
+**推荐 shortlist (stage 1, 1.x) + liked (stage 2, 2.x):** 2026-10-04 the reviewer confirmed two
+visible ranges — 1.1-1.38 of the first expansion (主技能栏 … 奇穴) and 1.1-1.15 of the second
+(门派 … 隐元秘鉴); 53 windows now sit in stage 2 `liked` (2.x). 推荐 (1.x) keeps the remaining
+candidates plus a third promotion batch (48 JSON entries; 42 visible — the six rejected windows
+stay in the JSON and are hidden by the `RejectionStore` side file).
+Original shortlist: 主技能栏, 玩家状态框, 目标框（玩家）, 聊天窗口, 任务追踪, CompassPanel, ExpLine,
+地图, 角色, 背包, 武学, 社交, 邮件, 交易行, 储物箱, 团队, 帮会, 交易, 坐骑槽位, 宠物秘鉴, 系统设置,
+快捷键设置, 界面设置, 主界面自定义模式, 系统菜单. (CompassPanel / ExpLine have no authored title
+string — kept English rather than inventing one.)
+2026-10-04 expansion (+36): 目标的目标/目标增益/目标减益/自身减益/队伍状态/队伍切换/世界标记/CD进程/
+连击/低血警示/加速球/顶部增益/折叠增益/目标资源条/目标技能条, 小地图/大地图, 属性/奇穴/门派/生活技艺/
+团队招募/队伍配置/风云录/声望/帮会仓库/宠物/个人名片, 表情动作/画质设置/声音设置/对话/活动/隐元秘鉴/
+任务栏/阵营.
+2026-10-04 second batch (+20, 1.x): 动作条/战斗预设/增益监视/面向设置/目标框综合, 详细属性/装备共用/
+查看装备/分解/阵法/帮会列表/拍团/添加好友/好友排名/玩具箱, 任务指引/系统菜单列表/系统菜单右/活动签到,
+侠客.
+2026-10-04 third batch (+20, 1.x): 聊天设置/共享背包/宠物信息/宠物技能/武学指导/阅读/相册/谁看过我/
+科举/按键/顶部菜单/任务对比/帮会战功榜/活动列表/师父奖励/招收帮众/我的名片/账号好友/宠物动作条/武器技能条.
+The six windows the reviewer moved to 不需要 (auctionpanel, compasspanel, guildmainpanel, mailpanel,
+newpet, questtracelist) stay in the stage in the JSON — the viewer's `RejectionStore` side file is
+what hides them.
+
+Each entry renders the INI's authored state (`PARTIAL`, backdrop `#33393E`, summary with section
+count + root geometry + group; no Lua replay, no GT capture yet). Catalog total: 1,240 windows
+(8 stages: 推荐 / 绝境战场界面 / 基础HUD / 功能面板 / 菜单与交互 / 其他界面 / 其他模式与入口 /
+备用); `--selftest` 1240/0/0 (2026-10-04).
+
+**Official Chinese names**: resolved per window from its own strings — the INI's title text
+(`Text_Title`/`*Title` sections) resolved through the window's `StringTable=ui\Scheme\Case\*.txt`
+and the global `g_tStrings`. **491 windows carry an official `cn`** (e.g. 角色, 背包, 武学, 交易行,
+储物箱, 帮会, 系统设置, 快捷键设置, 表情动作); windows whose data has no authored title (most HUD
+elements) keep the English title (no invented translations).
+
+**Art extraction (2026-10-04)**: scanned all 1,240 INIs → 1,300 `UITex` refs + 578 direct textures;
+pass 1 pulled 1,338 missing files, pass 2 resolved the siblings named by each `.UITex` `TextureName`
+(offset 24) = 1,046 more. The git-ignored viewer texture root `ui-process-app/assets/uitex` grew
+154 → 2,479 files (~1.5 GB), so the shortlist renders now show real art instead of placeholders.
+Post-art `--audit`: placeholders=899, unresolved=3262, outOfBounds=6533 (full 1,240-window scope;
+remaining misses are atlases/frames not referenced from any INI path and non-ASCII texture names
+skipped in pass 2).
+
+Authored-state edge cases fixed: `AccelerateBall` and `HLBOp_Main` author `LockShowAndHide=1`
+roots (runtime-shown / invisible anchor host) — their entries carry `show` lists so the authored
+state renders.
+
+## Next sessions
+
+1. HUD core deep research (`BASIC_UI_HUD.md`): MainBarPanel/ActionBar, Player, Target family, BuffList/DebuffList/TargetBuff/DeBuff, ExpLine, CompassPanel, QuestTraceList, ChatPanel — then viewer entries under the new 基础界面 stage.
+2. Panels (character/bag/skill → social/team → mail/auction/bank), menus/settings, world/interaction — one group per session, doc + entries + EXPERIENCES.
+3. Native-driven elements (cast bar `ProgressBar`, generic progress bars, nameplates/damage numbers) get INI-art layout only, flagged; engine-host behavior is a later phase.
+4. Per-window refinement pass over the bulk entries: runtime state replay (texts/tabs/lists/show-hide) where the authored state is empty or misleading, guided by GT captures when available.

@@ -7,8 +7,9 @@ namespace UiProcessApp.Engine
 {
     /// <summary>
     /// Locates the app's asset roots. The UI-process worktree keeps the extracted
-    /// config/strings inside ui-process-app/assets (committed); the full texture
-    /// tree lives in proof/minimap/ui when that (git-ignored) extraction exists.
+    /// config/strings inside ui-process-app/assets (git-ignored, re-extract from
+    /// PakV4/text, see the README) or, when present, proof/minimap/ui; the committed
+    /// UTF-8 text copies (per-window string tables) live in Data/text.
     /// </summary>
     public static class Paths
     {
@@ -92,6 +93,17 @@ namespace UiProcessApp.Engine
             var proofScheme = Path.Combine(ProofUiRoot ?? "", "Scheme", "Case");
             if (Directory.Exists(proofScheme))
                 tables.AddRange(Directory.GetFiles(proofScheme, "*.txt"));
+            // Committed UTF-8 text copies (Data/text, see tools/prepare_ui_text.py).
+            // They carry the per-window StringTable= files the local extraction lacks
+            // (e.g. string_ArenaCorpsPanel.txt for NewBattleFieldQueue) plus the
+            // global `g_tStrings` table pulled from ui/String/string.lua
+            // (tools/ui/extract_lua_string_table.py, e.g. STR_HOTKEY_SURE / MSG_BRACKET).
+            var appTextScheme = Path.Combine(AppRoot, "Data", "text", "ui", "Scheme", "Case");
+            if (Directory.Exists(appTextScheme))
+                tables.AddRange(Directory.GetFiles(appTextScheme, "*.txt"));
+            var appTextStrings = Path.Combine(AppRoot, "Data", "text", "ui", "String");
+            if (Directory.Exists(appTextStrings))
+                tables.AddRange(Directory.GetFiles(appTextStrings, "*.txt"));
             tables.Add(Path.Combine(PakRoot, "string_PVPAcount.txt"));
             Strings.Load(tables.ToArray());
 

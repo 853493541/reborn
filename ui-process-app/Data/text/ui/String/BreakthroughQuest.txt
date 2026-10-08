@@ -1,0 +1,6 @@
+ID	Length	String
+STR_BREAK	4	个人突破
+STR_FINISH	15	　　你已经完成了个人突破任务。
+STR_UNFINISH	21	　　你等级不够还不能开始个人等级突破任务。
+STR_DO_2	53	　　你可以去<D0>找<D1>接取任务: [<D2>]，或者去<D3>找<D4>接取任务: [<D5>]。
+STR_DO_1	28	　　你可以去<D0>找<D1>接取任务: [<D2>]。

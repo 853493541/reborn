@@ -1,0 +1,96 @@
+ID	Length	String
+STR_PVP_HotKey	10	快捷键设置
+STR_PVP_PLAYERTIP	20	点击切换至该队员视角
+STR_JH_DASHANG	8	艺人打赏
+STR_JH_ZS	4	赠送
+STR_JH_SL	4	算了
+STR_JH_TEXT1	18	打赏给XXXXXX礼品！
+STR_JH_DSJS	8	打赏结算
+STR_JH_JE	4	金额
+STR_JH_DS1	8	确定花费
+STR_JH_DS2	10	给该艺人？
+STR_JH_DS3	4	鲜花
+STR_JH_BAIKE	8	江湖百态
+STR_JH_SHENFEN	10	身份排行榜
+STR_JH_JIHUO	4	激活
+STR_JH_JNT1	10	已解锁技能
+STR_JH_YUJU	18	确定雇佣这位镖师？
+STR_JH_HAOBS	7	 好镖师
+STR_JH_BS	4	镖师
+STR_JH_JNT2	10	升级可解锁
+STR_JH_TIP	32	点数累积满后可以触发高级舞台效果
+STR_JH_JS	8	身份介绍
+STR_JH_JS2	8	赠送数量
+STR_JH_JS3	8	表演艺人
+STR_JH_JS4	8	金额合计
+STR_JH_JS5	8	奖励进度
+STR_JH_UN1	6	未习得
+STR_JH_GUYON	4	雇佣
+STR_JH_RANKT	10	周排行奖励
+STR_JH_TIME1	14	表演结束倒计时
+STR_JH_TIMETIP	16	身份切换CD倒计时
+STR_JH_T1	8	关闭界面
+STR_JH_T2	22	点击打开身份排行榜界面
+STR_JH_T3	10	身份经验值
+STR_JH_T4	12	点击返回首页
+STR_JH_T5	12	当前身份等级
+STR_JH_T6	8	交互技能
+STR_JH_T7	10	赠花排行榜
+STR_JH_T8	22	点击打开赠花排行榜界面
+STR_JH_T9	22	该宠物可做被驭兽师召唤
+STR_JH_T10	8	交互面板
+STR_JH_T11	8	敬请期待
+STR_JH_T12	12	暂未收到鲜花
+STR_JH_T13	18	暂未有玩家赠送鲜花
+STR_JH_T14	23	110级侠士可习得全部身份
+STR_JH_T15	43	110级侠士可习得全部五个身份，并可自由切换。
+STR_JH_T16	16	放弃雇佣这位镖师
+STR_JH_T17	8	我的镖师
+STR_JH_T18	8	解除雇佣
+STR_JH_T19	12	解除雇佣关系
+STR_JH_T20	9	折叠/展开
+STR_JH_T21	44	该镖师距离过远或不在队伍中，不能为你承担伤害
+STR_JH_T22	28	该镖师在你附近，可以承担伤害
+STR_JH_T23	10	成功护镖：
+STR_JH_T24	8	护镖信息
+STR_JH_T25	28	护镖时间越长，所获奖励越丰厚
+STR_JH_T26	31	护镖时间至少达3分钟方可获得奖励
+STR_JH_T27	10	护镖雇主：
+STR_JH_T28	10	护镖进程：
+STR_JH_T29	26	镖师等级越高，护卫能力越强
+STR_JH_T30	194	<text>text="今日成功护镖次数\n" font=65 </text><text>text="每日最多可领取5次护镖奖励。达到以下两个条件方为成功护镖：\n一，获得20分护镖积分；\n二，镖师在雇主附近，且雇主成功交镖。"font=162</text>
+STR_JH_T31	44	护镖积分，在有效范围内保护雇主方能获得积分。
+STR_JH_T32	8	暂无镖师
+STR_JH_T33	14	点击选中该镖师
+STR_JH_T34	12	至少开启一个
+STR_JH_T35	4	阵眼
+STR_JH_T36	12	方能激活法阵
+STR_JH_T37	146	<text>text="兑卦 (dui)\n" font=65 </text><text>text="尚未激活\n"font=161</text>><text>text="<队员占位即可开启该阵眼，增加法阵等级>"font=162</text>
+STR_JH_T38	145	<text>text="艮卦 (gen)\n" font=65 </text><text>text="尚未激活\n"font=161</text><text>text="<队员占位即可开启该阵眼，增加法阵等级>"font=162</text>
+STR_JH_T39	145	<text>text="坤卦 (kun)\n" font=65 </text><text>text="尚未激活\n"font=161</text><text>text="<队员占位即可开启该阵眼，增加法阵等级>"font=162</text>
+STR_JH_T40	146	<text>text="震卦 (zhen)\n" font=65 </text><text>text="尚未激活\n"font=161</text><text>text="<队员占位即可开启该阵眼，增加法阵等级>"font=162</text>
+STR_JH_T41	144	<text>text="离卦 (li)\n" font=65 </text><text>text="尚未激活\n"font=161</text><text>text="<队员占位即可开启该阵眼，增加法阵等级>"font=162</text>
+STR_JH_T42	146	<text>text="乾卦 (qian)\n" font=65 </text><text>text="尚未激活\n"font=161</text><text>text="<队员占位即可开启该阵眼，增加法阵等级>"font=162</text>
+STR_JH_T43	145	<text>text="巽卦 (xun)\n" font=65 </text><text>text="尚未激活\n"font=161</text><text>text="<队员占位即可开启该阵眼，增加法阵等级>"font=162</text>
+STR_JH_T44	145	<text>text="坎卦 (kan)\n" font=65 </text><text>text="尚未激活\n"font=161</text><text>text="<队员占位即可开启该阵眼，增加法阵等级>"font=162</text>
+STR_JH_T45	120	<text>text="兑卦 (dui)\n" font=65 </text><text>text="已激活\n"font=165</text>><text>text="激活队员：<D0>"font=162</text>
+STR_JH_T46	119	<text>text="艮卦 (gen)\n" font=65 </text><text>text="已激活\n"font=165</text><text>text="激活队员：<D0>"font=162</text>
+STR_JH_T47	119	<text>text="坤卦 (kun)\n" font=65 </text><text>text="已激活\n"font=165</text><text>text="激活队员：<D0>"font=162</text>
+STR_JH_T48	120	<text>text="震卦 (zhen)\n" font=65 </text><text>text="已激活\n"font=165</text><text>text="激活队员：<D0>"font=162</text>
+STR_JH_T49	118	<text>text="离卦 (li)\n" font=65 </text><text>text="已激活\n"font=165</text><text>text="激活队员：<D0>"font=162</text>
+STR_JH_T50	120	<text>text="乾卦 (qian)\n" font=65 </text><text>text="已激活\n"font=165</text><text>text="激活队员：<D0>"font=162</text>
+STR_JH_T51	119	<text>text="巽卦 (xun)\n" font=65 </text><text>text="已激活\n"font=165</text><text>text="激活队员：<D0>"font=162</text>
+STR_JH_T52	119	<text>text="坎卦 (kan)\n" font=65 </text><text>text="已激活\n"font=165</text><text>text="激活队员：<D0>"font=162</text>
+STR_JH_T53	93	<text>text="当前法阵等级\n" font=65 </text><text>text="激活法阵的方士等级之和"font=162</text>
+STR_JH_T54	10	技能栏配置
+STR_JH_T55	4	动作
+STR_JH_T56	4	外观
+STR_JH_T57	4	挂件
+STR_JH_T58	4	表情
+STR_JH_T59	22	打开动态技能栏配置界面
+STR_JH_T60	10	动作技能栏
+STR_JH_T61	24	该技能已经在动态技能栏中
+STR_JH_T62	18	尚未拥有该类型动作
+STR_JH_T63	12	护送雇主交镖
+STR_REWARD	27	鲜花费用的20%将奖励给该艺人
+STR_BZZDTC	12	不再自动弹出

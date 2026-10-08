@@ -1,0 +1,33 @@
+ID	Length	String
+STR_PERSINALCARD1	8	重新拍摄
+STR_PERSINALCARD2	4	移动
+STR_PERSINALCARD3	4	缩放
+STR_PERSINALCARD4	8	照片复原
+STR_PERSINALCARD5	26	右键点击上方图标可取消选择
+STR_PERSINALCARD6	18	右键点击可删减特效
+STR_PERSINALCARD7	8	重新裁剪
+STR_PERSINALCARD8	12	编辑装饰内容
+STR_PERSINALCARD9	12	其他途径解锁
+STR_PERSINALCARD10	12	商城购买解锁
+STR_PERSINALCARD11	12	进入编辑状态
+STR_PERSINALCARD12	8	一键解锁
+STR_PERSINALCARD13	46	请在右侧列表解锁或删除未解锁的装饰，再保存形象
+STR_PERSINALCARD14	108	保存形象后，新拍摄的人物形象需要审核。审核通过，人物形象才会显示出来；审核不通过，则不会显示，需要重新拍摄。
+STR_PERSINALCARD15	8	解锁装饰
+STR_PERSINALCARD16	8	装饰名称
+STR_PERSINALCARD17	8	新建形象
+STR_PERSINALCARD18	4	使用
+STR_PERSINALCARD19	24	修改（贴花、特效、边框）
+STR_PERSINALCARD20	12	点击更换称号
+STR_PERSINALCARD21	16	点击设置展示信息
+STR_PERSINALCARD22	8	名片徽章
+STR_PERSINALCARD23	8	名片形象
+STR_PERSINALCARD_LOCK1	110	<text>text="名片形象编辑锁（未解锁）" font=163 </text><text>text="\\\n解锁后可编辑名片形象。" font=106 </text>
+STR_PERSINALCARD_LOCK2	130	<text>text="名片形象编辑锁（已解锁）" font=163 </text><text>text="\\\n角色下线后依旧保持解锁状态，需要手动上锁。" font=106 </text>
+STR_PERSINALCARD24	20	请在左侧列表添加装饰
+STR_ROTATION	4	旋转
+STR_ROTATION1	21	展开/关闭旋转参数调整
+STR_PERSINALCARD25	16	暂无未解锁的装饰
+STR_PERSINALCARD26	16	暂无已解锁的装饰
+STR_BUYCARD	4	扩展
+STR_BUYCARDTIP	588	<text>text="如何新增名片形象栏位？\n" font=65 </text><text>text="点击扩展按钮，消耗对应数量金币即可扩展名片形象栏位。\n"</text><text>text="\n如何知道名片形象栏位要消耗的金币数量？\n" font=65 </text><text>text="在点击扩展按钮后，系统会明确显示本次扩展所需金币数量，确认后即可完成栏位扩展。\n"</text><text>text="\n购买名片形象栏位后还可以删除或者退还吗？\n" font=65 </text><text>text="名片形象栏位一经扩展即为永久拥有，无法删除或退还金币，请在操作前确认您的选择。\n"</text><text>text="\n名片形象栏还会开放可解锁上限吗？\n" font=65 </text><text>text="更多名片形象栏上限将于后续解锁。"</text>

@@ -1,0 +1,3 @@
+ID	Length	String
+STR_BALANCE	4	平衡
+STR_NOT_BALANCE	6	不平衡

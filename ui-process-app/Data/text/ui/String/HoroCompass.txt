@@ -1,0 +1,28 @@
+ID	Length	String
+NO_BUFF_NAME	4	？？？？
+TITLE	43	<F100 运势名称：><F105 %s><F100 \n运势时长：><F105 %s>
+TIME	21	<F100 运势时长：><F105 %s>
+DUN_VALUE	22	<F100 \n秘境运势：><S105 %s>
+DIG_VALUE	22	<F100 \n寻宝运势：><S105 %s>
+STATE_STRING	110	<F100 当前运格：><F105 %s><F100 \n运格等级：><S105 %s %s><F100 \n运格经验：><F106 %s><F100 ／><F105 %s><F100 \n运格天数：><S106 %s 10>
+FIND	33	<F100 点击寻找宝箱：><F105 感应当前地图的宝物位置。>
+PARTY_DIG_TIME	24	<F100 \n队伍宝藏时间：><F105 %s>
+PARTY_DIG_SCENE	24	<F100 \n队伍宝藏地点：><F105 %s>
+HIDE	25	<F113 \n\n<放开[Ctrl]键隐藏说明。>>
+SHOW	25	<F113 \n\n<按住[Ctrl]键查看说明。>>
+STAR	1	★
+HALFSTAR	1	☆
+FINDCD	30	<F217 \n◆正在积蓄天地人之灵气，不能再次感应宝藏点。>
+DOOM	47	<F217 \n◆当前的运势是><F15 【甘渊·劫】><F111 ，不能感应到有价值的宝藏。>
+LEVEL	42	<F217 ◆阅历等级不足><F15 ２０><F111 ，不能感应到有价值的宝藏。>
+SCHOOL_MAP	25	<F107 \n　◇门派地图：><F107 %s。>
+CITY_MAP	25	<F107 \n　◇主城地图：><F107 %s。>
+WILD_MAP	25	<F107 \n　◇野外地图：><F107 %s。>
+SCENE	5	上元·上赤
+SCENE_CANT_FIND	37	当前场景不能感应到宝藏点，按%s打开生活技艺界面-异术-寻宝可查看详情。\n
+SCENE_BRACKETS	4	【%s】
+COMPASS_HAMMER	19	<F105 ◆点击锄头即可挖掘宝藏。>
+COMPASS_START	18	<F105 \n◆点击此处开始挖宝。>
+COMPASS_FIND	24	<F105 ◆沿着宝藏点箭头方向走可寻得宝物。>
+COMPASS_INTERVAL	26	<F111 \n◆再次挖宝间隔：><F111 %s>>
+COMPASS_START_TIME	26	<F111 \n◆再次开启间隔：><F111 %s>>

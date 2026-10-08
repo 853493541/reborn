@@ -1,0 +1,5 @@
+ID	Length	String
+STR_SOUL_TITLE	4	魂铃
+STR_PEOPLE_NUMBER	8	剩余人数
+STR_WIN_TITLE	14	探秘者胜利条件
+STR_SCORE_TITLE	8	尸毒样本

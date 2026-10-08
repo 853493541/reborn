@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -47,7 +48,92 @@ namespace UiProcessApp
                 Shutdown(exit);
                 return;
             }
+            if (e.Args.Contains("--status"))
+            {
+                var exit = RunStatus(e.Args);
+                Shutdown(exit);
+                return;
+            }
+            if (e.Args.Contains("--contact-sheet"))
+            {
+                var exit = RunContactSheet(e.Args);
+                Shutdown(exit);
+                return;
+            }
+            if (e.Args.Contains("--click"))
+            {
+                var exit = RunClick(e.Args);
+                Shutdown(exit);
+                return;
+            }
+            if (e.Args.Contains("--drag"))
+            {
+                var exit = RunDrag(e.Args);
+                Shutdown(exit);
+                return;
+            }
+            if (e.Args.Contains("--reject"))
+            {
+                var exit = RunReject(e.Args);
+                Shutdown(exit);
+                return;
+            }
             base.OnStartup(e);
+        }
+
+        /// <summary>
+        /// Headless 不需要 toggle (same logic as the viewer's X key):
+        ///   UiProcessApp.exe --reject &lt;windowId&gt;
+        /// Moves the window into the not-needed stage (or restores it) and saves Data/rejected.tsv.
+        /// </summary>
+        private static int RunReject(string[] args)
+        {
+            try
+            {
+                string id = null;
+                for (int i = 0; i < args.Length - 1; i++)
+                    if (args[i] == "--reject") id = args[i + 1];
+                if (string.IsNullOrWhiteSpace(id)) throw new ArgumentException("--reject needs a window id");
+                Paths.Locate();
+                var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                Inventory inv = null;
+                foreach (var candidate in new[]
+                         {
+                             System.IO.Path.Combine(AppContext.BaseDirectory, "Data", "ui_inventory.json"),
+                             System.IO.Path.Combine(Paths.AppRoot, "Data", "ui_inventory.json"),
+                         })
+                {
+                    if (!System.IO.File.Exists(candidate)) continue;
+                    inv = System.Text.Json.JsonSerializer.Deserialize<Inventory>(
+                        System.IO.File.ReadAllText(candidate), options);
+                    if (inv?.Stages != null) break;
+                }
+                if (inv == null) throw new System.IO.FileNotFoundException("ui_inventory.json not found");
+
+                var rejected = RejectionStore.Load(Paths.AppRoot);
+                RejectionStore.Apply(inv, rejected);
+                var window = inv.Stages
+                    .SelectMany(s => s.Windows ?? new List<WindowInfo>())
+                    .FirstOrDefault(w => string.Equals(w.Id, id, StringComparison.OrdinalIgnoreCase));
+                if (window == null)
+                {
+                    Console.WriteLine("reject failed: no window with id '" + id + "'");
+                    return 1;
+                }
+                RejectionStore.Toggle(inv, window, rejected);
+                RejectionStore.Save(Paths.AppRoot, rejected);
+                var stage = inv.Stages.FirstOrDefault(s =>
+                    string.Equals(s.Id, RejectionStore.NotNeededStageId, StringComparison.OrdinalIgnoreCase));
+                Console.WriteLine((rejected.ContainsKey(id) ? "rejected " : "restored ") + id +
+                                  " | not-needed=" + (stage?.Windows?.Count ?? 0) +
+                                  " | total=" + inv.Stages.Sum(s => s.Windows?.Count ?? 0));
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("reject failed: " + ex.Message);
+                return 1;
+            }
         }
 
         /// <summary>
@@ -157,7 +243,16 @@ namespace UiProcessApp
                     : Path.Combine(Paths.AppRoot, "assets", "ui", rel);
                 var ini = IniFile.Load(iniPath);
                 var effectivePage = page ?? window.Page;
+                PageState pageState = null;
+                if (window.Pages != null && window.Pages.Count > 0)
+                {
+                    pageState = window.Pages.FirstOrDefault(pg =>
+                            string.Equals(pg.Id, effectivePage, StringComparison.OrdinalIgnoreCase)) ?? window.Pages[0];
+                    effectivePage = null; // viewer pages are state, not INI Page_* tabs
+                }
                 var plan = LayoutPlanBuilder.Build(ini, effectivePage);
+                LayoutPlanBuilder.ApplyAppendIni(plan.Filtered, window.AppendIni, LoadIniTolerant);
+                var runtimeApplied = LayoutPlanBuilder.ApplyRuntimeState(plan.Filtered, window.Path);
                 LayoutPlanBuilder.ApplyHide(plan.Filtered, hide ?? window.Hide);
                 LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
                 LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
@@ -165,25 +260,72 @@ namespace UiProcessApp
                 LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, LoadTemplateIni);
                 LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
                 LayoutPlanBuilder.ApplyOnly(plan.Filtered, only);
+                LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                 LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
-                        LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+                LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
+                LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+                if (pageState != null)
+                {
+                    LayoutPlanBuilder.ApplyTexts(plan.Filtered, pageState.Texts);
+                    LayoutPlanBuilder.ApplyImages(plan.Filtered, pageState.Images);
+                    LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, pageState.Adjust);
+                    if (pageState.Hide != null && pageState.Hide.Count > 0)
+                        LayoutPlanBuilder.ApplyHide(plan.Filtered, string.Join(",", pageState.Hide));
+                }
                 var resolverRoot = Paths.ProofUiRoot ?? Path.Combine(Paths.AppRoot, "assets", "ui");
                 var assets = new AssetResolver(Paths.ResolveRoots());
                 var textures = new UiTexCache(assets);
                 UiLayout.Wireframe = wire;
                 var build = UiLayout.Build(plan.Filtered, assets, textures);
+                var overlayRoot = BuildOverlayVisual(window, assets, textures, wire);
 
                 double width = plan.Filtered.Sections[0].GetInt("Width");
                 double height = plan.Filtered.Sections[0].GetInt("Height");
                 if (width <= 0) width = 1280;
                 if (height <= 0) height = 720;
 
+                FrameworkElement composedRoot = build.Root;
+                if (overlayRoot != null)
+                {
+                    var grid = new Grid { Width = width, Height = height };
+                    if (window.Overlay != null && window.Overlay.Front == true)
+                    {
+                        grid.Children.Add(build.Root);
+                        grid.Children.Add(overlayRoot);
+                    }
+                    else
+                    {
+                        grid.Children.Add(overlayRoot);
+                        grid.Children.Add(build.Root);
+                    }
+                    composedRoot = grid;
+                }
+
+                // Window placement on the client (inventory offsetX/offsetY): shift
+                // only the main window; the overlay stays at (0,0) — the client shows
+                // the MiddleMap below the WorldMap band (WorldMap at the client top).
+                double offsetX = window.OffsetX ?? 0;
+                double offsetY = window.OffsetY ?? 0;
+                if (offsetX != 0 || offsetY != 0)
+                {
+                    build.Root.Margin = new Thickness(offsetX, offsetY, 0, 0);
+                    build.Root.HorizontalAlignment = HorizontalAlignment.Left;
+                    build.Root.VerticalAlignment = VerticalAlignment.Top;
+                    width += Math.Max(0, offsetX);
+                    height += Math.Max(0, offsetY);
+                    if (composedRoot is Grid offsetGrid)
+                    {
+                        offsetGrid.Width = width;
+                        offsetGrid.Height = height;
+                    }
+                }
+
                 var host = new Border
                 {
-                    Background = new SolidColorBrush(Color.FromRgb(0x10, 0x10, 0x10)),
+                    Background = BackdropBrush(window),
                     Width = width,
                     Height = height,
-                    Child = build.Root,
+                    Child = composedRoot,
                 };
                 host.Measure(new Size(width, height));
                 host.Arrange(new Rect(0, 0, width, height));
@@ -201,12 +343,12 @@ namespace UiProcessApp
                     {
                         Width = width + overhang.L + overhang.R,
                         Height = height + overhang.T + overhang.B,
-                        Background = new SolidColorBrush(Color.FromRgb(0x10, 0x10, 0x10)),
+                        Background = BackdropBrush(window),
                     };
                     host.Child = null;
-                    Canvas.SetLeft(build.Root, overhang.L);
-                    Canvas.SetTop(build.Root, overhang.T);
-                    expanded.Children.Add(build.Root);
+                    Canvas.SetLeft(composedRoot, overhang.L);
+                    Canvas.SetTop(composedRoot, overhang.T);
+                    expanded.Children.Add(composedRoot);
                     host.Child = expanded;
                     host.Width = expanded.Width;
                     host.Height = expanded.Height;
@@ -227,7 +369,12 @@ namespace UiProcessApp
                         try
                         {
                             var point = element.TransformToAncestor(build.Root).Transform(new Point(0, 0));
-                            lines.Add($"{pair.Key}\tx={point.X:F0}\ty={point.Y:F0}\tw={element.ActualWidth:F0}\th={element.ActualHeight:F0}\t{text ?? ""}");
+                            plan.Filtered.ByName.TryGetValue(pair.Key, out var dumpSec);
+                            var planNote = dumpSec == null ? "" :
+                                $"plan={dumpSec.Get("Left")},{dumpSec.Get("Top")} pt={dumpSec.GetInt("PosType")}" +
+                                (dumpSec.Get("$FormatItems") == "1" ? " F" : "") +
+                                (dumpSec.Get("$AbsPos") != null ? " A=" + dumpSec.Get("$AbsPos") : "");
+                            lines.Add($"{pair.Key}\tx={point.X:F0}\ty={point.Y:F0}\tw={element.ActualWidth:F0}\th={element.ActualHeight:F0}\t{planNote}\t{text ?? ""}");
                         }
                         catch
                         {
@@ -243,8 +390,8 @@ namespace UiProcessApp
                 encoder.Frames.Add(BitmapFrame.Create(bitmap));
                 outPath ??= Path.Combine(AppContext.BaseDirectory, $"render_{windowId}.png");
                 using (var stream = File.Create(outPath)) encoder.Save(stream);
-                Console.WriteLine($"rendered {windowId} page={effectivePage ?? "(all)"} sections={plan.Filtered.Sections.Count} " +
-                                  $"art={(Paths.ProofUiRoot != null ? "on" : "missing")} -> {outPath}");
+                Console.WriteLine($"rendered {windowId} page={pageState?.Id ?? effectivePage ?? "(all)"} sections={plan.Filtered.Sections.Count} " +
+                                  $"runtime={runtimeApplied} art={(Paths.ProofUiRoot != null ? "on" : "missing")} -> {outPath}");
                 return 0;
             }
             catch (Exception ex)
@@ -373,6 +520,7 @@ namespace UiProcessApp
                 var textures = new UiTexCache(assets);
                 var report = new StringBuilder();
                 int totalPlaceholders = 0, totalUnresolved = 0, totalOutOfBounds = 0;
+                var totalOobByClass = new Dictionary<string, int>(StringComparer.Ordinal);
 
                 foreach (var stage in inventory.Stages)
                 {
@@ -387,14 +535,26 @@ namespace UiProcessApp
 
                         var ini = IniFile.Load(iniPath);
                         var plan = LayoutPlanBuilder.Build(ini, window.Page);
+                        LayoutPlanBuilder.ApplyAppendIni(plan.Filtered, window.AppendIni, LoadIniTolerant);
+                        LayoutPlanBuilder.ApplyRuntimeState(plan.Filtered, window.Path);
                         LayoutPlanBuilder.ApplyHide(plan.Filtered, window.Hide);
                         LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
                         LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
                         LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs, window.Page);
                         LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, LoadTemplateIni);
                         LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
+                        LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                         LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
+                        LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
                         LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+                        if (window.Pages != null && window.Pages.Count > 0)
+                        {
+                            var auditPage = window.Pages.FirstOrDefault(pg =>
+                                    string.Equals(pg.Id, window.Page, StringComparison.OrdinalIgnoreCase)) ?? window.Pages[0];
+                            LayoutPlanBuilder.ApplyTexts(plan.Filtered, auditPage.Texts);
+                            LayoutPlanBuilder.ApplyImages(plan.Filtered, auditPage.Images);
+                            LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, auditPage.Adjust);
+                        }
                         var build = UiLayout.Build(plan.Filtered, assets, textures);
 
                         double width = plan.Filtered.Sections[0].GetInt("Width");
@@ -407,7 +567,16 @@ namespace UiProcessApp
                         host.Arrange(new Rect(0, 0, width, height));
                         host.UpdateLayout();
 
-                        var outOfBounds = new List<string>();
+                        // Out-of-window classes (docs/ui/UI_OOB_FIX_PLAN.md):
+                        //   clipped  = the viewer clips it (WndScroll viewport / $Clip) -> not visible
+                        //   parked   = authored off-window (negative Left/Top on the parent chain)
+                        //   clone    = a runtime item clone (__lt_*)
+                        //   edge-pos = an edge-anchored PosType (3/4/5/9-12)
+                        //   overhang = expected placement outside the frame (the engine draws it)
+                        //   placed-wrong = rendered != the script's own SetRelPos/SetAbsPos (class A)
+                        var lastPos = LoadRuntimePositions(Path.GetFileNameWithoutExtension(window.Path));
+                        var outOfBounds = new List<(string Name, string Class, string Rect)>();
+                        var oobClass = new Dictionary<string, int>(StringComparer.Ordinal);
                         foreach (var pair in build.Elements)
                         {
                             var element = pair.Value;
@@ -418,7 +587,14 @@ namespace UiProcessApp
                                 var p = element.TransformToAncestor(build.Root).Transform(new Point(0, 0));
                                 double w = element.ActualWidth, h = element.ActualHeight;
                                 if (p.X < -1 || p.Y < -1 || p.X + w > width + 1 || p.Y + h > height + 1)
-                                    outOfBounds.Add($"{pair.Key} ({p.X:F0},{p.Y:F0} {w:F0}x{h:F0})");
+                                {
+                                    var cls = ClassifyOutOfBounds(plan.Filtered.ByName, pair.Key);
+                                    if ((cls == "overhang" || cls == "parked" || cls == "edge-pos") &&
+                                        RenderedMismatchesScript(plan.Filtered.ByName, pair.Key, build, p, lastPos))
+                                        cls = "placed-wrong";
+                                    outOfBounds.Add((pair.Key, cls, $"({p.X:F0},{p.Y:F0} {w:F0}x{h:F0})"));
+                                    oobClass[cls] = (oobClass.TryGetValue(cls, out var n) ? n : 0) + 1;
+                                }
                             }
                             catch { }
                         }
@@ -426,17 +602,27 @@ namespace UiProcessApp
                         totalPlaceholders += build.Placeholders.Count;
                         totalUnresolved += build.UnresolvedStrings.Count;
                         totalOutOfBounds += outOfBounds.Count;
+                        foreach (var kv in oobClass)
+                            totalOobByClass[kv.Key] = (totalOobByClass.TryGetValue(kv.Key, out var tn) ? tn : 0) + kv.Value;
 
+                        var classNote = oobClass.Count == 0
+                            ? ""
+                            : " [" + string.Join(" ", oobClass.OrderByDescending(kv => kv.Value)
+                                .Select(kv => kv.Key + "=" + kv.Value)) + "]";
                         report.AppendLine($"== {window.Id} ({window.Title}) {width:0}x{height:0} " +
                                           $"sections={plan.Filtered.Sections.Count} elements={build.Elements.Count} " +
                                           $"placeholders={build.Placeholders.Count} unresolved={build.UnresolvedStrings.Count} " +
-                                          $"outOfBounds={outOfBounds.Count}");
+                                          $"outOfBounds={outOfBounds.Count}{classNote}");
                         foreach (var item in build.Placeholders.Take(40)) report.AppendLine("   placeholder  " + item);
                         foreach (var item in build.UnresolvedStrings.Take(40)) report.AppendLine("   unresolved   " + item);
-                        foreach (var item in outOfBounds.Take(40)) report.AppendLine("   outOfBounds  " + item);
+                        foreach (var item in outOfBounds)
+                            report.AppendLine($"   oob[{item.Class}] {item.Name} {item.Rect}");
                     }
                 }
                 report.AppendLine($"TOTAL placeholders={totalPlaceholders} unresolved={totalUnresolved} outOfBounds={totalOutOfBounds}");
+                if (totalOobByClass.Count > 0)
+                    report.AppendLine("TOTAL oob classes: " + string.Join(" ", totalOobByClass.OrderByDescending(kv => kv.Value)
+                        .Select(kv => kv.Key + "=" + kv.Value)));
 
                 outPath ??= Path.Combine(AppContext.BaseDirectory, "ui_process_audit.txt");
                 File.WriteAllText(outPath, report.ToString());
@@ -450,6 +636,579 @@ namespace UiProcessApp
             }
         }
 
+        /// <summary>Out-of-window class of a section (docs/ui/UI_OOB_FIX_PLAN.md):
+        /// `clipped` (under a WndScroll viewport or a $Clip container — the viewer clips
+        /// it, so it is not visible outside), `parked` (authored negative Left/Top),
+        /// `clone` (runtime item clone), `edge-pos` (edge-anchored PosType), else
+        /// `overhang` (expected placement outside the frame; the engine draws it).</summary>
+        internal static string ClassifyOutOfBounds(Dictionary<string, IniSection> byName, string sectionName)
+        {
+            if (sectionName.StartsWith("__lt_", StringComparison.OrdinalIgnoreCase)) return "clone";
+            var cursor = sectionName;
+            var guard = 0;
+            bool parked = false, edge = false;
+            while (!string.IsNullOrWhiteSpace(cursor) && guard++ < 64)
+            {
+                if (!byName.TryGetValue(cursor, out var sec)) break;
+                var type = sec.Get("._WndType") ?? "";
+                // The viewer only clips WndScroll viewports (and inventory $Clip): the
+                // bar control (WndNewScrollBar) is not a clipping parent.
+                if (type.Equals("WndScroll", StringComparison.OrdinalIgnoreCase)) return "clipped";
+                if (sec.Get("$Clip") == "1") return "clipped";
+                if (sec.GetInt("Left") < 0 || sec.GetInt("Top") < 0) parked = true;
+                int pt = sec.GetInt("PosType");
+                if (pt == 3 || pt == 4 || pt == 5 || (pt >= 9 && pt <= 12)) edge = true;
+                cursor = sec.Get("._Parent");
+            }
+            if (parked) return "parked";
+            if (edge) return "edge-pos";
+            return "overhang";
+        }
+
+        /// <summary>Last script-recorded position per section (SetRelPos/SetAbsPos) from the
+        /// window's replay TSV, used to separate viewer placement bugs (rendered != script)
+        /// from authored/script-faithful overhang (docs/ui/UI_OOB_FIX_PLAN.md).</summary>
+        internal static Dictionary<string, (string Kind, double X, double Y)> LoadRuntimePositions(string stem)
+        {
+            var map = new Dictionary<string, (string, double, double)>(StringComparer.Ordinal);
+            if (string.IsNullOrWhiteSpace(stem)) return map;
+            var path = Path.Combine(Paths.AppRoot, "Data", "runtime_state", stem + ".tsv");
+            if (!File.Exists(path)) return map;
+            foreach (var line in File.ReadLines(path))
+            {
+                var parts = line.Split('\t');
+                if (parts.Length < 4) continue;
+                if (parts[1] != "SetRelPos" && parts[1] != "SetAbsPos") continue;
+                if (double.TryParse(parts[2], out var x) && double.TryParse(parts[3], out var y))
+                    map[parts[0]] = (parts[1], x, y);
+            }
+            return map;
+        }
+
+        /// <summary>True when the rendered absolute position disagrees with the script's own last
+        /// SetRelPos/SetAbsPos (PosType 0 only; anchored placements are computed by the engine).
+        /// A mismatch is a viewer placement bug (class A), a match is script-faithful (class C).</summary>
+        internal static bool RenderedMismatchesScript(Dictionary<string, IniSection> byName, string sectionName,
+                                                      UiBuildResult build, Point abs,
+                                                      Dictionary<string, (string Kind, double X, double Y)> lastPos)
+        {
+            if (!lastPos.TryGetValue(sectionName, out var rp)) return false;
+            if (!byName.TryGetValue(sectionName, out var sec)) return false;
+            if (sec.GetInt("PosType") != 0) return false;
+            double ex = rp.X, ey = rp.Y;
+            if (rp.Kind == "SetRelPos")
+            {
+                var parentName = sec.Get("._Parent");
+                if (string.IsNullOrWhiteSpace(parentName) || !build.Elements.TryGetValue(parentName, out var pe))
+                    return false;
+                if (pe.Visibility != Visibility.Visible) return false;
+                var pp = pe.TransformToAncestor(build.Root).Transform(new Point(0, 0));
+                ex += pp.X; ey += pp.Y;
+            }
+            return Math.Abs(abs.X - ex) > 2.0 || Math.Abs(abs.Y - ey) > 2.0;
+        }
+
+        /// <summary>
+        /// Compact per-window render status for the review badges (P1 of
+        /// docs/ui/UI_RENDER_FIDELITY_PLAN.md):
+        ///   UiProcessApp.exe --status [--out file.tsv]
+        /// Writes id/stage/size/sections/elements/leaves/placeholders/unresolved/
+        /// outOfBounds/pages/page/lsh/hosts/flags and prints stage totals.
+        /// </summary>
+        private static int RunStatus(string[] args)
+        {
+            try
+            {
+                string outPath = null;
+                for (int i = 0; i < args.Length - 1; i++)
+                    if (args[i] == "--out") outPath = args[i + 1];
+
+                Paths.Locate();
+                var inventoryPath = Path.Combine(AppContext.BaseDirectory, "Data", "ui_inventory.json");
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var inventory = JsonSerializer.Deserialize<Inventory>(File.ReadAllText(inventoryPath), options);
+
+                var assets = new AssetResolver(Paths.ResolveRoots());
+                var textures = new UiTexCache(assets);
+                var report = new StringBuilder();
+                report.AppendLine("id\tstage\tw\th\tsections\telements\tleaves\tplaceholders\tunresolved\toutOfBounds\tpages\tpage\tlsh\thosts\tflags");
+
+                var stageStats = new List<string>();
+                int totalShell = 0, totalRuntime = 0, totalPlaced = 0;
+
+                foreach (var stage in inventory.Stages)
+                {
+                    int n = 0, shell = 0, runtime = 0, placed = 0;
+                    foreach (var window in stage.Windows ?? new List<WindowInfo>())
+                    {
+                        if (string.IsNullOrWhiteSpace(window.Path)) continue;
+                        var filtered = BuildWindowPlan(window, out var ini);
+                        if (filtered == null) continue;
+                        var build = UiLayout.Build(filtered, assets, textures);
+
+                        double width = filtered.Sections[0].GetInt("Width");
+                        double height = filtered.Sections[0].GetInt("Height");
+                        if (width <= 0) width = 1280;
+                        if (height <= 0) height = 720;
+
+                        var host = new Border { Width = width, Height = height, Child = build.Root };
+                        host.Measure(new Size(width, height));
+                        host.Arrange(new Rect(0, 0, width, height));
+                        host.UpdateLayout();
+
+                        int leaves = 0, outOfBounds = 0;
+                        foreach (var pair in build.Elements)
+                        {
+                            var element = pair.Value;
+                            if (element.Visibility != Visibility.Visible) continue;
+                            if (element.ActualWidth <= 0 && element.ActualHeight <= 0) continue;
+                            if (build.Sections.TryGetValue(pair.Key, out var section))
+                            {
+                                var type = section.Get("._WndType") ?? "";
+                                if (type.Equals("Image", StringComparison.OrdinalIgnoreCase) ||
+                                    type.Equals("Text", StringComparison.OrdinalIgnoreCase) ||
+                                    type.Equals("WndButton", StringComparison.OrdinalIgnoreCase) ||
+                                    type.Equals("WndCheckBox", StringComparison.OrdinalIgnoreCase))
+                                    leaves++;
+                            }
+                            try
+                            {
+                                var p = element.TransformToAncestor(build.Root).Transform(new Point(0, 0));
+                                if (p.X < -1 || p.Y < -1 ||
+                                    p.X + element.ActualWidth > width + 1 ||
+                                    p.Y + element.ActualHeight > height + 1)
+                                    outOfBounds++;
+                            }
+                            catch { }
+                        }
+
+                        var parentNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                        foreach (var section in filtered.Sections)
+                        {
+                            var parent = section.Get("._Parent");
+                            if (!string.IsNullOrWhiteSpace(parent)) parentNames.Add(parent);
+                        }
+                        int hosts = 0;
+                        foreach (var section in filtered.Sections)
+                        {
+                            var type = section.Get("._WndType") ?? "";
+                            if (!(type.Equals("Handle", StringComparison.OrdinalIgnoreCase) ||
+                                  type.Equals("Box", StringComparison.OrdinalIgnoreCase) ||
+                                  type.Equals("WndList", StringComparison.OrdinalIgnoreCase) ||
+                                  type.Equals("WndScroll", StringComparison.OrdinalIgnoreCase) ||
+                                  type.Equals("WndContainer", StringComparison.OrdinalIgnoreCase) ||
+                                  type.Equals("WndFlexContainer", StringComparison.OrdinalIgnoreCase)))
+                                continue;
+                            if (!parentNames.Contains(section.Name)) hosts++;
+                        }
+
+                        int lsh = ini.Sections.Count(s => s.GetInt("LockShowAndHide") == 1);
+                        var pages = ini.Sections.Count(s => s.Name.StartsWith("Page_", StringComparison.OrdinalIgnoreCase));
+                        var flags = new List<string>();
+                        if (width <= 0 || height <= 0) flags.Add("host");
+                        if (leaves <= 2) flags.Add("shell");
+                        if (hosts >= 1) flags.Add("runtime-hosts=" + hosts);
+                        if (pages > 0 && string.IsNullOrWhiteSpace(window.Page))
+                            flags.Add("pages=" + pages + " no-default");
+                        if (outOfBounds > 0) flags.Add("oob=" + outOfBounds);
+                        if (build.Placeholders.Count > 0) flags.Add("ph=" + build.Placeholders.Count);
+                        if (build.UnresolvedStrings.Count > 0) flags.Add("str=" + build.UnresolvedStrings.Count);
+                        if (flags.Count == 0) flags.Add("ok");
+
+                        n++;
+                        if (leaves <= 2) shell++;
+                        if (hosts >= 1) runtime++;
+                        if (width > 0 && height > 0) placed++;
+                        report.AppendLine(string.Join("\t", new[]
+                        {
+                            window.Id, stage.Id,
+                            width.ToString("0", System.Globalization.CultureInfo.InvariantCulture),
+                            height.ToString("0", System.Globalization.CultureInfo.InvariantCulture),
+                            filtered.Sections.Count.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            build.Elements.Count.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            leaves.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            build.Placeholders.Count.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            build.UnresolvedStrings.Count.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            outOfBounds.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            pages.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            window.Page ?? "",
+                            lsh.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            hosts.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            string.Join(",", flags),
+                        }));
+                    }
+                    stageStats.Add($"# stage {stage.Id}: windows={n} placed={placed} shell={shell} runtime-hosts={runtime}");
+                    totalShell += shell;
+                    totalRuntime += runtime;
+                    totalPlaced += placed;
+                }
+                foreach (var line in stageStats) report.AppendLine(line);
+                report.AppendLine($"# total: shell={totalShell} runtime-hosts={totalRuntime} placed={totalPlaced}");
+
+                outPath ??= Path.Combine(Paths.AppRoot, "Data", "render_status.tsv");
+                File.WriteAllText(outPath, report.ToString());
+                Console.WriteLine($"status -> {outPath}");
+                foreach (var line in stageStats) Console.WriteLine(line);
+                Console.WriteLine($"# total: shell={totalShell} runtime-hosts={totalRuntime} placed={totalPlaced}");
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("status failed: " + ex.Message);
+                return 1;
+            }
+        }
+
+        /// <summary>
+        /// Renders every window of one stage into a labeled thumbnail grid (P2 of
+        /// docs/ui/UI_RENDER_FIDELITY_PLAN.md):
+        ///   UiProcessApp.exe --contact-sheet &lt;stageId|title|number&gt; [--out sheet.png] [--cols N] [--max N]
+        /// </summary>
+        private static int RunContactSheet(string[] args)
+        {
+            try
+            {
+                string stageArg = null, outPath = null;
+                int cols = 4, max = 80;
+                for (int i = 0; i < args.Length - 1; i++)
+                {
+                    if (args[i] == "--contact-sheet") stageArg = args[i + 1];
+                    else if (args[i] == "--out") outPath = args[i + 1];
+                    else if (args[i] == "--cols") int.TryParse(args[i + 1], out cols);
+                    else if (args[i] == "--max") int.TryParse(args[i + 1], out max);
+                }
+                if (string.IsNullOrWhiteSpace(stageArg))
+                    throw new ArgumentException("--contact-sheet needs a stage id, title or 1-based number");
+                if (cols < 1) cols = 4;
+
+                Paths.Locate();
+                var inventoryPath = Path.Combine(AppContext.BaseDirectory, "Data", "ui_inventory.json");
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var inventory = JsonSerializer.Deserialize<Inventory>(File.ReadAllText(inventoryPath), options);
+
+                StageInfo stage = null;
+                int stageIndex = -1;
+                for (int i = 0; i < inventory.Stages.Count; i++)
+                {
+                    var s = inventory.Stages[i];
+                    if (string.Equals(s.Id, stageArg, StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(s.Title, stageArg, StringComparison.OrdinalIgnoreCase) ||
+                        (int.TryParse(stageArg, out var n) && n == i + 1))
+                    {
+                        stage = s;
+                        stageIndex = i;
+                        break;
+                    }
+                }
+                if (stage == null) throw new ArgumentException($"stage '{stageArg}' not found");
+
+                var assets = new AssetResolver(Paths.ResolveRoots());
+                var textures = new UiTexCache(assets);
+                var rejected = RejectionStore.Load(Paths.AppRoot) ?? new Dictionary<string, string>();
+                int rejectedInStage = (stage.Windows ?? new List<WindowInfo>()).Count(w => rejected.ContainsKey(w.Id));
+                var windows = (stage.Windows ?? new List<WindowInfo>())
+                    .Where(w => !string.IsNullOrWhiteSpace(w.Path) && !rejected.ContainsKey(w.Id))
+                    .Take(max).ToList();
+                if (windows.Count == 0) throw new ArgumentException("stage has no renderable windows");
+
+                const double cellW = 320, cellH = 240, pad = 8, labelH = 24;
+                int rows = (windows.Count + cols - 1) / cols;
+                int sheetW = (int)(cols * cellW);
+                int sheetH = (int)(labelH + rows * (cellH + labelH + pad) + pad);
+                var titleFace = new Typeface("Microsoft YaHei");
+                var labelFace = new Typeface("Microsoft YaHei");
+                var white = new SolidColorBrush(Color.FromRgb(0xEC, 0xEC, 0xEC));
+                var gray = new SolidColorBrush(Color.FromRgb(0x9A, 0x9A, 0x9A));
+                var borderPen = new Pen(new SolidColorBrush(Color.FromRgb(0x3A, 0x3E, 0x44)), 1);
+
+                var visual = new DrawingVisual();
+                using (var dc = visual.RenderOpen())
+                {
+                    dc.DrawRectangle(new SolidColorBrush(Color.FromRgb(0x18, 0x1A, 0x1E)), null,
+                        new Rect(0, 0, sheetW, sheetH));
+                    dc.DrawText(new FormattedText(
+                            $"{stageIndex + 1}. {stage.Title}  ({windows.Count} windows" +
+                            (rejectedInStage > 0 ? $", {rejectedInStage} rejected hidden" : "") + ")",
+                            System.Globalization.CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                            titleFace, 16, white, 1.0),
+                        new Point(8, 3));
+
+                    for (int i = 0; i < windows.Count; i++)
+                    {
+                        var window = windows[i];
+                        int col = i % cols, row = i / cols;
+                        double x = col * cellW;
+                        double y = labelH + row * (cellH + labelH + pad);
+                        var name = string.IsNullOrWhiteSpace(window.Cn) ? window.Title : window.Cn;
+                        var label = $"{stageIndex + 1}.{i + 1}  {name}";
+                        try
+                        {
+                            var filtered = BuildWindowPlan(window, out _);
+                            if (filtered == null)
+                            {
+                                dc.DrawText(new FormattedText(label + "  (no INI)", System.Globalization.CultureInfo.CurrentCulture,
+                                    FlowDirection.LeftToRight, labelFace, 13, gray, 1.0), new Point(x + 6, y + 4));
+                                continue;
+                            }
+                            var build = UiLayout.Build(filtered, assets, textures);
+                            double width = filtered.Sections[0].GetInt("Width");
+                            double height = filtered.Sections[0].GetInt("Height");
+                            if (width <= 0) width = 1280;
+                            if (height <= 0) height = 720;
+                            var host = new Border
+                            {
+                                Width = width,
+                                Height = height,
+                                Background = BackdropBrush(window),
+                                Child = build.Root,
+                            };
+                            host.Measure(new Size(width, height));
+                            host.Arrange(new Rect(0, 0, width, height));
+                            host.UpdateLayout();
+                            var bmp = new RenderTargetBitmap(Math.Max(1, (int)width), Math.Max(1, (int)height),
+                                96, 96, PixelFormats.Pbgra32);
+                            bmp.Render(host);
+
+                            double scale = Math.Min((cellW - pad * 2) / width, (cellH - pad * 2) / height);
+                            if (scale > 1) scale = 1;
+                            double dw = width * scale, dh = height * scale;
+                            double dx = x + (cellW - dw) / 2, dy = y + (cellH - dh) / 2;
+                            dc.DrawImage(bmp, new Rect(dx, dy, dw, dh));
+                            dc.DrawRectangle(null, borderPen, new Rect(dx, dy, dw, dh));
+
+                            dc.DrawText(new FormattedText(label, System.Globalization.CultureInfo.CurrentCulture,
+                                FlowDirection.LeftToRight, labelFace, 13, white, 1.0), new Point(x + 6, y + cellH + 3));
+                            var flags = $"{width:0}x{height:0}  {filtered.Sections.Count}s  " +
+                                        $"{build.Placeholders.Count}ph  {build.UnresolvedStrings.Count}str";
+                            dc.DrawText(new FormattedText(flags, System.Globalization.CultureInfo.CurrentCulture,
+                                FlowDirection.LeftToRight, labelFace, 11, gray, 1.0), new Point(x + 6, y + cellH + 19));
+                        }
+                        catch (Exception ex)
+                        {
+                            dc.DrawText(new FormattedText(label + "  (failed: " + ex.Message + ")",
+                                System.Globalization.CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                                labelFace, 12, gray, 1.0), new Point(x + 6, y + 4));
+                        }
+                    }
+                }
+
+                var sheet = new RenderTargetBitmap(sheetW, sheetH, 96, 96, PixelFormats.Pbgra32);
+                sheet.Render(visual);
+                outPath ??= Path.Combine(AppContext.BaseDirectory, "contact_sheet_" + stage.Id + ".png");
+                using (var stream = File.Create(outPath))
+                {
+                    var encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(sheet));
+                    encoder.Save(stream);
+                }
+                Console.WriteLine($"contact-sheet -> {outPath} windows={windows.Count} size={sheetW}x{sheetH}");
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("contact-sheet failed: " + ex.Message);
+                return 1;
+            }
+        }
+
+        /// <summary>
+        /// Headless interaction checks through tools/ui/replay_server.lua, applying the
+        /// returned mutation delta on top of the window's runtime state and rendering the
+        /// result (docs/ui/UI_INTERACTION_REPLAY.md).
+        ///   UiProcessApp.exe --click &lt;windowId&gt; &lt;section&gt; [handler] [--out file.png]
+        ///   UiProcessApp.exe --drag &lt;windowId&gt; &lt;section&gt; [--out file.png]
+        /// </summary>
+        private static int RunClick(string[] args) { return RunEvent(args, false); }
+
+        private static int RunDrag(string[] args) { return RunEvent(args, true); }
+
+        private static int RunEvent(string[] args, bool drag)
+        {
+            try
+            {
+                string windowId = null, section = null, handler = null, outPath = null;
+                int ci = Array.IndexOf(args, drag ? "--drag" : "--click");
+                if (ci >= 0)
+                {
+                    if (ci + 1 < args.Length) windowId = args[ci + 1];
+                    if (ci + 2 < args.Length) section = args[ci + 2];
+                    if (!drag && ci + 3 < args.Length && !args[ci + 3].StartsWith("--")) handler = args[ci + 3];
+                }
+                for (int i = 0; i < args.Length - 1; i++)
+                    if (args[i] == "--out") outPath = args[i + 1];
+                if (windowId == null || section == null)
+                    throw new ArgumentException((drag ? "--drag" : "--click") + " needs <windowId> <section>" +
+                                                (drag ? "" : " [handler]"));
+                handler ??= "OnLButtonClick";
+
+                Paths.Locate();
+                var inventoryPath = Path.Combine(AppContext.BaseDirectory, "Data", "ui_inventory.json");
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var inventory = JsonSerializer.Deserialize<Inventory>(File.ReadAllText(inventoryPath), options);
+                WindowInfo window = null;
+                foreach (var stage in inventory.Stages)
+                    foreach (var w in stage.Windows ?? new List<WindowInfo>())
+                        if (string.Equals(w.Id, windowId, StringComparison.OrdinalIgnoreCase)) window = w;
+                if (window?.Path == null) throw new ArgumentException($"window '{windowId}' has no layout");
+
+                var stem = Path.GetFileNameWithoutExtension(window.Path);
+                var rel = window.Path.Replace('/', Path.DirectorySeparatorChar);
+                var iniPath = window.Root == "pak" ? Path.Combine(Paths.PakRoot, rel)
+                                                   : Path.Combine(Paths.AppRoot, "assets", "ui", rel);
+                var luaPath = Path.Combine(Paths.AppRoot, "assets", "ui", "Config", "Default", stem + ".lua");
+                if (!File.Exists(luaPath)) throw new ArgumentException("no script for " + stem);
+
+                var commands = new List<string>();
+                if (drag)
+                {
+                    // A section the script registered for drag (RegisterLButtonDrag ->
+                    // $DragRegistered, e.g. Btn_Drag) drives the engine's OnDragButton
+                    // family; any other section drives the item sequence
+                    // (KItemEventMgr 0x180153590/0x180153850: Down on press, Drag while
+                    // held, Up then DragEnd on release). The MOUSE lines feed
+                    // Station.GetMessagePos for script-driven drags.
+                    bool handleDrag = false;
+                    var probe = BuildWindowPlan(window, out _);
+                    if (probe != null && probe.ByName.TryGetValue(section, out var probeSec))
+                        handleDrag = probeSec.Get("$DragRegistered") == "1" || probeSec.Get("$DragEnabled") == "1";
+                    commands.Add("CLIENT 1920 1080");
+                    commands.Add("MOUSE 500 300");
+                    if (handleDrag)
+                    {
+                        commands.Add("EVENT " + section + " OnDragButtonBegin");
+                        commands.Add("MOUSE 560 310");
+                        commands.Add("EVENT " + section + " OnDragButton");
+                        commands.Add("MOUSE 560 310");
+                        commands.Add("EVENT " + section + " OnDragButtonEnd");
+                    }
+                    else
+                    {
+                        commands.Add("EVENT " + section + " OnItemLButtonDown");
+                        commands.Add("MOUSE 560 310");
+                        commands.Add("EVENT " + section + " OnItemLButtonDrag");
+                        commands.Add("MOUSE 560 310");
+                        commands.Add("EVENT " + section + " OnItemLButtonUp");
+                        commands.Add("EVENT " + section + " OnItemLButtonDragEnd");
+                    }
+                }
+                else
+                {
+                    commands.Add("EVENT " + section + " " + handler);
+                }
+
+                var delta = DispatchReplayCommands(luaPath, iniPath, commands, out var opened);
+                Console.WriteLine((drag ? "drag " : "click ") + windowId + " " + section +
+                                  (drag ? "" : " " + handler) + " -> mutations=" + delta.Count +
+                                  (opened.Count > 0 ? " opens=" + string.Join(",", opened) : ""));
+
+                var filtered = BuildWindowPlan(window, out _);
+                LayoutPlanBuilder.ApplyRuntimeMutations(filtered, delta);
+                var assets = new AssetResolver(Paths.ResolveRoots());
+                var textures = new UiTexCache(assets);
+                var build = UiLayout.Build(filtered, assets, textures);
+                double width = filtered.Sections[0].GetInt("Width");
+                double height = filtered.Sections[0].GetInt("Height");
+                if (width <= 0) width = 1280;
+                if (height <= 0) height = 720;
+                var host = new Border
+                {
+                    Width = width,
+                    Height = height,
+                    Background = BackdropBrush(window),
+                    Child = build.Root,
+                };
+                host.Measure(new Size(width, height));
+                host.Arrange(new Rect(0, 0, width, height));
+                host.UpdateLayout();
+                var overhang = ComputeOverhang(build, width, height);
+                if (overhang.L > 0 || overhang.T > 0 || overhang.R > 0 || overhang.B > 0)
+                {
+                    var expanded = new Canvas
+                    {
+                        Width = width + overhang.L + overhang.R,
+                        Height = height + overhang.T + overhang.B,
+                        Background = BackdropBrush(window),
+                    };
+                    host.Child = null;
+                    Canvas.SetLeft(build.Root, overhang.L);
+                    Canvas.SetTop(build.Root, overhang.T);
+                    expanded.Children.Add(build.Root);
+                    host.Child = expanded;
+                    host.Width = expanded.Width;
+                    host.Height = expanded.Height;
+                    host.Measure(new Size(expanded.Width, expanded.Height));
+                    host.Arrange(new Rect(0, 0, expanded.Width, expanded.Height));
+                    host.UpdateLayout();
+                }
+                outPath ??= Path.Combine(AppContext.BaseDirectory,
+                    (drag ? "drag_" : "click_") + windowId + "_" + section + ".png");
+                var bitmap = new RenderTargetBitmap((int)host.Width, (int)host.Height, 96, 96, PixelFormats.Pbgra32);
+                bitmap.Render(host);
+                using (var stream = File.Create(outPath))
+                {
+                    var encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                    encoder.Save(stream);
+                }
+                Console.WriteLine($"rendered {filtered.Sections.Count} sections -> {outPath}");
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("click failed: " + ex.Message);
+                return 1;
+            }
+        }
+
+        /// <summary>Spawns replay_server.lua, sends the command script (EVENT / MOUSE /
+        /// CLIENT) and returns the accumulated mutation delta lines. Each EVENT is
+        /// followed by its mutation block and an END line; the other commands are
+        /// silent (consumed with the next EVENT's output).</summary>
+        private static List<string> DispatchReplayCommands(string luaPath, string iniPath, List<string> commands,
+                                                           out List<string> opened)
+        {
+            opened = new List<string>();
+            var lua32 = Environment.GetEnvironmentVariable("LUA32");
+            if (string.IsNullOrWhiteSpace(lua32))
+                lua32 = @"C:\Users\ZHIBIN~1\AppData\Local\Temp\opencode\lua-5.1.5\lua-5.1.5\build32\lua32.exe";
+            var server = Path.Combine(Paths.RepoRoot ?? "", "tools", "ui", "replay_server.lua");
+            if (!File.Exists(lua32) || !File.Exists(server))
+                throw new FileNotFoundException("lua32 or replay_server.lua missing");
+            var psi = new ProcessStartInfo(lua32, "\"" + server + "\" \"" + luaPath + "\" auto \"" + iniPath + "\"")
+            {
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            };
+            using (var proc = Process.Start(psi))
+            {
+                proc.StandardOutput.ReadLine(); // READY
+                var lines = new List<string>();
+                foreach (var command in commands)
+                {
+                    proc.StandardInput.WriteLine(command);
+                    proc.StandardInput.Flush();
+                    if (!command.StartsWith("EVENT ", StringComparison.Ordinal)) continue;
+                    for (int i = 0; i < 5000; i++)
+                    {
+                        var line = proc.StandardOutput.ReadLine();
+                        if (line == null || line == "END") break;
+                        if (line.StartsWith("RESULT ", StringComparison.Ordinal)) continue;
+                        if (line.StartsWith("WINDOW ", StringComparison.Ordinal))
+                        {
+                            opened.Add(line.Substring("WINDOW ".Length).Trim());
+                            continue;
+                        }
+                        if (line.IndexOf('\t') >= 0) lines.Add(line);
+                    }
+                }
+                try { proc.Kill(); } catch { }
+                return lines;
+            }
+        }
+
         /// <summary>
         /// Sections the window script shows even though they carry
         /// LockShowAndHide=1: the mode tabs (ShowModeTabs) plus the inventory's
@@ -460,6 +1219,9 @@ namespace UiProcessApp
             var shown = new List<string>();
             if (window?.Show != null) shown.AddRange(window.Show);
             if (window?.Tabs?.Show != null) shown.AddRange(window.Tabs.Show);
+            if (window?.AppendIni != null)
+                foreach (var spec in window.AppendIni)
+                    if (spec?.Show != null) shown.AddRange(spec.Show);
             return shown;
         }
 
@@ -467,9 +1229,54 @@ namespace UiProcessApp
         /// Resolves a list-item prototype INI referenced by the inventory. Prototypes
         /// live either in PakV4 (root "pak", flat names) or the extracted ui tree.
         /// </summary>
-        internal static IniFile LoadTemplateIni(string relative)
+        /// <summary>
+        /// Builds the optional second window drawn behind the main one (inventory
+        /// `overlay`): the client shows the WorldMap behind the MiddleMap, so the
+        /// reference capture is a composite (MiddleMap chrome + WorldMap top-left,
+        /// region list, close). Returns null when there is no overlay.
+        /// </summary>
+        internal static FrameworkElement BuildOverlayVisual(WindowInfo window, AssetResolver assets,
+            UiTexCache textures, bool wire)
         {
-            var rel = relative.Replace('/', Path.DirectorySeparatorChar);
+            var spec = window?.Overlay;
+            if (spec == null || string.IsNullOrWhiteSpace(spec.Path)) return null;
+            var rel = spec.Path.Replace('/', Path.DirectorySeparatorChar);
+            var path = Path.Combine(Paths.AppRoot, "assets", "ui", rel);
+            if (!File.Exists(path)) return null;
+            var ini = IniFile.Load(path);
+            var plan = LayoutPlanBuilder.Build(ini, null);
+            LayoutPlanBuilder.ApplyHide(plan.Filtered, spec.Hide);
+            LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, spec.Show ?? new List<string>());
+            LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, spec.Lists, LoadTemplateIni);
+            LayoutPlanBuilder.ApplyTexts(plan.Filtered, spec.Texts);
+            LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, spec.Adjust);
+            var build = UiLayout.Build(plan.Filtered, assets, textures);
+            // Pin the overlay to the top-left of the composite grid: a fixed-size
+            // root inside a taller grid would otherwise be centered by WPF.
+            build.Root.HorizontalAlignment = HorizontalAlignment.Left;
+            build.Root.VerticalAlignment = VerticalAlignment.Top;
+            return build.Root;
+        }
+
+        /// <summary>
+        /// Host backdrop for a window render: the inventory `backdrop` hex colour when set
+        /// (semi-transparent windows composite over the game world on the client), else
+        /// the viewer's default dark host.
+        /// </summary>
+        internal static SolidColorBrush BackdropBrush(WindowInfo window)
+        {
+            var hex = window?.Backdrop;
+            if (!string.IsNullOrWhiteSpace(hex))
+            {
+                var s = hex.TrimStart('#');
+                if (s.Length == 6 && uint.TryParse(s, System.Globalization.NumberStyles.HexNumber,
+                        System.Globalization.CultureInfo.InvariantCulture, out var v))
+                    return new SolidColorBrush(Color.FromRgb((byte)(v >> 16), (byte)(v >> 8), (byte)v));
+            }
+            return new SolidColorBrush(Color.FromRgb(0x10, 0x10, 0x10));
+        }
+
+        internal static IniFile LoadTemplateIni(string relative)        {            var rel = relative.Replace('/', Path.DirectorySeparatorChar);
             var candidates = new[]
             {
                 Path.Combine(Paths.PakRoot, rel),
@@ -479,6 +1286,57 @@ namespace UiProcessApp
             foreach (var candidate in candidates)
                 if (File.Exists(candidate)) return IniFile.Load(candidate);
             throw new FileNotFoundException($"list template ini '{relative}' not found");
+        }
+
+        /// <summary>Tolerant variant for optional second INIs (appendIni): missing
+        /// sources leave the window renderable instead of failing the build.</summary>
+        internal static IniFile LoadIniTolerant(string relative)
+        {
+            try { return LoadTemplateIni(relative); }
+            catch { return null; }
+        }
+
+        /// <summary>
+        /// The full inventory-driven plan pipeline (INI load + page + appendIni +
+        /// hide/skin/anchors/tabs/lists/LSH/appends/texts/images/adjust + viewer page
+        /// state). Shared by the headless status scan and the contact sheet; the
+        /// interactive renderer keeps its own copy because it takes CLI page/hide
+        /// overrides.
+        /// </summary>
+        internal static IniFile BuildWindowPlan(WindowInfo window, out IniFile rawIni)
+        {
+            rawIni = null;
+            if (window == null || string.IsNullOrWhiteSpace(window.Path)) return null;
+            var rel = window.Path.Replace('/', Path.DirectorySeparatorChar);
+            var iniPath = window.Root == "pak"
+                ? Path.Combine(Paths.PakRoot, rel)
+                : Path.Combine(Paths.AppRoot, "assets", "ui", rel);
+            if (!File.Exists(iniPath)) return null;
+            rawIni = IniFile.Load(iniPath);
+            var plan = LayoutPlanBuilder.Build(rawIni, window.Page);
+            LayoutPlanBuilder.ApplyAppendIni(plan.Filtered, window.AppendIni, LoadIniTolerant);
+            LayoutPlanBuilder.ApplyRuntimeState(plan.Filtered, window.Path);
+            LayoutPlanBuilder.ApplyHide(plan.Filtered, window.Hide);
+            LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
+            LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
+            LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs, window.Page);
+            LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, LoadTemplateIni);
+            LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
+            LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
+            LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
+            LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
+            LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+            if (window.Pages != null && window.Pages.Count > 0)
+            {
+                var page = window.Pages.FirstOrDefault(pg =>
+                        string.Equals(pg.Id, window.Page, StringComparison.OrdinalIgnoreCase)) ?? window.Pages[0];
+                LayoutPlanBuilder.ApplyTexts(plan.Filtered, page.Texts);
+                LayoutPlanBuilder.ApplyImages(plan.Filtered, page.Images);
+                LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, page.Adjust);
+                if (page.Hide != null && page.Hide.Count > 0)
+                    LayoutPlanBuilder.ApplyHide(plan.Filtered, string.Join(",", page.Hide));
+            }
+            return plan.Filtered;
         }
 
         /// <summary>
@@ -526,14 +1384,26 @@ namespace UiProcessApp
                         {
                             var ini = IniFile.Load(iniPath);
                             var plan = LayoutPlanBuilder.Build(ini, window.Page);
+                            LayoutPlanBuilder.ApplyAppendIni(plan.Filtered, window.AppendIni, LoadIniTolerant);
+                            LayoutPlanBuilder.ApplyRuntimeState(plan.Filtered, window.Path);
                             LayoutPlanBuilder.ApplyHide(plan.Filtered, window.Hide);
                             LayoutPlanBuilder.ApplySkin(plan.Filtered, window.Skin ?? "uitimate");
                             LayoutPlanBuilder.ApplyAnchors(plan.Filtered, window.Anchors);
                 LayoutPlanBuilder.ApplyTabs(plan.Filtered, window.Tabs, window.Page);
                             LayoutPlanBuilder.ApplyListTemplates(plan.Filtered, window.Lists, LoadTemplateIni);
                             LayoutPlanBuilder.ApplyLockedVisibility(plan.Filtered, ScriptShown(window));
+                            LayoutPlanBuilder.ApplyAppends(plan.Filtered, window.Appends);
                             LayoutPlanBuilder.ApplyTexts(plan.Filtered, window.Texts);
-                        LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+                            LayoutPlanBuilder.ApplyImages(plan.Filtered, window.Images);
+                            LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, window.Adjust);
+                            if (window.Pages != null && window.Pages.Count > 0)
+                            {
+                                var selfPage = window.Pages.FirstOrDefault(pg =>
+                                        string.Equals(pg.Id, window.Page, StringComparison.OrdinalIgnoreCase)) ?? window.Pages[0];
+                                LayoutPlanBuilder.ApplyTexts(plan.Filtered, selfPage.Texts);
+                                LayoutPlanBuilder.ApplyImages(plan.Filtered, selfPage.Images);
+                                LayoutPlanBuilder.ApplyAdjustments(plan.Filtered, selfPage.Adjust);
+                            }
                             var build = UiLayout.Build(plan.Filtered, assets, textures);
                             rendered++;
                             report.AppendLine($"OK   {window.Id,-22} sections={plan.Filtered.Sections.Count,-5} " +

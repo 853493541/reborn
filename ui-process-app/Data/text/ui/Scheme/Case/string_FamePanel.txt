@@ -1,0 +1,13 @@
+ID	Length	String
+STR_GRADETIPS	125	现阶段情况：/n1.当前账号名望：12级；/n等级上限1.名望等级上限将随时间陆续解锁。横刀断浪版本之后第一周为五级，之后每周解锁3级。
+STR_BINDINGTIPS	500	<text>text=\"现阶段情况：\n\"</text><text>text=\"1.当前角色已绑定\n\"</text><text>text=\"积累方式：\n\"</text><text>text=\"1.共账号角色名望等级为账号名望，所有共账号角色共享；\n\"</text><text>text=\"2.非共账号角色名望为个人名望，仅供该角色使用；\n\"</text><text>text=\"覆盖规则：\n\"</text><text>text=\"1.将角色绑定为共账号角色时，如果账号名望小于个人名望，则将账号名望提高至个人名望水平。\n\"</text><text>text=\"2.将共账号角色解绑时，如果个人名望小于账号名望，则将个人名望提高至账号名望水平\"</text>
+STR_FAMETITLE1	9	名望商人:
+STR_FAMETITLE2	8	等级奖励
+STR_FAMETITLE3	8	解锁方式
+STR_FAMETITLE4	8	完成成就
+STR_TITLE	4	名望
+STR_SPECIALTITLE	4	事件
+STR_SPECIALTITLE1	14	当前事件地点：
+STR_SPECIALTITLE2	32	解锁：完成以下场景的主线剧情任务
+STR_FAMETITLE5	8	规则介绍
+STR_FAMETITLE6	8	参与事件

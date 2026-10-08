@@ -1,0 +1,5 @@
+ID	Length	String
+STR_TIP_BTN_SKIP	10	跳过 (Esc)
+STR_TIP_BTN_NEXT	10	下一句 (N)
+STR_TIP_BTN_AUTOPLAY	12	自动播放 (P)
+STR_TIP_BTN_PLAYSPEED	16	切换播放速度 (R)

@@ -1,0 +1,40 @@
+ID	Length	String
+STR_EVERCHIPS	10	每周获取：
+STR_OBTAIN	8	前往获取
+STR_FIND	26	武器丢失，点击按钮方可找回
+STR_OBTAIN1	8	获取神兵
+STR_CURRENTEQUIPMENT	8	当前装备
+STR_UPGRADEEQUIPMENT	10	可消耗装备
+STR_CREATEGOALS	8	摹铸目标
+STR_MKUNGFU	8	目标心法
+STR_CONSUMPTIONINFO	10	消耗金钱：
+STR_ECONOMIZE	6	节省：
+STR_CEQUALITYTIP	11	*不会被消耗
+STR_UEQUALITYTIP	37	*消耗装备、继承附魔、抵扣同等价值金币
+STR_ECTIP	30	选择当前装备和目标心法进行摹铸
+STR_EC_STR	6	  摹铸
+STR_ECSUCCESS	12	  摹铸成功！
+STR_ECTIP1	60	根据当前装备，消耗金钱摹铸目标心法同品级、同部位、同系列装备
+STR_SELECTEQUIPMENT	14	点击可选择装备
+STR_UEQUALITYTIP1	9	*继承附魔
+STR_UEQUALITYTIP2	13	*抵扣等价金钱
+STR_SELECTEQUIPMENT1	36	选择心法与当前装备后，将显示摹铸目标
+STR_EMPTY	16	当前暂无相关武器
+STR_SUPERIOR	26	当前神兵已升至版本最高等阶
+STR_UPGACCTBTN	8	减负升阶
+STR_ACTIVITYLEVEL	8	当前进度
+STR_ROLE	10	角色进度：
+STR_ACCOUNT	10	账号进度：
+STR_TIPSACTIVITYLEVEL	382	同账号下累计获取【玉灵淬石】数量最多的角色，会根据角色新增加的【玉灵淬石】数量为"账号进度"同步增加进度。\n同账号任意角色下所有心法，对神兵进行升阶时，若"角色进度"小于"账号进度"，可选择用金币补齐升阶所需【玉灵淬石】，从而实现快速升阶。 \n用金币进行减负升阶，不会变更账号进度和角色进度。 \n账号进度：当前账号获取【玉灵淬石】的最高进度。\n角色进度：当前角色的【玉灵淬石】历史积攒数量。
+STR_ROLETIP	46	账号进度：当前账号获取【玉灵淬石】的最高进度。
+STR_ACCOUNTTIP	46	角色进度：当前角色的【玉灵淬石】历史积攒数量。
+STR_TIPSUPGRADECHEAPER	128	同账号任意角色下所有心法，对神兵进行升阶时，若"角色进度"小于"账号进度"，可选择用金币补齐升阶所需【玉灵淬石】，从而实现快速升阶。
+STR_UPGRADEBTN	8	升阶神兵
+STR_SELECTTARGETTIP	37	*熔炼目标为随机款式，界面展示仅供参考
+STR_UPGRADERULETIP	257	<text>text="选择熔炼原胚\n" font=65 </text><text>text="1.砺陨枭刃已达熔炼极致，不可熔炼。\n2.熔炼原胚会被消耗，不可返还。\n3.若熔炼原胚已被穿戴，则熔炼目标将直接穿戴至侠士身上，且不会与挂件包内已有挂件重复。\n4.若熔炼原胚在背包中，则熔炼目标会直接放入背包。
+STR_DYEINGRULERULETIP	289	<text>text="选择焕色原胚\n" font=65 </text><text>text="1.砺陨修刃、砺陨锋刃不可焕色。\n2.焕色原胚会被消耗，不可返还。\n3.焕色目标一定不会与焕色原胚相同。\n4.若焕色原胚已被穿戴，则焕色目标将直接穿戴至侠士身上，且不会与挂件包内已有挂件重复。\n5.若焕色原胚在背包中，则焕色目标会直接放入背包。
+STR_UPGRADESOURCETIP	217	<text>text="熔炼原胚\n" font=65 </text><text>text="1.熔炼原胚会被消耗，不可返还。\n2.若熔炼原胚已被穿戴，则熔炼目标将直接穿戴至侠士身上，且不会与挂件包内已有挂件重复。\n3.若熔炼原胚在背包中，则熔炼目标会直接放入背包。
+STR_DYEINGSOURCETIP	253	<text>text="焕色原胚\n" font=65 </text><text>text="1.焕色原胚会被消耗，不可返还。\n2.焕色目标一定不会与焕色原胚相同。\n3.若焕色原胚已被穿戴，则焕色目标将直接穿戴至侠士身上，且不会与挂件包内已有挂件重复。\n4.若焕色原胚在背包中，则焕色目标会直接放入背包。
+STR_UPGRADETARGETTIP	231	<text>text="熔炼目标\n" font=65 </text><text>text="1.熔炼目标为随机款式，界面展示偏色仅供参考。\n2.若熔炼原胚已被穿戴，则熔炼目标将直接穿戴至侠士身上，且不会与挂件包内已有挂件重复。\n3.若熔炼原胚在背包中，则熔炼目标会直接放入背包。
+STR_DYEINGTARGETTIP	327	<text>text="焕色目标\n" font=65 </text><text>text="1.若焕色目标为随机款式，界面展示偏色仅供参考。\n2.若指定焕色目标，则需要消耗更多材料，必定产出指定挂件。\n3.焕色目标一定不会与焕色原胚相同。\n4.若焕色原胚已被穿戴，则焕色目标将直接穿戴至侠士身上，且不会与挂件包内已有挂件重复。\n5.若焕色原胚在背包中，则焕色目标会直接放入背包。
+STR_ENERGY	10	消耗精力：

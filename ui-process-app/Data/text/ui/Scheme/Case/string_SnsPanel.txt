@@ -1,0 +1,6 @@
+ID	Length	String
+STR_H5_NUM_TITLE	16	春节鼠标垫剩余：
+STR_DAILY_TITLE	13	分享至推栏APP
+STR_COMPRESS	8	上传原图
+STR_QR_CODE	29	请先扫描下载推栏APP并绑定账号
+STR_ERROR	24	无法连接服务器请稍后再试

@@ -1,0 +1,17 @@
+queue panel compare: GT=proof/minimap/screenshots/Screenshot-given-1.png (1720x1101, downscaled to 960x624)
+                       APP=UiProcessApp --render queue-panel --page Page_DesertStorm (960x624, 2026-09-29)
+
+region          GT mean RGB            APP mean RGB           delta
+title           (  70.1,  85.6,  82.2)   (  50.9,  78.4,  82.7)   (-19.2, -7.2,  0.5)
+tabs            (  82.1,  85.0,  84.6)   (  69.1,  82.4,  89.3)   (-13.1, -2.6,  4.7)
+tabs_badges     (  90.6,  89.0,  86.6)   (  82.5,  94.6,  96.3)   ( -8.0,  5.6,  9.6)
+score           (  68.3,  73.2,  76.8)   (  60.7,  72.0,  81.5)   ( -7.6, -1.2,  4.7)
+currency        (  76.1,  79.6,  81.7)   (  65.4,  76.3,  84.9)   (-10.7, -3.3,  3.2)
+centertitle     (  73.1,  77.8,  81.2)   (  60.7,  72.2,  82.8)   (-12.4, -5.6,  1.7)
+skill           (  74.7,  74.1,  78.7)   (  55.4,  67.0,  77.8)   (-19.3, -7.1, -0.9)
+crests          (  68.0,  79.1,  79.5)   (  67.8,  83.7,  91.2)   ( -0.2,  4.6, 11.7)
+bottom          (  76.6,  89.3,  85.7)   (  65.8,  86.6,  89.4)   (-10.9, -2.7,  3.7)
+
+feature pixels (same threshold both images):
+tab 赛季 badge orange      GT=445    APP=357
+personal score yellow    GT=97     APP=95

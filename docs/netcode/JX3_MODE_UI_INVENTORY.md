@@ -5,6 +5,10 @@
 **Method:** official PakV4 UI assets only — extracted `ui/Config/Default/*` windows
 (ini + Lua bytecode/decompiled), the official string tables
 (`ui/Scheme/Case/string.txt`, `string_PVPAcount.txt`), and code/protocol evidence.
+Window discovery beyond the old dictionary corpus: `ui/module_info.xml` (the module
+manifest, `tools/netcode/extract_pak_paths.py --list`) lists every window module and its
+script file, e.g. the battlefield finals `ACC_BFShowFinal`, `ACC_TreasureFinal`,
+`ACC_MobaShowFinal`, `ACC_JJCRougeShowFinal`, `ACC_WinOrDefect`, `ACC_DesertStormInfo`.
 The `interface\` addon tree is excluded (see `JX3_MODE_MATCH_LIFECYCLE.md` §10).
 
 Legend: **PROVEN** = window/label located in shipped data · **PARTIAL** = labels or
@@ -13,7 +17,7 @@ assets located but the renderer/consumer is missing · **OPEN** = expected, not 
 **Interactive viewer:** `ui-process-app` (WPF, same stack as `map-ui-app`) renders every
 window below from its real KGUI INI with the shared `UiLayout` engine —
 `dotnet run --project ui-process-app`; headless check
-`UiProcessApp.exe --selftest` (currently 15/15 windows rendered).
+`UiProcessApp.exe --selftest` (currently 16 rendered / 1 skipped, 0 failed).
 
 ---
 
@@ -52,6 +56,17 @@ Mode tabs (`PageSet_Total`): `CheckBox_DesertStorm` (绝境/沙漠风暴),
 Room UI (custom rooms): `Bool_CreateRoom/JoinRoom/StartGame/DisbandRoom/ExitRoom`
 confirm dialogs, room member list, OB slot (`NewBattleFieldQueue.decompiled.lua:5604-5882`).
 
+> **Reborn design variant — NOT client truth (user request 2026-10-02).** A
+> viewer-only queue page built on this section's `Page_DesertStorm` (same INI, same sample
+> state): the mode strip is reduced to one tab renamed 经典模式, the three tooltip `?` icons
+> (`Image_Rule_4`, `Btn_Rull_DS`, `Image_BuffRule`) and the 技能平衡 row (`WndContainer_Buff`)
+> are removed, and 快捷组队 reads 绝境武学 (`Text_BtnQuickTeam_D`). It lives as the
+> `zhenzhuan-queue` entry (status `DESIGN`) in `ui-process-app/Data/ui_inventory.json` with
+> no INI/asset edits — do not cite it as the shipped queue window. Rename pass 2026-10-02:
+> displayed as **排队界面** (the catalog's queue entry), and the faithful 五人模式
+> `queue-panel` catalog entry was removed on the user's request (the INI/Lua research in
+> this section stands).
+
 ## 2. Queue tracking — `MapQueue`
 
 **PROVEN** (`MapQueue.{ini,lua}`): per-map queue rows, cancel menu 点击取消排队
@@ -63,9 +78,28 @@ updates via `OnQueuePosUpdate` / `OnSyncMapQueueInfo`.
 
 - **PROVEN (flow):** queue pop → confirm dialog, or silent entry when 自动进入 is
   checked → `DoComfirmEnterQueueMap` (C→S 0x116) (`JX3_MODE_UI_FLOW.md` §3).
-- **PARTIAL:** `STR_PVP_Ready` = 准备好了 exists in the official string table but **no
-  extracted window/lua consumes it** — likely the ready/accept prompt lives in a
-  not-yet-extracted panel or is native. Hunt target.
+- **PROVEN (renderer):** the prompt is the engine's generic KGUI MessageBox
+  (`ui/Config/Default/MessageBox/MessageBox.ini`, 35 sections), opened as
+  `MB_entermap` by the shell `ui/script/module.lua` `ComfirmEnterQueuedMap`:
+  body `FormatString(STR_SWITCHMAP_GFZ_TIP, map)` = 需要前往的"<map>"地图吗？,
+  option 1 `STR_HOTKEY_SURE` (确定) with `nCountDownTime=30` through
+  `MSG_BRACKET` `<D0>(<D1>)` = 确定(30), option 2 `STR_HOTKEY_CANCEL` (取消);
+  the script appends the body to `Handle_Message` (`AppendItemFromString`,
+  font 18), fills `Text_Option1/2`, hides `CheckBox_Msg` (no `tCheckBoxConfig`)
+  and `fnAutoClose` fires when the 30 s run out. The strings live in the global
+  `g_tStrings` lib `ui/String/string.lua` (bound by `ui/module_info.xml`, not in
+  `ui/Scheme/Case/string.txt`); `tools/ui/extract_lua_string_table.py` decodes
+  its Lua-5.1 `SETTABLE` constants into the committed TSV
+  `ui-process-app/Data/text/ui/String/string.txt` (8,242 ids). The viewer
+  renders the 龙门绝境 sample (MapList 296/297) at the first countdown frame:
+  `ui-process-app` `ready-confirm` (inventory `appends` + `texts`); render
+  `proof/ui/evidence/ready_confirm_render.png` (2026-09-29). The viewer now
+  carries one page per battlefield map (296/297/410/512/532 — the page texts
+  override the appended body) and the option labels replay the button's
+  `NormalFont` scheme 18 (the authored `Text_Option` FontScheme=1 black is a
+  stale default — the ExitPanel sure/cancel pairs carry 18; the button state
+  fonts are the label's color source).
+- `STR_PVP_Ready` = 准备好了 is a separate label (no extracted consumer);
 - `STR_SETTING244` = 无需倒计时直接进入 (skip countdown and enter) — a user option
   that affects this transition.
 
@@ -73,40 +107,179 @@ updates via `OnQueuePosUpdate` / `OnSyncMapQueueInfo`.
 
 **PROVEN:** `NSX3DEngine::KWindowsLoadingWnd` (X3DEngine.dll) — GDI loading window with
 art + progress bar + spinner; config `<game>/ui/loading/loading.ini` (18 random
-backgrounds); progress handshake `ComfirmSyncMapProgress`; per-map loading art extracted
-for 296/297/410/512/532/645/709 (`proof/netcode/mode_ui/loading/*`, `JX3_MODE_UI_FLOW.md` §4).
+backgrounds, `ui/Loading/background{1..18}.bmp` 600x333 + `progress.bmp` 441x3 +
+`sprite.bmp` 28x28); progress handshake `ComfirmSyncMapProgress`; per-map loading art
+extracted for 296/297/410/512/532/645/709 (`proof/netcode/mode_ui/loading/*`,
+`JX3_MODE_UI_FLOW.md` §4).
+
+**PROVEN (琉璃 KGUI overlay):** `ui/Config/Default/LoadingPanel.ini` (39 sections) +
+`LoadingPanel.lua` (35 KB bytecode): the full-screen loading overlay. `GetLoadingImage`
+reads the destination map's minimap `config.ini` `[loading] image=` (e.g. 龙门寻宝minimap
+→ `loadinglmxb.dds`, 1920x1080; the CDN `_mb` PNG variant is the same art) and
+`CorrectShow` fits it to the canvas; `ShowProgress` (proto /26) picks
+`Handle_Traffic`+`Image_ProgressT` while `IsTrafficState()` (download) or
+`Handle_Nor`+`Image_Progress` for a normal map load, and the traffic state adds the
+`Handle_Nodes` markers with `Text_PointName`. Progress chrome: `Carriage.UITex`
+frames 20-24 (track) and `CharButton.UITex` frames 18/19 (fill). The viewer replays
+  the normal state as one `loading-window` entry with a page per map
+  (296/297/410/512/532; 645 洱海绝境 / 709 林海绝境 dropped for now):
+  `Handle_Traffic` and `Handle_PakV4Msg` hidden (the traffic bar and the PakV4
+  download tips only appear while the client streams resources), `Image_Bg`
+  full-bleed (cw+4 x ch+2 at -3,-1) on a 1280x720 canvas, progress bar at
+  (10% w, 89.4% h) = (128,644) with a 912px fill, message handles at (128,646),
+  tip panel at (655,115) — all from `CorrectShow`; renders
+  `proof/ui/evidence/loading_panel_296_render.png` and
+  `loading_panel_532_render.png` (2026-09-29). The CDN art is pulled with
+  `tools/netcode/extract_hpkg_member.py` (packages `105/…`, `103/…`, `117/…`,
+  `51/…`, `108/…`, `111/…`, `100/…`); the viewer's `TextureLoader` decodes
+  PNG/BMP (WPF) in addition to the custom TGA/DDS decoders.
 
 ## 5. Staging (safe zone + countdown)
 
 | item | evidence | status |
 |---|---|---|
-| countdown frame art `UI_黑山绝境_倒计时通用底框.pss` | editor asset (`editor_assets_juejing.txt:72-77`) | PROVEN asset |
-| countdown value source | `OnSyncBFPQInfo` 0x11B → absolute end time → `BattleFieldMap.UpdateTime` h:m:s | PROVEN data path |
-| countdown labels | `STR_PQ_PROTIME` 阶段倒计时： and `STR_PQ_TIMETITLE` 挑战倒计时： (PQ module; mode use inferred), `STR_MAP_QUEUE` 排队中 | PARTIAL (generic PQ labels) |
-| safe-zone state | `STR_SAFEZONE` 安全区, `STR_HATREDPANEL_SAFEZONE` 安全区域 | PROVEN labels |
+| countdown frame art `UI_黑山绝境_倒计时通用底框.pss` | editor asset (`editor_assets_juejing.txt:72-77`); no extracted INI references it (corpus scan) | PROVEN asset, editor/runtime effect only |
+| countdown value source | `OnSyncBFPQInfo` 0x11B → absolute end time (`+0x1b490`) → `GetBattleFieldPQInfo()` 4th return | PROVEN data path |
+| countdown display | the only KGUI consumer is `BattleFieldMap.UpdateTime` → `Wnd_Title/Text_Time` (`STR_BUFF_H_LEFT_TIME_MSG`, decompiled:1578-1627), and `BattleFieldMap.Init` hides `Text_Time` when `IsInTreasureBattleFieldMap()` (decompiled:1352-1359) — true for every 绝境 map (296/297/410/512/532/645/676/677/709/715, `CheckTreasureBattleFieldMap.dump.txt`) | **OPEN — no KGUI renderer in this mode**; engine/PSS or system message |
+| countdown announcements | server system messages observed at T-30/20/10 s (`interface MY#DATA team_mon` countdown entries; interface-addon) | LOW |
+| countdown labels | `STR_PQ_PROTIME` 阶段倒计时： and `STR_PQ_TIMETITLE` 挑战倒计时： (PQ module; mode use inferred), `STR_MAP_QUEUE` 排队中 | PARTIAL (no mode consumer in the extracted corpus) |
+| safe-zone boundary | `BattleFieldMap.InitMapData` shows `Handle_CircleNew` + `Handle_StormLine` and registers `MapCircle` with `SFX_CircleNew` (`C_自己圈范围_677.pss`) for treasure maps (decompiled:5317-5341); engine-drawn, no KGUI image. `STR_SAFEZONE` 安全区 has no extracted consumer; `PROTECT_ZONE`/`ENTER_PROTECT_ZONE` (即将开启安全保护) is account security, not the BR zone | OPEN |
 | staging pose | `龙门绝境_站姿01..05` animation set | PROVEN asset |
 | mode HUD activation | minimap + main bar + BR skill bar appear after load | PARTIAL (activation trigger not proven) |
+
+**Viewer state (2026-10-02):** the countdown display IS a KGUI window after all: `RemainingTimeNotify` (`ui/Config/Default/RemainingTimeNotify.{ini,lua}`, extracted 2026-10-02) — anchored TOPCENTER,0,150; `Open(nSeconds)` renders the remaining time as big `RougeLike.UITex` digit frames (frame = digit 0-9; 剩余时间/秒钟 labels from MapWindow8) with `ROUGELIKE_KILL<digit>.pss` SFX and auto-closes ~5 s. The viewer renders it as `staging-countdown` (30 s sample: digits 3/0, seconds mode). The staging phase also has the mode notice panel `BattleFieldHSLHNotice` (黑山绝境 notices, e.g. 毒蘑菇即将出现/方位提示) and the T-30/20/10 phase announcements, which arrive as system messages and render on `MainMessageLine` (5.8). The safe-zone boundary stays engine-drawn (`MapCircle` + `SFX_CircleNew`).
 
 ## 6. In-match HUD
 
 | UI | evidence | status |
 |---|---|---|
-| BR dynamic skill bar | `DynamicBattleRoyale.{ini,lua}` (default + dynamic boxes, hotkeys) | PROVEN |
+| BR dynamic skill bar | `DynamicBattleRoyale.{ini,lua}` (default + dynamic boxes, hotkeys) | PROVEN — research only; removed from the viewer catalog 2026-09-30 (its window is not part of the product's UI list) |
 | Minimap + BattleField button | `Minimap.lua`, `Btn_BattleField`, `Minimap.ini` | PROVEN |
 | storm circle on minimap | `STR_SETTING210` 小地图增加风暴圈范围提示; `STR_SETTING262` 小地图安全区外警告闪烁及距离提示 | PROVEN labels |
-| battlefield map panel (M) | `BattleField/BattleFieldMap.{ini,lua}`: `Handle_StormLine`, `MapCircle`, `SFX_CircleNew`, heat map, mark/gain/sfx notify events | PROVEN renderer |
+| battlefield map panel (M) | `BattleField/BattleFieldMap.{ini,lua}`: five viewer pages 296/297/410/512/532, each with that map's minimap-pack art; the INI's map-suffixed team/line elements exist only for 512 and 709 (`Handle_Team_<currentMapID>_n` :3324-3358, `Image_CLine_` :3653) so the four other pages hide `*_512_*` + `*709*` and page 512 hides `*709*`; the window hide drops the faction/camp set (浩气盟/恶人谷 tabs, camp commander/OB markers, PK + area counts), the top-bar mode controls (`Wnd_Route` line tabs + `CheckBox_Follow` — the 绝境 line-choose phase; `CheckBox_ShowNum` + `Btn_Refresh` — `CanShowHeatMap` (map.lua:347-371) is true only for 同阵营战场/command mode, never a treasure map), the heat-map grid and the runtime item prototypes (data/map-icon/mark/arrow/event/draw-line/player/teammate templates); the title bar keeps `Btn_Setting` (PopupMenu) + `CheckBox_Minimize` (ExpandFrame); the skin filter ignores `StormLine` art — without that, hiding the heat-map items made `Handle_Map` look like old-skin chrome and the map layer was dropped as a duplicate of `Image_Bg`; `Handle_StormLine`, `MapCircle`, `SFX_CircleNew`, heat map, mark/gain/sfx notify events; only map 512 ships line data (the `Image_CLine_512_*` choice-line ring — shown; the runtime grays/normalizes one line, `ShowLootMode` :3636-3679), the other maps have none so no storm line is drawn; the 圈 is the `SFX_CircleNew` particle (no bitmap) | PROVEN renderer |
 | storm countdown HUD | `STR_TIMEDESERT` 风暴倒计时： | **PARTIAL — renderer not found** (see §8) |
 | remaining players | `STR_LEFTPEELE` 剩余人数： | PARTIAL — same |
 | storm state | `STR_STORM` 风暴, `STR_STORM2` 风暴状态 | PROVEN labels |
-| loot window / pickup | `LootList.lua`, `CanPick` bar text 拾取/打开/操作, `MaxLootRange=5` | PROVEN |
+| loot window / pickup | `LootList.lua`, `CanPick` bar text 拾取/打开/操作, `MaxLootRange=5` | PROVEN — viewer replays the two loot items only (麻布绷带 / 月影沙, no money row) stacked via list clones, `Btn_Sure` = STR_PICK_ALL .. STR_BRACKETS(AUTOINTERACT key) = 全部拾取［F］; names + slot frames use the rarity colors (viewer `fontColor`/`borderColor` overrides, replaying `GetItemFontColorByQuality`/`UpdateItemBoxExtend`); icons come from the UI pak via the `icon.txt` registry (`ui/Image/Icon/System/Drug/...` — 麻布绷带 = icon 6011 `CL_0417_01`, 月影沙 = icon 1321 `medicNew01b`) and are painted on the Box slots; rarities 优良/green2 + 精良/blue2 are provisional (the item table is unreachable) |
 | smart loot / auto-pick | `STR_SETTING195/196/197/199/202` + `STR_SETTING201` (filter rules re-read every entry) | PROVEN settings |
 | buffs/debuffs | `BuffList.lua`, `DebuffList.lua`, `TargetBuff.lua` | PROVEN files |
 | team frames | `Teammate.lua`, `TeamBuff.lua`, `RaidPanel.lua` | PROVEN files |
-| damage/heal/kill stats panel | `PVPShowPanel.lua`: `GetBattleFieldStatistics` + `PQ_STATISTICS_INDEX` (`INJURY`/`HARM_OUTPUT`/`TREAT_OUTPUT`) | PROVEN |
-| kill feed / messages | `MainMessageLine.lua` (SYS_MSG) | PROVEN file, mode use inferred |
+| damage/heal/kill stats panel | `PVPShowPanel.lua`: `GetBattleFieldStatistics` + `PQ_STATISTICS_INDEX` (`INJURY`/`HARM_OUTPUT`/`TREAT_OUTPUT`) | PROVEN — research only; removed from the viewer catalog 2026-09-30 (its window is not part of the product's UI list) |
+| kill feed / messages | `MainMessageLine.lua` (SYS_MSG); the info segments are runtime clones of `Handle_Info`/`Handle_Currency`/`Handle_Money` into `Handle_MainMessage` (addCommom/addCurrency/addMoney) driven by `Table_GetMessageLineList` (`ui/Scheme/Case/MessageLineList.txt`, 29 show/hide rows in 4 groups) + the saved `tShow` (default 网络延迟/时间/WeGame身份码, lua:100-111); `Btn_Settings` opens the numerical panel (OpenNumericalPanel, lua:1630-1657) | PROVEN — viewer replay matches the 5.8 Example capture (网络延迟：100 green, 时间：2026-08-22 00:31:45, 渲染FPS：34 orange, 逻辑FPS：34 orange, titles carrying `STR_COLON`) as five `Handle_Info` clones flowing right (`list flow row`; content-sized item widths via `adjust`); value colors replay the Lua's font switch via the new `fontScheme` text override (`getPingFont` ≤300ms → scheme 105 green2; `getFPSFont` 20-39 → 101 orange2, lua:465-531); the static template blocks hidden; the per-item `Image_HighlightI` plate (Common.UITex frame 4, no Lua driver — engine hover highlight) is dropped from the clones (`hide`), matching the 5.8 GT (no plate behind the items); `Image_Glassmorphism` (770x32, ImageType=16 backdrop blur) is hidden — its plate would overhang the 22-tall bar (GT bar uniform) |
 | streamer-mode banner | `STR_STORM3` 本场有主播玩家参与… | PROVEN label |
 | observer button | `Btn_Observer` + `UpdateObserverButton` (`Minimap.ini`, `Minimap.decompiled.lua:635,3654,7452`) | OPEN (BR gating unknown) |
 | mount/skill buttons from items | dynamic bar handles item skills (133 道具 scripts) | PARTIAL |
+
+**Viewer state (2026-09-29):** every HUD window renders with its shipped art after
+extracting the missing atlases from PakV4 (`RougeLike/NewRougeSkillBar`,
+`PVPUI1/2/3/4/5/16`, `PVPWatch`, `SystemButton`, `Box`, `BlackMarket1`, `JYUi_06`,
+`TeachingPanel7`, `TargetBg`, `Player`, `AssistNewbie`, `DesertStorm3`,
+`RevivePanel`, `Target`, `TopMenu`, `RaidTotal`, `RoomPanel`, `RaidRelated`,
+`Voice1`). The per-window `StringTable=` files the labels need were missing from
+the local extraction and are now committed as UTF-8 copies under
+`ui-process-app/Data/text/ui/Scheme/Case/`: `String_Comman.txt` (MiddleMap),
+`string_PVP.txt` (PVPShowPanel), `string_Novice.txt` (RevivePanel/Teammate),
+`String_RougeLike.txt` (DynamicBattleRoyale), `string_TeachingPanel.txt`.
+State/layout replays: the minimap lens is parked at `Left=-200` in the INI and
+`Minimap.UpdateAnchorCorner` (Minimap.decompiled.lua:1542-1770) puts the TOPRIGHT
+layout at `Wnd_Corner (27,0)` / `Wnd_Minimap (0,32)` / `CheckBox_Switch (205,-2)`
+(inventory `adjust`). The MiddleMap viewer state is a **composite**: the WorldMap
+window is drawn *behind* it — the client calls
+`WorldMap_ShowBehindMiddleMap(false, true)` (MiddleMap.decompiled.lua:22298,
+WorldMap.decompiled.lua:8314-8356), which hides the WorldMap map scroll/list and
+keeps its chrome — so the render takes the WorldMap top band (overlay `show`),
+`Text_Title` 地图, the `Handle_TipsTitle` zone legend, `CheckBox_Footprint`
+神行足迹 and `Wnd_SearchASetting` (`$Placeholder` 城镇或秘境; `WndEdit`
+placeholders now render). On top, MiddleMap replays the translucent
+`MapWindow3/4` bg tiles + `Handle_Map/Image_Map` with the **real map art** (the
+map area is masked by `Handle_Border`'s `ShapTexture`
+`ui/Image/UItimate/UIMask/MapMask.tga` with `AlphaShap=1` — a soft 100x80
+rounded-rect alpha stretched over the 936x764 border, applied by the viewer as a
+container `OpacityMask` so the art feathers into the glass like the capture): the
+map window is the **battlefield map's M-map** (inventory `pages`): `MapList.tab`
+rows 296/297/410/512/532 are the five `BATTLE_FIELD` maps — 龙门绝境,
+龙门绝境·夜, 沧溟绝境, 白龙绝境, 天原绝境 — and each page takes its art from
+that map's minimap pack (`龙门寻宝minimap_mb`, `龙门寻宝_夜晚minimap_mb`,
+`海岛绝境minimap_mb`, `白龙绝境minimap_mb`, `天原绝境minimap_mb`, the same packs
+the loading pages use) and its row label from
+`Table_GetMiddleMap(id).MiddleMap0`. Each pack carries `config.ini`
+(`[middlemap0] image=middlemap.png`, 1024x896, scale/startx/starty),
+`middlemap.png` (2048x1792) and `area.tab`; `MiddleMap.UpdateMapPos`
+(:9263-9320) fits the art preserving the config aspect into `Handle_Map`
+(928x812 = 928/2048 = 0.453; the inset art matches the packs at corr 0.98+).
+The left list is 世界 = `STRING_TITLE_WORLDMAP` plus the map row; the region row
+stays hidden (every battlefield row has Region=0, `UpateRegionBtn` :11989-11995
+returns before showing `Wnd_Region` — the 5.1 capture's 陇右 row is the
+world-map state); `Wnd_SmallMaps` is adjusted to `(left 0, top 0)` — with the
+region row hidden the runtime list stacks at the container top, right under the
+世界 row (authored `(53,161)` is the parked prototype; left 6 left the map
+crest/text ~6 px right of the row above; the engine's `FormatAllContentPos`
+re-format itself is not reproduced, so the viewer pins the stacked position). `Image_MapLogo` is adjusted to top 4: the authored top
+-6 draws the crest ~10 px above the capture, which centers it on
+`Text_SmallMap` (box correlation +11 px before, +0 after; capture
+`proof/minimap/screenshots/5.1 Example.png`, 2026-09-30 measurement — the
+viewer's static item layout does not reproduce the runtime row placement). The
+selected 龙门荒漠 row shows `Image_BgSelect` (`MapWindow6` frame 7 — its ink
+RGB (93,131,103) matches the capture's bar (91,118,100), not the normal frame
+33's (50,95,88)), so the viewer hides `Image_BgNormal`/`Image_BgOn` and places
+`Image_BgSelect` at top 5 (authored -5 puts the bar's bottom edge 10 px above
+the capture's — same runtime row-placement fit as the crest); the row highlight
+bar now aligns at +3/+1 px like the rest of the list (strip corr 0.68→0.94). The battlefield packs ship no NPC filter data: all five
+`minimap/npc.tab` are empty (0 bytes) and there is no `doodad.tab`, so
+`UpdateNpcDoodad` (:5978-6043, `g_tMapNpcTitle`/`g_tMapDoodad` in
+table_defs_dynamic.lua) appends nothing — the viewer replays no NPC rows (the
+5.1 capture's ten rows 地图内交通 … 碑铭 and its 跨地图交通/其他商人 checks are
+the *world* map 龙门荒漠's 33-row `npc.tab` and the player's saved StorageServer
+`MiddleMap_SelectNpc` filter — world state, not the battlefield; the same
+`Image_NpcOption` frame 0 checked / 4 unchecked mapping applies when a page
+ever carries rows, :501-504). The trunk rows
+(`Handle_NpcTrunk`/`Handle_CraftTrunk`, cloned from `Handle_Mode` by
+`UpdateAreaOrNpcList` :5660-5705) are hidden on the battlefield pages — an empty
+list shows no title, and the packs carry no rows (the 5.1 capture's world state
+shows them because its 龙门荒漠 pack has rows). When a page carries rows the
+trunk art is the `Image_ListBg1`/`Bg2` eye (`MapWindow6` frame 32 open / 35
+closed; `UpdateAreaOrNpcTruckState` :4501-4592 swaps them with the expand
+state), with the authored-visible `Image_ListCover` (frame 30 magnifier) and
+`Image_Minimize` hidden (list-template `hide`). The NPC list's scrollbar
+(`Scroll_List`) is hidden as well — the capture shows no scrollbar (its list
+fits; ours is empty). `Image_Search` is rendered diced (`adjust imageType 10`): the
+client draws the 20x20 `Common` frame 0 box art with 1 px borders although the
+INI omits `ImageType`; the stretched render showed a 13 px left/right band (the
+"extra dusted area"), the capture 1 px. Also replayed: the 标记设置
+button and the scale/alpha sliders, plus the window placement and tab state the
+capture shows: the MiddleMap window sits 27 px below the WorldMap band
+(inventory `offsetY`; the WorldMap stays at the client top — the capture's 地图
+tab underline is at y=113, the list/bottom bar/art all ~+27 vs the authored
+positions, and a high-pass alignment against the capture now leaves ≤2 px
+residuals on the list/tabs/search/title/rows near the window origin), the NPC
+title row is 43 px tall
+at runtime (inventory `adjust Handle_Mode`; the authored 54 is the editor
+height — the capture's panel rows land at y=228.6/266.9, ours 229/267),
+`CheckBox_MapPage` is checked (`images.checked`; the capture paints
+the selected frame and the script calls `Check(true)` :20817/20942) and
+`CheckBox_ExplorePage` is hidden (the script hides it when
+`GetMapExploreInfo(mapID)` is empty :3920-3958; the capture shows no 探索 tab).
+Measurement note (2026-09-30): the capture's MiddleMap content is ~0.64 % (x) /
+0.72 % (y) larger than the design-size render — a least-squares fit over 16
+feature patches gives `dx = 0.0064·x + 2.4`, `dy = 0.0072·y − 0.7` (the
+screenshot's UI scale is ≈1.8145, not the 1.8021 used in earlier passes), so
+residuals grow with x/y (≈ +3 px at the left list, +10 px at the right panel);
+per-element checks must correct for the scale before calling an offset real.
+`WndContainer_GFInfo` (GF counters + heat
+toolbar) is hidden: `UpdateHeatMapState` hides it when `CanShowHeatMap()` is
+false (:25045-25081) and the reference capture shows no toolbar. Only the parked
+data-marker layers (person/teammate, born/treasure/event marks, draw/storm lines,
+area name, traffic, quest/NPC marks), the command-mode/quest-filter subtrees and
+the script-locked widgets (`Wnd_CommandMap`, `CheckBox_QuestPage`, `Btn_Close`,
+`WndContainer_HeatMapDetail`) stay hidden (2026-09-29). The viewer supports
+table-driven labels/lists (`TextOverride.Table*`, `ListTemplate.RowSources` over
+the UTF-8 table copies in `ui-process-app/Data/table/`). Render sheet:
+`proof/ui/evidence/hud_windows_render.png`. Audit after the pass: 15
+placeholders — all authored `Image no Image` elements filled at runtime from
+player/engine data (`Image_Map`, `Image_School`, `Image_NPCMark`,
+`Image_innerPower`, `Image_inSchool*`) — and 0 unresolved ids. Open: the
+Teammate slot stack (five `PosType=10` frames at one spot; the stacking rule is
+not decoded yet).
 
 ## 7. Death / revive / settlement / exit
 
@@ -114,10 +287,13 @@ for 296/297/410/512/532/645/709 (`proof/netcode/mode_ui/loading/*`, `JX3_MODE_UI
 |---|---|---|
 | 濒危 / 受重伤 | `STR_NEAR_DEATH` 濒危 (`string_PVPAcount.txt`), `STR_BF_DEAD` 受重伤 | PROVEN labels |
 | revive | `STR_REVIVE_NO` 复活点复活 (`NewSkillPanel.ini` — generic skill panel consumer); C→S `DoPlayerReviveRequest` 0xB9; 冰封复活 31507 | PARTIAL |
-| settlement panel | `PVPShowFinal.{ini,lua}` + `PVPShowFinalL/R.ini`: registers `BATTLE_FIELD_SYNC_STATISTICS`, rows Name/Kill/Damage/Health/NearDeath, opens with `ApplyBattleFieldStatistics` | PROVEN |
+| settlement panel (viewer entry removed 2026-10-01 per user) | `PVPShowFinal.{ini,lua}` + `PVPShowFinalL/R.ini`: registers `BATTLE_FIELD_SYNC_STATISTICS`, rows Name/Kill(击伤)/Damage(伤害量)/Health(治疗量)/NearDeath(濒危), opens with `ApplyBattleFieldStatistics` | PROVEN — viewer replays the battlefield (mode) variant: 左方/右方 headers (STR_PVP_PLAYER_TEAM_NAME_L/R), 将在30秒后传出战场 (STR_BATTLEFIELD_BANISH), 离开战场 (STR_UISET_BFCENCEL), 3 sample rows/side with 万-formatted stats (the authored prototypes carry editor test values); the arena tournament titles (PVPUI7 frames 1/9) + arena score images stay hidden (InitPanel shows them only for the arena mode) |
+| treasure final (ACC_TreasureFinal) | `ui/Config/Default/BattleField/ACC_TreasureFinal.{ini,lua}` (PakV4; found via `ui/module_info.xml` module manifest, NOT in the old dictionary corpus — recovered 2026-10-01): the 绝境/寻宝 battlefield final, 1920x700; title band `Text_Rank` = `FormatString(STR_TREASURE_RANK 队伍排名：<D0>/<D1>, nRank, nTotal)` + badge `Image_Title`/`Handle_Rank` `Image_Num1/Num2/Image_Ming` from `Table_GetTreasureInfoTitle`, rank 1-3 plays `Handle_SFX` copper/silver/gold; `Handle_FinalList` rows clone `Handle_Player` (my-team members, `GetMyTeamMemberData` sorted by field 12), `TemplateGetRowData` maps Name→`Text_PlayerName`, DECAPITATE_COUNT→`Text_KillNum`, KILL_COUNT→`Text_XSNum`, BEST_ASSIST_KILL_COUNT→`Text_BestZGNum`, HARM_OUTPUT→`Text_HarmNum`, SPECIAL_OP_3→`Text_JJFenNum`, SPECIAL_OP_6→`Text_ResultNum`, per-row `Handle_Reward` (AWARD_1/2/3, `FormatRewardText` = `GetFormatImage("ui/Image/UITga/DesertStorm.UITex", n)` + count); `Text_Time` = STR_BATTLEFIELD_TIME_USED, `Text_WarningTime` = STR_NEW_BANISH_1..2 + countdown, `Btn_Leave` → `LeaveALLBattleField` (STR_UISET_BFCENCEL), `Btn_Export` → `ExportData` (STR_FACELIST_DAOCHUMIANJU, STR_CONTENST_INFO_EXPORT_SUCCESS), click → `Wnd_PersonCard` (PersonalCard_ShowData) | PROVEN — viewer renders the shipped INI: the table keeps its authored position, rows clone Handle_Player with placeholder samples in the window's real formats (`Text_Line` is the authored `/` so Text_KillNum+Line+XSNum read as the 击/助 pair, `Text_BestZGNum` = 最佳助攻, `Text_HarmNum` is 万-formatted, `Text_JJFenNum` = 本场表现分, `Text_ResultNum` = 个人评分结算), the rank badge keeps the INI's authored digits (第18名) with the matching `Text_Rank` 队伍排名 text, and the PVPUI12 chrome (LockShowAndHide=1) stays off. Sample values are placeholders, not a capture replay; the left personal-card popup (Wnd_PersonCard / PersonalCard_ShowData) is out of scope. The window has no opaque background art (only the semi-transparent veil Image_Bg1 + row bands over the live game world), so the viewer composites it over a neutral backdrop (`backdrop` #33393E) and, with the card column out, the table block is centered on the window (Handle_Titile 403, Handle_FinalList 415). Capture re-check (7.1 Example, downscaled 1/1.73): button labels render with the engine's WndButton NormalFont, not the child Text scheme (Btn_Leave 3 = 16px white, Btn_Export 18 = 15px white; the authored 28/27 are copy-paste leftovers), the countdown is the runtime three-segment append (257/258/257, seconds yellow2), the 击/助 pair packs tight via AutoSize=1 + PosType 9, and 导出数据 is hidden per the user's call (the capture shows it, white and underlined by the button art). The window is a full-screen overlay centred on the screen (editor root at (screen-window)/2), so the viewer renders it in a 1920x1080 screen frame (`screenWidth`/`screenHeight`) with the window centred on the neutral backdrop. |
+| battle-end settlement (EndOfBattle; viewer entry removed 2026-10-01 per user) | `ui/Config/Default/EndOfBattle.{ini,lua}` + `ui/scheme/case/string_EndOfBattle.txt` (PakV4, NOT in the old dictionary corpus — recovered 2026-10-01): 攻城/阵营 battle result, 1224x592; `EndOfBattle.Open(t)` takes tMainWarInfo/tSneakWarInfo + tMoney/bCanReceiveReward/nContribution; two pages (主战场/奇袭战场 via CheckBox_MainBattlefield/ViceBattlefield); 浩气/恶人 camp scores (Handle_HaoQiInfo/Handle_EReniInfo, Text_JiFen1/2); 战斗信息 rows (Handle_List1, Handle_Item clones from g_tTable.EndBattle: Text_Type_1/2, Text_Num_1/2, Text_Jifen_1/2) and 成就信息 rows (Handle_List2); per-camp totals (Handle_Total); 奖励预览 (HandleAward1-3: 战阶 x100000 / 威名点 x10000 / 帮会奖励, STR_MINGJIANBI 名剑币) | PROVEN — viewer renders it (new catalog window); the INI's case-differing twins (`Text_JiFen_1` header vs `Text_Jifen_1` row) crashed the first attempt and are now handled by reference-keyed element tracking (UiLayout.ElementsByRef); sample record rows are clones (prototype hidden) |
 | settlement labels | `STR_JIESUAN_TITLE` 结算, `STR_SHOW2` 个人评分结算, `STR_BF_*` (击伤/协助击伤/伤害量/治疗量/威望/奖励金钱/经验), `STR_FBLIST_DUIYUANMINGZI` | PROVEN |
 | settlement art | `UI_黑山结算_折戟沉沙.pss` | PROVEN asset |
-| leave | `STR_BATTLEFIELD_MENU_LEAVE`, `STR_BATTLEFIELD_LEAVE_QUEUE`, `LEAVE_BATTLE_FIELD` events | PROVEN |
+| exit confirm (ExitPanel) | `ui/Config/Default/ExitPanel.{ini,lua}` (PakV4): client exit/return confirm, 420x108 anchored TOPCENTER,TOPCENTER,0,360 (ShowModeID 27,26,24,22,12,36). `OpenExitPanel(szReason)` sets `Text_ExitGame` from g_tStrings: close -> `EXIT_QUIT` 你确定要退出游戏吗？, loginclose -> `EXIT_LOGIN_QUIT`, returntologin -> `EXIT_RETURN_LOGIN` 你确定要返回到登录吗？, returntorole -> `EXIT_RETURN_CHOOSE` 你确定要返回到角色选择吗？; Btn_Sure (确定, STR_SURE) exits / ReInitUI, Btn_Cancel (取消, STR_CANCEL) + Esc/Enter close. `Image_Back` is a runtime full-screen dimmer (UpdateBgImageSize sizes it to the client) and stays off in the static render; the runtime message is centred in its box and the icon moved to its left edge (`adjust hAlign=1`, `Image_Warning left=124`; a viewer interpretation - the shipped HAlign=0 + icon-glued 241px box leaves every reason left-hugging and the authored icon at 76 assumed a full-width message). Viewer: `leave-menu`, cn 退出游戏 | PROVEN |
+| battlefield leave labels | `STR_BATTLEFIELD_MENU_LEAVE`, `STR_BATTLEFIELD_LEAVE_QUEUE`, `LEAVE_BATTLE_FIELD` events | PROVEN labels |
 | rewards / rank recap | `STR_BF_REWARD/MONEY/EXP/PRESTIGE`, `MultipleRankPoint*`, `DoGetBFRankRequest` | PROVEN labels/handlers |
 
 ## 8. Missing renderers (the hunt list)
@@ -126,7 +302,9 @@ for 296/297/410/512/532/645/709 (`proof/netcode/mode_ui/loading/*`, `JX3_MODE_UI
    144-file dictionary corpus; not in `JX3UIX64.dll` string scan; no extracted Lua
    references `STR_TIMEDESERT`/`STR_LEFTPEELE`. Candidates: a PakV4 `ui/Config/...` Lua
    panel whose path was never extracted, or a native/Compose window.
-2. **Ready prompt** (`STR_PVP_Ready`).
+2. **Ready prompt** — solved: the queue pop uses the generic MessageBox
+   (`MB_entermap`, §3); `STR_PVP_Ready` (准备好了) is a distinct label with no
+   extracted consumer yet.
 3. **Observer/spectate UI** (BR-specific or arena-only).
 4. **Death/revive overlay** for the BR mode.
 5. **Airdrop / kill-feed specifics** (`KMapMark` types exist; the labels are not located).
@@ -304,16 +482,20 @@ These were validated against the shipped data while building the WPF renderer:
     `CheckBox_MapPage` frame override hack is gone with the fix
     (`MapWindow6.UITex` group 34/33/87 = frames 39/4/38 = unchecked/checked/
     hover tab art).
-17. **Script-set labels and ids missing from the extracted tables.** The mode
+17. **Script-set labels come from the window's own string table.** The mode
     tab handlers set `Handle_Total/Text_SkillTitle` per mode (lua:4453-4573;
     五人模式 → `STR_DESERTSTORM_TITLE`) and `UpdateOpenTime` sets
     `Text_TIP_DSTime` (lua:4350-4372; `STR_DSOPEN_TIME`/`STR_DSOPEN_WEEKTIME`).
-    Those ids are absent from the extracted PakV4 tables, so
-    `Engine/Strings.cs` aliases them to the equivalent shipped strings that
-    match the live client screenshot: `STR_DESERTSTORM_TITLE` →
-    `STR_BATTLE_SHAMOT` (绝境战场), `STRDES_TIME`/`STR_DSOPEN_TIME` →
-    `STR_AREAN_DSTIP` (每日12:00至次日凌晨1:00开放). The inventory `texts`
-    field replays the Lua's `SetText` calls onto the static render.
+    Those ids live in the window's declared `StringTable=
+    ui\Scheme\Case\string_ArenaCorpsPanel.txt` (NewBattleFieldQueue.ini), which
+    the local extraction lacked — extracting it from PakV4 resolves 绝境战场,
+    每日12:00至次日凌晨1:00开放, 个人评分, 单场奖励, 随机地图, 技能平衡,
+    绝境殊影/排名信息/快捷组队 etc. The app loads it through the committed
+    UTF-8 copy `ui-process-app/Data/text/ui/Scheme/Case/string_ArenaCorpsPanel.txt`
+    (`Engine/Paths.cs` merges `Data/text/ui/Scheme/Case/*.txt` after the local
+    extraction, first id wins). `Engine/Strings.cs` keeps its aliases only as a
+    fallback for snapshots without that table. The inventory `texts` field
+    replays the Lua's `SetText` calls onto the static render.
 18. **Live reference screenshot.** `proof/minimap/screenshots/Screenshot-given-1.png`
     is the live client's 五人模式 idle queue window. Besides the visibility
     rules above it pins: the 4-tab strip (乱武模式 676 dropped by
@@ -398,7 +580,36 @@ These were validated against the shipped data while building the WPF renderer:
     client; the INI's authored `STR_WEIMINGDIAN_GET` renders as
     `本周还可获得<1010>` (inline icon) before the script runs. The inventory
     overrides `Text_FeiShaLingAvailable[_K/_S/_T]` with the formatted sample so
-    the static render matches the reference. The tab badges
-    (`Image_AnniversaryIcon1/2/3`) are left hidden: `UpdateAnniversaryTabIcon`
-    sets their atlas+frame from live activity data (the reference shows 赛季 art,
-    the INI default is 周年).
+    the static render matches the reference; it also overrides the
+    player-data labels `Text_PersonalScore` (1873) and `Text_FeiShaLing`
+    (10000/10000, `UpdatePersonalScore`/`UpdateFeiShaWandNumber` read live role
+    data) with the reference screenshot's values.
+25. **Runtime image swaps are replayed through the inventory `images`.** The tab
+    badges (`Image_AnniversaryIcon1/2/3`) are `LockShowAndHide=1` and
+    `UpdateAnniversaryTabIcon` (lua:6506-6553) sets their atlas+frame from
+    `ActivityBenefitMgr` data; the INI default is frame 21 of
+    `PartnerTeam.UITex` (周年), while the reference screenshot shows the 赛季
+    art (frame 23, verified by dumping the atlas frames). The queue inventory
+    shows the three ids and overrides their frame to 23 (`ApplyImages`), which
+    is what the reference state pins.
+26. **Runtime message bodies are appended, and anchors honour `AnchorDst`.**
+    The MessageBox module never draws its body from the INI: it calls
+    `handleMsg:AppendItemFromString(text, 18)` and fills only the option labels.
+    The inventory `appends` field injects the authored text into the list handle
+    (`ApplyAppends`, optional `top` spacer because list items ignore authored
+    offsets), and the option texts come from `texts`. `AnchorArgs` sections that
+    also carry `AnchorDst` (e.g. the MessageBox ornaments →
+    `../Image_Bg`, `Btn_Close` → `root`) align against that target's rect, not
+    the direct parent's; the renderer resolves the named section when its
+    absolute rect is already known and otherwise keeps the parent fallback.
+27. **The MessageBox sizes to its content.** `MessageBox.lua` (lua:829-842)
+    sets `handleMsg` width to the body text extent, the option row to
+    `max(option button width * n + 40 + (n-1)*10, body)`, Wnd_All to the flex
+    content (+20 height via `StretchAnchorArgs`) and Image_Bg to the flex content
+    +56 (the 28px overhang on each side of the window). For the 2-option queue
+    prompt (`确定(30)` / `取消`, body 你要传送到"龙门绝境"地图吗？ = 205px):
+    content 226x83 → window 226x103, panel 282x103, buttons at x=20/118 (10px
+    gap), `Btn_Close` and `CheckBox_Msg` hidden (`bShowClose`/`tCheckBoxConfig`
+    unset). The inventory replays those values in `adjust`
+    (`ready-confirm`); the corrected render is
+    `proof/ui/evidence/ready_confirm_render.png` (2026-09-29).

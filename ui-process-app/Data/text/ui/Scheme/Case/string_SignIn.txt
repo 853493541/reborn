@@ -1,0 +1,9 @@
+ID	Length	String
+STR_SIGNIN1	10	今日运势签
+STR_SIGNIN2	49	根据运势获得1-4倍奖励，气运条满时，抽签必得鸿运。
+STR_HISTORY	18	您已累计签到<D0>次
+STR_HONGYUN	6	气运值
+STR_HONGYUN_TIP	56	气运值越高天降鸿运的触发概率越大，触发天降鸿运后气运清空
+STR_SIGNIN	8	每日签到
+STR_Title	6	花萼楼
+STR_SHOWTIP	16	天降洪福概率获得

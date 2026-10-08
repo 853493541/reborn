@@ -1,0 +1,11 @@
+ID	Length	String
+STR_TEXT01	8	任务详情
+STR_TEXT02	8	任务流程
+STR_TEXT03	10	等级要求：
+STR_TEXT04	10	组队人数：
+STR_TEXT06	10	活动时间：
+STR_TEXT07	6	提示：
+STR_TEXT08	8	额外奖励
+STR_TEXT09	28	完成前置任务后方可开启本任务
+STR_TEXT10	8	核心目标
+STR_TEXT11	8	额外奖励

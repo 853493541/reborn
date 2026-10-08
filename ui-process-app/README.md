@@ -28,15 +28,15 @@ extracted INI, writes `ui_process_selftest.txt` next to the exe):
 UiProcessApp.exe --selftest
 ```
 
-Current selftest: **15/15 windows rendered**, e.g. NewBattleFieldQueue 1,129
-sections / 1,016 elements, BattleFieldMap 367 sections.
+Current selftest: **1,240/1,240 windows rendered** (13 BR + 1,223 basic/mode UI + spare),
+e.g. NewBattleFieldQueue 1,129 sections / 1,016 elements, BattleFieldMap 367 sections.
 
 ## What it shows
 
 | pane | content |
 |---|---|
-| left tree | stages (queue → match → loading → staging → HUD → death → settlement → exit) and their windows |
-| Details | summary, status (PROVEN / PARTIAL), evidence list (click `open` to reveal the file), interface elements, key labels |
+| left tree | stages (queue → match → loading → staging → HUD → death → settlement → exit) and their windows (Chinese names; the English window id is the tooltip) |
+| Details | status (PROVEN / PARTIAL), evidence list (click `open` to reveal the file), interface elements, key labels |
 | Layout | the KGUI window rebuilt from its INI with a zoom slider; textures come from `proof/minimap/ui` when that extraction exists |
 | Labels 文案 | every `STR_*` referenced by the window/layout, resolved to Chinese |
 | INI 源码 | the raw layout file |
@@ -46,6 +46,8 @@ Search box filters windows by name/summary/label.
 ### Layout controls
 
 - **Page** — KGUI tab sections (`Page_*`): only the selected tab's content renders.
+  Entries are labelled with the game's own Chinese mode name when the INI authors
+  one (`Page_X` → `CheckBox_X` → its `Text_*` label), otherwise the raw page id.
 - **隐藏 (Hide)** — comma-separated section names whose whole subtree is hidden;
   `Name_*` wildcards are supported. Windows in `Data/ui_inventory.json` may carry a
   default `hide` list (the queue panel hides extra full-window backgrounds and the
@@ -71,18 +73,30 @@ and unresolved string ids are hidden instead of shown raw.
 ## Data
 
 - `Data/ui_inventory.json` — the stage/window/element/label inventory, generated
-  from `docs/netcode/JX3_MODE_UI_INVENTORY.md` (evidence paths included).
-- `assets/ui/Config/**` — extracted KGUI layouts (converted to UTF-8).
-- `assets/ui/Scheme/Case/string.txt` — official UI strings (UTF-8 copy).
-- `assets/pak/**` — settlement panel (`PVPShowFinal*`) + `string_PVPAcount.txt`.
+  from `docs/netcode/JX3_MODE_UI_INVENTORY.md` (evidence paths included). Window
+  entries carry the static state to replay: `texts` (Lua `SetText` / sample
+  values), `images` (Lua `FromUITex` frame swaps), `appends` (Lua
+  `AppendItemFromString` message bodies), `show` (script-shown
+  `LockShowAndHide=1` sections), `hide`, `tabs`, `lists`, `anchors`, `adjust`.
+- `Data/text/**` — committed UTF-8 copies of the game text the renderer loads
+  (system tables + per-window `StringTable=` files such as
+  `string_ArenaCorpsPanel.txt` for NewBattleFieldQueue; see
+  `tools/prepare_ui_text.py`) plus the global `g_tStrings` table decoded from
+  `ui/String/string.lua` (`tools/ui/extract_lua_string_table.py`).
+- `assets/` — git-ignored local extraction: `ui/Config/**` KGUI layouts,
+  `ui/Scheme/Case/**`, `ui/Font/**` shipped fonts, `ui/Loading/**` per-map
+  loading art (CDN `_mb` PNGs via `tools/netcode/extract_hpkg_member.py`),
+  `pak/` settlement INIs and the flat `uitex/` atlases pulled from PakV4. Fall
+  back to `proof/minimap/ui` (and `UIPROC_UI_ROOT`) for art. Textures decode as
+  TGA/DDS (custom) or PNG/BMP (WPF).
 
 ## Notes
 
 - Missing windows (storm HUD `STR_TIMEDESERT`/`STR_LEFTPEELE` renderer, ready
   prompt, death overlay) appear with status PARTIAL and no INI; the hunt list is
   in `docs/netcode/JX3_MODE_UI_INVENTORY.md` §8.
-- Textures for queue/settlement panels were never extracted, so those windows
-  render as layout + text placeholders. Map windows get full art when the
-  git-ignored `proof/minimap/ui` extraction is present next to the worktree.
+- Game art is never committed: queue/settlement atlases are pulled from PakV4
+  into the local `assets/uitex` (flat) or resolve from `proof/minimap/ui` when
+  present; without either, those windows render as layout + text placeholders.
 - Set `UIPROC_APP_ROOT` to point at `ui-process-app` if you move the exe away
   from the repository.

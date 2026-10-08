@@ -122,8 +122,13 @@ is the authoritative list of system files: `ModuleInfo`, `UIConfig`,
 
 92-byte header: magic `UI`, `texWidth@4`, `texHeight@8`, `frameCount@12`,
 64-byte texture name at `@24`; then `frameCount` × 20-byte records
-(`x, y, w, h, flag`); then frame-group records `(count, startFrame,
-intervalMs)` with `(count−1)` extra u32s for multi-frame groups. The texture
+(`x, y, w, h, flag`); then frame-group records: u32 `frameCount` (0 = empty
+group, 4 bytes), otherwise `frameCount` × 8-byte `(frameIndex, intervalMs)`
+entries — the group's start frame is the first entry's index. (An earlier
+reading as `(count, startFrame, intervalMs)` + `(count−1)` bare u32 indices
+mis-parsed multi-frame groups and desynced the whole group table, making
+buttons fall back to their authored `Frame` — fixed 2026-09-30, see
+`docs/EXPERIENCES.md`.) The texture
 is the sibling file named in the header (case-insensitive; `.tga`/`.dds`
 swap accepted).
 
@@ -334,13 +339,30 @@ Note `WndButon` appears as a typo key in some assets; treat case-insensitively
    table. Negative/`-1` appears 403× (`Frame=-1`) meaning "use default"
    (**INFERRED**; semantics to confirm).
 2. Buttons/checkboxes use **group ids** (`NormalGroup`...), resolved through
-   the group table that follows the frame table in the `.UITex`:
+   the animate/group table that follows the frame table in the `.UITex`:
    `startFrame` = the first frame of the group (normal state artwork).
+   **Layout is version-dependent** (verified 2026-10-05 from the engine loader
+   `KGUIX64.dll` `UI::KImageInfoMgr::LoadUITexFile` RVA 0xE9240, symbol
+   `UI::KImageInfoMgr::LoadUITexFile` + `UITEXFILEHEADER`/`UITEXFRAMEDATASTRUCTURE`/
+   `nAnimateCount` strings): the 88-byte header (frame count @0x0C, animate
+   count @0x10, version = header dword 0 >> 16) is followed by n 20-byte frame
+   records, then `u32 count; count × (u32 frame, u32 interval)` per group
+   (count=0 = empty group). **Version 1** frames start at 88
+   (`flag,x,y,w,h`) → groups at `88 + n*20`; **version 2** frames start at 92
+   (`x,y,w,h,flag`) → groups at `92 + n*20`. Reading v1 at the v2 offset
+   desynced 111/131 v1 atlases (HIGH; commit `UI: v1 atlas layout`).
 3. `ImageType` (17 values observed) is the render mode. Verified for map
    windows: `8` = horizontal mirror, `10` = nine-slice ("diced", native
    `BuildDicedImage`/`SetFrameDiecedInfo`/`GetFrameDiecedSize`). Most common
-   values: `0(1209), 10(1046), 11(351), 1(257), 8(138)`. **`ImageType=11`
-   is undecoded; the rest of the enum is UNKNOWN** (`notes/gaps.md`).
+   values: `0(1209), 10(1046), 11(351), 1(257), 8(138)`. **`ImageType=11` =
+   horizontal three-slice** (the caps keep their pixel size, only the middle
+   stretches): the KGUI draw dispatch (`KGUIX64.dll` `0x180117D7C`) groups
+   10/11/12 and 17/18/19 on one diced path, and the queue panel's reward
+   plaque (PVPUI22 frame 11, 48x20 authored 68x20) renders with native caps
+   in the live capture — a plain stretch flattened them so the right cap read
+   as open (verified 2026-10-02; the viewer detects the cap widths from the
+   frame's alpha/color profile, since this atlas ships no diced blocks). The
+   rest of the enum is UNKNOWN (`notes/gaps.md`).
 4. Related keys: `Alpha`, `DisableScale`, `ImagePercent`, `TimeStartAngle`,
    `PivotRotate/PivotScaleX/Y/PivotX/Y`, `Rotate*`, `RenderSampling`,
    `Blur`, `GrayColor`, `ReverseMask`, `R/G/B`, `ShapTexture*`.

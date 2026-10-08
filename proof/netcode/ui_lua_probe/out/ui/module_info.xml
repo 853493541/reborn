@@ -4,6 +4,7 @@
 		<file>\ui\Script\base.lua</file>
 		<file>\ui\Script\time_lib.lua</file>
 		<file>\ui\Script\c_call_func.lua</file>
+		<file>\ui\Script\DataAnalysis.lua</file>
 		<file>\ui\Script\ui_extensions.lua</file>
 		<file>\ui\Script\class.lua</file>
 		<file>\ui\Script\enum_ui.lua</file>
@@ -134,7 +135,6 @@
 		<file>\ui\Script\autowndpos.lua</file>
 		<file>\ui\Script\RemoteCommand.lua</file>
 		<file>\ui\Script\RepresentCommand.lua</file>
-		<file>\ui\Script\DataAnalysis.lua</file>
 		<file>\ui\Script\scroll.lua</file>
 		<file>\ui\Script\preloadimage.lua</file>
 		<file>\ui\Script\npcmodelview.lua</file>
@@ -359,7 +359,7 @@
 
 	<module name="client_scripts3" load="true" layer="2">
 		<file>\scripts\achievement\ItemAcquire_Achievement.lua</file>
-		<file>\scripts\skill\经脉\VerationTable.lua</file>
+		<file>\scripts\skill\缁忚剦\VerationTable.lua</file>
 	</module>
 
 	<module name="client_scripts4" load="true" layer="2">
@@ -368,17 +368,17 @@
 		<file>\scripts\Include\CastleCustomValueName.lh</file>
 		<file>\scripts\HorseSkill\include\HorseMagicInfoToHorseSkillIdLvForUI.lua</file>
 		<file>\scripts\Include\IdentityVisibleType.lua</file>
-		<file>\scripts\Map\天山碎冰谷\include\Match3V3Acount.lua</file>
+		<file>\scripts\Map\澶╁北纰庡啺璋穃include\Match3V3Acount.lua</file>
 		<file>\scripts\Include\JJCCoinFunc.lua</file>
 		<file>\scripts\Include\UIscript\UIscript_FriendsInvite.lua</file>
 		<file>\scripts\Include\UIscript\UIscriptDanmu.lua</file>
 		<file>\scripts\Include\UIscript\UIscript_ChangeSever.lua</file>
 		<file>\scripts\Include\UIscript\UIscript_JoinCamp.lua</file>
 		<file>\scripts\Include\UIscript\UIscript_AutomaticSell.lua</file>
-		<file>\scripts\Map\阵营首领\include\ClientCommanderFunc.lua</file>
-		<file>\scripts\Map\好友系统\include\HelpMapData.lua</file>
-		<file>\scripts\Map\世界通用\include\新版连续签到_data.lua</file>
-		<file>\scripts\Map\天山碎冰谷\include\竞技场开房间data.lua</file>
+		<file>\scripts\Map\闃佃惀棣栭\include\ClientCommanderFunc.lua</file>
+		<file>\scripts\Map\濂藉弸绯荤粺\include\HelpMapData.lua</file>
+		<file>\scripts\Map\涓栫晫閫氱敤\include\鏂扮増杩炵画绛惧埌_data.lua</file>
+		<file>\scripts\Map\澶╁北纰庡啺璋穃include\绔炴妧鍦哄紑鎴块棿data.lua</file>
 		<file>\scripts\Include\UIscript\UIscript_DestroyItemCheck.lua</file>
 		<file>\scripts\Include\UIscript\UIscript_BattleField.lua</file>
 		<file>\scripts\Include\UIscript\UIscript_PhotoGame.lua</file>
@@ -389,15 +389,15 @@
 		<file>\scripts\player\include\Kungfu2ArenaType.lh</file>
 		<file>\scripts\Include\UIscript\UIscript_WulinShenghui.lua</file>
 		<file>\scripts\Include\UIscript\UIscript_BoxLimit.lua</file>
-		<file>\scripts\Map\列星岛\include\CommonFunction.lua</file>
-		<file>\scripts\Map\好友系统\include\ClientData.lua</file>
+		<file>\scripts\Map\鍒楁槦宀沑include\CommonFunction.lua</file>
+		<file>\scripts\Map\濂藉弸绯荤粺\include\ClientData.lua</file>
 		<file>\scripts\Include\UIscript\UIscript_NewTrialValley.lua</file>
 		<file>\scripts\Include\UIscript\UIscript_Lottery.lua</file>
-		<file>\scripts\Map\家园系统客户端\Include\HomelandCommon.lua</file>
-		<file>\scripts\Map\家园系统客户端\Include\Home_LandObjectInteraction.lua</file>
-		<file>\scripts\Map\家园系统客户端\Include\Home_BuildLandObjectModels.lua</file>
-		<file>\scripts\Map\家园系统客户端\Include\Home_MiniGameCommonFunction.lua</file>
-		<file>\scripts\Map\家园系统客户端\Include\Home_BuildReplaceableModels.lua</file>
+		<file>\scripts\Map\瀹跺洯绯荤粺瀹㈡埛绔痋Include\HomelandCommon.lua</file>
+		<file>\scripts\Map\瀹跺洯绯荤粺瀹㈡埛绔痋Include\Home_LandObjectInteraction.lua</file>
+		<file>\scripts\Map\瀹跺洯绯荤粺瀹㈡埛绔痋Include\Home_BuildLandObjectModels.lua</file>
+		<file>\scripts\Map\瀹跺洯绯荤粺瀹㈡埛绔痋Include\Home_MiniGameCommonFunction.lua</file>
+		<file>\scripts\Map\瀹跺洯绯荤粺瀹㈡埛绔痋Include\Home_BuildReplaceableModels.lua</file>
 		<file>\scripts\MiniGame\Mahjong\xueliuchenghe\IdentityCustomValueName.lua</file>
 		<file>\scripts\MiniGame\Mahjong\xueliuchenghe\xueliuchenghePlayerMgr.lua</file>
 		<file>\scripts\Include\UIscript\UIscript_MeiRenTuData.lua</file>
@@ -4601,7 +4601,7 @@
 	</module>
 
 	<module name="GooseDuckKill" type="lib" load="true" layer="2">
-		<file>scripts\Map\ACT_三方杀\Include\三方杀_def.lua</file>
+		<file>scripts\Map\ACT_涓夋柟鏉�\Include\涓夋柟鏉�_def.lua</file>
 		<file>\ui\Script\common\GooseDuckKill.lua</file>
 	</module>
 
