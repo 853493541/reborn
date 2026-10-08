@@ -8461,6 +8461,15 @@ if the cache/host frames appear.
   world-projected floating numbers (no projection API); the Lua 5.1 VM for the 32 `-`
   (mostly no-op) abilities.
 
+### 2026-10-08 — v6 — panel UI: +30% icons, default open, top occluded fix
+
+- **Did:** AbilityPanel icons 28→36 px (+30%); P panel opens by default (`RC_PANEL_OPEN` default
+  `1`); `SetWindowPos(HWND_TOP)` on show so the panel's top sits above the engine child window
+  (not occluded); height clamped to the client area.
+- **Verified:** run without `RC_PANEL_OPEN` → `ability panel: 154 entries, 154 icons`; 65076
+  casts. Proof `proof/netcode/skillv6_panel_ui_20261008.txt`. Gates: jx3_model 10 PASS,
+  gravity PASS, loot selftest PASS.
+
 ### 2026-10-08 — v6 — abilities verified (batch 7, partial)
 
 - **Verified (run interrupted):** 65108 (dispel buff-=8), 65109 (child 65110;65111;65112), 65118

@@ -1,0 +1,10 @@
+# skill v6 — panel UI: +30% icons, default open, top not occluded (2026-10-08)
+# Build: reborn_client_skillv6.exe
+# Changes:
+#  - AbilityPanel icons 28 -> 36 px (+30%).
+#  - P panel opens by default (RC_PANEL_OPEN default "1").
+#  - SetWindowPos(HWND_TOP) on show so the panel's top is above the engine child window
+#    (not occluded); height clamped to the client area.
+
+## Verified: run WITHOUT RC_PANEL_OPEN -> "ability panel: 154 entries, 154 icons"; 65076 casts.
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

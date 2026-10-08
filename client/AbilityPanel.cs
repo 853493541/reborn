@@ -77,8 +77,8 @@ internal sealed class AbilityPanel : Form
             string[] r;
             if (!rows.TryGetValue(id, out r)) continue;
             var pb = new PictureBox();
-            pb.Size = new Size(28, 28);          // 30% smaller than 40
-            pb.Margin = new Padding(1);
+            pb.Size = new Size(36, 36);          // 30% larger than 28
+            pb.Margin = new Padding(2);
             pb.SizeMode = PictureBoxSizeMode.Zoom;
             pb.Cursor = Cursors.Hand;
             pb.BackColor = Color.FromArgb(32, 32, 36);
@@ -121,8 +121,12 @@ internal sealed class AbilityPanel : Form
     public void Attach(Form owner)
     {
         Point o = owner.PointToScreen(Point.Empty);
-        int w = ClientSize.Width > 1 ? ClientSize.Width : 300;
+        int w = ClientSize.Width > 1 ? ClientSize.Width : 320;
+        int h = ClientSize.Height > 1 ? ClientSize.Height : 600;
+        int maxH = owner.ClientSize.Height - 48;
+        if (maxH > 100 && h > maxH) h = maxH;
         Location = new Point(o.X + owner.ClientSize.Width - w - 8, o.Y + 40);
+        ClientSize = new Size(w, h);
         if (Owner == null) Owner = owner;
     }
 
@@ -142,6 +146,19 @@ internal sealed class AbilityPanel : Form
     public void SetVisible(bool v)
     {
         Visible = v;
-        if (v) { BringToFront(); if (Owner != null) Attach(Owner); }
+        if (v)
+        {
+            if (Owner != null) Attach(Owner);
+            // keep the panel above the engine child window so its top is not occluded
+            SetWindowPos(Handle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+            BringToFront();
+        }
     }
+
+    [DllImport("user32.dll")]
+    static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+    static readonly IntPtr HWND_TOP = IntPtr.Zero;
+    const uint SWP_NOSIZE = 0x0001;
+    const uint SWP_NOMOVE = 0x0002;
+    const uint SWP_NOACTIVATE = 0x0010;
 }

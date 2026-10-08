@@ -582,7 +582,7 @@ internal static class RebornClient
         // key 1 casts the active ability. Created LAZILY in the frame loop:
         // building WinForms windows before engine init hung the host (2026-10-08).
         AbilityPanel abilityPanel = null;
-        bool panelToggleReq = Env("RC_PANEL_OPEN", "0") == "1";
+        bool panelToggleReq = Env("RC_PANEL_OPEN", "1") == "1";   // default open
         // Loading overlay (D4): WinForms controls sit behind the engine's child window,
         // so the loading text is a separate top-level window; RC_NOLOADING=1 disables.
         LoadingOverlay loading = null;
