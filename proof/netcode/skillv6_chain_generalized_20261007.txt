@@ -1,0 +1,17 @@
+# skill v6 chain generalization (2026-10-07)
+# reborn_client_skillv6.exe; dataset ability_picker/data/cast_chain_f1.tsv (from build_cast_chain.py)
+# RC_ABILITY selects the skill; the chain plays that skill anim + dash-to-target (+ effect via tani)
+
+## reborn_20261007_214925.log
+21:49:25.566 cast chain: 3265 abilities from C:\SeasunGame\MovieEditor\bin64\ability_picker\cast_chain_f1.tsv
+21:49:25.566 cast chain ability: 65029 绝境_龙牙 anim=data\source\player\F1\动作\F1s04tc技能13_龙牙hd.tani fx=data\source\other\特效\技能\SFX\被击\被击_闪光01_龙牙.Sfx bone=S_fxmid
+21:50:07.033 cast chain 65029: target=初级试炼木桩(131) anim=data\source\player\F1\动作\F1s04tc技能13_龙牙hd.tani fx= animMs=1500 fxAt=520 dashTo=(18991,34253)
+21:50:07.093 t=12s fps=283 pos=(18991,962,33861) vy=0 grounded=True blocked=False hits=0 colCalls=180 colBlocked=0 spd=0u/s(IDLE) yaw=-1.57 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=26 cli
+21:50:09.096 t=14s fps=244 pos=(18991,964,34053) vy=0 grounded=True blocked=False hits=0 colCalls=210 colBlocked=0 spd=0u/s(IDLE) yaw=-1.57 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=24 cli
+
+## reborn_20261007_214806.log
+21:48:06.543 cast chain: 3265 abilities from C:\SeasunGame\MovieEditor\bin64\ability_picker\cast_chain_f1.tsv
+21:48:06.544 cast chain ability: 65076 绝境_云飞玉皇 anim=data\source\player\F1\动作\F1s07cj重剑技能11b_云飞HD.tani fx= bone=
+21:48:48.065 t=12s fps=295 pos=(18991,962,33861) vy=0 grounded=True blocked=False hits=0 colCalls=180 colBlocked=0 spd=0u/s(IDLE) yaw=-1.57 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=31 cli
+21:48:50.067 t=14s fps=225 pos=(18991,964,34053) vy=0 grounded=True blocked=False hits=0 colCalls=210 colBlocked=0 spd=0u/s(IDLE) yaw=-1.57 dir=(0.00,0.00) auto=0 vj=(0,0) cmds_unhandled=0() gait=0 mode=joystick ctx='' sprint=0 hitch=17 cli
+

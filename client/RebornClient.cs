@@ -202,44 +202,8 @@ internal static class RebornClient
         // plays the effect through the animation by default; the standalone .Sfx
         // path stays opt-in (RC_LY_FXE=1) until the engine SFX path is wired.
         if (Env("RC_LY_FXE", "") != "1") lyFx = "";
-        // v6 cast-chain dataset (ability_picker/tools/build_cast_chain.py):
-        //   skillId -> name / animTani / effectSfx / effectBone, from the client
-        //   tables (skill_caster + player_animation + skill_result + skill_effect).
-        var castChain = new System.Collections.Generic.Dictionary<string, string[]>();
-        string chainPath = Env("RC_CHAIN",
-            Path.Combine(Application.StartupPath, "ability_picker", "cast_chain_f1.tsv"));
-        try
-        {
-            if (File.Exists(chainPath))
-            {
-                int ln = 0;
-                foreach (string line in File.ReadAllLines(chainPath))
-                {
-                    if (ln++ == 0) continue;
-                    string[] p = line.Split('\t');
-                    if (p.Length >= 5 && p[0].Length > 0) castChain[p[0]] = p;
-                }
-                Log("cast chain: " + castChain.Count + " abilities from " + chainPath);
-            }
-            else Log("cast chain: missing " + chainPath);
-        }
-        catch (Exception e) { Log("cast chain load ex: " + e.Message); }
-        string selAbility = Env("RC_ABILITY", "65029");
-        string selAnimPath = lyAnim, selFxPath = lyFx;
-        {
-            string[] ab;
-            if (castChain.TryGetValue(selAbility, out ab))
-            {
-                if (ab[2].Length > 0) selAnimPath = ab[2];
-                selFxPath = ab[3];
-                Log("cast chain ability: " + selAbility + " " + ab[1]
-                    + " anim=" + ab[2] + " fx=" + ab[3] + " bone=" + ab[4]);
-            }
-            else Log("cast chain: ability " + selAbility + " not in dataset (longya defaults)");
-        }
-        // standalone .Sfx is opt-in: the engine factory is not wired in this host
-        // yet; the tani renders the authored effect by default.
-        if (Env("RC_LY_FXE", "") != "1") selFxPath = "";
+        // v6 cast-chain dataset is loaded after the Log delegate is assigned
+        // (further below) - Log is null before that.
         long lyAnimMs = 1500;
         long.TryParse(Env("RC_LY_ANIM_MS", "1500"), out lyAnimMs);
         long lyFxAt = 520;
@@ -295,6 +259,44 @@ internal static class RebornClient
                 if (logLines.Count > 400) logLines.RemoveRange(0, logLines.Count - 400);
             }
         };
+        // v6 cast-chain dataset (ability_picker/tools/build_cast_chain.py):
+        //   skillId -> name / animTani / effectSfx / effectBone, from the client
+        //   tables (skill_caster + player_animation + skill_result + skill_effect).
+        var castChain = new System.Collections.Generic.Dictionary<string, string[]>();
+        string chainPath = Env("RC_CHAIN",
+            Path.Combine(Application.StartupPath, "ability_picker", "cast_chain_f1.tsv"));
+        try
+        {
+            if (File.Exists(chainPath))
+            {
+                int ln = 0;
+                foreach (string line in File.ReadAllLines(chainPath))
+                {
+                    if (ln++ == 0) continue;
+                    string[] p = line.Split('\t');
+                    if (p.Length >= 5 && p[0].Length > 0) castChain[p[0]] = p;
+                }
+                Log("cast chain: " + castChain.Count + " abilities from " + chainPath);
+            }
+            else Log("cast chain: missing " + chainPath);
+        }
+        catch (Exception e) { Log("cast chain load ex: " + e.Message); }
+        string selAbility = Env("RC_ABILITY", "65029");
+        string selAnimPath = lyAnim, selFxPath = lyFx;
+        {
+            string[] ab;
+            if (castChain.TryGetValue(selAbility, out ab))
+            {
+                if (ab[2].Length > 0) selAnimPath = ab[2];
+                selFxPath = ab[3];
+                Log("cast chain ability: " + selAbility + " " + ab[1]
+                    + " anim=" + ab[2] + " fx=" + ab[3] + " bone=" + ab[4]);
+            }
+            else Log("cast chain: ability " + selAbility + " not in dataset (longya defaults)");
+        }
+        // standalone .Sfx is opt-in: the engine factory is not wired in this host
+        // yet; the tani renders the authored effect by default.
+        if (Env("RC_LY_FXE", "") != "1") selFxPath = "";
         // short visible tag from the exe name: reborn_client_collision.exe ->
         // "collision" (canonical reborn_client.exe -> "canonical"); shown in
         // the window title and the HUD's first line so parallel clients are

@@ -7731,7 +7731,25 @@ if the cache/host frames appear.
   fault is before any per-run log is written (shared engine root / repeated forced
   kills; the documented §2.6 concurrency caveat). Naming the conflicting session:
   `reborn_client_skillv5` PID 39660, started 21:24:11, ns `reborn_client_skillv5.memory`.
-- **Next:** re-verify the generalization with a clean engine root (no other client
+-  **Next:** re-verify the generalization with a clean engine root (no other client
   active), then per-ability dash/spans.
 - Verified: dataset generated + 65029 row matches the represent tables; runtime
   generalization pending the clean-window re-test.
+
+### 2026-10-07 — v6 — generalization verified; the "environment blocker" was a `Log` NRE
+
+- **Root cause of the startup crash (my bug, not the engine):** the dataset loader ran
+  at ~line 205 but `Log` is a **delegate assigned later** (`Log = delegate(...)`, ~line
+  286), so the loader's `Log(...)` calls hit a null delegate → `System.NullReferenceException
+  at RebornClient.Main` (confirmed from the .NET Runtime event; the earlier "shared
+  engine root / unnamed-module AV" reading was wrong — the canonical client proved the
+  engine was fine). Fix: moved the loader block to after the `Log` delegate is assigned.
+- **Generalization verified (driven):**
+  `RC_ABILITY=65076` → `clip → F1s07cj重剑技能11b_云飞HD.tani` (that skill's own anim),
+  `RC_ABILITY=65029` → `F1s04tc技能13_龙牙hd.tani`; both face the target, dash `pos z
+  33861 → 34053` (+200 u), revert to idle at +1.5 s, no crash. Dataset load:
+  `cast chain: 3265 abilities` (unique skillIds).
+  Proof: `proof/netcode/skillv6_chain_generalized_20261007.txt`.
+- **Lesson:** `Log` is not available before its delegate assignment; only reference it
+  after. (The v5 client is untouched.)
+- Verified: both driven runs alive + log; `jx3_model.py` 10 PASS / 0 FAIL.
