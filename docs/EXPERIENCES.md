@@ -5227,7 +5227,10 @@ power-pool values remain undecoded (re-open criteria in the doc).
   cast -> anchor + engine camPos byte-identical across 1963 trace frames spanning
   the whole clip; 太阴指 dash -> anchor/camPos translate with the -960 u dash
   (camYaw/camPitch constant); idle no-cast baseline -> a single campos value for
-  the run. `proof/character/3x_motion/p2_cam_fix_*.txt`.
+  the run; moving baseline (walk, no cast) -> anchor/campos translate with the walk
+  (anchor z 33853.6->36232.7, campos z 33111.2->35875.0) with camYaw/camPitch one
+  value for the whole run (the walk clip's bone motion no longer feeds the camera).
+  `proof/character/3x_motion/p2_cam_fix_*.txt`.
 - Note: the camera yaw/pitch difference vs the earlier runs (4.717/-0.441 vs
   5.110/-0.219) is the user's `custom.dat` change, not the anchor - the states
   build (94c9efa, no C2) shows the same values.
