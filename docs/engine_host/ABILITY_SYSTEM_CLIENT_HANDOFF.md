@@ -18,7 +18,16 @@ MovieEditor `Skill.exe` sandbox line — do not revive it; the target is this cl
 | Tani tag scan | `ability_picker/tools/scan_tani_tags.py` → `ability_picker/data/tani_pss_tags.json` (per ability: tani base `.ani` + embedded `.pss`/`.sfx` paths) |
 
 Controls: **P** = picker panel (scales with the window), **1** = cast selected,
-click an icon = select + cast. `RC_ABILITY=<name>` preselects (testing).
+click an icon = select + cast, **T** = toggle the process-timeline overlay.
+`RC_ABILITY=<name>` preselects (testing).
+Timeline overlay (top-left, compact, opaque, double-buffered): shows the current
+cast — `CAST <ability>  elapsed/total ms`, `step k/n  re-adds  restarts`, the
+live engine `clip=<path>`, the last event, and a time bar with each step's
+authored span (A anim blue / S sound green / D dummy-PSS purple, labelled with
+the duration). The long purple span is the **PSS effect lifetime** (e.g. 龙牙
+`D6240`) while the character animation is the short span (`A1394`); the live
+`clip=` readout shows the engine clip (idle after the anim) — the animation does
+not replay, only the effect continues.
 Diagnostics: `RC_PSS_FOLLOW=move|off|always|jitter` (PSS follow mode; default
 `move` = re-add when the caster moved >32 u), `RC_PSS_SKIP=1` (skip the staged
 PSS dummy — inspect what the tani's own tags render), `RC_CAST_CYCLE=<ms>`
