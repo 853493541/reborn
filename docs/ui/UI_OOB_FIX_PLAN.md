@@ -1,6 +1,8 @@
 # UI out-of-window (oob) fix plan
 
-**Status:** plan for review (2026-10-07). Owner area: `docs/ui/`; viewer `ui-process-app/`.
+**Status:** P0/P1/P3/P4 DONE (2026-10-07); all measured viewer placement bugs fixed
+(`placed-wrong=0`, oob 7,690 -> 6,897). **P2 is the only open item — it needs the reviewer's
+overhang-policy decision.** P5 gates are green. Owner area: `docs/ui/`; viewer `ui-process-app/`.
 **Problem:** the reviewer sees UI components outside the window frame. `--audit` reports
 **oob=7,690** flagged elements, but the number mixes real misplacements with engine-faithful
 overhang and viewer-only false positives, so it cannot be acted on as-is. Goal: make the report
@@ -106,13 +108,18 @@ independent of the viewer's layout math and needs no GT.
   against the engine's PosType/anchor rules (or a GT capture).
 - Acceptance met: stable per-class totals; the file is now a work queue.
 
-**P1 — engine clip/size truth (0.5 session, alongside P0).**
-1. Determine which control classes clip in the engine (WndScroll is confirmed by prior evidence;
-   check WndPage/WndPageSet/WndFrame in the renderer path) and whether the page-set sizes to the
-   frame or vice versa (QuestTraceList/MailPanel cases). Read-only disassembly, RVAs cited.
-2. Confirm the `AutoSize` default for frames/pagesets in `DecodeItem` (struct default) so C's
-   "expected" rect uses the engine's real sizing.
-3. Deliverable: a short evidence note (this doc + `UI_RUNTIME_REPLAY.md` if it changes the shim).
+**P1 — engine clip/size truth — DONE (2026-10-07).**
+- **No general clip property exists.** No `Clip` INI key in the 1,240 shipped INIs; no control
+  `Clip`/`SetClip` in the KGUI strings (only animation clips and clipboard). The only masking keys
+  are `ShapTexture` (1,073), `AlphaShap` (697), `ShapTextureTop/Bottom` (486/486) and `ReverseMask`
+  (129) — alpha masks, which the viewer already applies (MiddleMap's map mask), not hard clips.
+- Therefore **WndScroll is the only hard clipping control** (viewport clip, prior evidence). Frames,
+  pages and page-sets do **not** clip: the remaining `overhang`/`parked` classes are what the engine
+  itself draws (class C). This is why a blanket clip-to-frame fix is rejected — it would hide content
+  the engine shows.
+- `AutoSize` default: the INI decoder (`KUiComponentsDecoder::DecodeItem` 0x1800b86df) writes the
+  parsed value into the auto-size field, and `Width`/`Height` clear it — absent = explicit size
+  (MED). 1,123 root frames carry no `AutoSize`.
 
 **P2 — fix class B + decide the overhang policy (1 session).**
 1. True B is small: a section the script hides (`Show(false)`/`Hide`/`Clear`) that the viewer still
@@ -140,12 +147,15 @@ independent of the viewer's layout math and needs no GT.
 3. Fix each cause against the engine's jump tables/RVAs; re-run the report per cause.
 4. Acceptance: A list empty for the corpus; every fixed cause has a gate + a fingerprint sample.
 
-**P4 — script/page-driven sizing (1 session).**
-1. For the 66 root-sized windows and page-sized windows (QuestTraceList), verify the replay
-   captured the sizing and the viewer applied it. Where the script branch is data-dependent and the
-   stub session cannot reach it, record it as runtime-data-blocked (not a viewer bug).
-2. If a captured `SetSize` is dropped, fix the mutation consumer.
-3. Acceptance: windows whose size the script sets render at that size where captured.
+**P4 — script/page-driven sizing — DONE (2026-10-07).**
+- The root-size consumer works: of the windows whose script sets the root size, every parseable
+  value is applied (BigBagPanel 594x624, etc.). The precise root-`SetSize` set is 10 windows:
+  **6 render exactly at the scripted size**, 4 carry degenerate stub values (Bullet/Teaching
+  0,0; EditBox width -4; Navigator -200,-230) where the viewer keeps the authored/fallback size —
+  a stub-session artifact (the script computed the size from absent session data), not a viewer bug.
+- Page-level `SetSize` (QuestTraceList's `Page_Achi 300x600`) is page content, not a window resize:
+  the window keeps its authored 300x550 and `Image_Bg`'s 300x600 is authored overhang (C).
+- Acceptance met: captured sizes apply; degenerate/absent data is documented, not faked.
 
 **P5 — gates + proof (0.5 session).**
 - Gates: `--selftest` 1240/0/0; `--audit` class totals; replay 1201 OK/1 ERR/9 NOENTRY; census 0;
