@@ -1,0 +1,9 @@
+# skill v6 — 5 more abilities verified (2026-10-08)
+# Build: reborn_client_skillv6.exe
+## Verified (RC_ABILITY=<id> RC_CAST_AT=38000:1)
+#  65153 破军式   Stun  -> cc=Stun
+#  65156 怒海狂涛 Stun  -> cc=Stun + apply buff 682
+#  65028 藏剑决   dmg   -> apply buff 51402 + dmg=14.0
+#  27875 掣转裂胆 Normal-> apply child 15069 + buff 20236
+#  27903 散流霞   Normal-> apply child 27970 + buff 20260 -buff 20259;13986; mechanic buff-=4 child=21144,7276
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
