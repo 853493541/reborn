@@ -5204,3 +5204,14 @@ if the cache/host frames appear.
   engine screenshots come out blank (1609-byte solid frames) -> it breaks the
   render. Reverted. Next: engine-level control of the dummy-model loop (or play
   the PSS through the engine's tag/represent path instead of a dummy model).
+
+### 2026-10-07 - v5 - PSS-loop fix lead: engine `AniLoop` / `dwPlayType`
+
+- Probed MovieEngineCLR.dll: `MovieEngineCLR::KGSceneCLR::AddDummyModel` exists
+  (RTTI string), and the model exposes `AniLoop` and `dwPlayType` (script-binding
+  names). The dummy-model PSS loop (~1.6 s) is therefore an engine `AniLoop`
+  behaviour set at AddDummyModel time; KGModelCLR exposes no setter (the
+  PlayAnimation(pssPath, loop=0) attempt blanked the render). Next probe: find
+  the dummy model object's `AniLoop`/`dwPlayType` field via a native shim (like
+  sfx_shim's model-vtable access) and clear it, or play the PSS through the
+  engine's animation-tag path (once) instead of a dummy model.
