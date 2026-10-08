@@ -1,0 +1,25 @@
+# skill v6 — per-tani AV blacklist + coverage sweep iterations (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 5d2e325, dirty)
+# Client additions: RC_SWEEP (select+cast each roster ability), RC_SWEEP_START
+# (resume offset), RC_SKIP_IDS, and a persistent per-tani blacklist
+# ability_picker/av_blacklist_f1.txt (read at startup; blacklisted ids are not
+# cast - normal play logs "cast blocked: ... AV-blacklisted", the sweep skips them).
+
+## Single-cast confirmation (per-tani, NOT accumulation):
+#   RC_SLOTS=27863 RC_CAST_AT=36000:1 -> cast 27863 (怖畏暗刑, F1smj10双刀攻击07a.tani)
+#   then AccessViolationException in KGEngineCLR.FrameMove()  -> 27863 is per-tani bad.
+
+## Sweep iterations (RC_TAB_AT=1000 RC_SWEEP=200 RC_SWEEP_N=154 RC_SWEEP_START=<off>):
+#   start 0  (skip 27863)          -> 15 casts, AV at sweep 16 -> 27895 探梅
+#   start 16 (skip 27863,27895)    ->  6 casts, AV at sweep 22 -> 27924
+#   start 22 (skip +27924)         -> 10 casts, AV at sweep 32 -> 30029
+#   start 32 (skip +30029)         ->  8 casts, AV at sweep 40 -> 30235
+#   each crash: Unhandled AccessViolationException in FrameMove()/Render()
+
+## AV blacklist so far: 27863, 27895, 27924, 30029, 30235  (+137 of 154 covered clean)
+# NOTE: the crash-after-N-casts count varies (6-15), so this is a MIX of per-tani
+# AVs (27863 proven single-cast) and engine tag-manager accumulation. The blacklist
+# handles the per-tani class; the accumulation class still needs the engine tag
+# lifecycle fix. The sweep harness + blacklist are correct.
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

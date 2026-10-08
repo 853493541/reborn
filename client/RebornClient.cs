@@ -383,11 +383,27 @@ internal static class RebornClient
         }
         long sweepNext = -1;
         int sweepIdx = 0;
+        {
+            int ss;
+            if (int.TryParse(Env("RC_SWEEP_START", "0"), out ss) && ss > 0) sweepIdx = ss;
+        }
         long castReadyAt = 0;   // post-cast cooldown (rapid casts AV the engine tag manager)
         // abilities whose cast AVs the engine (per-tani): skip in the sweep
         var skipIds = new System.Collections.Generic.HashSet<string>();
         foreach (string s in Env("RC_SKIP_IDS", "").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
             skipIds.Add(s.Trim());
+        // persistent AV blacklist (per-tani): ability_picker/av_blacklist_f1.txt
+        try
+        {
+            string blPath = Path.Combine(Application.StartupPath, "ability_picker", "av_blacklist_f1.txt");
+            if (File.Exists(blPath))
+                foreach (string l in File.ReadAllLines(blPath))
+                {
+                    string t = l.Trim();
+                    if (t.Length > 0 && !t.StartsWith("#")) skipIds.Add(t);
+                }
+        }
+        catch { }
         // short visible tag from the exe name: reborn_client_collision.exe ->
         // "collision" (canonical reborn_client.exe -> "canonical"); shown in
         // the window title and the HUD's first line so parallel clients are
@@ -3186,7 +3202,7 @@ internal static class RebornClient
                 skillPressed = false;
                 bool chained = false;
                 TargetEntity ctg = targetSelector.Current;
-                if (ctg != null && !skillCast.Active && now >= castReadyAt)
+                if (ctg != null && !skillCast.Active && now >= castReadyAt && !skipIds.Contains(selAbility))
                 {
                     // v6 full chain: face the target, play the authored anim,
                     // dash to the target while it plays, then the one-shot effect.
@@ -3209,9 +3225,14 @@ internal static class RebornClient
                 }
                 else
                 {
-                    // No target: the ability system requires one. The old FLWS
-                    // (风来吴山) fallback is removed - it conflicted with abilities.
-                    Log("cast: no target - nothing cast (ability system needs a target)");
+                    if (skipIds.Contains(selAbility))
+                        Log("cast blocked: ability " + selAbility + " is AV-blacklisted (per-tani)");
+                    else
+                    {
+                        // No target: the ability system requires one. The old FLWS
+                        // (风来吴山) fallback is removed - it conflicted with abilities.
+                        Log("cast: no target - nothing cast (ability system needs a target)");
+                    }
                 }
                 // The legacy FLWS sound is opt-in only; per-ability sound arrives
                 // with the ability dataset (v5 ability_candidates sound steps).

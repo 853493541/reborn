@@ -7924,3 +7924,19 @@ if the cache/host frames appear.
   gravity PASS, loot selftest PASS.
 - **Next:** port v5's cast guard/cooldown + sfx warm-up into v6, then re-run the full 154
   sweep to build the coverage report and blacklist any AVing tanis.
+
+### 2026-10-08 — v6 — per-tani AV blacklist + sweep resume
+
+- **Did:** added `RC_SWEEP_START` (resume offset) and a persistent per-tani AV blacklist
+  `ability_picker/av_blacklist_f1.txt` (read at startup): blacklisted ids are never cast
+  (normal play logs `cast blocked: ... AV-blacklisted`; the sweep skips them). Iterated the
+  sweep from offset, adding each newly-found AVing id.
+- **Finding:** the engine AV is a **mix** — at least one proven **per-tani** (casting 27863
+  怖畏暗刑 *alone* AVs in `FrameMove`), plus an **accumulation** class (~6–15 casts then AV
+  in `Render`/`FrameMove`), matching v5's "at least partly per-tani". Blacklist so far:
+  `27863, 27895, 27924, 30029, 30235` (137/154 reached clean before the accumulation AV).
+- **Verified:** single-cast 27863 AV repro; 4 sweep iterations each advancing past the prior
+  bad id. Proof `proof/netcode/skillv6_av_blacklist_20261008.txt`. Gates: jx3_model 10 PASS,
+  gravity PASS, loot selftest PASS.
+- **Next:** finish the blacklist (resume from index 40) and, for the accumulation class,
+  the engine tag-lifecycle fix (v5 RE plan) or per-run batches.

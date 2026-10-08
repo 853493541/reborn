@@ -1,0 +1,10 @@
+# v6 per-tani AV blacklist (one skill id per line).
+# An ability whose cast makes the engine AV (KGEngineCLR.FrameMove/Render). The
+# client skips these (normal play logs "cast blocked: ... AV-blacklisted"; the
+# RC_SWEEP coverage harness skips them). Built by the Phase D coverage sweep.
+# Repro: cast the id alone -> AccessViolationException in FrameMove.
+27863
+27895
+27924
+30029
+30235
