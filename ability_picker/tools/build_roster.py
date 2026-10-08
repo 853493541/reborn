@@ -73,6 +73,7 @@ def main():
     cols = ["id", "name", "tani", "effect", "bone", "dash", "castMode", "channel", "icon"]
     tsv = os.path.join(DATA, "roster_f1.tsv")
     with open(tsv, "w", encoding="utf-8", newline="\n") as f:
+        f.write("\t".join(cols) + "\n")
         for r in rows:
             f.write("\t".join(str(r[c]) for c in cols) + "\n")
     with open(os.path.join(DATA, "roster_f1.json"), "w", encoding="utf-8") as f:
