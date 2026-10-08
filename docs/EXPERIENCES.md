@@ -8316,6 +8316,15 @@ if the cache/host frames appear.
   loot selftest PASS.
 - **Open:** the 32 `-` are mostly no-op/template passives; the rest are blocked/large.
 
+### 2026-10-08 — v6 — next 5 abilities verified + negative-damage fix
+
+- **Did:** verified 5 more abilities one-by-one; fixed `SkillDamage.Base` to clamp a missing
+  level table (dmg/rand = -1) to 0.
+- **Verified:** 65146 (Stun + child 65147,65148), 65149 (Charm + buff 28998; dmg=0.0 after fix),
+  65159 (Halt + dmg 2.0), 65024 (apply buff 51293 + dmg 22.8), 27904 (apply child 27995;20067 +
+  buff 13603). Proof `proof/netcode/skillv6_batch2_20261008.txt`. Gates: jx3_model 10 PASS,
+  gravity PASS, loot selftest PASS.
+
 ### 2026-10-08 — v6 — P7 server-spec reconciliation (documented)
 
 - **Did:** recorded P7 in `ABILITY_MECHANICS_PLAN.md`: the v6 ability runtime is a **local

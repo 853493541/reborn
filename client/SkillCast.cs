@@ -177,6 +177,8 @@ internal static class SkillDamage
     public static float Base(string[] row)
     {
         float dmg = Num(row, 3), rand = Num(row, 4);
+        if (dmg < 0f) dmg = 0f;    // missing level table -> no flat damage
+        if (rand < 0f) rand = 0f;
         string ops = row.Length > 11 ? row[11] : "";
         float baseMult = 0f, randMult = 0f;
         string[] parts = ops.Split(';');

@@ -1,0 +1,19 @@
+# skill v6 — next 5 abilities verified + negative-damage fix (2026-10-08)
+# Build: reborn_client_skillv6.exe
+# Fix: SkillDamage.Base clamped a missing level table (dmg/rand = -1) to 0 (was applied as -1).
+
+## Verified (RC_ABILITY=<id> RC_CAST_AT=38000:1)
+#  65146 星罗战意 Stun      -> cc=Stun child=65147,65148
+#  65149 巽方刑   Charm     -> cc=Charm buff+=28998 (dmg=0.0 after fix)
+#  65159 破军斩   Halt      -> cc=Halt dmg=2.0 (dealt)
+#  65024 太极无极           -> apply buff 51293, dmg=22.8 (dealt)
+#  27904 戳极八卦           -> apply child 27995;20067 + buff 13603
+
+## sample
+mechanic 65146 mode=TargetSingle -> 1 target(s) dmg=0.0 cc=Stun child=65147,65148
+mechanic 65149 mode=PointArea -> 1 target(s) dmg=0.0 cc=Charm buff+=28998
+mechanic 65159 mode=CasterArea -> 1 target(s) dmg=2.0 cc=Halt
+apply 65024 -> +buff=[51293]; mechanic 65024 ... dmg=22.8 [script]
+apply 27904 -> child=[27995;20067] +buff=[13603]
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
