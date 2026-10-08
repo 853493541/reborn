@@ -5159,3 +5159,19 @@ if the cache/host frames appear.
   (t_天策龙牙_狼头版.pss, 28 emitters all RepeatTimes=1); the client log plays the
   clip once (reborn_20261007_185745.log). The multiple-looking visuals are the
   authored PSS's staged wolf/claw emitters, not a repeated character animation.
+
+### 2026-10-07 - v5 - timeline UI: compact + double-buffered (flash fix); 龙牙 pose check
+
+- The full-width translucent timeline flickered (a translucent child control over
+  the engine surface repaints the parent). Replaced with a custom
+  `TimelineControl : Control` (UserPaint|AllPaintingInWmPaint|OptimizedDoubleBuffer),
+  opaque background, compact size (560*uiScale, capped to the window, top-left),
+  scaled via `LayoutTimeline()`. Verified by window capture (top-left box, no
+  full width).
+- 龙牙 "animation plays multiple times": captured the character pose over the
+  whole effect (crops montage) - the cast clip plays ONCE (0-1.5 s) then the
+  character IDLES (1.9-4.7 s); the state machine resumes at animUntil (1.55 s,
+  log confirms). The repeated-looking visuals are the authored PSS's staged
+  bursts (a big wolf-head sprite at ~2.4 s + staged shapes), not a repeated
+  character animation. Open: confirm whether the user means the character or the
+  effect; if the PSS effect itself loops, test the engine dummy-animation loop.
