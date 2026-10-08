@@ -30,7 +30,7 @@ machine), used to recreate the runtime model for reborn. Branch:
 | `REBORN_SERVER_SPEC.md` | implementable server+client contract (our own opcodes, rates, AOI, combat) |
 | `SKILL_DATA_RESEARCH.md` | skill scaling (attack %/weapon %/adaptive), dash attributes, tooltip DB, 尺 conversion |
 | `SKILL_DATA_EXTRACTION.md`, `SKILL_MOTION_METHOD.md` | skill/asset extraction methods |
-| `JX3_SKILL_CAST_FLOW.md` | **cast chain** (client truth): select target → cast intent → server → S2C → presentation; worked example **绝境·龙牙 (65029)** |
+| `JX3_SKILL_CAST_FLOW.md` | **cast chain** (client truth): select target → cast intent → server → S2C → presentation; worked example **绝境·龙牙 (65029)**; §7 v6 client impl (hotkey slots keys `1..N` + numbered ability bar, `client/SkillCast.cs`/`AbilityBar.cs`) |
 | `JX3_CAMERA_RESEARCH.md`, `REBORN_CAMERA_SPEC.md` | camera behaviour research + spec |
 | `JX3_MODE_*.md`, `JX3_LOOT_PROTOCOL_LAYOUTS.md` | 绝境 mode loading and loot protocol layouts |
 | `JX3_MODE_JUEJING.md` | 绝境战场 client-side **data map** (static mining: tables, symbols, MapList) |
@@ -69,7 +69,9 @@ machine), used to recreate the runtime model for reborn. Branch:
 `*_net_strings.txt` (binary string dumps), `exports_*.txt`, `imports_*.txt`,
 `disasm/` (annotated transcripts), `c2s_protocol_catalog.tsv`,
 `skill_data/` (scaling/ranges/tooltips/bytecode constants),
-`character_size/` (mesh census), `skill_motion/` (tani motion curves).
+`character_size/` (mesh census), `skill_motion/` (tani motion curves),
+`skillv6_*` (cast-chain driven runs: cast chain, generalization, effect fingerprint,
+6-slot cast + ability-bar render — `skillv6_bar.png`).
 
 Reproduce commands live at the bottom of each doc.
 
