@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-07T06:38:09",
+ "generatedAt": "2026-10-07T17:43:09",
  "cache": "C:\\SeasunGame\\Game\\JX3\\bin\\zhcn_hd\\SeasunDownloaderV2.4\\jx3-web-map-viewer\\cache-extraction\\pakv4-probe\\ability-matcher\\ability-tani-sound-cache.json",
  "count": 383,
  "withTanis": 307,
@@ -190,9 +190,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1scy03气攻击01_九转HD.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1scy03气攻击01.ani",
      "durMs": 816,
-     "n": "基础动画 816ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 816ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -250,9 +250,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1h唐门弩车001b_技能02a_HD.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1h唐门弩车001b_技能02a.ani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -312,9 +312,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s07cj内功重剑18_云栖松hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s07cj内功重剑18.ani",
      "durMs": 1606,
-     "n": "基础动画 1606ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1606ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -502,9 +502,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s18yz凌然天风01.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s18yz凌然天风01.ani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -563,9 +563,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能13_剑破虚空hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能13.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -693,9 +693,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s16lxg技能02a_hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s16lxg技能02a.ani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -753,9 +753,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s01wh针灸16_听风HD.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s01wh针灸16.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -1006,9 +1006,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1smj10双刀buff04_清净心01.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1smj10双刀buff04.ani",
      "durMs": 939,
-     "n": "TEST: play the tani itself - the engine's tag manager spawns the embedded .Sfx tags (engine-own path)"
+     "n": "TEST: play the tani itself - the engine's tag manager spawns the embedded .Sfx tags (engine-own path) | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -1601,9 +1601,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s04sl棍技能18a_扫击蓄力01.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04sl棍技能18a.ani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -1766,9 +1766,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s04sl爪技能12_hd01.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04sl爪技能12.ani",
      "durMs": 1091,
-     "n": "基础动画 1091ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1091ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -2052,9 +2052,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s14bd双刀技能08_01.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s14bd双刀技能08.ani",
      "durMs": 697,
-     "n": "基础动画 697ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 697ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -2108,9 +2108,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s17ytz星相技01_斗转星_悟.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s17ytz星相技01.ani",
      "durMs": 1364,
-     "n": "基础动画 1364ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1364ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -2233,9 +2233,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s16lxg链技能08_hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s16lxg链技能08.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -3232,9 +3232,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s03cy气技能15a_穹窿化生01_悟.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s03cy气技能15a.ani",
      "durMs": 1545,
-     "n": "基础动画 1545ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1545ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -3544,9 +3544,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s15pl伞技能空04c_人雕合一HD.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s15pl伞技能空04c.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -3679,9 +3679,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s04sl技能11_hd01.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04sl技能11.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -3887,9 +3887,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s05qx扇技能18_蝶弄足hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s05qx扇技能18.ani",
      "durMs": 1000,
-     "n": "基础动画 1000ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1000ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -4017,9 +4017,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s17ytz乘灯01.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s17ytz乘灯01.ani",
      "durMs": 1848,
-     "n": "基础动画 1848ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1848ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -4246,9 +4246,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s04sl技能16_hd01.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04sl技能16.ani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -4407,9 +4407,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能15_风来吴山hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能15.ani",
      "durMs": 576,
-     "n": "基础动画 576ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 576ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -4974,9 +4974,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s03cy剑技能13_万剑HD.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s03cy剑技能13.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -5098,9 +5098,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s03cy气技能18_三才hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s03cy气技能18.ani",
      "durMs": 818,
-     "n": "基础动画 818ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 818ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -5199,9 +5199,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s03cy剑技能11b_三环HD.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s03cy剑技能11b.ani",
      "durMs": 1606,
-     "n": "基础动画 1606ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1606ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -5492,9 +5492,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s07cj重剑技能11a_云飞HD.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能11a.ani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -5644,9 +5644,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s03cy气技能13_五方HD.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s03cy气技能13.ani",
      "durMs": 1242,
-     "n": "基础动画 1242ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1242ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -6039,9 +6039,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s03cy剑技能15_人剑合一hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s03cy剑技能15.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -6257,9 +6257,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s01wh点穴13a_兰摧玉折hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s01wh点穴13a.ani",
      "durMs": 1697,
-     "n": "基础动画 1697ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1697ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -6595,9 +6595,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1smj10双刀攻击06b_净世破魔击_月_悟.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1smj10双刀攻击06b.ani",
      "durMs": 1091,
-     "n": "基础动画 1091ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1091ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -7609,9 +7609,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s07cj内功轻剑12_听雷hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s07cj内功轻剑12.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -8332,9 +8332,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1ssl04技能06_hd01.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1ssl04技能06.ani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -8559,9 +8559,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能20_天地低昂hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能20.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -9470,9 +9470,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1stm09针攻击02_孔雀翎_悟.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1stm09针攻击02.ani",
      "durMs": 394,
-     "n": "基础动画 394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -9867,9 +9867,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s04sl爪技能15a_hd01.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04sl爪技能15a.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -10103,9 +10103,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能23_帝骖龙翔hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能23.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -10777,9 +10777,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s04sl爪技能13_hd01.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04sl爪技能13.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -10940,9 +10940,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s04sl爪技能14a_hd01.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04sl爪技能14a.ani",
      "durMs": 636,
-     "n": "基础动画 636ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 636ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -11277,9 +11277,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s04sl爪技能11_hd01.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04sl爪技能11.ani",
      "durMs": 1758,
-     "n": "基础动画 1758ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1758ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -11438,9 +11438,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s04sl棍技能14_hd03.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04sl棍技能14.ani",
      "durMs": 1061,
-     "n": "基础动画 1061ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1061ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -11528,9 +11528,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s04tc技能22_撼HD.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能22.ani",
      "durMs": 939,
-     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 939ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -11840,9 +11840,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s04sl技能12_hd01.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04sl技能12.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -11960,9 +11960,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s01wh技能12_星楼月影hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s01wh技能12.ani",
      "durMs": 1303,
-     "n": "基础动画 1303ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1303ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -12094,9 +12094,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s01wh技能15_春泥HD.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s01wh技能15.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -13040,9 +13040,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s04sl棍技能13_hd01.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04sl棍技能13.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -13421,9 +13421,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能18a_渊hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能18a.ani",
      "durMs": 485,
-     "n": "基础动画 485ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 485ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -13696,9 +13696,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能17_灭hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能17.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -14423,9 +14423,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s04tc技能16_疾HD.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能16.ani",
      "durMs": 1121,
-     "n": "基础动画 1121ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1121ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -15247,9 +15247,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s04tc技能11b_穿云hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能11b.ani",
      "durMs": 1545,
-     "n": "基础动画 1545ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1545ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -15531,9 +15531,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能11a_穿云hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能11a.ani",
      "durMs": 1515,
-     "n": "基础动画 1515ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1515ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -15950,9 +15950,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s05qx剑技能26_绛唇珠袖hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能26.ani",
      "durMs": 1545,
-     "n": "基础动画 1545ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1545ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -17328,9 +17328,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1stm09弩攻击03夺命01_追命箭_悟.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1stm09弩攻击03.ani",
      "durMs": 848,
-     "n": "基础动画 848ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 848ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -17830,9 +17830,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s01wh针灸13b长针hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s01wh针灸13b.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -17989,9 +17989,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能25_雷霆震怒hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s05qx剑技能25.ani",
      "durMs": 1242,
-     "n": "基础动画 1242ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1242ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -18169,9 +18169,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s21ds技能04b.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s21ds技能04b.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -18286,9 +18286,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1s04sl棍技能12_hd02.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04sl棍技能12.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -18897,9 +18897,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能14_鹤归孤山hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s07cj重剑技能14.ani",
      "durMs": 1727,
-     "n": "基础动画 1727ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1727ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -19000,9 +19000,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能12_龙吟hd.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能12.ani",
      "durMs": 1485,
-     "n": "基础动画 1485ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1485ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -19123,9 +19123,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\F1sgb11掌法攻击05b.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1sgb11掌法攻击05b.ani",
      "durMs": 1273,
-     "n": "基础动画 1273ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1273ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,
@@ -19244,9 +19244,9 @@
     {
      "t": 0,
      "kind": "anim",
-     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能13_龙牙hd_狼皮肤.tani",
+     "v": "data\\source\\player\\f1\\动作\\f1s04tc技能13.ani",
      "durMs": 1394,
-     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效"
+     "n": "基础动画 1394ms (播放一次; tani 的 Sfx 标签受引擎版本限制) | 播放 tani: 引擎标签系统渲染内嵌特效 | tani 内嵌 PSS 与 dummy 重复 -> 回退基础 .ani (特效只放一次)"
     },
     {
      "t": 0,

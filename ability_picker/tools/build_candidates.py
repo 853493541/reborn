@@ -376,15 +376,15 @@ except Exception:
     pass
 
 
-# OFF (2026-10-07, pending user verification): when the staged dummy PSS is
-# also carried by the matched tani, playing the tani makes the engine spawn it
-# a second time (tag instance). The tag instance is what renders the authored
-# early burst (verified: without the dummy it still bursts, then dies with the
-# animation); the dummy is the long tail. Removing the tani loses the authored
-# burst, so this stays off until the user confirms the duplicate is the
-# "effect replays" report. Flip to True to play the base .ani for those
-# abilities (single PSS source, no authored burst).
-AVOID_TANI_PSS_DUP = False
+# ON (2026-10-07): when the staged dummy PSS is also carried by the matched tani,
+# playing the tani makes the engine spawn the same PSS a second time (tag
+# instance) next to the dummy -> the effect plays from two sources ("effects
+# replay wrong" report, 58 of 61 dummy-carrying abilities). The game's own
+# process is the tani alone; with the dummy kept as the long visible layer
+# (user directive), the tani is dropped for those abilities so the PSS plays
+# once (base .ani + dummy). The tani's partial .Sfx sparks/trail are lost for
+# them; re-open if a fuller authored burst is required.
+AVOID_TANI_PSS_DUP = True
 
 
 def _base_name(p: str) -> str:
