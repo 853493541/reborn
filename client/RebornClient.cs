@@ -809,6 +809,36 @@ internal static class RebornClient
                 // modules (host cwd = MovieEditor) so the E_FAIL can be
                 // attributed: module missing vs device missing.
                 Log("watersim: flex preload " + FlexProbe.Preload());
+                // RC_WATERSIM_DBG=1: the CLR EnableFluxWaterSimulation does an indirect
+                // call through vtable slot +0x380 of m_pScene (IL: ldfld m_pScene;
+                // ldind.i8; +0x380; ldind.i8; calli). Log the actual function pointer
+                // so the failing native function can be mapped to a module RVA.
+                if (Env("RC_WATERSIM_DBG", "0") == "1")
+                {
+                    try
+                    {
+                        System.Reflection.FieldInfo fi = null;
+                        for (Type ty = scene.GetType(); ty != null && fi == null; ty = ty.BaseType)
+                            fi = ty.GetField("m_pScene",
+                                System.Reflection.BindingFlags.NonPublic |
+                                System.Reflection.BindingFlags.Public |
+                                System.Reflection.BindingFlags.Instance);
+                        Log("watersim dbg: sceneType=" + scene.GetType().FullName +
+                            " field=" + (fi == null ? "null" : fi.DeclaringType.Name + "." + fi.Name));
+                        object fv = fi == null ? null : fi.GetValue(scene);
+                        IntPtr sp = fv is IntPtr ? (IntPtr)fv : IntPtr.Zero;
+                        if (sp != IntPtr.Zero)
+                        {
+                            IntPtr vt = System.Runtime.InteropServices.Marshal.ReadIntPtr(sp);
+                            IntPtr fn = System.Runtime.InteropServices.Marshal.ReadIntPtr(vt, 0x380);
+                            Log("watersim dbg: m_pScene=0x" + sp.ToInt64().ToString("X") +
+                                " vtable=0x" + vt.ToInt64().ToString("X") +
+                                " slot380=0x" + fn.ToInt64().ToString("X"));
+                        }
+                        else Log("watersim dbg: m_pScene value null/unreadable");
+                    }
+                    catch (Exception dx) { Log("watersim dbg ex: " + dx.Message); }
+                }
                 int wsEn = scene.EnableFluxWaterSimulation(1);
                 scene.ResetFluxWaterSimulation();
                 scene.UpdateFluxCollisionHeightMap();

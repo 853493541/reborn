@@ -432,3 +432,19 @@ Next probe (E): determine how the MovieEditor engine resolves `data\material\Sha
 available to the host from an IGNORED copy (never write into the installs) so the engine's own
 water draw can initialize - or, if the search path cannot be overlaid, register the exact
 blocker. Do NOT fake water with a procedural surface.
+
+### Root cause (2026-10-07): E_FAIL = missing water material assets in the editor install
+
+- The CLR `EnableFluxWaterSimulation` IL does an indirect call through vtable slot +0x380
+  of `m_pScene` (`ldfld m_pScene; ldind.i8; +0x380; ldind.i8; calli`), so E_FAIL comes
+  from the engine's flux-enable function.
+- `config.ini` already sets `bEnableFluxWater = 1` (not the cause). All four Flex modules
+  load (E's probe).
+- The water material `data\material\Shader\Mtl_Water\FluxWaterDefault_BWater.JsonIns`
+  EXISTS in the game client paks (extracted, 7610 B) but is ABSENT from the MovieEditor
+  install (no `Mtl_Water`/material dir, no paks). The engine resolves `data\material\...`
+  against the MovieEditor resource root, so the water model cannot be created -> E_FAIL.
+- This is an ASSET boundary, not a code bug: the editor install does not ship the water
+  materials. Next probe: whether the engine supports an additional asset root (config/env)
+  so a copied client asset tree in an ignored dir can supply `data\material\Shader\Mtl_Water\*`;
+  otherwise water rendering is blocked until the host uses the game client's asset set.
