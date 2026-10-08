@@ -295,12 +295,44 @@ internal static class RebornClient
             else Log("cast chain: missing " + chainPath);
         }
         catch (Exception e) { Log("cast chain load ex: " + e.Message); }
+        // v6 ability roster (ability_picker/tools/build_roster.py): the shipped
+        // ability list (name/ids/matched/castMode/channel/icon) joined to the
+        // cast chain. The P panel lists these; key 1 casts the active one.
+        var roster = new System.Collections.Generic.Dictionary<string, string[]>();
+        var rosterOrder = new System.Collections.Generic.List<string>();
+        string rosterPath = Env("RC_ROSTER",
+            Path.Combine(Application.StartupPath, "ability_picker", "roster_f1.tsv"));
+        try
+        {
+            if (File.Exists(rosterPath))
+            {
+                int rl = 0;
+                foreach (string line in File.ReadAllLines(rosterPath))
+                {
+                    if (rl++ == 0) continue;
+                    string[] p = line.Split('\t');
+                    if (p.Length >= 6 && p[0].Length > 0)
+                    {
+                        roster[p[0]] = p;
+                        rosterOrder.Add(p[0]);
+                    }
+                }
+                Log("ability roster: " + roster.Count + " abilities from " + rosterPath);
+            }
+            else Log("ability roster: missing " + rosterPath);
+        }
+        catch (Exception e) { Log("ability roster load ex: " + e.Message); }
         // hotkey slots (RC_SLOTS overrides); keys 1..N select + cast a slot.
         string[] slotIds = Env("RC_SLOTS", "65029,65120,65087,65076,65036,65026").Split(',');
         int activeSlot = 0;
         {
             string want = Env("RC_ABILITY", slotIds[0].Trim());
-            for (int i = 0; i < slotIds.Length; i++) if (slotIds[i].Trim() == want) activeSlot = i;
+            bool matched = false;
+            for (int i = 0; i < slotIds.Length; i++)
+                if (slotIds[i].Trim() == want) { activeSlot = i; matched = true; }
+            // RC_ABILITY may name a roster ability outside the default slots:
+            // make it slot 0 so it is the active (key 1) ability.
+            if (!matched && roster.ContainsKey(want)) { slotIds[0] = want; activeSlot = 0; }
         }
         string selAbility = slotIds[0].Trim();
         string selAnimPath = lyAnim, selFxPath = lyFx;
@@ -313,7 +345,9 @@ internal static class RebornClient
             selAbility = slotIds[i].Trim();
             selAnimPath = lyAnim; selFxPath = lyFx; selDash = lyDash;
             string[] ab;
-            if (castChain.TryGetValue(selAbility, out ab))
+            bool found = castChain.TryGetValue(selAbility, out ab);
+            if (!found) found = roster.TryGetValue(selAbility, out ab);
+            if (found)
             {
                 if (ab[2].Length > 0) selAnimPath = ab[2];
                 selFxPath = ab[3];
@@ -433,6 +467,11 @@ internal static class RebornClient
             abilityBar.SetSelected(activeSlot);
         }
         abilityBar.PlaceTopRight(form);
+        // v6 ability panel (P): the full roster as an icon grid; click = active,
+        // key 1 casts the active ability. Created LAZILY in the frame loop:
+        // building WinForms windows before engine init hung the host (2026-10-08).
+        AbilityPanel abilityPanel = null;
+        bool panelToggleReq = Env("RC_PANEL_OPEN", "0") == "1";
         // Loading overlay (D4): WinForms controls sit behind the engine's child window,
         // so the loading text is a separate top-level window; RC_NOLOADING=1 disables.
         LoadingOverlay loading = null;
@@ -1707,6 +1746,7 @@ internal static class RebornClient
         }
         bool cDown = false, teleportToStructure = false;
         bool iDown = false;   // "I" toggles the info panel (alias of Esc)
+        bool pDown = false;   // "P" toggles the ability panel
         bool divDown = false;
         TargetEntity indTarget = null;
         // Command executor (host equivalent of the ui/script hotkey handlers):
@@ -2051,6 +2091,7 @@ internal static class RebornClient
             { slotKeyDown[dkey] = true; selectSlot(dkey); skillPressed = true; }
             else if (e.KeyCode == Keys.C && !cDown) { cDown = true; teleportToStructure = true; }
             else if (e.KeyCode == Keys.I && !iDown) { iDown = true; hud.ToggleInfo(); hud.UpdateLayered(); }
+            else if (e.KeyCode == Keys.P && !pDown) { pDown = true; panelToggleReq = true; }
             else if (e.KeyCode == Keys.F7 || e.KeyCode == Keys.OemQuestion)
             {
                 // operation-mode switch (host keys: "/" and F7; the real client
@@ -2144,6 +2185,7 @@ internal static class RebornClient
             { int dk = (int)e.KeyCode - (int)Keys.D1; if (dk >= 0 && dk < slotKeyDown.Length) slotKeyDown[dk] = false; }
             if (e.KeyCode == Keys.C) cDown = false;
             else if (e.KeyCode == Keys.I) iDown = false;
+            else if (e.KeyCode == Keys.P) pDown = false;
         };
         panel.Focus();
         // Esc toggles the information panel (open <-> close) no matter which
@@ -4805,6 +4847,31 @@ internal static class RebornClient
                     + "   [/] switch   cam " + camSys.Mode + " (F5)");
                 hud.PlaceOver(form);
                 hud.UpdateLayered();
+            }
+            // lazy top-right ability panel: create after engine init, toggle on P
+            if (abilityPanel == null && roster.Count > 0 && panelToggleReq)
+            {
+                try
+                {
+                    abilityPanel = new AbilityPanel(roster, rosterOrder,
+                        Path.Combine(Application.StartupPath, "ability_picker", "icons"), Log);
+                    abilityPanel.Attach(form);
+                    abilityPanel.OnSelect = delegate
+                    {
+                        slotIds[0] = abilityPanel.SelectedId;
+                        selectSlot(0);
+                        abilityBar.SetSlot(0, abilityPanel.SelectedName);
+                        abilityBar.SetSelected(0);
+                    };
+                    abilityPanel.SetVisible(true);
+                }
+                catch (Exception ex) { Log("ability panel ex: " + ex.Message); abilityPanel = null; }
+                panelToggleReq = false;
+            }
+            else if (panelToggleReq)
+            {
+                panelToggleReq = false;
+                if (abilityPanel != null) abilityPanel.Toggle();
             }
             // v6 numbered ability bar (top-right): key number + ability name
             abilityBar.SetSelected(activeSlot);

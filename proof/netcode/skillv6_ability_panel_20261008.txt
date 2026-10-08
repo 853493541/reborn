@@ -1,0 +1,28 @@
+# skill v6 — ability panel + roster (Phase B, 2026-10-08)
+# Build: reborn_client_skillv6.exe (git 62a2109, dirty) — title sandbox-skillv6
+# Roster: ability_picker/data/roster_f1.tsv (build_roster.py: skill_data.json
+#         [154 abilities: name/ids/matched/castMode/channel/icon] joined to
+#         cast_chain_f1.tsv for anim/effect/dash).
+# Panel:  client/AbilityPanel.cs — our own top-level icon grid (reuses only the
+#         shipped icon PNGs in bin64\ability_picker\icons\). P toggles; click =
+#         make active; key 1 casts the active ability.
+
+## Design notes / warts
+#  - The panel is a SEPARATE top-level window (WS_EX_NOACTIVATE, owned by the
+#    main form), NOT a child of the render host: adding WinForms controls to the
+#    render panel before engine init hung the host; even the top-level window is
+#    created LAZILY in the frame loop (after Init3DEngine), never at startup.
+#  - Form.BackColor must be opaque: Color.FromArgb(alpha,...) throws
+#    "Control does not support transparent background colors" (fixed).
+
+## Driven run: RC_PANEL_OPEN=1 RC_ABILITY=27844 RC_TAB_AT=32000 RC_CAST_AT=38000:1 RC_AUTORUN=45000
+## reborn_20261008_002858.log
+00:28:58.233 slot 1 -> 27844 道具_听风吹雪 anim=...F1s01wh针灸16_听风HD.tani fx= dash=0   (roster hit)
+00:29:22.865 Init3DEngine=1 err=1 ms=24156
+00:29:27.275 ability panel: 154 entries, 154 icons
+00:29:59.234 RC_TAB_AT -> Tab (target next)
+00:30:05.237 cast chain 27844: target=初级试炼木桩(131) anim=...F1s01wh针灸16_听风HD.tani animMs=1500 dash=0u/f
+00:30:05.238 cast chain started
+00:30:12.237 DONE                                (clean shutdown, no AV)
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

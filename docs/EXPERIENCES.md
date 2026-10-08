@@ -7865,3 +7865,27 @@ if the cache/host frames appear.
 - **Note:** this is P1 of the skill-system plan (see `docs/netcode/JX3_SKILL_CAST_FLOW.md`
   §7 / the plan in the session log): later steps = v5 roster + icons panel, camera max
   default, real prepare/channel/GCD cast state, full-coverage verify.
+
+### 2026-10-08 — v6 — ability roster + panel (Phase A/B) + camera default max
+
+- **Did:** (camera, item 3) default camera range = panel hard max (2000 u), not the
+  per-role `custom.dat` `fMaxCameraDistance` (821 u) — `CameraSystem ready … dist=2000u`.
+  (Phase A) `ability_picker/tools/build_roster.py` joins v5's `skill_data.json` (154
+  abilities: name/ids/matched/castMode/channel/icon) with `cast_chain_f1.tsv` →
+  `ability_picker/data/roster_f1.tsv` (header + 154 rows; 130 joined; 5 channel=1).
+  (Phase B) `client/AbilityPanel.cs` — our own top-level icon grid (P toggles; click =
+  active; key `1` casts the active ability); `selectSlot` now falls back to the roster;
+  `RC_ABILITY` can name any roster ability.
+- **Lessions (warts):** adding WinForms controls to the render host **before engine
+  init hangs the host** → the panel is a separate top-level window created **lazily in
+  the frame loop** (after `Init3DEngine`). `Form.BackColor` must be **opaque** (alpha
+  throws "Control does not support transparent background colors"). A data TSV the
+  client reads with a skip-first-line convention needs a **header row** (the roster
+  initially dropped 27844 → 153/154).
+- **Verified:** driven `reborn_client_skillv6.exe`: Init3DEngine ok, `ability panel: 154
+  entries, 154 icons`, roster ability 27844 听风吹雪 `cast chain 27844 … started`, clean
+  `DONE`. Proof: `proof/netcode/skillv6_ability_panel_20261008.txt`,
+  `skillv6_camera_max_20261007.txt`. Gates: jx3_model 10 PASS, gravity PASS, loot
+  selftest PASS.
+- **Remaining (plan):** Phase C = real prepare/channel/GCD cast state (items 4+6);
+  Phase D = coverage sweep over all 154.

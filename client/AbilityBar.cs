@@ -65,6 +65,13 @@ internal sealed class AbilityBar : Form
         dirty = true;
     }
 
+    public void SetSlot(int i, string name)
+    {
+        if (i < 0 || i >= names.Length || names[i] == name) return;
+        names[i] = name;
+        dirty = true;
+    }
+
     public void SetSelected(int i)
     {
         if (selected != i) { selected = i; dirty = true; }

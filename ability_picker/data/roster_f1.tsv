@@ -1,3 +1,4 @@
+id	name	tani	effect	bone	dash	castMode	channel	icon
 27844	听风吹雪	data\source\player\F1\动作\F1s01wh针灸16_听风HD.tani			0	TargetSingle	0	27844.png
 27846	云栖松	data\source\player\F1\动作\F1s07cj内功重剑18_云栖松HD.tani			0	CasterSingle	0	27846.png
 27847	霞流宝石	data\source\player\F1\动作\f1s07cj重剑技能17_霞流宝石hd.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击03_重剑_肉体.Sfx	S_fxmid	0	CasterSingle	0	27847.png
