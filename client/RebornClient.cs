@@ -565,6 +565,9 @@ internal static class RebornClient
             abilityBar.SetSelected(activeSlot);
         }
         abilityBar.PlaceTopRight(form);
+        // P5: always-on combat feedback (status line + recent damage/CC/buff events).
+        var combatText = new CombatText();
+        combatText.PlaceTop(form);
         // v6 ability panel (P): the full roster as an icon grid; click = active,
         // key 1 casts the active ability. Created LAZILY in the frame loop:
         // building WinForms windows before engine init hung the host (2026-10-08).
@@ -3928,6 +3931,17 @@ internal static class RebornClient
                                 if (plan.CcType.Length > 0) { tgt.CcType = plan.CcType; tgt.CcUntil = now + 2000; }
                                 if (plan.Knockdown) { tgt.CcType = "Knockdown"; tgt.CcUntil = now + 1500; }
                             }
+                            if (plan.Damage > 0f)
+                                combatText.Push("-" + plan.Damage.ToString("F0") + " " + skillCast.Name,
+                                    System.Drawing.Color.FromArgb(255, 230, 120));
+                            if (plan.CcType.Length > 0)
+                                combatText.Push("CC " + plan.CcType, System.Drawing.Color.FromArgb(150, 200, 255));
+                            if (plan.Knockdown)
+                                combatText.Push("KNOCKDOWN", System.Drawing.Color.FromArgb(255, 150, 150));
+                            if (plan.BuffsAdd.Count > 0)
+                                combatText.Push("+" + plan.BuffsAdd.Count + " buff", System.Drawing.Color.FromArgb(150, 255, 150));
+                            if (plan.BuffsRemove > 0)
+                                combatText.Push("-" + plan.BuffsRemove + " buff", System.Drawing.Color.FromArgb(230, 170, 230));
                             Log("mechanic " + skillCast.Name + " mode=" + castMode + " -> " + affected.Count
                                 + " target(s) " + plan.Summary()
                                 + (cur != null ? (" (hp=" + cur.Hp + "/" + cur.MaxHp + ")") : ""));
@@ -5116,6 +5130,13 @@ internal static class RebornClient
                 panelToggleReq = false;
                 if (abilityPanel != null) abilityPanel.Toggle();
             }
+            // P5 combat feedback (status + recent events)
+            combatText.SetStatus("HP " + (targetSelector.Current != null
+                    ? (targetSelector.Current.Hp + "/" + targetSelector.Current.MaxHp) : "-")
+                + "  mana " + mana.ToString("F0")
+                + "  gcd " + (gcdUntil > now ? (gcdUntil - now) + "ms" : "ready"));
+            combatText.PlaceTop(form);
+            combatText.UpdateLayered();
             // v6 numbered ability bar (top-right): key number + ability name
             abilityBar.SetSelected(activeSlot);
             abilityBar.PlaceTopRight(form);

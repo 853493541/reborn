@@ -8049,3 +8049,15 @@ if the cache/host frames appear.
   loot selftest PASS.
 - **Open:** charges (MaxCount>1) + overdraft; haste; mana regen/max from attributes; school
   resources; interrupt-on-move.
+
+### 2026-10-08 — v6 — P5: combat feedback overlay
+
+- **Did:** `client/CombatText.cs` — an always-on top-centre layered overlay with a status line
+  (target HP / self mana / GCD) and a short stack of recent combat events (damage / CC /
+  knockdown / buff add-remove, expiring after ~2.5 s); `RC_CT_DUMP=<png>` for fingerprints.
+- **Verified:** driven run 65029 (dmg) + 65116 (cc=Daze knockdown); overlay buffer
+  `425×30 sha256=52d3810799199e26` (`proof/netcode/skillv6_combattext.png`), clean `DONE`.
+  Proof `proof/netcode/skillv6_combattext_20261008.txt`. Gates: jx3_model 10 PASS, gravity
+  PASS, loot selftest PASS.
+- **Open (P5):** cooldown sweep on panel icons; cast bar; target-frame buff/CC icons;
+  world-projected floating numbers (this overlay is screen-space).

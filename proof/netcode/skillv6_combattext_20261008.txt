@@ -1,0 +1,18 @@
+# skill v6 — P5: combat feedback overlay (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 2b85a01, dirty)
+# Change: client/CombatText.cs — always-on top-centre layered overlay (like
+#   HudOverlay/AbilityBar) with a status line (target HP / self mana / GCD) and a
+#   short stack of recent combat events (damage/CC/knockdown/buff add/remove),
+#   each expiring after ~2.5 s. RC_CT_DUMP=<png> saves the buffer for fingerprints.
+
+## Driven run: RC_SLOTS=65029,65116 RC_CAST_AT=40000:1,50000:2 RC_CT_DUMP=proof\netcode\skillv6_combattext.png
+mechanic 65029 mode=TargetSingle -> 1 target(s) dmg=127.3 child=65030 (hp=499999873/500000000)
+mechanic 65116 mode=TargetSingle -> 1 target(s) dmg=0.0 cc=Daze knockdown child=65117
+DONE
+
+# overlay buffer: proof/netcode/skillv6_combattext.png 425x30 sha256=52d3810799199e26
+#   (.venv\Scripts\python.exe tools\proof\image_stats.py proof\netcode\skillv6_combattext.png --grid 4x3)
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open (P5): cooldown sweep on the panel icons; cast bar (prepare/channel); target-frame
+#   buff/CC icons; world-projected floating numbers (this overlay is screen-space).
