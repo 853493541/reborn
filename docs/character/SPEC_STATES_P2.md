@@ -411,3 +411,24 @@ Next probe (owner: E/states or camera/engine host): disassemble 0x180c04b50 /
 loads with the map), then drive the same init the MovieEditor editor does. Do NOT fake
 water with a procedural quad; if the engine path stays unreachable, register it as a
 named boundary with the exact failing precondition.
+
+### Water-visibility root cause (2026-10-07) - assets absent from the editor host
+
+`EnableFluxWaterSimulation` fails because the flux-water ASSETS are not in the MovieEditor
+resource root (the host cannot load them -> `KG3D_CreateFluxModel` / `KG3D_FluxDomainModel::Init`
+cannot init the domain -> E_FAIL):
+
+- MovieEditor (`C:\SeasunGame\MovieEditor`): no `data` dir; `Resource`/`ResourcePack` carry
+  editor templates/configs only; a recursive search finds NO `Mtl_Water` / `FluxWaterDefault*`
+  anywhere in the install.
+- The assets ship in the game client's data (loose copies under the downloader/debug trees,
+  and inside the client paks):
+  - `...\zhcn_hd\SeasunDownloaderV2.4\seasun\client\_HttpFileForDebug_\local\data\material\material\mtl_water\mtl_water_01.fx5` (+ `.jsondef`)
+  - `...\local\data\material\material\mtl_water\texture_water\waternormal2.dds`
+  - `...\cache-extraction\online-cdn\materialized-maps\<map>\data\material\Material\Mtl_Water\Texture_Water\waterNormal2.dds`
+
+Next probe (E): determine how the MovieEditor engine resolves `data\material\Shader\Mtl_Water\...`
+(its resource search path / `ResourcePack` overlay), then make the game's flux-water material
+available to the host from an IGNORED copy (never write into the installs) so the engine's own
+water draw can initialize - or, if the search path cannot be overlaid, register the exact
+blocker. Do NOT fake water with a procedural surface.
