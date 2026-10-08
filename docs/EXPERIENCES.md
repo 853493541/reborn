@@ -8061,3 +8061,19 @@ if the cache/host frames appear.
   PASS, loot selftest PASS.
 - **Open (P5):** cooldown sweep on panel icons; cast bar; target-frame buff/CC icons;
   world-projected floating numbers (this overlay is screen-space).
+
+### 2026-10-08 — v6 — P6: per-ability mechanic verification
+
+- **Did:** ran `RC_SWEEP` over all 154 roster abilities (GCD-gated) and parsed the
+  per-commit `mechanic <id> mode=… -> N target(s) …` lines into
+  `ability_picker/data/coverage_mechanics_f1.tsv`.
+- **Result:** **ok=115, av=39, no-mechanic=0 (154)**; modes TargetSingle 53 / CasterSingle 49 /
+  CasterArea 7 / PointArea 6. Of the 115: dmg>0 23, cc/knockdown 7, child 26, buff 27, move 10,
+  `[script]` 69. Clean `DONE`.
+- **Finding:** every castable ability resolves its authored mechanic program at commit; **69
+  abilities delegate to `EXECUTE_SCRIPT`** (flagged, not guessed) — the honest next step is a
+  Lua 5.1 VM + engine-API shim to execute those scripts. Proof
+  `proof/netcode/skillv6_coverage_mechanics_20261008.txt`. Gates: jx3_model 10 PASS, gravity
+  PASS, loot selftest PASS.
+- **Open (next):** EXECUTE_SCRIPT VM (the 69); weapon%/attack-power scaling + mitigation;
+  target displacement units.

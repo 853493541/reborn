@@ -5210,7 +5210,7 @@ internal static class RebornClient
             if (sweepMs > 0 && sweepIdx < sweepCount)
             {
                 if (sweepNext < 0) sweepNext = now + 1500;
-                if (now >= sweepNext && !skillCast.Active && now >= castReadyAt)
+                if (now >= sweepNext && !skillCast.Active && now >= castReadyAt && now >= gcdUntil)
                 {
                     sweepNext = now + sweepMs;
                     string sid = rosterOrder[sweepIdx];

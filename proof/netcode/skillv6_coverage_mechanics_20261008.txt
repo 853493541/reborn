@@ -1,0 +1,26 @@
+# skill v6 — P6: per-ability mechanic verification (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 5085ed1, dirty)
+# Method: RC_SWEEP drives all 154 roster abilities vs a target; each logs
+#   "mechanic <id> mode=<castMode> -> N target(s) <resolved program>" at commit.
+#   The log is parsed into ability_picker/data/coverage_mechanics_f1.tsv.
+
+## Full sweep: RC_SWEEP_N=154 RC_SWEEP_START=0 (GCD-gated), reborn_20261008_051812.log
+mechanic lines = 115 ; sweep skips (per-tani AV blacklist) = 39 ; total = 154 ; DONE (clean)
+
+coverage_mechanics_f1.tsv: ok=115  av=39  no-mechanic=0  total=154
+modes (ok set): TargetSingle 53, CasterSingle 49, CasterArea 7, PointArea 6
+
+## resolved outcomes of the 115 ok abilities:
+#   dmg>0        = 23   (authored flat base+rand applied)
+#   cc/knockdown =  7   (functionType Stun/Silence/Charm/Halt/Daze + CALL_KNOCKED_DOWN)
+#   child cast   = 26   (CAST_SKILL / CAST_SKILL_TARGET_DST/SRC)
+#   buff add/rm  = 27   (CALL_BUFF / DETACH / DEL / CONSUME)
+#   move         = 10   (DASH family self-move)
+#   [script]     = 69   (EXECUTE_SCRIPT -- flagged, needs a Lua VM to resolve)
+
+# => every castable ability resolves its authored mechanic program at commit; the 69
+#    script-delegated abilities are honestly flagged (not guessed).
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open (next): execute EXECUTE_SCRIPT via a Lua 5.1 VM + engine-API shim (the 69);
+#   weapon%/attack-power scaling + mitigation; target displacement units.
