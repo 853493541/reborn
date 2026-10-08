@@ -31,6 +31,9 @@ internal sealed class TargetEntity
     public float X, Y, Z;      // world position (X/Z ground, Y up)
     public bool IsPlayer;      // relation class: player vs npc
     public bool IsEnemy;
+    public System.Collections.Generic.List<string> Buffs = new System.Collections.Generic.List<string>();
+    public long CcUntil;       // CC (stun/silence/...) active until this ms
+    public string CcType = "";
     public override string ToString() { return Name + "(" + Level + ")"; }
 }
 

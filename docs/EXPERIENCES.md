@@ -7995,3 +7995,17 @@ if the cache/host frames appear.
   loot selftest PASS.
 - **Open (P3 next):** weapon%/attack-power scaling + mitigation; buffs/debuffs/CC ops;
   movement ops (leap/pull/knockback); AoE/multi-target (P2).
+
+### 2026-10-08 — v6 — P3 v2: resolve + apply the authored mechanic program
+
+- **Did:** `client/MechanicProgram.cs` resolves a mechanics row + `functionType` into a plan
+  {damage, ccType, buffsAdd/Remove, selfMove, targetKnock, knockdown, childCasts, hasScript};
+  at cast **commit** the client applies it (HP, target CC 2 s, knockdown, buff list) and logs a
+  structured summary. Roster gained `functionType` (col 12). Uninterpretable ops
+  (`EXECUTE_SCRIPT`) are flagged, not guessed.
+- **Verified:** driven run — `mechanic 65029 -> 木桩 dmg=127.3 child=65030`;
+  `65116 -> dmg=0.0 cc=Daze knockdown child=65117`; `30081 -> dmg=0.0 knock=1024 [script]`;
+  clean `DONE`. Proof `proof/netcode/skillv6_mechanics_20261008.txt`. Gates: jx3_model 10 PASS,
+  gravity PASS, loot selftest PASS.
+- **Open (P3 rest):** apply self/target displacement from move ops; weapon%/attack-power scaling
+  + mitigation; AoE/multi-target (P2); buff/CC UI (P5).

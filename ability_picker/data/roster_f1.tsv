@@ -1,155 +1,155 @@
-id	name	tani	effect	bone	dash	castMode	channel	icon	prepare	chanFrame	chanInterval
-27844	听风吹雪	data\source\player\F1\动作\F1s01wh针灸16_听风HD.tani			0	TargetSingle	0	27844.png	-1	-1	-1
-27846	云栖松	data\source\player\F1\动作\F1s07cj内功重剑18_云栖松HD.tani			0	CasterSingle	0	27846.png	0	-1	-1
-27847	霞流宝石	data\source\player\F1\动作\f1s07cj重剑技能17_霞流宝石hd.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击03_重剑_肉体.Sfx	S_fxmid	0	CasterSingle	0	27847.png	-1	-1	-1
-27850	紫气东来	data\source\player\F1\动作\F1s03cy技能19_紫气东来hd.tani			0	CasterSingle	0	27850.png	-1	-1	-1
-27855	蝶弄足	data\source\player\F1\动作\F1s05qx扇技能18_蝶弄足HD.tani			0	CasterSingle	0	27855.png	0	-1	-1
-27862	梯云纵	data\source\player\F1\动作\F1s03cy技能12a_梯云纵hd.tani			0	CasterSingle	0	27862.png	0	-1	-1
-27863	怖畏暗刑	data\source\player\F1\动作\F1smj10双刀攻击07a.tani			0	TargetSingle	0	27863.png	-1	-1	-1
-27869	烟雨行	data\source\player\f1\动作\f1sgb11前冲刺01_悟_烟雨行_悟.tani			0	CasterSingle	0	27869.png	-1	-1	-1
-27872	撼地	data\source\player\F1\动作\F1scy12刀盾攻击12践踏02.tani			0	PointArea	0	27872.png	-1	-1	-1
-27874	十方玄机	data\source\player\F1\动作\F1s16lxg技能02b_hd.tani			0	TargetSingle	0	27874.png	48	-1	-1
-27875	斗转星移	data\source\player\F1\动作\F1s17ytz星相技01.tani			0	TargetSingle	0	27875.png	-1	-1	-1
-27878	孤风飒踏	data\source\player\f1\动作\f1s16lxg链技能03_悟_孤风飒踏01_悟.tani			0	PointArea	0	27878.png	-1	-1	-1
-27888	舍身诀	data\source\player\F1\动作\f1s04sl技能11_hd01.tani			0	TargetSingle	0	27888.png	-1	-1	-1
-27890	抢珠式	data\source\player\F1\动作\f1s04sl爪技能12_HD01.tani			0	TargetSingle	0	27890.png	0	-1	-1
-27892	九霄风雷	data\source\player\f1\动作\f1h唐门弩车001b_技能02a_HD.tani			0	CasterSingle	0	27892.png	-1	-1	-1
-27895	化蝶	data\source\player\f1\动作\f1swd08小跳a化蝶.tani			0	CasterSingle	0	27895.png	-1	-1	-1
-27902	楚河汉界	Data\source\player\F1\动作\F1s14bd拔刀技能07_01.tani			0	CasterSingle	0	27902.png	-1	-1	-1
-27903	散流霞	data\source\player\f1\动作\F1s14bd双刀技能08_01.tani			0	CasterSingle	0	27903.png	-1	-1	-1
-27904	翔极碧落	Data\source\player\F1\动作\F1s15PL雕技能01_翼绝云天HD.tani			0	TargetSingle	0	27904.png	-1	-1	-1
-27905	跃潮斩波	data\source\player\f1\动作\f1s15pl掌技能空03a_跃潮斩波_悟.tani			0	TargetSingle	0	27905.png	-1	-1	-1
-27906	斩无常	data\source\player\F1\动作\F1s16lxg鞭技能04_01HD.tani			0	CasterSingle	1	27906.png	-1	64	8
-27924	蚀心蛊	data\source\player\F1\动作\F1swd08蛊攻击01_夺命蛊.tani			0	TargetSingle	0	27924.png	24	-1	-1
-27926	九转归一	data\source\player\F1\动作\F1scy03气攻击01_九转HD.tani			0	TargetSingle	0	27926.png	0	-1	-1
-27967	风来吴山	data\source\player\F1\动作\F1s07cj重剑技能15_风来吴山HD.tani			0	CasterSingle	1	27967.png	-1	84	10
-27969	孤影化双	Data\source\player\F1\动作\F1s13cg琴技能11a_01.tani			0	CasterSingle	0	27969.png	-1	-1	-1
-28031	临时飞爪	data\source\player\f1\动作\F1s16lxg链技能03_释放HD.tani			0	PointArea	0	28031.png	-1	-1	-1
-28045	洞烛机微	data\source\player\F1\动作\F1h唐门弩车001b_技能01.ani			0	CasterSingle	0	28045.png	-1	-1	-1
-28046	魂压怒涛	data\source\player\F1\动作\F1h唐门弩车001b_技能03.ani			0	CasterArea	0	28046.png	-1	-1	-1
-30023	锻骨诀	data\source\player\F1\动作\F1s04sl技能16_hd01.tani			0	CasterSingle	0	30023.png	-1	-1	-1
-30024	守如山	data\source\player\F1\动作\F1s04tc技能23_守如山HD.tani			0	CasterSingle	0	30024.png	0	-1	-1
-30025	转乾坤	data\source\player\F1\动作\F1s03cy剑技能16_乾坤HD.tani			0	CasterSingle	0	30025.png	-1	-1	-1
-30029	惊鸿游龙	Data\source\player\F1\动作\F1stm09BUFF01幻影.tani			0	CasterSingle	0	30029.png	-1	-1	-1
-30081	极乐引	data\source\player\F1\动作\f1smj10双刀攻击11_明教新拉人hd.tani			0	CasterArea	0	30081.png	-1	-1	-1
-30082	踏星行	data\source\player\f1\动作\F1s17ytz乘灯01.tani			0	CasterSingle	0	30082.png	-1	-1	-1
-30123	凌然天风	data\source\player\f1\动作\f1s18yz凌然天风01.tani			0	CasterSingle	0	30123.png	-1	-1	120
-30226	心诤	data\source\player\F1\动作\F1s04sl棍技能18a_扫击蓄力01.tani			0	CasterSingle	0	30226.png	-1	-1	-1
-30231	疾电叱羽	data\source\player\F1\动作\F1s15PL雕技能04a_疾电叱羽护盾01HD.tani			0	CasterSingle	0	30231.png	-1	-1	-1
-30233	飞刃回转	data\source\player\f1\动作\f1s16lxg链技能10_飞刃回转01_悟.tani			0	TargetSingle	0	30233.png	-1	-1	-1
-30234	鸿蒙天禁	data\source\player\F1\动作\F1s17ytz星相技03_鸿蒙天禁hd.tani			0	TargetSingle	0	30234.png	-1	-1	-1
-30235	天绝地灭	Data\source\player\F1\动作\F1stm09机关攻击03七煞毒.tani			0	PointArea	0	30235.png	-1	-1	-1
-30238	玄水蛊	data\source\player\f1\动作\f1sqg08wd蛊攻击01_玄水蛊hd.tani			0	CasterSingle	0	30238.png	-1	-1	-1
-30239	穹隆化生	data\source\player\f1\动作\F1s03cy气技能15a_穹窿化生01_悟.tani			0	CasterSingle	0	30239.png	0	-1	-1
-30243	龙啸九天	data\source\player\f1\动作\f1sgb11掌法攻击06_悟_龙啸九天_悟.tani			0	CasterSingle	0	30243.png	-1	-1	-1
-30247	驭羽骋风	data\source\player\f1\动作\f1s15pl雕技能02_驭羽骋风hd.tani			0	CasterSingle	0	30247.png	-1	-1	-1
-30257	剑破虚空	data\source\player\f1\动作\f1s05qx剑技能13_剑破虚空hd.tani			0	TargetSingle	0	30257.png	-1	-1	-1
-30261	无间狱	data\source\player\f1\动作\F1s16lxg链技能08_hd.tani			0	CasterSingle	0	30261.png	-1	-1	-1
-30262	振翅图南	Data\source\player\F1\动作\F1s15PL雕技能03_振翅hd.tani			0	PointArea	0	30262.png	-1	-1	-1
-30276	逐云寒蕊	data\source\player\f1\动作\f1s18yz植物系03_逐云寒蕊.tani			0	CasterSingle	0	30276.png	-1	-1	120
-30301	绿野蔓生	data\source\player\f1\动作\f1s18yz植物系03_绿野蔓生.tani			0	CasterSingle	0	30301.png	-1	-1	120
-32245	花语酥心	data\source\player\F1\动作\F1swh01辅助技能03.tani			0	CasterSingle	0	32245.png	-1	-1	-1
-32247	如意法	data\source\player\F1\动作\F1smj10双刀buff04杀意.tani			0	CasterSingle	0	32247.png	-1	-1	-1
-32287	徐如林	data\source\player\F1\动作\F1stc04技能01-02.tani			0	CasterSingle	0	32287.png	0	-1	-1
-32300	连环弩	Data\source\player\F1\动作\F1stm09通道02连环弩.tani			0	TargetSingle	1	32300.png	-1	48	16
-34591	游风飘踪	data\source\player\F1\动作\F1s18dz身法04_单.tani			0	CasterSingle	0	34591.png	-1	-1	-1
-34594	洗兵雨	data\source\player\F1\动作\F1s18dz擒拿02.tani	data\source\other\hd特效\技能\pss\被击\d_刀宗刀鞘被击.pss	S_fxmid	0	TargetSingle	0	34594.png	-1	-1	-1
-36501	应天授命	data\source\player\f1\动作\f1s20wlbuff03_应天授命_悟.tani			0	CasterSingle	0	36501.png	-1	-1	120
-39483	雾暗迷云	data\source\player\F1\动作\f1s21ds技能04b.tani			0	TargetSingle	0	39483.png	24	-1	-1
-39492	截阳	data\source\player\F1\动作\f1s21ds指法02.tani			0	TargetSingle	0	39492.png	-1	-1	-1
-39493	引窍	data\source\player\F1\动作\f1s21ds指法04b.tani			0	TargetSingle	0	39493.png	24	-1	-1
-39494	风流云散	data\source\player\F1\动作\F1s21ds步法01_F.tani			0	PointArea	0	39494.png	-1	-1	-1
-64898	横扫六合	data\source\player\F1\动作\f1s04sl棍技能13_HD01.tani			0	CasterSingle	0	64898.png	-1	-1	-1
-64899	捕风式	data\source\player\F1\动作\f1s04sl爪技能11_HD01.tani			0	TargetSingle	0	64899.png	0	-1	32
-64900	抱残式	data\source\player\F1\动作\F1ssl04爪攻击02.tani			0	TargetSingle	0	64900.png	0	-1	-1
-64901	守缺式	data\source\player\F1\动作\f1s04sl爪技能15a_HD01.tani			0	TargetSingle	0	64901.png	0	-1	-1
-64991	拿云式	data\source\player\F1\动作\F1s04sl爪技能13_hd01.tani			0	TargetSingle	0	64991.png	-1	-1	-1
-64992	长针	data\source\player\F1\动作\F1s01wh针灸13b长针hd.tani			0	TargetSingle	0	64992.png	48	-1	56
-64993	商阳指	data\source\player\F1\动作\F1s01wh点穴12_商阳指hd.tani			0	TargetSingle	0	64993.png	-1	-1	-1
-64994	钟林毓秀	data\source\player\F1\动作\F1s01wh点穴14b_钟林毓秀hd.tani			0	TargetSingle	0	64994.png	16	-1	-1
-64995	兰摧玉折	data\source\player\F1\动作\F1s01wh点穴13b_兰摧玉折hd.tani			0	TargetSingle	0	64995.png	16	-1	-1
-64996	破风	data\source\player\F1\动作\F1s04tc技能11b_穿云hd.tani			0	TargetSingle	0	64996.png	0	-1	144
-65022	穿	data\source\player\F1\动作\F1stc04枪攻击09.tani	data\source\other\特效\技能\SFX\被击\被击_天策攻击09.Sfx	S_fxmid	0	TargetArea	0	65022.png	-1	-1	-1
-65024	太极无极	data\source\player\F1\动作\F1s03cy气技能17_太极HD.tani			0	TargetSingle	0	65024.png	0	-1	-1
-65026	三环套月	data\source\player\F1\动作\F1s03cy剑技能11b_三环HD.tani	data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆02.pss	S_fxmid	0	TargetSingle	0	65026.png	-1	-1	-1
-65028	剑飞惊天	data\source\player\F1\动作\F1s03cy剑技能12_剑飞HD.tani	data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆03.pss	S_fxmid	0	TargetSingle	0	65028.png	0	-1	-1
-65029	龙牙	data\source\player\F1\动作\F1s04tc技能13_龙牙hd.tani	data\source\other\特效\技能\SFX\被击\被击_闪光01_龙牙.Sfx	S_fxmid	120	TargetSingle	0	65029.png	0	-1	-1
-65036	龙吟	data\source\player\F1\动作\F1s04tc技能12_龙吟HD.tani	data\source\other\HD特效\技能\Pss\被击\T_天策被击03.pss	S_fxmid	0	TargetSingle	0	65036.png	0	-1	104
-65038	灭	data\source\player\F1\动作\F1s04tc技能17_灭HD.tani			0	TargetSingle	0	65038.png	0	-1	64
-65046	蛇影	data\source\player\F1\动作\F1swd08毒攻击02_蛇影.tani			0	TargetSingle	0	65046.png	-1	-1	-1
-65047	蟾啸	data\source\player\F1\动作\F1swd08毒攻击02_蟾啸.tani			0	TargetArea	0	65047.png	-1	-1	-1
-65048	夺命蛊	data\source\player\F1\动作\F1swd08蛊攻击01_夺命蛊.tani			0	CasterSingle	0	65048.png	-1	-1	-1
-65049	迷心蛊	data\source\player\F1\动作\F1swd08蛊攻击01_迷心蛊.tani			0	CasterSingle	0	65049.png	-1	-1	-1
-65050	枯残蛊	data\source\player\F1\动作\F1swd08蛊攻击01_枯残蛊.tani			0	CasterSingle	0	65050.png	-1	-1	-1
-65053	化血镖	Data\source\player\F1\动作\F1stm09针攻击01毒芒针.tani			0	TargetSingle	0	65053.png	0	-1	-1
-65054	孔雀翎	Data\source\player\F1\动作\F1stm09针攻击02孔雀.tani			0	TargetSingle	0	65054.png	-1	-1	-1
-65058	玉石俱焚	data\source\player\F1\动作\F1s01wh点穴15_玉石俱焚hd.tani			0	TargetSingle	0	65058.png	-1	-1	-1
-65059	两仪化形	data\source\player\F1\动作\F1s03cy气技能11_两仪HD.tani			0	TargetSingle	0	65059.png	-1	-1	-1
-65060	无我无剑	data\source\player\F1\动作\F1s03cy剑技能14_无我无剑HD.tani			0	TargetSingle	0	65060.png	-1	-1	-1
-65061	万剑归宗	data\source\player\F1\动作\F1s03cy剑技能13_万剑HD.tani	data\source\other\特效\技能\SFX\被击\被击_纯阳攻击04.Sfx	S_fxmid	0	CasterArea	0	65061.png	0	-1	-1
-65062	天地无极	data\source\player\F1\动作\F1s03cy剑技能11c.ani	data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆01.pss	S_fxmid	0	TargetSingle	0	65062.png	0	-1	-1
-65065	剑主天地	data\source\player\F1\动作\F1sqx05双剑攻击04.tani			0	TargetSingle	0	65065.png	-1	-1	-1
-65068	百足	data\source\player\F1\动作\F1swd08毒攻击03_百足.tani			0	PointArea	0	65068.png	-1	-1	-1
-65071	追命箭	Data\source\player\F1\动作\F1stm09弩攻击03夺命01.tani			0	TargetSingle	0	65071.png	32	-1	-1
-65074	穿心弩	Data\source\player\F1\动作\F1stm09弩攻击05撕裂弩.tani			0	TargetSingle	0	65074.png	24	-1	96
-65075	听雷	data\source\player\F1\动作\F1s07cj内功轻剑12_听雷HD.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击02_单手剑_肉体.Sfx	S_fxmid	0	TargetSingle	0	65075.png	-1	-1	-1
-65076	云飞玉皇	data\source\player\F1\动作\F1s07cj重剑技能11b_云飞HD.tani			0	TargetSingle	0	65076.png	24	-1	-1
-65078	鹤归孤山	data\source\player\f1\动作\f1s07cj重剑技能14_鹤归孤山hd.tani			0	CasterSingle	0	65078.png	-1	-1	-1
-65083	幽月轮	data\source\player\f1\动作\f1smj10双刀攻击01_幽月轮1段_悟.tani			0	TargetSingle	0	65083.png	-1	-1	-1
-65087	净世破魔击	data\source\player\F1\动作\F1smj10组合刀攻击06_杀戮日.tani			90	TargetSingle	0	65087.png	-1	-1	-1
-65089	烈日斩	data\source\player\F1\动作\F1smj10组合刀攻击04_日斩.tani			0	TargetSingle	0	65089.png	-1	-1	-1
-65090	银月斩	data\source\player\F1\动作\F1smj10双刀攻击04_月斩.tani			0	TargetSingle	0	65090.png	-1	-1	-1
-65092	圣明佑	data\source\player\f1\动作\F1smj10乾坤大法buff01_01.tani			0	CasterSingle	0	65092.png	-1	-1	-1
-65095	生死劫	data\source\player\F1\动作\F1smj10乾坤大法buff04.tani			0	TargetSingle	0	65095.png	0	-1	50
-65096	驱夜断愁	data\source\player\F1\动作\F1smj10双刀攻击10连杀.tani			0	TargetSingle	0	65096.png	-1	-1	-1
-65097	韦陀献杵	data\source\player\F1\动作\f1s04sl棍技能12_HD02.tani			0	TargetSingle	0	65097.png	0	-1	-1
-65098	摩诃无量	data\source\player\F1\动作\f1s04sl棍技能14_HD03.tani			0	TargetSingle	0	65098.png	0	-1	-1
-65100	捉影式	data\source\player\F1\动作\f1s04sl爪技能14c_HD01.tani			0	TargetSingle	0	65100.png	8	-1	-1
-65101	五蕴皆空	data\source\player\F1\动作\F1ssl04袈裟攻击05.tani			0	TargetSingle	0	65101.png	-1	-1	-1
-65103	大狮子吼	data\source\player\F1\动作\f1ssl04技能06_hd01.tani			0	CasterArea	0	65103.png	-1	-1	-1
-65104	无相诀	data\source\player\F1\动作\f1s04sl技能12_HD01.tani			0	CasterSingle	0	65104.png	-1	-1	-1
-65105	春泥护花	data\source\player\F1\动作\F1s01wh技能15_春泥HD.tani			0	TargetSingle	0	65105.png	-1	-1	-1
-65107	星楼月影	data\source\player\F1\动作\F1s01wh技能12_星楼月影hd.tani			0	CasterSingle	0	65107.png	-1	-1	-1
-65108	少明指	data\source\player\F1\动作\F1s01wh点穴21b_少明指HD.tani			0	TargetSingle	0	65108.png	24	-1	-1
-65109	芙蓉并蒂	data\source\player\F1\动作\F1s01wh点穴20_芙蓉并蒂HD.tani			0	TargetSingle	0	65109.png	0	-1	-1
-65113	傍花随柳	data\source\player\F1\动作\F1swh01拂穴02.tani			0	TargetSingle	0	65113.png	16	-1	-1
-65116	沧月	data\source\player\F1\动作\F1s04tc技能20_沧月hd.tani			0	TargetSingle	0	65116.png	0	-1	-1
-65118	疾如风	data\source\player\F1\动作\F1s04tc技能24_疾如风hd.tani			0	CasterSingle	0	65118.png	-1	-1	-1
-65119	撼如雷	data\source\player\F1\动作\F1s04tc技能22_撼HD.tani			0	CasterArea	0	65119.png	-1	-1	-1
-65120	渊	data\source\player\F1\动作\F1s04tc技能18a_渊HD.tani			120	TargetSingle	0	65120.png	-1	-1	-1
-65133	碎星辰	data\source\player\F1\动作\F1s03cy技能17b_碎星辰HD.tani			0	CasterSingle	0	65133.png	16	-1	-1
-65136	破苍穹	data\source\player\F1\动作\F1s03cy技能15b_破苍穹HD.tani			0	CasterSingle	0	65136.png	16	-1	-1
-65138	凌太虚	data\source\player\F1\动作\F1scy03技能05-05.tani			0	CasterSingle	0	65138.png	16	-1	-1
-65140	吞日月	data\source\player\F1\动作\F1s03cy技能18b_吞日月HD.tani			0	CasterSingle	0	65140.png	16	-1	-1
-65142	生太极	data\source\player\F1\动作\F1s03cy技能16b_生太极hd.tani			0	CasterSingle	0	65142.png	16	-1	-1
-65144	任驰骋	Data\source\player\F1\动作\F1H上马01.ani	data\source\other\特效\技能\SFX\被击\被击_天策攻击09.Sfx	S_fxmid	0	CasterSingle	0	65144.png	24	-1	-1
-65145	三才化生	data\source\player\F1\动作\F1s03cy气技能18_三才hd.tani			0	CasterArea	0	65145.png	0	-1	-1
-65146	七星拱瑞	data\source\player\F1\动作\F1s03cy气技能15b_七星HD.tani			0	TargetSingle	0	65146.png	24	-1	-1
-65149	五方行尽	data\source\player\F1\动作\F1s03cy气技能13_五方HD.tani			0	PointArea	0	65149.png	-1	-1	-1
-65150	人剑合一	data\source\player\F1\动作\F1s03cy剑技能15_人剑合一hd.tani			0	CasterSingle	0	65150.png	-1	-1	-1
-65153	大道无术	data\source\player\F1\动作\F1scy03纯阳技能11_大道无术hd.tani			0	TargetSingle	0	65153.png	-1	-1	-1
-65154	坐忘无我	data\source\player\F1\动作\F1s03cy技能11_坐忘HD.tani			0	CasterSingle	0	65154.png	0	-1	-1
-65155	剑转流云	data\source\player\F1\动作\F1s05qx剑技能14_剑转流云HD.tani			0	TargetSingle	0	65155.png	0	-1	-1
-65156	雷霆震怒	data\source\player\F1\动作\F1s05qx剑技能25_雷霆震怒hd.tani			0	TargetSingle	0	65156.png	0	-1	-1
-65157	绛唇珠袖	data\source\player\F1\动作\F1s05qx剑技能26_绛唇珠袖hd.tani			0	TargetSingle	0	65157.png	0	-1	-1
-65159	帝骖龙翔	data\source\player\F1\动作\F1s05qx剑技能23_帝骖龙翔HD.tani			0	CasterArea	0	65159.png	0	-1	-1
-65160	天地低昂	data\source\player\F1\动作\F1s05qx剑技能20_天地低昂hd.tani			0	CasterSingle	0	65160.png	0	-1	-1
-65161	鹊踏枝	data\source\player\F1\动作\F1s05qx剑技能22_鹊踏枝HD.tani			0	CasterSingle	0	65161.png	0	-1	-1
-65162	蛊虫献祭	data\source\player\F1\动作\F1swd08牺牲01_粉身碎骨.tani			0	CasterSingle	0	65162.png	-1	-1	-1
-65163	女娲补天	data\source\player\F1\动作\F1swd08变身01_变身.tani			0	CasterSingle	0	65163.png	-1	-1	-1
-65165	雷震子	Data\source\player\F1\动作\F1stm09控制03雷震子.tani	data\source\other\特效\技能\SFX\被击\被击_唐门被击01.sfx	Bip01 L Foot	0	TargetSingle	0	65165.png	-1	-1	-1
-65167	镇山河	data\source\player\F1\动作\F1s03cy技能13b_镇山河.tani			0	CasterSingle	0	65167.png	0	-1	-1
-65240	疾	data\source\player\F1\动作\F1s04tc技能16_疾HD.tani			0	CasterSingle	0	65240.png	0	-1	-1
-65241	鸟翔碧空	data\source\player\f1\动作\f1stm09_鸟翔碧空01a.tani			0	CasterSingle	0	65241.png	-1	-1	-1
-65242	太阴指	data\source\player\f1\动作\f1s01wh点穴19_太阴指_悟.tani			0	CasterSingle	0	65242.png	0	-1	-1
-65243	暗尘弥散	data\source\player\F1\动作\F1smj10双刀buff03隐匿.tani			0	CasterSingle	0	65243.png	-1	-1	-1
-65244	浮光掠影	Data\source\player\F1\动作\F1stm09伪装01影遁.tani			0	CasterSingle	0	65244.png	-1	-1	-1
-65250	啸如虎	data\source\player\F1\动作\F1s04tc技能25_啸如虎01HD.tani			0	CasterSingle	0	65250.png	-1	-1	-1
-65251	风袖低昂	data\source\player\F1\动作\F1s05qx扇技能12_风袖HD.tani			0	TargetSingle	0	65251.png	-1	-1	-1
-65254	千蝶吐瑞	data\source\player\F1\动作\F1swd08治疗03_金蝉吐瑞.tani			0	CasterSingle	1	65254.png	-1	128	8
-65667	亢龙有悔	data\source\player\f1\动作\f1sgb11掌法攻击18a01_亢龙有悔.tani			0	TargetSingle	0	65667.png	-1	-1	-1
-65668	狂龙乱舞	data\source\player\f1\动作\f1sgb11掌法攻击15_狂龙乱舞.tani			0	CasterSingle	0	65668.png	24	-1	-1
-65669	龙战于野	data\source\player\f1\动作\f1sgb11掌法攻击02a_01.tani			0	CasterSingle	0	65669.png	-1	-1	-1
-65670	潜龙勿用	data\source\player\f1\动作\f1sgb11掌法攻击23_飞龙在天.tani			0	CasterSingle	0	65670.png	-1	-1	-1
-65671	棒打狗头	data\source\player\f1\动作\f1sgb11棒法攻击01b_悟_棒打狗头_悟.tani			0	TargetSingle	0	65671.png	-1	-1	-1
-65672	笑醉狂	data\source\player\F1\动作\F1sqg11gbbuff01_hd.tani			0	CasterSingle	1	65672.png	-1	144	16
+id	name	tani	effect	bone	dash	castMode	channel	icon	prepare	chanFrame	chanInterval	funcType
+27844	听风吹雪	data\source\player\F1\动作\F1s01wh针灸16_听风HD.tani			0	TargetSingle	0	27844.png	-1	-1	-1	Normal
+27846	云栖松	data\source\player\F1\动作\F1s07cj内功重剑18_云栖松HD.tani			0	CasterSingle	0	27846.png	0	-1	-1	Normal
+27847	霞流宝石	data\source\player\F1\动作\f1s07cj重剑技能17_霞流宝石hd.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击03_重剑_肉体.Sfx	S_fxmid	0	CasterSingle	0	27847.png	-1	-1	-1	Normal
+27850	紫气东来	data\source\player\F1\动作\F1s03cy技能19_紫气东来hd.tani			0	CasterSingle	0	27850.png	-1	-1	-1	Normal
+27855	蝶弄足	data\source\player\F1\动作\F1s05qx扇技能18_蝶弄足HD.tani			0	CasterSingle	0	27855.png	0	-1	-1	Normal
+27862	梯云纵	data\source\player\F1\动作\F1s03cy技能12a_梯云纵hd.tani			0	CasterSingle	0	27862.png	0	-1	-1	Fly
+27863	怖畏暗刑	data\source\player\F1\动作\F1smj10双刀攻击07a.tani			0	TargetSingle	0	27863.png	-1	-1	-1	Silence
+27869	烟雨行	data\source\player\f1\动作\f1sgb11前冲刺01_悟_烟雨行_悟.tani			0	CasterSingle	0	27869.png	-1	-1	-1	Fly
+27872	撼地	data\source\player\F1\动作\F1scy12刀盾攻击12践踏02.tani			0	PointArea	0	27872.png	-1	-1	-1	Normal
+27874	十方玄机	data\source\player\F1\动作\F1s16lxg技能02b_hd.tani			0	TargetSingle	0	27874.png	48	-1	-1	Normal
+27875	斗转星移	data\source\player\F1\动作\F1s17ytz星相技01.tani			0	TargetSingle	0	27875.png	-1	-1	-1	Normal
+27878	孤风飒踏	data\source\player\f1\动作\f1s16lxg链技能03_悟_孤风飒踏01_悟.tani			0	PointArea	0	27878.png	-1	-1	-1	Normal
+27888	舍身诀	data\source\player\F1\动作\f1s04sl技能11_hd01.tani			0	TargetSingle	0	27888.png	-1	-1	-1	Normal
+27890	抢珠式	data\source\player\F1\动作\f1s04sl爪技能12_HD01.tani			0	TargetSingle	0	27890.png	0	-1	-1	Damage
+27892	九霄风雷	data\source\player\f1\动作\f1h唐门弩车001b_技能02a_HD.tani			0	CasterSingle	0	27892.png	-1	-1	-1	Normal
+27895	化蝶	data\source\player\f1\动作\f1swd08小跳a化蝶.tani			0	CasterSingle	0	27895.png	-1	-1	-1	Normal
+27902	楚河汉界	Data\source\player\F1\动作\F1s14bd拔刀技能07_01.tani			0	CasterSingle	0	27902.png	-1	-1	-1	Normal
+27903	散流霞	data\source\player\f1\动作\F1s14bd双刀技能08_01.tani			0	CasterSingle	0	27903.png	-1	-1	-1	Normal
+27904	翔极碧落	Data\source\player\F1\动作\F1s15PL雕技能01_翼绝云天HD.tani			0	TargetSingle	0	27904.png	-1	-1	-1	Damage
+27905	跃潮斩波	data\source\player\f1\动作\f1s15pl掌技能空03a_跃潮斩波_悟.tani			0	TargetSingle	0	27905.png	-1	-1	-1	Damage
+27906	斩无常	data\source\player\F1\动作\F1s16lxg鞭技能04_01HD.tani			0	CasterSingle	1	27906.png	-1	64	8	Normal
+27924	蚀心蛊	data\source\player\F1\动作\F1swd08蛊攻击01_夺命蛊.tani			0	TargetSingle	0	27924.png	24	-1	-1	Normal
+27926	九转归一	data\source\player\F1\动作\F1scy03气攻击01_九转HD.tani			0	TargetSingle	0	27926.png	0	-1	-1	Damage
+27967	风来吴山	data\source\player\F1\动作\F1s07cj重剑技能15_风来吴山HD.tani			0	CasterSingle	1	27967.png	-1	84	10	Normal
+27969	孤影化双	Data\source\player\F1\动作\F1s13cg琴技能11a_01.tani			0	CasterSingle	0	27969.png	-1	-1	-1	Normal
+28031	临时飞爪	data\source\player\f1\动作\F1s16lxg链技能03_释放HD.tani			0	PointArea	0	28031.png	-1	-1	-1	Normal
+28045	洞烛机微	data\source\player\F1\动作\F1h唐门弩车001b_技能01.ani			0	CasterSingle	0	28045.png	-1	-1	-1	Normal
+28046	魂压怒涛	data\source\player\F1\动作\F1h唐门弩车001b_技能03.ani			0	CasterArea	0	28046.png	-1	-1	-1	Damage
+30023	锻骨诀	data\source\player\F1\动作\F1s04sl技能16_hd01.tani			0	CasterSingle	0	30023.png	-1	-1	-1	Normal
+30024	守如山	data\source\player\F1\动作\F1s04tc技能23_守如山HD.tani			0	CasterSingle	0	30024.png	0	-1	-1	Normal
+30025	转乾坤	data\source\player\F1\动作\F1s03cy剑技能16_乾坤HD.tani			0	CasterSingle	0	30025.png	-1	-1	-1	Normal
+30029	惊鸿游龙	Data\source\player\F1\动作\F1stm09BUFF01幻影.tani			0	CasterSingle	0	30029.png	-1	-1	-1	Normal
+30081	极乐引	data\source\player\F1\动作\f1smj10双刀攻击11_明教新拉人hd.tani			0	CasterArea	0	30081.png	-1	-1	-1	Damage
+30082	踏星行	data\source\player\f1\动作\F1s17ytz乘灯01.tani			0	CasterSingle	0	30082.png	-1	-1	-1	Fly
+30123	凌然天风	data\source\player\f1\动作\f1s18yz凌然天风01.tani			0	CasterSingle	0	30123.png	-1	-1	120	Fly
+30226	心诤	data\source\player\F1\动作\F1s04sl棍技能18a_扫击蓄力01.tani			0	CasterSingle	0	30226.png	-1	-1	-1	Normal
+30231	疾电叱羽	data\source\player\F1\动作\F1s15PL雕技能04a_疾电叱羽护盾01HD.tani			0	CasterSingle	0	30231.png	-1	-1	-1	Normal
+30233	飞刃回转	data\source\player\f1\动作\f1s16lxg链技能10_飞刃回转01_悟.tani			0	TargetSingle	0	30233.png	-1	-1	-1	Damage
+30234	鸿蒙天禁	data\source\player\F1\动作\F1s17ytz星相技03_鸿蒙天禁hd.tani			0	TargetSingle	0	30234.png	-1	-1	-1	Normal
+30235	天绝地灭	Data\source\player\F1\动作\F1stm09机关攻击03七煞毒.tani			0	PointArea	0	30235.png	-1	-1	-1	Normal
+30238	玄水蛊	data\source\player\f1\动作\f1sqg08wd蛊攻击01_玄水蛊hd.tani			0	CasterSingle	0	30238.png	-1	-1	-1	Normal
+30239	穹隆化生	data\source\player\f1\动作\F1s03cy气技能15a_穹窿化生01_悟.tani			0	CasterSingle	0	30239.png	0	-1	-1	Damage
+30243	龙啸九天	data\source\player\f1\动作\f1sgb11掌法攻击06_悟_龙啸九天_悟.tani			0	CasterSingle	0	30243.png	-1	-1	-1	Normal
+30247	驭羽骋风	data\source\player\f1\动作\f1s15pl雕技能02_驭羽骋风hd.tani			0	CasterSingle	0	30247.png	-1	-1	-1	Normal
+30257	剑破虚空	data\source\player\f1\动作\f1s05qx剑技能13_剑破虚空hd.tani			0	TargetSingle	0	30257.png	-1	-1	-1	Damage
+30261	无间狱	data\source\player\f1\动作\F1s16lxg链技能08_hd.tani			0	CasterSingle	0	30261.png	-1	-1	-1	Normal
+30262	振翅图南	Data\source\player\F1\动作\F1s15PL雕技能03_振翅hd.tani			0	PointArea	0	30262.png	-1	-1	-1	Normal
+30276	逐云寒蕊	data\source\player\f1\动作\f1s18yz植物系03_逐云寒蕊.tani			0	CasterSingle	0	30276.png	-1	-1	120	Normal
+30301	绿野蔓生	data\source\player\f1\动作\f1s18yz植物系03_绿野蔓生.tani			0	CasterSingle	0	30301.png	-1	-1	120	Normal
+32245	花语酥心	data\source\player\F1\动作\F1swh01辅助技能03.tani			0	CasterSingle	0	32245.png	-1	-1	-1	Normal
+32247	如意法	data\source\player\F1\动作\F1smj10双刀buff04杀意.tani			0	CasterSingle	0	32247.png	-1	-1	-1	Normal
+32287	徐如林	data\source\player\F1\动作\F1stc04技能01-02.tani			0	CasterSingle	0	32287.png	0	-1	-1	Normal
+32300	连环弩	Data\source\player\F1\动作\F1stm09通道02连环弩.tani			0	TargetSingle	1	32300.png	-1	48	16	Damage
+34591	游风飘踪	data\source\player\F1\动作\F1s18dz身法04_单.tani			0	CasterSingle	0	34591.png	-1	-1	-1	Normal
+34594	洗兵雨	data\source\player\F1\动作\F1s18dz擒拿02.tani	data\source\other\hd特效\技能\pss\被击\d_刀宗刀鞘被击.pss	S_fxmid	0	TargetSingle	0	34594.png	-1	-1	-1	Damage
+36501	应天授命	data\source\player\f1\动作\f1s20wlbuff03_应天授命_悟.tani			0	CasterSingle	0	36501.png	-1	-1	120	Normal
+39483	雾暗迷云	data\source\player\F1\动作\f1s21ds技能04b.tani			0	TargetSingle	0	39483.png	24	-1	-1	Normal
+39492	截阳	data\source\player\F1\动作\f1s21ds指法02.tani			0	TargetSingle	0	39492.png	-1	-1	-1	Normal
+39493	引窍	data\source\player\F1\动作\f1s21ds指法04b.tani			0	TargetSingle	0	39493.png	24	-1	-1	Normal
+39494	风流云散	data\source\player\F1\动作\F1s21ds步法01_F.tani			0	PointArea	0	39494.png	-1	-1	-1	Normal
+64898	横扫六合	data\source\player\F1\动作\f1s04sl棍技能13_HD01.tani			0	CasterSingle	0	64898.png	-1	-1	-1	Normal
+64899	捕风式	data\source\player\F1\动作\f1s04sl爪技能11_HD01.tani			0	TargetSingle	0	64899.png	0	-1	32	Damage
+64900	抱残式	data\source\player\F1\动作\F1ssl04爪攻击02.tani			0	TargetSingle	0	64900.png	0	-1	-1	Damage
+64901	守缺式	data\source\player\F1\动作\f1s04sl爪技能15a_HD01.tani			0	TargetSingle	0	64901.png	0	-1	-1	Damage
+64991	拿云式	data\source\player\F1\动作\F1s04sl爪技能13_hd01.tani			0	TargetSingle	0	64991.png	-1	-1	-1	Damage
+64992	长针	data\source\player\F1\动作\F1s01wh针灸13b长针hd.tani			0	TargetSingle	0	64992.png	48	-1	56	Normal
+64993	商阳指	data\source\player\F1\动作\F1s01wh点穴12_商阳指hd.tani			0	TargetSingle	0	64993.png	-1	-1	-1	Damage
+64994	钟林毓秀	data\source\player\F1\动作\F1s01wh点穴14b_钟林毓秀hd.tani			0	TargetSingle	0	64994.png	16	-1	-1	Damage
+64995	兰摧玉折	data\source\player\F1\动作\F1s01wh点穴13b_兰摧玉折hd.tani			0	TargetSingle	0	64995.png	16	-1	-1	Damage
+64996	破风	data\source\player\F1\动作\F1s04tc技能11b_穿云hd.tani			0	TargetSingle	0	64996.png	0	-1	144	Damage
+65022	穿	data\source\player\F1\动作\F1stc04枪攻击09.tani	data\source\other\特效\技能\SFX\被击\被击_天策攻击09.Sfx	S_fxmid	0	TargetArea	0	65022.png	-1	-1	-1	Damage
+65024	太极无极	data\source\player\F1\动作\F1s03cy气技能17_太极HD.tani			0	TargetSingle	0	65024.png	0	-1	-1	Damage
+65026	三环套月	data\source\player\F1\动作\F1s03cy剑技能11b_三环HD.tani	data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆02.pss	S_fxmid	0	TargetSingle	0	65026.png	-1	-1	-1	Damage
+65028	剑飞惊天	data\source\player\F1\动作\F1s03cy剑技能12_剑飞HD.tani	data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆03.pss	S_fxmid	0	TargetSingle	0	65028.png	0	-1	-1	Damage
+65029	龙牙	data\source\player\F1\动作\F1s04tc技能13_龙牙hd.tani	data\source\other\特效\技能\SFX\被击\被击_闪光01_龙牙.Sfx	S_fxmid	120	TargetSingle	0	65029.png	0	-1	-1	Damage
+65036	龙吟	data\source\player\F1\动作\F1s04tc技能12_龙吟HD.tani	data\source\other\HD特效\技能\Pss\被击\T_天策被击03.pss	S_fxmid	0	TargetSingle	0	65036.png	0	-1	104	Damage
+65038	灭	data\source\player\F1\动作\F1s04tc技能17_灭HD.tani			0	TargetSingle	0	65038.png	0	-1	64	Damage
+65046	蛇影	data\source\player\F1\动作\F1swd08毒攻击02_蛇影.tani			0	TargetSingle	0	65046.png	-1	-1	-1	Damage
+65047	蟾啸	data\source\player\F1\动作\F1swd08毒攻击02_蟾啸.tani			0	TargetArea	0	65047.png	-1	-1	-1	Damage
+65048	夺命蛊	data\source\player\F1\动作\F1swd08蛊攻击01_夺命蛊.tani			0	CasterSingle	0	65048.png	-1	-1	-1	Normal
+65049	迷心蛊	data\source\player\F1\动作\F1swd08蛊攻击01_迷心蛊.tani			0	CasterSingle	0	65049.png	-1	-1	-1	Normal
+65050	枯残蛊	data\source\player\F1\动作\F1swd08蛊攻击01_枯残蛊.tani			0	CasterSingle	0	65050.png	-1	-1	-1	Normal
+65053	化血镖	Data\source\player\F1\动作\F1stm09针攻击01毒芒针.tani			0	TargetSingle	0	65053.png	0	-1	-1	Damage
+65054	孔雀翎	Data\source\player\F1\动作\F1stm09针攻击02孔雀.tani			0	TargetSingle	0	65054.png	-1	-1	-1	Damage
+65058	玉石俱焚	data\source\player\F1\动作\F1s01wh点穴15_玉石俱焚hd.tani			0	TargetSingle	0	65058.png	-1	-1	-1	Damage
+65059	两仪化形	data\source\player\F1\动作\F1s03cy气技能11_两仪HD.tani			0	TargetSingle	0	65059.png	-1	-1	-1	Damage
+65060	无我无剑	data\source\player\F1\动作\F1s03cy剑技能14_无我无剑HD.tani			0	TargetSingle	0	65060.png	-1	-1	-1	Damage
+65061	万剑归宗	data\source\player\F1\动作\F1s03cy剑技能13_万剑HD.tani	data\source\other\特效\技能\SFX\被击\被击_纯阳攻击04.Sfx	S_fxmid	0	CasterArea	0	65061.png	0	-1	-1	Damage
+65062	天地无极	data\source\player\F1\动作\F1s03cy剑技能11c.ani	data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆01.pss	S_fxmid	0	TargetSingle	0	65062.png	0	-1	-1	Damage
+65065	剑主天地	data\source\player\F1\动作\F1sqx05双剑攻击04.tani			0	TargetSingle	0	65065.png	-1	-1	-1	Damage
+65068	百足	data\source\player\F1\动作\F1swd08毒攻击03_百足.tani			0	PointArea	0	65068.png	-1	-1	-1	Damage
+65071	追命箭	Data\source\player\F1\动作\F1stm09弩攻击03夺命01.tani			0	TargetSingle	0	65071.png	32	-1	-1	Damage
+65074	穿心弩	Data\source\player\F1\动作\F1stm09弩攻击05撕裂弩.tani			0	TargetSingle	0	65074.png	24	-1	96	Damage
+65075	听雷	data\source\player\F1\动作\F1s07cj内功轻剑12_听雷HD.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击02_单手剑_肉体.Sfx	S_fxmid	0	TargetSingle	0	65075.png	-1	-1	-1	Damage
+65076	云飞玉皇	data\source\player\F1\动作\F1s07cj重剑技能11b_云飞HD.tani			0	TargetSingle	0	65076.png	24	-1	-1	Damage
+65078	鹤归孤山	data\source\player\f1\动作\f1s07cj重剑技能14_鹤归孤山hd.tani			0	CasterSingle	0	65078.png	-1	-1	-1	Normal
+65083	幽月轮	data\source\player\f1\动作\f1smj10双刀攻击01_幽月轮1段_悟.tani			0	TargetSingle	0	65083.png	-1	-1	-1	Damage
+65087	净世破魔击	data\source\player\F1\动作\F1smj10组合刀攻击06_杀戮日.tani			90	TargetSingle	0	65087.png	-1	-1	-1	Damage
+65089	烈日斩	data\source\player\F1\动作\F1smj10组合刀攻击04_日斩.tani			0	TargetSingle	0	65089.png	-1	-1	-1	Damage
+65090	银月斩	data\source\player\F1\动作\F1smj10双刀攻击04_月斩.tani			0	TargetSingle	0	65090.png	-1	-1	-1	Damage
+65092	圣明佑	data\source\player\f1\动作\F1smj10乾坤大法buff01_01.tani			0	CasterSingle	0	65092.png	-1	-1	-1	Normal
+65095	生死劫	data\source\player\F1\动作\F1smj10乾坤大法buff04.tani			0	TargetSingle	0	65095.png	0	-1	50	Damage
+65096	驱夜断愁	data\source\player\F1\动作\F1smj10双刀攻击10连杀.tani			0	TargetSingle	0	65096.png	-1	-1	-1	Normal
+65097	韦陀献杵	data\source\player\F1\动作\f1s04sl棍技能12_HD02.tani			0	TargetSingle	0	65097.png	0	-1	-1	Damage
+65098	摩诃无量	data\source\player\F1\动作\f1s04sl棍技能14_HD03.tani			0	TargetSingle	0	65098.png	0	-1	-1	Damage
+65100	捉影式	data\source\player\F1\动作\f1s04sl爪技能14c_HD01.tani			0	TargetSingle	0	65100.png	8	-1	-1	Damage
+65101	五蕴皆空	data\source\player\F1\动作\F1ssl04袈裟攻击05.tani			0	TargetSingle	0	65101.png	-1	-1	-1	Damage
+65103	大狮子吼	data\source\player\F1\动作\f1ssl04技能06_hd01.tani			0	CasterArea	0	65103.png	-1	-1	-1	Damage
+65104	无相诀	data\source\player\F1\动作\f1s04sl技能12_HD01.tani			0	CasterSingle	0	65104.png	-1	-1	-1	Normal
+65105	春泥护花	data\source\player\F1\动作\F1s01wh技能15_春泥HD.tani			0	TargetSingle	0	65105.png	-1	-1	-1	Normal
+65107	星楼月影	data\source\player\F1\动作\F1s01wh技能12_星楼月影hd.tani			0	CasterSingle	0	65107.png	-1	-1	-1	Normal
+65108	少明指	data\source\player\F1\动作\F1s01wh点穴21b_少明指HD.tani			0	TargetSingle	0	65108.png	24	-1	-1	Damage
+65109	芙蓉并蒂	data\source\player\F1\动作\F1s01wh点穴20_芙蓉并蒂HD.tani			0	TargetSingle	0	65109.png	0	-1	-1	Damage
+65113	傍花随柳	data\source\player\F1\动作\F1swh01拂穴02.tani			0	TargetSingle	0	65113.png	16	-1	-1	Damage
+65116	沧月	data\source\player\F1\动作\F1s04tc技能20_沧月hd.tani			0	TargetSingle	0	65116.png	0	-1	-1	Daze
+65118	疾如风	data\source\player\F1\动作\F1s04tc技能24_疾如风hd.tani			0	CasterSingle	0	65118.png	-1	-1	-1	Normal
+65119	撼如雷	data\source\player\F1\动作\F1s04tc技能22_撼HD.tani			0	CasterArea	0	65119.png	-1	-1	-1	Damage
+65120	渊	data\source\player\F1\动作\F1s04tc技能18a_渊HD.tani			120	TargetSingle	0	65120.png	-1	-1	-1	Normal
+65133	碎星辰	data\source\player\F1\动作\F1s03cy技能17b_碎星辰HD.tani			0	CasterSingle	0	65133.png	16	-1	-1	Normal
+65136	破苍穹	data\source\player\F1\动作\F1s03cy技能15b_破苍穹HD.tani			0	CasterSingle	0	65136.png	16	-1	-1	Normal
+65138	凌太虚	data\source\player\F1\动作\F1scy03技能05-05.tani			0	CasterSingle	0	65138.png	16	-1	-1	Normal
+65140	吞日月	data\source\player\F1\动作\F1s03cy技能18b_吞日月HD.tani			0	CasterSingle	0	65140.png	16	-1	-1	Normal
+65142	生太极	data\source\player\F1\动作\F1s03cy技能16b_生太极hd.tani			0	CasterSingle	0	65142.png	16	-1	-1	Normal
+65144	任驰骋	Data\source\player\F1\动作\F1H上马01.ani	data\source\other\特效\技能\SFX\被击\被击_天策攻击09.Sfx	S_fxmid	0	CasterSingle	0	65144.png	24	-1	-1	Normal
+65145	三才化生	data\source\player\F1\动作\F1s03cy气技能18_三才hd.tani			0	CasterArea	0	65145.png	0	-1	-1	Damage
+65146	七星拱瑞	data\source\player\F1\动作\F1s03cy气技能15b_七星HD.tani			0	TargetSingle	0	65146.png	24	-1	-1	Stun
+65149	五方行尽	data\source\player\F1\动作\F1s03cy气技能13_五方HD.tani			0	PointArea	0	65149.png	-1	-1	-1	Charm
+65150	人剑合一	data\source\player\F1\动作\F1s03cy剑技能15_人剑合一hd.tani			0	CasterSingle	0	65150.png	-1	-1	-1	Normal
+65153	大道无术	data\source\player\F1\动作\F1scy03纯阳技能11_大道无术hd.tani			0	TargetSingle	0	65153.png	-1	-1	-1	Stun
+65154	坐忘无我	data\source\player\F1\动作\F1s03cy技能11_坐忘HD.tani			0	CasterSingle	0	65154.png	0	-1	-1	Normal
+65155	剑转流云	data\source\player\F1\动作\F1s05qx剑技能14_剑转流云HD.tani			0	TargetSingle	0	65155.png	0	-1	-1	Damage
+65156	雷霆震怒	data\source\player\F1\动作\F1s05qx剑技能25_雷霆震怒hd.tani			0	TargetSingle	0	65156.png	0	-1	-1	Stun
+65157	绛唇珠袖	data\source\player\F1\动作\F1s05qx剑技能26_绛唇珠袖hd.tani			0	TargetSingle	0	65157.png	0	-1	-1	Damage
+65159	帝骖龙翔	data\source\player\F1\动作\F1s05qx剑技能23_帝骖龙翔HD.tani			0	CasterArea	0	65159.png	0	-1	-1	Halt
+65160	天地低昂	data\source\player\F1\动作\F1s05qx剑技能20_天地低昂hd.tani			0	CasterSingle	0	65160.png	0	-1	-1	Normal
+65161	鹊踏枝	data\source\player\F1\动作\F1s05qx剑技能22_鹊踏枝HD.tani			0	CasterSingle	0	65161.png	0	-1	-1	Normal
+65162	蛊虫献祭	data\source\player\F1\动作\F1swd08牺牲01_粉身碎骨.tani			0	CasterSingle	0	65162.png	-1	-1	-1	Normal
+65163	女娲补天	data\source\player\F1\动作\F1swd08变身01_变身.tani			0	CasterSingle	0	65163.png	-1	-1	-1	Normal
+65165	雷震子	Data\source\player\F1\动作\F1stm09控制03雷震子.tani	data\source\other\特效\技能\SFX\被击\被击_唐门被击01.sfx	Bip01 L Foot	0	TargetSingle	0	65165.png	-1	-1	-1	Stun
+65167	镇山河	data\source\player\F1\动作\F1s03cy技能13b_镇山河.tani			0	CasterSingle	0	65167.png	0	-1	-1	Normal
+65240	疾	data\source\player\F1\动作\F1s04tc技能16_疾HD.tani			0	CasterSingle	0	65240.png	0	-1	-1	Damage
+65241	鸟翔碧空	data\source\player\f1\动作\f1stm09_鸟翔碧空01a.tani			0	CasterSingle	0	65241.png	-1	-1	-1	Normal
+65242	太阴指	data\source\player\f1\动作\f1s01wh点穴19_太阴指_悟.tani			0	CasterSingle	0	65242.png	0	-1	-1	Damage
+65243	暗尘弥散	data\source\player\F1\动作\F1smj10双刀buff03隐匿.tani			0	CasterSingle	0	65243.png	-1	-1	-1	Normal
+65244	浮光掠影	Data\source\player\F1\动作\F1stm09伪装01影遁.tani			0	CasterSingle	0	65244.png	-1	-1	-1	Normal
+65250	啸如虎	data\source\player\F1\动作\F1s04tc技能25_啸如虎01HD.tani			0	CasterSingle	0	65250.png	-1	-1	-1	Normal
+65251	风袖低昂	data\source\player\F1\动作\F1s05qx扇技能12_风袖HD.tani			0	TargetSingle	0	65251.png	-1	-1	-1	Normal
+65254	千蝶吐瑞	data\source\player\F1\动作\F1swd08治疗03_金蝉吐瑞.tani			0	CasterSingle	1	65254.png	-1	128	8	Normal
+65667	亢龙有悔	data\source\player\f1\动作\f1sgb11掌法攻击18a01_亢龙有悔.tani			0	TargetSingle	0	65667.png	-1	-1	-1	Damage
+65668	狂龙乱舞	data\source\player\f1\动作\f1sgb11掌法攻击15_狂龙乱舞.tani			0	CasterSingle	0	65668.png	24	-1	-1	Normal
+65669	龙战于野	data\source\player\f1\动作\f1sgb11掌法攻击02a_01.tani			0	CasterSingle	0	65669.png	-1	-1	-1	Normal
+65670	潜龙勿用	data\source\player\f1\动作\f1sgb11掌法攻击23_飞龙在天.tani			0	CasterSingle	0	65670.png	-1	-1	-1	Normal
+65671	棒打狗头	data\source\player\f1\动作\f1sgb11棒法攻击01b_悟_棒打狗头_悟.tani			0	TargetSingle	0	65671.png	-1	-1	-1	Normal
+65672	笑醉狂	data\source\player\F1\动作\F1sqg11gbbuff01_hd.tani			0	CasterSingle	1	65672.png	-1	144	16	Normal

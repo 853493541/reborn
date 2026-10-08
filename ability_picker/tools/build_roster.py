@@ -88,11 +88,12 @@ def main():
             "channel": 1 if v.get("channel") else 0, "icon": icon,
             "prepare": f.get("prepare", "-1"), "chanFrame": f.get("chanFrame", "-1"),
             "chanInterval": f.get("chanInterval", "-1"),
+            "funcType": v.get("functionType", ""),
         })
     rows.sort(key=lambda r: (int(r["id"]) if r["id"].isdigit() else 0, r["id"]))
 
     cols = ["id", "name", "tani", "effect", "bone", "dash", "castMode", "channel",
-            "icon", "prepare", "chanFrame", "chanInterval"]
+            "icon", "prepare", "chanFrame", "chanInterval", "funcType"]
     tsv = os.path.join(DATA, "roster_f1.tsv")
     with open(tsv, "w", encoding="utf-8", newline="\n") as f:
         f.write("\t".join(cols) + "\n")

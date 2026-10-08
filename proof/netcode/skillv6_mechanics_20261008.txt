@@ -1,0 +1,23 @@
+# skill v6 — P3 v2: abilities resolve + apply their authored mechanic program (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 738c189, dirty)
+# Change: client/MechanicProgram.cs resolves a mechanics row (col 11 ops) + roster
+#   functionType into a plan {damage, ccType, buffsAdd/Remove, selfMove, targetKnock,
+#   knockdown, childCasts, hasScript}; at cast COMMIT the client applies it:
+#   HP (damage), target CC (functionType in Stun/Silence/Charm/Halt/Daze -> 2 s),
+#   knockdown, target buff list (CALL_BUFF adds, DETACH/DEL/CONSUME clears), and logs
+#   a structured summary. Ops we cannot interpret (EXECUTE_SCRIPT) are flagged, not guessed.
+#   Roster now carries functionType (col 12, build_roster.py).
+
+## Driven run: RC_SLOTS=65029,65116,30081 RC_CAST_AT=40000:1,48000:2,56000:3
+mechanic 65029 -> 初级试炼木桩 dmg=127.3 child=65030 (hp=499999873/500000000 buffs=0)
+mechanic 65116 -> 初级试炼木桩 dmg=0.0 cc=Daze knockdown child=65117 (hp=499999873/500000000 buffs=0)
+mechanic 30081 -> 初级试炼木桩 dmg=0.0 knock=1024 [script] (hp=499999873/500000000 buffs=0)
+DONE
+
+# 65029 = SKILL_PHYSICS_DAMAGE + CAST_SKILL_TARGET_DST(65030)
+# 65116 = Daze (functionType) + CALL_KNOCKED_DOWN(16) + CAST_SKILL_TARGET_DST(65117)
+# 30081 = KNOCKED_BACK_RATE(1024) + PULL + EXECUTE_SCRIPT(flagged)
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open (P3 rest): apply self/target displacement from the move ops; weapon%/attack-power
+#   scaling + mitigation; AoE/multi-target (P2); buff/CC UI (P5).

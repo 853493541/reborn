@@ -3776,24 +3776,32 @@ internal static class RebornClient
                         }
                         catch (Exception e) { Log("cast chain fx ex: " + e.Message); }
                     }
-                    // P3 v1: apply the ability's authored damage program to the target
+                    // P3 v2: resolve + apply the ability's authored mechanic program
                     try
                     {
                         string[] mr;
                         TargetEntity dmgTgt = targetSelector.Current;
                         if (dmgTgt != null && mechanics.TryGetValue(skillCast.Name, out mr))
                         {
-                            float dmg = SkillDamage.Base(mr);
-                            if (dmg > 0f)
+                            string funcType = "";
+                            string[] rr;
+                            if (roster.TryGetValue(skillCast.Name, out rr) && rr.Length > 12) funcType = rr[12];
+                            MechanicPlan plan = MechanicProgram.Resolve(mr, funcType);
+                            if (plan.Damage > 0f)
                             {
-                                dmgTgt.Hp -= (long)dmg;
+                                dmgTgt.Hp -= (long)plan.Damage;
                                 if (dmgTgt.Hp < 0) dmgTgt.Hp = 0;
-                                Log("damage " + skillCast.Name + " -> " + dmgTgt.Name + " "
-                                    + dmg.ToString("F1") + " (hp=" + dmgTgt.Hp + "/" + dmgTgt.MaxHp + ")");
                             }
+                            for (int bi = 0; bi < plan.BuffsAdd.Count; bi++)
+                                if (!dmgTgt.Buffs.Contains(plan.BuffsAdd[bi])) dmgTgt.Buffs.Add(plan.BuffsAdd[bi]);
+                            if (plan.BuffsRemove > 0) dmgTgt.Buffs.Clear();
+                            if (plan.CcType.Length > 0) { dmgTgt.CcType = plan.CcType; dmgTgt.CcUntil = now + 2000; }
+                            if (plan.Knockdown) { dmgTgt.CcType = "Knockdown"; dmgTgt.CcUntil = now + 1500; }
+                            Log("mechanic " + skillCast.Name + " -> " + dmgTgt.Name + " " + plan.Summary()
+                                + " (hp=" + dmgTgt.Hp + "/" + dmgTgt.MaxHp + " buffs=" + dmgTgt.Buffs.Count + ")");
                         }
                     }
-                    catch (Exception e) { Log("damage ex: " + e.Message); }
+                    catch (Exception e) { Log("mechanic ex: " + e.Message); }
                 }
             }
             if (castFxUntil != 0 && now >= castFxUntil)
