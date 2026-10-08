@@ -237,8 +237,13 @@ namespace MapUiApp.Engine
                 // background/decoration children (the engine's content list).
                 if (runtimeFlow)
                 {
+                    // A FormatAllItemPos receiver with no runtime items must not flow its
+                    // authored background children: the engine's list is empty there, so
+                    // the script's call is a no-op. Flowing them stacked Handle_Bg's
+                    // decoration images into a row at x~1927 (oob class A).
                     var runtimeItems = candidates.Where(s => s.Get("$RuntimeItem") == "1").ToList();
-                    if (runtimeItems.Count > 0) candidates = runtimeItems;
+                    if (runtimeItems.Count == 0) continue;
+                    candidates = runtimeItems;
                 }
                 var items = candidates;
                 if (items.Count == 0) continue;

@@ -2633,3 +2633,20 @@ solved it, and what is still open. **Newest at the bottom.**
   A. Added to `UI_OOB_FIX_PLAN.md` (P3 step 1), plus a P2 overhang-policy decision (clip-to-frame
   toggle vs clip negative overhang) that needs the reviewer's call.
 - Plan doc updated with the P0 class totals and this correction; no code changed in this entry.
+
+### 2026-10-07 — UI — oob P3 first fix: FormatAllItemPos must not flow authored children
+
+- `--audit` now also emits `placed-wrong` (rendered != the script's own last SetRelPos/SetAbsPos,
+  PosType 0 only) — the A detector from `UI_OOB_FIX_PLAN.md`. It isolated 14 real viewer bugs from
+  thousands of engine-faithful overhang items.
+- Root cause of the biggest cluster: `UiLayout` treated a `$FormatItems` container as a list even
+  when it had **no** runtime items, so BigBagPanel's `Handle_Bg FormatAllItemPos` flowed its
+  authored decoration images into a row at x≈1927 and dragged the bag's right-side controls
+  (Btn_Drag/Scroll_List/Btn_Up/Btn_Down/…) to y=0 — outside the window. In the engine the list is
+  empty, so the call is a no-op. Fixed in `UiLayout` (`runtimeFlow` with 0 runtime items -> skip).
+- Effect: `--audit` oob 7,690 -> **6,877** (-813), placed-wrong 14 -> **6**; BigBagPanel Btn_Drag
+  renders at its scripted (580,610), Scroll_List (578,112), Image_TextureR (422,0). `--selftest`
+  1240/0/0.
+- Remaining placed-wrong (6, single sections): Album Wnd_Thumb, Coinshop_CheckOut PageSet_CheckOut,
+  Coinshop_CantBuy Wnd_Warning, Collection Image_BottomBg, ExteriorBoxError Wnd_Error,
+  CreditsPanel Image_CreditsPanelBg — the next P3 items.

@@ -566,8 +566,10 @@ namespace UiProcessApp
                         //   clipped  = the viewer clips it (WndScroll viewport / $Clip) -> not visible
                         //   parked   = authored off-window (negative Left/Top on the parent chain)
                         //   clone    = a runtime item clone (__lt_*)
-                        //   edge-pos = an edge-anchored PosType (3/4/5/8-12)
+                        //   edge-pos = an edge-anchored PosType (3/4/5/9-12)
                         //   overhang = expected placement outside the frame (the engine draws it)
+                        //   placed-wrong = rendered != the script's own SetRelPos/SetAbsPos (class A)
+                        var lastPos = LoadRuntimePositions(Path.GetFileNameWithoutExtension(window.Path));
                         var outOfBounds = new List<(string Name, string Class, string Rect)>();
                         var oobClass = new Dictionary<string, int>(StringComparer.Ordinal);
                         foreach (var pair in build.Elements)
@@ -582,6 +584,9 @@ namespace UiProcessApp
                                 if (p.X < -1 || p.Y < -1 || p.X + w > width + 1 || p.Y + h > height + 1)
                                 {
                                     var cls = ClassifyOutOfBounds(plan.Filtered, pair.Key);
+                                    if ((cls == "overhang" || cls == "parked" || cls == "edge-pos") &&
+                                        RenderedMismatchesScript(plan.Filtered, pair.Key, build, p, lastPos))
+                                        cls = "placed-wrong";
                                     outOfBounds.Add((pair.Key, cls, $"({p.X:F0},{p.Y:F0} {w:F0}x{h:F0})"));
                                     oobClass[cls] = (oobClass.TryGetValue(cls, out var n) ? n : 0) + 1;
                                 }
@@ -653,6 +658,49 @@ namespace UiProcessApp
             if (parked) return "parked";
             if (edge) return "edge-pos";
             return "overhang";
+        }
+
+        /// <summary>Last script-recorded position per section (SetRelPos/SetAbsPos) from the
+        /// window's replay TSV, used to separate viewer placement bugs (rendered != script)
+        /// from authored/script-faithful overhang (docs/ui/UI_OOB_FIX_PLAN.md).</summary>
+        private static Dictionary<string, (string Kind, double X, double Y)> LoadRuntimePositions(string stem)
+        {
+            var map = new Dictionary<string, (string, double, double)>(StringComparer.Ordinal);
+            if (string.IsNullOrWhiteSpace(stem)) return map;
+            var path = Path.Combine(Paths.AppRoot, "Data", "runtime_state", stem + ".tsv");
+            if (!File.Exists(path)) return map;
+            foreach (var line in File.ReadLines(path))
+            {
+                var parts = line.Split('\t');
+                if (parts.Length < 4) continue;
+                if (parts[1] != "SetRelPos" && parts[1] != "SetAbsPos") continue;
+                if (double.TryParse(parts[2], out var x) && double.TryParse(parts[3], out var y))
+                    map[parts[0]] = (parts[1], x, y);
+            }
+            return map;
+        }
+
+        /// <summary>True when the rendered absolute position disagrees with the script's own last
+        /// SetRelPos/SetAbsPos (PosType 0 only; anchored placements are computed by the engine).
+        /// A mismatch is a viewer placement bug (class A), a match is script-faithful (class C).</summary>
+        private static bool RenderedMismatchesScript(IniFile ini, string sectionName, UiBuildResult build,
+                                                     Point abs,
+                                                     Dictionary<string, (string Kind, double X, double Y)> lastPos)
+        {
+            if (!lastPos.TryGetValue(sectionName, out var rp)) return false;
+            if (!ini.ByName.TryGetValue(sectionName, out var sec)) return false;
+            if (sec.GetInt("PosType") != 0) return false;
+            double ex = rp.X, ey = rp.Y;
+            if (rp.Kind == "SetRelPos")
+            {
+                var parentName = sec.Get("._Parent");
+                if (string.IsNullOrWhiteSpace(parentName) || !build.Elements.TryGetValue(parentName, out var pe))
+                    return false;
+                if (pe.Visibility != Visibility.Visible) return false;
+                var pp = pe.TransformToAncestor(build.Root).Transform(new Point(0, 0));
+                ex += pp.X; ey += pp.Y;
+            }
+            return Math.Abs(abs.X - ex) > 2.0 || Math.Abs(abs.Y - ey) > 2.0;
         }
 
         /// <summary>

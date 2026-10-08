@@ -10,16 +10,27 @@ labelled rather than "fixed" by invention.
 ## 1. Measured baseline (2026-10-07)
 
 **P0 is DONE** — `--audit` now writes every flagged element with its class
-(`oob[class] name (x,y wxh)`) and a `TOTAL oob classes:` line (no more 40/window cap).
-The uncapped split of **oob=7,690**:
+(`oob[class] name (x,y wxh)`) and a `TOTAL oob classes:` line (no more 40/window cap), and the
+`placed-wrong` detector (rendered vs the script's own `SetRelPos`/`SetAbsPos`) separates real
+viewer bugs from script-faithful overhang. After the first P3 fix (below), **oob=6,877**:
 
 | class | count | meaning |
 |---|---|---|
-| `overhang` | 3,516 | expected placement outside the frame; the engine draws it (C) |
-| `clipped` | 2,168 | under a `WndScroll` viewport / `$Clip` — the viewer clips it (D) |
-| `parked` | 1,633 | authored negative Left/Top on the parent chain (B candidate) |
-| `edge-pos` | 371 | edge-anchored PosType 3/4/5/9-12 (A candidate) |
+| `overhang` | 3,233 | expected placement outside the frame; the engine draws it (C) |
+| `clipped` | 1,679 | under a `WndScroll` viewport / `$Clip` — the viewer clips it (D) |
+| `parked` | 1,591 | authored/script off-window (C after the Selfie finding) |
+| `edge-pos` | 366 | edge-anchored PosType 3/4/5/9-12 (review) |
+| `placed-wrong` | 6 | rendered ≠ the script's own position — **real viewer bugs (A)** |
 | `clone` | 2 | runtime item clone (`__lt_*`) |
+
+**P3 first fix (2026-10-07): `FormatAllItemPos` no-runtime-items guard.** `UiLayout` flowed a
+`$FormatItems` container's *authored* children when no runtime items were appended (the engine's
+list is empty, so the call is a no-op). BigBagPanel's `Handle_Bg` decoration images were stacked
+into a row at x≈1927 and the bag's right-side controls (Btn_Drag/Scroll_List/…) were dragged to
+y=0 — outside the window. Guarding the flow removed **813 oob elements** (7,690 → 6,877) and 8
+`placed-wrong`; Btn_Drag is back at its scripted (580,610). Remaining `placed-wrong` (6): Album
+`Wnd_Thumb`, Coinshop_CheckOut `PageSet_CheckOut`, Coinshop_CantBuy `Wnd_Warning`, Collection
+`Image_BottomBg`, ExteriorBoxError `Wnd_Error`, CreditsPanel `Image_CreditsPanelBg`.
 
 The earlier capped analysis (first 40/window, 6,254 elements) gave scroll 1,194 · parked 1,347 ·
 negative-pos 457 · edge 149 · other 2,903, and the post-filter container 1,548 / leaf 1,204 /
@@ -152,6 +163,6 @@ ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --selftest   # 1240/0
 parent-chain walk, WndScroll clip HIGH from prior evidence); engine AutoSize default MED
 (DecodeItem 0x1800b86df; P1 confirms); A-vs-C split MED (needs P3 engine-rules review or GT).
 
-Last verified: 2026-10-07 (`--audit` oob=7,690 → overhang=3,516 clipped=2,168 parked=1,633
-edge-pos=371 clone=2; 1,123 root frames without AutoSize; 66 script-sized roots; `--selftest`
-1240/0/0).
+Last verified: 2026-10-07 (`--audit` oob=6,877 → overhang=3,233 clipped=1,679 parked=1,591
+edge-pos=366 placed-wrong=6 clone=2; the flow-guard fix removed 813; 1,123 root frames without
+AutoSize; 66 script-sized roots; `--selftest` 1240/0/0).
