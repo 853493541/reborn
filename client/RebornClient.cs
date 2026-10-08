@@ -364,6 +364,27 @@ internal static class RebornClient
             else Log("cooldowns: missing " + cdPath);
         }
         catch (Exception e) { Log("cooldowns load ex: " + e.Message); }
+        // passive abilities (ability_picker/tools/build_passives.py): the 39 script-only
+        // abilities whose Apply() triggers child casts / buffs (self, no target).
+        var passives = new System.Collections.Generic.Dictionary<string, string[]>();
+        string pvPath = Env("RC_PASSIVES",
+            Path.Combine(Application.StartupPath, "ability_picker", "passives_f1.tsv"));
+        try
+        {
+            if (File.Exists(pvPath))
+            {
+                int pl = 0;
+                foreach (string line in File.ReadAllLines(pvPath))
+                {
+                    if (pl++ == 0) continue;
+                    string[] p = line.Split('\t');
+                    if (p.Length >= 5 && p[0].Length > 0) passives[p[0]] = p;
+                }
+                Log("passives: " + passives.Count + " abilities from " + pvPath);
+            }
+            else Log("passives: missing " + pvPath);
+        }
+        catch (Exception e) { Log("passives load ex: " + e.Message); }
         // hotkey slots (RC_SLOTS overrides); keys 1..N select + cast a slot.
         string[] slotIds = Env("RC_SLOTS", "65029,65120,65087,65076,65036,65026").Split(',');
         int activeSlot = 0;
@@ -3318,7 +3339,8 @@ internal static class RebornClient
                         if (mrow.Length > 7 && int.TryParse(mrow[7], out nrow) && cooldowns.TryGetValue(nrow.ToString(), out cr)) { float d; if (float.TryParse(cr[1], out d)) cdMs = d * 1000f; }
                     }
                 }
-                if (ctg != null && !skillCast.Active && now >= castReadyAt && now >= gcdUntil
+                if ((ctg != null || passives.ContainsKey(selAbility)) && !skillCast.Active
+                    && now >= castReadyAt && now >= gcdUntil
                     && now >= cdForSkill && mana >= costMana && !skipIds.Contains(selAbility))
                 {
                     // v6 full chain: face the target, play the authored anim,
@@ -3336,8 +3358,11 @@ internal static class RebornClient
                         }
                     }
                     float effDash = selDash > 0f ? selDash : planMove;
+                    float tgx = ctg != null ? ctg.X : px;
+                    float tgy = ctg != null ? ctg.Y : py;
+                    float tgz = ctg != null ? ctg.Z : pz;
                     skillCast.Begin(now, selAbility, selAnimPath, selFxPath,
-                        px, pz, ctg.X, ctg.Y, ctg.Z, lyAnimMs, lyFxAt, selPrepareMs,
+                        px, pz, tgx, tgy, tgz, lyAnimMs, lyFxAt, selPrepareMs,
                         selChannelMs, lyStop, effDash);
                     curYaw = skillCast.FaceYaw();
                     skillUntil = now + skillCast.TotalMs();
@@ -3349,14 +3374,14 @@ internal static class RebornClient
                     setClip(selAnimPath);
                     camShake.Start(2.0, 0.5, 0.8, 3);
                     chained = true;
-                    Log("cast chain " + selAbility + ": target=" + ctg.ToString()
+                    Log("cast chain " + selAbility + ": target=" + (ctg != null ? ctg.ToString() : "self")
                         + " anim=" + selAnimPath + " fx=" + selFxPath
                         + " animMs=" + lyAnimMs + " prepareMs=" + selPrepareMs
                         + " channelMs=" + selChannelMs + " gcdMs=" + gcdMs + " cdMs=" + cdMs + " mana=" + mana
                         + " commitMs=" + skillCast.CommitMs() + " totalMs=" + skillCast.TotalMs()
                         + " fxAt=" + lyFxAt + " dash=" + effDash
                         + "u/f ->" + skillCast.DashMs() + "ms stop=" + lyStop
-                        + " dashTo=(" + ctg.X.ToString("F0") + "," + ctg.Z.ToString("F0") + ")");
+                        + " dashTo=(" + tgx.ToString("F0") + "," + tgz.ToString("F0") + ")");
                 }
                 else
                 {
@@ -3893,6 +3918,28 @@ internal static class RebornClient
                                 if (rr.Length > 6) castMode = rr[6];
                             }
                             MechanicPlan plan = MechanicProgram.Resolve(mr, funcType);
+                            // passive: run the Apply()-derived actions (child casts / buffs)
+                            string[] pv;
+                            if (passives.TryGetValue(skillCast.Name, out pv))
+                            {
+                                string children = pv.Length > 2 ? pv[2] : "";
+                                string pvBuffs = pv.Length > 3 ? pv[3] : "";
+                                Log("passive " + skillCast.Name + " -> child=[" + children + "] buffs=[" + pvBuffs + "]");
+                                combatText.Push("passive " + skillCast.Name + (children.Length > 0 ? (" -> " + children) : ""),
+                                    System.Drawing.Color.FromArgb(180, 220, 255));
+                                string[] cids = children.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                                for (int ci = 0; ci < cids.Length; ci++)
+                                {
+                                    string[] cmr;
+                                    if (mechanics.TryGetValue(cids[ci], out cmr))
+                                    {
+                                        MechanicPlan cp = MechanicProgram.Resolve(cmr, "");
+                                        TargetEntity ct = targetSelector.Current;
+                                        if (ct != null && cp.Damage > 0f) { ct.Hp -= (long)cp.Damage; if (ct.Hp < 0) ct.Hp = 0; }
+                                        Log("passive child " + cids[ci] + " " + cp.Summary());
+                                    }
+                                }
+                            }
                             float areaR = 0f; if (mr.Length > 14) float.TryParse(mr[14], out areaR);
                             TargetEntity cur = targetSelector.Current;
                             var affected = new System.Collections.Generic.List<TargetEntity>();

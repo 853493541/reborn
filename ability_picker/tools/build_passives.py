@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+"""Extract passive-ability effects from each skill script's `Apply()` function.
+
+The 39 "script-only" roster abilities are passives (function Apply); their designed
+behaviour runs when the skill is active. Parse the Apply body for the actions it
+performs: child casts (CastSkill/CastSkillXYZ/CastSkillByXYZ), buffs (AddBuff/
+SetBuff/player.AddBuff), and attribute adds.
+
+Emits ability_picker/data/passives_f1.tsv: skillId name childCasts buffs attrs.
+
+Reproduce:
+  .venv\\Scripts\\python.exe ability_picker\\tools\\build_passives.py
+"""
+import glob
+import os
+import re
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+DATA = os.path.join(HERE, "..", "data")
+CACHE = (r"C:\SeasunGame\Game\JX3\bin\zhcn_hd\SeasunDownloaderV2.4"
+         r"\jx3-web-map-viewer\cache-extraction\pakv4-probe")
+
+
+def find_skills_tab():
+    cands = glob.glob(os.path.join(CACHE, "**", "skills.tab"), recursive=True)
+    for pref in ("ad-desc-probe-out", "logic-skill"):
+        for c in cands:
+            if pref in c:
+                return c
+    return cands[0] if cands else None
+
+
+def script_path(sf):
+    root = os.path.join(CACHE, "ability-matcher", "extracted", "scripts", "skill")
+    p = os.path.join(root, sf.replace("\\", "/").replace("/", os.sep))
+    return p if os.path.exists(p) else None
+
+
+def apply_body(t):
+    m = re.search(r"function\s+Apply\s*\(([^)]*)\)", t)
+    if not m:
+        return ""
+    s = m.end()
+    depth = 1
+    # openers function/if/for/while (do pairs with for/while); closer end.
+    for tok in re.finditer(r"\b(function|if|for|while|end)\b", t[s:]):
+        if tok.group(1) == "end":
+            depth -= 1
+            if depth == 0:
+                return t[s:s + tok.start()]
+        else:
+            depth += 1
+    return t[s:]
+
+
+def main():
+    tab = find_skills_tab()
+    sfmap = {}
+    for l in open(tab, "rb").read().decode("gb18030", "replace").splitlines()[1:]:
+        c = l.split("\t")
+        if len(c) > 57 and c[1].isdigit():
+            sfmap[c[1]] = c[57]
+
+    ids = [l.split("\t")[0] for l in open(os.path.join(DATA, "script_only_f1.tsv"),
+                                          encoding="utf-8").read().splitlines()[1:] if l.strip()]
+    rows = []
+    tot_child = tot_buff = 0
+    for sid in ids:
+        sf = sfmap.get(sid)
+        p = script_path(sf) if sf else None
+        if not p:
+            rows.append((sid, "", "", "", ""))
+            continue
+        t = open(p, "rb").read().decode("gb18030", "replace")
+        body = apply_body(t)
+        child = re.findall(r"CastSkill(?:XYZ|ByXYZ|ByDirection)?\s*\(\s*(\d+)", body)
+        buffs = re.findall(r"Add(?:Buff|State|Aura)\w*\s*\(\s*(\d+)", body)
+        attrs = len(re.findall(r"AddAttribute\s*\(", body))
+        tot_child += len(child)
+        tot_buff += len(buffs)
+        rows.append((sid, "", ";".join(dict.fromkeys(child)), ";".join(dict.fromkeys(buffs)), str(attrs)))
+
+    tsv = os.path.join(DATA, "passives_f1.tsv")
+    with open(tsv, "w", encoding="utf-8", newline="\n") as f:
+        f.write("skillId\tname\tchildCasts\tbuffs\tattrs\n")
+        for r in rows:
+            f.write("\t".join(r) + "\n")
+    print("passives: %d rows (%d child casts, %d buffs) -> %s" % (len(rows), tot_child, tot_buff, tsv))
+    for r in rows[:8]:
+        print("  %s child=%s buffs=%s attrs=%s" % (r[0], r[2] or "-", r[3] or "-", r[4] or "-"))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -8092,3 +8092,16 @@ if the cache/host frames appear.
   loot selftest PASS.
 - **Next:** passive-aura path — extract each `Apply()` body's effects into a self-buff list
   (or run it via a Lua 5.1 VM).
+
+### 2026-10-08 — v6 — passive-aura path (the 39 passives)
+
+- **Did:** `build_passives.py` parses each passive script's `Apply()` body (block-depth
+  matcher) for child casts and buffs → `passives_f1.tsv` (39 rows; 40 child casts, 4 buffs).
+  The client loads it; a passive may be cast **without a target** (self) and at commit runs the
+  Apply-derived actions (child casts applied one level, buffs logged) with a combat-text line.
+- **Verified:** 27872 咄嗟 → `passive 27872 -> child=[27934]` (its `player.CastSkillXYZ(27934)`)
+  + `mechanic … [script]`; 65029 unaffected. Proof
+  `proof/netcode/skillv6_passives_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Open:** passive buff/attribute extraction; deeper Apply (function calls/tables); full cast
+  of the passive's child skills; Lua 5.1 VM for arbitrary Apply bodies.

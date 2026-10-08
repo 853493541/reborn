@@ -1,0 +1,20 @@
+# skill v6 — passive-aura path (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 983391d, dirty)
+# Change:
+#  - build_passives.py parses each of the 39 passive scripts' `Apply()` body (block-depth
+#    matcher) for child casts (CastSkill/CastSkillXYZ/...) and buffs -> passives_f1.tsv
+#    (39 rows; 40 child casts, 4 buffs).
+#  - client loads passives_f1.tsv; a passive ability may be cast without a target (self);
+#    at commit it runs the Apply-derived actions (child casts applied one level deep, buffs
+#    logged) and shows a "passive" combat-text line.
+
+## Driven run: RC_SLOTS=27872,65029 RC_CAST_AT=40000:1,52000:2
+passives: 39 abilities from ...\passives_f1.tsv
+cast chain 27872: ... (passive, target or self)
+passive 27872 -> child=[27934] buffs=[]            (Apply: player.CastSkillXYZ(27934,...))
+mechanic 27872 mode=PointArea -> 1 target(s) dmg=0.0 [script]
+cast chain 65029: ... (normal cast unaffected)
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open: passive buffs (AddBuff/attribute) extraction; deeper Apply (function calls, tables);
+#   applying the passive's child casts as full casts; Lua 5.1 VM for arbitrary Apply bodies.
