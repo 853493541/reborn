@@ -78,29 +78,31 @@ def main():
         sf = sfmap.get(sid)
         p = script_path(sf) if sf else None
         if not p:
-            rows.append((sid, "", "", "", ""))
+            rows.append((sid, "", "", "", "", ""))
             continue
         t = open(p, "rb").read().decode("gb18030", "replace")
         body = apply_body(t)
         child = re.findall(r"CastSkill(?:XYZ|ByXYZ|ByDirection)?\s*\(\s*(\d+)", body)
-        buffs = []
+        adds, dels = [], []
         for m in re.finditer(r"\.?(AddBuff|DelBuff\w*)\s*\(([^)]*)\)", body):
             b = first_numeric_arg(m.group(2))
-            if b:
-                buffs.append(b)
+            if not b:
+                continue
+            (adds if m.group(1) == "AddBuff" else dels).append(b)
         attrs = len(re.findall(r"AddAttribute\s*\(", body))
         tot_child += len(child)
-        tot_buff += len(buffs)
-        rows.append((sid, "", ";".join(dict.fromkeys(child)), ";".join(dict.fromkeys(buffs)), str(attrs)))
+        tot_buff += len(adds)
+        rows.append((sid, "", ";".join(dict.fromkeys(child)),
+                     ";".join(dict.fromkeys(adds)), ";".join(dict.fromkeys(dels)), str(attrs)))
 
     tsv = os.path.join(DATA, "passives_f1.tsv")
     with open(tsv, "w", encoding="utf-8", newline="\n") as f:
-        f.write("skillId\tname\tchildCasts\tbuffs\tattrs\n")
+        f.write("skillId\tname\tchildCasts\taddBuffs\tdelBuffs\tattrs\n")
         for r in rows:
             f.write("\t".join(r) + "\n")
-    print("passives: %d rows (%d child casts, %d buffs) -> %s" % (len(rows), tot_child, tot_buff, tsv))
+    print("passives: %d rows (%d child casts, %d add-buffs) -> %s" % (len(rows), tot_child, tot_buff, tsv))
     for r in rows[:8]:
-        print("  %s child=%s buffs=%s attrs=%s" % (r[0], r[2] or "-", r[3] or "-", r[4] or "-"))
+        print("  %s child=%s add=%s del=%s attrs=%s" % (r[0], r[2] or "-", r[3] or "-", r[4] or "-", r[5] or "-"))
     return 0
 
 

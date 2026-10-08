@@ -8137,3 +8137,14 @@ if the cache/host frames appear.
   loot selftest PASS.
 - **Open:** other `Apply` effects (DelBuff/CreateDoodad/CreateNpc/Dash/heal); buff
   durations/levels; Lua 5.1 VM for arbitrary bodies.
+
+### 2026-10-08 — v6 — passive AddBuff/DelBuff separated
+
+- **Did:** `build_passives.py` emits `addBuffs` and `delBuffs` as separate columns (53 add);
+  the client applies adds to the self-buff list and removes dels.
+- **Verified:** 27892 → `+buff=[20359;20354;20357;20356] -buff=[3479]`; 27874 → `+buff=[20292;20293]
+  -buff=[13986]`; overlay `515×30 sha256=11afbbab1e23c955`. Proof
+  `proof/netcode/skillv6_passives_addel_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Open:** other `Apply` effects (CreateDoodad/CreateNpc/Dash/heal); buff durations/levels;
+  Lua 5.1 VM for arbitrary bodies.

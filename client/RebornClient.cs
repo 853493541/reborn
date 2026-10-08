@@ -3924,11 +3924,14 @@ internal static class RebornClient
                             if (passives.TryGetValue(skillCast.Name, out pv))
                             {
                                 string children = pv.Length > 2 ? pv[2] : "";
-                                string pvBuffs = pv.Length > 3 ? pv[3] : "";
-                                Log("passive " + skillCast.Name + " -> child=[" + children + "] buffs=[" + pvBuffs + "]");
-                                string[] bids = pvBuffs.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                                string addBuffs = pv.Length > 3 ? pv[3] : "";
+                                string delBuffs = pv.Length > 4 ? pv[4] : "";
+                                Log("passive " + skillCast.Name + " -> child=[" + children + "] +buff=[" + addBuffs + "] -buff=[" + delBuffs + "]");
+                                string[] bids = addBuffs.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                                 for (int bi = 0; bi < bids.Length; bi++)
                                     if (!selfBuffs.Contains(bids[bi])) selfBuffs.Add(bids[bi]);
+                                string[] dids = delBuffs.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                                for (int di = 0; di < dids.Length; di++) selfBuffs.Remove(dids[di]);
                                 combatText.Push("passive " + skillCast.Name + (children.Length > 0 ? (" -> " + children) : ""),
                                     System.Drawing.Color.FromArgb(180, 220, 255));
                                 string[] cids = children.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);

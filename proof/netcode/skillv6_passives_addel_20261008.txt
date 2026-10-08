@@ -1,0 +1,13 @@
+# skill v6 — passive AddBuff/DelBuff separated (2026-10-08)
+# Build: reborn_client_skillv6.exe (git e4d9cf0, dirty)
+# Change: build_passives.py emits addBuffs and delBuffs as separate columns (53 add, N del);
+#   the client applies adds to the self-buff list and removes dels.
+
+## Driven run: RC_SLOTS=27892,27874 RC_CAST_AT=40000:1,52000:2
+passive 27892 -> child=[] +buff=[20359;20354;20357;20356] -buff=[3479]
+passive 27874 -> child=[27996] +buff=[20292;20293] -buff=[13986]
+# overlay buffer: proof/netcode/skillv6_selfbuffs2.png 515x30 sha256=11afbbab1e23c955
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open: other Apply effects (CreateDoodad/CreateNpc/Dash/heal); buff durations/levels;
+#   Lua 5.1 VM for arbitrary Apply bodies.
