@@ -1177,7 +1177,7 @@
    "effectResultId": "364",
    "effectSfx": "data\\source\\other\\HD特效\\技能\\Pss\\被击\\C_纯阳两仪爆02.pss",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "368",
@@ -1405,7 +1405,7 @@
    "effectResultId": "402",
    "effectSfx": "data\\source\\other\\HD特效\\技能\\Pss\\被击\\T_天策被击02.pss",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "404",
@@ -1513,7 +1513,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "425",
@@ -1537,7 +1537,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "427",
@@ -1885,7 +1885,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "526",
@@ -2725,7 +2725,7 @@
    "effectResultId": "710",
    "effectSfx": "data\\source\\other\\特效\\技能\\SFX\\被击\\被击_藏剑攻击02_单手剑_肉体.Sfx",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "1707",
@@ -2737,7 +2737,7 @@
    "effectResultId": "740",
    "effectSfx": "data\\source\\other\\特效\\技能\\SFX\\被击\\被击_藏剑攻击01_重剑_肉体.Sfx",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "1709",
@@ -2749,7 +2749,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "1710",
@@ -2761,7 +2761,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "1711",
@@ -2773,7 +2773,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "1712",
@@ -2785,7 +2785,7 @@
    "effectResultId": "730",
    "effectSfx": "data\\source\\other\\特效\\技能\\SFX\\被击\\被击_藏剑攻击03_重剑_肉体.Sfx",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "1793",
@@ -3565,7 +3565,7 @@
    "effectResultId": "364",
    "effectSfx": "data\\source\\other\\HD特效\\技能\\Pss\\被击\\C_纯阳两仪爆02.pss",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "2707",
@@ -3673,7 +3673,7 @@
    "effectResultId": "730",
    "effectSfx": "data\\source\\other\\特效\\技能\\SFX\\被击\\被击_藏剑攻击03_重剑_肉体.Sfx",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "2897",
@@ -4093,7 +4093,7 @@
    "effectResultId": "0",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "3118",
@@ -6241,7 +6241,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "3976",
@@ -6277,7 +6277,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "3981",
@@ -6301,7 +6301,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "3983",
@@ -10813,7 +10813,7 @@
    "effectResultId": "8135",
    "effectSfx": "data\\source\\other\\特效\\技能\\SFX\\被击\\C_苍云刀被击01.Sfx",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "13053",
@@ -10825,7 +10825,7 @@
    "effectResultId": "8131",
    "effectSfx": "data\\source\\other\\新特效\\技能\\Pss\\被击\\C_苍云爆04.pss",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 126
   },
   {
    "skillId": "13054",
@@ -10849,7 +10849,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "13059",
@@ -10909,7 +10909,7 @@
    "effectResultId": "8132",
    "effectSfx": "data\\source\\other\\新特效\\技能\\Pss\\被击\\C_苍云爆03.pss",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "13070",
@@ -11197,7 +11197,7 @@
    "effectResultId": "8118",
    "effectSfx": "data\\source\\other\\特效\\技能\\SFX\\被击\\被击_天策2.Sfx",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 120
   },
   {
    "skillId": "13275",
@@ -13837,7 +13837,7 @@
    "effectResultId": "8146",
    "effectSfx": "data\\source\\other\\新特效\\技能\\Pss\\被击\\B_霸刀腿被击01.pss",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "16031",
@@ -14221,7 +14221,7 @@
    "effectResultId": "8146",
    "effectSfx": "data\\source\\other\\新特效\\技能\\Pss\\被击\\B_霸刀腿被击01.pss",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "16605",
@@ -15361,7 +15361,7 @@
    "effectResultId": "740",
    "effectSfx": "data\\source\\other\\特效\\技能\\SFX\\被击\\被击_藏剑攻击01_重剑_肉体.Sfx",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "18324",
@@ -15793,7 +15793,7 @@
    "effectResultId": "0",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 120
   },
   {
    "skillId": "18752",
@@ -18037,7 +18037,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "21133",
@@ -18385,7 +18385,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 240
   },
   {
    "skillId": "21337",
@@ -19129,7 +19129,7 @@
    "effectResultId": "8199",
    "effectSfx": "data\\source\\other\\hd特效\\技能\\pss\\被击\\l_lxg剑被击.pss",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "22146",
@@ -19237,7 +19237,7 @@
    "effectResultId": "8328",
    "effectSfx": "data\\source\\other\\hd特效\\技能\\pss\\被击\\l_lxg鞭被击01.pss",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "22358",
@@ -19729,7 +19729,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "22913",
@@ -21385,7 +21385,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "24911",
@@ -21661,7 +21661,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "25096",
@@ -22849,7 +22849,7 @@
    "effectResultId": "364",
    "effectSfx": "data\\source\\other\\HD特效\\技能\\Pss\\被击\\C_纯阳两仪爆02.pss",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "26716",
@@ -24205,7 +24205,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 360
   },
   {
    "skillId": "28044",
@@ -24217,7 +24217,7 @@
    "effectResultId": "740",
    "effectSfx": "data\\source\\other\\特效\\技能\\SFX\\被击\\被击_藏剑攻击01_重剑_肉体.Sfx",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 360
   },
   {
    "skillId": "28045",
@@ -24817,7 +24817,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 160
   },
   {
    "skillId": "28533",
@@ -25105,7 +25105,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 120
   },
   {
    "skillId": "28773",
@@ -25237,7 +25237,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 120
   },
   {
    "skillId": "28888",
@@ -25621,7 +25621,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "29063",
@@ -25669,7 +25669,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "29071",
@@ -27445,7 +27445,7 @@
    "effectResultId": "816",
    "effectSfx": "data\\source\\other\\hd特效\\技能\\pss\\被击\\d_刀宗单手刀被击.pss",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "32135",
@@ -27457,7 +27457,7 @@
    "effectResultId": "816",
    "effectSfx": "data\\source\\other\\hd特效\\技能\\pss\\被击\\d_刀宗单手刀被击.pss",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "32140",
@@ -27505,7 +27505,7 @@
    "effectResultId": "815",
    "effectSfx": "data\\source\\other\\hd特效\\技能\\pss\\被击\\d_刀宗刀鞘被击.pss",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "32149",
@@ -27601,7 +27601,7 @@
    "effectResultId": "816",
    "effectSfx": "data\\source\\other\\hd特效\\技能\\pss\\被击\\d_刀宗单手刀被击.pss",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "32178",
@@ -28177,7 +28177,7 @@
    "effectResultId": "0",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "32781",
@@ -28213,7 +28213,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "32895",
@@ -28225,7 +28225,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "32916",
@@ -30181,7 +30181,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 120
   },
   {
    "skillId": "36059",
@@ -31321,7 +31321,7 @@
    "effectResultId": "0",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 50
   },
   {
    "skillId": "37334",
@@ -31813,7 +31813,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 120
   },
   {
    "skillId": "38012",
@@ -34369,7 +34369,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 90
   },
   {
    "skillId": "41196",
@@ -34897,7 +34897,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 200
   },
   {
    "skillId": "41275",
@@ -35089,7 +35089,7 @@
    "effectResultId": "8132",
    "effectSfx": "data\\source\\other\\新特效\\技能\\Pss\\被击\\C_苍云爆03.pss",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "41358",
@@ -35101,7 +35101,7 @@
    "effectResultId": "8132",
    "effectSfx": "data\\source\\other\\新特效\\技能\\Pss\\被击\\C_苍云爆03.pss",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 120
   },
   {
    "skillId": "41360",
@@ -35113,7 +35113,7 @@
    "effectResultId": "8132",
    "effectSfx": "data\\source\\other\\新特效\\技能\\Pss\\被击\\C_苍云爆03.pss",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 126
   },
   {
    "skillId": "41361",
@@ -35329,7 +35329,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 200
   },
   {
    "skillId": "41408",
@@ -35353,7 +35353,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 200
   },
   {
    "skillId": "41412",
@@ -36505,7 +36505,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 120
   },
   {
    "skillId": "42551",
@@ -36817,7 +36817,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 200
   },
   {
    "skillId": "43278",
@@ -37945,7 +37945,7 @@
    "effectResultId": "364",
    "effectSfx": "data\\source\\other\\HD特效\\技能\\Pss\\被击\\C_纯阳两仪爆02.pss",
    "effectBone": "S_fxmid",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "44428",
@@ -38281,7 +38281,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 100
   },
   {
    "skillId": "44576",
@@ -38305,7 +38305,7 @@
    "effectResultId": "",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 150
   },
   {
    "skillId": "44641",
@@ -38569,7 +38569,7 @@
    "effectResultId": "0",
    "effectSfx": "",
    "effectBone": "",
-   "dash": 0
+   "dash": 120
   },
   {
    "skillId": "44974",

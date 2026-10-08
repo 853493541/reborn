@@ -96,7 +96,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 361	凌太虚	data\source\player\F1\动作\F1scy03技能05-05.tani			0
 362	碎星辰	data\source\player\F1\动作\F1s03cy技能17b_碎星辰HD.tani			0
 363	吞日月	data\source\player\F1\动作\F1s03cy技能18b_吞日月HD.tani			0
-364	三环套月		data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆02.pss	S_fxmid	0
+364	三环套月		data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆02.pss	S_fxmid	100
 368	六合独尊	data\source\player\F1\动作\F1s03cy气技能14_六合HD.tani			0
 371	镇山河	data\source\player\F1\动作\F1s03cy技能13b_镇山河.tani			0
 372	转乾坤	data\source\player\F1\动作\F1s03cy剑技能16_乾坤HD.tani			0
@@ -115,7 +115,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 397	大道无术_3点气	data\source\player\F1\动作\F1scy03纯阳技能11_大道无术hd.tani			0
 398	大道无术_4点气	data\source\player\F1\动作\F1scy03纯阳技能11_大道无术hd.tani			0
 399	大道无术_5点气	data\source\player\F1\动作\F1scy03纯阳技能11_大道无术hd.tani			0
-402	天策-定军	data\source\player\F1\动作\F1s04tc技能21_定军HD.tani	data\source\other\HD特效\技能\Pss\被击\T_天策被击02.pss	S_fxmid	0
+402	天策-定军	data\source\player\F1\动作\F1s04tc技能21_定军HD.tani	data\source\other\HD特效\技能\Pss\被击\T_天策被击02.pss	S_fxmid	100
 404	天策-撼如雷	data\source\player\F1\动作\F1s04tc技能22_撼HD.tani			0
 405	天策-徐如林	data\source\player\F1\动作\F1stc04技能01-02.tani			0
 411	天策-掠如火	data\source\player\F1\动作\F1stc04技能01-03.tani			0
@@ -124,9 +124,9 @@ skillId	name	animTani	effectSfx	effectBone	dash
 420	天策-乱(未启用)	data\source\player\F1\动作\F1stc04枪攻击10.tani	data\source\other\特效\技能\SFX\被击\被击_天策攻击09.Sfx	S_fxmid	0
 421	大道无术_6点气	data\source\player\F1\动作\F1scy03纯阳技能11_大道无术hd.tani			0
 422	天策-啸如虎	data\source\player\F1\动作\F1s04tc技能25_啸如虎01HD.tani			0
-423	天策-灭	data\source\player\F1\动作\F1s04tc技能17_灭HD.tani			0
+423	天策-灭	data\source\player\F1\动作\F1s04tc技能17_灭HD.tani			100
 425	天策-御奔突	data\source\player\F1\动作\F1stc04骑乘02.tani	data\source\other\特效\技能\SFX\被击\被击_天策攻击09.Sfx	S_fxmid	0
-426	天策-破坚阵	data\source\player\F1\动作\F1s04tc技能27_骑乘破坚阵HD.tani			0
+426	天策-破坚阵	data\source\player\F1\动作\F1s04tc技能27_骑乘破坚阵HD.tani			100
 427	天策-战八方	data\source\player\F1\动作\F1s04tc技能29_骑乘_战八方hd.tani			0
 431	天策_子技能_突_伤害	data\source\player\F1\动作\F1s04tc技能14b_突HD.tani			0
 432	天策_子技能_疾_伤害眩晕		data\source\other\HD特效\技能\Pss\被击\t_天策龙吟被击01.pss	S_fxmid	0
@@ -155,7 +155,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 475	八卦洞玄_10点气	data\source\player\F1\动作\F1scy03纯阳技能10_八卦洞玄hd.tani			0
 479	天策-裂苍穹	Data\source\player\F1\动作\F1stc04枪攻击17-骑乘.tani			0
 480	天策-沧月	data\source\player\F1\动作\F1s04tc技能20_沧月hd.tani			0
-482	天策-崩	data\source\player\F1\动作\F1s04tc技能19_崩HD.tani			0
+482	天策-崩	data\source\player\F1\动作\F1s04tc技能19_崩HD.tani			100
 526	七秀治疗阵法施放	Data\source\player\F1\动作\F1b02ty阵法01.tani			0
 537	名动四方	data\source\player\F1\动作\F1s05qx剑舞开始_HD.tani			0
 543	羿射九日(废弃)	data\source\player\F1\动作\F1sqx05袖舞14-02.tani			0
@@ -225,12 +225,12 @@ skillId	name	animTani	effectSfx	effectBone	dash
 1682	高老庄_刺骨针(伤害)	data\source\player\F1\动作\F1stc04枪攻击20-陆战01.tani	data\source\other\特效\技能\SFX\被击\被击_射箭01.Sfx	S_fxmid	0
 1702	宇文宝藏_鹧鸪弓	Data\source\player\F1\动作\F1b01aq攻击01.tani			0
 1703	宇文宝藏_凝肌散	Data\source\player\F1\动作\F1b02dj扔馒头01.tani			0
-1706	藏剑_君子风_听雷_问水诀	data\source\player\F1\动作\F1s07cj内功轻剑12_听雷HD.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击02_单手剑_肉体.Sfx	S_fxmid	0
-1707	藏剑_君子风_听雷_山居剑意	data\source\player\F1\动作\F1s07cj内功重剑12_听雷HD.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击01_重剑_肉体.Sfx	S_fxmid	0
-1709	藏剑_君子风_惊涛_问水诀	data\source\player\F1\动作\F1s07cj内功轻剑14_惊涛HD.tani			0
-1710	藏剑_君子风_惊涛_山居剑意	data\source\player\F1\动作\F1s07cj内功重剑14_惊涛HD.tani			0
-1711	藏剑_君子风_醉月_问水诀	data\source\player\F1\动作\F1s07cj内功轻剑15_醉月HD.tani			0
-1712	藏剑_君子风_醉月_山居剑意	data\source\player\F1\动作\F1s07cj内功重剑15_醉月HD.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击03_重剑_肉体.Sfx	S_fxmid	0
+1706	藏剑_君子风_听雷_问水诀	data\source\player\F1\动作\F1s07cj内功轻剑12_听雷HD.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击02_单手剑_肉体.Sfx	S_fxmid	100
+1707	藏剑_君子风_听雷_山居剑意	data\source\player\F1\动作\F1s07cj内功重剑12_听雷HD.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击01_重剑_肉体.Sfx	S_fxmid	100
+1709	藏剑_君子风_惊涛_问水诀	data\source\player\F1\动作\F1s07cj内功轻剑14_惊涛HD.tani			100
+1710	藏剑_君子风_惊涛_山居剑意	data\source\player\F1\动作\F1s07cj内功重剑14_惊涛HD.tani			100
+1711	藏剑_君子风_醉月_问水诀	data\source\player\F1\动作\F1s07cj内功轻剑15_醉月HD.tani			100
+1712	藏剑_君子风_醉月_山居剑意	data\source\player\F1\动作\F1s07cj内功重剑15_醉月HD.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击03_重剑_肉体.Sfx	S_fxmid	100
 1793	夜射天狼_连射	Data\source\player\F1\动作\F1b01aq攻击01.tani	data\source\other\特效\技能\SFX\被击\被击_闪光01_枪木质.Sfx	S_fxmid	0
 1794	夜射天狼_瞄准射击	data\source\player\F1\动作\F1stc04枪攻击20-陆战02.tani	data\source\other\特效\技能\SFX\被击\被击_射箭01.Sfx	S_fxmid	0
 1866	藏剑阵法释放	Data\source\player\F1\动作\F1b02ty阵法01.tani			0
@@ -295,7 +295,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 2674	气纯_五方行尽	data\source\player\F1\动作\F1s03cy气技能13_五方HD.tani			0
 2681	气纯_紫气东来	data\source\player\F1\动作\F1s03cy技能19_紫气东来hd.tani			0
 2690	剑冲阴阳	data\source\player\F1\动作\F1s03cy剑技能17a_剑冲阴阳HD.tani			0
-2699	八荒归元	data\source\player\F1\动作\F1s03cy剑技能18_八荒HD.tani	data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆02.pss	S_fxmid	0
+2699	八荒归元	data\source\player\F1\动作\F1s03cy剑技能18_八荒HD.tani	data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆02.pss	S_fxmid	100
 2707	玳弦急曲	data\source\player\F1\动作\F1s05qx剑技能12_玳弦急曲HD.tani			0
 2716	剑破虚空	data\source\player\F1\动作\F1s05qx剑技能13_剑破虚空HD.tani			0
 2733	屈柘枝	data\source\player\F1\动作\F1sqx05buff01_zp霓裳劲舞.tani			0
@@ -304,7 +304,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 2759	映波锁澜	data\source\player\F1\动作\F1scj07重剑攻击02-空中碧环阮墩.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击03_重剑_肉体.Sfx	S_fxmid	0
 2768	潮鸣弦	data\source\player\F1\动作\F1scj07buff01_zp钟渡水.tani			0
 2855	寂灭厅_2号Boss_玩家_五毒失心散_Const	Data\source\player\F1\动作\F1b02dj扔彩球01.tani			0
-2896	藏剑_灵锋剑式_夕照雷锋_正常	data\source\player\F1\动作\f1scj07重剑攻击01a_01HD.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击03_重剑_肉体.Sfx	S_fxmid	0
+2896	藏剑_灵锋剑式_夕照雷锋_正常	data\source\player\F1\动作\f1scj07重剑攻击01a_01HD.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击03_重剑_肉体.Sfx	S_fxmid	100
 2897	藏剑_灵锋剑式_夕照雷锋_疏影	data\source\player\F1\动作\f1scj07重剑攻击01a_01HD.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击03_重剑_肉体.Sfx	S_fxmid	100
 2899	藏剑_灵锋剑式_云飞玉皇_近距离_疏影	data\source\player\F1\动作\F1s07cj重剑技能11b_云飞HD.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击01_重剑_肉体.Sfx	S_fxmid	100
 2900	藏剑_灵锋剑式_云飞玉皇_远距离_疏影	data\source\player\F1\动作\F1s07cj重剑技能11b_云飞HD.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击01_重剑_肉体.Sfx	S_fxmid	100
@@ -339,7 +339,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 3114	惊鸿游龙	Data\source\player\F1\动作\F1stm09BUFF01幻影.tani			0
 3115	荆天棘地	Data\source\player\F1\动作\F1stm09弩攻击03荆棘.tani			0
 3116	子母飞爪之子爪	Data\source\player\F1\动作\F1stm09钩子攻击01.ani			0
-3117	子母飞爪之母爪	Data\source\player\F1\动作\F1stm09钩子攻击02.ani			0
+3117	子母飞爪之母爪	Data\source\player\F1\动作\F1stm09钩子攻击02.ani			100
 3118	鸟翔碧空	data\source\player\F1\动作\F1stm09_鸟翔碧空01a_跳hd.tani			0
 3119	鸟翔碧空二段_滞空	data\source\player\F1\动作\F1stm09飞天上升01_展开机翼HD.tani			0
 3189	逐星箭_子技能_3级	Data\source\player\F1\动作\F1stm09弩攻击01迅疾箭.tani			0
@@ -518,12 +518,12 @@ skillId	name	animTani	effectSfx	effectBone	dash
 3972	极乐引·引	data\source\player\f1\动作\f1smj10双刀攻击17.ani			0
 3973	贪魔体	data\source\player\F1\动作\F1smj10乾坤大法buff02沙化.tani			0
 3974	暗尘弥散	data\source\player\F1\动作\F1smj10双刀buff03隐匿.tani			0
-3975	怖畏暗刑	data\source\player\F1\动作\F1smj10双刀攻击07a.tani			0
+3975	怖畏暗刑	data\source\player\F1\动作\F1smj10双刀攻击07a.tani			100
 3976	业海罪缚	data\source\player\F1\动作\F1smj10双刀攻击08.tani			0
 3978	生灭予夺	data\source\player\F1\动作\F1smj10圣火诀buff04逆袭.tani			0
-3980	戒火斩	data\source\player\F1\动作\F1smj10圣火诀buff01.tani			0
+3980	戒火斩	data\source\player\F1\动作\F1smj10圣火诀buff01.tani			100
 3981	归寂道	data\source\player\F1\动作\F1smj10乾坤大法buff04刺眼.tani			0
-3982	慈悲愿	data\source\player\F1\动作\F1smj10圣火诀buff03.tani			0
+3982	慈悲愿	data\source\player\F1\动作\F1smj10圣火诀buff03.tani			100
 3983	性命海	data\source\player\F1\动作\F1smj10圣火诀buff04.tani			0
 3984	渡厄力	data\source\player\F1\动作\F1smj10圣火诀buff05.tani			0
 3985	朝圣言	data\source\player\F1\动作\F1smj10圣火诀buff06hd.tani			0
@@ -899,15 +899,15 @@ skillId	name	animTani	effectSfx	effectBone	dash
 13048	盾舞	data\source\player\F1\动作\F1scy12刀舞_02.tani	data\source\other\特效\技能\SFX\被击\C_苍云盾舞被击01.Sfx	S_fxmid	0
 13049	盾墙	data\source\player\F1\动作\F1scy12盾墙01a_盾墙释放01.tani			0
 13050	盾飞	data\source\player\F1\动作\F1scy12盾飞01_01.tani			0
-13052	劫刀	data\source\player\F1\动作\F1scy12双手刀06_劫刀01.tani	data\source\other\特效\技能\SFX\被击\C_苍云刀被击01.Sfx	S_fxmid	0
-13053	闪刀	data\source\player\F1\动作\F1scy12双手刀02苍云闪刀.tani	data\source\other\新特效\技能\Pss\被击\C_苍云爆04.pss	S_fxmid	0
+13052	劫刀	data\source\player\F1\动作\F1scy12双手刀06_劫刀01.tani	data\source\other\特效\技能\SFX\被击\C_苍云刀被击01.Sfx	S_fxmid	100
+13053	闪刀	data\source\player\F1\动作\F1scy12双手刀02苍云闪刀.tani	data\source\other\新特效\技能\Pss\被击\C_苍云爆04.pss	S_fxmid	126
 13054	斩刀	data\source\player\F1\动作\F1scy12双手刀05_03.tani	data\source\other\新特效\技能\Pss\被击\C_苍云爆03.pss	S_fxmid	0
-13055	绝刀	data\source\player\F1\动作\F1scy12双手刀01绝刀01.tani			0
+13055	绝刀	data\source\player\F1\动作\F1scy12双手刀01绝刀01.tani			100
 13059	盾刀二段	data\source\player\F1\动作\F1scy12刀盾攻击02_01.tani	data\source\other\特效\技能\SFX\被击\C_苍云刀被击01.Sfx	S_fxmid	100
 13060	盾刀三段	data\source\player\F1\动作\F1scy12刀盾攻击04_01.tani	data\source\other\新特效\技能\Pss\被击\C_苍云爆03.pss	S_fxmid	100
 13061	菊花技能-控Boss	data\source\player\F1\动作\f1s重阳投掷菊花.tani			0
 13068	盾毅	data\source\player\F1\动作\F1scy12刀盾攻击11a.tani	data\source\other\新特效\技能\Pss\被击\C_苍云爆03.pss	S_fxmid	126
-13069	盾抛	data\source\player\F1\动作\F1scy12刀盾投技02_盾抛HD.tani	data\source\other\新特效\技能\Pss\被击\C_苍云爆03.pss	S_fxmid	0
+13069	盾抛	data\source\player\F1\动作\F1scy12刀盾投技02_盾抛HD.tani	data\source\other\新特效\技能\Pss\被击\C_苍云爆03.pss	S_fxmid	100
 13070	盾壁	data\source\player\F1\动作\F1scy12刀盾buff01盾壁01.tani			0
 13072	盾护	data\source\player\F1\动作\F1scy12刀盾buff01_苍云盾护01.tani			0
 13101	盾猛无视免疫击退效果	data\source\player\F1\动作\F1scy12刀盾攻击11b.tani	data\source\other\新特效\技能\Pss\被击\C_苍云爆03.pss	S_fxmid	0
@@ -931,7 +931,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 13228	临川列山阵释放	Data\source\player\F1\动作\F1b02ty阵法01.tani			0
 13252	史思明_十殿阎罗_传功	data\source\player\F1\动作\F1s02ty对掌a吟唱.tani			0
 13253	史思明_十殿阎罗_出掌	data\source\player\F1\动作\F1s02ty对掌b爆击蓝.tani			0
-13269	盾猛冲刺	data\source\player\F1\动作\F1scy12刀盾攻击11a.tani	data\source\other\特效\技能\SFX\被击\被击_天策2.Sfx	S_fxmid	0
+13269	盾猛冲刺	data\source\player\F1\动作\F1scy12刀盾攻击11a.tani	data\source\other\特效\技能\SFX\被击\被击_天策2.Sfx	S_fxmid	120
 13275	锋凌横绝阵施放	Data\source\player\F1\动作\F1b02ty阵法01.tani			0
 13284	隐刀障碍冲刺一	data\source\player\F1\动作\F1scy12双手刀03a_隐刀01.tani	data\source\other\新特效\技能\Pss\被击\C_苍云隐刀01.pss	S_fxmid	120
 13285	隐刀障碍冲刺二	data\source\player\F1\动作\F1scy12双手刀03b_隐刀01.tani	data\source\other\新特效\技能\Pss\被击\C_苍云隐刀01.pss	S_fxmid	120
@@ -1151,7 +1151,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 15999	方士_招魂	data\source\player\F1\动作\F1b02ty招魂01b_01.tani			0
 16000	方士_挖宝	data\source\player\F1\动作\F1b02ty招魂01b_01.tani			0
 16027	刀啸风吟	Data\source\player\F1\动作\F1s14bd拔刀技能01b_01.tani	data\source\other\新特效\技能\Pss\被击\B_霸刀被击04.pss	S_fxmid	0
-16028	龙骧虎步	Data\source\player\F1\动作\F1s14bd腿技能01_双刀_01.tani	data\source\other\新特效\技能\Pss\被击\B_霸刀腿被击01.pss	S_fxmid	0
+16028	龙骧虎步	Data\source\player\F1\动作\F1s14bd腿技能01_双刀_01.tani	data\source\other\新特效\技能\Pss\被击\B_霸刀腿被击01.pss	S_fxmid	100
 16031	镖师_投石问路	data\source\player\F1\动作\F1b02ty投石闪光.tani			0
 16033	破阵舞·和众	data\source\player\F1\动作\F1b02ty艺人舞蹈01_一级.tani			0
 16034	破阵舞·安定	data\source\player\F1\动作\F1b02ty艺人舞蹈02_一级.tani			0
@@ -1183,7 +1183,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 16481	割据秦宫二段眩晕	Data\source\player\F1\动作\F1s14bd大刀技能02b_01.tani	data\source\other\新特效\技能\Pss\被击\B_霸刀大刀被击01.pss	S_fxmid	0
 16482	割据秦宫三段击倒	Data\source\player\F1\动作\F1s14bd大刀技能02c刀光.tani	data\source\other\新特效\技能\Pss\被击\B_霸刀大刀被击01.pss	S_fxmid	0
 16595	绝云逐电	Data\source\player\F1\动作\F1s14bd腿技能04b_双刀_01.tani			0
-16598	雷走风切	Data\source\player\F1\动作\F1s14bd腿技能03_双刀_01.tani	data\source\other\新特效\技能\Pss\被击\B_霸刀腿被击01.pss	S_fxmid	0
+16598	雷走风切	Data\source\player\F1\动作\F1s14bd腿技能03_双刀_01.tani	data\source\other\新特效\技能\Pss\被击\B_霸刀腿被击01.pss	S_fxmid	100
 16605	崩雪潮对移动目标伤害	Data\source\player\F1\动作\F1s14bd双刀技能05_01.tani			0
 16621	坚壁清野	Data\source\player\F1\动作\F1s14bd拔刀技能02b_01.tani	data\source\other\新特效\技能\Pss\被击\B_霸刀被击04.pss	S_fxmid	0
 16627	上将军印	data\source\player\F1\动作\F1s14bd大刀技能07_01.tani	data\source\other\新特效\技能\Pss\被击\B_霸刀大刀被击01.pss	S_fxmid	0
@@ -1278,7 +1278,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 18251	骑乘_飞翼马车_空格表现_主人	data\source\player\F1\动作\F1飞机马车主控pst01.ani			0
 18253	骑乘_飞翼马车_空格表现_客人	data\source\player\F1\动作\F1飞机马车副控pst01_01.tani			0
 18291	明教拉人免死	data\source\player\F1\动作\f1smj10双刀攻击11_明教新拉人hd.tani			0
-18317	厌高_云飞最大伤害	data\source\player\F1\动作\F1s07cj重剑技能11_奇穴_云飞HD.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击01_重剑_肉体.Sfx	S_fxmid	0
+18317	厌高_云飞最大伤害	data\source\player\F1\动作\F1s07cj重剑技能11_奇穴_云飞HD.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击01_重剑_肉体.Sfx	S_fxmid	100
 18324	原地鹤归附带驱散效果	Data\source\player\F1\动作\F1s07cj重剑技能14_奇穴_鹤归孤山hd.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击01_重剑_肉体.Sfx	S_fxmid	0
 18333	原地风来吴山	Data\source\player\F1\动作\F1s07cj重剑技能15_奇穴_风来吴山hd.tani			0
 18383	藏剑三柴剑法有特效	Data\source\player\F1\动作\F1b03cy攻击01_藏剑hd.tani	data\source\other\特效\技能\SFX\被击\被击_临时血光01_J.Sfx	S_fxmid	0
@@ -1314,7 +1314,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 18706	弄影影子冲刺	data\source\player\F1\动作\F1s13cg剑技能09_醉剑HD.tani			0
 18707	啸影模仿目标	data\source\player\F1\动作\F1s13cg剑技能10_醉剑HD.tani			0
 18739	万世顺发蓄力	data\source\player\F1\动作\F1s03cy气技能19a_新万世HD.tani			0
-18751	无释放需求剑冲阴阳	data\source\player\F1\动作\F1s03cy剑技能17a_剑冲阴阳HD.tani			0
+18751	无释放需求剑冲阴阳	data\source\player\F1\动作\F1s03cy剑技能17a_剑冲阴阳HD.tani			120
 18752	流血增强龙吟伤害	data\source\player\F1\动作\F1s04tc技能12_龙吟hd_aoe_全出.tani	data\source\other\HD特效\技能\Pss\被击\t_天策龙吟被击01.pss	S_fxmid	0
 18761	风吹荷表现轻剑	data\source\player\F1\动作\F1s07cj内功轻剑16_风吹荷hd.tani			0
 18762	风吹荷表现重剑	data\source\player\F1\动作\F1s07cj内功重剑16_风吹荷hd.tani			0
@@ -1501,7 +1501,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 21055	骑乘_雪橇犬_场景	data\source\player\F1\动作\F1Hxueqiao01_上车01.ani			0
 21075	百里追魂_飞天	data\source\player\F1\动作\F1stm09飞天攻击01a_飞天狙击HD.tani			0
 21129	木落雁归奇穴表现	Data\source\player\F1\动作\F1s15pl伞技能02_木落雁归奇穴hd.tani			0
-21132	空中破坚阵	data\source\player\F1\动作\F1sqg04tc技能27_破坚阵hd.tani			0
+21132	空中破坚阵	data\source\player\F1\动作\F1sqg04tc技能27_破坚阵hd.tani			100
 21133	空中任驰骋	data\source\player\F1\动作\F1sqg04tc技能03_任驰骋hd.tani			0
 21134	空中战八方	data\source\player\F1\动作\F1sqg04tc技能29_战八方hd.tani			0
 21140	没藏呼月_一剑决被击	data\source\player\f1\动作\f1npc_bat01_没藏呼月.ani			0
@@ -1530,7 +1530,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 21313	狂剑势（剑纯）	data\source\player\F1\动作\F1s03cy如月剑字诀01_hd.tani			0
 21314	唯剑势（剑纯）	data\source\player\F1\动作\F1s03cy如月剑字诀01_hd.tani			0
 21315	浪剑势（剑纯）	data\source\player\F1\动作\F1s03cy如月剑字诀01_hd.tani			0
-21317	画影残月（剑纯）	data\source\player\F1\动作\F1scy03画影残月b.ani			0
+21317	画影残月（剑纯）	data\source\player\F1\动作\F1scy03画影残月b.ani			240
 21337	3号_发射鱼枪子技能	data\source\player\f1\动作\f1b02ty飞镖01b.ani			0
 21362	骑乘_猪坐骑空格	data\source\player\F1\动作\F1H猪_pst04.ani			0
 21421	炸弹人_圆形炸弹	data\source\player\f1\动作\f1b02yd丢炸弹.ani			0
@@ -1592,7 +1592,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 22097	少林_因陀罗裂闪（启动）	data\source\player\F1\动作\f1ssl04少林防御反击_金刚01hd.tani			0
 22099	少林_大力伐折罗	data\source\player\F1\动作\f1s04sl伏魔杖连打01_hd.tani			0
 22143	星垂平野	data\source\player\F1\动作\F1s16lxg剑技能01a_HD.tani	data\source\other\hd特效\技能\pss\被击\l_lxg剑被击.pss	S_fxmid	0
-22144	金戈回澜	data\source\player\F1\动作\F1s16lxg剑技能02b_HD.tani	data\source\other\hd特效\技能\pss\被击\l_lxg剑被击.pss	S_fxmid	0
+22144	金戈回澜	data\source\player\F1\动作\F1s16lxg剑技能02b_HD.tani	data\source\other\hd特效\技能\pss\被击\l_lxg剑被击.pss	S_fxmid	100
 22146	星垂平野二段	data\source\player\F1\动作\F1s16lxg剑技能01b_HD.tani	data\source\other\hd特效\技能\pss\被击\l_lxg剑被击.pss	S_fxmid	0
 22147	星垂平野三段	data\source\player\F1\动作\F1s16lxg剑技能01c_HD.tani	data\source\other\hd特效\技能\pss\被击\l_lxg剑被击.pss	S_fxmid	0
 22150	骤雨寒江	Data\source\player\F1\动作\F1s16lxg剑技能03_HD.tani	data\source\other\hd特效\技能\pss\被击\l_lxg剑被击.pss	S_fxmid	0
@@ -1601,7 +1601,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 22288	岚尘金蛇（藏剑）	data\source\player\F1\动作\F1scj07胧蛇剑舞a_01_hd.tani			0
 22289	蝮蛇出洞（藏剑）	data\source\player\F1\动作\F1scj07胧蛇剑舞b_01_hd.tani			0
 22296	暴烛毒葬（藏剑）	data\source\player\F1\动作\F1s07cj胧蛇剑舞b02_hd.tani			0
-22327	寂洪荒	Data\source\player\F1\动作\F1s16lxg鞭技能03_01hd.tani	data\source\other\hd特效\技能\pss\被击\l_lxg鞭被击01.pss	S_fxmid	0
+22327	寂洪荒	Data\source\player\F1\动作\F1s16lxg鞭技能03_01hd.tani	data\source\other\hd特效\技能\pss\被击\l_lxg鞭被击01.pss	S_fxmid	100
 22358	斩无常	data\source\player\f1\动作\f1s16lxg鞭技能04_01HD.tani	data\source\other\hd特效\技能\pss\被击\l_lxg鞭被击01.pss	S_fxmid	0
 22360	崔嵬鬼步	Data\source\player\F1\动作\F1s16lxg技能01_hd.tani			0
 22361	幽冥窥月	Data\source\player\F1\动作\F1s16lxg链技能04_hd.tani			0
@@ -1642,7 +1642,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 22861	蔷薇列岛神机台_扫射	data\source\player\F1\动作\F1神机台001_at01_a.ani			0
 22862	蔷薇列岛神机台_扫射技能伤害	data\source\player\F1\动作\F1神机台001_at02_b_箭.tani			0
 22887	铁血·乱天狼双手表现	data\source\player\F1\动作\F1s16lxg鞭技能01_hd.tani			0
-22890	交替破魔触发招式	data\source\player\F1\动作\F1smj10组合刀攻击07_hd.tani			0
+22890	交替破魔触发招式	data\source\player\F1\动作\F1smj10组合刀攻击07_hd.tani			100
 22913	天策特殊武器_狼阵绝炎冲	data\source\player\f1\动作\F1s04tc红莲龙胆06_挑枪_hd.tani			0
 22913	天策特殊武器_狼阵绝炎冲	data\source\player\f1\动作\F1s04tc红莲龙胆06_挑枪_hd.tani			0
 22953	丐帮新版特殊武器_九龙升景AOE	data\source\player\f1\动作\f1b11gb九龙升景c_01_hd.tani			0
@@ -1780,7 +1780,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 24877	鬼星开穴山艮卦象表现	data\source\player\F1\动作\f1s17ytz魂灯技02_hd.tani			0
 24886	千斤坠实际自身范围aoe	data\source\player\f1\动作\f1ssl04轻功01缓冲_千斤坠坠地.tani			0
 24892	乘龙箭_通道	data\source\player\f1\动作\f1s04tc技能33_骑乘_乘龙箭01HD.tani			0
-24897	天策_马上灭	data\source\player\f1\动作\f1s04tc技能17_骑乘_灭HD.tani			0
+24897	天策_马上灭	data\source\player\f1\动作\f1s04tc技能17_骑乘_灭HD.tani			100
 24911	新大针	data\source\player\f1\动作\f1swh01针灸05_大针01HD.tani			0
 24913	听风吹雪_和敌方换血	data\source\player\F1\动作\F1s01wh针灸16_听风HD.tani			0
 24916	乘墨由心	data\source\player\f1\动作\f1b01wh点穴23_洒墨01HD.tani			0
@@ -1803,7 +1803,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 25051	玩家_水枪AOE	Data\source\player\F1\动作\F1stm09机关攻击02_01.tani			0
 25058	圣元阵	data\source\player\f1\动作\f1b08cd治疗04_蝶群01.tani			0
 25070	飞来闻踪	data\source\player\f1\动作\f1s07cj重剑技能19.tani			0
-25095	横断山河	data\source\player\f1\动作\f1s14bd拔刀技能08a_hd.tani			0
+25095	横断山河	data\source\player\f1\动作\f1s14bd拔刀技能08a_hd.tani			100
 25096	横断山河击飞目标	data\source\player\f1\动作\f1s14bd拔刀技能08b_hd.tani			0
 25097	横断山河二段冲刺	data\source\player\f1\动作\f1s14bd拔刀技能08c_hd.tani			120
 25107	鸿蒙天禁_中性	data\source\player\F1\动作\F1s17ytz星相技03_鸿蒙天禁hd.tani			0
@@ -1902,7 +1902,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 26511	骑乘_紫微金阙交椅_空格	Data\source\player\F1\动作\F1HZQ_轿子01_pst01.ani			0
 26531	心法秘籍升级空技能	data\source\player\F1\动作\F1b02dj打坐b02释放_HD.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击03_重剑_肉体.Sfx	S_fxmid	0
 26638	帮会联赛大旗手摧城锋附加击倒	data\source\player\F1\动作\F1b02xs攻击05加强.tani			0
-26699	万剑归宗二段	data\source\player\F1\动作\F1s03cy剑技能13b_hd.tani	data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆02.pss	S_fxmid	0
+26699	万剑归宗二段	data\source\player\F1\动作\F1s03cy剑技能13b_hd.tani	data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆02.pss	S_fxmid	100
 26716	绳爪	data\source\player\F1\动作\F1smj10组合刀攻击10_影子日.tani			0
 26738	水中浮游天地表现	data\source\player\f1\动作\f1s15pl姿态切换02_浮游天地HD.tani			0
 26757	黑豹跳跃表现技	data\source\player\f1\动作\f1bqg凌雪阁加强_豹人跳_伤害01HD.tani			0
@@ -2015,8 +2015,8 @@ skillId	name	animTani	effectSfx	effectBone	dash
 27966	27966 道具_星楼月影	data\source\player\F1\动作\F1s01wh技能12_星楼月影hd.tani			0
 27967	道具_风来吴山	data\source\player\F1\动作\F1s07cj重剑技能15_风来吴山HD.tani			0
 27969	道具_孤影化双	Data\source\player\F1\动作\F1s13cg琴技能11a_01.tani			0
-28029	空穴来风	data\source\player\f1\动作\f1Lz02_藏剑俯冲b01_冯度空穴来风01.tani			0
-28044	空穴来风_5层	data\source\player\f1\动作\f1sqg09tm针攻击02冯度aoe.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击01_重剑_肉体.Sfx	S_fxmid	0
+28029	空穴来风	data\source\player\f1\动作\f1Lz02_藏剑俯冲b01_冯度空穴来风01.tani			360
+28044	空穴来风_5层	data\source\player\f1\动作\f1sqg09tm针攻击02冯度aoe.tani	data\source\other\特效\技能\SFX\被击\被击_藏剑攻击01_重剑_肉体.Sfx	S_fxmid	360
 28045	道具_伪九霄风雷加速	data\source\player\F1\动作\F1h唐门弩车001b_技能01.ani			0
 28046	道具_伪九霄风雷冲撞	data\source\player\F1\动作\F1h唐门弩车001b_技能03.ani			0
 28085	歌朵兰漠仙人掌	data\source\player\F1\动作\f1b01yd扔石头_盗宝贼.tani			0
@@ -2066,7 +2066,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 28497	冯度_斗转金移	data\source\player\f1\动作\f1lz02_aq攻击24_冯度花钱消灾01.tani			0
 28498	冯度_斗转金移_烟雾	data\source\player\f1\动作\f1Lz02_buff01_冯度_斗转金移.tani			0
 28513	山风满楼区域效果	data\source\player\F1\动作\F1stm09弩攻击10_山风满楼01.tani			0
-28525	方宇谦_漾剑式	data\source\player\f1\动作\f1lz03_雪海散华c_方宇谦_漾剑式.tani			0
+28525	方宇谦_漾剑式	data\source\player\f1\动作\f1lz03_雪海散华c_方宇谦_漾剑式.tani			160
 28533	青圃着尘	data\source\player\f1\动作\f1s18yz手术刀技04_手术刀大招.tani			0
 28561	求凰_女娲解除控制	data\source\player\F1\动作\F1swd08变身02_女娲补天.tani			0
 28571	方宇谦_定波式反击	data\source\player\f1\动作\f1Lz03_伞技能04b_方宇谦_定波式01_PT.tani			0
@@ -2090,7 +2090,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 28768	谢云流_渐影凝视	data\source\player\f1\动作\f1lz02_cy气技能19b_谢云流渐影凝视01.tani			0
 28769	谢云流_居合贯诚	data\source\player\f1\动作\f1lz03_轻剑攻击01_谢云流居合贯诚01.tani			0
 28770	谢云流_居合贯诚_3级	data\source\player\f1\动作\f1lz03_轻剑攻击01_谢云流.ani			0
-28772	卫栖梧_百步缠丝手	data\source\player\f1\动作\F1Lz02_掌法攻击05a_卫栖梧_PT.tani			0
+28772	卫栖梧_百步缠丝手	data\source\player\f1\动作\F1Lz02_掌法攻击05a_卫栖梧_PT.tani			120
 28773	卫栖梧_百步缠丝手_子技能	data\source\player\f1\动作\F1Lz02_掌法攻击05a_卫栖梧_PT.tani			120
 28777	谢云流_渐影凝视_3级单体	data\source\player\f1\动作\f1lz02_cy气技能19b_谢云流渐影凝视01.tani			0
 28781	飞云回转刀	data\source\player\f1\动作\f1Lz10_xlsf01_卫栖梧_释放01_PT.tani			0
@@ -2101,7 +2101,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 28881	土崩炸弹_表现	data\source\player\f1\动作\f1lz02_大刀技能02b_提多罗吒_土崩炸弹.tani			0
 28882	傲然刀势_表现	data\source\player\f1\动作\F1Lz10_双刀buff04_卫栖梧_PT.tani			0
 28883	气血蚕食法_表现	data\source\player\f1\动作\f1s01wh点穴18.ani			0
-28885	28885 城复于隍_大击退	Data\source\player\F1\动作\F1sqg11gb冲刺01a_HD.tani			0
+28885	28885 城复于隍_大击退	Data\source\player\F1\动作\F1sqg11gb冲刺01a_HD.tani			120
 28888	卫栖梧_百步缠丝手动作一	data\source\player\f1\动作\F1Lz02_掌法攻击07b_卫栖梧_PT.tani			0
 28889	卫栖梧_百步缠丝手动作二	data\source\player\f1\动作\F1Lz02_掌法攻击08_卫栖梧_PT.tani			0
 28913	奔狼踏月式_冲锋	data\source\player\f1\动作\f1lz04_红莲龙胆02_陆寻奔狼踏月式02.tani			160
@@ -2133,11 +2133,11 @@ skillId	name	animTani	effectSfx	effectBone	dash
 29043	天原绝境_照明火把释放	data\source\player\f1\动作\f1_b01aq攻击24_丢雪球.tani			0
 29051	天原绝境_燧石单体	Data\source\player\F1\动作\F1b02dj扔火把01.tani			0
 29054	谢云流_气刃法	data\source\player\f1\动作\f1lz03_cy气技能19b_萧武宗_气刃释放.tani			0
-29059	青霄飞羽移动技能_左	data\source\player\F1\动作\F1s13cg琴技能18_空l_青霄飞羽位移.tani			0
+29059	青霄飞羽移动技能_左	data\source\player\F1\动作\F1s13cg琴技能18_空l_青霄飞羽位移.tani			100
 29063	五行术土遁动作	data\source\player\f1\动作\f1smj10乾坤大法buff02c1.tani			0
 29064	源明雅_武傀召来_复活	data\source\player\f1\动作\f1lz02_召唤剑气_源明雅_武傀召来.tani			0
 29066	29066 矢尽兵穷_决斗场	data\source\player\F1\动作\F1scy12刀盾buff06_决斗场01.tani			0
-29070	青霄飞羽移动技能_右	data\source\player\F1\动作\F1s13cg琴技能18_空r_青霄飞羽位移.tani			0
+29070	青霄飞羽移动技能_右	data\source\player\F1\动作\F1s13cg琴技能18_空r_青霄飞羽位移.tani			100
 29071	不愧君	data\source\player\F1\动作\F1s13cg剑技能12_不愧君.tani			0
 29080	明丹心	data\source\player\F1\动作\F1s13cg琴技能19_明丹心.tani			0
 29106	枪断晴川_单体伤害	data\source\player\f1\动作\f1lz04_tc技能21_陆寻枪断晴川01.tani			0
@@ -2285,12 +2285,12 @@ skillId	name	animTani	effectSfx	effectBone	dash
 32023	回忆录_暗龙火冲_母技能	data\source\player\f1\动作\f1scy12刀盾攻击11_持国天王_暗龙火冲02.tani			0
 32077	骑乘_葫芦鸭_空格	data\source\player\F1\动作\F1HWJ_葫芦鸭01_pst01.ani			0
 32105	回忆录_蝠王红蝠掠影落地动作回归	data\source\player\f1\动作\f1lz15_伞技能06b_持国天王.ani			0
-32133	停云势	data\source\player\F1\动作\F1s18dz技能02.tani	data\source\other\hd特效\技能\pss\被击\d_刀宗单手刀被击.pss	S_fxmid	0
-32135	断云势	data\source\player\F1\动作\F1s18dz技能04.tani	data\source\other\hd特效\技能\pss\被击\d_刀宗单手刀被击.pss	S_fxmid	0
+32133	停云势	data\source\player\F1\动作\F1s18dz技能02.tani	data\source\other\hd特效\技能\pss\被击\d_刀宗单手刀被击.pss	S_fxmid	100
+32135	断云势	data\source\player\F1\动作\F1s18dz技能04.tani	data\source\other\hd特效\技能\pss\被击\d_刀宗单手刀被击.pss	S_fxmid	100
 32140	驰风八步·一段		data\source\other\hd特效\技能\pss\被击\d_刀宗单手刀被击.pss	S_fxmid	0
 32141	驰风八步·二段		data\source\other\hd特效\技能\pss\被击\d_刀宗单手刀被击.pss	S_fxmid	0
 32145	孤锋破浪	data\source\player\F1\动作\F1s18dz双持技03.tani			0
-32147	洗兵雨	data\source\player\F1\动作\F1s18dz擒拿02.tani	data\source\other\hd特效\技能\pss\被击\d_刀宗刀鞘被击.pss	S_fxmid	0
+32147	洗兵雨	data\source\player\F1\动作\F1s18dz擒拿02.tani	data\source\other\hd特效\技能\pss\被击\d_刀宗刀鞘被击.pss	S_fxmid	100
 32149	行云势实际伤害一段	data\source\player\F1\动作\F1s18dz技能01a.tani	data\source\other\hd特效\技能\pss\被击\d_刀宗单手刀被击.pss	S_fxmid	0
 32150	行云势实际伤害二段	data\source\player\F1\动作\F1s18dz技能01b.tani	data\source\other\hd特效\技能\pss\被击\d_刀宗单手刀被击.pss	S_fxmid	0
 32151	行云势实际伤害三段	data\source\player\F1\动作\F1s18dz技能01c.tani	data\source\other\hd特效\技能\pss\被击\d_刀宗单手刀被击.pss	S_fxmid	0
@@ -2298,7 +2298,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 32166	冲刺决云势实际伤害	data\source\player\F1\动作\F1s18dz技能03a.tani			120
 32167	断云势实际伤害		data\source\other\hd特效\技能\pss\被击\d_刀宗单手刀被击.pss	S_fxmid	0
 32174	按虎式·一段	data\source\player\F1\动作\F1s18dz技能05a.tani			0
-32175	按虎式·二段	data\source\player\F1\动作\F1s18dz身法06.tani	data\source\other\hd特效\技能\pss\被击\d_刀宗单手刀被击.pss	S_fxmid	0
+32175	按虎式·二段	data\source\player\F1\动作\F1s18dz身法06.tani	data\source\other\hd特效\技能\pss\被击\d_刀宗单手刀被击.pss	S_fxmid	100
 32178	凝神式少量反击伤害	data\source\player\F1\动作\F1s18dz技能05c.tani	data\source\other\hd特效\技能\pss\被击\d_刀宗单手刀被击.pss	S_fxmid	0
 32216	沧浪三叠一段实际伤害	data\source\player\F1\动作\F1s18dz双持技01a.tani	data\source\other\hd特效\技能\pss\被击\d_刀宗双手刀被击.pss	S_fxmid	0
 32217	沧浪三叠二段实际伤害	data\source\player\F1\动作\F1s18dz双持技01b.tani	data\source\other\hd特效\技能\pss\被击\d_刀宗双手刀被击.pss	S_fxmid	0
@@ -2346,11 +2346,11 @@ skillId	name	animTani	effectSfx	effectBone	dash
 32747	分山劲_吹角关山_狂战士大招二段	data\source\player\f1\动作\f1scy12刀盾buff04_血染雁关02.tani			0
 32753	寂灭蛊	data\source\player\f1\动作\f1swd08涅槃.tani			0
 32766	触石雨伤害效果	data\source\player\F1\动作\F1s18dz擒拿03b.tani	data\source\other\hd特效\技能\pss\被击\d_刀宗刀鞘被击.pss	S_fxmid	0
-32776	剑引龙泉2段	data\source\player\f1\动作\f1scj07剑引龙泉02b_剑灵斩重击.tani			0
+32776	剑引龙泉2段	data\source\player\f1\动作\f1scj07剑引龙泉02b_剑灵斩重击.tani			100
 32781	韶景飘芳	data\source\player\f1\动作\f1sqg05qx剑技能18_转圈圈.tani			0
 32791	衍天宗_列宿游	data\source\player\f1\动作\f1s17ytz符技07.tani			0
-32894	将临阵马上子技能	data\source\player\f1\动作\f1s04tc技能30_骑乘_傲血挑飞.tani			0
-32895	将临阵马下子技能	data\source\player\F1\动作\F1s04tc技能19_崩HD.tani			0
+32894	将临阵马上子技能	data\source\player\f1\动作\f1s04tc技能30_骑乘_傲血挑飞.tani			100
+32895	将临阵马下子技能	data\source\player\F1\动作\F1s04tc技能19_崩HD.tani			100
 32916	暗度·怒锋倾套	data\source\player\F1\动作\F1s18dz技能06c.tani			0
 32940	真实斩杀冲刺技	data\source\player\F1\动作\F1s18dz技能06b.tani			200
 32974	横刀单持普通攻击	data\source\player\F1\动作\F1s18dz普通攻击01.tani	data\source\other\hd特效\技能\pss\被击\d_刀宗单手刀被击.pss	S_fxmid	0
@@ -2513,7 +2513,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 36007	万灵山庄_霖集簇追尝试2目标	data\source\player\F1\动作\F1s20wl弓技能02b.tani			0
 36008	万灵山庄_霖集簇追尝试3目标	data\source\player\F1\动作\F1s20wl弓技能02b.tani			0
 36009	万灵山庄_霖集簇追尝试4目标	data\source\player\F1\动作\F1s20wl弓技能02b.tani			0
-36045	万灵山庄_游雾乘云跳跃	data\source\player\F1\动作\F1HA393_小跳a.ani			0
+36045	万灵山庄_游雾乘云跳跃	data\source\player\F1\动作\F1HA393_小跳a.ani			120
 36059	岚微香馥	data\source\player\f1\动作\f1s18yz毒技07_治疗药雾01.tani			0
 36066	万灵山庄_乘黄吼叫矩形控制	data\source\player\F1\动作\F1HA393_小跳a.ani			0
 36067	北天药宗_香繁饮露_强化招式	data\source\player\f1\动作\f1s18yz治疗08_无方加速buff01.tani			0
@@ -2608,7 +2608,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 37316	芳姿畅音	data\source\player\f1\动作\f1s05qx剑技能33.tani			0
 37329	程沐华_天养生息法_移动端五毒灵素	data\source\player\f1\动作\f1lz02_wh01蓄力06_程沐华_天养蓄力.tani			0
 37330	程沐华_天养生息法_移动端其它奶	data\source\player\f1\动作\f1lz02_wh01蓄力06_程沐华_天养蓄力.tani			0
-37332	扑粉匀香	data\source\player\F1\动作\F1s08cd冲刺01a.tani			0
+37332	扑粉匀香	data\source\player\F1\动作\F1s08cd冲刺01a.tani			50
 37334	天养生息法_移动端奶职业二段母技能	data\source\player\f1\动作\f1Lz02_wh01辅助技能02_程沐华_天养释放.tani			0
 37336	崇光斩恶子技能	data\source\player\F1\动作\F1smj10组合刀攻击11a.tani			0
 37336	崇光斩恶子技能	data\source\player\F1\动作\F1smj10组合刀攻击11a.tani			0
@@ -2649,7 +2649,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 38008	破穴	data\source\player\F1\动作\f1s21ds指法03.tani			0
 38009	引窍	data\source\player\F1\动作\f1s21ds指法04b.tani			0
 38010	雾暗迷云	data\source\player\F1\动作\f1s21ds技能04b.tani			0
-38011	风流云散	data\source\player\F1\动作\F1s21ds步法01_F.tani			0
+38011	风流云散	data\source\player\F1\动作\F1s21ds步法01_F.tani			120
 38012	雪重花满	data\source\player\F1\动作\f1s21dsbuff01.tani			0
 38013	月落参横	data\source\player\F1\动作\f1s21dsbuff02.tani			0
 38016	雾刃飞光一段	data\source\player\F1\动作\f1s21ds技能05a.tani			0
@@ -2862,7 +2862,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 41191	奇境_日曜2	data\source\player\F1\动作\F1smj10组合刀攻击04_日斩.tani			0
 41192	奇境_日曜3	data\source\player\F1\动作\F1smj10组合刀攻击06_杀戮日.tani			0
 41193	奇境_月晦1	data\source\player\F1\动作\F1smj10双刀攻击04_月斩.tani			0
-41194	奇境_月晦2	data\source\player\F1\动作\F1smj10双刀攻击06b三连.tani			0
+41194	奇境_月晦2	data\source\player\F1\动作\F1smj10双刀攻击06b三连.tani			90
 41196	奇境_宫	Data\source\player\F1\动作\F1s13cg琴技能04b_01.tani			0
 41197	奇境_商	Data\source\player\F1\动作\F1s13cg琴技能03_01.tani			0
 41198	奇境_角	Data\source\player\F1\动作\F1s13cg琴技能01_01.tani			0
@@ -2906,7 +2906,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 41267	奇境_霜天剑泠	data\source\player\f1\动作\f1s05qx剑技能29_hd.tani			0
 41268	奇境_剑影留痕	data\source\player\F1\动作\F1s05qx剑技能16_剑影留痕HD.tani			0
 41272	奇境_剑出鸿蒙	data\source\player\F1\动作\F1s03cy气技能20_hd.tani			0
-41274	武器_突冲刺	data\source\player\F1\动作\F1s04tc技能14a_突HD.tani			0
+41274	武器_突冲刺	data\source\player\F1\动作\F1s04tc技能14a_突HD.tani			200
 41275	武器_突击倒1-3秒	data\source\player\F1\动作\F1s04tc技能14b_突HD.tani			0
 41323	青鹅膏菇	Data\source\player\F1\动作\F1b01aq攻击24.ani			0
 41325	公孙二娘_流霞点绛_冲刺结束刺剑动作	data\source\player\f1\动作\f1lz03_sk96_公孙二娘.tani			0
@@ -2922,9 +2922,9 @@ skillId	name	animTani	effectSfx	effectBone	dash
 41353	奇境_往者定	data\source\player\F1\动作\F1s17ytz符技04_者HD.tani			0
 41354	奇境_神皆寂	data\source\player\F1\动作\F1s17ytz符技05_hd.tani			0
 41355	寻宝_追命箭实际运功	Data\source\player\F1\动作\F1stm09弩攻击03夺命01.tani			0
-41357	盾击	data\source\player\F1\动作\F1scy12刀盾攻击05_03.tani	data\source\other\新特效\技能\Pss\被击\C_苍云爆03.pss	S_fxmid	0
-41358	盾猛	data\source\player\F1\动作\f1scy12刀盾攻击07_hd.tani	data\source\other\新特效\技能\Pss\被击\C_苍云爆03.pss	S_fxmid	0
-41360	斩刀	data\source\player\F1\动作\F1scy12双手刀05_03.tani	data\source\other\新特效\技能\Pss\被击\C_苍云爆03.pss	S_fxmid	0
+41357	盾击	data\source\player\F1\动作\F1scy12刀盾攻击05_03.tani	data\source\other\新特效\技能\Pss\被击\C_苍云爆03.pss	S_fxmid	100
+41358	盾猛	data\source\player\F1\动作\f1scy12刀盾攻击07_hd.tani	data\source\other\新特效\技能\Pss\被击\C_苍云爆03.pss	S_fxmid	120
+41360	斩刀	data\source\player\F1\动作\F1scy12双手刀05_03.tani	data\source\other\新特效\技能\Pss\被击\C_苍云爆03.pss	S_fxmid	126
 41361	绝刀	data\source\player\F1\动作\F1scy12双手刀01绝刀01.tani	data\source\other\新特效\技能\Pss\被击\C_苍云爆04.pss	S_fxmid	0
 41362	奇境_三环套月A段表现	data\source\player\F1\动作\F1s03cy剑技能11c_三环HD.tani			0
 41363	奇境_三环套月B段表现	data\source\player\F1\动作\F1s03cy剑技能11b_三环HD.tani			0
@@ -2942,9 +2942,9 @@ skillId	name	animTani	effectSfx	effectBone	dash
 41388	武器_听雷	data\source\player\F1\动作\F1s07cj内功轻剑12_听雷HD.tani			0
 41390	武器_风来吴山	data\source\player\F1\动作\F1s07cj重剑技能15_风来吴山HD.tani			0
 41405	奇境_人剑合一	Data\source\player\F1\动作\F1scy03自绝经脉02.tani			0
-41407	武器_鹤归孤山冲刺子技能	data\source\player\f1\动作\f1sqg07cj重剑技能16a_松舍问霞hd.tani			0
+41407	武器_鹤归孤山冲刺子技能	data\source\player\f1\动作\f1sqg07cj重剑技能16a_松舍问霞hd.tani			200
 41408	武器_鹤归孤山伤害子技能	Data\source\player\F1\动作\F1s07cj重剑技能14_奇穴_鹤归孤山hd.tani			0
-41411	武器_梦泉虎跑冲刺子技能	data\source\player\F1\动作\F1s07cj轻剑技能16b_梦泉虎跑hd.tani			0
+41411	武器_梦泉虎跑冲刺子技能	data\source\player\F1\动作\F1s07cj轻剑技能16b_梦泉虎跑hd.tani			200
 41412	武器_梦泉虎跑伤害子技能	data\source\player\F1\动作\F1s07cj轻剑技能16a_梦泉虎跑hd.tani			0
 41413	奇境-1-木落雁归	Data\source\player\F1\动作\F1s15pl伞技能02_木落雁归hd.tani			0
 41415	奇境-3-逐波灵游	Data\source\player\F1\动作\F1s15pl掌技能空01e_01hd.tani			0
@@ -3040,7 +3040,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 42504	太白蚀昴	data\source\player\f1\动作\f1s17ytz占卜技04.tani			0
 42516	梦鲤_1	data\source\player\F1\动作\F1s05qx剑技能14_剑转流云HD.tani			0
 42520	御前星实际伤害	data\source\player\F1\动作\F1s17ytz符技04_者HD.tani			0
-42529	断水流	data\source\player\F1\动作\f1s13cg剑技能01b.tani			0
+42529	断水流	data\source\player\F1\动作\f1s13cg剑技能01b.tani			120
 42551	普通攻击枪_表现	Data\source\player\F1\动作\F1b04qi攻击01_梅花枪hd.tani			0
 42557	普通攻击_笔_表现	Data\source\player\F1\动作\F1b01bi攻击01_判官HD.tani	data\source\other\HD特效\技能\Pss\被击\W_万花被击_普攻.pss	S_fxmid	0
 42558	人剑发招表现	data\source\player\F1\动作\F1s03cy剑技能15_人剑合一hd.tani			0
@@ -3066,7 +3066,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 43078	事件_PQ700_跳舞三	data\source\player\f1\动作\f1b01ty黑走马02c.ani			0
 43087	普通攻击-牵丝轮攻击	data\source\player\f1\动作\f1s22wxl普通攻击01.tani			0
 43089	落笼簿施法表现技能	data\source\player\f1\动作\f1s22wxl浮空01a.tani			0
-43227	武器_金戈回澜链接子技能	data\source\player\F1\动作\F1s16lxg剑技能02b_HD.tani			0
+43227	武器_金戈回澜链接子技能	data\source\player\F1\动作\F1s16lxg剑技能02b_HD.tani			200
 43278	闹须弥子技能	Data\source\player\F1\动作\F1s14bd双刀技能05_01.tani	data\source\other\新特效\技能\Pss\被击\B_霸刀被击05.pss	S_fxmid	0
 43283	闹须弥流血伤害加强版	Data\source\player\F1\动作\F1s14bd双刀技能05_01.tani	data\source\other\新特效\技能\Pss\被击\B_霸刀被击05.pss	S_fxmid	0
 43291	背挂_弹布尔_使用	data\source\player\F1\动作\F1b01ty弹布尔01b.ani			0
@@ -3160,7 +3160,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 44390	借树生花二段	data\source\player\F1\动作\F1s18yz毒技10b.tani			0
 44403	霸刀专属斗气奇穴	data\source\player\f1\动作\f1s14bd双刀技能11.tani			0
 44419	阳关三叠	data\source\player\f1\动作\f1s13cg琴技能06b.ani			0
-44427	不争	data\source\player\F1\动作\F1s03cy剑技能13b_hd.tani	data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆02.pss	S_fxmid	0
+44427	不争	data\source\player\F1\动作\F1s03cy剑技能13b_hd.tani	data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆02.pss	S_fxmid	100
 44428	万世不竭瞬发	data\source\player\F1\动作\F1s03cy气技能19a_新万世HD.tani			0
 44448	明教_回灵技能表现	data\source\player\F1\动作\F1smj10组合刀攻击03_日轮.tani			0
 44448	明教_回灵技能表现	data\source\player\F1\动作\F1smj10组合刀攻击01_日轮.tani			0
@@ -3188,9 +3188,9 @@ skillId	name	animTani	effectSfx	effectBone	dash
 44520	疾锋摧锐	data\source\player\F1\动作\F1stm09匕首02.ani			0
 44545	影雷刺	data\source\player\f1\动作\f1s16lxg剑技能09_凌雪遮挡.tani			0
 44552	鹿鸣放鹿动作表现	data\source\player\F1\动作\F1s13cg琴技能19_明丹心.tani			0
-44558	摩诃无量_奇穴aoe版	data\source\player\F1\动作\F1s04sl棍技能14_HD03.tani			0
+44558	摩诃无量_奇穴aoe版	data\source\player\F1\动作\F1s04sl棍技能14_HD03.tani			100
 44576	橙武额外破穴	data\source\player\F1\动作\f1s21ds指法03.tani			0
-44593	端午节_赛艇_喷气冲锋	data\source\player\F1\动作\F1H龙舟_前进01.ani			0
+44593	端午节_赛艇_喷气冲锋	data\source\player\F1\动作\F1H龙舟_前进01.ani			150
 44641	木_木灵_春风和气	data\source\player\f1\动作\f1Lz02_wh01辅助技能02_程沐华_天养释放.tani			0
 44659	水-上善若水-超链接	data\source\player\f1\动作\f1lz02_sk04_源明雅_水灵符.tani			0
 44666	水流链接	data\source\player\F1\动作\F1s01tyBuff03.ani			0
@@ -3212,7 +3212,7 @@ skillId	name	animTani	effectSfx	effectBone	dash
 44835	目标获得基于已损气血的护盾	data\source\player\f1\动作\f1lz02_sk04_源明雅_土灵符.tani			0
 44850	木_灵药寄生_蕴灵寄生	data\source\player\F1\动作\F1Lz02_sk16_程沐华_扁鹊推手01.tani			0
 44924	震耳欲聋	data\source\player\f1\动作\f1lz02_双刀buff05_秦雷_钱南撰角抵技巧.tani			0
-44944	金_聂云普通强化版	data\source\player\F1\动作\f1lz02_sk13a_肖红_冲刺黄01.tani			0
+44944	金_聂云普通强化版	data\source\player\F1\动作\f1lz02_sk13a_肖红_冲刺黄01.tani			120
 44974	行云触发治疗事件子技能	Data\source\player\F1\动作\F1s13cg琴技能05徵治疗.tani			0
 44975	金_强化聂云二段招式	data\source\player\f1\动作\f1lz03_sk02a_拓跋思南_冲.tani			0
 44980	骑乘_帮会坐骑001_表现	data\source\player\F1\动作\F1HWJ_鹿灯坐骑001_pst02.ani			0

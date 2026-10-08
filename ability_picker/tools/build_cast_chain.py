@@ -107,20 +107,20 @@ def load_script_map(cache):
     return m
 
 
-def load_script_texts(root):
-    """ScriptFile-relative path -> script text, walking a scripts/skill directory."""
-    texts = {}
+def load_scripts(root):
+    """ScriptFile-relative path -> raw script bytes, walking a scripts/skill dir."""
+    out = {}
     if not os.path.isdir(root):
-        return texts
+        return out
     for dp, ds, fs in os.walk(root):
         for f in fs:
             if f.lower().endswith(".lua"):
                 p = os.path.join(dp, f)
                 try:
-                    texts[os.path.relpath(p, root)] = read_gbk(p)
+                    out[os.path.relpath(p, root)] = open(p, "rb").read()
                 except Exception:
                     pass
-    return texts
+    return out
 
 
 def extract_scripts(dest, script_files):
@@ -135,10 +135,61 @@ def extract_scripts(dest, script_files):
     return os.path.join(dest, "scripts", "skill")
 
 
-def parse_dash(text):
-    """The dash speed (engine u/frame) from a skill script, or 0."""
-    if not text or text[:4] == "\x1bLua":
+# ---- dash / child extraction (text + Lua 5.1 bytecode) --------------------
+_REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.join(_REPO, "tools", "netcode"))
+try:
+    import lua51_dump as _L
+except Exception:
+    _L = None
+
+
+def _protos(data):
+    if _L is None or data[:4] != b"\x1bLua":
+        return
+    r = _L.Reader(data, data[6] == 1, data[8], data[7], data[10], bool(data[11]))
+    r.o = 12
+    stack = [_L.read_proto(r)]
+    while stack:
+        p = stack.pop()
+        yield p
+        stack.extend(p["protos"])
+
+
+def _attr_arg(code, consts, name, want_arg):
+    """GETTABLE consts['name'] -> the want_arg-th LOADK const before the CALL."""
+    for pc, ins in enumerate(code):
+        if _L.OPCODES[ins & 0x3F] != "GETTABLE":
+            continue
+        C = (ins >> 14) & 0x1FF
+        if not (C & 0x100) or consts[C & 0xFF] != name:
+            continue
+        loads = []
+        for k in range(pc + 1, min(pc + 6, len(code))):
+            op = code[k] & 0x3F
+            if _L.OPCODES[op] == "LOADK":
+                bx = (code[k] >> 14) & 0x3FFFF
+                loads.append(consts[bx] if 0 <= bx < len(consts) else None)
+            elif _L.OPCODES[op] == "CALL":
+                break
+        if len(loads) > want_arg:
+            return loads[want_arg]
+    return None
+
+
+def parse_dash(data):
+    """Dash speed (engine u/frame) from a script (text or bytecode), or 0."""
+    if not data:
         return 0
+    if data[:4] == b"\x1bLua":
+        for p in _protos(data):
+            for name, arg in (("DASH", 0), ("DASH_FORWARD", 1), ("DASH_BACKWARD", 1),
+                              ("DASH_LEFT", 1), ("DASH_RIGHT", 1), ("DASH_TO_POINT", 0)):
+                v = _attr_arg(p["code"], p["consts"], name, arg)
+                if isinstance(v, (int, float)):
+                    return int(v)
+        return 0
+    text = data.decode("gb18030", "replace")
     m = re.search(r"ATTRIBUTE_TYPE\.DASH\s*,\s*(\d+)", text)
     if m:
         return int(m.group(1))
@@ -152,9 +203,16 @@ def parse_dash(text):
     return 0
 
 
-def parse_child(text):
-    if not text or text[:4] == "\x1bLua":
+def parse_child(data):
+    if not data:
         return ""
+    if data[:4] == b"\x1bLua":
+        for p in _protos(data):
+            v = _attr_arg(p["code"], p["consts"], "CAST_SKILL_TARGET_DST", 0)
+            if isinstance(v, (int, float)):
+                return str(int(v))
+        return ""
+    text = data.decode("gb18030", "replace")
     m = re.search(r"CAST_SKILL_TARGET_DST\s*,\s*(\d+)", text)
     return m.group(1) if m else ""
 
@@ -188,19 +246,19 @@ def main():
         scripts_root = extract_scripts(tmp, script_map.values())
     if not scripts_root:
         scripts_root = os.path.join(args.cache, "ability-matcher", "extracted", "scripts", "skill")
-    script_texts = load_script_texts(scripts_root)
+    script_texts = load_scripts(scripts_root)
 
     def dash_for(sid):
         """Dash speed (u/frame): the skill's own script, or its CAST_SKILL_TARGET_DST child."""
         sp = script_map.get(sid, "")
         if not sp:
             return 0
-        d = parse_dash(script_texts.get(sp, ""))
+        d = parse_dash(script_texts.get(sp, b""))
         if d:
             return d
-        ch = parse_child(script_texts.get(sp, ""))
+        ch = parse_child(script_texts.get(sp, b""))
         if ch:
-            d = parse_dash(script_texts.get(script_map.get(ch, ""), ""))
+            d = parse_dash(script_texts.get(script_map.get(ch, ""), b""))
         return d
 
     abilities = []

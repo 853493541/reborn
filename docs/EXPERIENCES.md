@@ -7810,3 +7810,16 @@ if the cache/host frames appear.
   `dash=0` (parse cannot read AddAttribute args); a bytecode-aware dash extractor
   (lua51 instruction decode) is the next step for full coverage.
 - Verified: builder exit=0; dataset regenerated.
+
+### 2026-10-07 — v6 — bytecode-aware dash extractor (dash coverage 31 -> 95)
+
+- **Did:** the builder now parses **Lua 5.1 bytecode** scripts too (`lua51_dump` reused):
+  `_attr_arg` walks the instruction stream for `GETTABLE ATTRIBUTE_TYPE['<DASH*>']` and
+  returns the LOADK argument (DASH -> arg0, DASH_FORWARD/BACKWARD/LEFT/RIGHT -> arg1
+  speed; `CAST_SKILL_TARGET_DST` -> arg0 child). Dash coverage **31 -> 95** abilities.
+- **Verified:** `65029` dash=120; top dash skills sensible (`空穴来风` 360,
+  `画影残月（剑纯）` 240, `触石雨冲刺技能`/`疾回马枪冲刺`/`鹤归孤山冲刺` 200).
+- **Wart:** DASH(distance) vs DASH_FORWARD(frames,speed) have different semantics but
+  are both consumed as "u/frame" by `SkillCast`; correct for 龙牙 (DASH 120); revisit if
+  a skill's dash misbehaves.
+- Verified: builder exit=0; dataset regenerated; 65029 still 120.
