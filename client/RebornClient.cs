@@ -5191,7 +5191,11 @@ internal static class RebornClient
                     ? (targetSelector.Current.Hp + "/" + targetSelector.Current.MaxHp) : "-")
                 + "  mana " + mana.ToString("F0")
                 + "  gcd " + (gcdUntil > now ? (gcdUntil - now) + "ms" : "ready")
-                + "  buffs " + selfBuffs.Count);
+                + "  buffs " + selfBuffs.Count
+                + (targetSelector.Current != null
+                    ? ("  tgt[" + targetSelector.Current.Buffs.Count + "b"
+                        + (targetSelector.Current.CcUntil > now ? (" " + targetSelector.Current.CcType) : "") + "]")
+                    : ""));
             combatText.SetCast(skillCast.Active ? skillCast.Name : "",
                 skillCast.Active ? skillCast.ElapsedPct(now) : 0f);
             combatText.PlaceTop(form);

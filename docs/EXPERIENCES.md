@@ -8159,3 +8159,12 @@ if the cache/host frames appear.
   loot selftest PASS.
 - **Open (P5):** target-frame buff/CC icons; world-projected floating numbers; per-icon cooldown
   on the ability panel.
+
+### 2026-10-08 — v6 — P5: target CC/buff surfaced in status
+
+- **Did:** the combat-overlay status line now includes the target's state `tgt[<buffs>b <CC>]`
+  (buff count + active CC type), alongside self mana/GCD/self-buffs.
+- **Verified:** 65116 (cc=Daze) → overlay `588×30 sha256=5a63ca44fad267df` (width grew from the
+  `tgt[..Daze]` field); `proof/netcode/skillv6_tgtcc.png`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Open (P5):** buff/CC icons on the target frame widget; world-projected floating numbers.

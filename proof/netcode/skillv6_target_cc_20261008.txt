@@ -1,0 +1,12 @@
+# skill v6 — P5: target CC/buff surfaced in status (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 6fc1ea4, dirty)
+# Change: the combat-overlay status line now includes the target's state: "tgt[<buffs>b <CC>]"
+#   (buff count + active CC type), alongside self mana/GCD/self-buffs.
+
+## Driven run: RC_SLOTS=65116 RC_CAST_AT=40000:1 RC_CT_DUMP=proof\netcode\skillv6_tgtcc.png RC_CT_DUMP_ALL=1
+mechanic 65116 mode=TargetSingle -> 1 target(s) dmg=0.0 cc=Daze knockdown child=65117
+# overlay buffer: proof/netcode/skillv6_tgtcc.png 588x30 sha256=5a63ca44fad267df
+#   (width grew from the "tgt[..Daze]" field)
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open (P5): buff/CC icons on the target frame widget; world-projected floating numbers.
