@@ -5302,6 +5302,12 @@ internal static class RebornClient
                 skillCast.Active ? skillCast.ElapsedPct(now) : 0f);
             combatText.PlaceTop(form);
             combatText.UpdateLayered();
+            // ability panel (layered): re-render each frame so it stays above the engine.
+            if (abilityPanel != null && abilityPanel.Visible)
+            {
+                abilityPanel.Attach(form);
+                abilityPanel.UpdateLayered();
+            }
             // (ability bar removed: the P panel is the single ability UI; key 1 casts)
             // target frame (Targeting.cs): real client UI composited over the viewport
             if (targetFrame != null && targetHudOn)

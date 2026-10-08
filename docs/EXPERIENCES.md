@@ -8470,6 +8470,17 @@ if the cache/host frames appear.
   casts. Proof `proof/netcode/skillv6_panel_ui_20261008.txt`. Gates: jx3_model 10 PASS,
   gravity PASS, loot selftest PASS.
 
+### 2026-10-08 — v6 — ability panel rewritten as a layered window + catalogs
+
+- **Did:** rewrote `AbilityPanel` as a **layered window** (buffer + `UpdateLayeredWindow`, like the
+  working overlays) so it renders **above the engine child window** — a plain Form's top was
+  occluded. Icons drawn manually, clicks hit-tested, mouse-wheel scroll. Icons 36→**29 px**
+  (−20%). Removed the header/description. Added **catalogs**: `测试` (the 5 individually-verified
+  abilities) on top, then `全部`.
+- **Verified:** `ability panel: 154 entries, 154 icons, 2 catalogs`; buffer
+  `proof/netcode/skillv6_panel2.png 320×640 sha256=a556cebbd7b19904`. Gates: jx3_model 10 PASS,
+  gravity PASS, loot selftest PASS.
+
 ### 2026-10-08 — v6 — abilities verified (batch 7, partial)
 
 - **Verified (run interrupted):** 65108 (dispel buff-=8), 65109 (child 65110;65111;65112), 65118

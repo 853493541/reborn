@@ -1,0 +1,14 @@
+# skill v6 — ability panel: layered + catalogs + smaller icons + no header (2026-10-08)
+# Build: reborn_client_skillv6.exe
+# Changes:
+#  - AbilityPanel rewritten as a LAYERED window (WS_EX_LAYERED|NOACTIVATE|TOOLWINDOW), rendered
+#    into a buffer and blitted with UpdateLayeredWindow -> sits ABOVE the engine child window, so
+#    its TOP is no longer occluded (a plain Form's top was blocked). Icons are drawn manually and
+#    clicks are hit-tested; mouse-wheel scrolls.
+#  - icons 36 -> 29 px (-20%).
+#  - removed the header/description line; the panel now shows CATALOG sections.
+#  - catalogs: "测试" (the 5 individually-verified abilities) on top, then "全部" (the rest).
+
+## Verified: RC_PANEL_DUMP -> ability panel: 154 entries, 154 icons, 2 catalogs;
+#   buffer proof/netcode/skillv6_panel2.png 320x640 sha256=a556cebbd7b19904.
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
