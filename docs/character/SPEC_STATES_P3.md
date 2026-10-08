@@ -75,3 +75,20 @@ interaction, which does not depend on the flux render.
 5. Walk out at the shallow edge: **automatic** return to run/stand, swim mode cleared.
 6. The region is the real water (cell flag / engine water query) — no render-rect heuristic.
 7. Gates: build 0, camera_smoke ALL PASS, collision 36/36; driven walk-in proof + fingerprint.
+### True water region source found (2026-10-07): `water/regiondata/RegionInfo.json`
+
+Each map ships `water\regiondata\RegionInfo.json` (e.g. 80,664 B for 龙门), the water region
+tree used to place water per region - NOT the body-center circle and NOT the render list:
+```
+{ "ReferNode": { "<nodeKey>": { "GSInfo":..., "BlockData": [
+    { "WaterUniqueCount":1, "LeafNodeIndex":N,
+      "WUnique_0": { "WaterSurfaceID":S, "HasNorMask":1, "HasHoleMask":0 } }, ... ] } } }
+```
+龙门: one ReferNode with **256 leaf nodes** (LeafNodeIndex 0..255), all `WaterSurfaceID=0` -
+a large water surface spanning the region's leaf grid (consistent with a real lake, unlike the
+40-u render rect). The surface height per id comes from `watersurfacelist.json`.
+
+**Next step:** map `LeafNodeIndex` -> world cell bounds (the water region tree mirrors the
+terrain region grid: regions x leaves) and use it as the host water region, replacing the P1
+`4096*Scale` provisional. This is shipped data (no engine RE), so it is the tractable path to
+the true region.
