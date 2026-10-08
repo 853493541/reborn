@@ -8200,3 +8200,13 @@ if the cache/host frames appear.
   `proof/netcode/skillv6_repel_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
   loot selftest PASS.
 - **Open:** the engine's base repel speed (to turn RepelFrames+KnockRate into a distance).
+
+### 2026-10-08 — v6 — passive heal (PCustomTherapy) applied
+
+- **Did:** `build_passives.py` extracts a heal fraction from `Apply`'s `PCustomTherapy(...)`
+  calls (the `* <frac>` amount, e.g. `nMaxLife * 0.2`) → `passives_f1.tsv` `healPct` (1 heal).
+  The client has a self-HP model (`RC_PLAYER_HP`) and heals self + target by `healPct*MaxHp`.
+- **Verified:** 27844 → `heal 27844 self+100000 (hp=500000) tgt=500000000` (0.2×500000), clean
+  `DONE`. Proof `proof/netcode/skillv6_heal_20261008.txt`. Gates: jx3_model 10 PASS, gravity
+  PASS, loot selftest PASS.
+- **Open:** heal targeting (party/self/target); other Apply effects (summon/doodad).

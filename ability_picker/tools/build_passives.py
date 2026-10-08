@@ -78,7 +78,7 @@ def main():
         sf = sfmap.get(sid)
         p = script_path(sf) if sf else None
         if not p:
-            rows.append((sid, "", "", "", "", ""))
+            rows.append((sid, "", "", "", "", "", ""))
             continue
         t = open(p, "rb").read().decode("gb18030", "replace")
         body = apply_body(t)
@@ -89,20 +89,31 @@ def main():
             if not b:
                 continue
             (adds if m.group(1) == "AddBuff" else dels).append(b)
+        # heal: PCustomTherapy(...) with a `* <fraction>` amount (e.g. nMaxLife * 0.2)
+        heal = ""
+        for m in re.finditer(r"PCustomTherapy\s*\(([^)]*)\)", body):
+            fm = re.findall(r"\*\s*(0?\.\d+|\d+\.\d+)", m.group(1))
+            for x in fm:
+                if 0.0 < float(x) < 1.0:
+                    heal = x
+                    break
+            if heal:
+                break
         attrs = len(re.findall(r"AddAttribute\s*\(", body))
         tot_child += len(child)
         tot_buff += len(adds)
         rows.append((sid, "", ";".join(dict.fromkeys(child)),
-                     ";".join(dict.fromkeys(adds)), ";".join(dict.fromkeys(dels)), str(attrs)))
+                     ";".join(dict.fromkeys(adds)), ";".join(dict.fromkeys(dels)), heal, str(attrs)))
 
     tsv = os.path.join(DATA, "passives_f1.tsv")
     with open(tsv, "w", encoding="utf-8", newline="\n") as f:
-        f.write("skillId\tname\tchildCasts\taddBuffs\tdelBuffs\tattrs\n")
+        f.write("skillId\tname\tchildCasts\taddBuffs\tdelBuffs\thealPct\tattrs\n")
         for r in rows:
             f.write("\t".join(r) + "\n")
-    print("passives: %d rows (%d child casts, %d add-buffs) -> %s" % (len(rows), tot_child, tot_buff, tsv))
+    heals = sum(1 for r in rows if r[5])
+    print("passives: %d rows (%d child casts, %d add-buffs, %d heals) -> %s" % (len(rows), tot_child, tot_buff, heals, tsv))
     for r in rows[:8]:
-        print("  %s child=%s add=%s del=%s attrs=%s" % (r[0], r[2] or "-", r[3] or "-", r[4] or "-", r[5] or "-"))
+        print("  %s child=%s add=%s del=%s heal=%s" % (r[0], r[2] or "-", r[3] or "-", r[4] or "-", r[5] or "-"))
     return 0
 
 

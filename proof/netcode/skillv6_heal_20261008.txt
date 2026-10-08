@@ -1,0 +1,13 @@
+# skill v6 — passive heal (PCustomTherapy) applied (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 3bc55da, dirty)
+# Change: build_passives.py extracts a heal fraction from Apply's PCustomTherapy(...) calls
+#   (the `* <frac>` amount, e.g. nMaxLife * 0.2) -> passives_f1.tsv healPct column (1 heal).
+#   The client has a self-HP model (RC_PLAYER_HP) and heals self + target by healPct*MaxHp.
+
+## Driven run: RC_SLOTS=27844 RC_CAST_AT=40000:1
+passive 27844 -> child=[] +buff=[] -buff=[]
+heal 27844 self+100000 (hp=500000) tgt=500000000     (0.2 * 500000 = 100000)
+DONE
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open: heal targeting (party/self/target); other Apply effects (summon/doodad).

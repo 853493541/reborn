@@ -466,6 +466,9 @@ internal static class RebornClient
         float.TryParse(Env("RC_MANA_MAX", "10000"), out manaMax);
         float mana = manaMax;
         var selfBuffs = new System.Collections.Generic.List<string>();   // passive self-buffs
+        float playerMaxHp = 500000f;
+        float.TryParse(Env("RC_PLAYER_HP", "500000"), out playerMaxHp);
+        float playerHp = playerMaxHp;
         // abilities whose cast AVs the engine (per-tani): skip in the sweep
         var skipIds = new System.Collections.Generic.HashSet<string>();
         foreach (string s in Env("RC_SKIP_IDS", "").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -3936,6 +3939,17 @@ internal static class RebornClient
                                     if (!selfBuffs.Contains(bids[bi])) selfBuffs.Add(bids[bi]);
                                 string[] dids = delBuffs.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                                 for (int di = 0; di < dids.Length; di++) selfBuffs.Remove(dids[di]);
+                                float hpct;
+                                if (pv.Length > 5 && float.TryParse(pv[5], out hpct) && hpct > 0f)
+                                {
+                                    long heal = (long)(playerMaxHp * hpct);
+                                    playerHp += heal; if (playerHp > playerMaxHp) playerHp = playerMaxHp;
+                                    TargetEntity ht = targetSelector.Current;
+                                    if (ht != null) { ht.Hp += (long)(ht.MaxHp * hpct); if (ht.Hp > ht.MaxHp) ht.Hp = ht.MaxHp; }
+                                    Log("heal " + skillCast.Name + " self+" + heal + " (hp=" + playerHp.ToString("F0") + ") tgt="
+                                        + (ht != null ? ht.Hp.ToString() : "-"));
+                                    combatText.Push("+" + heal + " heal", System.Drawing.Color.FromArgb(120, 255, 120));
+                                }
                                 combatText.Push("passive " + skillCast.Name + (children.Length > 0 ? (" -> " + children) : ""),
                                     System.Drawing.Color.FromArgb(180, 220, 255));
                                 string[] cids = children.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
