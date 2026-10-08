@@ -14,7 +14,8 @@ internal sealed class MechanicPlan
     public List<string> BuffsAdd = new List<string>();
     public int BuffsRemove;
     public float SelfMovePerFrame;                   // SKILL_MOVE / DASH_* (u/frame)
-    public float TargetKnockPerFrame;                // PULL / REPULSED / KNOCKED_BACK_RATE
+    public float TargetPullPerFrame;                 // PULL (u/frame; arg commented 速度)
+    public float TargetKnockPerFrame;                // REPULSED / KNOCKED_BACK_RATE (rate)
     public bool Knockdown;                           // CALL_KNOCKED_DOWN
     public List<string> ChildCasts = new List<string>();
     public bool HasScript;                           // EXECUTE_SCRIPT (not executed)
@@ -26,6 +27,7 @@ internal sealed class MechanicPlan
         if (BuffsAdd.Count > 0) s += " buff+=" + string.Join(",", BuffsAdd.ToArray());
         if (BuffsRemove > 0) s += " buff-=" + BuffsRemove;
         if (SelfMovePerFrame > 0f) s += " selfMove=" + SelfMovePerFrame.ToString("F0");
+        if (TargetPullPerFrame > 0f) s += " pull=" + TargetPullPerFrame.ToString("F0");
         if (TargetKnockPerFrame > 0f) s += " knock=" + TargetKnockPerFrame.ToString("F0");
         if (Knockdown) s += " knockdown";
         if (ChildCasts.Count > 0) s += " child=" + string.Join(",", ChildCasts.ToArray());
@@ -65,7 +67,8 @@ internal static class MechanicProgram
             else if (t.StartsWith("DETACH") || t.StartsWith("DEL_") || t == "CONSUME_BUFF") p.BuffsRemove++;
             else if (t == "SKILL_MOVE" || t == "DASH" || t == "DASH_FORWARD" || t == "DASH_TO_POINT")
                 p.SelfMovePerFrame = Math.Max(p.SelfMovePerFrame, Num(arg));
-            else if (t == "PULL" || t == "CALL_REPULSED" || t == "KNOCKED_BACK_RATE")
+            else if (t == "PULL") p.TargetPullPerFrame = Math.Max(p.TargetPullPerFrame, Num(arg));
+            else if (t == "CALL_REPULSED" || t == "KNOCKED_BACK_RATE")
                 p.TargetKnockPerFrame = Math.Max(p.TargetKnockPerFrame, Num(arg));
             else if (t == "CALL_KNOCKED_DOWN") p.Knockdown = true;
             else if (t == "CAST_SKILL" || t == "CAST_SKILL_TARGET_DST" ||

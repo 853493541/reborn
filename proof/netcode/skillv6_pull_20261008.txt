@@ -1,0 +1,14 @@
+# skill v6 — target pull (PULL) applied (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 741e16e, dirty)
+# Change: MechanicProgram now distinguishes PULL (a speed; its script arg is commented
+#   速度) from REPULSED/KNOCKED_BACK_RATE (a rate). The client applies PULL as a pull of
+#   the affected target(s) to ~100 u from the caster (endpoint = caster, no invented
+#   magnitude); REPULSED/KNOCKED_BACK_RATE remain logged (unit unclear).
+
+## Driven run: RC_SLOTS=30081,65100 RC_CAST_AT=40000:1,52000:2
+pull 30081 -> 初级试炼木桩 to (18991,33953)          (moved from z=34253 to 100 u from caster z=33853)
+mechanic 30081 mode=CasterArea -> 1 target(s) dmg=0.0 pull=100 knock=1024 [script]
+mechanic 65100 mode=TargetSingle -> 1 target(s) dmg=0.0 buff-=1 pull=100 knock=1024 [script]
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open: REPULSED/KNOCKED_BACK_RATE units; move the dummy MODEL (entity pos updated only).

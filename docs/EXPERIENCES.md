@@ -8168,3 +8168,14 @@ if the cache/host frames appear.
   `tgt[..Daze]` field); `proof/netcode/skillv6_tgtcc.png`. Gates: jx3_model 10 PASS, gravity PASS,
   loot selftest PASS.
 - **Open (P5):** buff/CC icons on the target frame widget; world-projected floating numbers.
+
+### 2026-10-08 — v6 — target pull (PULL) applied
+
+- **Did:** `MechanicProgram` distinguishes **PULL** (a speed; its script arg is commented 速度)
+  from REPULSED/KNOCKED_BACK_RATE (a rate). The client applies PULL by moving the affected
+  target(s) to ~100 u from the caster (endpoint = caster; no invented magnitude);
+  REPULSED/KNOCKED_BACK_RATE stay logged.
+- **Verified:** 30081 → `pull 30081 -> 木桩 to (18991,33953)` (from z 34253 → 100 u from caster);
+  `mechanic … pull=100 knock=1024`. Proof `proof/netcode/skillv6_pull_20261008.txt`. Gates:
+  jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+- **Open:** REPULSED/KNOCKED_BACK_RATE units; move the dummy model (entity pos updated only).

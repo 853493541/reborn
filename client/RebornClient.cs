@@ -3986,6 +3986,18 @@ internal static class RebornClient
                                 if (plan.BuffsRemove > 0) tgt.Buffs.Clear();
                                 if (plan.CcType.Length > 0) { tgt.CcType = plan.CcType; tgt.CcUntil = now + 2000; }
                                 if (plan.Knockdown) { tgt.CcType = "Knockdown"; tgt.CcUntil = now + 1500; }
+                                if (plan.TargetPullPerFrame > 0f)
+                                {
+                                    float pdx = px - tgt.X, pdz = pz - tgt.Z;
+                                    float pd = (float)Math.Sqrt(pdx * pdx + pdz * pdz);
+                                    if (pd > 100f)
+                                    {
+                                        tgt.X = px - pdx / pd * 100f;
+                                        tgt.Z = pz - pdz / pd * 100f;
+                                        Log("pull " + skillCast.Name + " -> " + tgt.Name + " to ("
+                                            + tgt.X.ToString("F0") + "," + tgt.Z.ToString("F0") + ")");
+                                    }
+                                }
                             }
                             if (plan.Damage > 0f)
                                 combatText.Push("-" + plan.Damage.ToString("F0") + " " + skillCast.Name,
