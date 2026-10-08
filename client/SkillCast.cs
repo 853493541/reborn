@@ -44,8 +44,8 @@ internal sealed class SkillCast
     public void Begin(long now, string name, string anim, string effect,
                       float selfX, float selfZ,
                       float tgtX, float tgtY, float tgtZ,
-                      long animMs, long effectAtMs, long prepareMs, float stopDistance,
-                      float dashSpeedPerFrame)
+                      long animMs, long effectAtMs, long prepareMs, long channelMs,
+                      float stopDistance, float dashSpeedPerFrame)
     {
         Active = true;
         Name = name;
@@ -57,7 +57,7 @@ internal sealed class SkillCast
         // commit = the cast completes: instant skills commit at the effect frame,
         // prepared skills at the end of the prepare (nPrepareFrames) phase.
         commitMs = prepareMs > eff ? prepareMs : eff;
-        totalMs = this.animMs > commitMs ? this.animMs : commitMs;
+        totalMs = (this.animMs > commitMs ? this.animMs : commitMs) + (channelMs > 0 ? channelMs : 0);
         effectPending = effect != null && effect.Length > 0;
 
         fromX = selfX;

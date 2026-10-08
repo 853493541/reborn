@@ -7955,3 +7955,16 @@ if the cache/host frames appear.
   gravity PASS, loot selftest PASS. Commits `3d05625`→`45bc6e8` (+ coverage).
 - **Remaining (plan):** runtime channel ticks (`nChannelFrame`/`nChannelInterval`) + GCD refinement;
   and the per-tani AV root cause (39 tanis) is an open engine/host item (not chased further).
+
+### 2026-10-08 — v6 — channel duration applied (item 4 refinement)
+
+- **Did:** `SkillCast.Begin` now takes `channelMs`; `totalMs = max(animMs, commitMs) + channelMs`.
+  `selectSlot` reads roster col 10 (`nChannelFrame`, frames) → `selChannelMs` (= frames/16·1000).
+- **Verified:** 27906 (nChannelFrame=64) → `channelMs=4000`, `totalMs=5500` (holds the channel);
+  65029 → `channelMs=0`, `totalMs=1500` unchanged; clean `DONE`. Full 154 coverage re-run on the
+  final build: **115 casts + 39 skips = 154, clean `DONE`** (channel timing does not change AV
+  behaviour). Proof `proof/netcode/skillv6_channel_20261008.txt`. Gates: jx3_model 10 PASS,
+  gravity PASS, loot selftest PASS.
+- **Open (minor):** `nChannelInterval` (tick interval) not modelled (only total channel duration);
+  expression-based intervals (`HDJueJingSkillCoe`) unresolved; GCD is a `totalMs+1200` cooldown,
+  not the client's cooldown row 16.

@@ -1,0 +1,21 @@
+# skill v6 — channel duration (nChannelFrame) applied + coverage re-verified (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 512c1da, dirty)
+# Change: SkillCast.Begin takes channelMs; totalMs = max(animMs, commitMs) + channelMs.
+#   selectSlot reads roster col 10 (nChannelFrame, frames) -> selChannelMs.
+
+## Channel ability: 27906 (nChannelFrame=64 -> 64/16 = 4000 ms)
+slot 1 -> 27906 摧枯拉朽 anim=...F1s16lxg...04_01HD.tani prepareMs=0 channelMs=4000
+cast chain 27906: ... commitMs=520 totalMs=5500      <- holds 4 s channel
+## Instant (no channel): 65029
+slot 2 -> 65029 绝境_龙牙 ... prepareMs=0 channelMs=0
+cast chain 65029: ... commitMs=520 totalMs=1500      <- unchanged
+DONE                                                  <- clean, no AV
+
+## Coverage re-verified on the FINAL build (channel timing active):
+## RC_SWEEP_N=154 RC_SWEEP_START=0 -> 115 casts + 39 skips = 154, last entry 65672, clean DONE.
+## (so the 16 channel abilities' longer cast does not change AV behaviour)
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open: nChannelInterval (tick interval) not modelled (only the total channel
+#       duration); expression-based intervals (HDJueJingSkillCoe) unresolved; GCD is
+#       the castReadyAt = totalMs+1200 cooldown, not the client's cooldown row 16.
