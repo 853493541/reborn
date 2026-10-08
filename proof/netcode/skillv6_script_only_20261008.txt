@@ -1,0 +1,20 @@
+# skill v6 — P6b: characterize the 39 script-only abilities (2026-10-08)
+# Build: reborn_client_skillv6.exe (git f3f304a)
+# Method: for each of the 39 abilities whose mechanic program resolves to nothing but
+#   EXECUTE_SCRIPT (mechanics_f1 ops), inspect its own skill script for structure.
+
+## Result: 38/39 define `function Apply(dwCharacterID, dwSkillSrcID)` -> they are PASSIVE
+#   AURAS (the script runs when the skill is active/learned, not at cast). The 39th is
+#   also passive-gated (buffgate). They are not cast-time damage/CC abilities.
+#   Example 27872 咄嗟: GetSkillLevelData only registers EXECUTE_SCRIPT(self); the logic
+#   is in Apply/UnApply.
+
+## Implication: of the 115 castable roster abilities, 76 carry interpretable cast ops
+#   (damage/CC/buff/child/move) and are handled; the 39 are passives whose "designed
+#   behaviour" is a self-aura applied via Apply() -- to implement them the client must
+#   run/extract the Apply function (self-buff), not a cast.
+
+# artifacts: ability_picker/data/script_only_f1.tsv (skillId, name, castMode, tags)
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# next: passive-aura path (extract Apply() effects -> self-buff list); Lua 5.1 VM if the
+#   Apply bodies need execution.

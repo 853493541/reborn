@@ -8077,3 +8077,18 @@ if the cache/host frames appear.
   PASS, loot selftest PASS.
 - **Open (next):** EXECUTE_SCRIPT VM (the 69); weapon%/attack-power scaling + mitigation;
   target displacement units.
+
+### 2026-10-08 — v6 — P6b: the 39 script-only abilities are passives
+
+- **Did:** characterized the 39 abilities whose mechanic program resolves to only
+  `EXECUTE_SCRIPT` by inspecting their own scripts.
+- **Finding:** **38/39 define `function Apply(dwCharacterID, dwSkillSrcID)`** (passive auras);
+  the 39th is passive-gated. So they are **passive/aura abilities**, not cast-time
+  damage/CC — their "designed behaviour" is a self-aura applied when the skill is active.
+  Of the 115 castable roster abilities, **76 carry interpretable cast ops and are handled**;
+  the 39 are passives needing the `Apply()` path.
+- **Artifacts:** `ability_picker/data/script_only_f1.tsv`,
+  `proof/netcode/skillv6_script_only_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Next:** passive-aura path — extract each `Apply()` body's effects into a self-buff list
+  (or run it via a Lua 5.1 VM).
