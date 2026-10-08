@@ -7677,3 +7677,22 @@ if the cache/host frames appear.
   plays it once at the anchor (bone `S_fxmid`), reproducing the client's tag path
   (this is the client-truth effect, not a looping dummy).
 - Verified: crash isolated by disabling the effect (clean run) vs enabling (AV).
+
+### 2026-10-07 — v6 — engine-SFX shim wired; factory faults in the host (evidence)
+
+- **Did:** added `native/sfx_shim.cpp` + `native/build_sfx_shim.cmd` (output
+  `bin64\sfx_shim_v6.dll`, unique name — the shared `sfx_shim.dll` is locked by the
+  running v5 client) and a `SfxShim` P/Invoke class in the client; the chain's effect
+  frame now calls `RC_Shim_SfxPlay(effectPath, x,y,z)` (the engine's
+  `KG3D_CreateSFXFromFile` → model → play path) instead of `AddDummyModel(.Sfx)`.
+- **Result:** the shim loads and is SEH-guarded (no host crash), but the engine factory
+  **faults internally**: log `cast chain fx(engine) -> ...Sfx rc=7 ... exc=0xC0000005`
+  with `obj=0 out=0` and a stack through `ntdll.dll+0x26844 / jemallocX64.dll+0x11001`.
+  The v5 shim's owner/context chain (`singleton @RVA 0x2CF7038`) is wrong for the
+  MovieEditor host build, so the `.Sfx` is not created.
+- **Chain state:** target → face → tani anim + dash → idle is verified and safe;
+  effect-through-the-tani (the authored tags) is the default; the standalone engine
+  `.Sfx` path is opt-in (`RC_LY_FXE=1`) and currently returns rc=7.
+- **Next probe:** resolve the correct owner/context for `KG3D_CreateSFXFromFile` in the
+  ME host (or use the host's own tag-spawn context), then play once at the anchor.
+- Verified: driven run alive with the shim enabled; fault confined by the shim's SEH.

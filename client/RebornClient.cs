@@ -606,6 +606,16 @@ internal static class RebornClient
             }
             catch (Exception e) { Log("sound-hook ex: " + e.Message); }
         }
+        // v6 effect path: the engine's own SFX factory (native/sfx_shim.cpp), the
+        // route the shipped client uses for skill .Sfx effects.
+        try
+        {
+            string sfxDll = Env("RC_SFX_SHIM", Path.Combine(Application.StartupPath, "sfx_shim_v6.dll"));
+            IntPtr hs = SfxShim.Load(sfxDll);
+            Log(hs == IntPtr.Zero ? ("sfx-shim: load failed (" + sfxDll + ")")
+                                  : ("sfx-shim: loaded " + sfxDll));
+        }
+        catch (Exception e) { Log("sfx-shim ex: " + e.Message); }
 
         var scene = new KGSceneCLR();
         // Recon: dump the managed wrapper API surface for the player / near-plane
@@ -3539,14 +3549,10 @@ internal static class RebornClient
                     skillCast.EffectPoint(out ex, out ey, out ez);
                     try
                     {
-                        var fxr = new CLRfloat4(); fxr.x = 0f; fxr.y = 0f; fxr.z = 0f; fxr.w = 1f;
-                        var fxs = new CLRfloat3(); fxs.x = 1f; fxs.y = 1f; fxs.z = 1f;
-                        var fxp = new CLRfloat3(); fxp.x = ex; fxp.y = ey + 90f; fxp.z = ez;
-                        long fh = scene.AddDummyModel("skill_fx", lyFx, fxp, fxr, fxs);
-                        castFxUntil = now + lyFxLife;
-                        Log("cast chain fx -> " + lyFx + " h=" + fh
+                        int frc = SfxShim.Play(lyFx, ex, ey + 90f, ez);
+                        Log("cast chain fx(engine) -> " + lyFx + " rc=" + frc
                             + " at (" + ex.ToString("F0") + "," + (ey + 90f).ToString("F0")
-                            + "," + ez.ToString("F0") + ")");
+                            + "," + ez.ToString("F0") + ") " + SfxShim.Status());
                     }
                     catch (Exception e) { Log("cast chain fx ex: " + e.Message); }
                 }
@@ -5167,6 +5173,46 @@ internal static class RebornClient
         public static string Status()
         {
             if (_status == IntPtr.Zero) return "(no status export)";
+            StatusFn f = (StatusFn)Marshal.GetDelegateForFunctionPointer(_status, typeof(StatusFn));
+            IntPtr p = f();
+            return p == IntPtr.Zero ? "(null)" : Marshal.PtrToStringAnsi(p);
+        }
+    }
+
+    // SfxShim: the engine's own SFX factory path (native/sfx_shim.cpp). Playing a
+    // compiled skill .Sfx through a dummy MODEL AVs the host; the shipped client
+    // plays it through KG3D_CreateSFXFromFile (owner -> model -> play), which this
+    // shim reproduces (SEH-guarded inside the DLL).
+    internal static class SfxShim
+    {
+        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+        static extern IntPtr LoadLibraryA(string name);
+        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+        static extern IntPtr GetProcAddress(IntPtr h, string name);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate int PlayFn([MarshalAs(UnmanagedType.LPStr)] string path, float x, float y, float z);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate IntPtr StatusFn();
+        static IntPtr _play = IntPtr.Zero, _status = IntPtr.Zero;
+        public static IntPtr Load(string path)
+        {
+            IntPtr h = LoadLibraryA(path);
+            if (h != IntPtr.Zero)
+            {
+                _play = GetProcAddress(h, "RC_Shim_SfxPlay");
+                _status = GetProcAddress(h, "RC_Shim_SfxStatus");
+            }
+            return h;
+        }
+        public static int Play(string path, float x, float y, float z)
+        {
+            if (_play == IntPtr.Zero) return -1;
+            PlayFn f = (PlayFn)Marshal.GetDelegateForFunctionPointer(_play, typeof(PlayFn));
+            return f(path, x, y, z);
+        }
+        public static string Status()
+        {
+            if (_status == IntPtr.Zero) return "(no sfx status)";
             StatusFn f = (StatusFn)Marshal.GetDelegateForFunctionPointer(_status, typeof(StatusFn));
             IntPtr p = f();
             return p == IntPtr.Zero ? "(null)" : Marshal.PtrToStringAnsi(p);
