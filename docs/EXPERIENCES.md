@@ -8220,3 +8220,14 @@ if the cache/host frames appear.
   Proof `proof/netcode/skillv6_summon_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
   loot selftest PASS.
 - **Open:** summon lifetime/owner; doodads; other Apply effects.
+
+### 2026-10-08 — v6 — passive doodad (CreateDoodad) extraction
+
+- **Did:** `build_passives.py` extracts `CreateDoodad` ids from `Apply` → `passives_f1.tsv`
+  `doodads` column (1: 34594 → 9810;10121). The client attempts to spawn each as a dummy model
+  and logs the id + resolved model path.
+- **Verified:** 34594 → `doodad 34594 id=9810 model=` + `id=10121 model=` (the doodad represent
+  space does not resolve a model via `GetRepresentModelPath` → id surfaced, model not spawned),
+  clean `DONE`. Proof `proof/netcode/skillv6_doodad_20261008.txt`. Gates: jx3_model 10 PASS,
+  gravity PASS, loot selftest PASS.
+- **Open:** doodad model resolution (different represent space); summon lifetime/owner.

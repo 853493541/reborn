@@ -3933,7 +3933,7 @@ internal static class RebornClient
                                 string children = pv.Length > 2 ? pv[2] : "";
                                 string addBuffs = pv.Length > 3 ? pv[3] : "";
                                 string delBuffs = pv.Length > 4 ? pv[4] : "";
-                                Log("passive " + skillCast.Name + " -> child=[" + children + "] +buff=[" + addBuffs + "] -buff=[" + delBuffs + "]");
+                                Log("passive " + skillCast.Name + " -> child=[" + children + "] +buff=[" + addBuffs + "] -buff=[" + delBuffs + "] n=" + pv.Length);
                                 string[] bids = addBuffs.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                                 for (int bi = 0; bi < bids.Length; bi++)
                                     if (!selfBuffs.Contains(bids[bi])) selfBuffs.Add(bids[bi]);
@@ -3973,6 +3973,31 @@ internal static class RebornClient
                                         }
                                     }
                                     catch (Exception se) { Log("summon ex: " + se.Message); }
+                                }
+                                string ddIds = pv.Length > 7 ? pv[7] : "";
+                                string[] ddids = ddIds.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                                for (int dai = 0; dai < ddids.Length; dai++)
+                                {
+                                    int drid;
+                                    if (!int.TryParse(ddids[dai], out drid)) continue;
+                                    try
+                                    {
+                                        string mp = scene.GetRepresentModelPath(drid);
+                                        Log("doodad " + skillCast.Name + " id=" + drid + " model=" + (mp == null ? "" : mp));
+                                        if (mp != null && mp.Length > 0)
+                                        {
+                                            float sx = px + 120f * (dai + 1), sz = pz + 120f;
+                                            var sp = new CLRfloat3(); sp.x = sx;
+                                            sp.y = sampler != null ? sampler.Sample(sx, sz) : py; sp.z = sz;
+                                            var sr = new CLRfloat4(); sr.w = 1f;
+                                            var ss = new CLRfloat3(); ss.x = 1f; ss.y = 1f; ss.z = 1f;
+                                            long dh = scene.AddDummyModel("doodad" + drid + "_" + dai,
+                                                mp.Replace('/', '\\'), sp, sr, ss);
+                                            Log("doodad " + skillCast.Name + " spawned id=" + drid + " handle=" + dh);
+                                            combatText.Push("doodad " + drid, System.Drawing.Color.FromArgb(200, 180, 140));
+                                        }
+                                    }
+                                    catch (Exception de) { Log("doodad ex: " + de.Message); }
                                 }
                                 combatText.Push("passive " + skillCast.Name + (children.Length > 0 ? (" -> " + children) : ""),
                                     System.Drawing.Color.FromArgb(180, 220, 255));

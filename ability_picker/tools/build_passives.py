@@ -78,7 +78,7 @@ def main():
         sf = sfmap.get(sid)
         p = script_path(sf) if sf else None
         if not p:
-            rows.append((sid, "", "", "", "", "", "", ""))
+            rows.append((sid, "", "", "", "", "", "", "", ""))
             continue
         t = open(p, "rb").read().decode("gb18030", "replace")
         body = apply_body(t)
@@ -101,21 +101,23 @@ def main():
                 break
         attrs = len(re.findall(r"AddAttribute\s*\(", body))
         npcs = re.findall(r"CreateNpc\w*\s*\(\s*(\d+)", body)
+        doodads = re.findall(r"CreateDoodad\w*\s*\(\s*(\d+)", body)
         tot_child += len(child)
         tot_buff += len(adds)
         rows.append((sid, "", ";".join(dict.fromkeys(child)),
                      ";".join(dict.fromkeys(adds)), ";".join(dict.fromkeys(dels)), heal,
-                     ";".join(dict.fromkeys(npcs)), str(attrs)))
+                     ";".join(dict.fromkeys(npcs)), ";".join(dict.fromkeys(doodads)), str(attrs)))
 
     tsv = os.path.join(DATA, "passives_f1.tsv")
     with open(tsv, "w", encoding="utf-8", newline="\n") as f:
-        f.write("skillId\tname\tchildCasts\taddBuffs\tdelBuffs\thealPct\tnpcs\tattrs\n")
+        f.write("skillId\tname\tchildCasts\taddBuffs\tdelBuffs\thealPct\tnpcs\tdoodads\tattrs\n")
         for r in rows:
             f.write("\t".join(r) + "\n")
     heals = sum(1 for r in rows if r[5])
     summons = sum(1 for r in rows if r[6])
-    print("passives: %d rows (%d child casts, %d add-buffs, %d heals, %d summons) -> %s"
-          % (len(rows), tot_child, tot_buff, heals, summons, tsv))
+    dood = sum(1 for r in rows if r[7])
+    print("passives: %d rows (%d child casts, %d add-buffs, %d heals, %d summons, %d doodads) -> %s"
+          % (len(rows), tot_child, tot_buff, heals, summons, dood, tsv))
     for r in rows[:8]:
         print("  %s child=%s add=%s del=%s heal=%s npc=%s" % (r[0], r[2] or "-", r[3] or "-", r[4] or "-", r[5] or "-", r[6] or "-"))
     return 0

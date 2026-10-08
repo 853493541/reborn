@@ -1,0 +1,15 @@
+# skill v6 — passive doodad (CreateDoodad) extraction (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 5df79d2, dirty)
+# Change: build_passives.py extracts CreateDoodad ids from Apply -> passives_f1.tsv doodads
+#   column (1 doodad: 34594 -> 9810;10121). The client attempts to spawn each as a dummy model
+#   and logs the id + resolved model path. The doodad represent space does not resolve a model
+#   via GetRepresentModelPath (empty) -> the id is surfaced, the model is not spawned.
+
+## Driven run: RC_SLOTS=34594 RC_CAST_AT=40000:1
+passive 34594 -> child=[] +buff=[28529;25569] -buff=[28529;25569] n=9
+doodad 34594 id=9810 model=
+doodad 34594 id=10121 model=
+DONE
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open: doodad model resolution (different represent space); summon lifetime/owner.
