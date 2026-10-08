@@ -390,13 +390,14 @@ internal static class AbilitySystem
             if (panel.Visible) panel.BringToFront();
         }
         // RC_CAST_CYCLE=<ms>: select + cast the next tani-playing ability every
-        // <ms> (test sweep; the cast guard serializes casts)
+        // <ms> (test sweep; the cast guard serializes casts). The index advances
+        // only when a cast actually starts, so a sweep covers every tani ability.
         if (castCycleMs > 0 && taniNames.Count > 0 && now >= cycleNext)
         {
             cycleNext = now + castCycleMs;
             sel = taniNames[cycleIdx % taniNames.Count];
-            cycleIdx++;
-            log("cast cycle -> " + sel + " (" + cycleIdx + "/" + taniNames.Count + ")");
+            log("cast cycle -> " + sel + " (" + (cycleIdx % taniNames.Count + 1)
+                + "/" + taniNames.Count + ")");
             castReq = true;
         }
         if (castReq)
@@ -409,7 +410,11 @@ internal static class AbilitySystem
                 log("cast blocked: " + (active ? "effect still playing" : "cooldown")
                     + " (" + sel + ")");
             }
-            else StartCast(now, px, py, pz, yaw);
+            else
+            {
+                StartCast(now, px, py, pz, yaw);
+                if (castCycleMs > 0) cycleIdx++;
+            }
         }
         if (!active) return;
         long rel = now - startMs;
