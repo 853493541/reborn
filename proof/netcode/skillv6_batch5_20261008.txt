@@ -1,0 +1,9 @@
+# skill v6 — 5 more abilities verified (batch 5, 2026-10-08)
+# Build: reborn_client_skillv6.exe
+## Verified (RC_ABILITY=<id> RC_CAST_AT=38000:1)
+#  64899 剑意式 -> dmg=46.0
+#  64991 太极式 -> dmg=128.7
+#  64992 剑影式 -> apply child 65175;65174
+#  64994 剑意式 -> dmg=0.0 (coefficient/weapon-based; no flat base -> scaling blocked)
+#  64995 剑意式 -> dmg=0.0 (same)
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
