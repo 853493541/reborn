@@ -103,6 +103,24 @@ lua scripts, sets up entities).
   `rep+0x39D560` (len **23** - its `sub rsp,0x80` is 7 bytes; len 20 = illegal
   instruction) that captures `{vtable,this}`; the RLActorMgrNT handler vtable is
   `rep+0xC90848`.
+- Gate 4 MILESTONE (2026-10-07): the manager is an embedded singleton member at
+  **singleton+0x25150** (vt `rep+0xC8FF98`). Host wires the engine's own Init caller
+  (`rep+0x3E44C1`): `RLActorMgrNT::Init(mgr, [singleton+0xC0], [singleton+0xB0]->vt[8]())`,
+  after `InitAsyncTask(rep_main+0x26090, NULL, 0)` (delegate registry at rep_main+0x262C0,
+  `Delegate::Initialize` count 0x56). **`Init -> 1` (SUCCESS).** Root cause of the
+  line-86 failure: the host's `void` hooks clobbered the engine's `Register` return
+  (audit all `void` hooks - 3 instances of this bug class).
+- Gate 4 remaining: `CreateRLActorNT(mgr, representID, type)` enters the engine's actor
+  path (loads `represent/scripts/dummy/behavior_base.lua`, `OnSceneActorLoaded` fires)
+  but the run dies with fatal `STATUS_HEAP_CORRUPTION` (0xC0000374), nondeterministic.
+  Suspect: `RLActorMgrNT::Init` creates an async worker thread (`mgr+0xB8`,
+  `RLAsyncTaskMgr::Init` rep+0x375F50) and the host passes `InitAsyncTask` an EMPTY task
+  list (`r8d=0`); the engine's normal call supplies the represent's async-task array.
+  Next: supply that array (find InitAsyncTask's caller, no static xref yet), or run
+  actor creation on the engine's task thread; then `RLActorNT::LoadModel` F1 +
+  `tools/proof/image_stats.py`.
+- `RC_HOST_ACTOR=<rid>,<type>` drives the actor call; `RC_HOST_ACTOR=init` = init-only;
+  `RC_HOST_NOHANGPET`/`RC_HOST_NODIAG`/`RC_HOST_NOSHADOWDESC` gate the other blocks.
 - Next: drive the logic scene-enter (or construct `RLActorMgrNT`), then
   `CreateRLActorNT` + `LoadModel` F1 + `tools/proof/image_stats.py` proof.
 - `m_tabCommon` is set by the game's own `KTableList::LoadConfigureFile`
