@@ -47,9 +47,27 @@ def load_cast_chain():
     return out
 
 
+def load_frames():
+    """id -> {isChannel, prepareFrames, channelFrame, channelInterval} from
+    cast_frames_f1.tsv (build_cast_frames.py)."""
+    out = {}
+    p = os.path.join(DATA, "cast_frames_f1.tsv")
+    if not os.path.exists(p):
+        return out
+    with open(p, "r", encoding="utf-8") as f:
+        for i, line in enumerate(f):
+            if i == 0:
+                continue
+            c = line.rstrip("\r\n").split("\t")
+            if len(c) >= 5 and c[0]:
+                out[c[0]] = {"isChannel": c[1], "prepare": c[2], "chanFrame": c[3], "chanInterval": c[4]}
+    return out
+
+
 def main():
     skills = json.load(open(os.path.join(DATA, "skill_data.json"), encoding="utf-8"))["abilities"]
     chain = load_cast_chain()
+    frames = load_frames()
 
     rows = []
     for name, v in skills.items():
@@ -62,15 +80,19 @@ def main():
         effect = c["effect"] if c else ""
         bone = c["bone"] if c else ""
         dash = c["dash"] if c else "0"
+        f = frames.get(sid, {})
         icon = v.get("iconPng") or (sid + ".png")
         rows.append({
             "id": sid, "name": name, "tani": tani, "effect": effect, "bone": bone,
             "dash": dash, "castMode": v.get("castMode", ""),
             "channel": 1 if v.get("channel") else 0, "icon": icon,
+            "prepare": f.get("prepare", "-1"), "chanFrame": f.get("chanFrame", "-1"),
+            "chanInterval": f.get("chanInterval", "-1"),
         })
     rows.sort(key=lambda r: (int(r["id"]) if r["id"].isdigit() else 0, r["id"]))
 
-    cols = ["id", "name", "tani", "effect", "bone", "dash", "castMode", "channel", "icon"]
+    cols = ["id", "name", "tani", "effect", "bone", "dash", "castMode", "channel",
+            "icon", "prepare", "chanFrame", "chanInterval"]
     tsv = os.path.join(DATA, "roster_f1.tsv")
     with open(tsv, "w", encoding="utf-8", newline="\n") as f:
         f.write("\t".join(cols) + "\n")

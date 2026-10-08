@@ -337,24 +337,33 @@ internal static class RebornClient
         string selAbility = slotIds[0].Trim();
         string selAnimPath = lyAnim, selFxPath = lyFx;
         float selDash = lyDash;
+        long selPrepareMs = 0;   // cast time (nPrepareFrames / GAME_FPS); 0 = instant
         Action<int> selectSlot = null;
         selectSlot = delegate(int i)
         {
             if (i < 0 || i >= slotIds.Length) return;
             activeSlot = i;
             selAbility = slotIds[i].Trim();
-            selAnimPath = lyAnim; selFxPath = lyFx; selDash = lyDash;
+            selAnimPath = lyAnim; selFxPath = lyFx; selDash = lyDash; selPrepareMs = 0;
             string[] ab;
-            bool found = castChain.TryGetValue(selAbility, out ab);
-            if (!found) found = roster.TryGetValue(selAbility, out ab);
+            bool found = roster.TryGetValue(selAbility, out ab);   // roster carries prepareFrames
+            if (!found) found = castChain.TryGetValue(selAbility, out ab);
             if (found)
             {
                 if (ab[2].Length > 0) selAnimPath = ab[2];
                 selFxPath = ab[3];
                 selDash = 0f;   // dataset is authoritative: dash 0 = no dash
                 if (ab.Length >= 6) { float dd; if (float.TryParse(ab[5], out dd)) selDash = dd; }
+                // roster rows carry prepareFrames (col 9): the cast time in frames
+                if (ab.Length >= 10)
+                {
+                    int pf;
+                    if (int.TryParse(ab[9], out pf) && pf > 0)
+                        selPrepareMs = (long)pf * 1000L / SkillCast.GameFps;
+                }
                 Log("slot " + (i + 1) + " -> " + selAbility + " " + ab[1]
-                    + " anim=" + ab[2] + " fx=" + ab[3] + " dash=" + selDash);
+                    + " anim=" + ab[2] + " fx=" + ab[3] + " dash=" + selDash
+                    + " prepareMs=" + selPrepareMs);
             }
             else Log("slot " + (i + 1) + " -> " + selAbility + " (not in dataset)");
             // standalone .Sfx is opt-in: the tani renders the authored effect by default.
@@ -3164,16 +3173,18 @@ internal static class RebornClient
                     // v6 full chain: face the target, play the authored anim,
                     // dash to the target while it plays, then the one-shot effect.
                     skillCast.Begin(now, selAbility, selAnimPath, selFxPath,
-                        px, pz, ctg.X, ctg.Y, ctg.Z, lyAnimMs, lyFxAt, lyStop, selDash);
+                        px, pz, ctg.X, ctg.Y, ctg.Z, lyAnimMs, lyFxAt, selPrepareMs, lyStop, selDash);
                     curYaw = skillCast.FaceYaw();
-                    skillUntil = now + lyAnimMs;
+                    skillUntil = now + skillCast.TotalMs();
                     curClip = null;
                     setClip(selAnimPath);
                     camShake.Start(2.0, 0.5, 0.8, 3);
                     chained = true;
                     Log("cast chain " + selAbility + ": target=" + ctg.ToString()
                         + " anim=" + selAnimPath + " fx=" + selFxPath
-                        + " animMs=" + lyAnimMs + " fxAt=" + lyFxAt + " dash=" + selDash
+                        + " animMs=" + lyAnimMs + " prepareMs=" + selPrepareMs
+                        + " commitMs=" + skillCast.CommitMs() + " totalMs=" + skillCast.TotalMs()
+                        + " fxAt=" + lyFxAt + " dash=" + selDash
                         + "u/f ->" + skillCast.DashMs() + "ms stop=" + lyStop
                         + " dashTo=(" + ctg.X.ToString("F0") + "," + ctg.Z.ToString("F0") + ")");
                 }

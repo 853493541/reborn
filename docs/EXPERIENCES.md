@@ -7889,3 +7889,20 @@ if the cache/host frames appear.
   selftest PASS.
 - **Remaining (plan):** Phase C = real prepare/channel/GCD cast state (items 4+6);
   Phase D = coverage sweep over all 154.
+
+### 2026-10-08 — v6 — cast time (prepare) from skill scripts (Phase C)
+
+- **Did:** `ability_picker/tools/build_cast_frames.py` parses each skill's Lua script
+  (skills.tab `ScriptFile`) for `skill.nPrepareFrames` / `nChannelFrame` /
+  `nChannelInterval` (text regex; bytecode via `lua51_dump` SETTABLE) →
+  `cast_frames_f1.tsv` (41141 skills; 157 with nPrepareFrames, 121 channel), joined into
+  `roster_f1.tsv`. `SkillCast` now takes `prepareMs`: `commitMs = max(prepare, effectFrame)`,
+  `totalMs = max(animMs, commitMs)`; the clip holds for `totalMs`. `selectSlot` prefers the
+  roster row (it carries prepareFrames) over the cast-chain row.
+- **Verified:** 65076 绝境_云飞玉皇 (script `nPrepareFrames = 24`) → `prepareMs=1500`,
+  `commitMs=1500` (prepared, not instant); 65029 绝境_龙牙 → `prepareMs=0`, `commitMs=520`
+  (instant). Clean `DONE`. Proof `proof/netcode/skillv6_cast_frames_20261008.txt`.
+- **Open:** runtime channel ticks (`nChannelFrame`/`nChannelInterval`) not modelled yet
+  (prepare only); `nChannelInterval` expressions using `HDJueJingSkillCoe` resolve to -1
+  (the coefficient is a documented global, not yet folded in); GCD (cooldown row 16) still
+  to come.

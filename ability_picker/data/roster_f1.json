@@ -8,7 +8,10 @@
   "dash",
   "castMode",
   "channel",
-  "icon"
+  "icon",
+  "prepare",
+  "chanFrame",
+  "chanInterval"
  ],
  "abilities": [
   {
@@ -20,7 +23,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "27844.png"
+   "icon": "27844.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27846",
@@ -31,7 +37,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "27846.png"
+   "icon": "27846.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27847",
@@ -42,7 +51,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "27847.png"
+   "icon": "27847.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27850",
@@ -53,7 +65,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "27850.png"
+   "icon": "27850.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27855",
@@ -64,7 +79,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "27855.png"
+   "icon": "27855.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27862",
@@ -75,7 +93,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "27862.png"
+   "icon": "27862.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27863",
@@ -86,7 +107,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "27863.png"
+   "icon": "27863.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27869",
@@ -97,7 +121,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "27869.png"
+   "icon": "27869.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27872",
@@ -108,7 +135,10 @@
    "dash": "0",
    "castMode": "PointArea",
    "channel": 0,
-   "icon": "27872.png"
+   "icon": "27872.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27874",
@@ -119,7 +149,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "27874.png"
+   "icon": "27874.png",
+   "prepare": "48",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27875",
@@ -130,7 +163,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "27875.png"
+   "icon": "27875.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27878",
@@ -141,7 +177,10 @@
    "dash": "0",
    "castMode": "PointArea",
    "channel": 0,
-   "icon": "27878.png"
+   "icon": "27878.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27888",
@@ -152,7 +191,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "27888.png"
+   "icon": "27888.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27890",
@@ -163,7 +205,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "27890.png"
+   "icon": "27890.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27892",
@@ -174,7 +219,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "27892.png"
+   "icon": "27892.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27895",
@@ -185,7 +233,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "27895.png"
+   "icon": "27895.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27902",
@@ -196,7 +247,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "27902.png"
+   "icon": "27902.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27903",
@@ -207,7 +261,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "27903.png"
+   "icon": "27903.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27904",
@@ -218,7 +275,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "27904.png"
+   "icon": "27904.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27905",
@@ -229,7 +289,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "27905.png"
+   "icon": "27905.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27906",
@@ -240,7 +303,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 1,
-   "icon": "27906.png"
+   "icon": "27906.png",
+   "prepare": "-1",
+   "chanFrame": "64",
+   "chanInterval": "8"
   },
   {
    "id": "27924",
@@ -251,7 +317,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "27924.png"
+   "icon": "27924.png",
+   "prepare": "24",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27926",
@@ -262,7 +331,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "27926.png"
+   "icon": "27926.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "27967",
@@ -273,7 +345,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 1,
-   "icon": "27967.png"
+   "icon": "27967.png",
+   "prepare": "-1",
+   "chanFrame": "84",
+   "chanInterval": "10"
   },
   {
    "id": "27969",
@@ -284,7 +359,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "27969.png"
+   "icon": "27969.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "28031",
@@ -295,7 +373,10 @@
    "dash": "0",
    "castMode": "PointArea",
    "channel": 0,
-   "icon": "28031.png"
+   "icon": "28031.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "28045",
@@ -306,7 +387,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "28045.png"
+   "icon": "28045.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "28046",
@@ -317,7 +401,10 @@
    "dash": "0",
    "castMode": "CasterArea",
    "channel": 0,
-   "icon": "28046.png"
+   "icon": "28046.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30023",
@@ -328,7 +415,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "30023.png"
+   "icon": "30023.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30024",
@@ -339,7 +429,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "30024.png"
+   "icon": "30024.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30025",
@@ -350,7 +443,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "30025.png"
+   "icon": "30025.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30029",
@@ -361,7 +457,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "30029.png"
+   "icon": "30029.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30081",
@@ -372,7 +471,10 @@
    "dash": "0",
    "castMode": "CasterArea",
    "channel": 0,
-   "icon": "30081.png"
+   "icon": "30081.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30082",
@@ -383,7 +485,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "30082.png"
+   "icon": "30082.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30123",
@@ -394,7 +499,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "30123.png"
+   "icon": "30123.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "120"
   },
   {
    "id": "30226",
@@ -405,7 +513,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "30226.png"
+   "icon": "30226.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30231",
@@ -416,7 +527,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "30231.png"
+   "icon": "30231.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30233",
@@ -427,7 +541,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "30233.png"
+   "icon": "30233.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30234",
@@ -438,7 +555,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "30234.png"
+   "icon": "30234.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30235",
@@ -449,7 +569,10 @@
    "dash": "0",
    "castMode": "PointArea",
    "channel": 0,
-   "icon": "30235.png"
+   "icon": "30235.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30238",
@@ -460,7 +583,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "30238.png"
+   "icon": "30238.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30239",
@@ -471,7 +597,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "30239.png"
+   "icon": "30239.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30243",
@@ -482,7 +611,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "30243.png"
+   "icon": "30243.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30247",
@@ -493,7 +625,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "30247.png"
+   "icon": "30247.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30257",
@@ -504,7 +639,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "30257.png"
+   "icon": "30257.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30261",
@@ -515,7 +653,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "30261.png"
+   "icon": "30261.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30262",
@@ -526,7 +667,10 @@
    "dash": "0",
    "castMode": "PointArea",
    "channel": 0,
-   "icon": "30262.png"
+   "icon": "30262.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "30276",
@@ -537,7 +681,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "30276.png"
+   "icon": "30276.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "120"
   },
   {
    "id": "30301",
@@ -548,7 +695,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "30301.png"
+   "icon": "30301.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "120"
   },
   {
    "id": "32245",
@@ -559,7 +709,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "32245.png"
+   "icon": "32245.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "32247",
@@ -570,7 +723,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "32247.png"
+   "icon": "32247.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "32287",
@@ -581,7 +737,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "32287.png"
+   "icon": "32287.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "32300",
@@ -592,7 +751,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 1,
-   "icon": "32300.png"
+   "icon": "32300.png",
+   "prepare": "-1",
+   "chanFrame": "48",
+   "chanInterval": "16"
   },
   {
    "id": "34591",
@@ -603,7 +765,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "34591.png"
+   "icon": "34591.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "34594",
@@ -614,7 +779,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "34594.png"
+   "icon": "34594.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "36501",
@@ -625,7 +793,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "36501.png"
+   "icon": "36501.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "120"
   },
   {
    "id": "39483",
@@ -636,7 +807,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "39483.png"
+   "icon": "39483.png",
+   "prepare": "24",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "39492",
@@ -647,7 +821,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "39492.png"
+   "icon": "39492.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "39493",
@@ -658,7 +835,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "39493.png"
+   "icon": "39493.png",
+   "prepare": "24",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "39494",
@@ -669,7 +849,10 @@
    "dash": "0",
    "castMode": "PointArea",
    "channel": 0,
-   "icon": "39494.png"
+   "icon": "39494.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "64898",
@@ -680,7 +863,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "64898.png"
+   "icon": "64898.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "64899",
@@ -691,7 +877,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "64899.png"
+   "icon": "64899.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "32"
   },
   {
    "id": "64900",
@@ -702,7 +891,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "64900.png"
+   "icon": "64900.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "64901",
@@ -713,7 +905,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "64901.png"
+   "icon": "64901.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "64991",
@@ -724,7 +919,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "64991.png"
+   "icon": "64991.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "64992",
@@ -735,7 +933,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "64992.png"
+   "icon": "64992.png",
+   "prepare": "48",
+   "chanFrame": "-1",
+   "chanInterval": "56"
   },
   {
    "id": "64993",
@@ -746,7 +947,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "64993.png"
+   "icon": "64993.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "64994",
@@ -757,7 +961,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "64994.png"
+   "icon": "64994.png",
+   "prepare": "16",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "64995",
@@ -768,7 +975,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "64995.png"
+   "icon": "64995.png",
+   "prepare": "16",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "64996",
@@ -779,7 +989,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "64996.png"
+   "icon": "64996.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "144"
   },
   {
    "id": "65022",
@@ -790,7 +1003,10 @@
    "dash": "0",
    "castMode": "TargetArea",
    "channel": 0,
-   "icon": "65022.png"
+   "icon": "65022.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65024",
@@ -801,7 +1017,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65024.png"
+   "icon": "65024.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65026",
@@ -812,7 +1031,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65026.png"
+   "icon": "65026.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65028",
@@ -823,7 +1045,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65028.png"
+   "icon": "65028.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65029",
@@ -834,7 +1059,10 @@
    "dash": "120",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65029.png"
+   "icon": "65029.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65036",
@@ -845,7 +1073,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65036.png"
+   "icon": "65036.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "104"
   },
   {
    "id": "65038",
@@ -856,7 +1087,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65038.png"
+   "icon": "65038.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "64"
   },
   {
    "id": "65046",
@@ -867,7 +1101,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65046.png"
+   "icon": "65046.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65047",
@@ -878,7 +1115,10 @@
    "dash": "0",
    "castMode": "TargetArea",
    "channel": 0,
-   "icon": "65047.png"
+   "icon": "65047.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65048",
@@ -889,7 +1129,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65048.png"
+   "icon": "65048.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65049",
@@ -900,7 +1143,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65049.png"
+   "icon": "65049.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65050",
@@ -911,7 +1157,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65050.png"
+   "icon": "65050.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65053",
@@ -922,7 +1171,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65053.png"
+   "icon": "65053.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65054",
@@ -933,7 +1185,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65054.png"
+   "icon": "65054.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65058",
@@ -944,7 +1199,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65058.png"
+   "icon": "65058.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65059",
@@ -955,7 +1213,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65059.png"
+   "icon": "65059.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65060",
@@ -966,7 +1227,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65060.png"
+   "icon": "65060.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65061",
@@ -977,7 +1241,10 @@
    "dash": "0",
    "castMode": "CasterArea",
    "channel": 0,
-   "icon": "65061.png"
+   "icon": "65061.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65062",
@@ -988,7 +1255,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65062.png"
+   "icon": "65062.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65065",
@@ -999,7 +1269,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65065.png"
+   "icon": "65065.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65068",
@@ -1010,7 +1283,10 @@
    "dash": "0",
    "castMode": "PointArea",
    "channel": 0,
-   "icon": "65068.png"
+   "icon": "65068.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65071",
@@ -1021,7 +1297,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65071.png"
+   "icon": "65071.png",
+   "prepare": "32",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65074",
@@ -1032,7 +1311,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65074.png"
+   "icon": "65074.png",
+   "prepare": "24",
+   "chanFrame": "-1",
+   "chanInterval": "96"
   },
   {
    "id": "65075",
@@ -1043,7 +1325,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65075.png"
+   "icon": "65075.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65076",
@@ -1054,7 +1339,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65076.png"
+   "icon": "65076.png",
+   "prepare": "24",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65078",
@@ -1065,7 +1353,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65078.png"
+   "icon": "65078.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65083",
@@ -1076,7 +1367,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65083.png"
+   "icon": "65083.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65087",
@@ -1087,7 +1381,10 @@
    "dash": "90",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65087.png"
+   "icon": "65087.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65089",
@@ -1098,7 +1395,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65089.png"
+   "icon": "65089.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65090",
@@ -1109,7 +1409,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65090.png"
+   "icon": "65090.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65092",
@@ -1120,7 +1423,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65092.png"
+   "icon": "65092.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65095",
@@ -1131,7 +1437,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65095.png"
+   "icon": "65095.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "50"
   },
   {
    "id": "65096",
@@ -1142,7 +1451,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65096.png"
+   "icon": "65096.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65097",
@@ -1153,7 +1465,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65097.png"
+   "icon": "65097.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65098",
@@ -1164,7 +1479,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65098.png"
+   "icon": "65098.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65100",
@@ -1175,7 +1493,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65100.png"
+   "icon": "65100.png",
+   "prepare": "8",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65101",
@@ -1186,7 +1507,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65101.png"
+   "icon": "65101.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65103",
@@ -1197,7 +1521,10 @@
    "dash": "0",
    "castMode": "CasterArea",
    "channel": 0,
-   "icon": "65103.png"
+   "icon": "65103.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65104",
@@ -1208,7 +1535,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65104.png"
+   "icon": "65104.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65105",
@@ -1219,7 +1549,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65105.png"
+   "icon": "65105.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65107",
@@ -1230,7 +1563,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65107.png"
+   "icon": "65107.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65108",
@@ -1241,7 +1577,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65108.png"
+   "icon": "65108.png",
+   "prepare": "24",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65109",
@@ -1252,7 +1591,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65109.png"
+   "icon": "65109.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65113",
@@ -1263,7 +1605,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65113.png"
+   "icon": "65113.png",
+   "prepare": "16",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65116",
@@ -1274,7 +1619,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65116.png"
+   "icon": "65116.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65118",
@@ -1285,7 +1633,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65118.png"
+   "icon": "65118.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65119",
@@ -1296,7 +1647,10 @@
    "dash": "0",
    "castMode": "CasterArea",
    "channel": 0,
-   "icon": "65119.png"
+   "icon": "65119.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65120",
@@ -1307,7 +1661,10 @@
    "dash": "120",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65120.png"
+   "icon": "65120.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65133",
@@ -1318,7 +1675,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65133.png"
+   "icon": "65133.png",
+   "prepare": "16",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65136",
@@ -1329,7 +1689,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65136.png"
+   "icon": "65136.png",
+   "prepare": "16",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65138",
@@ -1340,7 +1703,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65138.png"
+   "icon": "65138.png",
+   "prepare": "16",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65140",
@@ -1351,7 +1717,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65140.png"
+   "icon": "65140.png",
+   "prepare": "16",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65142",
@@ -1362,7 +1731,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65142.png"
+   "icon": "65142.png",
+   "prepare": "16",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65144",
@@ -1373,7 +1745,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65144.png"
+   "icon": "65144.png",
+   "prepare": "24",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65145",
@@ -1384,7 +1759,10 @@
    "dash": "0",
    "castMode": "CasterArea",
    "channel": 0,
-   "icon": "65145.png"
+   "icon": "65145.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65146",
@@ -1395,7 +1773,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65146.png"
+   "icon": "65146.png",
+   "prepare": "24",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65149",
@@ -1406,7 +1787,10 @@
    "dash": "0",
    "castMode": "PointArea",
    "channel": 0,
-   "icon": "65149.png"
+   "icon": "65149.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65150",
@@ -1417,7 +1801,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65150.png"
+   "icon": "65150.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65153",
@@ -1428,7 +1815,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65153.png"
+   "icon": "65153.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65154",
@@ -1439,7 +1829,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65154.png"
+   "icon": "65154.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65155",
@@ -1450,7 +1843,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65155.png"
+   "icon": "65155.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65156",
@@ -1461,7 +1857,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65156.png"
+   "icon": "65156.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65157",
@@ -1472,7 +1871,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65157.png"
+   "icon": "65157.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65159",
@@ -1483,7 +1885,10 @@
    "dash": "0",
    "castMode": "CasterArea",
    "channel": 0,
-   "icon": "65159.png"
+   "icon": "65159.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65160",
@@ -1494,7 +1899,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65160.png"
+   "icon": "65160.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65161",
@@ -1505,7 +1913,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65161.png"
+   "icon": "65161.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65162",
@@ -1516,7 +1927,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65162.png"
+   "icon": "65162.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65163",
@@ -1527,7 +1941,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65163.png"
+   "icon": "65163.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65165",
@@ -1538,7 +1955,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65165.png"
+   "icon": "65165.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65167",
@@ -1549,7 +1969,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65167.png"
+   "icon": "65167.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65240",
@@ -1560,7 +1983,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65240.png"
+   "icon": "65240.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65241",
@@ -1571,7 +1997,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65241.png"
+   "icon": "65241.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65242",
@@ -1582,7 +2011,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65242.png"
+   "icon": "65242.png",
+   "prepare": "0",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65243",
@@ -1593,7 +2025,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65243.png"
+   "icon": "65243.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65244",
@@ -1604,7 +2039,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65244.png"
+   "icon": "65244.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65250",
@@ -1615,7 +2053,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65250.png"
+   "icon": "65250.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65251",
@@ -1626,7 +2067,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65251.png"
+   "icon": "65251.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65254",
@@ -1637,7 +2081,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 1,
-   "icon": "65254.png"
+   "icon": "65254.png",
+   "prepare": "-1",
+   "chanFrame": "128",
+   "chanInterval": "8"
   },
   {
    "id": "65667",
@@ -1648,7 +2095,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65667.png"
+   "icon": "65667.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65668",
@@ -1659,7 +2109,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65668.png"
+   "icon": "65668.png",
+   "prepare": "24",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65669",
@@ -1670,7 +2123,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65669.png"
+   "icon": "65669.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65670",
@@ -1681,7 +2137,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 0,
-   "icon": "65670.png"
+   "icon": "65670.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65671",
@@ -1692,7 +2151,10 @@
    "dash": "0",
    "castMode": "TargetSingle",
    "channel": 0,
-   "icon": "65671.png"
+   "icon": "65671.png",
+   "prepare": "-1",
+   "chanFrame": "-1",
+   "chanInterval": "-1"
   },
   {
    "id": "65672",
@@ -1703,7 +2165,10 @@
    "dash": "0",
    "castMode": "CasterSingle",
    "channel": 1,
-   "icon": "65672.png"
+   "icon": "65672.png",
+   "prepare": "-1",
+   "chanFrame": "144",
+   "chanInterval": "16"
   }
  ]
 }

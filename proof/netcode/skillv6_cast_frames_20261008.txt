@@ -1,0 +1,29 @@
+# skill v6 — cast time (prepare) from skill scripts (Phase C, 2026-10-08)
+# Build: reborn_client_skillv6.exe (git 4b75c4e, dirty)
+# Data:  ability_picker/tools/build_cast_frames.py reads each skill's Lua script
+#        (skills.tab ScriptFile col 57) and extracts:
+#          skill.nPrepareFrames     cast/prepare time, frames (GAME_FPS 16)
+#          skill.nChannelFrame      channel duration, frames
+#          skill.nChannelInterval   channel tick interval (ms)
+#        -> ability_picker/data/cast_frames_f1.tsv (41141 skills; 157 nPrepareFrames,
+#           121 channel); joined into roster_f1.tsv cols prepare/chanFrame/chanInterval.
+# Client: SkillCast.Begin(..., prepareMs, ...): commitMs = max(prepareMs, effectFrame);
+#         totalMs = max(animMs, commitMs); the clip holds for totalMs (not instant).
+
+## worked example — 65076 绝境_云飞玉皇 (script scripts/skill/绝境战场/绝境_云飞玉皇.lua)
+   skill.nPrepareFrames = 24;        -- 准备帧数   (24 frames / 16 fps = 1500 ms)
+   skill.nMinPrepareFrames = 1;
+   skill.nChannelInterval = 200 * 1.07 * 1.05 * HDJueJingSkillCoe;  -- (symbol -> -1, unresolved)
+
+## driven run: RC_SLOTS=65076,65029 RC_TAB_AT=32000 RC_CAST_AT=38000:1,46000:2 RC_AUTORUN=54000
+## reborn_...log
+slot 1 -> 65076 绝境_云飞玉皇 ... dash=0 prepareMs=1500
+cast chain 65076: target=初级试炼木桩(131) anim=...F1s07cj重剑技能11b_云飞HD.tani
+  animMs=1500 prepareMs=1500 commitMs=1500 totalMs=1500 fxAt=520      <- PREPARED (not instant)
+slot 2 -> 65029 绝境_龙牙 ... dash=120 prepareMs=0
+cast chain 65029: animMs=1500 prepareMs=0 commitMs=520 totalMs=1500    <- INSTANT (commit at effect frame)
+DONE                                                                  <- clean, no AV
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open: nChannelFrame/nChannelInterval not yet modelled at runtime (only prepare);
+#       channelInterval expressions with HDJueJingSkillCoe resolve to -1.

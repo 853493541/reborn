@@ -30,7 +30,8 @@ internal sealed class SkillCast
     long startMs;
     long animMs;
     long dashMs;
-    long effectAtMs;
+    long commitMs;                 // effect/commit time = max(prepare, effect frame)
+    long totalMs;                  // cast ends here = max(anim, commit)
     bool effectPending;
 
     float fromX, fromZ;
@@ -39,10 +40,11 @@ internal sealed class SkillCast
     float faceYaw;
 
     // dashSpeedPerFrame = engine units per frame (the child skill's DASH value).
+    // prepareMs = the skill's cast time (nPrepareFrames / GAME_FPS); 0 = instant.
     public void Begin(long now, string name, string anim, string effect,
                       float selfX, float selfZ,
                       float tgtX, float tgtY, float tgtZ,
-                      long animMs, long effectAtMs, float stopDistance,
+                      long animMs, long effectAtMs, long prepareMs, float stopDistance,
                       float dashSpeedPerFrame)
     {
         Active = true;
@@ -51,7 +53,11 @@ internal sealed class SkillCast
         EffectPath = effect;
         startMs = now;
         this.animMs = animMs > 1 ? animMs : 1;
-        this.effectAtMs = effectAtMs < 0 ? 0 : effectAtMs;
+        long eff = effectAtMs < 0 ? 0 : effectAtMs;
+        // commit = the cast completes: instant skills commit at the effect frame,
+        // prepared skills at the end of the prepare (nPrepareFrames) phase.
+        commitMs = prepareMs > eff ? prepareMs : eff;
+        totalMs = this.animMs > commitMs ? this.animMs : commitMs;
         effectPending = effect != null && effect.Length > 0;
 
         fromX = selfX;
@@ -112,17 +118,20 @@ internal sealed class SkillCast
         else f = 1f;
         x = fromX + (endX - fromX) * f;
         z = fromZ + (endZ - fromZ) * f;
-        if (el >= animMs) Active = false;
+        if (el >= totalMs) Active = false;
         return true;
     }
 
-    // true exactly once, at the effect frame.
+    // true exactly once, at the commit frame.
     public bool TakeEffect(long now)
     {
         if (!effectPending) return false;
-        if (now - startMs >= effectAtMs) { effectPending = false; return true; }
+        if (now - startMs >= commitMs) { effectPending = false; return true; }
         return false;
     }
+
+    public long TotalMs() { return totalMs; }
+    public long CommitMs() { return commitMs; }
 
     public void EffectPoint(out float x, out float y, out float z)
     {
