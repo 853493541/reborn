@@ -5199,3 +5199,18 @@ power-pool values remain undecoded (re-open criteria in the doc).
   p2_jump_deep (`swim: jump state=5` -> re-entry 7), p2_jump_shallow (normal
   jump). Gates: build 0, smoke ALL PASS, collision 36/36.
 
+### 2026-10-07 - Real-input mount verification: auto-flip misfire found and removed
+
+- Problem: the user saw no improvement despite harness-green; the driven OS-input
+  rig initially delivered nothing (SetForegroundWindow silently failed) - fixed with
+  verified activation + PostMessage fallback (drive_mount2.ps1).
+- With real input: idle/moving/backward/double/jump/dismount branches all match the
+  spec runs, BUT walking backward (180-degree turn) triggered the facing check's
+  auto-flip TWICE (travel reference vs rider facing) - the horse visibly flipped.
+  Root cause: the check compared the head to the instantaneous travel vector and
+  MUTATED the placement.
+- Fix: compare to the rider's facing, log only, never mutate (anomaly after 5
+  samples). After-proof: `head dot rider=1.00` through the turn, zero auto-flips,
+  full scenario + dismount + DONE (realinput_after_fix.txt).
+- Scope named (not faked): vehicles/glider/full parachute/double-ride/footprints/
+  fade phases/hidden 13618-44565 motions remain separate features.

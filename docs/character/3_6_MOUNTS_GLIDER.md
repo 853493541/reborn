@@ -736,3 +736,9 @@ Against the four user acceptance criteria, proven from the client + driven runs:
 Proof: `fs2_full_run_20261006_223217.txt`, `fs2_mini_run_20261006_223252.txt`,
 screenshots `fs2_full_*.png` / `fs2_mini_*.png` + `image_stats_fs2_20261006.txt`
 (6 fingerprints). Gates: `camera_smoke` ALL PASS, `collision_selftest` 36/36.
+
+> **Update 2026-10-07 (real input):** the runtime facing check now compares the horse
+> head to the RIDER'S FACING (not the travel vector) and never mutates the placement;
+> the earlier auto-flip flipped a correct horse during 180-degree turns/backward
+> movement. See `SPEC_MOUNT.md` "Real-input verification" + `proof/character/mount/
+> realinput_*`.
