@@ -444,6 +444,25 @@ The bar rendered (buffer `168×188`, `sha256=8fac109136253991`; `proof/netcode/s
 tani length) instead of the fixed 200 u / 1500 ms; the standalone `.Sfx` engine factory
 (the v5 shim faults in this host — owner/context unresolved).
 
+**v6 ability system (2026-10-08).** A full ability layer on top of the chain:
+- **Roster** `ability_picker/tools/build_roster.py` → `roster_f1.tsv` (154 abilities:
+  name/ids/tani/castMode/channel/icon joined to the cast chain); icons reused from the
+  shipped `bin64\ability_picker\icons\`.
+- **Panel** `client/AbilityPanel.cs` — top-right icon grid; click = make active, key `1`
+  casts; `P` toggles. (Top-level window, created lazily after engine init.)
+- **Cast state** `client/SkillCast.cs` — `instant` / `prepare` (`nPrepareFrames`) /
+  `channel` (`nChannelFrame`); `ability_picker/tools/build_cast_frames.py` extracts the
+  frames from the skill scripts. e.g. 65076 `nPrepareFrames=24` → 1500 ms cast;
+  27906 `nChannelFrame=64` → 4000 ms channel.
+- **Coverage (Phase D):** `RC_SWEEP` drives every roster ability; a full pass is
+  **115 casts + 39 skipped = 154, clean** — the 39 are per-tani AVing tanis
+  (`ability_picker/data/av_blacklist_f1.txt`; `coverage_f1.tsv`). Not animation-only: each
+  cast applies the ability's own clip, cast time and channel.
+
+**Open (v6):** runtime `nChannelInterval` ticks (only total channel duration modelled);
+GCD is a `totalMs+1200` cooldown, not the client's cooldown row 16; the 39 per-tani AV
+tanis are an open host/engine item.
+
 ---
 
 ## Reproduce
