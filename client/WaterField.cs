@@ -1,15 +1,20 @@
-// Water source per SPEC_STATES_P2 section "Water surface data semantics".
+// Water source per SPEC_STATES_P3.
 //
-// Truth: the authored per-map surface list (client/WaterSurfaces.cs, generated
-// by tools/character/water_surfaces.py from
-// data\source\maps\<map>\water\surface\watersurfacelist.json in the client
-// PakV4 store). This list is the RENDER/WAVE placement; the gameplay region is
-// the terrain logic cell (m_pCell = [char+0x50]; flag bit0; surface =
-// word[+6]<<6; floor = word[+4]<<6, helper 0x140312440) whose writer is still
-// untraced (P1). The interim mapping is the authored rectangle:
-//   center = Postion, half-extents = 0.5*BaseWidth*ScaleX x 0.5*BaseLenght*ScaleZ,
-//   yaw = RotY; type 0 = global plane; always gated on ground < surface.
-// Labeled P1-provisional. RC_WATER boxes remain a TEST-ONLY override.
+// Real region: the shipped water region tree
+// data\source\maps\<map>\water\regiondata\RegionInfo.json, decoded by
+// tools/character/water_region.py into client/WaterRegions.cs. The ReferNode key
+// encodes the region's world origin (KG3D_LoaderNoRenderX64.dll fn 0x1800245b0:
+// key field = sign digit + 3 magnitude digits of minWorld/(RegionSize*UnitScale)
+// = minWorld/51200); a region spans 1024 cells = 102400 u (16x16 leaves of 64
+// cells). Height is the shipped water surface (watersurfacelist.json) inside the
+// region. The engine narrows the shoreline with the region hole/normal masks
+// (not decoded); the host floats water over the block AABB where ground < surface.
+//
+// Fallback (maps without a RegionInfo decode): the authored per-map surface list
+// (WaterSurfaces.cs) mapped to cells with the old registered P1 heuristic. That
+// path is NOT used for maps that carry a real region.
+//
+// RC_WATER boxes remain a TEST-ONLY override and always win.
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -23,14 +28,17 @@ internal sealed class WaterField
 
     readonly List<Box> _boxes = new List<Box>();
     WaterSurfaces.Body[] _bodies = new WaterSurfaces.Body[0];
+    WaterRegions.Region[] _regions = new WaterRegions.Region[0];
 
     public int BodyCount { get { return _bodies.Length; } }
+    public int RegionCount { get { return _regions.Length; } }
     public int BoxCount { get { return _boxes.Count; } }
-    public int Count { get { return _bodies.Length + _boxes.Count; } }
+    public int Count { get { return _regions.Length + _bodies.Length + _boxes.Count; } }
 
     public static WaterField Create(string mapName, string boxSpec)
     {
         WaterField w = new WaterField();
+        try { w._regions = WaterRegions.For(mapName); } catch (Exception) { }
         try { w._bodies = WaterSurfaces.For(mapName); } catch (Exception) { }
         if (!string.IsNullOrEmpty(boxSpec))
         {
@@ -61,12 +69,56 @@ internal sealed class WaterField
         return w;
     }
 
-    // water at (x,z): surface height. The authored surface only holds where
-    // the terrain is below it (a floating plane does not flood hills).
+    // water at (x,z): surface height. The surface only holds where the terrain is
+    // below it (a floating plane does not flood hills).
     public bool Sample(float x, float z, float ground, out float surface)
     {
         surface = 0f;
         bool found = false;
+        for (int i = 0; i < _regions.Length; i++)
+        {
+            WaterRegions.Region r = _regions[i];
+            if (x < r.X0 || x > r.X1 || z < r.Z0 || z > r.Z1) continue;
+            if (ground >= r.Surface) continue;
+            surface = r.Surface;
+            found = true;
+        }
+        if (_regions.Length == 0)
+        {
+            for (int i = 0; i < _bodies.Length; i++)
+            {
+                WaterSurfaces.Body b = _bodies[i];
+                if (ground >= b.Y) continue;          // plane above the terrain only
+                if (b.Type == 0)
+                {
+                    surface = b.Y;                    // ocean: global plane
+                    found = true;
+                    continue;
+                }
+                float dx = x - b.X;
+                float dz = z - b.Z;
+                // P1-registered footprint (fallback maps only): 4096 u * Scale.
+                float hx = 4096f * b.ScaleX;
+                float hz = 4096f * b.ScaleZ;
+                if (hx <= 0f) hx = 1f;
+                if (hz <= 0f) hz = 1f;
+                if (b.RotY != 0f)
+                {
+                    float ca = (float)Math.Cos(-b.RotY);
+                    float sa = (float)Math.Sin(-b.RotY);
+                    float rx = dx * ca - dz * sa;
+                    float rz = dx * sa + dz * ca;
+                    dx = rx;
+                    dz = rz;
+                }
+                if (Math.Abs(dx) <= hx && Math.Abs(dz) <= hz)
+                {
+                    surface = b.Y;
+                    found = true;
+                }
+            }
+        }
+        // RC_WATER boxes: TEST-ONLY override, always wins.
         for (int i = 0; i < _boxes.Count; i++)
         {
             Box b = _boxes[i];
@@ -74,50 +126,12 @@ internal sealed class WaterField
             surface = b.Surface;
             found = true;
         }
-        for (int i = 0; i < _bodies.Length; i++)
-        {
-            WaterSurfaces.Body b = _bodies[i];
-            if (ground >= b.Y) continue;          // plane above the terrain only
-            if (b.Type == 0)
-            {
-                surface = b.Y;                    // ocean: global plane
-                found = true;
-                continue;
-            }
-            float dx = x - b.X;
-            float dz = z - b.Z;
-            // P1 REGISTERED PROVISIONAL region (restored 2026-10-07): the water
-            // body footprint is `4096 u * Scale` from the body center. E's P2
-            // "authored rect" used BaseWidth=40 raw (~40 u) which is ~100x too
-            // small and made the real lake "no water" (a regression vs the P1
-            // behavior the user had). BaseWidth/BaseLenght are base-mesh dims,
-            // not the extent. True region = the terrain-cell water layer
-            // (SPEC_STATES_P3); re-open when that writer is traced.
-            float hx = 4096f * b.ScaleX;
-            float hz = 4096f * b.ScaleZ;
-            if (hx <= 0f) hx = 1f;
-            if (hz <= 0f) hz = 1f;
-            if (b.RotY != 0f)
-            {
-                float ca = (float)Math.Cos(-b.RotY);
-                float sa = (float)Math.Sin(-b.RotY);
-                float rx = dx * ca - dz * sa;
-                float rz = dx * sa + dz * ca;
-                dx = rx;
-                dz = rz;
-            }
-            if (Math.Abs(dx) <= hx && Math.Abs(dz) <= hz)
-            {
-                surface = b.Y;
-                found = true;
-            }
-        }
         return found;
     }
 
     public string Describe()
     {
-        return string.Format("waterBodies={0} waterBoxes={1} (P1 authored-rect mapping; true region = terrain cell layer)",
-            _bodies.Length, _boxes.Count);
+        return string.Format("waterRegions={0} waterBodies={1} waterBoxes={2} (real RegionInfo tree; height from watersurfacelist)",
+            _regions.Length, _bodies.Length, _boxes.Count);
     }
 }

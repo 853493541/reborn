@@ -4204,7 +4204,10 @@ internal static class RebornClient
             bool swimNow = wFound && py <= wSurf && wDepth >= swimT;
             if (swimNow)
             {
-                int newSwimState = moving ? 6 : 7;
+                // SPEC_STATES_P3 §1: a fall-in (airborne descent) stops at state 7;
+                // grounded walk/run -> 6 (moving) / 7 (idle).
+                bool fallIn = !grounded && vy < 0f;
+                int newSwimState = fallIn ? 7 : (moving ? 6 : 7);
                 if (swimState == 0)
                     Log(string.Format("swim: enter state={0} surface={1:F0} depth={2:F0} T={3:F0} y={4:F0} pos=({5:F0},{6:F0})",
                         newSwimState, wSurf, wDepth, swimT, py, px, pz));

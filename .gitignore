@@ -92,3 +92,6 @@ proof/character/fltool/
 proof/character/face_out/
 proof/character/face_tab/mesh_probe/
 samples/water_surfaces/
+
+# Water region decode scratch (RegionInfo copies; game assets)
+samples/water_region/
