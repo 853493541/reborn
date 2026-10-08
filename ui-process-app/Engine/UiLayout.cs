@@ -1380,6 +1380,31 @@ namespace MapUiApp.Engine
                 return;
             }
 
+            // SetAbsPos is window-root-relative (LayoutPlan stores "$AbsPos=x,y" from the
+            // engine's LuaWindow_SetAbsPos, KGUIX64 0x1801c36a0); convert it to the
+            // parent-relative coordinate the Canvas tree uses. A runtime call wins over
+            // the authored anchors.
+            var absSpec = section.Get("$AbsPos");
+            if (!string.IsNullOrWhiteSpace(absSpec))
+            {
+                var ap = absSpec.Split(',');
+                if (ap.Length >= 2 &&
+                    double.TryParse(ap[0], System.Globalization.NumberStyles.Float,
+                        System.Globalization.CultureInfo.InvariantCulture, out var ax) &&
+                    double.TryParse(ap[1], System.Globalization.NumberStyles.Float,
+                        System.Globalization.CultureInfo.InvariantCulture, out var ay))
+                {
+                    left = ax - parentAbs.X;
+                    top = ay - parentAbs.Y;
+                    Canvas.SetLeft(element, left);
+                    Canvas.SetTop(element, top);
+                    if (Wireframe && element.ToolTip == null) element.ToolTip = section.Name;
+                    ApplyAlphaAndVisibility(element, section);
+                    parent.Children.Add(element);
+                    return;
+                }
+            }
+
             var anchorTarget = ResolveAnchorDst(section, parentAbs, rootWidth, rootHeight, sizeOf, absPos, build);
             if (TryAnchorArgs(section, parentWidth, parentHeight, elementWidth, elementHeight, out var anchorLeft, out var anchorTop, anchorTarget))
             {

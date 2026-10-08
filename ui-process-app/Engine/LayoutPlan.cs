@@ -802,9 +802,19 @@ namespace UiProcessApp.Engine
                         applied++;
                         break;
                     case "SetRelPos":
-                    case "SetAbsPos":
                         SetValue(section, "Left", parts, 2);
                         SetValue(section, "Top", parts, 3);
+                        applied++;
+                        break;
+                    case "SetAbsPos":
+                        // SetAbsPos is relative to the WINDOW ROOT, not the parent: the
+                        // engine's LuaWindow_SetAbsPos (KGUIX64 0x1801c36a0) subtracts the
+                        // frame origin before setting. Store it for UiLayout to resolve
+                        // against the root (a parent-relative Left/Top would be wrong for a
+                        // nested control — Collection's Image_BottomBg rendered at y=987).
+                        if (parts.Length > 3 && !string.IsNullOrWhiteSpace(parts[2]) &&
+                            !string.IsNullOrWhiteSpace(parts[3]))
+                            section.Values["$AbsPos"] = parts[2] + "," + parts[3];
                         applied++;
                         break;
                     case "SetRelX":

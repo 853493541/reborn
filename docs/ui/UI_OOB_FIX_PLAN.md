@@ -30,18 +30,22 @@ into a row at x≈1927 and the bag's right-side controls (Btn_Drag/Scroll_List/�
 y=0 — outside the window. Guarding the flow removed **813 oob elements** (7,690 → 6,877) and 8
 `placed-wrong`; Btn_Drag is back at its scripted (580,610). Remaining `placed-wrong` (6) and the
 observed pattern:
-- **SetAbsPos with an offset parent** — Collection `Image_BottomBg` (`SetAbsPos 0 -40`, parent
-  `Handle_BottomBg` at y≈1027 → rendered 987) and CreditsPanel `Image_CreditsPanelBg`
-  (`SetAbsPos 0 0`, parent `Handle_All` at -300,-28 → rendered -300,-28). The viewer treats
-  `SetAbsPos` like `SetRelPos` (both set Left/Top); if the engine's `SetAbsPos` is absolute to the
-  window, the viewer is wrong here. **P3 follow-up: disassemble `LuaWindow_SetAbsPos` vs
-  `LuaWindow_SetRelPos` and apply the correct semantics.**
-- **SetRelPos with one axis mismatched** — Album `Wnd_Thumb` (script -399.5,-110 → rendered
-  0,-110), Coinshop_CheckOut `PageSet_CheckOut` (-385.5,-360 → 0,-360), Coinshop_CantBuy
-  `Wnd_Warning` (-206,-157.5 → -206,0), ExteriorBoxError `Wnd_Error` (-248.5,-93 → 0,-93). The
-  INIs carry no `PosType`; if the viewer's default PosType for these control classes is non-zero
-  (anchor), the axis is anchored instead of relative. **P3 follow-up: confirm the PosType default
-  for WndWindow/WndPageSet/WndContainer against the engine.**
+- **SetAbsPos with an offset parent — FIXED (2026-10-07).** The engine's `LuaWindow_SetAbsPos`
+  (KGUIX64 0x1801c36a0) subtracts the **window root** origin before setting (`subss xmm7,[rbx+0x24]`),
+  so `SetAbsPos` is window-root-relative, while `LuaWindow_SetRelPos` (0x1801c3490) calls the
+  parent-relative core directly. The viewer treated both as parent-relative, so Collection
+  `Image_BottomBg` (`SetAbsPos 0 -40`, parent `Handle_BottomBg` at y≈1027) rendered at y=987 and
+  CreditsPanel `Image_CreditsPanelBg` (`SetAbsPos 0 0`, parent `Handle_All` at -300,-28) at
+  (-300,-28). Fix: `LayoutPlan` stores `$AbsPos=x,y`; `UiLayout.Attach` resolves it against the
+  window root. 59 `SetAbsPos` calls across 43 windows. `placed-wrong` 6 → 4.
+- **SetRelPos with one axis mismatched (4, open)** — Album `Wnd_Thumb` (script -399.5,-110 →
+  rendered 0,-110), Coinshop_CheckOut `PageSet_CheckOut` (-385.5,-360 → 0,-360), Coinshop_CantBuy
+  `Wnd_Warning` (-206,-157.5 → -206,0), ExteriorBoxError `Wnd_Error` (-248.5,-93 → 0,-93). All are
+  `WndWindow`/`WndPageSet` with no `PosType`/`AnchorArgs` and no inventory override, and the script
+  has no later `SetRelX`/`SetRelY` — so one axis of the applied `SetRelPos` is being overwritten to
+  0 after `ApplyRuntimeState`. **P3 follow-up: trace the plan's `Left`/`Top` for one section
+  (plan-dump before `UiLayout.Build`) to find the overwrite; candidates are the `$FormatItems`
+  list pass or `Clear` on the container.**
 
 The earlier capped analysis (first 40/window, 6,254 elements) gave scroll 1,194 · parked 1,347 ·
 negative-pos 457 · edge 149 · other 2,903, and the post-filter container 1,548 / leaf 1,204 /
@@ -174,6 +178,7 @@ ui-process-app\bin\Release\net5.0-windows\UiProcessApp.exe --selftest   # 1240/0
 parent-chain walk, WndScroll clip HIGH from prior evidence); engine AutoSize default MED
 (DecodeItem 0x1800b86df; P1 confirms); A-vs-C split MED (needs P3 engine-rules review or GT).
 
-Last verified: 2026-10-07 (`--audit` oob=6,877 → overhang=3,233 clipped=1,679 parked=1,591
-edge-pos=366 placed-wrong=6 clone=2; the flow-guard fix removed 813; 1,123 root frames without
-AutoSize; 66 script-sized roots; `--selftest` 1240/0/0).
+Last verified: 2026-10-07 (`--audit` oob=6,879 → overhang=3,241 clipped=1,679 parked=1,579
+edge-pos=374 placed-wrong=4 clone=2; the flow-guard fix removed 813 and the SetAbsPos fix removed
+2 placed-wrong; 1,123 root frames without AutoSize; 66 script-sized roots; `--selftest`
+1240/0/0).

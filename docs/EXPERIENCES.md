@@ -2650,3 +2650,17 @@ solved it, and what is still open. **Newest at the bottom.**
 - Remaining placed-wrong (6, single sections): Album Wnd_Thumb, Coinshop_CheckOut PageSet_CheckOut,
   Coinshop_CantBuy Wnd_Warning, Collection Image_BottomBg, ExteriorBoxError Wnd_Error,
   CreditsPanel Image_CreditsPanelBg — the next P3 items.
+
+### 2026-10-07 — UI — oob P3: SetAbsPos is window-root-relative (engine IL)
+
+- IL: `LuaWindow_SetAbsPos` (KGUIX64 0x1801c35b0, work at 0x1801c36a0) subtracts the **window
+  root** origin before setting (`subss xmm7,[rbx+0x24]`, `subss xmm6,[rbx+0x28]`); `LuaWindow_SetRelPos`
+  (0x1801c3490) calls the parent-relative core directly. So SetAbsPos = absolute within the window,
+  SetRelPos = relative to the parent.
+- The viewer treated both as parent-relative, so nested SetAbsPos controls were offset by their
+  parent: Collection `Image_BottomBg` (SetAbsPos 0 -40, parent at y≈1027) rendered at y=987;
+  CreditsPanel `Image_CreditsPanelBg` (SetAbsPos 0 0, parent -300,-28) at -300,-28. Fix: LayoutPlan
+  stores `$AbsPos=x,y`, UiLayout resolves it against the window root. 59 SetAbsPos calls / 43 windows.
+- `--audit`: placed-wrong 6 -> 4; oob 6,877 -> 6,879; `--selftest` 1240/0/0. The 4 remaining are
+  SetRelPos with one axis overwritten to 0 (no later SetRelX/Y, no inventory override) — next P3
+  item (trace the plan's Left/Top before UiLayout.Build).
