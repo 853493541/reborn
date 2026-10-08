@@ -601,3 +601,36 @@ shots + `spec_image_stats.txt`), full map + 1x1 mini sandbox, all `DONE`:
   (criterion 9) and the deliberate sprint press-2 dismounts (criterion 10).
 - P2 CameraAdjust unit unresolved -> logged + 0.01 deg/unit scale (criterion 18 partial).
 - D3 the `H加速奔跑01.tani` fade clip remains an AV boundary (not played).
+
+---
+
+## Real-input verification (2026-10-07, driven OS input)
+
+The scripted harness bypassed nothing in logic, but it never walked a 180-degree
+turn - the real-input rig (`tools/character/drive_mount.ps1`, fallback-verified
+`drive_mount2.ps1`: verified foreground activation, PostMessage fallback) exposed a
+real defect:
+
+**Defect (before, run `proof/character/mount/realinput_before_flip.txt`):** the
+runtime facing check compared the horse head to the instantaneous TRAVEL vector.
+Walking backward (joystick mode turns the character 180 deg) made `head dot
+travel=-1.00` during the turn and the check **mutated the placement (auto-flip
++pi)** - twice (`17:34:24.381/.395`), visibly flipping the horse. The horse must
+follow the character heading (`+0x44`); travel differs from facing during turns and
+backward movement.
+
+**Fix:** the check now compares the horse head against the RIDER'S FACING
+(`sin r, cos r`), logs `head dot rider`, and NEVER mutates the placement (a
+persistent mismatch logs an anomaly after 5 samples instead).
+
+**After (run `proof/character/mount/realinput_after_fix.txt`):** full real-input
+scenario - T mount; idle Space -> skill 13618 (no jump); W + Space -> skill 44565 +
+horse triple 60/180/11; airborne double -> branch-B reject with the mount kept;
+landing intact; S + Space -> 13618 (no jump); T dismount; `DONE`; **zero auto-flip
+lines**, `head dot rider=1.00` through the 180-degree turn (riderYaw 0 -> 3.14).
+
+**Scope note (spec 6, named not faked):** vehicles/manned spaces (神机车/摧城车),
+glider/nav-fly (AUTOFLY + ride 1152 + GliderCamera), full parachute behavior
+(flag + jump reject are in; Vz-preserve/bird gates are not), double-ride
+(`ride_link.txt`), footprint SFX, fade phases (fade-in clip is an AV boundary D3),
+and the hidden skill motions for 13618/44565 remain separate unimplemented features.
