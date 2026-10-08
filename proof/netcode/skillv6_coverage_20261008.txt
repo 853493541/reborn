@@ -1,0 +1,29 @@
+# skill v6 — full coverage sweep CLEAN (Phase D done, 2026-10-08)
+# Build: reborn_client_skillv6.exe (git 45bc6e8, dirty)
+# Roster: 154 abilities (ability_picker/data/roster_f1.tsv)
+# Blacklist: 39 per-tani AVing ids (ability_picker/data/av_blacklist_f1.txt)
+
+## Verification run: RC_TAB_AT=1000 RC_SWEEP=150 RC_SWEEP_N=154 RC_SWEEP_START=0 RC_AUTORUN=600000
+## reborn_20261008_031302.log
+build=reborn_client_skillv6.exe ...
+Init3DEngine=1 ... spawn=...
+# full traversal of all 154 roster entries:
+casts (cast chain started) = 115
+skips (AV-blacklisted)     = 39
+last sweep                = "sweep skip -> 65672"    (index 153, the last roster entry)
+DONE                                                  (clean shutdown, no AV, no AccessViolation)
+
+# => every non-blacklisted roster ability selected + cast its own authored clip /
+#    cast-time with no AV; the 39 blacklisted ids are per-tani AVing tanis.
+
+## CORRECTION to earlier note: the crashes previously labelled "accumulation"
+#  were ALL per-tani - e.g. 65162 AV'd even when cast ALONE (single-cast repro).
+#  With the complete blacklist there is NO accumulation AV: a single process ran
+#  115 casts back to back, clean. The per-tani blacklist was the whole fix.
+
+## BLACKLIST (39): 27863 27895 27924 30029 30235 30238 32245 32247 32287 32300
+#  64900 65022 65046 65047 65048 65049 65050 65053 65054 65065 65068 65071
+#  65074 65089 65090 65092 65095 65096 65101 65113 65138 65162 65163 65165
+#  65243 65244 65254 65669 65672
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

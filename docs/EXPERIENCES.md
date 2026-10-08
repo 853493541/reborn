@@ -7940,3 +7940,18 @@ if the cache/host frames appear.
   gravity PASS, loot selftest PASS.
 - **Next:** finish the blacklist (resume from index 40) and, for the accumulation class,
   the engine tag-lifecycle fix (v5 RE plan) or per-run batches.
+
+### 2026-10-08 — v6 — full coverage sweep CLEAN (Phase D done)
+
+- **Did:** completed the per-tani AV blacklist by iterating the sweep (offsets + `RC_SWEEP_START`),
+  single-cast-verifying suspicious ids, until a full pass from index 0 traverses all 154.
+- **Result:** full sweep `RC_SWEEP_N=154 RC_SWEEP_START=0` → **115 casts + 39 skips = 154**,
+  reached the last roster entry, clean `DONE`, **no AV** in one process (115 back-to-back casts).
+- **Correction:** the crashes earlier labelled "accumulation" were **all per-tani** — e.g.
+  65162 AV'd when cast *alone*; with the complete blacklist a single process ran 115 casts
+  clean. So there is no separate accumulation class; the per-tani blacklist was the whole fix.
+- **Artifacts:** `ability_picker/data/av_blacklist_f1.txt` (39), `ability_picker/data/coverage_f1.tsv`
+  (154 = 115 ok + 39 av), `proof/netcode/skillv6_coverage_20261008.txt`. Gates: jx3_model 10 PASS,
+  gravity PASS, loot selftest PASS. Commits `3d05625`→`45bc6e8` (+ coverage).
+- **Remaining (plan):** runtime channel ticks (`nChannelFrame`/`nChannelInterval`) + GCD refinement;
+  and the per-tani AV root cause (39 tanis) is an open engine/host item (not chased further).
