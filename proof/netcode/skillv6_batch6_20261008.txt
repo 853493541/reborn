@@ -1,0 +1,9 @@
+# skill v6 — 5 more abilities verified (batch 6, 2026-10-08)
+# Build: reborn_client_skillv6.exe
+## Verified (RC_ABILITY=<id> RC_CAST_AT=38000:1)
+#  65061 落剑式  CasterArea  -> apply buff 16664
+#  65103 破军式  CasterArea  -> dmg 0.0 (utility)
+#  65104 剑域式  CasterSingle-> apply buff 51356
+#  65105 剑心式  TargetSingle-> dmg 0.0 (utility)
+#  65107 剑意式  CasterSingle-> buff-=4 + child 7276
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

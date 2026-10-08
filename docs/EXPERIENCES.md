@@ -8350,6 +8350,13 @@ if the cache/host frames appear.
   loot selftest PASS.
 - **Note:** 25 abilities explicitly verified.
 
+### 2026-10-08 — v6 — 5 more abilities verified (batch 6)
+
+- **Verified:** 65061 (buff 16664), 65103 (dmg 0), 65104 (buff 51356), 65105 (dmg 0), 65107
+  (dispel + child 7276). Proof `proof/netcode/skillv6_batch6_20261008.txt`. Gates: jx3_model
+  10 PASS, gravity PASS, loot selftest PASS.
+- **Note:** 30 abilities explicitly verified.
+
 ### 2026-10-08 — v6 — P7 server-spec reconciliation (documented)
 
 - **Did:** recorded P7 in `ABILITY_MECHANICS_PLAN.md`: the v6 ability runtime is a **local
