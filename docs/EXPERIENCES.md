@@ -8439,6 +8439,14 @@ if the cache/host frames appear.
   10 PASS, gravity PASS, loot selftest PASS.
 - **Note:** ~98 abilities explicitly verified; 25 castables remain.
 
+### 2026-10-08 — v6 — 8 more abilities verified (batch 16)
+
+- **Verified:** 65100 (buff + pull), 65150 (child 27957;27958), 65154 (buff 51391), 65155 (dispel),
+  65157 (dmg 0), 65160 (buff 684), 65161 (dispel + child), 65167 (buff 108 + child 706). Proof
+  `proof/netcode/skillv6_batch16_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Note:** ~106 abilities explicitly verified; 9 castables remain.
+
 ### 2026-10-08 — v6 — abilities verified (batch 7, partial)
 
 - **Verified (run interrupted):** 65108 (dispel buff-=8), 65109 (child 65110;65111;65112), 65118
