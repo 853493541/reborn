@@ -274,6 +274,10 @@ Resolved tuning globals (`scripts/Include/Skill.lh` main proto, instructions
 * Sound: tani tags → Wwise events
   `skillremake_tiance_skill_s04tcjineng13_longyahd` (+`_qicheng_`), wems
   `380889589`, `382640133` (`ability_candidates.json`).
+* **Generalizes:** `skill_caster_f1.txt` has 5190 rows, of which **288 are 6xxxx
+  (绝境/阵船) ids** with their own `CastSkillAnimationID0` (e.g. 65667→1706,
+  65076→711, 65145→611, 65119→460). So the 绝境 skills ship normal client cast
+  animations — no server-side display-id remap is involved.
 
 ### 3.6 The exact sequence (客户端实际会做什么)
 
