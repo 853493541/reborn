@@ -3,7 +3,8 @@
 **Status: COMPLETE (2026-10-07).** P0/P1/P2/P3/P4 done, P5 gates green; all measured viewer
 placement bugs fixed (`placed-wrong=0`, oob 7,690 -> 6,897). The remaining oob is engine-faithful
 (clipped WndScroll content, script/authored overhang) and the edge-pos review queue; overhang
-policy = keep as-is. Owner area: `docs/ui/`; viewer `ui-process-app/`.
+policy = GUI clips to the window frame (audit still measures off-window content). Owner area:
+`docs/ui/`; viewer `ui-process-app/`.
 **Problem:** the reviewer sees UI components outside the window frame. `--audit` reports
 **oob=7,690** flagged elements, but the number mixes real misplacements with engine-faithful
 overhang and viewer-only false positives, so it cannot be acted on as-is. Goal: make the report
@@ -134,9 +135,12 @@ independent of the viewer's layout math and needs no GT.
    faithful (C) once compared with the script's recorded positions (the Selfie sample). The residual
    no-state parked items are in NOENTRY/ERR windows (no replay to apply) — documented, not a viewer
    bug.
-2. **Overhang policy: KEEP AS-IS, no toggle (reviewer decision 2026-10-07).** The viewer keeps
-   drawing overhang exactly as the engine does (the engine has no frame clip); the classified audit
-   labels it. No behavior change, so no content the engine shows is hidden.
+2. **Overhang policy: clip the GUI render to the window frame (revised 2026-10-07).** The first
+   decision was keep-as-is, but the reviewer still saw "many components outside the window": the
+   viewer's overhang canvas expansion was pulling the scripts' parked popups/slide bars and the
+   authored overhang into view. The GUI now sizes the canvas to the window rect and sets
+   `ClipToBounds`, so the window renders cleanly; `--audit` still measures and classes the
+   off-window content. (Headless `--render`/`--click` keep the overhang expansion for inspection.)
 3. Acceptance met: every remaining hit is labelled clipped (D), script/author overhang (C), or
    edge-pos review; the policy is decided and recorded.
 
