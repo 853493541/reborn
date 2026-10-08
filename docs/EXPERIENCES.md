@@ -8021,3 +8021,17 @@ if the cache/host frames appear.
   gravity PASS, loot selftest PASS.
 - **Open:** target displacement semantics (ground the units from IL/scripts); weapon%/attack-power
   scaling + mitigation; AoE (P2); buff/CC UI (P5).
+
+### 2026-10-08 — v6 — P2: AoE / multi-target resolution
+
+- **Did:** `build_mechanics.py` now extracts AoE geometry from the skill script
+  (`nMinRadius`/`nMaxRadius`/`nAreaRadius`/`nHeight` × `LENGTH_BASE`=64 u). The client spawns
+  `RC_DUMMY_N` dummies and, at commit, applies the mechanic plan to the **affected set** by
+  castMode (TargetSingle→current; CasterSingle→self; CasterArea→within `nAreaRadius` of caster;
+  PointArea/TargetArea→within `nAreaRadius` of the point/target).
+- **Verified:** `RC_DUMMY_N=3` → 3 dummies; 30081 `mode=CasterArea -> 3 target(s)`;
+  28031 `mode=PointArea -> 3 target(s)`; clean `DONE`. Proof
+  `proof/netcode/skillv6_aoe_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Open:** PointArea ground point (Alt-direction) vs current-target; per-entity attenuation
+  (`nAttackAttenuationCof`); range check vs `nMaxRadius`.

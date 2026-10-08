@@ -74,6 +74,18 @@ def call_arg(text, name):
     return int(m.group(1)) if m else -1
 
 
+LENGTH_BASE = 64.0   # 1 尺 = 64 units (docs/netcode/UNIT_SCALE_AND_CHARACTER_SIZE.md)
+
+
+def length_units(text, name):
+    """`name = N * LENGTH_BASE` -> N*64 units; or a bare number."""
+    m = re.search(r"(?<![A-Za-z])" + name + r"\s*=\s*([0-9.]+)\s*\*\s*LENGTH_BASE", text)
+    if m:
+        return round(float(m.group(1)) * LENGTH_BASE, 1)
+    m = re.search(r"(?<![A-Za-z])" + name + r"\s*=\s*([0-9.]+)", text)
+    return round(float(m.group(1)), 1) if m else -1
+
+
 def parse_ops(text):
     ops = []
     for m in re.finditer(r"AddAttribute\s*\(([^)]*)\)", text):
@@ -101,6 +113,10 @@ def parse_script(data):
         "prepareFrames": first_num(t, "nPrepareFrames"),
         "channelFrame": first_num(t, "nChannelFrame"),
         "channelInterval": first_num(t, "nChannelInterval"),
+        "minRadius": length_units(t, "nMinRadius"),
+        "maxRadius": length_units(t, "nMaxRadius"),
+        "areaRadius": length_units(t, "nAreaRadius"),
+        "height": length_units(t, "nHeight"),
         "ops": parse_ops(t),
     }
     return rec
@@ -141,18 +157,22 @@ def main():
             missn += 1
         r = rec or {"costMana": -1, "dmg": -1, "dmgRand": -1, "weaponPct": -1,
                     "gcdRow": -1, "normalCd": -1, "prepareFrames": -1,
-                    "channelFrame": -1, "channelInterval": -1, "ops": []}
+                    "channelFrame": -1, "channelInterval": -1, "ops": [],
+                    "minRadius": -1, "maxRadius": -1, "areaRadius": -1, "height": -1}
         rows.append((sid, name, r))
 
     tsv = os.path.join(DATA, "mechanics_f1.tsv")
     with open(tsv, "w", encoding="utf-8", newline="\n") as f:
         f.write("skillId\tname\tcostMana\tdmg\tdmgRand\tweaponPct\tgcdRow\tnormalCd\t"
-                "prepareFrames\tchannelFrame\tchannelInterval\tops\n")
+                "prepareFrames\tchannelFrame\tchannelInterval\tops\t"
+                "minRadius\tmaxRadius\tareaRadius\theight\n")
         for sid, name, r in rows:
             f.write("\t".join([sid, name, str(r["costMana"]), str(r["dmg"]), str(r["dmgRand"]),
                                str(r["weaponPct"]), str(r["gcdRow"]), str(r["normalCd"]),
                                str(r["prepareFrames"]), str(r["channelFrame"]),
-                               str(r["channelInterval"]), ";".join(r["ops"])]) + "\n")
+                               str(r["channelInterval"]), ";".join(r["ops"]),
+                               str(r["minRadius"]), str(r["maxRadius"]),
+                               str(r["areaRadius"]), str(r["height"])]) + "\n")
     print("mechanics: %d abilities (%d text, %d bytecode, %d missing) -> %s"
           % (len(rows), textn, bcn, missn, tsv))
     for sid in ("65029", "65076"):

@@ -1,0 +1,25 @@
+# skill v6 — P2: AoE / multi-target resolution (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 7755599, dirty)
+# Change:
+#  - build_mechanics.py extracts AoE geometry from the skill script:
+#    nMinRadius / nMaxRadius / nAreaRadius / nHeight (x LENGTH_BASE=64 u).
+#  - client spawns RC_DUMMY_N dummies (RC_DUMMY_SPACING) for AoE testing.
+#  - at cast COMMIT the mechanic plan is applied to the AFFECTED SET by castMode:
+#    TargetSingle -> current target; CasterSingle -> self (no entity);
+#    CasterArea -> entities within nAreaRadius of the caster;
+#    PointArea/TargetArea -> entities within nAreaRadius of the point/target.
+
+## Driven run: RC_DUMMY_N=3 RC_DUMMY_SPACING=120 RC_SLOTS=30081,28031
+target dummy[extra 1] handle=... at (18871,34253)
+target dummy[extra 2] handle=... at (18751,34253)
+cast chain 30081: ... 
+mechanic 30081 mode=CasterArea -> 3 target(s) dmg=0.0 knock=1024 [script]
+cast chain 28031: ...
+mechanic 28031 mode=PointArea -> 3 target(s) dmg=0.0 [script]
+DONE
+
+# extracted geometry examples: 28031 maxR=2560 areaR=6400 ; 65022 maxR=512 areaR=256
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
+# open: PointArea ground point (Alt-direction) vs current-target point; per-entity
+#   attenuation (nAttackAttenuationCof); range check vs nMaxRadius.

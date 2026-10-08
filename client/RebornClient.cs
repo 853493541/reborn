@@ -1735,6 +1735,51 @@ internal static class RebornClient
             else Log("target dummy disabled (RC_DUMMY=0)");
         }
         catch (Exception e) { Log("target dummy ex: " + e.Message); }
+        // P2: extra target dummies (RC_DUMMY_N) offset laterally for AoE testing.
+        try
+        {
+            int dummyRid2; if (!int.TryParse(Env("RC_DUMMY", "35901"), out dummyRid2)) dummyRid2 = 35901;
+            int extraN; if (!int.TryParse(Env("RC_DUMMY_N", "1"), out extraN)) extraN = 1;
+            float dummyDist2; if (!float.TryParse(Env("RC_DUMMY_DIST", "400"), out dummyDist2)) dummyDist2 = 400f;
+            float spacing; if (!float.TryParse(Env("RC_DUMMY_SPACING", "160"), out spacing)) spacing = 160f;
+            if (dummyRid2 > 0 && extraN > 1)
+            {
+                float dx = viewX, dz = viewZ;
+                float dl = (float)Math.Sqrt(dx * dx + dz * dz);
+                if (dl < 1e-4f) { dx = 0f; dz = 1f; } else { dx /= dl; dz /= dl; }
+                float perpX = -dz, perpZ = dx;
+                string dModel = scene.GetRepresentModelPath(dummyRid2);
+                string dAni = scene.GetRepresentAniPath(dummyRid2);
+                for (int di = 1; di < extraN; di++)
+                {
+                    float off = di * spacing;
+                    float tx = px + dx * dummyDist2 + perpX * off;
+                    float tz = pz + dz * dummyDist2 + perpZ * off;
+                    float ty = sampler != null ? sampler.Sample(tx, tz) : py; if (ty == 0f) ty = py;
+                    var tpos = new CLRfloat3(); tpos.x = tx; tpos.y = ty; tpos.z = tz;
+                    float tyaw = (float)Math.Atan2(-dx, -dz); float th = tyaw * 0.5f;
+                    var trot = new CLRfloat4(); trot.y = (float)Math.Sin(th); trot.w = (float)Math.Cos(th);
+                    var tscl = new CLRfloat3(); tscl.x = 1f; tscl.y = 1f; tscl.z = 1f;
+                    long h = 0;
+                    if (dModel != null && dModel.Length > 0)
+                        h = scene.AddDummyModel("target_dummy" + di, dModel.Replace('/', '\\'), tpos, trot, tscl);
+                    if (h > 0)
+                    {
+                        var tent = new TargetEntity();
+                        tent.Handle = h;
+                        tent.Name = Env("RC_DUMMY_NAME", "\u521D\u7EA7\u8BD5\u70BC\u6728\u6869") + "#" + di;
+                        if (!int.TryParse(Env("RC_DUMMY_LEVEL", "131"), out tent.Level)) tent.Level = 131;
+                        if (!long.TryParse(Env("RC_DUMMY_HP", "500000000"), out tent.MaxHp)) tent.MaxHp = 500000000L;
+                        tent.Hp = tent.MaxHp; tent.X = tx; tent.Y = ty; tent.Z = tz;
+                        targetSelector.Add(tent);
+                    }
+                    if (h > 0 && dAni != null && dAni.Length > 0)
+                    { var a = new KGModelCLR(); a.AttachModel(h); a.PlayAnimation(dAni.Replace('/', '\\'), 0, 1.0f, 0); }
+                    Log(string.Format("target dummy[extra {0}] handle={1} at ({2:F0},{3:F0})", di, h, tx, tz));
+                }
+            }
+        }
+        catch (Exception e) { Log("extra dummy ex: " + e.Message); }
 
         // camera yaw from the measured engine view direction (camera -> anchor)
         if (Math.Abs(viewX) > 1e-4f || Math.Abs(viewZ) > 1e-4f)
@@ -3789,29 +3834,62 @@ internal static class RebornClient
                         }
                         catch (Exception e) { Log("cast chain fx ex: " + e.Message); }
                     }
-                    // P3 v2: resolve + apply the ability's authored mechanic program
+                    // P3 v2 + P2: resolve the mechanic program and apply it to the
+                    // affected target set (castMode AoE around the caster/target/point).
                     try
                     {
                         string[] mr;
-                        TargetEntity dmgTgt = targetSelector.Current;
-                        if (dmgTgt != null && mechanics.TryGetValue(skillCast.Name, out mr))
+                        if (mechanics.TryGetValue(skillCast.Name, out mr))
                         {
-                            string funcType = "";
+                            string funcType = "", castMode = "";
                             string[] rr;
-                            if (roster.TryGetValue(skillCast.Name, out rr) && rr.Length > 12) funcType = rr[12];
-                            MechanicPlan plan = MechanicProgram.Resolve(mr, funcType);
-                            if (plan.Damage > 0f)
+                            if (roster.TryGetValue(skillCast.Name, out rr))
                             {
-                                dmgTgt.Hp -= (long)plan.Damage;
-                                if (dmgTgt.Hp < 0) dmgTgt.Hp = 0;
+                                if (rr.Length > 12) funcType = rr[12];
+                                if (rr.Length > 6) castMode = rr[6];
                             }
-                            for (int bi = 0; bi < plan.BuffsAdd.Count; bi++)
-                                if (!dmgTgt.Buffs.Contains(plan.BuffsAdd[bi])) dmgTgt.Buffs.Add(plan.BuffsAdd[bi]);
-                            if (plan.BuffsRemove > 0) dmgTgt.Buffs.Clear();
-                            if (plan.CcType.Length > 0) { dmgTgt.CcType = plan.CcType; dmgTgt.CcUntil = now + 2000; }
-                            if (plan.Knockdown) { dmgTgt.CcType = "Knockdown"; dmgTgt.CcUntil = now + 1500; }
-                            Log("mechanic " + skillCast.Name + " -> " + dmgTgt.Name + " " + plan.Summary()
-                                + " (hp=" + dmgTgt.Hp + "/" + dmgTgt.MaxHp + " buffs=" + dmgTgt.Buffs.Count + ")");
+                            MechanicPlan plan = MechanicProgram.Resolve(mr, funcType);
+                            float areaR = 0f; if (mr.Length > 14) float.TryParse(mr[14], out areaR);
+                            TargetEntity cur = targetSelector.Current;
+                            var affected = new System.Collections.Generic.List<TargetEntity>();
+                            if (castMode == "CasterArea")
+                            {
+                                for (int ei = 0; ei < targetSelector.Entities.Count; ei++)
+                                {
+                                    TargetEntity en = targetSelector.Entities[ei];
+                                    float ddx = en.X - px, ddz = en.Z - pz;
+                                    if (areaR <= 0f || ddx * ddx + ddz * ddz <= areaR * areaR) affected.Add(en);
+                                }
+                            }
+                            else if (castMode == "PointArea" || castMode == "TargetArea")
+                            {
+                                float cx = cur != null ? cur.X : px, cz = cur != null ? cur.Z : pz;
+                                for (int ei = 0; ei < targetSelector.Entities.Count; ei++)
+                                {
+                                    TargetEntity en = targetSelector.Entities[ei];
+                                    float ddx = en.X - cx, ddz = en.Z - cz;
+                                    if (areaR <= 0f || ddx * ddx + ddz * ddz <= areaR * areaR) affected.Add(en);
+                                }
+                            }
+                            else if (castMode == "CasterSingle")
+                            {
+                                // self-targeted: no external entity affected
+                            }
+                            else if (cur != null) affected.Add(cur);
+                            if (affected.Count == 0 && cur != null) affected.Add(cur);
+                            for (int ai = 0; ai < affected.Count; ai++)
+                            {
+                                TargetEntity tgt = affected[ai];
+                                if (plan.Damage > 0f) { tgt.Hp -= (long)plan.Damage; if (tgt.Hp < 0) tgt.Hp = 0; }
+                                for (int bi = 0; bi < plan.BuffsAdd.Count; bi++)
+                                    if (!tgt.Buffs.Contains(plan.BuffsAdd[bi])) tgt.Buffs.Add(plan.BuffsAdd[bi]);
+                                if (plan.BuffsRemove > 0) tgt.Buffs.Clear();
+                                if (plan.CcType.Length > 0) { tgt.CcType = plan.CcType; tgt.CcUntil = now + 2000; }
+                                if (plan.Knockdown) { tgt.CcType = "Knockdown"; tgt.CcUntil = now + 1500; }
+                            }
+                            Log("mechanic " + skillCast.Name + " mode=" + castMode + " -> " + affected.Count
+                                + " target(s) " + plan.Summary()
+                                + (cur != null ? (" (hp=" + cur.Hp + "/" + cur.MaxHp + ")") : ""));
                         }
                     }
                     catch (Exception e) { Log("mechanic ex: " + e.Message); }
