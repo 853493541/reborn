@@ -1,0 +1,16 @@
+# skill v6 — merge ability bar into the P panel (2026-10-08)
+# Build: reborn_client_skillv6.exe
+# Change:
+#  - the separate top-right numbered ability bar (AbilityBar) is REMOVED; the P panel is the
+#    single ability UI, shown on the RIGHT side.
+#  - P panel icons 30% smaller (40 -> 28 px).
+#  - the selected ability gets a GREEN border (custom Paint, not FixedSingle).
+#  - cast hotkey is ONLY `1` (keys 2-6 removed); RC_ABILITY sets the single active ability.
+
+## Driven run: RC_PANEL_OPEN=1 RC_ABILITY=65076 RC_CAST_AT=40000:1
+slot 1 -> 65076 绝境_云飞玉皇
+ability panel: 154 entries, 154 icons
+cast chain 65076: target=初级试炼木桩(131)     (key 1 casts the active ability)
+DONE
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

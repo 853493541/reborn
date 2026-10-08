@@ -25,6 +25,7 @@ internal sealed class AbilityPanel : Form
 
     readonly Dictionary<string, string[]> rows;
     readonly Dictionary<string, PictureBox> byId = new Dictionary<string, PictureBox>();
+    PictureBox selectedPb;
     readonly Action<string> log;
 
     protected override CreateParams CreateParams
@@ -76,11 +77,19 @@ internal sealed class AbilityPanel : Form
             string[] r;
             if (!rows.TryGetValue(id, out r)) continue;
             var pb = new PictureBox();
-            pb.Size = new Size(40, 40);
-            pb.Margin = new Padding(2);
+            pb.Size = new Size(28, 28);          // 30% smaller than 40
+            pb.Margin = new Padding(1);
             pb.SizeMode = PictureBoxSizeMode.Zoom;
             pb.Cursor = Cursors.Hand;
             pb.BackColor = Color.FromArgb(32, 32, 36);
+            pb.Paint += delegate(object s, PaintEventArgs e)
+            {
+                if (s == selectedPb)
+                {
+                    using (Pen pen = new Pen(Color.FromArgb(80, 220, 80), 2f))
+                        e.Graphics.DrawRectangle(pen, 1, 1, pb.Width - 3, pb.Height - 3);
+                }
+            };
             string png = r.Length > 8 ? r[8] : "";
             if (png.Length > 0)
             {
@@ -112,7 +121,8 @@ internal sealed class AbilityPanel : Form
     public void Attach(Form owner)
     {
         Point o = owner.PointToScreen(Point.Empty);
-        Location = new Point(o.X + 8, o.Y + 40);
+        int w = ClientSize.Width > 1 ? ClientSize.Width : 300;
+        Location = new Point(o.X + owner.ClientSize.Width - w - 8, o.Y + 40);
         if (Owner == null) Owner = owner;
     }
 
@@ -122,8 +132,8 @@ internal sealed class AbilityPanel : Form
         if (!rows.TryGetValue(id, out r)) return;
         SelectedId = id;
         SelectedName = r[1];
-        foreach (KeyValuePair<string, PictureBox> kv in byId)
-            kv.Value.BorderStyle = (kv.Key == id) ? BorderStyle.FixedSingle : BorderStyle.None;
+        selectedPb = byId.ContainsKey(id) ? byId[id] : null;
+        foreach (KeyValuePair<string, PictureBox> kv in byId) kv.Value.Invalidate();
         if (OnSelect != null) OnSelect();
     }
 

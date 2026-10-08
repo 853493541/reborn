@@ -386,16 +386,12 @@ internal static class RebornClient
         }
         catch (Exception e) { Log("passives load ex: " + e.Message); }
         // hotkey slots (RC_SLOTS overrides); keys 1..N select + cast a slot.
-        string[] slotIds = Env("RC_SLOTS", "65029,65120,65087,65076,65036,65026").Split(',');
+        // single active ability (key 1 casts it); the P panel click changes it.
+        string[] slotIds = new string[] { Env("RC_SLOTS", "65029").Split(',')[0].Trim() };
         int activeSlot = 0;
         {
-            string want = Env("RC_ABILITY", slotIds[0].Trim());
-            bool matched = false;
-            for (int i = 0; i < slotIds.Length; i++)
-                if (slotIds[i].Trim() == want) { activeSlot = i; matched = true; }
-            // RC_ABILITY may name a roster ability outside the default slots:
-            // make it slot 0 so it is the active (key 1) ability.
-            if (!matched && roster.ContainsKey(want)) { slotIds[0] = want; activeSlot = 0; }
+            string want = Env("RC_ABILITY", slotIds[0]);
+            if (want.Length > 0) slotIds[0] = want;
         }
         string selAbility = slotIds[0].Trim();
         string selAnimPath = lyAnim, selFxPath = lyFx;
@@ -578,19 +574,7 @@ internal static class RebornClient
         if (Env("RC_HUD_OPEN", "0") == "1") hud.ShowInfo = true;   // test: start open
         form.Show();
         hud.PlaceOver(form);
-        // v6 numbered ability bar (top-right): key 1..N + ability name.
-        var abilityBar = new AbilityBar();
-        {
-            string[] slotNames = new string[slotIds.Length];
-            for (int i = 0; i < slotIds.Length; i++)
-            {
-                string[] ab;
-                slotNames[i] = castChain.TryGetValue(slotIds[i].Trim(), out ab) ? ab[1] : slotIds[i].Trim();
-            }
-            abilityBar.SetSlots(slotNames);
-            abilityBar.SetSelected(activeSlot);
-        }
-        abilityBar.PlaceTopRight(form);
+        // (the top-right numbered ability bar is merged into the P panel; key 1 casts)
         // P5: always-on combat feedback (status line + recent damage/CC/buff events).
         var combatText = new CombatText();
         combatText.PlaceTop(form);
@@ -2260,9 +2244,9 @@ internal static class RebornClient
             for (int hi = 0; hi < hcmds.Count; hi++) keyCommand(hcmds[hi], true);
             // host/test keys outside the movement command set
             // hotkey ability slots: keys 1..N select + cast
-            int dkey = (int)e.KeyCode - (int)Keys.D1;
-            if (dkey >= 0 && dkey < slotIds.Length && !slotKeyDown[dkey])
-            { slotKeyDown[dkey] = true; selectSlot(dkey); skillPressed = true; }
+            // cast the active (panel-selected) ability with key 1 only
+            if (e.KeyCode == Keys.D1 && !slotKeyDown[0])
+            { slotKeyDown[0] = true; skillPressed = true; }
             else if (e.KeyCode == Keys.C && !cDown) { cDown = true; teleportToStructure = true; }
             else if (e.KeyCode == Keys.I && !iDown) { iDown = true; hud.ToggleInfo(); hud.UpdateLayered(); }
             else if (e.KeyCode == Keys.P && !pDown) { pDown = true; panelToggleReq = true; }
@@ -2356,7 +2340,7 @@ internal static class RebornClient
             System.Collections.Generic.List<string> hcmds =
                 hotkeys.Match((int)e.KeyCode, e.Control, e.Shift, e.Alt);
             for (int hi = 0; hi < hcmds.Count; hi++) keyCommand(hcmds[hi], false);
-            { int dk = (int)e.KeyCode - (int)Keys.D1; if (dk >= 0 && dk < slotKeyDown.Length) slotKeyDown[dk] = false; }
+            if (e.KeyCode == Keys.D1) slotKeyDown[0] = false;
             if (e.KeyCode == Keys.C) cDown = false;
             else if (e.KeyCode == Keys.I) iDown = false;
             else if (e.KeyCode == Keys.P) pDown = false;
@@ -5271,8 +5255,6 @@ internal static class RebornClient
                     {
                         slotIds[0] = abilityPanel.SelectedId;
                         selectSlot(0);
-                        abilityBar.SetSlot(0, abilityPanel.SelectedName);
-                        abilityBar.SetSelected(0);
                     };
                     abilityPanel.SetVisible(true);
                 }
@@ -5298,15 +5280,7 @@ internal static class RebornClient
                 skillCast.Active ? skillCast.ElapsedPct(now) : 0f);
             combatText.PlaceTop(form);
             combatText.UpdateLayered();
-            // v6 numbered ability bar (top-right): key number + ability name
-            abilityBar.SetSelected(activeSlot);
-            {
-                long cdr; cdReady.TryGetValue(selAbility, out cdr);
-                long cdTot; cdTotalBySkill.TryGetValue(selAbility, out cdTot);
-                abilityBar.SetCooldown(cdr > now ? cdr - now : 0, cdTot);
-            }
-            abilityBar.PlaceTopRight(form);
-            abilityBar.UpdateLayered();
+            // (ability bar removed: the P panel is the single ability UI; key 1 casts)
             // target frame (Targeting.cs): real client UI composited over the viewport
             if (targetFrame != null && targetHudOn)
             {
