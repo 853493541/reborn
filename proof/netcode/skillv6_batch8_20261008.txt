@@ -1,0 +1,10 @@
+# skill v6 — 8 more abilities verified (batch 8, 2026-10-08)
+# Build: reborn_client_skillv6.exe
+## Verified (RC_ABILITY=<id> RC_CAST_AT=38000:1)
+#  65136/65140/65142 CasterSingle -> apply buff[0] (non-literal id) + [script]
+#  65144 CasterSingle -> buff+=244,8475 buff-=1
+#  65145 CasterArea -> [script]
+#  64993 TargetSingle -> dmg 0.0
+#  65038 TargetSingle -> apply child 65040;65039 + buff 51301
+#  65023 -> NOT a roster ability (child skill); nothing to verify
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

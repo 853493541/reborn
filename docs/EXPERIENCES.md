@@ -8365,6 +8365,14 @@ if the cache/host frames appear.
   loot selftest PASS.
 - **Note:** 35 abilities explicitly verified.
 
+### 2026-10-08 — v6 — 8 more abilities verified (batch 8)
+
+- **Verified:** 65136/65140/65142 (buff[0]; non-literal id), 65144 (buffs 244,8475), 65145
+  (CasterArea), 64993 (dmg 0), 65038 (child 65040;65039 + buff 51301). 65023 is not a roster
+  ability (child skill). Proof `proof/netcode/skillv6_batch8_20261008.txt`. Gates: jx3_model
+  10 PASS, gravity PASS, loot selftest PASS.
+- **Note:** ~42 abilities explicitly verified.
+
 ### 2026-10-08 — v6 — abilities verified (batch 7, partial)
 
 - **Verified (run interrupted):** 65108 (dispel buff-=8), 65109 (child 65110;65111;65112), 65118
