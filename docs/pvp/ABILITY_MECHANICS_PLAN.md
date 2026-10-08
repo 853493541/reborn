@@ -77,14 +77,17 @@ Done (v6 client, branch `agent/skillv6-sandbox`):
 - **P6/P6b** coverage: full 154 sweep (115 ok + 39 av) → `coverage_mechanics_f1.tsv`; the 39 are
   passives (`function Apply`) → `script_only_f1.tsv`.
 - **Passive path**: `build_passives.py` extracts each `Apply()` child casts + AddBuff/DelBuff ids
-  → `passives_f1.tsv`; the client applies self-buffs and child casts.
+  + heal (`PCustomTherapy` fraction) + summon (`CreateNpc`) + doodad (`CreateDoodad`) ids
+  → `passives_f1.tsv`; the client applies self-buffs (add/del), child casts, heal, and spawns
+  summons (doodads: id surfaced, model space unresolved).
 
 Open:
 - `EXECUTE_SCRIPT` bodies beyond the static patterns (69 abilities touch them; 39 are passives
   whose Apply is partly parsed) → a **Lua 5.1 VM + engine-API shim** is the remaining path.
 - weapon% / attack-power scaling + mitigation (needs a character attribute model).
 - target-displacement units (PULL/KNOCKED_BACK_RATE); other Apply effects (heal/summon/doodad).
-- world-projected floating numbers; buff durations (Buff.tab has no duration column).
+- world-projected floating numbers; buff durations (Buff.tab has no duration column; buff 20359
+  has no script — unavailable).
 - **P7** server-spec reconciliation.
 
 Last verified: 2026-10-08.
