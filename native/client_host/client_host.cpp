@@ -5539,6 +5539,12 @@ int main(void)
                                     {
                                     unsigned rid = 0, atype = 0;
                                     sscanf_s(af, "%u,%u", &rid, &atype);
+                                    if (af[0] == 'i' || af[0] == 'I')
+                                    {
+                                        logf("[host] frame60: RC_HOST_ACTOR init-only; skip CreateRLActorNT");
+                                    }
+                                    else
+                                    {
                                     logf("[host] frame60: CreateRLActorNT(mgr,%u,%u) calling...",
                                          rid, atype);
                                     void* actor = ((void* (__fastcall *)(void*, unsigned,
@@ -5547,6 +5553,7 @@ int main(void)
                                         am, rid, atype);
                                     logf("[host] frame60: CreateRLActorNT(mgr,%u,%u) -> %p",
                                          rid, atype, actor);
+                                    }
                                     }
                                 }                            }
                             __except (EXCEPTION_EXECUTE_HANDLER)
