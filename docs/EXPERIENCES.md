@@ -8532,3 +8532,14 @@ if the cache/host frames appear.
   then `-> 测试中 (F2)`; `RC_SET_STATUS` persisted + panel showed 4 catalogs. Proof
   `proof/netcode/skillv6_status_keys_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
   loot selftest PASS.
+### 2026-10-08 — v6 — F3 key, probe isolation, coverage sweep range
+
+- **Did:** added **F3 = 需要修复** (companion to F1 已完成 / F2 测试中). Probe runs (RC_MEM_NS set)
+  now write a separate status file (`ability_status_probe.txt`) so scripted tests never touch the
+  user's tags. The coverage sweep can opt into a larger gate via `RC_SWEEP_RANGE` (the 20-尺 gate
+  stays the play default; verified separately).
+- **Lesson (mistake):** `Stop-Process -Name reborn_client_skillv6` kills the USER's session too
+  (same exe name). For scripted probes, kill only your own PID.
+- **Verified:** full 154 sweep with RC_SWEEP_RANGE=99999 -> 115 casts + 39 av-skip, 0 out-of-range,
+  no AV (proof/netcode/skillv6_coverage_sweeprange_20261008.txt); F1/F2/F3 via PostMessage
+  (proof/netcode/skillv6_f3_20261008.txt). Gates: jx3_model 10 PASS, gravity PASS, loot selftest PASS.
