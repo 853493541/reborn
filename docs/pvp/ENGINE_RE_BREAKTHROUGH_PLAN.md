@@ -40,16 +40,19 @@ Proven: `dump_fn_disasm.py JX3RepresentX64.dll --names behit_names.txt` returned
   3. `disasm_fn.py <module> --rva <RVA>` -> read the faulting access; compare the bad pointer
      chain to what we pass (the tani/model/bone we set).
   4. Fix the host wiring (likely a missing weapon/skeleton/shadow binding for those tanis).
-- **W2 — FWD2 default be-hit animation. ROOT RULE RECOVERED.** The NPC be-hit animation path is
-  built by `KRLCharacter::BeHittedByNpc` via the **format template**
-  `data/source/npc_source/%s/动作/%s_%s` (verified string @ VA `0x180cac990`, GBK `动作`), i.e.
-  the be-hit anim is a **sibling of the target's model** under `npc_source/<folder>/动作/<model>_<suffix>`.
-  `BeHittedByPlayer` @ `0x1804d0220` tests the target model path for `npc_source/a` / `NPC_source\A`
-  and, on a match, extracts the model filename (builder `0x1804d8700`, skip 11 chars to the first
-  separator) and formats that template; otherwise it uses the player/global table branch
-  (`0x1804d032b`, `[rip+0xa0dcae]+0x1a0`). Next: resolve the `<suffix>` (the be-hit anim name,
-  the `...bat01.ani` fragment) + the player-target template, then reproduce for our target's model
-  path and play it via `KGModelCLR.AttachModel(tgt.Handle).PlayAnimation(...)`.
+- **W2 — FWD2 default be-hit animation. RULE RECOVERED (implementation is non-trivial).**
+  - `KRLCharacter::PlayBeHittedAnimation` is virtual; the caller passes `pcszAni`.
+  - `BeHittedByNpc` @ `0x1804cfb50`: gets the target's anim model (`pSkillCasterModel`,
+    `[rip+0xa0e2e5]+0x1a0`), reads a **kind** from the frame data (`0x180003a6c`) and selects one of
+    the target's loaded be-hit anims: kind 1 -> `[rsi+0xa4]`, 2 -> `[rsi+0x94]`, 6 -> `[rsi+0x8c]`;
+    else builds a sibling path via `0x1804d8700` with the template
+    **`data/source/npc_source/%s/动作/%s_%s`** (string @ `0x180cac990`). Then `PlayBeHittedAnimation`.
+  - `BeHittedByPlayer` @ `0x1804d0220`: tests the target model path for `npc_source/a` /
+    `NPC_source\A` -> template path; else the player/global branch (`[rip+0xa0dcae]+0x1a0`).
+  - So the be-hit anim is a **kind-selected animation from the target's set** (or a model-sibling
+    path), not a fixed id. To implement FX4 we must load the target's be-hit anims + pick by kind
+    (our dummy's set) — non-trivial; keep documented until we have the target anim set.
+  - Remaining: the target's be-hit anim set source (which table fills `[rsi+0x8c/0x94/0xa4]`).
 - **W3 — FWD3 Wwise name→id.** Either (a) write a small `.bnk` HIRC reader (parse event ids) and
   match against the game's name table, or (b) disassemble the client's PostEvent wrapper to see
   the name→id hash it uses. Then `PostEvent(id)` the hit sound.
