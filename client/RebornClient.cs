@@ -2440,6 +2440,13 @@ internal static class RebornClient
         fkeyFilter.OnF2 = delegate { if (selAbility.Length > 0) { abilityStatus[selAbility] = "测试中"; saveStatus(); if (abilityPanel != null) abilityPanel.Refresh(abilityStatus); Log("ability " + selAbility + " -> 测试中 (F2)"); } };
         fkeyFilter.OnF3 = delegate { if (selAbility.Length > 0) { abilityStatus[selAbility] = "需要修复"; saveStatus(); if (abilityPanel != null) abilityPanel.Refresh(abilityStatus); Log("ability " + selAbility + " -> 需要修复 (F3)"); } };
         Application.AddMessageFilter(fkeyFilter);
+        // Also install a low-level keyboard hook: the engine's native window can swallow a key
+        // (F2 in particular) before the in-process filter sees it. The hook fires first.
+        var fkeyHook = new LowLevelKeyHook();
+        fkeyHook.OnF1 = fkeyFilter.OnF1;
+        fkeyHook.OnF2 = fkeyFilter.OnF2;
+        fkeyHook.OnF3 = fkeyFilter.OnF3;
+        Log("F1/F2/F3 low-level hook installed=" + fkeyHook.Install());
 
         // ---------------- main loop ----------------
         // table values converted from 15 logic frames/s into continuous seconds
@@ -5994,6 +6001,62 @@ internal sealed class FKeyFilter : System.Windows.Forms.IMessageFilter
         if (vk == 0x72) { if (OnF3 != null) OnF3(); return true; }   // VK_F3
         return false;
     }
+}
+
+// Low-level keyboard hook (WH_KEYBOARD_LL): fires for F1/F2/F3 before any window in the
+// system, regardless of which thread/window holds focus. Needed because the engine's native
+// window can swallow a key (e.g. F2) before our in-process message filter sees it.
+internal sealed class LowLevelKeyHook
+{
+    public Action OnF1, OnF2, OnF3;
+    public static LowLevelKeyHook Installed;   // root the instance so the delegate stays alive
+
+    delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
+    HookProc proc;
+    IntPtr hook = IntPtr.Zero;
+    readonly bool[] down = new bool[3];
+
+    const int WH_KEYBOARD_LL = 13;
+    const int WM_KEYDOWN = 0x0100;
+    const int WM_KEYUP = 0x0101;
+    const int WM_SYSKEYDOWN = 0x0104;
+    const int WM_SYSKEYUP = 0x0105;
+
+    public bool Install()
+    {
+        proc = Callback;
+        hook = SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(null), 0);
+        if (hook != IntPtr.Zero) Installed = this;
+        return hook != IntPtr.Zero;
+    }
+
+    IntPtr Callback(int nCode, IntPtr wParam, IntPtr lParam)
+    {
+        if (nCode >= 0)
+        {
+            int msg = wParam.ToInt32();
+            int vk = Marshal.ReadInt32(lParam);
+            int idx = vk == 0x70 ? 0 : vk == 0x71 ? 1 : vk == 0x72 ? 2 : -1;
+            if (idx >= 0)
+            {
+                bool isDown = msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN;
+                bool isUp = msg == WM_KEYUP || msg == WM_SYSKEYUP;
+                if (isDown && !down[idx])
+                {
+                    down[idx] = true;
+                    if (idx == 0 && OnF1 != null) OnF1();
+                    else if (idx == 1 && OnF2 != null) OnF2();
+                    else if (idx == 2 && OnF3 != null) OnF3();
+                }
+                else if (isUp) down[idx] = false;
+            }
+        }
+        return CallNextHookEx(hook, nCode, wParam, lParam);
+    }
+
+    [DllImport("user32.dll")] static extern IntPtr SetWindowsHookEx(int idHook, HookProc lpfn, IntPtr hMod, uint dwThreadId);
+    [DllImport("user32.dll")] static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+    [DllImport("kernel32.dll")] static extern IntPtr GetModuleHandle(string lpModuleName);
 }
 
 

@@ -1,0 +1,21 @@
+# skill v6 — F1/F2/F3 via low-level keyboard hook (2026-10-08)
+# Build: reborn_client_skillv6.exe
+
+## Why
+# The in-process message filter only sees keys delivered to THIS process's message queue, and
+# only when the app is foreground. The engine's native window can swallow a key (F2 especially)
+# before our form/filter sees it. A WH_KEYBOARD_LL hook fires for every key in the system
+# before any window, independent of focus/thread -> robust for F1/F2/F3 tagging.
+
+## Change
+# LowLevelKeyHook (WH_KEYBOARD_LL) with per-key down/up de-dup; installed at startup alongside
+# the existing IMessageFilter. Logs "F1/F2/F3 low-level hook installed=True".
+
+## Verified (real keybd_event, NO AppActivate / no foreground needed)
+F1/F2/F3 low-level hook installed=True
+ability 65036 -> 测试中 (F2)
+ability 65036 -> 已完成 (F1)
+ability 65036 -> 需要修复 (F3)
+
+## Combined with the panel fix (efe1009): icon click selects (slot 1 -> id) and F1/F2/F3 tag.
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
