@@ -66,30 +66,32 @@ Evidence base: `docs/pvp/JX3_PVP_BATTLE_RESEARCH.md` (synthesis),
 
 Done (v6 client, branch `agent/skillv6-sandbox`):
 - **P0/P1** model + `build_mechanics.py` (level table, AddAttribute program, weapon%, cooldown
-  rows, prepare/channel frames, AoE geometry) → `mechanics_f1.tsv`.
+  rows, prepare/channel frames, AoE geometry, knockback) → `mechanics_f1.tsv`.
 - **P2** target/AoE resolution (castMode + `nAreaRadius`×64) with `RC_DUMMY_N` multi-target.
 - **P3** effect runtime: damage (flat base+rand), CC (functionType), buffs add/remove, child
-  casts, self-move (DASH family). `SkillDamage` + `MechanicProgram`.
+  casts, self-move (DASH family), **PULL** (to caster) and **knockback** (`nKnockedBackDis`).
+  `SkillDamage` + `MechanicProgram`.
 - **P4** resources/GCD/cooldowns: `build_cooldowns.py` (`CoolDownList.tab`), GCD row 16 = 1.5 s,
-  per-skill cooldown, mana.
-- **P5** feedback: combat-text overlay (status + events), cast bar (prepare/channel), ability-bar
-  cooldown sweep, target CC/buff in the status line.
-- **P6/P6b** coverage: full 154 sweep (115 ok + 39 av) → `coverage_mechanics_f1.tsv`; the 39 are
-  passives (`function Apply`) → `script_only_f1.tsv`.
-- **Passive path**: `build_passives.py` extracts each `Apply()` child casts + AddBuff/DelBuff ids
-  + heal (`PCustomTherapy` fraction) + summon (`CreateNpc`) + doodad (`CreateDoodad`) ids
-  → `passives_f1.tsv`; the client applies self-buffs (add/del), child casts, heal, and spawns
-  summons (doodads: id surfaced, model space unresolved).
+  per-skill cooldown (row = 2nd arg of `SetNormalCoolDown`), mana. Uniform **20 尺 cast range**
+  (`RC_CAST_RANGE`) enforced with out-of-range feedback.
+- **P5** feedback: layered ability panel (right, catalogs `测试`/`全部`, 29 px icons, green selected
+  border, default open), combat-text overlay (status + events), cast bar, ability-bar/panel
+  cooldown, target CC/buff.
+- **Prepared / channel cast**: prepared skills play the **prepare anim** for `nPrepareFrames` then
+  the **release anim** at commit (65076 1.5 s, 27874 3 s, …); channel skills hold for `nChannelFrame`.
+- **P6/P6b** coverage: full 154 sweep (115 ok + 39 av); **all 115 castable abilities individually
+  verified** (`proof/netcode/skillv6_batch*`); the 39 av are per-tani blacklisted.
+- **Apply() path**: `build_passives.py` extracts each `Apply()` child casts + AddBuff/DelBuff ids
+  + heal + summon + doodad → `apply_f1.tsv` (137 abilities); the client runs them **at cast**.
 
 Open:
-- `EXECUTE_SCRIPT` bodies beyond the static patterns (88 self-reference + 5 external across the
-  roster; the 48 `-` abilities are mostly **no-op/template passives** — 0 call local helpers,
-  sampled Apply bodies are no-ops, e.g. 27850) → a **Lua 5.1 VM + engine-API shim** would only
-  help the subset with real runtime logic. See `proof/netcode/skillv6_residual_20261008.txt`.
-- weapon% / attack-power scaling + mitigation (needs a character attribute model).
-- target-displacement units (PULL/KNOCKED_BACK_RATE); other Apply effects (heal/summon/doodad).
-- world-projected floating numbers; buff durations (Buff.tab has no duration column; buff 20359
-  has no script — unavailable).
+- `EXECUTE_SCRIPT` bodies beyond the static patterns (88 self + 5 external; the 32 `-` abilities
+  are mostly **no-op/template passives**) → a **Lua 5.1 VM + engine-API shim** would only help the
+  subset with real runtime logic (`proof/netcode/skillv6_residual_20261008.txt`).
+- weapon% / attack-power damage scaling + mitigation (needs a character attribute model — the host
+  player has no stats).
+- world-projected floating numbers (no world→screen API); buff durations (`Buff.tab` has no
+  duration column).
 - **P7** server-spec reconciliation.
 
 ## P7 — server-spec reconciliation (2026-10-08)
