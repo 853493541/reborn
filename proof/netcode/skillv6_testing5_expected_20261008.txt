@@ -1,0 +1,28 @@
+# skill v6 — expected behavior of the 5 测试中 abilities (2026-10-08)
+# From the client's own data (mechanics_f1 + apply_f1 + roster_f1); the client runs everything
+# at cast with cooldown 3 s / GCD 1.19 s (host override).
+
+## 65036 绝境_龙吟 — TargetSingle, Damage
+#   ops: SKILL_PHYSICS_DAMAGE 56*1.1*1.1 + rand (weaponPct 1024 = 100 %)
+#   expect: faces target, plays anim, deals flat physics damage (~dmg>0); no buff/child.
+
+## 65087 绝境_净世破魔击 — TargetSingle, Damage
+#   ops: CALL_BUFF 4528 ; DASH 90 ; CAST_SKILL 65088 ; (DETACH/DEL)
+#   expect: buff 4528 (self) + self-move 90 u/f + child 65088 + dispel.
+
+## 65120 绝境_渊 — TargetSingle, Normal
+#   ops: CAST_SKILL_TARGET_DST 65122
+#   apply: +buff 51367;51366
+#   expect: child 65122 + self-buff 51367,51366.
+
+## 27874 十方俱灭 — TargetSingle, Normal, nPrepareFrames=48 (3 s)
+#   prepare anim 02a -> release anim 02b
+#   ops: EXECUTE_SCRIPT (self)
+#   apply: child 27996 + buff 20292;20293 -buff 13986
+#   expect: 3 s prepare (cast bar + 02a) -> release 02b + child 27996 + buffs.
+
+## 65149 巽方刑 — PointArea, Charm, nAreaRadius=512 (8 尺)
+#   ops: SKILL_NEUTRAL_DAMAGE (coefficient) 
+#   expect: cc=Charm on the area targets + neutral damage + buff 28998 (PointArea).
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
