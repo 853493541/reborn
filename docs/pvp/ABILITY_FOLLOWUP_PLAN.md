@@ -29,10 +29,13 @@ Confidence: **HIGH** = verified from data/code; **MED** = partial evidence; **LO
   **visual** is broader: joining roster→`skills.tab` col-57 `ScriptFile` (keyed by col-1 SkillID) →
   script shows **17 roster skills** set `skill.nSkillBulletType = 1` (all the same type). The type→
   model map is `skill_bullet.krl.txt` (groups like `CYShield`/`PureShadow`, each `{ CommonFlyAni,
-  CommonModel, SingleTargetAni, OutTime }`), but the `SKILL_BULLET_TYPE` enum that names the type is
-  **not in `scripts/Include/Skill.lh`** (needs the right include). We resolve projectiles instantly
-  at the point. Next: find the `SKILL_BULLET_TYPE` enum → group → `CommonModel`/`CommonFlyAni`, then
-  spawn the bullet at the caster, travel to the target, and trigger on arrival.
+  CommonModel, SingleTargetAni, OutTime }`). `SKILL_BULLET_TYPE` is registered as a **Lua global in
+  `JX3ClientX64.exe` @`0x140085714`** (a name/value-pair registration block; member names live in the
+  enum string table around `0x1407F05C8`), and `JX3RepresentX64.dll` has a `KSKILL_BULLET_TYPE`
+  enum (assert `!"KSKILL_BULLET_TYPE INVALID"` @`0xCA8340`). We resolve projectiles instantly at the
+  point. Next: decode the `SKILL_BULLET_TYPE` member→value table (all 17 roster skills use value 1,
+  so one group) → its `CommonModel`/`CommonFlyAni`, then spawn at the caster, travel, trigger on
+  arrival.
 - **Buff durations. DONE (2026-10-09).** Client truth: `KScriptFuncList::LuaGetBuffTime`
   @`0x1401c0730` (`JX3ClientX64.exe`) returns a buff's `(Count×Interval, Count, Interval)`; `Count`
   = Buff.tab col 13, `Interval` col 14; frame base 16 fps (cast frames confirm it). New

@@ -8856,3 +8856,16 @@ if the cache/host frames appear.
   then spawn the bullet at the caster + travel + trigger on arrival. `ABILITY_FOLLOWUP_PLAN.md`
   missiles bullet + handoff updated.
 - Verified: read-only joins/scans; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+
+### 2026-10-09 — v6 — SKILL_BULLET_TYPE enum located (Lua global in the client exe)
+
+- **Did:** located the `SKILL_BULLET_TYPE` enum that maps `skill.nSkillBulletType` to a
+  `skill_bullet.krl.txt` group.
+- **Finding:** it is a **Lua global registered in `JX3ClientX64.exe`** (string @`0x1407F05C8`, one
+  code xref @`0x140085714` — a large name/value-pair registration block). `JX3RepresentX64.dll`
+  also has a `KSKILL_BULLET_TYPE` enum (assert `!"KSKILL_BULLET_TYPE INVALID"` @`0xCA8340`). Not in
+  `scripts/Include/Skill.lh`. All 17 roster bullet skills use value **1** (one group).
+- **Next:** decode the member→value table (or the represent-side `KSKILL_BULLET_TYPE` handling) to
+  pick the group → `CommonModel`/`CommonFlyAni`, then implement bullet spawn/travel/trigger.
+  `ABILITY_FOLLOWUP_PLAN.md` updated.
+- Verified: read-only disasm/scan; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
