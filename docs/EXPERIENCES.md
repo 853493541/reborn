@@ -8900,3 +8900,17 @@ if the cache/host frames appear.
   the host spawn the group's `CommonModel` at the caster, move it to the target over the cast window,
   and trigger the mechanic on arrival. Large-ish; scoped.
 - Verified: read-only disasm; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+
+### 2026-10-09 — v6 — bullet: LoadBullet takes the model (type resolution is upstream)
+
+- **Did:** disassembled `KRLBuffBullet::LoadBullet` (@`0x18047d810`) to locate the `nSkillBulletType`
+  →model mapping.
+- **Finding:** `LoadBullet(this, pBulletModel, nType)` receives an **already-resolved** `pBulletModel`
+  (it only allocates a 0x190-byte bullet and binds the passed model; asserts `pBulletModel`/`pBullet`).
+  So the type→model/group resolution happens **upstream** (the skill-cast/bullet-init caller), not in
+  LoadBullet. Recovering it needs an xref of the LoadBullet call site / the bullet-init path.
+- **Assessment:** the projectile feature is a genuine multi-layer RE task (type→group map) plus a
+  host-side flying-model implementation. Combined with W1/W4 (debugger), W3 (bank) and damage scaling
+  (server), the remaining backlog needs a debugger or a dedicated large effort rather than more
+  bounded in-session steps. Recorded for the next session; no code change.
+- Verified: read-only disasm; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
