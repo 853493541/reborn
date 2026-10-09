@@ -8884,3 +8884,19 @@ if the cache/host frames appear.
   is unreferenced by RIP-relative code, i.e. dead/assert-only), so the consumer must be found via the
   `nSkillBulletType` field xrefs in the represent DLL or the bullet-group loader. No code change.
 - Verified: read-only disasm; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+
+### 2026-10-09 — v6 — bullet visual class found (KRLBuffBullet); type→group map still open
+
+- **Did:** dumped the client's bullet representation to scope the projectile feature.
+- **Finding:** `JX3RepresentX64.dll` has a full bullet class **`KRLBuffBullet`** (`LoadBullet`,
+  `LoadBullets`, `LaunchBullet/ChargeBullet/BurstBullet`, `UpdateBullet`, `PlayBulletAnimation`,
+  `SetBulletDirection`, `AddBulletToScene`, `UpdateTargetPosition`) plus `krlSkillBullet::Init/StartFly`
+  — i.e. the client-truth projectile is a spawned model that flies caster→target. `KRLBuffBullet::
+  LoadBullet` / `krlSkillBullet::Init|StartFly` have **no string refs** (the type→model map is
+  field/table-driven, no file path), so the exact `nSkillBulletType=1`→`skill_bullet.krl.txt` group
+  link is not recoverable by string xref alone.
+- **Remaining (bullet feature):** recover the type→group map (disasm the field indexed by
+  `nSkillBulletType` in `KRLBuffBullet::LoadBullet`, or the loader of `skill_bullet.krl.txt`), then in
+  the host spawn the group's `CommonModel` at the caster, move it to the target over the cast window,
+  and trigger the mechanic on arrival. Large-ish; scoped.
+- Verified: read-only disasm; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
