@@ -73,9 +73,15 @@ extracted and not played** — no landing-zone SFX, no hit effect, no be-hit ani
   the target. Verified: 65149 (PointArea, `RC_DUMMY_N=3`) -> `hit fx 65149 -> <target>
   ...\被击\C_纯阳两仪爆01.pss` on all 3 targets, no AV. (`.pss` plays via AddDummyModel; only
   `.Sfx` faults — see FX2.)
-- **FX4 — be-hit animation. BLOCKED — see §4 (default be-hit anim source unknown).** Plan when
-  unblocked: when `isPlayBehit` is set, play the be-hit anim on the target via
-  `KGModelCLR.AttachModel(tgt.Handle).PlayAnimation(path, 0, speed, 0)` at `behitSpeed`.
+- **FX4 — be-hit animation. DONE (2026-10-09).** Rule recovered from IL
+  (`KRLCharacter::BeHittedByPlayer` @ `0x1804d0220` uses the literal `bat01.ani`; the sibling
+  builder `0x1804d8700` template is `data/source/npc_source/%s/动作/%s_%s`). The client derives
+  the target's default be-hit anim as the `_bat01` sibling of its idle anim
+  (`wj_练功木桩001_st02.ani` -> `wj_练功木桩001_bat01.ani`) and plays it via
+  `KGModelCLR.AttachModel(tgt.Handle).PlayAnimation(path, 0, behitSpeed, 0)`, restoring idle after
+  800 ms. Verified A/B (65149, `isPlayBehit=1`, 3 dummies): localized dummy-region diff at the hit
+  frame, 0 diff pre-cast; no AV. `RC_BEHIT=0` disables. Proof
+  `proof/netcode/skillv6_fx4_behit_20261009.txt` (+3 PNG fingerprints).
 - **FX5 — hit sound. BLOCKED — see §4 (name→Wwise-id mapping).** Plan when unblocked: play the
   `hit_target_sound` SoundEvent for `hitSoundId` (material-aware via `behit_sound_type`).
 - **FX6 — be-hit shake (optional).** Apply `behit_shake.txt` (count/offset/duration/type) to the
@@ -87,11 +93,13 @@ extracted and not played** — no landing-zone SFX, no hit effect, no be-hit ani
   returns rc=7 with `exc=0xC0000005` (native/sfx_shim.cpp; the reverse-engineered owner chain
   is wrong for the MovieEditor host build). `.pss` plays fine via `AddDummyModel`; only `.Sfx`
   faults. Unblock = native RE of the correct engine SFX-factory owner (or a scene-level spawn).
-- **FX4 be-hit animation — BLOCKED (data).** No roster skill authors `BeHittedByF1..Npc` (all
-  empty) and `skills.tab` `HitStiffSkillMoveID` is empty too, so every hit uses the engine
-  **default** be-hit animation, whose source is not yet identified. `player_animation_f1.txt`
-  has 受击 entries at KindID 15/31; unblock = find the default-selection rule (engine default
-  per body, or the target's animation table by a 受击 KindID).
+- **FX4 be-hit animation — DONE (2026-10-09).** No roster skill authors `BeHittedByF1..Npc` (all
+  empty), so every hit uses the engine **default**, now recovered: the `_bat01` sibling of the
+  target's idle anim in its `动作` folder (`KRLCharacter::BeHittedByPlayer` @ `0x1804d0220`,
+  literal `bat01.ani` @ `0x180caf980`; sibling builder `0x1804d8700`, template @ `0x180cac990`).
+  The per-NPC `npc_animation.txt` table is generated at runtime (not shipped), so the path is
+  resolved by that naming rule. The kind map (1->`[rsi+0xa4]`, 2->`[rsi+0x94]`, 6->`[rsi+0x8c]`)
+  applies only to non-empty skill-caster be-hit columns (none in the roster).
 - **FX5 hit sound — BLOCKED (mapping).** `sound_probe.dll` exposes `PostEvent(uint eventId)`
   (numeric only); the client posts a single hardcoded FLWS id `3378728138`. The authored
   `hit_target_sound` SoundEvent is a **name** (`f2sgb11BangFaGongJi07`). Tested 2026-10-08: the

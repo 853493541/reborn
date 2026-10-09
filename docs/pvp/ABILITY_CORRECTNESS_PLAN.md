@@ -20,7 +20,7 @@ This supersedes nothing; it is the umbrella forward plan. Detail lives in
 | FX3 hit effect (.pss) | done; one-shot (unique instance + 2 s removal) |
 | **Castability** | **39 abilities AV-blacklisted — cannot cast** |
 | FX2 landing-zone SFX (.Sfx) | **blocked** (engine .Sfx spawn faults) |
-| FX4 be-hit animation | **blocked** (default be-hit anim source unknown) |
+| FX4 be-hit animation | **done** (2026-10-09): target `_bat01` sibling of its idle anim, played + restored (`proof/netcode/skillv6_fx4_behit_20261009.txt`) |
 | FX5 hit sound | **blocked** (name→Wwise-id mapping) |
 | FX6 be-hit shake | optional (RepresentID selector unknown) |
 | Scripts beyond static patterns (`-` abilities) | open (Lua 5.1 VM) |
@@ -37,13 +37,13 @@ This supersedes nothing; it is the umbrella forward plan. Detail lives in
   item"). Unblock = find why the per-tani anim AVs the host (engine RE) — likely the tani's
   skeleton/shadow/weapon binding. Until then these 39 stay blacklisted (do NOT substitute a
   fallback anim: that is a band-aid).
-- **FWD2 — FX4 default be-hit animation. LOCATED (needs binary RE).** The be-hit logic lives in
-  the game client's `bin64\JX3RepresentX64.dll`: `KRLCharacter::BeHittedByNpc`,
-  `KRLCharacter::BeHittedByPlayer`, `KRLCharacter::PlayBeHittedAnimation` (+ `EnableHideInBeHitted`).
-  The `BeHittedByNpc` path derives the NPC be-hit anim from the model path (`npc_source/...`,
-  `...bat01.ani` — assert fragments; the files are packed). Unblock = disassemble
-  `PlayBeHittedAnimation` / `BeHittedByPlayer` to get the default-anim rule, then play it on the
-  target when `isPlayBehit` via `KGModelCLR.AttachModel(tgt.Handle).PlayAnimation(...)`.
+- **FWD2 — FX4 default be-hit animation. DONE (2026-10-09).** Disassembled
+  `KRLCharacter::BeHittedByNpc` @ `0x1804cfb50` (kind map 1/2/6 -> `[rsi+0xa4/0x94/0x8c]`),
+  `KRLCharacter::BeHittedByPlayer` @ `0x1804d0220` (npc_source target -> literal `bat01.ani` @
+  `0x180caf980`) and the sibling builder `0x1804d8700` (template
+  `data/source/npc_source/%s/动作/%s_%s` @ `0x180cac990`). The client plays the target's `_bat01`
+  sibling of its idle anim when `isPlayBehit` and restores idle after 800 ms. Verified A/B.
+  Proof `proof/netcode/skillv6_fx4_behit_20261009.txt`.
 - **FWD3 — FX5 hit sound.** Map the `hit_target_sound` SoundEvent name → Wwise event id (parse
   the `.bnk` HIRC, or expose a by-name PostEvent in `sound_probe`). Material-aware.
 - **FWD4 — FX2 landing-zone SFX.** Native-RE the engine `.Sfx` factory owner so `.Sfx` spawns

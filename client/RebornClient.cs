@@ -229,8 +229,10 @@ internal static class RebornClient
         long chanNextTick = 0;
         // FX3 hit effects: spawn each as a UNIQUE instance and remove it after a short life,
         // so a looping/lingering .pss does not replay and repeated casts do not stack.
-        long hitFxSeq = 0;
-        var hitFxActive = new System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<string, long>>();
+    long hitFxSeq = 0;
+    var hitFxActive = new System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<string, long>>();
+    var behitActive = new System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<TargetEntity, long>>();
+    bool behitEnabled = Env("RC_BEHIT", "1") != "0";
         long autoRunMs = 0;
         long.TryParse(Env("RC_AUTORUN", "0"), out autoRunMs);
         var tabAt = new System.Collections.Generic.List<long>();
@@ -1876,7 +1878,7 @@ internal static class RebornClient
                     if (!long.TryParse(Env("RC_DUMMY_HP", "500000000"), out tent.MaxHp)) tent.MaxHp = 500000000L;
                     tent.Hp = tent.MaxHp;
                     tent.X = tx; tent.Y = ty; tent.Z = tz;
-                    tent.ModelName = "target_dummy"; tent.ModelPath = dummyModel;
+                    tent.ModelName = "target_dummy"; tent.ModelPath = dummyModel; tent.AnimPath = dummyAni;
                     targetSelector.Add(tent);
                     dummyTarget = tent;
                     Log(string.Format("target entity registered: {0} lv{1} hp={2} (Tab = facing cone search)",
@@ -1928,7 +1930,7 @@ internal static class RebornClient
                         if (!int.TryParse(Env("RC_DUMMY_LEVEL", "131"), out tent.Level)) tent.Level = 131;
                         if (!long.TryParse(Env("RC_DUMMY_HP", "500000000"), out tent.MaxHp)) tent.MaxHp = 500000000L;
                         tent.Hp = tent.MaxHp; tent.X = tx; tent.Y = ty; tent.Z = tz;
-                        tent.ModelName = "target_dummy" + di; tent.ModelPath = dModel;
+                        tent.ModelName = "target_dummy" + di; tent.ModelPath = dModel; tent.AnimPath = dAni;
                         targetSelector.Add(tent);
                     }
                     if (h > 0 && dAni != null && dAni.Length > 0)
@@ -4200,9 +4202,11 @@ internal static class RebornClient
                                 // FX3: spawn the authored hit (被击) effect at each target as a
                                 // UNIQUE instance, removed after a short life (one-shot, no replay).
                                 // Only .pss is spawned: AddDummyModel(.Sfx) AVs the host.
+                                // FX4: play the target's be-hit animation when isPlayBehit=1.
                                 {
                                     string[] hf;
-                                    if (hitFx.TryGetValue(skillCast.Name, out hf) && hf[5].Length > 0
+                                    hitFx.TryGetValue(skillCast.Name, out hf);
+                                    if (hf != null && hf[5].Length > 0
                                         && hf[5].ToLower().EndsWith(".pss"))
                                     {
                                         try
@@ -4216,6 +4220,24 @@ internal static class RebornClient
                                             Log("hit fx " + skillCast.Name + " -> " + tgt.Name + " " + hf[5] + " as " + hname);
                                         }
                                         catch (Exception) { }
+                                    }
+                                    if (behitEnabled && hf != null && hf[6] == "1")
+                                    {
+                                        string ba = BehitAnimPath(tgt.AnimPath);
+                                        if (ba.Length > 0)
+                                        {
+                                            float bspd = 1.0f;
+                                            if (hf[12].Length > 0) float.TryParse(hf[12], out bspd);
+                                            if (bspd <= 0f) bspd = 1.0f;
+                                            try
+                                            {
+                                                var ma = new KGModelCLR(); ma.AttachModel(tgt.Handle);
+                                                int brc = ma.PlayAnimation(ba.Replace('/', '\\'), 0, bspd, 0);
+                                                behitActive.Add(new System.Collections.Generic.KeyValuePair<TargetEntity, long>(tgt, now + 800));
+                                                Log("behit anim " + skillCast.Name + " -> " + tgt.Name + " " + ba + " rc=" + brc);
+                                            }
+                                            catch (Exception) { }
+                                        }
                                     }
                                 }
                                 for (int bi = 0; bi < plan.BuffsAdd.Count; bi++)
@@ -4297,6 +4319,21 @@ internal static class RebornClient
                     try { scene.RemoveDummyModel(hitFxActive[hfi].Key); } catch { }
                     Log("hit fx removed " + hitFxActive[hfi].Key);
                     hitFxActive.RemoveAt(hfi);
+                }
+            // FX4: after the be-hit anim plays, restore the target's idle anim.
+            for (int bhi = behitActive.Count - 1; bhi >= 0; bhi--)
+                if (now >= behitActive[bhi].Value)
+                {
+                    TargetEntity bt = behitActive[bhi].Key;
+                    if (bt.Handle > 0 && bt.AnimPath.Length > 0)
+                        try
+                        {
+                            var mb = new KGModelCLR(); mb.AttachModel(bt.Handle);
+                            mb.PlayAnimation(bt.AnimPath.Replace('/', '\\'), 0, 1.0f, 0);
+                        }
+                        catch (Exception) { }
+                    Log("behit anim restore " + bt.Name);
+                    behitActive.RemoveAt(bhi);
                 }
 
             // model update (only when changed; keeps animation alive).
@@ -5760,6 +5797,25 @@ internal static class RebornClient
     {
         string v = Environment.GetEnvironmentVariable(name);
         return string.IsNullOrEmpty(v) ? def : v;
+    }
+
+    // Engine-truth default be-hit animation (KRLCharacter::BeHittedByPlayer uses the
+    // literal "bat01.ani" for npc_source targets): the "_bat01" sibling of the idle
+    // anim in the same folder, e.g. wj_练功木桩001_st02.ani -> wj_练功木桩001_bat01.ani.
+    // Returns "" when the idle anim has no "_st<NN>" state token (nothing to derive).
+    static string BehitAnimPath(string idleAnim)
+    {
+        if (idleAnim == null || idleAnim.Length == 0) return "";
+        int slash = idleAnim.LastIndexOfAny(new char[] { '\\', '/' });
+        string dir = slash >= 0 ? idleAnim.Substring(0, slash + 1) : "";
+        string file = slash >= 0 ? idleAnim.Substring(slash + 1) : idleAnim;
+        int dot = file.LastIndexOf('.');
+        string ext = dot >= 0 ? file.Substring(dot) : "";
+        string stem = dot >= 0 ? file.Substring(0, dot) : file;
+        System.Text.RegularExpressions.Match m =
+            System.Text.RegularExpressions.Regex.Match(stem, "_[sS][tT]\\d+.*$");
+        if (!m.Success) return "";
+        return dir + stem.Substring(0, m.Index) + "_bat01" + ext;
     }
 
     // Recon helper: log the public managed methods whose name matters for the

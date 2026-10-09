@@ -12,7 +12,7 @@ Confidence: **HIGH** = verified from data/code; **MED** = partial evidence; **LO
 | Item | Precise now (HIGH/MED) | Still imprecise | Next probe |
 |---|---|---|---|
 | W1 per-tani AV (39 abilities) | fault = `memcpy` size `0xFFFFFFFA` via `jemallocX64.dll` from engine anim code (`KG3DEngineDX11EX64.dll+0xE2E842` region); dump captured | exact engine caller fn; the corrupt map key/binding (which anim/bone id) | debugger (x64dbg/`cdb`) attach, or forced full-memory dump → `.pdata` unwind; then disasm the caller |
-| W2 be-hit animation | rule = kind-selected from the target anim set (`[rsi+0x8c/0x94/0xa4]`, kinds 1/2/6) or model-sibling template `data/source/npc_source/%s/动作/%s_%s` | which table fills the target's be-hit anims; the kind↔field mapping; the `<suffix>` | disasm the target anim loader / the code that fills `[rsi+0x8c..0xa4]`; find the npc anim table |
+| W2 be-hit animation **DONE (2026-10-09)** | kind map (`BeHittedByNpc` @ `0x1804cfb50`: kind 1→`[rsi+0xa4]`, 2→`[rsi+0x94]`, 6→`[rsi+0x8c]`) + default NPC rule (`BeHittedByPlayer` @ `0x1804d0220`: literal `bat01.ani`; sibling `0x1804d8700` = `data/source/npc_source/%s/动作/%s_%s`) | — | implemented: target's `_bat01` sibling of its idle anim, played + restored; `npc_animation.txt` is runtime-generated (not shipped) |
 | W3 hit sound | `Behit.bnk` parsed (95 Event ids); `hit_target_sound` gives the SoundEvent name; `PostEvent(uint)` only | the SoundEvent-name → Wwise-id mapping: NOT plain FNV-1/-1a (checked all 87 banks, no match); the names are not in `resource_sfx`/`custom_sfx`/`WwiseSound` | disasm the client's sound-name→id resolution (find the hash/table it uses), or a by-name PostEvent |
 | W4 landing `.Sfx` | engine `.Sfx` spawn faults (`rc=7`, `0xC0000005`); `.pss` works | the correct engine SFX-factory owner chain | disasm the engine tag-spawn caller (shim comment cites `0x76E51A`) |
 | W5 be-hit shake | `behit_shake.txt` (RepresentID→count/offset/duration/type) exists | which column/global selects a skill's RepresentID | grep `skill_caster_f1`/`skills.tab` for a shake column; disasm the shake trigger |
@@ -69,5 +69,5 @@ Confidence: **HIGH** = verified from data/code; **MED** = partial evidence; **LO
 2. **B: per-skill cooldown/GCD + multi-hit schedule** — code-only, no engine RE; affects many skills.
 3. **W3 hit sound** — a bounded `.bnk` reader.
 4. **B: missiles** — model projectile skills.
-5. **W2/W4** — deeper engine RE.
+5. **W4** — deeper engine RE (`.Sfx` factory owner chain); W2 done.
 6. **C: Lua VM** — for the 46 script-only abilities.

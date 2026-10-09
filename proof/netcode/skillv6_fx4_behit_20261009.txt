@@ -1,0 +1,63 @@
+# skill v6 — FX4 target be-hit animation (W2) (2026-10-09)
+# Build: reborn_client_skillv6.exe  (client/RebornClient.cs, client/Targeting.cs)
+
+## Change
+The client now plays the target's authored be-hit animation when the ability's
+skill_caster row has IsPlayBehitAnimation=1 (hit_fx_f1.tsv col isPlayBehit). The
+path is the engine's own default rule: the "_bat01" sibling of the target's idle
+anim in the same `动作` folder (KRLCharacter::BeHittedByPlayer uses the literal
+"bat01.ani" for npc_source targets), e.g.
+  wj_练功木桩001_st02.ani -> wj_练功木桩001_bat01.ani.
+Played via KGModelCLR.AttachModel(tgt.Handle).PlayAnimation(path,0,speed,0) and
+restored to idle after 800 ms. RC_BEHIT=0 disables it (test hook).
+
+## Client truth (recovered, JX3RepresentX64.dll — read-only disasm)
+- KRLCharacter::BeHittedByNpc @ 0x1804cfb50: kind from the target frame data
+  (call 0x180003a6c) selects one of the skill-caster model's loaded be-hit anims:
+  kind 1 -> [rsi+0xa4], kind 2 -> [rsi+0x94], kind 6 -> [rsi+0x8c]; else the
+  sibling path 0x1804d8700 with template `data/source/npc_source/%s/动作/%s_%s`.
+- KRLCharacter::BeHittedByPlayer @ 0x1804d0220: for an npc_source target model it
+  calls 0x1804d8700 with the literal "bat01.ani" (string @0x180caf980) -> the
+  default be-hit animation. 0x1804d8700 (sibling builder) uses the template
+  `data/source/npc_source/%s/动作/%s_%s` (string @0x180cac990).
+- `npc_animation.txt` (the per-NPC AniID table; filepath.ini NpcAnimationModel) is
+  NOT shipped in the readable client paks (generated at runtime), so the exact
+  per-NPC be-hit path is resolved by naming convention. The dummy's authored file
+  `wj_练功木桩001_bat01.ani` exists in the pak (321 bytes, MIN2 + bone01) and is
+  exactly the derived sibling of its idle anim.
+
+## Verified — driven A/B (RC_ABILITY=65149 PointArea, RC_DUMMY_N=3, cast @38 s)
+Same run, only RC_BEHIT toggled (deterministic engine; pre-cast frames identical):
+A (RC_BEHIT=1):
+  hit fx 65149 -> <木桩>   ...Pss\被击\C_纯阳两仪爆01.pss
+  behit anim 65149 -> <木桩>   data\source\npc_source\练功木桩001\动作\wj_练功木桩001_bat01.ani rc=0
+  behit anim 65149 -> <木桩#1> (same) rc=0
+  behit anim 65149 -> <木桩#2> (same) rc=0
+  behit anim restore <木桩#2> / <木桩#1> / <木桩>
+  mechanic 65149 mode=PointArea -> 3 target(s) dmg=0.0 cc=Charm buff+=28998
+  DONE (no AV)
+B (RC_BEHIT=0): 0 behit-anim lines, otherwise identical; DONE.
+
+## Numeric fingerprint (frame-diff A vs B, 1280x720, 8x8 region mean of |Δ|max)
+Shot @36500 (pre-cast idle) : max|Δ|=68,  pixels>6=1206, all 64 region means = 0
+Shot @38800 (be-hit window) : max|Δ|=178, pixels>6=8078, localized dummy region
+                              rows3-5/cols3-5 means 1..5  <-- FX4 visual change
+Shot @39800 (after restore) : max|Δ|=171, pixels>6=3604, dummy region settling
+PNGs: proof/netcode/skillv6_fx4_behit_A_idle_36500.png,
+      skillv6_fx4_behit_A_on_38800.png, skillv6_fx4_behit_B_off_38800.png
+
+## Engine log note (NOT caused by FX4)
+`KG3DModelManager::LoadResourceFromFile` + `KG3DModelProxy::SetDetail nIndex!=-1`
+appear in BOTH A and B (2 and 5 counts) -> pre-existing hit-fx path noise, not FX4.
+
+## Reproduce
+  set RC_MEM_NS=reborn_skillv6_probe.memory
+  set RC_ABILITY=65149 & set RC_DUMMY_N=3 & set RC_NOLOADING=1
+  set RC_TAB_AT=10000 & set RC_CAST_AT=38000:1 & set RC_AUTORUN=52000
+  set RC_SHOTS=36500,38800,39800
+  rem A: RC_BEHIT default 1;  B: RC_BEHIT=0
+  run C:\SeasunGame\MovieEditor\bin64\reborn_client_skillv6.exe
+      working dir C:\SeasunGame\MovieEditor
+
+## Gates
+jx3_model 10 PASS / gravity PASS / loot selftest PASS

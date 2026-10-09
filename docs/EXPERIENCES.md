@@ -8601,3 +8601,32 @@ if the cache/host frames appear.
   default be-hit animation source, .pss playback, Wwise sound playback, behit_shake RepresentID.
 - **Verified:** table dumps (skill_caster_f1 65149 row, hit_target_sound, behit_shake). Gates:
   jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+
+### 2026-10-09 — v6 — FX4 target be-hit animation (W2 done)
+
+- **Did:** implemented the target be-hit reaction. `build_hit_fx.py` already carries per-skill
+  `IsPlayBehitAnimation` (col 6) and `behitSpeed` (col 12); the client now, for each affected
+  target when `isPlayBehit=1`, derives the target's default be-hit anim as the `_bat01` sibling of
+  its idle anim and plays it via `KGModelCLR.AttachModel(tgt.Handle).PlayAnimation(path,0,speed,0)`,
+  restoring idle after 800 ms. `TargetEntity` gained `AnimPath` (idle, set at dummy spawn).
+- **Client truth (JX3RepresentX64.dll, read-only disasm):** `KRLCharacter::BeHittedByNpc`
+  @`0x1804cfb50` kind map (1→`[rsi+0xa4]`, 2→`[rsi+0x94]`, 6→`[rsi+0x8c]`); `BeHittedByPlayer`
+  @`0x1804d0220` uses the literal `bat01.ani` @`0x180caf980` for npc_source targets; the sibling
+  builder `0x1804d8700` template `data/source/npc_source/%s/动作/%s_%s` @`0x180cac990`. The per-NPC
+  `npc_animation.txt` (filepath.ini `NpcAnimationModel`) is **not shipped** in the readable paks
+  (runtime-generated), so the path is resolved by the engine's own `bat01` naming rule. The dummy's
+  authored file `wj_练功木桩001_bat01.ani` (321 B MIN2+bone01) is exactly the derived sibling of its
+  idle `wj_练功木桩001_st02.ani`.
+- **Verified (driven A/B):** 65149 (PointArea, `isPlayBehit=1`), `RC_DUMMY_N=3`, cast @38 s; only
+  `RC_BEHIT` toggled. A: `behit anim 65149 -> <木桩[#1/#2]> wj_练功木桩001_bat01.ani rc=0` ×3 +
+  restore ×3; B: 0. Numeric fingerprint (frame diff A vs B, 8×8 region mean |Δ|max): @36500 pre-cast
+  all 64 regions = 0; @38800 (hit) localized dummy region means 1..5 (max|Δ|=178, 8078 px>6);
+  @39800 restore settling. No AV, clean `DONE`. Proof
+  `proof/netcode/skillv6_fx4_behit_20261009.txt` (+3 PNGs).
+- **Note:** the `KG3DModelManager::LoadResourceFromFile` / `KG3DModelProxy::SetDetail nIndex!=-1`
+  engine log lines appear in **both** A and B → pre-existing hit-fx path noise, not FX4.
+- **Also fixed (tool):** `tools/pvp/dump_fn_disasm.py` crashed on a `SKIPDATA` `.byte` instruction
+  when annotating; `annotate()` now guards `insn.id`/operand access. Gates: jx3_model 10 PASS,
+  gravity PASS, loot selftest PASS.
+- **Open (next):** W3 hit sound (name→Wwise-id), W4 landing `.Sfx`, non-channel multi-hit, missiles,
+  buff durations, skill tag/chain, hit-stiff, AoE shapes, damage scaling, Lua VM, be-hit shake.

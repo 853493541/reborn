@@ -49,7 +49,15 @@ Proven: `dump_fn_disasm.py JX3RepresentX64.dll --names behit_names.txt` returned
   recovered from these dumps. Unblock = capture with a debugger (x64dbg/`cdb`), or force full
   memory capture, then unwind via `.pdata`. Faulting site + module + bad value (0xFFFFFFFA) are
   known; the fix (supply the anim/bone binding) is a large engine-RE sub-task.
-- **W2 — FWD2 default be-hit animation. RULE RECOVERED (implementation is non-trivial).**
+- **W2 — FWD2 default be-hit animation. DONE (2026-10-09; implemented + verified A/B).**
+  - **Default NPC rule:** `KRLCharacter::BeHittedByPlayer` @ `0x1804d0220` uses the literal
+    `bat01.ani` (string @0x180caf980) for npc_source targets via the sibling builder
+    `0x1804d8700` (template `data/source/npc_source/%s/动作/%s_%s` @0x180cac990). Kind map in
+    `BeHittedByNpc` @ `0x1804cfb50`: kind 1→`[rsi+0xa4]`, 2→`[rsi+0x94]`, 6→`[rsi+0x8c]`
+    (only for non-empty skill-caster cols, none in the roster). `npc_animation.txt` is
+    runtime-generated (not shipped in the readable paks). Client plays the target's `_bat01`
+    sibling of its idle anim; proof `proof/netcode/skillv6_fx4_behit_20261009.txt`.
+  - (historical detail below)
   - `KRLCharacter::PlayBeHittedAnimation` is virtual; the caller passes `pcszAni`.
   - `BeHittedByNpc` @ `0x1804cfb50`: gets the target's anim model (`pSkillCasterModel`,
     `[rip+0xa0e2e5]+0x1a0`), reads a **kind** from the frame data (`0x180003a6c`) and selects one of

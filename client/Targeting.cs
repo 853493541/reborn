@@ -36,6 +36,7 @@ internal sealed class TargetEntity
     public string CcType = "";
     public string ModelName = "";   // engine dummy name (to move the model)
     public string ModelPath = "";   // engine model path
+    public string AnimPath = "";    // idle anim path (source of the default be-hit anim)
     public override string ToString() { return Name + "(" + Level + ")"; }
 }
 
