@@ -74,15 +74,19 @@ Done (v6 client, branch `agent/skillv6-sandbox`):
 - **P4** resources/GCD/cooldowns: `build_cooldowns.py` (`CoolDownList.tab`), GCD row 16 = 1.5 s,
   per-skill cooldown (row = 2nd arg of `SetNormalCoolDown`), mana. Uniform **20 尺 cast range**
   (`RC_CAST_RANGE`) enforced with out-of-range feedback.
-- **P5** feedback: layered ability panel (right, catalogs `测试`/`全部`, 29 px icons, green selected
-  border, default open), combat-text overlay (status + events), cast bar, ability-bar/panel
-  cooldown, target CC/buff.
+- **P5** feedback: layered ability panel (right, **4 catalogs 测试中/未测试/需要修复/已完成**,
+  29 px icons, green selected border, default open), combat-text overlay (status + events + the
+  selected ability name/catalog), cast bar, panel cooldown, target CC/buff.
 - **Prepared / channel cast**: prepared skills play the **prepare anim** for `nPrepareFrames` then
   the **release anim** at commit (65076 1.5 s, 27874 3 s, …); channel skills hold for `nChannelFrame`.
 - **P6/P6b** coverage: full 154 sweep (115 ok + 39 av); **all 115 castable abilities individually
   verified** (`proof/netcode/skillv6_batch*`); the 39 av are per-tani blacklisted.
 - **Apply() path**: `build_passives.py` extracts each `Apply()` child casts + AddBuff/DelBuff ids
   + heal + summon + doodad → `apply_f1.tsv` (137 abilities); the client runs them **at cast**.
+- **Review tools (host)**: **F1 → 已完成 / F2 → 测试中** for the selected ability, persisted to
+  `ability_status_f1.txt` (reloaded at startup, panel re-sorts live); `RC_SET_STATUS` test hook;
+  every ability **3 s cooldown** (`RC_CD_MS`) + **1.19 s GCD** (`RC_GCD_MS`); the single-instance
+  guard honors a distinct `RC_MEM_NS` (concurrent isolated runs).
 
 Open:
 - `EXECUTE_SCRIPT` bodies beyond the static patterns (88 self + 5 external; the 32 `-` abilities
