@@ -1,0 +1,4 @@
+RepresentID	OscillationCount(振荡次数)	MaxOffset(单次抖动距原点最大偏移)	Duration(总时长/毫秒)	OscillationType(振荡方式)
+0	0	0	0	0
+1	2	10	100	0
+2	5	50	100	0

@@ -1,0 +1,155 @@
+skillId	name	aoeSfxScale	aoeSfxFile	hitEffectResultId	hitEffectPath	isPlayBehit	behitF1	behitF2	behitM1	behitM2	behitNpc	behitSpeed	hitSoundId
+27844	听风吹雪	1		139	data\source\other\HD特效\技能\Pss\被击\W_万花听风被击01.pss	1							
+27846	云栖松												
+27847	霞流宝石												
+27850	紫气东来	1		0		1							
+27855	蝶弄足												
+27862	梯云纵												
+27863	怖畏暗刑			8042	data\source\other\特效\技能\SFX\被击\被击_明教被击01.Sfx								
+27869	烟雨行												
+27872	撼地	1	data/source/other/HD特效/技能/Pss/状态/C_苍云标示01_HD.pss										
+27874	十方玄机												
+27875	斗转星移	1		0		1							
+27878	孤风飒踏	1	data\source\other\hd特效\技能\pss\发招\lxg_凌雪阁范围标识_3尺.pss										
+27888	舍身诀												
+27890	抢珠式			600	data\source\other\HD特效\技能\Pss\被击\S_少林爪被击.pss								
+27892	九霄风雷												
+27895	化蝶	1		0		1							
+27902	楚河汉界												
+27903	散流霞												
+27904	翔极碧落	0.2	data/source/other/HD特效/技能/Pss/状态/pl_蓬莱选择框01.pss	8191	data\source\other\HD特效\技能\Pss\被击\pl_蓬莱被击02.pss								
+27905	跃潮斩波												
+27906	斩无常												
+27924	蚀心蛊	1		803	data\source\other\特效\技能\SFX\被击\被击_五毒攻击05.Sfx	1							
+27926	九转归一			309	data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆01.pss								
+27967	风来吴山												
+27969	孤影化双			8139	data\source\other\新特效\技能\Pss\被击\C_长歌爆01.pss								
+28031	临时飞爪	0.5	data/source/other/HD特效/技能/Pss/状态/T_唐门点选aoe01HD.pss										
+28045	洞烛机微												
+28046	魂压怒涛	1	data/source/other/HD特效/技能/Pss/发招/t_唐门飞天范围.pss										
+30023	锻骨诀												
+30024	守如山												
+30025	转乾坤												
+30029	惊鸿游龙	1		0		1							
+30081	极乐引			8039	data\source\other\特效\技能\SFX\释放\释放_明教圣火12.Sfx								
+30082	踏星行												
+30123	凌然天风												
+30226	心诤												
+30231	疾电叱羽												
+30233	飞刃回转												
+30234	鸿蒙天禁	1		0		1							
+30235	天绝地灭	0.6	Data\source\other\特效\技能\SFX\释放\释放_点选唐门遥控.Sfx	0		1							
+30238	玄水蛊												
+30239	穹隆化生												
+30243	龙啸九天												
+30247	驭羽骋风												
+30257	剑破虚空												
+30261	无间狱												
+30262	振翅图南	1	data/source/other/HD特效/技能/Pss/状态/pl_蓬莱选择框01.pss										
+30276	逐云寒蕊												
+30301	绿野蔓生												
+32245	花语酥心			134	data\source\other\特效\技能\SFX\增益\增益_笔攻击05.Sfx								
+32247	如意法												
+32287	徐如林												
+32300	连环弩	1		8017	data\source\other\特效\技能\SFX\被击\被击_唐门连环弩.sfx	1							
+34591	游风飘踪												
+34594	洗兵雨	1				1							
+36501	应天授命												
+39483	雾暗迷云												
+39492	截阳												
+39493	引窍												
+39494	风流云散	0.1	data/source/other/HD特效/技能/Pss/状态/DS_段氏雾海萦空_10尺指示圈.pss										
+64898	横扫六合			620	data\source\other\HD特效\技能\Pss\被击\S_少林爆01.pss								
+64899	捕风式												
+64900	抱残式			600	data\source\other\HD特效\技能\Pss\被击\S_少林爪被击.pss								
+64901	守缺式			600	data\source\other\HD特效\技能\Pss\被击\S_少林爪被击.pss								
+64991	拿云式												
+64992	长针			142	data\source\other\特效\技能\SFX\被击\被击_笔攻击08.Sfx								
+64993	商阳指			180	data\source\other\特效\技能\SFX\被击\被击_笔攻击20.Sfx								
+64994	钟林毓秀			189	data\source\other\特效\技能\SFX\被击\被击_笔攻击31.Sfx								
+64995	兰摧玉折			190	data\source\other\特效\技能\SFX\被击\被击_笔攻击33.Sfx								
+64996	破风			401	data\source\other\hd特效\技能\pss\被击\t_天策穿云被击c.pss								
+65022	穿												
+65024	太极无极	1		0		1							
+65026	三环套月												
+65028	剑飞惊天												
+65029	龙牙												
+65036	龙吟												
+65038	灭			420	data\source\other\特效\技能\SFX\被击\被击_天策攻击09.Sfx								
+65046	蛇影	1		803	data\source\other\特效\技能\SFX\被击\被击_五毒攻击05.Sfx	1							
+65047	蟾啸	1		801	data\source\other\特效\技能\SFX\被击\被击_五毒攻击01.Sfx	1							
+65048	夺命蛊	1		803	data\source\other\特效\技能\SFX\被击\被击_五毒攻击05.Sfx	1							
+65049	迷心蛊	1		803	data\source\other\特效\技能\SFX\被击\被击_五毒攻击05.Sfx	1							
+65050	枯残蛊	1		803	data\source\other\特效\技能\SFX\被击\被击_五毒攻击05.Sfx	1							
+65053	化血镖	1		8005	data\source\other\特效\技能\SFX\被击\被击_唐门毒芒针.sfx	1							
+65054	孔雀翎	1		8014	data\source\other\特效\技能\SFX\被击\被击_唐门孔雀翎.sfx	1							
+65058	玉石俱焚												
+65059	两仪化形												
+65060	无我无剑			365	data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆01.pss								
+65061	万剑归宗												
+65062	天地无极												
+65065	剑主天地												
+65068	百足	1	Data\source\other\特效\技能\SFX\释放\释放_五毒点选AOE2.Sfx	0		1							
+65071	追命箭	1		8020	data\source\other\特效\技能\SFX\被击\被击_唐门追命箭.sfx	1							
+65074	穿心弩	1		8021	data\source\other\特效\技能\SFX\被击\被击_唐门穿心弩.sfx	1							
+65075	听雷												
+65076	云飞玉皇												
+65078	鹤归孤山												
+65083	幽月轮												
+65087	净世破魔击			8045	data\source\other\特效\技能\SFX\被击\被击_明教被击03.Sfx								
+65089	烈日斩			8044	data\source\other\特效\技能\SFX\被击\被击_明教被击02.Sfx								
+65090	银月斩			8043	data\source\other\特效\技能\SFX\被击\被击_明教被击04.Sfx								
+65092	圣明佑												
+65095	生死劫			8044	data\source\other\特效\技能\SFX\被击\被击_明教被击02.Sfx								
+65096	驱夜断愁			8043	data\source\other\特效\技能\SFX\被击\被击_明教被击04.Sfx								
+65097	韦陀献杵			620	data\source\other\HD特效\技能\Pss\被击\S_少林爆01.pss								
+65098	摩诃无量												
+65100	捉影式												
+65101	五蕴皆空												
+65103	大狮子吼												
+65104	无相诀												
+65105	春泥护花												
+65107	星楼月影												
+65108	少明指			184	data\source\other\特效\技能\SFX\被击\被击_笔攻击24.Sfx								
+65109	芙蓉并蒂												
+65113	傍花随柳			187	data\source\other\特效\技能\SFX\被击\被击_笔攻击25.Sfx								
+65116	沧月			480	data\source\other\特效\技能\SFX\被击\被击_临时血光02.Sfx								
+65118	疾如风												
+65119	撼如雷												
+65120	渊	1		0		1							
+65133	碎星辰		Data\source\other\特效\技能\SFX\释放\释放_纯阳攻击17.Sfx										
+65136	破苍穹		Data\source\other\特效\技能\SFX\释放\释放_纯阳攻击17.Sfx										
+65138	凌太虚		Data\source\other\特效\技能\SFX\释放\释放_纯阳攻击17.Sfx										
+65140	吞日月		Data\source\other\特效\技能\SFX\释放\释放_纯阳攻击17.Sfx										
+65142	生太极		Data\source\other\特效\技能\SFX\释放\释放_纯阳攻击17.Sfx										
+65144	任驰骋												
+65145	三才化生			306	data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆03.pss								
+65146	七星拱瑞												
+65149	五方行尽	1	Data\source\other\特效\技能\SFX\释放\释放_纯阳攻击17.Sfx	368	data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆01.pss	1							
+65150	人剑合一												
+65153	大道无术			366	data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆01.pss								
+65154	坐忘无我												
+65155	剑转流云												
+65156	雷霆震怒												
+65157	绛唇珠袖												
+65159	帝骖龙翔												
+65160	天地低昂												
+65161	鹊踏枝												
+65162	蛊虫献祭	1		0		1							
+65163	女娲补天	1		0		1							
+65165	雷震子	1		8006	data\source\other\特效\技能\SFX\被击\被击_唐门被击01.sfx	1							
+65167	镇山河	0.7	Data\source\other\特效\技能\SFX\释放\释放_纯阳攻击17.Sfx										
+65240	疾												
+65241	鸟翔碧空												
+65242	太阴指												
+65243	暗尘弥散												
+65244	浮光掠影	1		0		1							
+65250	啸如虎												
+65251	风袖低昂												
+65254	千蝶吐瑞	1		6010	data\source\other\hd特效\技能\pss\状态\w_五毒_治疗_01.pss	1							
+65667	亢龙有悔												
+65668	狂龙乱舞												
+65669	龙战于野												
+65670	潜龙勿用												
+65671	棒打狗头												
+65672	笑醉狂												

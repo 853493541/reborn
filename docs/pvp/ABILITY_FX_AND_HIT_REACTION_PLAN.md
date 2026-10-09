@@ -59,11 +59,12 @@ extracted and not played** — no landing-zone SFX, no hit effect, no be-hit ani
 
 ## 3. Fix plan (phases)
 
-- **FX1 — extract.** Extend the extractor (new `ability_picker/tools/build_hit_fx.py`, reusing
-  `build_cast_chain.py`'s extractor + maps) to emit per skill: `aoeSfxScale`, `aoeSfxFile`,
-  `hitEffectResultId` -> `hitEffectPath`, `isPlayBehit`, `behitAnim{f1,f2,m1,m2,npc}`,
-  `behitSpeed`, `hitSoundId`. Emit `ability_picker/data/hit_fx_f1.tsv`. Also extract the four
-  helper tables into `data/` (hit_target_sound, behit_sound_type, behit_shake) for the client.
+- **FX1 — extract. DONE (2026-10-08).** `ability_picker/tools/build_hit_fx.py` emits
+  `ability_picker/data/hit_fx_f1.tsv` (per roster skill: `aoeSfxScale`, `aoeSfxFile`,
+  `hitEffectResultId`->`hitEffectPath`, `isPlayBehit`, `behitF1..Npc`, `behitSpeed`, `hitSoundId`)
+  and copies the helper tables `hit_target_sound.tsv`, `behit_sound_type.tsv`, `behit_shake.tsv`
+  into `data/`. Result: 154 abilities — 16 landing-SFX, 43 hit-effect, 28 play-behit, 0 hit-sound.
+  65149: `aoeSfxFile=释放_纯阳攻击17.Sfx`, `hitEffectPath=C_纯阳两仪爆01.pss`, `isPlayBehit=1`.
 - **FX2 — landing-zone SFX.** On a PointArea/TargetArea cast, spawn `aoeSfxFile` (scaled by
   `aoeSfxScale`) at the AoE centre when the cast commits (same point the damage resolves at).
   Reuse the existing effect-spawn path; add an "aoe" effect slot on `SkillCast`.
