@@ -1,0 +1,29 @@
+# skill v6 — W4 .Sfx fault site (refined) (2026-10-09)
+# Read-only: engine disasm + the shim's own fault logs in bin64\reborn_out\*.log
+
+## Observed fault (native/sfx_shim.cpp RC_Shim_SfxPlay, all past runs)
+  exc=0xC0000005  obj=0 out=0  pool non-null
+  stack: [ ... ntdll.dll+0x26844 ... jemallocX64.dll+0x11001 ...]
+  fault_rva printed as 0x2CFBFA7D — but that is `fault - g_base` for a fault that is NOT in the
+  engine (0x2CFBFA7D > SizeOfImage 0x2EA7000), so the printed "rva" is meaningless; the real
+  faulting frame is in **ntdll / jemallocX64** (a memcpy/realloc), i.e. the SAME class as W1's
+  per-tani AV (`memcpy` with a bogus size through jemalloc from engine resource/model code).
+
+## Refined arg reading of KG3D_CreateSFXFromFile @0xBE4000
+- Prologue only REQUIRES a1 owner and a2 path non-null; a3 (r8), a4 (r9) and the stack args are
+  used later. a8 (`[rbp+0x648]`) is only `test`ed and read as `[a8+0x15]` (a byte flag) — so a8 is
+  a **creation-params struct**, not an out slot (the SFX comes back in rax). The real caller
+  (`KG3D_SFXModel::BindData` @0x180e3412a) passes a8=&local-params.
+- Inside, it calls `KG3D_CreateModelFromFile` (assert string @0x1822115a0) to build the effect
+  model, then a model vt[+0x40]. A failure there leads into the jemalloc memcpy fault.
+
+## Conclusion
+The `.Sfx` failure is not (only) an arg-order bug — it is a **resource/model creation fault of the
+same class as W1** (bad-size memcpy via jemalloc). Correcting the arg mapping (a8=&params, a3/a4)
+would still leave the model-creation fault. Both W4 and W1 need a debugger at the faulting engine
+frame; the `.Sfx` route should instead go through the engine's own tag/effect pipeline once W1's
+engine-resource issue is understood.
+
+## Reproduce
+  read-only: bin64\reborn_out\*.log lines "cast chain fx(engine) ... rc=7 ... exc=0xC0000005"
+  disasm: tools\pvp\dump_fn_disasm.py <KG3DEngineDX11EX64.dll> --names sfx_addrs.txt

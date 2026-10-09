@@ -8811,3 +8811,19 @@ if the cache/host frames appear.
   (W4 tag-path, W3 bank, W1 debugger, damage scaling stats, Lua VM).
 - **Artifacts:** `docs/pvp/ABILITY_FOLLOWUP_PLAN.md` hit-stiff bullet updated.
 - Verified: read-only table read; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+
+### 2026-10-09 — v6 — W4 .Sfx fault site: same class as W1 (bad-size memcpy via jemalloc)
+
+- **Did:** read the shim's own fault logs and the `CreateSFXFromFile` body to localize the `.Sfx`
+  crash.
+- **Findings:** the AV is a `memcpy`/realloc through `jemallocX64.dll` (ntdll+0x26844 /
+  jemalloc+0x11001 frames) — the printed `fault_rva=0x2CFBFA7D` is `fault-base` for a fault that is
+  NOT in the engine (> SizeOfImage) and is meaningless. Inside `KG3D_CreateSFXFromFile` the code
+  calls `KG3D_CreateModelFromFile` then a model vt[+0x40]; a8 (`[rbp+0x648]`) is a creation-params
+  struct (`[a8+0x15]` byte), not an out slot. So this is the **same class as W1** (bad-size memcpy
+  from engine resource/model code), not merely an arg-order bug.
+- **Conclusion:** W4 cannot be closed by arg tweaks alone; it shares W1's root (engine model/resource
+  creation) which needs a debugger. Recorded as blocked with the exact fault frames + the
+  tag-path/scene-API route. Evidence `proof/netcode/skillv6_sfx_faultsite_20261009.txt`;
+  `ENGINE_RE_BREAKTHROUGH_PLAN.md` W4 updated.
+- Verified: read-only analysis; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.

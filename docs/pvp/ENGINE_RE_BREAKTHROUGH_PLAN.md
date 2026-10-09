@@ -100,6 +100,11 @@ Proven: `dump_fn_disasm.py JX3RepresentX64.dll --names behit_names.txt` returned
   via `PlayAnimation`, not a `KG3D_SFXModel` tag), so no arg fix can supply them. **Route:** spawn
   the landing `.Sfx` through the engine's own animation/SFX **tag** path (so the tag args exist), or
   a scene-level standalone-effect API. Evidence: `proof/netcode/skillv6_sfx_argmapping_20261009.txt`.
+  **Refined:** the fault is a bad-size `memcpy` via `jemallocX64.dll` (ntdll/jemalloc frames; the
+  printed `fault_rva` is meaningless outside the engine) reached from `KG3D_CreateModelFromFile` —
+  the **same class as W1**, so the arg fix alone would not clear it. `KG3D_CreateSFXFromFile`'s a8 is
+  a creation-params struct (`[a8+0x15]`), not an out slot. Evidence
+  `proof/netcode/skillv6_sfx_faultsite_20261009.txt`.
 - **W5 — FWD6 scripts.** Build the Lua 5.1 VM (`lua51_disasm.py` already parses bytecode) + an
   engine-API shim; run the residual scripts.
 
