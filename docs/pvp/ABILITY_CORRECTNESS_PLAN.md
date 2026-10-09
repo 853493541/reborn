@@ -28,9 +28,15 @@ This supersedes nothing; it is the umbrella forward plan. Detail lives in
 
 ## Forward phases
 
-- **FWD1 — Castability: un-blacklist the 39 AV abilities.** Reproduce the AV per ability,
-  find the trigger (anim / effect / bone), and either avoid it (skip the offending step) or fix
-  the wiring, so they cast. Highest leverage (+39 abilities).
+- **FWD1 — Castability: un-blacklist the 39 AV abilities. IN PROGRESS — root cause is per-tani
+  (engine).** Reproduced 65068 (百足) with the blacklist emptied: `cast chain 65068` +
+  `cast chain started`, then `System.AccessViolationException at RebornClient.Main` (crash);
+  the AV is in an engine call in the cast path (D6 is seeded, so not D6; no summon/doodad in
+  its apply; the child 65069 is not executed). Matches the known open item
+  (`docs/EXPERIENCES.md` ~7957: "the per-tani AV root cause (39 tanis) is an open engine/host
+  item"). Unblock = find why the per-tani anim AVs the host (engine RE) — likely the tani's
+  skeleton/shadow/weapon binding. Until then these 39 stay blacklisted (do NOT substitute a
+  fallback anim: that is a band-aid).
 - **FWD2 — FX4 default be-hit animation.** Locate the engine default (per body / target anim
   table by a 受击 KindID); play it on the target when `isPlayBehit`. (Unblocks the "be hit anim".)
 - **FWD3 — FX5 hit sound.** Map the `hit_target_sound` SoundEvent name → Wwise event id (parse
