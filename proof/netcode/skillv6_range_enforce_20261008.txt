@@ -1,0 +1,11 @@
+# skill v6 — 20-尺 cast range enforcement verified (2026-10-08)
+# Build: reborn_client_skillv6.exe (git a45119d)
+# RC_CAST_RANGE=20 -> 1280 u; a cast whose target is beyond range is blocked.
+
+## Driven run: RC_ABILITY=65116 RC_CAST_AT=38000:1,46000:1
+cast chain 65116: ... target=初级试炼木桩(131)
+knockback 65116 -> 初级试炼木桩 to (18991,35533)   (dummy pushed to ~1680 u from caster)
+cast blocked: out of range 1680u > 1280u          (second cast blocked)
+cast blocked: out of range 1680u > 1280u
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
