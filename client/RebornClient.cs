@@ -338,7 +338,8 @@ internal static class RebornClient
         foreach (string id in new string[] { "65029", "65116", "30081", "27844" })
             if (roster.ContainsKey(id)) abilityStatus[id] = "已完成";
         string statusPath = Env("RC_STATUS",
-            Path.Combine(Application.StartupPath, "ability_picker", "ability_status_f1.txt"));
+            Path.Combine(Application.StartupPath, "ability_picker",
+                "ability_status" + (Env("RC_MEM_NS", "").Length > 0 ? "_probe" : "_f1") + ".txt"));
         try
         {
             if (File.Exists(statusPath))
