@@ -405,6 +405,29 @@ internal static class RebornClient
             else Log("mechanics: missing " + mechPath);
         }
         catch (Exception e) { Log("mechanics load ex: " + e.Message); }
+        // v6 ability FX beyond the cast (ability_picker/tools/build_hit_fx.py): per-ability
+        // landing-zone SFX, hit effect (.pss), be-hit anim/sound. Columns:
+        // 0 skillId 1 name 2 aoeSfxScale 3 aoeSfxFile 4 hitEffectResultId 5 hitEffectPath
+        // 6 isPlayBehit 7 behitF1 8 behitF2 9 behitM1 10 behitM2 11 behitNpc 12 behitSpeed 13 hitSoundId
+        var hitFx = new System.Collections.Generic.Dictionary<string, string[]>();
+        string hfPath = Env("RC_HITFX",
+            Path.Combine(Application.StartupPath, "ability_picker", "hit_fx_f1.tsv"));
+        try
+        {
+            if (File.Exists(hfPath))
+            {
+                int hl = 0;
+                foreach (string line in File.ReadAllLines(hfPath))
+                {
+                    if (hl++ == 0) continue;
+                    string[] p = line.Split('\t');
+                    if (p.Length >= 14 && p[0].Length > 0) hitFx[p[0]] = p;
+                }
+                Log("hit_fx: " + hitFx.Count + " abilities from " + hfPath);
+            }
+            else Log("hit_fx: missing " + hfPath);
+        }
+        catch (Exception e) { Log("hit_fx load ex: " + e.Message); }
         // cooldown table (ability_picker/tools/build_cooldowns.py): row -> Duration(s),
         // MaxCount. GCD = row 16 (1.5 s).
         var cooldowns = new System.Collections.Generic.Dictionary<string, string[]>();
@@ -4132,6 +4155,22 @@ internal static class RebornClient
                             {
                                 TargetEntity tgt = affected[ai];
                                 if (plan.Damage > 0f) { tgt.Hp -= (long)plan.Damage; if (tgt.Hp < 0) tgt.Hp = 0; }
+                                // FX3: spawn the authored hit (被击) effect at each target.
+                                {
+                                    string[] hf; if (hitFx.TryGetValue(skillCast.Name, out hf) && hf[5].Length > 0)
+                                    {
+                                        try
+                                        {
+                                            var hp = new CLRfloat3(); hp.x = tgt.X; hp.y = tgt.Y + 90f; hp.z = tgt.Z;
+                                            var hr = new CLRfloat4(); hr.w = 1f;
+                                            var hsc = new CLRfloat3(); hsc.x = 1f; hsc.y = 1f; hsc.z = 1f;
+                                            scene.AddDummyModel("hitfx_" + skillCast.Name + "_" + ai,
+                                                hf[5].Replace('/', '\\'), hp, hr, hsc);
+                                            Log("hit fx " + skillCast.Name + " -> " + tgt.Name + " " + hf[5]);
+                                        }
+                                        catch (Exception) { }
+                                    }
+                                }
                                 for (int bi = 0; bi < plan.BuffsAdd.Count; bi++)
                                     if (!tgt.Buffs.Contains(plan.BuffsAdd[bi])) tgt.Buffs.Add(plan.BuffsAdd[bi]);
                                 if (plan.BuffsRemove > 0) tgt.Buffs.Clear();

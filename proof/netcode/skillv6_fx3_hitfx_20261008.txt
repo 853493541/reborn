@@ -1,0 +1,18 @@
+# skill v6 — FX3 hit effect (.pss) per target (2026-10-08)
+# Build: reborn_client_skillv6.exe
+
+## Change
+# Client loads ability_picker/hit_fx_f1.tsv (build_hit_fx.py) and, in the mechanic apply loop,
+# spawns the authored hit (被击) effect for each affected target via scene.AddDummyModel at the
+# target position. The hit effect is a .pss (plays via AddDummyModel; only .Sfx faults).
+
+## Verified (RC_ABILITY=65149 PointArea, RC_DUMMY_N=3)
+hit_fx: 154 abilities from ...\ability_picker\hit_fx_f1.tsv
+hit fx 65149 -> <target>   data\source\other\HD特效\技能\Pss\被击\C_纯阳两仪爆01.pss
+hit fx 65149 -> <target#1> (same .pss)
+hit fx 65149 -> <target#2> (same .pss)
+mechanic 65149 mode=PointArea -> 3 target(s) dmg=0.0 cc=Charm buff+=28998
+AV = no
+
+# FX2 (landing-zone .Sfx) remains blocked: the engine .Sfx spawn faults (rc=7, 0xC0000005).
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

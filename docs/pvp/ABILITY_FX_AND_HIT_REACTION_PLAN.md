@@ -68,9 +68,11 @@ extracted and not played** — no landing-zone SFX, no hit effect, no be-hit ani
 - **FX2 — landing-zone SFX.** On a PointArea/TargetArea cast, spawn `aoeSfxFile` (scaled by
   `aoeSfxScale`) at the AoE centre when the cast commits (same point the damage resolves at).
   Reuse the existing effect-spawn path; add an "aoe" effect slot on `SkillCast`.
-- **FX3 — hit effect.** For each resolved target, spawn `hitEffectPath` at the target's hit bone.
-  Note the hit effect is often a **.pss** (particle) — confirm the host's particle spawn path
-  handles `.pss` (the current effect path plays `.Sfx`).
+- **FX3 — hit effect. DONE (2026-10-08).** Client loads `hit_fx_f1.tsv` and, for each affected
+  target in the mechanic apply loop, spawns `hitEffectPath` (a **.pss**) via `AddDummyModel` at
+  the target. Verified: 65149 (PointArea, `RC_DUMMY_N=3`) -> `hit fx 65149 -> <target>
+  ...\被击\C_纯阳两仪爆01.pss` on all 3 targets, no AV. (`.pss` plays via AddDummyModel; only
+  `.Sfx` faults — see FX2.)
 - **FX4 — be-hit animation.** When `isPlayBehit` is set, play `behitAnim<body>` (or the engine
   default when empty) on the target for the hit duration at `behitSpeed`. Wire via the target
   actor's animation state (target dummy in `Targeting.cs`).
