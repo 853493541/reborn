@@ -8827,3 +8827,17 @@ if the cache/host frames appear.
   tag-path/scene-API route. Evidence `proof/netcode/skillv6_sfx_faultsite_20261009.txt`;
   `ENGINE_RE_BREAKTHROUGH_PLAN.md` W4 updated.
 - Verified: read-only analysis; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+
+### 2026-10-09 — v6 — W3 hit-sound names absent from every local bank/table (hard block)
+
+- **Did:** extended the W3 search to the raw Wwise banks and the remaining sound tables.
+- **Findings:** the `hit_target_sound.txt` SoundEvent names (`TianCe_Body_L01`, `TianCe_Wood_L01`,
+  `l_LongYaBeiJi`, `f2sgb11BangFaGongJi07`) are absent from the 93 `.bnk` files + bank `.txt`
+  metadata in `...\cache-extraction\wwise-pak-extract` **and** the game client's own
+  `jx3ac\...\GeneratedSoundBanks\Windows` (174 bank files; `Behit.txt` only has `Play_BeHit_*`), and
+  from `Represent/common/Sound.txt` (which maps SoundID→`.ogg`, not these names). So the name→id
+  mapping is not in any locally accessible bank/table.
+- **Conclusion:** W3/FX5 is **hard-blocked** — resolving it needs a bank set we cannot find locally,
+  or a runtime `PostEvent(const char*)` hook on the real client (not allowed per root AGENTS §8).
+  Marked blocked (re-open only if such a bank surfaces). `ABILITY_FOLLOWUP_PLAN.md` W3 row updated.
+- Verified: read-only scans (no writes); gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
