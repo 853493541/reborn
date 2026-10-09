@@ -350,6 +350,18 @@ internal static class RebornClient
                 }
         }
         catch { }
+        {
+            int nT = 0, nU = 0, nF = 0, nD = 0;
+            foreach (System.Collections.Generic.KeyValuePair<string, string> kv in abilityStatus)
+            {
+                if (kv.Value == "测试中") nT++;
+                else if (kv.Value == "未测试") nU++;
+                else if (kv.Value == "需要修复") nF++;
+                else if (kv.Value == "已完成") nD++;
+            }
+            Log("ability status loaded: 测试中=" + nT + " 未测试=" + nU + " 需要修复=" + nF
+                + " 已完成=" + nD + " file=" + statusPath);
+        }
         Action saveStatus = delegate
         {
             try
@@ -4142,7 +4154,7 @@ internal static class RebornClient
                                             if (tgt.ModelName.Length > 0 && tgt.ModelPath.Length > 0)
                                                 scene.AddDummyModel(tgt.ModelName, tgt.ModelPath.Replace('/', '\\'), tp, tr, ts);
                                         }
-                                        catch { }
+        catch { }
                                         Log("pull " + skillCast.Name + " -> " + tgt.Name + " to ("
                                             + tgt.X.ToString("F0") + "," + tgt.Z.ToString("F0") + ")");
                                     }
