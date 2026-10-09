@@ -1,0 +1,18 @@
+# skill v6 — full coverage sweep with RC_SWEEP_RANGE (2026-10-08, log 19:20:59)
+# Build: reborn_client_skillv6.exe (adds opt-in RC_SWEEP_RANGE for the coverage sweep)
+# Isolated: RC_MEM_NS=reborn_skillv6_probe.memory
+
+## Result
+iterated      = 154  (115 castable + 39 av-blacklist)
+casts         = 115   (every castable ability cast)
+out-of-range  = 0
+av skipped    = 39
+DONE          = 1
+AV/crash      = no
+
+## Change
+# The 20-尺 uniform cast range stays the default for play (verified separately). The coverage
+# sweep can opt into a larger gate via RC_SWEEP_RANGE so a scripted sweep still reaches every
+# castable ability after the dash drift moves the player out of 20尺. RC_SWEEP_RANGE=99999 here.
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

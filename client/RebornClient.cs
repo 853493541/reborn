@@ -3407,6 +3407,10 @@ internal static class RebornClient
                 float tdist = 0f;
                 if (ctg != null) { float ddx = ctg.X - px, ddz = ctg.Z - pz; tdist = (float)Math.Sqrt(ddx * ddx + ddz * ddz); }
                 bool inRange = ctg == null || tdist <= castRangeU;   // uniform 20-尺 cast range
+                // coverage sweep: allow an opt-in larger gate (RC_SWEEP_RANGE) so a scripted
+                // sweep reaches every castable ability even after the player drifts; the 20-尺
+                // gate stays the default for play and is verified separately.
+                if (sweepMs > 0) { float sr; if (float.TryParse(Env("RC_SWEEP_RANGE", "0"), out sr) && sr > 0f) inRange = ctg == null || tdist <= sr; }
                 if ((ctg != null || !needTarget) && inRange && !skillCast.Active
                     && now >= castReadyAt && now >= gcdUntil
                     && now >= cdForSkill && mana >= costMana && !skipIds.Contains(selAbility))
