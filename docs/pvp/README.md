@@ -9,6 +9,7 @@ system for reborn, with a PvP focus. Branch: `research/jx3-pvp-battle`.
 | `REBORN_PVP_BATTLE_SPEC.md` | implementable server/client contract: data model, damage pipeline, validation gates, our opcode set, mode config, test plan |
 | `TARGET_DUMMY_RESEARCH.md` | 木桩 target dummies: full inventory + live spawn stats (主城木桩 zone + generic), model resolution, PvP damage-test framing, sandbox verification |
 | `ABILITY_MECHANICS_PLAN.md` | **plan**: make every ability do what it was designed to do (targets/AoE, damage/heal, buffs/CC, movement, child skills, costs/GCD); phases P0–P7, grounded in `mechanics_f1.tsv` |
+| `ABILITY_FX_AND_HIT_REACTION_PLAN.md` | **plan**: ability FX beyond the cast — landing-zone SFX (`AOESelectionSFXFile`), hit effect (`HitEffectResultID`→.pss), be-hit animation (`BeHittedBy*`) + hit sound (`HitSoundID`); phases FX1–FX6, grounded in `skill_caster_f1.txt` (五方行尽 65149 worked example) |
 
 Per-workstream evidence reports (raw values + citations + confidence):
 

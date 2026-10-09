@@ -8586,3 +8586,18 @@ if the cache/host frames appear.
 - **Lesson:** in-process IMessageFilter is not enough for host hotkeys; the engine can consume
   a key before it reaches our queue. WH_KEYBOARD_LL is the robust path (and is testable with
   keybd_event without stealing foreground).
+
+### 2026-10-08 — v6 — ability FX beyond the cast (research + fix plan)
+
+- **Did:** researched why 五方行尽 (65149) should play more than a cast anim+effect. Client truth:
+  `Represent/skill/skill_caster_f1.txt` carries per-skill HitEffectResultID(16),
+  AOESelectionSFXScale/File(30/31, the landing-zone SFX), IsPlayBehitAnimation(32),
+  BeHittedByF1..Npc(34-38), 被击动作播放速度(46), HitSoundID(50). Resolution: skill_result ->
+  skill_effect for effects; hit_target_sound + behit_sound_type for the hit sound;
+  behit_shake for the shake. 65149: landing SFX = 释放_纯阳攻击17.Sfx; HitEffectResultID 368 ->
+  C_纯阳两仪爆01.pss; IsPlayBehitAnimation=1 (BeHittedByF1 + HitStiffSkillMoveID empty ->
+  default be-hit anim).
+- **Plan:** docs/pvp/ABILITY_FX_AND_HIT_REACTION_PLAN.md (FX1 extract .. FX6 shake). Open items:
+  default be-hit animation source, .pss playback, Wwise sound playback, behit_shake RepresentID.
+- **Verified:** table dumps (skill_caster_f1 65149 row, hit_target_sound, behit_shake). Gates:
+  jx3_model 10 PASS, gravity PASS, loot selftest PASS.
