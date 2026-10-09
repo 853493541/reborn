@@ -8630,3 +8630,24 @@ if the cache/host frames appear.
   gravity PASS, loot selftest PASS.
 - **Open (next):** W3 hit sound (name→Wwise-id), W4 landing `.Sfx`, non-channel multi-hit, missiles,
   buff durations, skill tag/chain, hit-stiff, AoE shapes, damage scaling, Lua VM, be-hit shake.
+
+### 2026-10-09 — v6 — W3 hit sound: investigated, no name→id hash (blocked, next probe named)
+
+- **Did:** probed the offline Wwise index (`...\jx3-web-map-viewer\log\wwise-soundbank-index.json`,
+  230 banks / 23,579 events) and disassembled the client hit-sound path.
+- **Findings:** Wwise ids here are **authored, not name-hashed** — adjacent names get consecutive
+  ids (`Play_AiLi_Skill02`=48696777, `Skill01`=48696778) and FNV-1/FNV-1a/djb2 of the FLWS name
+  ≠ its id 3378728138. The `hit_target_sound.txt` SoundEvent names (`f2sgb11BangFaGongJi07` /
+  `TianCe_Body_L01` / `l_LongYaBeiJi`) are **absent** from all 230 indexed banks (and from
+  `resource_sfx`/`custom_sfx`/`WwiseSound`/`WwiseMIDISound`); the game client's `Behit.bnk` has
+  `Play_BeHit_*`, the `TianCe` bank has `TianCe_TianCe_Behit_Behit_*` — none match. Client path:
+  `ProcessSkillEffectSound` @`0x18059fdc0` (JX3RepresentX64.dll) looks up `pcHitTargetSoundModel`
+  by (SoundID, TargetType) and passes `->szEvent` (the name) to the Wwise manager vtable
+  `[r8+0x3f8]`; no numeric id is computed client-side.
+- **Artifacts:** `docs/pvp/ENGINE_RE_BREAKTHROUGH_PLAN.md` W3 rewritten with the evidence + next
+  probe; `ABILITY_FOLLOWUP_PLAN.md` W3 row updated. (No code change; research-only.)
+- **Next probe:** locate the bank that carries those exact names (scan the game client's Wwise
+  banks for the strings), then post **by name** into it (the `sound_probe` already hooks
+  `AK::SoundEngine::PostEvent(const char*)`), or add `RC_SoundProbe_PostEventName` and test the
+  names against the loaded bank set — never guess a numeric id.
+- Verified: read-only analysis; index + disasm are the evidence. Gates unaffected.

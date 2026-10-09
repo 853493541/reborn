@@ -70,9 +70,27 @@ Proven: `dump_fn_disasm.py JX3RepresentX64.dll --names behit_names.txt` returned
     path), not a fixed id. To implement FX4 we must load the target's be-hit anims + pick by kind
     (our dummy's set) — non-trivial; keep documented until we have the target anim set.
   - Remaining: the target's be-hit anim set source (which table fills `[rsi+0x8c/0x94/0xa4]`).
-- **W3 — FWD3 Wwise name→id.** Either (a) write a small `.bnk` HIRC reader (parse event ids) and
-  match against the game's name table, or (b) disassemble the client's PostEvent wrapper to see
-  the name→id hash it uses. Then `PostEvent(id)` the hit sound.
+- **W3 — FWD3 Wwise name→id. INVESTIGATED (2026-10-09) — BLOCKED; exact next probe named.**
+  - Wwise event ids here are **authored, not name-hashed**: in `wwise-soundbank-index.json`
+    (`...\jx3-web-map-viewer\log`, 230 banks / 23,579 events) adjacent names get consecutive ids
+    (`Play_AiLi_Skill02`=48696777, `Skill01`=48696778), and neither FNV-1/FNV-1a/djb2 of the
+    FLWS name matches its id (3378728138). So a hash is not derivable.
+  - The `hit_target_sound.txt` SoundEvent names (`SoundID 0 -> f2sgb11BangFaGongJi07`,
+    `TianCe_Body_L01`, `l_LongYaBeiJi`, …) are **not present** in the index (any bank, exact or
+    prefix/lower/substring), nor in `resource_sfx`/`custom_sfx`/`WwiseSound`/`WwiseMIDISound`.
+    The game client's `Behit.bnk` holds `Play_BeHit_*` (22), the `TianCe` bank holds
+    `TianCe_TianCe_Behit_Behit_*` — neither matches the authored hit-target names.
+  - Client path (`JX3RepresentX64.dll`, read-only disasm): `ProcessSkillEffectSound` @
+    `0x18059fdc0` looks up `pcHitTargetSoundModel` by (SoundID, TargetType), asserts
+    `pcHitTargetSoundModel->szEvent`, then hands the **name string** to the Wwise manager vtable
+    `[r8+0x3f8]` (`HitTargetSound` = `represent/skill/hit_target_sound.txt`, filepath.ini).
+  - `native/sound_probe.cpp` already hooks `AK::SoundEngine::PostEvent` incl. the `const char*`
+    overload (`g_tPostEventStr`), so a **by-name PostEvent** is available in the host.
+  - **Next probe:** (a) load the bank that carries these names — find it by scanning the game
+    client's Wwise banks for the exact strings `TianCe_Body_L01`/`l_LongYaBeiJi` (the index's
+    parser did not surface them); then post by name into the loaded bank; OR (b) expose
+    `RC_SoundProbe_PostEventName(const char*)` and try the names against the loaded bank set and
+    read Wwise's return (invalid id vs played). Do not guess a numeric id.
 - **W4 — FWD4 engine `.Sfx` spawn.** `dump_fn_disasm.py` on the engine DLL for the SFX factory /
   the tag-spawn caller; recover the correct owner chain so `RC_Shim_SfxPlay` stops faulting, then
   play `AOESelectionSFXFile` at the AoE centre.
