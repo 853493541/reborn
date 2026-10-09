@@ -68,13 +68,22 @@ internal sealed class AbilityPanel : Form
         BackColor = Color.FromArgb(14, 14, 16);
         ClientSize = new Size(320, 600);
 
-        // catalog: 测试 (the 5 verified) on top, then 全部 (everything not in 测试).
+        // catalog: 测试 (the 5 verified) on top, then the rest grouped by functionType.
         var test = new List<string>();
         foreach (string t in TestIds) if (rows.ContainsKey(t)) test.Add(t);
-        var rest = new List<string>();
-        foreach (string id in order) if (!test.Contains(id)) rest.Add(id);
         if (test.Count > 0) cats.Add(new Cat("测试", test));
-        cats.Add(new Cat("全部", rest));
+        var byType = new Dictionary<string, List<string>>();
+        foreach (string id in order)
+        {
+            if (test.Contains(id)) continue;
+            string[] r;
+            if (!rows.TryGetValue(id, out r)) continue;
+            string ft = (r.Length > 12 && r[12].Length > 0) ? r[12] : "其他";
+            List<string> lst;
+            if (!byType.TryGetValue(ft, out lst)) { lst = new List<string>(); byType[ft] = lst; }
+            lst.Add(id);
+        }
+        foreach (KeyValuePair<string, List<string>> kv in byType) cats.Add(new Cat(kv.Key, kv.Value));
 
         int got = 0;
         foreach (string id in order)

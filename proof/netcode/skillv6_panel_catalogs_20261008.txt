@@ -1,0 +1,7 @@
+# skill v6 — ability panel catalogs grouped by functionType (2026-10-08)
+# Build: reborn_client_skillv6.exe
+# Change: the layered panel now groups the non-test abilities by roster `functionType`
+#   (测试 on top, then Damage / Normal / Stun / Silence / Charm / Halt / Daze / Fly …).
+
+## Verified: "ability panel: 154 entries, 154 icons, 8 catalogs"
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
