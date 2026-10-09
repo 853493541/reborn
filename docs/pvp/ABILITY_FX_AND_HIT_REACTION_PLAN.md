@@ -65,30 +65,40 @@ extracted and not played** — no landing-zone SFX, no hit effect, no be-hit ani
   and copies the helper tables `hit_target_sound.tsv`, `behit_sound_type.tsv`, `behit_shake.tsv`
   into `data/`. Result: 154 abilities — 16 landing-SFX, 43 hit-effect, 28 play-behit, 0 hit-sound.
   65149: `aoeSfxFile=释放_纯阳攻击17.Sfx`, `hitEffectPath=C_纯阳两仪爆01.pss`, `isPlayBehit=1`.
-- **FX2 — landing-zone SFX.** On a PointArea/TargetArea cast, spawn `aoeSfxFile` (scaled by
-  `aoeSfxScale`) at the AoE centre when the cast commits (same point the damage resolves at).
-  Reuse the existing effect-spawn path; add an "aoe" effect slot on `SkillCast`.
+- **FX2 — landing-zone SFX. BLOCKED — see §4 (engine `.Sfx` spawn faults).** Plan when unblocked:
+  on a PointArea/TargetArea cast, spawn `aoeSfxFile` (scaled by `aoeSfxScale`) at the AoE centre
+  when the cast commits (same point the damage resolves at).
 - **FX3 — hit effect. DONE (2026-10-08).** Client loads `hit_fx_f1.tsv` and, for each affected
   target in the mechanic apply loop, spawns `hitEffectPath` (a **.pss**) via `AddDummyModel` at
   the target. Verified: 65149 (PointArea, `RC_DUMMY_N=3`) -> `hit fx 65149 -> <target>
   ...\被击\C_纯阳两仪爆01.pss` on all 3 targets, no AV. (`.pss` plays via AddDummyModel; only
   `.Sfx` faults — see FX2.)
-- **FX4 — be-hit animation.** When `isPlayBehit` is set, play `behitAnim<body>` (or the engine
-  default when empty) on the target for the hit duration at `behitSpeed`. Wire via the target
-  actor's animation state (target dummy in `Targeting.cs`).
-- **FX5 — hit sound.** Play the `hit_target_sound` SoundEvent for `hitSoundId` (material-aware
-  via `behit_sound_type`), default SoundID 0 when empty. Use the existing Wwise extraction
-  (`fetch_sounds.py` -> `.wem`) if in-host playback is available.
+- **FX4 — be-hit animation. BLOCKED — see §4 (default be-hit anim source unknown).** Plan when
+  unblocked: when `isPlayBehit` is set, play the be-hit anim on the target via
+  `KGModelCLR.AttachModel(tgt.Handle).PlayAnimation(path, 0, speed, 0)` at `behitSpeed`.
+- **FX5 — hit sound. BLOCKED — see §4 (name→Wwise-id mapping).** Plan when unblocked: play the
+  `hit_target_sound` SoundEvent for `hitSoundId` (material-aware via `behit_sound_type`).
 - **FX6 — be-hit shake (optional).** Apply `behit_shake.txt` (count/offset/duration/type) to the
   target/camera on hit.
 
-## 4. Open items / probes needed
+## 4. Open items / probes needed (with findings, 2026-10-08)
 
-- **Default be-hit animation** (BeHittedByF1 + HitStiffSkillMoveID both empty): find the engine
-  default per body (probe the running client, or a represent table not yet extracted).
-- **`.pss` playback** in the host (particle vs `.Sfx`); confirm before FX3.
-- **Wwise sound playback** path in the host (do we have an audio player wired?).
-- **behit_shake RepresentID** source (which column/global selects a shake row).
+- **FX2 landing `.Sfx` — BLOCKED (engine).** The host's `.Sfx` spawn faults: `SfxShim.Play`
+  returns rc=7 with `exc=0xC0000005` (native/sfx_shim.cpp; the reverse-engineered owner chain
+  is wrong for the MovieEditor host build). `.pss` plays fine via `AddDummyModel`; only `.Sfx`
+  faults. Unblock = native RE of the correct engine SFX-factory owner (or a scene-level spawn).
+- **FX4 be-hit animation — BLOCKED (data).** No roster skill authors `BeHittedByF1..Npc` (all
+  empty) and `skills.tab` `HitStiffSkillMoveID` is empty too, so every hit uses the engine
+  **default** be-hit animation, whose source is not yet identified. `player_animation_f1.txt`
+  has 受击 entries at KindID 15/31; unblock = find the default-selection rule (engine default
+  per body, or the target's animation table by a 受击 KindID).
+- **FX5 hit sound — BLOCKED (mapping).** `sound_probe.dll` exposes `PostEvent(uint eventId)`
+  (numeric only) and the client posts a single hardcoded FLWS id `3378728138`. The authored
+  `hit_target_sound` SoundEvent is a **name** (`f2sgb11BangFaGongJi07`); unblock = confirm the
+  name→Wwise-id hash (candidate: FNV-1 32-bit; `f2sgb11BangFaGongJi07` -> 941870167, unverified)
+  or expose a by-name PostEvent in the probe.
+- **FX6 be-hit shake — optional.** `behit_shake.txt` (RepresentID -> count/offset/duration/type)
+  exists; the column/global that selects a skill's RepresentID is not yet identified.
 
 ## Reproduce
 
