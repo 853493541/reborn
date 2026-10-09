@@ -1,0 +1,13 @@
+# skill v6 — F1/F2 catalog tagging + persistence (2026-10-08)
+# Build: reborn_client_skillv6.exe
+# Feature: with an ability selected (active in the panel), press **F1** to move it into 已完成,
+#   **F2** into 测试中. The status is persisted to bin64\ability_picker\ability_status_f1.txt
+#   (id<TAB>category) and reloaded at startup, and the panel re-renders immediately.
+#   Panel catalogs: 测试中 / 未测试 / 需要修复 / 已完成 (status-driven).
+# Test hook: RC_SET_STATUS=id:cat[;id:cat] applies + persists at startup (no key input).
+
+## Verified: RC_SET_STATUS=65036:已完成;65087:需要修复;65076:测试中
+RC_SET_STATUS 65036 -> 已完成 / 65087 -> 需要修复 / 65076 -> 测试中
+ability panel: 154 entries, 154 icons, 4 catalogs
+ability_status_f1.txt holds the merged statuses (defaults + overrides).
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

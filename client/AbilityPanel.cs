@@ -26,6 +26,7 @@ internal sealed class AbilityPanel : Form
     readonly Dictionary<string, Image> icons = new Dictionary<string, Image>();
     readonly List<Cat> cats = new List<Cat>();
     readonly List<Item> items = new List<Item>();
+    readonly List<string> orderIds;
     readonly Action<string> log;
 
     const int Pad = 6;
@@ -55,36 +56,17 @@ internal sealed class AbilityPanel : Form
     }
 
     public AbilityPanel(Dictionary<string, string[]> rows, List<string> order,
-                        string iconDir, Action<string> logIn)
+                        Dictionary<string, string> status, string iconDir, Action<string> logIn)
     {
         this.rows = rows;
+        this.orderIds = order;
         log = logIn;
         FormBorderStyle = FormBorderStyle.None;
         ShowInTaskbar = false;
         StartPosition = FormStartPosition.Manual;
         BackColor = Color.FromArgb(14, 14, 16);
         ClientSize = new Size(320, 600);
-
-        // 4 catalogs: 测试中 (recommended to test), 未测试 (rest), 需要修复, 已完成.
-        string[] testing = { "65036", "65087", "65120", "27874", "65149" };
-        string[] needsFix = { "65076" };
-        string[] done = { "65029", "65116", "30081", "27844" };
-        var tset = new HashSet<string>(testing);
-        var nset = new HashSet<string>(needsFix);
-        var dset = new HashSet<string>(done);
-        var tlist = new List<string>();
-        foreach (string t in testing) if (rows.ContainsKey(t)) tlist.Add(t);
-        var nlist = new List<string>();
-        foreach (string t in needsFix) if (rows.ContainsKey(t)) nlist.Add(t);
-        var dlist = new List<string>();
-        foreach (string t in done) if (rows.ContainsKey(t)) dlist.Add(t);
-        var rest = new List<string>();
-        foreach (string id in order)
-            if (!tset.Contains(id) && !nset.Contains(id) && !dset.Contains(id)) rest.Add(id);
-        cats.Add(new Cat("测试中", tlist));
-        cats.Add(new Cat("未测试", rest));
-        cats.Add(new Cat("需要修复", nlist));
-        cats.Add(new Cat("已完成", dlist));
+        BuildCats(status);
 
         int got = 0;
         foreach (string id in order)
@@ -108,6 +90,30 @@ internal sealed class AbilityPanel : Form
         }
         Layout();
         log("ability panel: " + order.Count + " entries, " + got + " icons, " + cats.Count + " catalogs");
+    }
+
+    static readonly string[] CatOrder = { "测试中", "未测试", "需要修复", "已完成" };
+
+    void BuildCats(Dictionary<string, string> status)
+    {
+        cats.Clear();
+        var byCat = new Dictionary<string, List<string>>();
+        foreach (string c in CatOrder) byCat[c] = new List<string>();
+        foreach (string id in orderIds)
+        {
+            string cat;
+            if (status == null || !status.TryGetValue(id, out cat) || !byCat.ContainsKey(cat)) cat = "未测试";
+            byCat[cat].Add(id);
+        }
+        foreach (string c in CatOrder) cats.Add(new Cat(c, byCat[c]));
+    }
+
+    // move an ability to a catalog live (F1/F2) and re-render.
+    public void Refresh(Dictionary<string, string> status)
+    {
+        BuildCats(status);
+        Layout();
+        if (Visible) UpdateLayered();
     }
 
     void Layout()

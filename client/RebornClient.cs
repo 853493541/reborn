@@ -322,6 +322,50 @@ internal static class RebornClient
             else Log("ability roster: missing " + rosterPath);
         }
         catch (Exception e) { Log("ability roster load ex: " + e.Message); }
+        // ability status catalogs (测试中/未测试/需要修复/已完成). F1 = 已完成, F2 = 测试中 for
+        // the selected ability; persisted to disk so it survives restarts.
+        var abilityStatus = new System.Collections.Generic.Dictionary<string, string>();
+        foreach (string id in rosterOrder) abilityStatus[id] = "未测试";
+        foreach (string id in new string[] { "65036", "65087", "65120", "27874", "65149" })
+            if (roster.ContainsKey(id)) abilityStatus[id] = "测试中";
+        foreach (string id in new string[] { "65076" })
+            if (roster.ContainsKey(id)) abilityStatus[id] = "需要修复";
+        foreach (string id in new string[] { "65029", "65116", "30081", "27844" })
+            if (roster.ContainsKey(id)) abilityStatus[id] = "已完成";
+        string statusPath = Env("RC_STATUS",
+            Path.Combine(Application.StartupPath, "ability_picker", "ability_status_f1.txt"));
+        try
+        {
+            if (File.Exists(statusPath))
+                foreach (string line in File.ReadAllLines(statusPath))
+                {
+                    string[] p = line.Split('\t');
+                    if (p.Length >= 2 && p[0].Trim().Length > 0) abilityStatus[p[0].Trim()] = p[1].Trim();
+                }
+        }
+        catch { }
+        Action saveStatus = delegate
+        {
+            try
+            {
+                System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                foreach (System.Collections.Generic.KeyValuePair<string, string> kv in abilityStatus)
+                    sb.Append(kv.Key).Append('\t').Append(kv.Value).Append('\n');
+                File.WriteAllText(statusPath, sb.ToString());
+            }
+            catch { }
+        };
+        // RC_SET_STATUS=id:cat[;id:cat] (test hook): apply + persist at startup.
+        foreach (string s in Env("RC_SET_STATUS", "").Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            string[] kv = s.Split(':');
+            if (kv.Length == 2 && kv[0].Trim().Length > 0)
+            {
+                abilityStatus[kv[0].Trim()] = kv[1].Trim();
+                Log("RC_SET_STATUS " + kv[0].Trim() + " -> " + kv[1].Trim());
+            }
+        }
+        if (Env("RC_SET_STATUS", "").Length > 0) saveStatus();
         // v6 mechanics (ability_picker/tools/build_mechanics.py): per-ability damage
         // program (level table + AddAttribute ops) for the effect runtime (P3).
         var mechanics = new System.Collections.Generic.Dictionary<string, string[]>();
@@ -2308,6 +2352,14 @@ internal static class RebornClient
                 camSys.Yaw = cameraYawBehind() + (e.KeyCode == Keys.End ? Math.PI : 0.0);
                 alignAim();
                 Log("camera view preset: " + (e.KeyCode == Keys.End ? "front" : "behind"));
+            }
+            else if (e.KeyCode == Keys.F1)
+            {
+                if (selAbility.Length > 0) { abilityStatus[selAbility] = "已完成"; saveStatus(); if (abilityPanel != null) abilityPanel.Refresh(abilityStatus); Log("ability " + selAbility + " -> 已完成 (F1)"); }
+            }
+            else if (e.KeyCode == Keys.F2)
+            {
+                if (selAbility.Length > 0) { abilityStatus[selAbility] = "测试中"; saveStatus(); if (abilityPanel != null) abilityPanel.Refresh(abilityStatus); Log("ability " + selAbility + " -> 测试中 (F2)"); }
             }
             else if (e.KeyCode == Keys.F5)
             {
@@ -5284,7 +5336,7 @@ internal static class RebornClient
             {
                 try
                 {
-                    abilityPanel = new AbilityPanel(roster, rosterOrder,
+                    abilityPanel = new AbilityPanel(roster, rosterOrder, abilityStatus,
                         Path.Combine(Application.StartupPath, "ability_picker", "icons"), Log);
                     abilityPanel.Attach(form);
                     abilityPanel.OnSelect = delegate
