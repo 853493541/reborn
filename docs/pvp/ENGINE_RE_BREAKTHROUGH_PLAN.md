@@ -40,14 +40,16 @@ Proven: `dump_fn_disasm.py JX3RepresentX64.dll --names behit_names.txt` returned
   3. `disasm_fn.py <module> --rva <RVA>` -> read the faulting access; compare the bad pointer
      chain to what we pass (the tani/model/bone we set).
   4. Fix the host wiring (likely a missing weapon/skeleton/shadow binding for those tanis).
-- **W2 — FWD2 default be-hit animation. STARTED (dumped).** `dump_fn_disasm.py JX3RepresentX64.dll`
-  for `KRLCharacter::PlayBeHittedAnimation` (3 xrefs) and `KRLCharacter::BeHitted` (6 xrefs).
-  Finding: `PlayBeHittedAnimation(this, pcszAni, speed, t)` is a **virtual** method
-  (`vtable thunk @0x18001a6ef -> 0x1804e8940`) that only validates `pcszAni` and calls an
-  internal play helper — the **caller chooses the animation path**, so the default be-hit anim
-  is computed in `BeHittedByPlayer`/`BeHittedByNpc`. Next: locate those two (their name strings
-  had 0 direct xrefs — likely asserts; find them via the `pcszAni`/callers of the vtable slot),
-  disassemble, and read the default-anim rule. Then play it on the target when `isPlayBehit`.
+- **W2 — FWD2 default be-hit animation. IN PROGRESS (good progress).** Dumped `KRLCharacter::
+  PlayBeHittedAnimation` (virtual; caller passes `pcszAni`) and located `BeHittedByPlayer`
+  (`0x1804d0220`) / `BeHittedByNpc` (`0x1804cfdxx`) / `BeHitted` (`0x1804cfbxx`). `BeHittedByPlayer`
+  resolves the be-hit anim by **string lookups on the target model path**: it tests
+  `strstr(path,"npc_source/a")` / `strstr(path,"NPC_source\\A")` and builds the anim ending
+  `...bat01.ani` (default speed at `[rip+0x7b1f30]`), else falls back to a global table
+  (`[rip+0xa0dcae]+0x1a0`). So the default be-hit anim is **derived from the target's model path**
+  (NPC sibling `...bat01.ani`), not a fixed id. Next: read the branch past `0x1804d032b` (the
+  player/default table) and the builder `0x1804d8700` to get the exact filename rule; then
+  reproduce it in the host for our target's model path.
 - **W3 — FWD3 Wwise name→id.** Either (a) write a small `.bnk` HIRC reader (parse event ids) and
   match against the game's name table, or (b) disassemble the client's PostEvent wrapper to see
   the name→id hash it uses. Then `PostEvent(id)` the hit sound.
