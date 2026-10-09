@@ -70,7 +70,9 @@ Done (v6 client, branch `agent/skillv6-sandbox`):
 - **P2** target/AoE resolution (castMode + `nAreaRadius`×64) with `RC_DUMMY_N` multi-target.
 - **P3** effect runtime: damage (flat base+rand), CC (functionType), buffs add/remove, child
   casts, self-move (DASH family), **PULL** (to caster) and **knockback** (`nKnockedBackDis`).
-  `SkillDamage` + `MechanicProgram`.
+  `SkillDamage` + `MechanicProgram`. **Buff durations** (2026-10-09):
+  `ability_picker/tools/build_buff_times.py` → `buff_times_f1.tsv` (Buff.tab `Count×Interval`
+  frames @16 fps, from `KScriptFuncList::LuaGetBuffTime`); self/target buffs now expire.
 - **P4** resources/GCD/cooldowns: `build_cooldowns.py` (`CoolDownList.tab`), GCD row 16 = 1.5 s,
   per-skill cooldown (row = 2nd arg of `SetNormalCoolDown`), mana. Uniform **20 尺 cast range**
   (`RC_CAST_RANGE`) enforced with out-of-range feedback.

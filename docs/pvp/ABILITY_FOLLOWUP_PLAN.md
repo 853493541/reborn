@@ -27,28 +27,18 @@ Confidence: **HIGH** = verified from data/code; **MED** = partial evidence; **LO
   exist; PointArea/projectile skills likely spawn a missile that travels and triggers on landing.
   We resolve instantly at the point. Unknown: flight + on-hit trigger + the missile model. Next:
   model missiles from `missile.txt`/`skill_missile.txt`.
-- **Buff durations — SOURCE LOCATED (2026-10-09); unit unconfirmed.** The duration is the **5th
-  positional arg of `AddBuff`** in the skill script (`AddBuff(ownerID, level, buffID, stack,
-  nBuffTime)`; scripts name it `nBuffTime`, e.g. `AddBuff(npc.dwID, npc.nLevel, 20346, 1,
-  nBuffTime)`). Literal values across the extracted scripts: {0,1,2,3,4,5,6,7,8,10,12,13,14,15,
-  18,20,21,25,30,40,49,60,100,120,600,7200}; 600 (×22) / 120 / 60 look like round seconds if the
-  unit is 1/60 s (10 s / 2 s / 1 s) but the CC `Intensity` column only reads as seconds at 1/16 s
-  (445 silence 48→3 s), so the two units conflict. Disasm (`JX3ClientX64.exe`, read-only):
-  `KBuffList::AddBuff` @`0x140309690` only copies the buff struct (no time scaling);
-  `KScriptFuncList::LuaGetBuffTime` @`0x1401c0730` reads the buff's fields `[+0x3c]` and `[+0x40]`
-  and returns **(count×interval, count, interval)** — so a buff stores a count and an interval
-  (frames), and the duration is their product; no unit conversion appears at add/get time. The
-  global `[..+0xe80]` pushed as a number by the sibling fn `0x1401c0860` is a candidate frame/time
-  base. **Next probe:** identify `[+0x3c]`/`[+0x40]` (which AddBuff arg feeds each) and the
-  `+0xe80` global value (FPS/time-base) to fix the unit, then emit `buffDur` in `apply_f1.tsv` and
-  expire buffs. Do not apply a guessed unit.
-  Buff.tab data (read-only): `Count` col 13 = 1 for the sampled buffs; `Interval` col 14 carries
-  8/16/24/50/80/128/160/240/320/9600 → `Count×Interval` at **16 fps** (cast frames confirm 16 fps:
-  `nChannelFrame=64`→4 s, `nPrepareFrames=24`→1.5 s) gives 0.5/1/1.5/3.1/5/8/10/15/20/600 s, all
-  plausible. But CC buffs carry their duration in `Intensity` (col 10, e.g. 51402 Silence 96→6 s)
-  which disagrees with `Count×Interval` (80→5 s), so the CC-vs-non-CC rule must be fixed from the
-  client before applying. Authored script comments (`60 --1s??`, `5 --??1s`, `2 --??10s`,
-  `610 --10s`) are mutually contradictory and not authoritative.
+- **Buff durations. DONE (2026-10-09).** Client truth: `KScriptFuncList::LuaGetBuffTime`
+  @`0x1401c0730` (`JX3ClientX64.exe`) returns a buff's `(Count×Interval, Count, Interval)`; `Count`
+  = Buff.tab col 13, `Interval` col 14; frame base 16 fps (cast frames confirm it). New
+  `ability_picker/tools/build_buff_times.py` → `ability_picker/data/buff_times_f1.tsv` (123 buffs /
+  346 rows) for the roster's applied buffs (apply_f1 + mechanics `CALL_BUFF`); the client expires
+  self/target buffs at `Count×Interval/16` s (0 = permanent). Verified driven: 27892 → 20354
+  +3.004 s / 20359 +3.128 s; 65028 → 51402 +5.007 s; 65149 → 28998 (target) +9.992 s. Proof
+  `proof/netcode/skillv6_buff_duration_20261009.txt`.
+  Still open: CC buffs carry a separate control duration in `Intensity` (col 10) that disagrees
+  with `Count×Interval` (51402 Silence: 96→6 s vs 80→5 s); the client's CC remains the uniform
+  functionType 2 s. The `AddBuff` 5th script arg is an override of unclear unit (authored comments
+  are contradictory) — not applied.
 - **Per-skill cooldown / GCD values. DONE (opt-in, 2026-10-09).** `RC_AUTHORED_CD=1` applies the
   authored per-skill cooldown (`cooldowns_f1` via the mechanics `normalCd` row) + authored GCD
   (`gcdRow`); default stays the locked uniform 3 s / 1.19 s. Verified: 65029 -> gcdMs=1500,

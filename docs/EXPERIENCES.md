@@ -8705,3 +8705,24 @@ if the cache/host frames appear.
   expiring buffs. No guessed rule applied.
 - **Artifacts:** `docs/pvp/ABILITY_FOLLOWUP_PLAN.md` buff-duration bullet updated.
 - Verified: read-only table read; gates unaffected.
+
+### 2026-10-09 — v6 — buff durations applied (Count x Interval @16 fps; 3 driven expiries verified)
+
+- **Did:** implemented buff durations end to end. New `ability_picker/tools/build_buff_times.py`
+  reads Buff.tab (`Count` col 13, `Interval` col 14, `Intensity` col 10, `FunctionType` col 3) via
+  PakV4SfxExtract and emits `ability_picker/data/buff_times_f1.tsv` for every buff id the roster
+  applies (apply_f1 addBuffs/delBuffs + mechanics `CALL_BUFF` ops): **123 buffs / 346 rows**. The
+  client loads it (runtime copy `bin64\ability_picker\buff_times_f1.tsv`; `RC_BUFFTIMES` override)
+  and expires self + target buffs at `Count×Interval×1000/16` ms (0 = permanent), with a per-frame
+  cleanup (`TargetEntity.BuffUntil`).
+- **Client truth:** `KScriptFuncList::LuaGetBuffTime` @`0x1401c0730` returns `(Count×Interval,
+  Count, Interval)`; 16 fps confirmed by cast frames (`nChannelFrame=64`→4 s).
+- **Verified (driven, exact timing):** 27892 → `buff expired self 20354` +3.004 s and `20359`
+  +3.128 s (expect 3.0/3.125 s; 20356/20357 = 23 s correctly did not expire); 65028 → `51402`
+  +5.007 s (5.0 s); 65149 → target `28998` +9.992 s (10.0 s). No AV, clean `DONE`. Proof
+  `proof/netcode/skillv6_buff_duration_20261009.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Open:** CC buffs carry a *separate* control duration in `Intensity` (51402 Silence 96→6 s vs
+  Count×Interval 5 s); the client's CC is still the uniform functionType 2 s, so the buff-vs-CC
+  duration distinction is not yet wired. The `AddBuff` 5th script arg is an unclear override
+  (authored comments contradictory) — not applied.

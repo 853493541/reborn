@@ -1,0 +1,42 @@
+# skill v6 — buff durations (Count x Interval, 16 fps) (2026-10-09)
+# Build: reborn_client_skillv6.exe  (client/RebornClient.cs, client/Targeting.cs)
+
+## Client truth (read-only, JX3ClientX64.exe)
+- `KScriptFuncList::LuaGetBuffTime` @0x1401c0730 reads a buff's fields [+0x3c]/[+0x40]
+  and pushes (Count*Interval, Count, Interval) to Lua -> the buff's timer is
+  Count x Interval. `KBuffList::AddBuff` @0x140309690 only copies the struct (no scaling).
+- Buff.tab (settings/skill/Buff.tab): Count = col 13, Interval = col 14, Intensity = col 10.
+- Frame base 16 fps (cast frames confirm it: nChannelFrame=64 -> 4 s,
+  nPrepareFrames=24 -> 1.5 s). 0 -> no expiry.
+
+## Change
+- New `ability_picker/tools/build_buff_times.py` emits `ability_picker/data/buff_times_f1.tsv`
+  = {buffId, level, functionType, count, interval, intensity} for every buff id the roster
+  applies (apply_f1 addBuffs/delBuffs + mechanics CALL_BUFF ops): 123 buffs / 346 rows.
+- Runtime copy: C:\SeasunGame\MovieEditor\bin64\ability_picker\buff_times_f1.tsv.
+- Client loads it; a buff's expiry = now + Count*Interval*1000/16 ms (0 = permanent). Self and
+  target buff lists now expire (`buff expired self <id>` / `buff expired <target> <id>`).
+  RC_BUFFTIMES overrides the path. CC control stays functionType-driven (unchanged).
+
+## Verified (driven — expiry timing = the client-derived duration)
+27892 (self apply; +buff=[20359;20354;20357;20356]):  20354 +3.004 s, 20359 +3.128 s
+  (expected 1x48/16=3.0 s / 1x50/16=3.125 s); 20356/20357 (23 s) correctly did NOT expire.
+65028 (self apply buff 51402):  +5.007 s (expected 1x80/16 = 5.0 s)
+65149 (PointArea -> target buff 28998):  +9.992 s (expected 1x160/16 = 10.0 s)
+No AV, clean DONE in all runs. Logs: reborn_out (timestamps above).
+
+## Reproduce
+  .venv\Scripts\python.exe ability_picker\tools\build_buff_times.py
+  copy ability_picker\data\buff_times_f1.tsv C:\SeasunGame\MovieEditor\bin64\ability_picker\
+  set RC_CLIENT_EXE=reborn_client_skillv6.exe & client\build_client.cmd
+  set RC_MEM_NS=reborn_skillv6_probe.memory & set RC_ABILITY=27892
+  set RC_NOLOADING=1 & set RC_CAST_AT=38000:1 & set RC_AUTORUN=47000
+  run C:\SeasunGame\MovieEditor\bin64\reborn_client_skillv6.exe (cwd C:\SeasunGame\MovieEditor)
+
+## Gates
+jx3_model 10 PASS / gravity PASS / loot selftest PASS
+
+## Open
+- CC buffs carry a separate control duration in Intensity (col 10) that disagrees with
+  Count x Interval (e.g. 51402 Silence: Intensity 96->6 s vs 80->5 s); the client's CC is
+  still the uniform functionType 2 s, so the CC-vs-buff distinction is not yet wired.
