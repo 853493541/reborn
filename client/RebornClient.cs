@@ -468,6 +468,11 @@ internal static class RebornClient
         // all abilities: a uniform 20 尺 cast range (LENGTH_BASE = 64 u); RC_CAST_RANGE overrides.
         float castRangeU = 20f * 64f;
         { float cr; if (float.TryParse(Env("RC_CAST_RANGE", "20"), out cr) && cr > 0f) castRangeU = cr * 64f; }
+        // user decision: every ability cooldown 3 s, GCD 1.19 s.
+        float gcdOverrideMs = 1190f;
+        { float v; if (float.TryParse(Env("RC_GCD_MS", "1190"), out v) && v > 0f) gcdOverrideMs = v; }
+        float cdOverrideMs = 3000f;
+        { float v; if (float.TryParse(Env("RC_CD_MS", "3000"), out v) && v >= 0f) cdOverrideMs = v; }
         var selfBuffs = new System.Collections.Generic.List<string>();   // passive self-buffs
         float playerMaxHp = 500000f;
         float.TryParse(Env("RC_PLAYER_HP", "500000"), out playerMaxHp);
@@ -3325,16 +3330,13 @@ internal static class RebornClient
                 bool chained = false;
                 TargetEntity ctg = targetSelector.Current;
                 long cdForSkill = 0; cdReady.TryGetValue(selAbility, out cdForSkill);
-                float gcdMs = 1500f, cdMs = 0f, costMana = 0f;
+                // cooldowns overridden globally (user decision): every ability 3 s, GCD 1.19 s.
+                float gcdMs = gcdOverrideMs, cdMs = cdOverrideMs, costMana = 0f;
                 {
                     string[] mrow;
                     if (mechanics.TryGetValue(selAbility, out mrow))
                     {
                         float cm; if (mrow.Length > 2 && float.TryParse(mrow[2], out cm)) costMana = cm;
-                        int grow; string[] cr;
-                        if (mrow.Length > 6 && int.TryParse(mrow[6], out grow) && cooldowns.TryGetValue(grow.ToString(), out cr)) { float d; if (float.TryParse(cr[1], out d)) gcdMs = d * 1000f; }
-                        int nrow;
-                        if (mrow.Length > 7 && int.TryParse(mrow[7], out nrow) && cooldowns.TryGetValue(nrow.ToString(), out cr)) { float d; if (float.TryParse(cr[1], out d)) cdMs = d * 1000f; }
                     }
                 }
                 string gateMode = "";

@@ -1,0 +1,13 @@
+# skill v6 — cooldowns 3 s / GCD 1.19 s + 4 panel catalogs (2026-10-08)
+# Build: reborn_client_skillv6.exe
+# Changes (user decision):
+#  - every ability cooldown = 3 s (RC_CD_MS default 3000), GCD = 1.19 s (RC_GCD_MS default 1190);
+#    overrides the per-ability CoolDownList rows.
+#  - ability panel catalogs -> 4: 测试中 / 未测试 / 需要修复 / 已完成.
+#    测试中 = 5 recommended: 65036 龙吟, 65087 净世破魔击, 65120 渊, 27874 十方俱灭, 65149 巽方刑.
+#    已完成 = 65029 龙牙, 65116 剑意, 30081 裂伤, 27844 听风吹雪.
+#    需要修复 = 65076 云飞玉皇.  未测试 = the rest.
+
+## Verified: "ability panel: 154 entries, 154 icons, 4 catalogs";
+#   cast chain ... cdMs=3000 gcdMs=1190; clicking 测试中 icons switches the active ability.
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

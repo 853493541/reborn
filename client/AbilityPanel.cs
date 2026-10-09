@@ -44,9 +44,6 @@ internal sealed class AbilityPanel : Form
     readonly Pen selPen = new Pen(Color.FromArgb(80, 220, 80), 2f);
     readonly SolidBrush barBrush = new SolidBrush(Color.FromArgb(120, 200, 200, 200));
 
-    // Test catalog: the 5 abilities verified individually.
-    static readonly string[] TestIds = { "65029", "65076", "65116", "30081", "27844" };
-
     protected override CreateParams CreateParams
     {
         get
@@ -68,22 +65,26 @@ internal sealed class AbilityPanel : Form
         BackColor = Color.FromArgb(14, 14, 16);
         ClientSize = new Size(320, 600);
 
-        // catalog: 测试 (the 5 verified) on top, then the rest grouped by functionType.
-        var test = new List<string>();
-        foreach (string t in TestIds) if (rows.ContainsKey(t)) test.Add(t);
-        if (test.Count > 0) cats.Add(new Cat("测试", test));
-        var byType = new Dictionary<string, List<string>>();
+        // 4 catalogs: 测试中 (recommended to test), 未测试 (rest), 需要修复, 已完成.
+        string[] testing = { "65036", "65087", "65120", "27874", "65149" };
+        string[] needsFix = { "65076" };
+        string[] done = { "65029", "65116", "30081", "27844" };
+        var tset = new HashSet<string>(testing);
+        var nset = new HashSet<string>(needsFix);
+        var dset = new HashSet<string>(done);
+        var tlist = new List<string>();
+        foreach (string t in testing) if (rows.ContainsKey(t)) tlist.Add(t);
+        var nlist = new List<string>();
+        foreach (string t in needsFix) if (rows.ContainsKey(t)) nlist.Add(t);
+        var dlist = new List<string>();
+        foreach (string t in done) if (rows.ContainsKey(t)) dlist.Add(t);
+        var rest = new List<string>();
         foreach (string id in order)
-        {
-            if (test.Contains(id)) continue;
-            string[] r;
-            if (!rows.TryGetValue(id, out r)) continue;
-            string ft = (r.Length > 12 && r[12].Length > 0) ? r[12] : "其他";
-            List<string> lst;
-            if (!byType.TryGetValue(ft, out lst)) { lst = new List<string>(); byType[ft] = lst; }
-            lst.Add(id);
-        }
-        foreach (KeyValuePair<string, List<string>> kv in byType) cats.Add(new Cat(kv.Key, kv.Value));
+            if (!tset.Contains(id) && !nset.Contains(id) && !dset.Contains(id)) rest.Add(id);
+        cats.Add(new Cat("测试中", tlist));
+        cats.Add(new Cat("未测试", rest));
+        cats.Add(new Cat("需要修复", nlist));
+        cats.Add(new Cat("已完成", dlist));
 
         int got = 0;
         foreach (string id in order)
