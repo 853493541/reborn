@@ -40,10 +40,14 @@ Proven: `dump_fn_disasm.py JX3RepresentX64.dll --names behit_names.txt` returned
   3. `disasm_fn.py <module> --rva <RVA>` -> read the faulting access; compare the bad pointer
      chain to what we pass (the tani/model/bone we set).
   4. Fix the host wiring (likely a missing weapon/skeleton/shadow binding for those tanis).
-- **W2 — FWD2 default be-hit animation.** `dump_fn_disasm.py JX3RepresentX64.dll` for
-  `KRLCharacter::PlayBeHittedAnimation` / `BeHittedByPlayer` / `BeHittedByNpc` (DONE: dumped);
-  read the disasm to get the default-anim rule (per body / model path), then play it on the
-  target when `isPlayBehit`.
+- **W2 — FWD2 default be-hit animation. STARTED (dumped).** `dump_fn_disasm.py JX3RepresentX64.dll`
+  for `KRLCharacter::PlayBeHittedAnimation` (3 xrefs) and `KRLCharacter::BeHitted` (6 xrefs).
+  Finding: `PlayBeHittedAnimation(this, pcszAni, speed, t)` is a **virtual** method
+  (`vtable thunk @0x18001a6ef -> 0x1804e8940`) that only validates `pcszAni` and calls an
+  internal play helper — the **caller chooses the animation path**, so the default be-hit anim
+  is computed in `BeHittedByPlayer`/`BeHittedByNpc`. Next: locate those two (their name strings
+  had 0 direct xrefs — likely asserts; find them via the `pcszAni`/callers of the vtable slot),
+  disassemble, and read the default-anim rule. Then play it on the target when `isPlayBehit`.
 - **W3 — FWD3 Wwise name→id.** Either (a) write a small `.bnk` HIRC reader (parse event ids) and
   match against the game's name table, or (b) disassemble the client's PostEvent wrapper to see
   the name→id hash it uses. Then `PostEvent(id)` the hit sound.
