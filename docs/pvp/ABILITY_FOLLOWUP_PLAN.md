@@ -27,8 +27,16 @@ Confidence: **HIGH** = verified from data/code; **MED** = partial evidence; **LO
   exist; PointArea/projectile skills likely spawn a missile that travels and triggers on landing.
   We resolve instantly at the point. Unknown: flight + on-hit trigger + the missile model. Next:
   model missiles from `missile.txt`/`skill_missile.txt`.
-- **Buff durations (LOW).** `Buff.tab` has no duration column; how a buff's duration is authored
-  is unknown (skill script `AddBuff` args? a Buff level table?). Next: find the duration source.
+- **Buff durations — SOURCE LOCATED (2026-10-09); unit unconfirmed.** The duration is the **5th
+  positional arg of `AddBuff`** in the skill script (`AddBuff(ownerID, level, buffID, stack,
+  nBuffTime)`; scripts name it `nBuffTime`, e.g. `AddBuff(npc.dwID, npc.nLevel, 20346, 1,
+  nBuffTime)`). Literal values across the extracted scripts: {0,1,2,3,4,5,6,7,8,10,12,13,14,15,
+  18,20,21,25,30,40,49,60,100,120,600,7200}; 600 (×22) / 120 / 60 look like round seconds if the
+  unit is 1/60 s (10 s / 2 s / 1 s) but the CC `Intensity` column only reads as seconds at 1/16 s
+  (445 silence 48→3 s), so the two units conflict. **Next probe:** disasm `KBuffList::AddBuff` /
+  `KScriptFuncList::LuaAddBuff` (`JX3ClientX64Base.dll`/`JX3LogicEditOperationX64.dll`) to see how
+  the time arg is scaled/stored, then extract it into `apply_f1.tsv` (`buffDur`) and expire buffs.
+  Do not apply a guessed unit.
 - **Per-skill cooldown / GCD values. DONE (opt-in, 2026-10-09).** `RC_AUTHORED_CD=1` applies the
   authored per-skill cooldown (`cooldowns_f1` via the mechanics `normalCd` row) + authored GCD
   (`gcdRow`); default stays the locked uniform 3 s / 1.19 s. Verified: 65029 -> gcdMs=1500,

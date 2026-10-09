@@ -8651,3 +8651,23 @@ if the cache/host frames appear.
   `AK::SoundEngine::PostEvent(const char*)`), or add `RC_SoundProbe_PostEventName` and test the
   names against the loaded bank set — never guess a numeric id.
 - Verified: read-only analysis; index + disasm are the evidence. Gates unaffected.
+
+### 2026-10-09 — v6 — buff-duration source located (AddBuff 5th arg `nBuffTime`)
+
+- **Did:** hunted the buff-duration source (the follow-up plan said `Buff.tab` has no duration
+  column). Sampled `AddBuff(...)` calls across the extracted skill scripts
+  (`...\ability-matcher\extracted\scripts\skill\**`).
+- **Finding:** `AddBuff` is `AddBuff(ownerID, level, buffID, stack, nBuffTime)` — the **5th
+  positional arg is the buff time** (scripts literally name it `nBuffTime`, e.g.
+  `player.AddBuff(npc.dwID, npc.nLevel, 20346, 1, nBuffTime)`). Literal 5th-arg values seen:
+  {0,1,2,3,4,5,6,7,8,10,12,13,14,15,18,20,21,25,30,40,49,60,100,120,600,7200}; 600 (×22),
+  120, 60 read as 10 s / 2 s / 1 s at 1/60 s. `KBuffList::AddBuff` /
+  `KScriptFuncList::LuaGetBuffTime` confirm the buff-time notion exists.
+- **Open:** the unit conflicts with the CC `Intensity` (frames) reading (48→3 s implies 1/16 s),
+  so the exact scale is unconfirmed. `build_passives.py`/`build_mechanics.py` currently extract
+  only the buff id (arg 2); arg 4 extraction + expiry is the next step once the unit is fixed.
+- **Next probe:** disasm `KBuffList::AddBuff` / `KScriptFuncList::LuaAddBuff`
+  (`JX3ClientX64Base.dll` / `JX3LogicEditOperationX64.dll`) to see how the time arg is stored;
+  then emit `buffDur` in `apply_f1.tsv` and expire the self-buff list. No guessed unit.
+- **Artifacts:** `docs/pvp/ABILITY_FOLLOWUP_PLAN.md` buff-duration bullet updated. (Research only.)
+- Verified: read-only script sampling; gates unaffected.
