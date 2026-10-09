@@ -1,0 +1,10 @@
+# skill v6 — channel abilities verified (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 766331e)
+# Channel abilities (nChannelFrame>0) hold the cast for channelMs = nChannelFrame/GAME_FPS.
+
+## Verified
+#  27906 channelMs=4000  totalMs=5500  (anim 1500 + channel 4000)
+#  27967 channelMs=5250  totalMs=6750
+#  32300 is AV-blacklisted (per-tani) -> cast blocked (expected)
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
