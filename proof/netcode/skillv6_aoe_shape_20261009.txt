@@ -1,0 +1,46 @@
+# skill v6 — AoE geometry fix (hit-all when nAreaRadius unset) (2026-10-09)
+# Build: reborn_client_skillv6.exe  (client/RebornClient.cs, ability_picker/tools/build_mechanics.py)
+
+## Bug (before)
+The mechanic AoE branches used `if (areaR <= 0f || dist2 <= areaR*areaR) affected.Add(en)`,
+so a roster PointArea/TargetArea/CasterArea skill whose `nAreaRadius` is unset (<=0) hit **every
+entity** in range of the loop. Example: 30262 `风来剑法?` (PointArea, nMaxRadius=1280, nAreaRadius
+unset) hit all 3 dummies even when spaced 2000 units apart.
+
+## Client truth (shape fields)
+- The skill scripts carry only `nMinRadius / nMaxRadius / nAreaRadius / nHeight` (0 occurrences of
+  nAreaAngle/nAngle/nWidth/nLength/nShape/nAreaType/nSector/nAreaLength/nAreaWidth/nRangeType/
+  nAoeType across the extracted scripts). `skills.tab` (117 cols) has only `LongRange`,
+  `RangePutOpti`, `IgnoreRangeBlock` (no shape/angle). So the AoE is **circular (optionally an
+  annulus via nMinRadius) + nHeight** — no sector/rect/line geometry exists in the client data.
+- `nMinRadius > 0` in exactly 1 of the 154 roster abilities (65120: min 384, area unset).
+
+## Fix (client-only; the dataset stays semantically clean)
+`RebornClient.cs`: after reading `areaRadius`, if `areaRadius <= 0` and `maxRadius > 0`, use
+`maxRadius` (the AoE then covers the cast range); otherwise hit an entity only with a **positive**
+radius (radius<=0 -> the existing "affected.Count==0 && cur != null" keeps the current target).
+`RC_AOE_ALL=1` disables the fallback and restores the old "radius<=0 -> every entity" path for A/B.
+`build_mechanics.py`/`mechanics_f1.tsv` are unchanged (a builder-side fallback was tried first but
+touched 90 single-target rows needlessly, so the fallback moved to the client, which knows the
+cast mode).
+
+## Verified — A/B (30262 PointArea, areaRadius unset, RC_DUMMY_N=3, RC_DUMMY_SPACING=2000, @38 s)
+A (RC_AOE_ALL=1, old path)  -> mechanic 30262 mode=PointArea -> 3 target(s)
+B (default, fallback to nMaxRadius=1280) -> mechanic 30262 mode=PointArea -> 1 target(s)
+Regression (65149 PointArea area=512, default, clustered dummies) -> 3 target(s)  (unchanged)
+No AV, clean DONE.
+
+## Reproduce
+  .venv\Scripts\python.exe ability_picker\tools\build_mechanics.py
+  copy ability_picker\data\mechanics_f1.tsv C:\SeasunGame\MovieEditor\bin64\ability_picker\
+  set RC_CLIENT_EXE=reborn_client_skillv6.exe & client\build_client.cmd
+  set RC_MEM_NS=reborn_skillv6_probe.memory & set RC_ABILITY=30262 & set RC_DUMMY_N=3
+  set RC_DUMMY_SPACING=2000 & set RC_TAB_AT=10000 & set RC_NOLOADING=1
+  set RC_CAST_AT=38000:1 & set RC_AUTORUN=46000   (RC_AOE_ALL=1 for the old path)
+  run C:\SeasunGame\MovieEditor\bin64\reborn_client_skillv6.exe (cwd C:\SeasunGame\MovieEditor)
+
+## Gates
+jx3_model 10 PASS / gravity PASS / loot selftest PASS
+
+## Open
+- nMinRadius (annulus inner cut) is not applied (1 skill); actor cone/AoE facing not modelled.

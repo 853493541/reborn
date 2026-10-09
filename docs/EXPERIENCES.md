@@ -8739,3 +8739,23 @@ if the cache/host frames appear.
   P7 (CC/damage/buff application is server-side). No client-side duration to adopt.
 - **Artifacts:** `docs/pvp/ABILITY_FOLLOWUP_PLAN.md` new "Target CC duration" bullet. No code change.
 - Verified: read-only table reads (skill_caster_f1, skills.tab, Buff.tab); gates unaffected.
+
+### 2026-10-09 — v6 — AoE geometry: radius-only (no sector/rect) + hit-all bug fixed
+
+- **Did:** audited the AoE geometry fields and fixed a real targeting bug.
+- **Finding:** the skill scripts carry only `nMinRadius/nMaxRadius/nAreaRadius/nHeight` (0 hits for
+  angle/width/length/shape/sector/rect/type tokens across the extracted scripts); `skills.tab`
+  (117 cols) has only `LongRange`/`RangePutOpti`/`IgnoreRangeBlock`. So the AoE is **circular
+  (optionally an annulus via nMinRadius) + height** — the plan's "sector/rect/line" belief is not
+  in the client data. `nMinRadius>0` in exactly 1 of 154 roster skills (65120).
+- **Bug fixed:** the mechanic branch used `areaR <= 0f || dist2 <= areaR^2`, so a skill with
+  `nAreaRadius` unset hit **every** entity. `build_mechanics.py` now falls back
+  `areaRadius = nMaxRadius` when `nAreaRadius<=0` (30262: area -1→1280), and the client only hits
+  within a positive radius (radius<=0 -> current target only). `RC_AOE_ALL=1` restores the old
+  path for A/B.
+- **Verified (A/B, 30262 PointArea, 3 dummies spaced 2000):** old (area=-1 + `RC_AOE_ALL=1`) →
+  `3 target(s)`; fixed (area=1280, default) → `1 target(s)`; regression 65149 (area=512,
+  clustered) → `3 target(s)` unchanged. No AV, clean DONE. Proof
+  `proof/netcode/skillv6_aoe_shape_20261009.txt`.
+- **Open:** `nMinRadius` inner cut (1 skill) and actor cone/facing not modelled.
+- Gates: jx3_model 10 PASS, gravity PASS, loot selftest PASS.

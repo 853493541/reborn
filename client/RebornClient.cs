@@ -4194,6 +4194,12 @@ internal static class RebornClient
                                 }
                             }
                             float areaR = 0f; if (mr.Length > 14) float.TryParse(mr[14], out areaR);
+                            float maxR = 0f; if (mr.Length > 13) float.TryParse(mr[13], out maxR);
+                            // nAreaRadius unset (<=0): the AoE covers the cast range (nMaxRadius);
+                            // with no radius at all only the current target is hit. RC_AOE_ALL=1
+                            // restores the old "no radius -> every target" path for A/B.
+                            bool aoeAllNoRadius = Env("RC_AOE_ALL", "0") == "1";
+                            if (!aoeAllNoRadius && areaR <= 0f && maxR > 0f) areaR = maxR;
                             TargetEntity cur = targetSelector.Current;
                             var affected = new System.Collections.Generic.List<TargetEntity>();
                             if (castMode == "CasterArea")
@@ -4202,7 +4208,7 @@ internal static class RebornClient
                                 {
                                     TargetEntity en = targetSelector.Entities[ei];
                                     float ddx = en.X - px, ddz = en.Z - pz;
-                                    if (areaR <= 0f || ddx * ddx + ddz * ddz <= areaR * areaR) affected.Add(en);
+                                    if ((aoeAllNoRadius && areaR <= 0f) || (areaR > 0f && ddx * ddx + ddz * ddz <= areaR * areaR)) affected.Add(en);
                                 }
                             }
                             else if (castMode == "PointArea" || castMode == "TargetArea")
@@ -4212,7 +4218,7 @@ internal static class RebornClient
                                 {
                                     TargetEntity en = targetSelector.Entities[ei];
                                     float ddx = en.X - cx, ddz = en.Z - cz;
-                                    if (areaR <= 0f || ddx * ddx + ddz * ddz <= areaR * areaR) affected.Add(en);
+                                    if ((aoeAllNoRadius && areaR <= 0f) || (areaR > 0f && ddx * ddx + ddz * ddz <= areaR * areaR)) affected.Add(en);
                                 }
                             }
                             else if (castMode == "CasterSingle")

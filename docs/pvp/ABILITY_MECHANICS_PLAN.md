@@ -68,6 +68,8 @@ Done (v6 client, branch `agent/skillv6-sandbox`):
 - **P0/P1** model + `build_mechanics.py` (level table, AddAttribute program, weapon%, cooldown
   rows, prepare/channel frames, AoE geometry, knockback) → `mechanics_f1.tsv`.
 - **P2** target/AoE resolution (castMode + `nAreaRadius`×64) with `RC_DUMMY_N` multi-target.
+  **2026-10-09:** only radius+height exist (no sector/rect); `nAreaRadius` unset now falls back to
+  `nMaxRadius`, and no-radius skills no longer hit every entity (`RC_AOE_ALL=1` = old path).
 - **P3** effect runtime: damage (flat base+rand), CC (functionType), buffs add/remove, child
   casts, self-move (DASH family), **PULL** (to caster) and **knockback** (`nKnockedBackDis`).
   `SkillDamage` + `MechanicProgram`. **Buff durations** (2026-10-09):

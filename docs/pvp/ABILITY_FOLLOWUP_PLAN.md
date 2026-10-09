@@ -58,8 +58,14 @@ Confidence: **HIGH** = verified from data/code; **MED** = partial evidence; **LO
 - **Damage scaling (blocked).** `nWeaponDamagePercent` + adaptive coefficient not applied — no
   player weapon/attack-power stats. Unknown: whether a base-attribute table exists locally. Next:
   search the client settings for a character base-attribute / attack-power table.
-- **AoE shape (MED).** We use a radius (`nAreaRadius`×64); some skills use sector/rect/line.
-  Unknown: the non-circular AoE shapes. Next: read the AoE geometry fields fully.
+- **AoE shape. DONE (2026-10-09) — radius only; no sector/rect in client data.** The scripts carry
+  only `nMinRadius/nMaxRadius/nAreaRadius/nHeight` (no angle/width/length/shape tokens), and
+  `skills.tab` has only `LongRange`/`RangePutOpti`/`IgnoreRangeBlock` — so the AoE is circular
+  (annulus via `nMinRadius`) + height, **not** sector/rect. Fixed a real bug: a skill with
+  `nAreaRadius` unset hit *every* entity; `build_mechanics.py` now falls back
+  `areaRadius = nMaxRadius` when unset, and the client only hits within a positive radius
+  (30262: 3→1 target; 65149 regression 3). `nMinRadius>0` in only 1 roster skill (65120, not
+  applied). Proof `proof/netcode/skillv6_aoe_shape_20261009.txt`.
 
 ## C. Scripts
 
