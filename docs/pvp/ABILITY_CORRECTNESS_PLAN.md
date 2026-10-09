@@ -37,8 +37,13 @@ This supersedes nothing; it is the umbrella forward plan. Detail lives in
   item"). Unblock = find why the per-tani anim AVs the host (engine RE) — likely the tani's
   skeleton/shadow/weapon binding. Until then these 39 stay blacklisted (do NOT substitute a
   fallback anim: that is a band-aid).
-- **FWD2 — FX4 default be-hit animation.** Locate the engine default (per body / target anim
-  table by a 受击 KindID); play it on the target when `isPlayBehit`. (Unblocks the "be hit anim".)
+- **FWD2 — FX4 default be-hit animation. LOCATED (needs binary RE).** The be-hit logic lives in
+  the game client's `bin64\JX3RepresentX64.dll`: `KRLCharacter::BeHittedByNpc`,
+  `KRLCharacter::BeHittedByPlayer`, `KRLCharacter::PlayBeHittedAnimation` (+ `EnableHideInBeHitted`).
+  The `BeHittedByNpc` path derives the NPC be-hit anim from the model path (`npc_source/...`,
+  `...bat01.ani` — assert fragments; the files are packed). Unblock = disassemble
+  `PlayBeHittedAnimation` / `BeHittedByPlayer` to get the default-anim rule, then play it on the
+  target when `isPlayBehit` via `KGModelCLR.AttachModel(tgt.Handle).PlayAnimation(...)`.
 - **FWD3 — FX5 hit sound.** Map the `hit_target_sound` SoundEvent name → Wwise event id (parse
   the `.bnk` HIRC, or expose a by-name PostEvent in `sound_probe`). Material-aware.
 - **FWD4 — FX2 landing-zone SFX.** Native-RE the engine `.Sfx` factory owner so `.Sfx` spawns
