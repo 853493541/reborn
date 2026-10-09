@@ -1,0 +1,18 @@
+# skill v6 — the 32 `-` abilities have no cast-time effect function (2026-10-08)
+# Method: for the 32 abilities with no extractable behavior ('-'), list their script functions.
+# Result: functions = { GetSkillLevelData, CanCast, CanLearnSkill, Apply, UnApply,
+#   OnSkillLevelUp, OnSkillForgotten, OnRemove, OnEarlyWarning, OnTimer } -- there is NO
+#   cast-time function (no OnCast/Execute/Effect). Apply/UnApply (passive auras) are already
+#   parsed (apply_f1.tsv); OnTimer is periodic, not cast-time.
+# => the 32 `-` abilities are genuinely no-op at cast (or passives with no extractable action),
+#    not unimplemented mechanics. The client-side interpretable ability scope is complete.
+
+## Scope status (branch agent/skillv6-sandbox)
+#  - all 115 castable abilities individually verified (proof/netcode/skillv6_batch*)
+#  - prepared skills: prepare anim -> release anim + effect; channel skills hold nChannelFrame
+#  - uniform enforced 20-尺 cast range; layered categorized ability panel
+#  - Apply() runs at cast (137 abilities)
+# Blocked/large (documented, not fabricated): weapon%/attack-power scaling (no player stats);
+#  world-projected numbers (no world->screen API); Lua 5.1 VM for niche periodic scripts.
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
