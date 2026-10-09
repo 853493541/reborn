@@ -93,10 +93,12 @@ extracted and not played** — no landing-zone SFX, no hit effect, no be-hit ani
   has 受击 entries at KindID 15/31; unblock = find the default-selection rule (engine default
   per body, or the target's animation table by a 受击 KindID).
 - **FX5 hit sound — BLOCKED (mapping).** `sound_probe.dll` exposes `PostEvent(uint eventId)`
-  (numeric only) and the client posts a single hardcoded FLWS id `3378728138`. The authored
-  `hit_target_sound` SoundEvent is a **name** (`f2sgb11BangFaGongJi07`); unblock = confirm the
-  name→Wwise-id hash (candidate: FNV-1 32-bit; `f2sgb11BangFaGongJi07` -> 941870167, unverified)
-  or expose a by-name PostEvent in the probe.
+  (numeric only); the client posts a single hardcoded FLWS id `3378728138`. The authored
+  `hit_target_sound` SoundEvent is a **name** (`f2sgb11BangFaGongJi07`). Tested 2026-10-08: the
+  be-hit bank is `jx3ac\...\GeneratedSoundBanks\Windows\Behit.bnk` (BKHD, no embedded names),
+  and neither FNV-1 (941870167) nor FNV-1a (1661497075) of the name appears in it — so the
+  name→id hash is not the plain FNV. Unblock = parse the `.bnk` HIRC event ids and match against
+  the game's name table, or expose a by-name PostEvent in the probe.
 - **FX6 be-hit shake — optional.** `behit_shake.txt` (RepresentID -> count/offset/duration/type)
   exists; the column/global that selects a skill's RepresentID is not yet identified.
 
