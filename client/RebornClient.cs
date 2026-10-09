@@ -3427,13 +3427,26 @@ internal static class RebornClient
                 bool chained = false;
                 TargetEntity ctg = targetSelector.Current;
                 long cdForSkill = 0; cdReady.TryGetValue(selAbility, out cdForSkill);
-                // cooldowns overridden globally (user decision): every ability 3 s, GCD 1.19 s.
+                // cooldowns: uniform by default (locked user decision: 3 s / GCD 1.19 s). With
+                // RC_AUTHORED_CD=1, apply the authored per-skill cooldown (cooldowns_f1 via the
+                // mechanics normalCd row) + authored GCD (gcdRow); RC_CD_MS / RC_GCD_MS still force.
                 float gcdMs = gcdOverrideMs, cdMs = cdOverrideMs, costMana = 0f;
                 {
                     string[] mrow;
                     if (mechanics.TryGetValue(selAbility, out mrow))
                     {
                         float cm; if (mrow.Length > 2 && float.TryParse(mrow[2], out cm)) costMana = cm;
+                        bool authored = Env("RC_AUTHORED_CD", "0") == "1";
+                        if (authored && Env("RC_CD_MS", "").Length == 0 && mrow.Length > 7)
+                        {
+                            string[] cd; if (cooldowns.TryGetValue(mrow[7], out cd) && cd.Length > 1)
+                            { float d; if (float.TryParse(cd[1], out d)) cdMs = d * 1000f; }
+                        }
+                        if (authored && Env("RC_GCD_MS", "").Length == 0 && mrow.Length > 6)
+                        {
+                            string[] cd; if (cooldowns.TryGetValue(mrow[6], out cd) && cd.Length > 1)
+                            { float d; if (float.TryParse(cd[1], out d)) gcdMs = d * 1000f; }
+                        }
                     }
                 }
                 string gateMode = "";

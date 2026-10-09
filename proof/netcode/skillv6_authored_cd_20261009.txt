@@ -1,0 +1,12 @@
+# skill v6 — authored per-skill cooldown/GCD (opt-in) (2026-10-09)
+# Build: reborn_client_skillv6.exe
+
+## Change
+# The authored per-skill cooldown (cooldowns_f1.tsv via mechanics normalCd row -> durationSec) and
+# authored GCD (gcdRow -> durationSec) are now applied when RC_AUTHORED_CD=1. Default stays the
+# locked uniform values (3 s cd / GCD 1.19 s, RC_CD_MS / RC_GCD_MS). RC_CD_MS/RC_GCD_MS still force.
+
+## Verified (RC_SLOTS=65029; mechanics gcdRow=16 normalCd=7101; cooldowns 16=1.5s, 7101=10s)
+# RC_AUTHORED_CD=1 -> gcdMs=1500 cdMs=10000
+# default         -> gcdMs=1190 cdMs=3000
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

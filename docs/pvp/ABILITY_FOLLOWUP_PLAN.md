@@ -29,9 +29,10 @@ Confidence: **HIGH** = verified from data/code; **MED** = partial evidence; **LO
   model missiles from `missile.txt`/`skill_missile.txt`.
 - **Buff durations (LOW).** `Buff.tab` has no duration column; how a buff's duration is authored
   is unknown (skill script `AddBuff` args? a Buff level table?). Next: find the duration source.
-- **Per-skill cooldown / GCD values (MED).** We currently override uniformly (3 s cd, 1.19 s GCD).
-  The authored per-skill cooldown (row = 2nd arg of `SetNormalCoolDown`) + GCD rows exist but are
-  not applied per ability. Unknown: which rows apply to which skill. Next: apply `cooldowns_f1`.
+- **Per-skill cooldown / GCD values. DONE (opt-in, 2026-10-09).** `RC_AUTHORED_CD=1` applies the
+  authored per-skill cooldown (`cooldowns_f1` via the mechanics `normalCd` row) + authored GCD
+  (`gcdRow`); default stays the locked uniform 3 s / 1.19 s. Verified: 65029 -> gcdMs=1500,
+  cdMs=10000 (authored) vs 1190/3000 (default).
 - **Skill marks/tags/chain/shadow (LOW).** `skill_tag.txt`, `skill_chain.txt`, `skill_shadow.txt`
   are unmodeled. Next: read each + wire the ones that affect combat (chain, tag).
 - **Hit-stiff (LOW).** `skills.tab` cols 112–116 (`HitStiffDelayFrame`, `HitStiffSkillMoveID`,
