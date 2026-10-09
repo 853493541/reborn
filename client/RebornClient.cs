@@ -2432,6 +2432,14 @@ internal static class RebornClient
             hud.UpdateLayered();
         };
         Application.AddMessageFilter(escFilter);
+        // F1/F2/F3 catalog tagging must also fire when the engine's native child window
+        // holds focus (the form's KeyPreview never sees those keys then). App-wide filter,
+        // same reason as the Esc filter above.
+        var fkeyFilter = new FKeyFilter();
+        fkeyFilter.OnF1 = delegate { if (selAbility.Length > 0) { abilityStatus[selAbility] = "已完成"; saveStatus(); if (abilityPanel != null) abilityPanel.Refresh(abilityStatus); Log("ability " + selAbility + " -> 已完成 (F1)"); } };
+        fkeyFilter.OnF2 = delegate { if (selAbility.Length > 0) { abilityStatus[selAbility] = "测试中"; saveStatus(); if (abilityPanel != null) abilityPanel.Refresh(abilityStatus); Log("ability " + selAbility + " -> 测试中 (F2)"); } };
+        fkeyFilter.OnF3 = delegate { if (selAbility.Length > 0) { abilityStatus[selAbility] = "需要修复"; saveStatus(); if (abilityPanel != null) abilityPanel.Refresh(abilityStatus); Log("ability " + selAbility + " -> 需要修复 (F3)"); } };
+        Application.AddMessageFilter(fkeyFilter);
 
         // ---------------- main loop ----------------
         // table values converted from 15 logic frames/s into continuous seconds
@@ -5965,6 +5973,25 @@ internal sealed class EscKeyFilter : System.Windows.Forms.IMessageFilter
         long lp = m.LParam.ToInt64();
         if ((lp & (1L << 30)) == 0 && OnEscape != null) OnEscape();
         return true;
+    }
+}
+
+// F1/F2/F3 catalog-tagging filter (same app-wide reason as EscKeyFilter): the form's
+// KeyPreview does not see keys when the engine's native child window has focus.
+internal sealed class FKeyFilter : System.Windows.Forms.IMessageFilter
+{
+    public Action OnF1, OnF2, OnF3;
+
+    public bool PreFilterMessage(ref Message m)
+    {
+        if (m.Msg != 0x0100) return false;                       // WM_KEYDOWN
+        long lp = m.LParam.ToInt64();
+        if ((lp & (1L << 30)) != 0) return false;                // ignore auto-repeat
+        int vk = m.WParam.ToInt32();
+        if (vk == 0x70) { if (OnF1 != null) OnF1(); return true; }   // VK_F1
+        if (vk == 0x71) { if (OnF2 != null) OnF2(); return true; }   // VK_F2
+        if (vk == 0x72) { if (OnF3 != null) OnF3(); return true; }   // VK_F3
+        return false;
     }
 }
 

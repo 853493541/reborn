@@ -1,0 +1,18 @@
+# skill v6 — F1/F2/F3 real-keypress fix (2026-10-08)
+# Build: reborn_client_skillv6.exe
+# Symptom (user): "F2 does not really work".
+# Root cause: the form's KeyPreview (line ~2291) only sees keys routed through WinForms
+# controls. When the engine's native child window holds focus, WM_KEYDOWN goes there and the
+# form's KeyDown never fires -> F1/F2/F3 tagging silently did nothing. (The same reason an
+# app-wide EscKeyFilter already exists.)
+# Fix: added FKeyFilter (Application.AddMessageFilter), same pattern as EscKeyFilter; consumes
+# WM_KEYDOWN for VK_F1/F2/F3 (ignoring auto-repeat) and calls the catalog-tag actions.
+
+## Repro / verify: real keybd_event (NOT PostMessage) after AppActivate(pid)
+#  BEFORE: real keys produced no log line.
+#  AFTER:
+ability 65036 -> 测试中 (F2)
+ability 65036 -> 已完成 (F1)
+# (PostMessage-to-form tests had passed earlier but did NOT exercise the engine-child focus case.)
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
