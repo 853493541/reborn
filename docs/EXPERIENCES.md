@@ -8869,3 +8869,18 @@ if the cache/host frames appear.
   pick the group → `CommonModel`/`CommonFlyAni`, then implement bullet spawn/travel/trigger.
   `ABILITY_FOLLOWUP_PLAN.md` updated.
 - Verified: read-only disasm/scan; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+
+### 2026-10-09 — v6 — bullet enum: exe table not cleanly static; represent-side is the route
+
+- **Did:** tried to decode the `SKILL_BULLET_TYPE` registration block (`JX3ClientX64.exe`
+  @`0x140085714`) by resolving its `lea` targets.
+- **Finding:** the block is a **name/value-pointer pool shared by many enums** (each enum name is
+  followed by a pointer into a string pool — e.g. the first pointer lands on the item-bind enum pool
+  `INVALID/NEVER_BIND/BIND_ON_EQUIPED/...`), so the SKILL_BULLET_TYPE members are not isolated by a
+  simple pair walk. The cleaner route is the **represent-side consumer**: `JX3RepresentX64.dll`
+  asserts `!"KSKILL_BULLET_TYPE INVALID"` (string @`0x00CA8340`); xref that VA (via
+  `tools/netcode/xref_va.py`) and disasm the function that switches on `nSkillBulletType`.
+- **Next probe:** `xref_va.py JX3RepresentX64.dll 0x180CA8340` returned **0 refs** (the assert string
+  is unreferenced by RIP-relative code, i.e. dead/assert-only), so the consumer must be found via the
+  `nSkillBulletType` field xrefs in the represent DLL or the bullet-group loader. No code change.
+- Verified: read-only disasm; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
