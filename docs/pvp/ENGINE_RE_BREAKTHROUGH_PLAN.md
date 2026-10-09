@@ -42,12 +42,13 @@ Proven: `dump_fn_disasm.py JX3RepresentX64.dll --names behit_names.txt` returned
   the engine's animation code** (`+0xE2E842` is a std::map/tree lookup region) with a bad node/size.
   Root: the tani drives the engine anim code into a corrupt/absent map entry (bad size 0xFFFFFFFA),
   most likely a bone/skeleton/animation id the host model lacks.
-  **Status:** the heuristic stack walk (rbp-chain broken) resolves the engine frames to a data
-  pointer (`KG3DEngineDX11EX64.dll+0x2D3EEE8`) + values that are not all instruction boundaries
-  (`+0xE2E842` sits mid-instruction), so the exact caller is not pinned. Next = a real stack
-  unwind via the dump's `.pdata`/xdata (extend `minidump_exc.py`) or a debugger, to name the
-  engine anim function + the map key it looks up; then supply that binding host-side (do NOT swap
-  the animation). This is a large engine-RE sub-task.
+  **Status:** heuristic stack walk (rbp-chain broken) + return-address validation both fail
+  because the dump does not contain the caller frames' **code pages** (`d.read` returns None at
+  `ntdll+0x26844`, `jemallocX64.dll+0x11001`, `KG3DEngineDX11EX64.dll+0xE2E842` even with
+  DumpType=2 / 118 MB). Only the faulting pages are captured. So the exact engine caller can't be
+  recovered from these dumps. Unblock = capture with a debugger (x64dbg/`cdb`), or force full
+  memory capture, then unwind via `.pdata`. Faulting site + module + bad value (0xFFFFFFFA) are
+  known; the fix (supply the anim/bone binding) is a large engine-RE sub-task.
 - **W2 — FWD2 default be-hit animation. RULE RECOVERED (implementation is non-trivial).**
   - `KRLCharacter::PlayBeHittedAnimation` is virtual; the caller passes `pcszAni`.
   - `BeHittedByNpc` @ `0x1804cfb50`: gets the target's anim model (`pSkillCasterModel`,
