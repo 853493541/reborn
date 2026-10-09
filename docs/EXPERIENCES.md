@@ -8557,3 +8557,18 @@ if the cache/host frames appear.
 - **Verified:** real keybd_event after AppActivate -> `ability 65036 -> 测试中 (F2)` and
   `-> 已完成 (F1)` (proof/netcode/skillv6_fkey_focus_20261008.txt). Gates: jx3_model 10 PASS,
   gravity PASS, loot selftest PASS.
+
+### 2026-10-08 — v6 — "F2 does not really work" (panel not clickable + focus)
+
+- **Two root causes:** (1) the engine's full-screen render window (KGWin32App) sat above the
+  ability panel for input, so real icon clicks did not select -> F1/F2/F3 acted on nothing;
+  (2) F1/F2/F3 were only in the form's KeyDown (KeyPreview), blind when another window holds
+  focus.
+- **Fixes:** app-wide `FKeyFilter` for VK_F1/F2/F3; `AbilityPanel.RaiseTop()` re-raises the
+  panel HWND_TOP each frame (NOT global topmost - HWND_TOPMOST made the panel the active window
+  and broke foreground/activation, which then suppressed the F-keys).
+- **Verified:** real click selects (`slot 1 -> 27846`, was nothing); real keybd_event fires
+  when the client is foreground (`65036 -> 测试中 (F2)`).
+- **Lesson:** PostMessage-to-form and AppActivate are unreliable proxies for real input here;
+  verify with real mouse_event/keybd_event and check GetForegroundWindow (AppActivate silently
+  fails when another process holds the foreground).
