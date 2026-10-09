@@ -8726,3 +8726,16 @@ if the cache/host frames appear.
   Count×Interval 5 s); the client's CC is still the uniform functionType 2 s, so the buff-vs-CC
   duration distinction is not yet wired. The `AddBuff` 5th script arg is an unclear override
   (authored comments contradictory) — not applied.
+
+### 2026-10-09 — v6 — target CC duration is server-authoritative (no client source)
+
+- **Did:** checked whether the CC control duration can be adopted from client data (to replace the
+  uniform 2 s).
+- **Finding:** `skill_caster_f1.txt` `LockControlTime` (col 4) is empty/0 for every roster CC skill
+  (65116/65149/65153/65156/65159) — it is the **caster's** control lock, not the target CC. `skills.tab`
+  cols 63/64 are `SelfMoveStateMask`/`TargetMoveStateMask` (bitmasks, no time); Buff.tab has
+  `MoveStateMask` but no CC-time column; only 65156 applies a CC-typed buff (682 Stun, 1 s). So the
+  uniform 2 s CC is a stand-in for the absent server, consistent with `ABILITY_MECHANICS_PLAN.md`
+  P7 (CC/damage/buff application is server-side). No client-side duration to adopt.
+- **Artifacts:** `docs/pvp/ABILITY_FOLLOWUP_PLAN.md` new "Target CC duration" bullet. No code change.
+- Verified: read-only table reads (skill_caster_f1, skills.tab, Buff.tab); gates unaffected.

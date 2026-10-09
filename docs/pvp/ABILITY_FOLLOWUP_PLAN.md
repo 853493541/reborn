@@ -39,6 +39,14 @@ Confidence: **HIGH** = verified from data/code; **MED** = partial evidence; **LO
   with `Count×Interval` (51402 Silence: 96→6 s vs 80→5 s); the client's CC remains the uniform
   functionType 2 s. The `AddBuff` 5th script arg is an override of unclear unit (authored comments
   are contradictory) — not applied.
+- **Target CC duration — server-authoritative (client has no source).** `skill_caster_<body>.txt`
+  `LockControlTime` (col 4) is empty/0 for every roster CC skill (65116/65149/65153/65156/65159);
+  it is the *caster's* control lock, not the target's CC time. `skills.tab` cols 63/64 are
+  `SelfMoveStateMask`/`TargetMoveStateMask` (bitmasks, no time); Buff.tab has `MoveStateMask` but
+  no CC-time column; only 65156 applies a CC-typed buff (682 Stun, Count×Interval=1 s). So the
+  client's uniform 2 s CC is a stand-in for the absent server (matches `ABILITY_MECHANICS_PLAN.md`
+  P7: CC application is server-side). No client-side duration to adopt; keep the documented 2 s
+  deviation until a server/replay supplies the value.
 - **Per-skill cooldown / GCD values. DONE (opt-in, 2026-10-09).** `RC_AUTHORED_CD=1` applies the
   authored per-skill cooldown (`cooldowns_f1` via the mechanics `normalCd` row) + authored GCD
   (`gcdRow`); default stays the locked uniform 3 s / 1.19 s. Verified: 65029 -> gcdMs=1500,
