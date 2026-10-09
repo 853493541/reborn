@@ -8914,3 +8914,16 @@ if the cache/host frames appear.
   (server), the remaining backlog needs a debugger or a dedicated large effort rather than more
   bounded in-session steps. Recorded for the next session; no code change.
 - Verified: read-only disasm; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+
+### 2026-10-09 — v6 — bullet: LoadBullet reached only via a jump table (indirect dispatch)
+
+- **Did:** xref'd `KRLBuffBullet::LoadBullet` (@`0x18047d810`) to find its caller / the type→group
+  resolver.
+- **Finding:** the only ref is a **jump-table thunk** (`0x1800200a9: jmp 0x18047d810` inside a
+  `0x180020000`-region thunk table), i.e. the caller is dispatched indirectly — not a direct call to
+  trace statically. So the `nSkillBulletType`→group resolver is not reachable by a simple xref walk.
+- **Conclusion:** the projectile feature is a jump-table-dispatched, multi-layer RE task; it needs a
+  debugger or a dedicated session. **Autonomously-actionable backlog is exhausted** — remaining items
+  are W1/W4 (need an approved debugger), W3 (no local bank), damage scaling (server), Lua VM and
+  projectiles (large). No code change.
+- Verified: read-only disasm; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
