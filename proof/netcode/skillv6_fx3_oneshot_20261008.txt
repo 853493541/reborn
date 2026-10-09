@@ -1,0 +1,20 @@
+# skill v6 — FX3 hit effect one-shot fix (no repeat) (2026-10-08)
+# Build: reborn_client_skillv6.exe
+# Report: "the be-hit [hit effect] is playing multiple times" (example: 百足 class skills).
+
+## Root cause
+# The FX3 hit effect was spawned via scene.AddDummyModel with a REUSED name
+# ("hitfx_<skill>_<targetIndex>"). AddDummyModel keeps/updates an existing same-name model,
+# so a lingering/looping .pss kept replaying and repeated casts stacked onto the same handle.
+
+## Fix
+# Spawn each hit effect as a UNIQUE instance ("hitfx_<skill>_<targetIndex>_<seq>") and remove it
+# after a short life (2000 ms) via scene.RemoveDummyModel, so it plays ONCE per hit and does not
+# linger/replay. Also skip .Sfx hit effects (AddDummyModel(.Sfx) AVs the host) - only .pss.
+
+## Verified (RC_SLOTS=27844, RC_CAST_AT=38000:1, RC_DUMMY_N=1)
+cast chain 27844 (1)
+hit fx 27844 -> <target> ...\被击\W_万花听风被击01.pss as hitfx_27844_0_1
+hit fx removed hitfx_27844_0_1            # ~2 s later (one-shot)
+AV = no
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

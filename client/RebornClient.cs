@@ -223,6 +223,10 @@ internal static class RebornClient
         long.TryParse(Env("RC_LY_FX_LIFE", "2500"), out lyFxLife);
         SkillCast skillCast = new SkillCast();
         long castFxUntil = 0;
+        // FX3 hit effects: spawn each as a UNIQUE instance and remove it after a short life,
+        // so a looping/lingering .pss does not replay and repeated casts do not stack.
+        long hitFxSeq = 0;
+        var hitFxActive = new System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<string, long>>();
         long autoRunMs = 0;
         long.TryParse(Env("RC_AUTORUN", "0"), out autoRunMs);
         var tabAt = new System.Collections.Generic.List<long>();
@@ -4155,18 +4159,23 @@ internal static class RebornClient
                             {
                                 TargetEntity tgt = affected[ai];
                                 if (plan.Damage > 0f) { tgt.Hp -= (long)plan.Damage; if (tgt.Hp < 0) tgt.Hp = 0; }
-                                // FX3: spawn the authored hit (被击) effect at each target.
+                                // FX3: spawn the authored hit (被击) effect at each target as a
+                                // UNIQUE instance, removed after a short life (one-shot, no replay).
+                                // Only .pss is spawned: AddDummyModel(.Sfx) AVs the host.
                                 {
-                                    string[] hf; if (hitFx.TryGetValue(skillCast.Name, out hf) && hf[5].Length > 0)
+                                    string[] hf;
+                                    if (hitFx.TryGetValue(skillCast.Name, out hf) && hf[5].Length > 0
+                                        && hf[5].ToLower().EndsWith(".pss"))
                                     {
                                         try
                                         {
                                             var hp = new CLRfloat3(); hp.x = tgt.X; hp.y = tgt.Y + 90f; hp.z = tgt.Z;
                                             var hr = new CLRfloat4(); hr.w = 1f;
                                             var hsc = new CLRfloat3(); hsc.x = 1f; hsc.y = 1f; hsc.z = 1f;
-                                            scene.AddDummyModel("hitfx_" + skillCast.Name + "_" + ai,
-                                                hf[5].Replace('/', '\\'), hp, hr, hsc);
-                                            Log("hit fx " + skillCast.Name + " -> " + tgt.Name + " " + hf[5]);
+                                            string hname = "hitfx_" + skillCast.Name + "_" + ai + "_" + (++hitFxSeq);
+                                            scene.AddDummyModel(hname, hf[5].Replace('/', '\\'), hp, hr, hsc);
+                                            hitFxActive.Add(new System.Collections.Generic.KeyValuePair<string, long>(hname, now + 2000));
+                                            Log("hit fx " + skillCast.Name + " -> " + tgt.Name + " " + hf[5] + " as " + hname);
                                         }
                                         catch (Exception) { }
                                     }
@@ -4242,6 +4251,14 @@ internal static class RebornClient
                 castFxUntil = 0;
                 try { scene.RemoveDummyModel("skill_fx"); Log("cast chain fx removed"); } catch { }
             }
+            // FX3: remove expired hit effects (one-shot; prevents a looping .pss from replaying).
+            for (int hfi = hitFxActive.Count - 1; hfi >= 0; hfi--)
+                if (now >= hitFxActive[hfi].Value)
+                {
+                    try { scene.RemoveDummyModel(hitFxActive[hfi].Key); } catch { }
+                    Log("hit fx removed " + hitFxActive[hfi].Key);
+                    hitFxActive.RemoveAt(hfi);
+                }
 
             // model update (only when changed; keeps animation alive).
             // Y must be part of the gate: a standing jump changes py only, and
