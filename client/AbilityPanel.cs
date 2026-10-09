@@ -174,6 +174,13 @@ internal sealed class AbilityPanel : Form
         }
     }
 
+    // Keep the panel above the engine's render window (which the engine raises during load),
+    // without going global-topmost (that would float over other apps and break activation).
+    public void RaiseTop()
+    {
+        if (Visible) SetWindowPos(Handle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+    }
+
     public void UpdateLayered()
     {
         int w = ClientSize.Width, h = ClientSize.Height;
@@ -267,6 +274,7 @@ internal sealed class AbilityPanel : Form
 
     [DllImport("user32.dll")] static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
     static readonly IntPtr HWND_TOP = IntPtr.Zero;
+    static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
     const uint SWP_NOSIZE = 0x0001;
     const uint SWP_NOMOVE = 0x0002;
     const uint SWP_NOACTIVATE = 0x0010;

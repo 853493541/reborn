@@ -1,0 +1,26 @@
+# skill v6 — "F2 does not really work" root cause + fixes (2026-10-08)
+# Build: reborn_client_skillv6.exe
+
+## Root causes (two, both real)
+# 1. Panel not clickable: the engine's full-screen render window (class KGWin32App) sat above
+#    the ability panel for input (WindowFromPoint at an icon returned KGWin32App). Real clicks
+#    on icons did NOT select an ability -> F1/F2/F3 then acted on nothing. Verified: a real
+#    mouse click at the first icon produced NO "slot 1 ->" line before the fix.
+# 2. F1/F2/F3 only existed in the form's KeyDown (KeyPreview), which does not see keys when
+#    another window holds focus (same reason an app-wide EscKeyFilter already existed).
+
+## Fixes
+# - FKeyFilter (Application.AddMessageFilter): catches WM_KEYDOWN VK_F1/F2/F3 app-wide.
+# - AbilityPanel.RaiseTop(): re-raises the panel with HWND_TOP every frame so it stays above
+#   the engine render window for both rendering AND hit-testing. Deliberately NOT global
+#   topmost (HWND_TOPMOST made the panel the active window and broke foreground/activation).
+
+## Verified
+# - Real mouse click on the first panel icon now selects: "slot 1 -> 27846" (was: nothing).
+# - Real keybd_event F1/F2/F3 fires when the client is foreground:
+#     ability 65036 -> 测试中 (F2) ; ability 65036 -> 已完成 (F1)   (proof .../skillv6_fkey_focus_*)
+# - Automated foreground (AppActivate) is unreliable in this environment (foreground stayed on
+#   another pid), so the scripted click->F2 path could not be driven end to end here; the two
+#   fixes are each verified independently.
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

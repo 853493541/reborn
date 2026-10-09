@@ -5397,6 +5397,7 @@ internal static class RebornClient
             {
                 abilityPanel.Attach(form);
                 abilityPanel.UpdateLayered();
+                abilityPanel.RaiseTop();   // stay above the engine's render window (no global topmost)
             }
             // (ability bar removed: the P panel is the single ability UI; key 1 casts)
             // target frame (Targeting.cs): real client UI composited over the viewport
