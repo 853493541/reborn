@@ -8671,3 +8671,19 @@ if the cache/host frames appear.
   then emit `buffDur` in `apply_f1.tsv` and expire the self-buff list. No guessed unit.
 - **Artifacts:** `docs/pvp/ABILITY_FOLLOWUP_PLAN.md` buff-duration bullet updated. (Research only.)
 - Verified: read-only script sampling; gates unaffected.
+
+### 2026-10-09 — v6 — buff duration disasm: duration = Count × Interval (frames); unit still open
+
+- **Did:** followed the buff-duration probe into `JX3ClientX64.exe` (read-only disasm).
+- **Findings:** `KBuffList::AddBuff` @`0x140309690` only copies the buff struct into the list (no
+  time scaling); `KScriptFuncList::LuaGetBuffTime` @`0x1401c0730` reads the buff's fields `[+0x3c]`
+  and `[+0x40]` and pushes **(count×interval, count, interval)** to Lua — i.e. a buff's duration is
+  `Count × Interval` (matching `Buff.tab` cols 13/14), and the `AddBuff` 5th arg overrides it. No
+  unit conversion happens at add/get time. The sibling fn `0x1401c0860` pushes the global
+  `[singleton+0xe80]` (a candidate FPS/time-base). The Lua binding name "AddBuff" is not present as
+  a standalone string in the exe (only inside `KBuffList::AddBuff`), so the binding is table-based.
+- **Open:** which AddBuff arg feeds `[+0x3c]` vs `[+0x40]`, and the value of the `+0xe80` global
+  (to fix frames-vs-seconds). Repo evidence (GAME_FPS 16 + CC Intensity 48→3 s) favours **frames at
+  16/s** for both, but this is not asserted without the constant.
+- **Artifacts:** `docs/pvp/ABILITY_FOLLOWUP_PLAN.md` buff-duration bullet updated. No code change.
+- Verified: read-only disasm; gates unaffected.

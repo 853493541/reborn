@@ -33,10 +33,15 @@ Confidence: **HIGH** = verified from data/code; **MED** = partial evidence; **LO
   nBuffTime)`). Literal values across the extracted scripts: {0,1,2,3,4,5,6,7,8,10,12,13,14,15,
   18,20,21,25,30,40,49,60,100,120,600,7200}; 600 (×22) / 120 / 60 look like round seconds if the
   unit is 1/60 s (10 s / 2 s / 1 s) but the CC `Intensity` column only reads as seconds at 1/16 s
-  (445 silence 48→3 s), so the two units conflict. **Next probe:** disasm `KBuffList::AddBuff` /
-  `KScriptFuncList::LuaAddBuff` (`JX3ClientX64Base.dll`/`JX3LogicEditOperationX64.dll`) to see how
-  the time arg is scaled/stored, then extract it into `apply_f1.tsv` (`buffDur`) and expire buffs.
-  Do not apply a guessed unit.
+  (445 silence 48→3 s), so the two units conflict. Disasm (`JX3ClientX64.exe`, read-only):
+  `KBuffList::AddBuff` @`0x140309690` only copies the buff struct (no time scaling);
+  `KScriptFuncList::LuaGetBuffTime` @`0x1401c0730` reads the buff's fields `[+0x3c]` and `[+0x40]`
+  and returns **(count×interval, count, interval)** — so a buff stores a count and an interval
+  (frames), and the duration is their product; no unit conversion appears at add/get time. The
+  global `[..+0xe80]` pushed as a number by the sibling fn `0x1401c0860` is a candidate frame/time
+  base. **Next probe:** identify `[+0x3c]`/`[+0x40]` (which AddBuff arg feeds each) and the
+  `+0xe80` global value (FPS/time-base) to fix the unit, then emit `buffDur` in `apply_f1.tsv` and
+  expire buffs. Do not apply a guessed unit.
 - **Per-skill cooldown / GCD values. DONE (opt-in, 2026-10-09).** `RC_AUTHORED_CD=1` applies the
   authored per-skill cooldown (`cooldowns_f1` via the mechanics `normalCd` row) + authored GCD
   (`gcdRow`); default stays the locked uniform 3 s / 1.19 s. Verified: 65029 -> gcdMs=1500,
