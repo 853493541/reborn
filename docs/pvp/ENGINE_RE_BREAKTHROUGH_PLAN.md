@@ -32,14 +32,17 @@ Proven: `dump_fn_disasm.py JX3RepresentX64.dll --names behit_names.txt` returned
 
 ## Break-the-wall tasks
 
-- **W1 — FWD1 per-tani AV (39 abilities).** Get the faulting site:
-  1. Enable a local crash dump for *our* exe (WER `LocalDumps`, HKCU — a local dev setting) OR
-     wrap the suspect engine call in an SEH probe (the `sfx_shim`/`CameraShim` pattern) that logs
-     a status instead of dying.
-  2. `minidump_exc.py <dmp>` -> faulting module + RVA.
-  3. `disasm_fn.py <module> --rva <RVA>` -> read the faulting access; compare the bad pointer
-     chain to what we pass (the tani/model/bone we set).
-  4. Fix the host wiring (likely a missing weapon/skeleton/shadow binding for those tanis).
+- **W1 — FWD1 per-tani AV (39 abilities). DUMP CAPTURED (faulting site known).**
+  WER LocalDumps works for our exe (`%LOCALAPPDATA%\CrashDumps\reborn_client_skillv6.exe.<pid>.dmp`).
+  Reproduced 65068 (blacklist emptied) -> crash; `tools/camera/minidump_exc.py` on the dump:
+  `exc code=0xC0000005 addr=ntdll.dll+0xFA7D`, `rdx=rsi=0xFFFFFFFA` (a bogus size / bad source),
+  and the stack return-address candidates are **`KG3DEngineDX11EX64.dll`** animation frames
+  (`+0xE2E842`, `+0xE2DADA`, `+0xE2D706`, `+0xBE4938`, …). So the AV is a **bad-size `memcpy`
+  (ntdll) inside the engine's animation/skeleton code**, almost certainly because the tani binds
+  a bone/skeleton the host's model lacks (a bad index -> size 0xFFFFFFFA). Next: walk the stack
+  to the immediate caller (the engine anim function that computes the size) and check what
+  host-side model/skeleton we pass for those tanis; the fix is to supply the correct skeleton/
+  bone binding (or skip the offending bind) — NOT to swap the animation.
 - **W2 — FWD2 default be-hit animation. RULE RECOVERED (implementation is non-trivial).**
   - `KRLCharacter::PlayBeHittedAnimation` is virtual; the caller passes `pcszAni`.
   - `BeHittedByNpc` @ `0x1804cfb50`: gets the target's anim model (`pSkillCasterModel`,
