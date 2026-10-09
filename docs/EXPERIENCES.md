@@ -8543,3 +8543,17 @@ if the cache/host frames appear.
 - **Verified:** full 154 sweep with RC_SWEEP_RANGE=99999 -> 115 casts + 39 av-skip, 0 out-of-range,
   no AV (proof/netcode/skillv6_coverage_sweeprange_20261008.txt); F1/F2/F3 via PostMessage
   (proof/netcode/skillv6_f3_20261008.txt). Gates: jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+
+### 2026-10-08 — v6 — F2 tagging "does not really work" (real-keypress focus bug)
+
+- **Symptom:** user pressed F2 and nothing happened.
+- **Root cause:** F1/F2/F3 were handled only in the form's KeyDown via KeyPreview. When the
+  engine's native child window holds focus, WM_KEYDOWN goes there and the form never sees it
+  (same reason an app-wide EscKeyFilter already existed). My earlier verification used
+  PostMessage directly to the form, which does NOT exercise this focus case — a bad test.
+- **Fix:** added `FKeyFilter` (Application.AddMessageFilter), consuming WM_KEYDOWN for
+  VK_F1/F2/F3 and calling the tag actions. App-wide, focus-independent.
+- **Lesson:** verify host input with REAL key events after AppActivate(pid), not PostMessage.
+- **Verified:** real keybd_event after AppActivate -> `ability 65036 -> 测试中 (F2)` and
+  `-> 已完成 (F1)` (proof/netcode/skillv6_fkey_focus_20261008.txt). Gates: jx3_model 10 PASS,
+  gravity PASS, loot selftest PASS.
