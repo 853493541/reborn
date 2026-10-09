@@ -8521,3 +8521,14 @@ if the cache/host frames appear.
   to `OP_SKILL_EFFECT`/`OP_CONTROL`, driven by the same `mechanics_f1` program so client and
   server agree; local `selfBuffs`/`Buffs`/`CcUntil` become prediction mirrors.
 - **Verified:** docs only; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+
+### 2026-10-08 — v6 — F1/F2 catalog tagging (status-driven panel)
+
+- **Did:** the ability panel is now status-driven with 4 catalogs (测试中/未测试/需要修复/已完成);
+  with an ability selected, **F1 → 已完成**, **F2 → 测试中**. Status persists to
+  `bin64\ability_picker\ability_status_f1.txt` (reloaded at startup) and the panel re-renders
+  live. Test hook `RC_SET_STATUS=id:cat`.
+- **Verified:** driven probe (PostMessage VK_F1/VK_F2 to the form): `ability 65036 -> 已完成 (F1)`
+  then `-> 测试中 (F2)`; `RC_SET_STATUS` persisted + panel showed 4 catalogs. Proof
+  `proof/netcode/skillv6_status_keys_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
