@@ -81,7 +81,12 @@ internal static class RebornClient
         // memory namespace. Different feature builds have different namespaces
         // and are allowed to run concurrently; the canonical build excludes the
         // apps that still hardcode MovieEditor.memory. RC_ALLOW_MULTI=1 overrides.
-        if (Env("RC_ALLOW_MULTI", "0") != "1")
+        // A distinct RC_MEM_NS is a distinct engine memory namespace -> allow concurrent
+        // instances (do not block by process name).
+        string _pn = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+        string _defNs = (_pn == "reborn_client") ? "MovieEditor.memory" : _pn + ".memory";
+        bool customNs = Env("RC_MEM_NS", "").Length > 0 && memNs != _defNs;
+        if (Env("RC_ALLOW_MULTI", "0") != "1" && !customNs)
         {
             try
             {

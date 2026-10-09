@@ -1,0 +1,10 @@
+# skill v6 — single-instance guard: honor a distinct RC_MEM_NS (2026-10-08)
+# Build: reborn_client_skillv6.exe
+# Bug: the guard blocked by PROCESS NAME for feature builds, so a second instance of the same
+#   exe was blocked even with a distinct RC_MEM_NS (contradicting the "blocks only same-namespace
+#   peers" rule). Fixed: if RC_MEM_NS names a namespace different from the derived default, the
+#   guard is skipped (the engine memory namespace already separates the instances).
+
+## Verified: instance A (default ns reborn_client_skillv6.memory) + instance B
+#   (RC_MEM_NS=reborn_skillv6_probe.memory) both ALIVE concurrently.
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
