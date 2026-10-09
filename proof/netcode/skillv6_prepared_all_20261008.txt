@@ -1,0 +1,17 @@
+# skill v6 — all prepared (吟唱) skills verified (2026-10-08)
+# Build: reborn_client_skillv6.exe (git b218d24)
+# Two-phase cast (prepare anim -> release anim + effect at commit) verified on the remaining
+# prepare-anim abilities; none AV.
+
+## Verified (RC_ABILITY=<id> RC_CAST_AT=38000:1)
+#  39483 prepare 04a -> 04b   prepareMs=1500 totalMs=3000 cdMs=70000
+#  39493 prepare 04a -> 04b   1500/3000 cdMs=9000
+#  64992 prepare 19a -> 13b   3000/4500 cdMs=5000   (48-frame prepare)
+#  64994 prepare 14a -> 14b   1000/2500 cdMs=0
+#  64995 prepare 13a -> 13b   1000/2500 cdMs=0
+#  65100 prepare 14a -> 14c   500/2000  cdMs=20000
+#  65133 prepare 13a -> 17b   1000/2500 cdMs=45000
+#  65144 prepare stc04 -> base .ani 1500/3000 cdMs=30000
+#  (plus 65076 1.5s, 27874 3s, 65108 1.5s previously)
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
