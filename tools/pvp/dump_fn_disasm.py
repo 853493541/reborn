@@ -100,7 +100,13 @@ def main() -> int:
     def annotate(insn) -> str:
         """Resolve RIP-relative operand targets to printable strings (ASCII/UTF-16LE/GBK)."""
         parts = []
-        for op in insn.operands:
+        if not insn.id:
+            return ""
+        try:
+            operands = insn.operands
+        except Exception:
+            return ""
+        for op in operands:
             if op.type != 3 or op.mem.base != 41:
                 continue
             tgt = insn.address + insn.size + op.mem.disp
