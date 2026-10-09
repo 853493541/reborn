@@ -1,0 +1,14 @@
+# skill v6 — F1/F2/F3 single-path + full end-to-end (2026-10-08)
+# Build: reborn_client_skillv6.exe
+
+## Change
+# Consolidated F1/F2/F3 tagging to ONE authoritative path: the WH_KEYBOARD_LL hook
+# (LowLevelKeyHook). Removed the redundant in-process IMessageFilter and the form KeyDown
+# handlers (they caused 2-3 fires per keypress and could be swallowed by the engine).
+
+## Verified: full real flow (real mouse click on a panel icon, then real keybd_event F2)
+slot 1 -> 27846                       # click selected the icon's ability
+ability 27846 -> 测试中 (F2)          # one fire (was two before consolidation)
+F1/F2/F3 low-level hook installed=True
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
