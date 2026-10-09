@@ -1,0 +1,21 @@
+# skill v6 — full 154 sweep on current build (2026-10-08, log 19:06:47)
+# Build: reborn_client_skillv6.exe (F3 + probe status isolation)
+# Isolated: RC_MEM_NS=reborn_skillv6_probe.memory (user's session untouched)
+
+## Result
+iterated          = 154  (115 castable + 39 av-blacklist)
+cast (cast chain) = 85
+range-gated       = 30   ("cast blocked: out of range 1380u > 1280u" -> 20尺 gate)
+av skipped        = 39
+AV/crash          = no
+
+## The 30 range-gated (all 65xxx) are a sweep-harness artifact, not a regression:
+#  mid-sweep the dash repositions drifted the player to 1380u from the dummy (>1280u = 20尺),
+#  so the uniform range gate correctly refused. Each of these 30 was verified individually
+#  earlier (proof/netcode/skillv6_batch*). At spawn the dummy is within 20尺, so normal play
+#  is unaffected.
+#  65118 65119 65120 65133 65136 65140 65142 65144 65145 65146 65149 65150 65153 65154
+#  65155 65156 65157 65159 65160 65161 65167 65240 65241 65242 65250 65251 65667 65668
+#  65670 65671
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
