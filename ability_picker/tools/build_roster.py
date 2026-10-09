@@ -27,23 +27,21 @@ DATA = os.path.join(HERE, "..", "data")
 def load_cast_chain():
     """id -> {anim, effect, bone, dash} from cast_chain_f1.tsv (skip bad rows)."""
     out = {}
-    p = os.path.join(DATA, "cast_chain_f1.tsv")
+    p = os.path.join(DATA, "cast_chain_f1.json")
     if not os.path.exists(p):
         return out
-    with open(p, "r", encoding="utf-8") as f:
-        for i, line in enumerate(f):
-            if i == 0:
-                continue
-            parts = line.rstrip("\r\n").split("\t")
-            if len(parts) < 5 or not parts[0].strip():
-                continue
-            sid = parts[0].strip()
-            out[sid] = {
-                "anim": parts[2].strip() if len(parts) > 2 else "",
-                "effect": parts[3].strip() if len(parts) > 3 else "",
-                "bone": parts[4].strip() if len(parts) > 4 else "",
-                "dash": parts[5].strip() if len(parts) > 5 else "0",
-            }
+    d = json.load(open(p, encoding="utf-8"))
+    for a in d.get("abilities", []):
+        sid = str(a.get("skillId", "")).strip()
+        if not sid:
+            continue
+        out[sid] = {
+            "anim": a.get("animTani", ""),
+            "prepare": a.get("prepareAnim", ""),
+            "effect": a.get("effectSfx", ""),
+            "bone": a.get("effectBone", ""),
+            "dash": str(a.get("dash", "0")),
+        }
     return out
 
 
@@ -77,6 +75,7 @@ def main():
         sid = str(ids[0])
         c = chain.get(sid)
         tani = (c["anim"] if c and c["anim"] else v.get("matched", "")) or v.get("matched", "")
+        prepareAnim = c["prepare"] if c else ""
         effect = c["effect"] if c else ""
         bone = c["bone"] if c else ""
         dash = c["dash"] if c else "0"
@@ -89,11 +88,12 @@ def main():
             "prepare": f.get("prepare", "-1"), "chanFrame": f.get("chanFrame", "-1"),
             "chanInterval": f.get("chanInterval", "-1"),
             "funcType": v.get("functionType", ""),
+            "prepareAnim": prepareAnim,
         })
     rows.sort(key=lambda r: (int(r["id"]) if r["id"].isdigit() else 0, r["id"]))
 
     cols = ["id", "name", "tani", "effect", "bone", "dash", "castMode", "channel",
-            "icon", "prepare", "chanFrame", "chanInterval", "funcType"]
+            "icon", "prepare", "chanFrame", "chanInterval", "funcType", "prepareAnim"]
     tsv = os.path.join(DATA, "roster_f1.tsv")
     with open(tsv, "w", encoding="utf-8", newline="\n") as f:
         f.write("\t".join(cols) + "\n")

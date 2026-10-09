@@ -12,7 +12,8 @@
   "prepare",
   "chanFrame",
   "chanInterval",
-  "funcType"
+  "funcType",
+  "prepareAnim"
  ],
  "abilities": [
   {
@@ -28,7 +29,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "27846",
@@ -43,7 +45,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "27847",
@@ -58,7 +61,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "27850",
@@ -73,7 +77,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "27855",
@@ -88,7 +93,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "27862",
@@ -103,7 +109,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Fly"
+   "funcType": "Fly",
+   "prepareAnim": ""
   },
   {
    "id": "27863",
@@ -118,7 +125,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Silence"
+   "funcType": "Silence",
+   "prepareAnim": ""
   },
   {
    "id": "27869",
@@ -133,7 +141,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Fly"
+   "funcType": "Fly",
+   "prepareAnim": ""
   },
   {
    "id": "27872",
@@ -148,7 +157,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "27874",
@@ -163,7 +173,8 @@
    "prepare": "48",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\F1s16lxg技能02a_hd.tani"
   },
   {
    "id": "27875",
@@ -178,7 +189,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "27878",
@@ -193,7 +205,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "27888",
@@ -208,7 +221,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "27890",
@@ -223,7 +237,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "27892",
@@ -238,7 +253,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "27895",
@@ -253,7 +269,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "27902",
@@ -268,7 +285,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "27903",
@@ -283,7 +301,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "27904",
@@ -298,7 +317,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "27905",
@@ -313,7 +333,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "27906",
@@ -328,7 +349,8 @@
    "prepare": "-1",
    "chanFrame": "64",
    "chanInterval": "8",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "27924",
@@ -343,7 +365,8 @@
    "prepare": "24",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\F1swd08蛊攻击01_蓄力_HD.tani"
   },
   {
    "id": "27926",
@@ -358,7 +381,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\F1scy03聚气01_九转HD.tani"
   },
   {
    "id": "27967",
@@ -373,7 +397,8 @@
    "prepare": "-1",
    "chanFrame": "84",
    "chanInterval": "10",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "27969",
@@ -388,7 +413,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "28031",
@@ -403,7 +429,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "28045",
@@ -418,7 +445,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "28046",
@@ -433,7 +461,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "30023",
@@ -448,7 +477,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "30024",
@@ -463,7 +493,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "30025",
@@ -478,7 +509,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "30029",
@@ -493,7 +525,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "30081",
@@ -508,7 +541,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "30082",
@@ -523,7 +557,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Fly"
+   "funcType": "Fly",
+   "prepareAnim": ""
   },
   {
    "id": "30123",
@@ -538,7 +573,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "120",
-   "funcType": "Fly"
+   "funcType": "Fly",
+   "prepareAnim": ""
   },
   {
    "id": "30226",
@@ -553,7 +589,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "30231",
@@ -568,7 +605,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "30233",
@@ -583,7 +621,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "30234",
@@ -598,7 +637,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "30235",
@@ -613,7 +653,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "30238",
@@ -628,7 +669,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "30239",
@@ -643,7 +685,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "30243",
@@ -658,7 +701,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "30247",
@@ -673,7 +717,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "30257",
@@ -688,7 +733,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "30261",
@@ -703,7 +749,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "30262",
@@ -718,7 +765,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "30276",
@@ -733,7 +781,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "120",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "30301",
@@ -748,7 +797,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "120",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "32245",
@@ -763,7 +813,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "32247",
@@ -778,7 +829,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "32287",
@@ -793,7 +845,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "32300",
@@ -808,7 +861,8 @@
    "prepare": "-1",
    "chanFrame": "48",
    "chanInterval": "16",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "34591",
@@ -823,7 +877,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "34594",
@@ -838,7 +893,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "36501",
@@ -853,7 +909,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "120",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "39483",
@@ -868,7 +925,8 @@
    "prepare": "24",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\f1s21ds技能04a.tani"
   },
   {
    "id": "39492",
@@ -883,7 +941,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "39493",
@@ -898,7 +957,8 @@
    "prepare": "24",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\f1s21ds指法04a.tani"
   },
   {
    "id": "39494",
@@ -913,7 +973,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "64898",
@@ -928,7 +989,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "64899",
@@ -943,7 +1005,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "32",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "64900",
@@ -958,7 +1021,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "64901",
@@ -973,7 +1037,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "64991",
@@ -988,7 +1053,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "64992",
@@ -1003,7 +1069,8 @@
    "prepare": "48",
    "chanFrame": "-1",
    "chanInterval": "56",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\F1s01wh针灸19a缝针吟唱HD.tani"
   },
   {
    "id": "64993",
@@ -1018,7 +1085,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "64994",
@@ -1033,7 +1101,8 @@
    "prepare": "16",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\F1s01wh点穴14a_钟林毓秀hd.tani"
   },
   {
    "id": "64995",
@@ -1048,7 +1117,8 @@
    "prepare": "16",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\F1s01wh点穴13a_兰摧玉折hd.tani"
   },
   {
    "id": "64996",
@@ -1063,7 +1133,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "144",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65022",
@@ -1078,7 +1149,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65024",
@@ -1093,7 +1165,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65026",
@@ -1108,7 +1181,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65028",
@@ -1123,7 +1197,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65029",
@@ -1138,7 +1213,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65036",
@@ -1153,7 +1229,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "104",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65038",
@@ -1168,7 +1245,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "64",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65046",
@@ -1183,7 +1261,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65047",
@@ -1198,7 +1277,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65048",
@@ -1213,7 +1293,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65049",
@@ -1228,7 +1309,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65050",
@@ -1243,7 +1325,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65053",
@@ -1258,7 +1341,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65054",
@@ -1273,7 +1357,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65058",
@@ -1288,7 +1373,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65059",
@@ -1303,7 +1389,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65060",
@@ -1318,7 +1405,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65061",
@@ -1333,7 +1421,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65062",
@@ -1348,7 +1437,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65065",
@@ -1363,7 +1453,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65068",
@@ -1378,7 +1469,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\F1swd08毒蓄力03_百足.tani"
   },
   {
    "id": "65071",
@@ -1393,7 +1485,8 @@
    "prepare": "32",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": "Data\\source\\player\\F1\\动作\\F1stm09弩蓄力03夺命01.tani"
   },
   {
    "id": "65074",
@@ -1408,7 +1501,8 @@
    "prepare": "24",
    "chanFrame": "-1",
    "chanInterval": "96",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": "Data\\source\\player\\F1\\动作\\F1stm09弩蓄力05撕裂弩.tani"
   },
   {
    "id": "65075",
@@ -1423,7 +1517,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65076",
@@ -1438,7 +1533,8 @@
    "prepare": "24",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\F1s07cj重剑技能11a_云飞HD.tani"
   },
   {
    "id": "65078",
@@ -1453,7 +1549,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65083",
@@ -1468,7 +1565,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65087",
@@ -1483,7 +1581,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65089",
@@ -1498,7 +1597,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65090",
@@ -1513,7 +1613,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65092",
@@ -1528,7 +1629,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65095",
@@ -1543,7 +1645,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "50",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65096",
@@ -1558,7 +1661,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65097",
@@ -1573,7 +1677,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65098",
@@ -1588,7 +1693,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65100",
@@ -1603,7 +1709,8 @@
    "prepare": "8",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\f1s04sl爪技能14a_HD01.tani"
   },
   {
    "id": "65101",
@@ -1618,7 +1725,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65103",
@@ -1633,7 +1741,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65104",
@@ -1648,7 +1757,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65105",
@@ -1663,7 +1773,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65107",
@@ -1678,7 +1789,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": "Data\\source\\player\\F1\\动作\\F1b02zd倒地中.ani"
   },
   {
    "id": "65108",
@@ -1693,7 +1805,8 @@
    "prepare": "24",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\F1s01wh点穴21a_少明指HD.tani"
   },
   {
    "id": "65109",
@@ -1708,7 +1821,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65113",
@@ -1723,7 +1837,8 @@
    "prepare": "16",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\F1swh01蓄力04-02.tani"
   },
   {
    "id": "65116",
@@ -1738,7 +1853,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Daze"
+   "funcType": "Daze",
+   "prepareAnim": ""
   },
   {
    "id": "65118",
@@ -1753,7 +1869,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65119",
@@ -1768,7 +1885,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65120",
@@ -1783,7 +1901,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65133",
@@ -1798,7 +1917,8 @@
    "prepare": "16",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\F1s03cy技能13a_生太极HD.tani"
   },
   {
    "id": "65136",
@@ -1813,7 +1933,8 @@
    "prepare": "16",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\F1s03cy技能13a_生太极HD.tani"
   },
   {
    "id": "65138",
@@ -1828,7 +1949,8 @@
    "prepare": "16",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\F1scy03聚气01-08.tani"
   },
   {
    "id": "65140",
@@ -1843,7 +1965,8 @@
    "prepare": "16",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\F1s03cy技能13a_生太极HD.tani"
   },
   {
    "id": "65142",
@@ -1858,7 +1981,8 @@
    "prepare": "16",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\F1s03cy气技能12a_万世hd.tani"
   },
   {
    "id": "65144",
@@ -1873,7 +1997,8 @@
    "prepare": "24",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\F1stc04技能03_吹哨子HD.tani"
   },
   {
    "id": "65145",
@@ -1888,7 +2013,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65146",
@@ -1903,7 +2029,8 @@
    "prepare": "24",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Stun"
+   "funcType": "Stun",
+   "prepareAnim": "data\\source\\player\\F1\\动作\\F1s03cy气技能15a_七星HD.tani"
   },
   {
    "id": "65149",
@@ -1918,7 +2045,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Charm"
+   "funcType": "Charm",
+   "prepareAnim": ""
   },
   {
    "id": "65150",
@@ -1933,7 +2061,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65153",
@@ -1948,7 +2077,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Stun"
+   "funcType": "Stun",
+   "prepareAnim": ""
   },
   {
    "id": "65154",
@@ -1963,7 +2093,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65155",
@@ -1978,7 +2109,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65156",
@@ -1993,7 +2125,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Stun"
+   "funcType": "Stun",
+   "prepareAnim": ""
   },
   {
    "id": "65157",
@@ -2008,7 +2141,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65159",
@@ -2023,7 +2157,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Halt"
+   "funcType": "Halt",
+   "prepareAnim": ""
   },
   {
    "id": "65160",
@@ -2038,7 +2173,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65161",
@@ -2053,7 +2189,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65162",
@@ -2068,7 +2205,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65163",
@@ -2083,7 +2221,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65165",
@@ -2098,7 +2237,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Stun"
+   "funcType": "Stun",
+   "prepareAnim": ""
   },
   {
    "id": "65167",
@@ -2113,7 +2253,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65240",
@@ -2128,7 +2269,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65241",
@@ -2143,7 +2285,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65242",
@@ -2158,7 +2301,8 @@
    "prepare": "0",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65243",
@@ -2173,7 +2317,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65244",
@@ -2188,7 +2333,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65250",
@@ -2203,7 +2349,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65251",
@@ -2218,7 +2365,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65254",
@@ -2233,7 +2381,8 @@
    "prepare": "-1",
    "chanFrame": "128",
    "chanInterval": "8",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65667",
@@ -2248,7 +2397,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Damage"
+   "funcType": "Damage",
+   "prepareAnim": ""
   },
   {
    "id": "65668",
@@ -2263,7 +2413,8 @@
    "prepare": "24",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65669",
@@ -2278,7 +2429,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65670",
@@ -2293,7 +2445,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65671",
@@ -2308,7 +2461,8 @@
    "prepare": "-1",
    "chanFrame": "-1",
    "chanInterval": "-1",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   },
   {
    "id": "65672",
@@ -2323,7 +2477,8 @@
    "prepare": "-1",
    "chanFrame": "144",
    "chanInterval": "16",
-   "funcType": "Normal"
+   "funcType": "Normal",
+   "prepareAnim": ""
   }
  ]
 }

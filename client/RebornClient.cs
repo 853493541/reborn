@@ -398,13 +398,14 @@ internal static class RebornClient
         float selDash = lyDash;
         long selPrepareMs = 0;   // cast time (nPrepareFrames / GAME_FPS); 0 = instant
         long selChannelMs = 0;   // channel duration (nChannelFrame / GAME_FPS); 0 = none
+        string selPrepareAnim = "";   // prepare-phase anim (roster col 13); played during prepare
         Action<int> selectSlot = null;
         selectSlot = delegate(int i)
         {
             if (i < 0 || i >= slotIds.Length) return;
             activeSlot = i;
             selAbility = slotIds[i].Trim();
-            selAnimPath = lyAnim; selFxPath = lyFx; selDash = lyDash; selPrepareMs = 0; selChannelMs = 0;
+            selAnimPath = lyAnim; selFxPath = lyFx; selDash = lyDash; selPrepareMs = 0; selChannelMs = 0; selPrepareAnim = "";
             string[] ab;
             bool found = roster.TryGetValue(selAbility, out ab);   // roster carries prepareFrames
             if (!found) found = castChain.TryGetValue(selAbility, out ab);
@@ -428,9 +429,12 @@ internal static class RebornClient
                     if (int.TryParse(ab[10], out cf) && cf > 0)
                         selChannelMs = (long)cf * 1000L / SkillCast.GameFps;
                 }
+                // prepare-phase animation (roster col 13): played during the prepare window
+                if (ab.Length >= 14) selPrepareAnim = ab[13];
                 Log("slot " + (i + 1) + " -> " + selAbility + " " + ab[1]
                     + " anim=" + ab[2] + " fx=" + ab[3] + " dash=" + selDash
-                    + " prepareMs=" + selPrepareMs + " channelMs=" + selChannelMs);
+                    + " prepareMs=" + selPrepareMs + " channelMs=" + selChannelMs
+                    + " prepareAnim=" + selPrepareAnim);
             }
             else Log("slot " + (i + 1) + " -> " + selAbility + " (not in dataset)");
             // standalone .Sfx is opt-in: the tani renders the authored effect by default.
@@ -461,6 +465,9 @@ internal static class RebornClient
         float manaMax = 10000f;
         float.TryParse(Env("RC_MANA_MAX", "10000"), out manaMax);
         float mana = manaMax;
+        // all abilities: a uniform 20 尺 cast range (LENGTH_BASE = 64 u); RC_CAST_RANGE overrides.
+        float castRangeU = 20f * 64f;
+        { float cr; if (float.TryParse(Env("RC_CAST_RANGE", "20"), out cr) && cr > 0f) castRangeU = cr * 64f; }
         var selfBuffs = new System.Collections.Generic.List<string>();   // passive self-buffs
         float playerMaxHp = 500000f;
         float.TryParse(Env("RC_PLAYER_HP", "500000"), out playerMaxHp);
@@ -3333,7 +3340,10 @@ internal static class RebornClient
                 string gateMode = "";
                 { string[] grr; if (roster.TryGetValue(selAbility, out grr) && grr.Length > 6) gateMode = grr[6]; }
                 bool needTarget = gateMode == "TargetSingle" || gateMode == "PointArea" || gateMode == "TargetArea";
-                if ((ctg != null || !needTarget) && !skillCast.Active
+                float tdist = 0f;
+                if (ctg != null) { float ddx = ctg.X - px, ddz = ctg.Z - pz; tdist = (float)Math.Sqrt(ddx * ddx + ddz * ddz); }
+                bool inRange = ctg == null || tdist <= castRangeU;   // uniform 20-尺 cast range
+                if ((ctg != null || !needTarget) && inRange && !skillCast.Active
                     && now >= castReadyAt && now >= gcdUntil
                     && now >= cdForSkill && mana >= costMana && !skipIds.Contains(selAbility))
                 {
@@ -3355,7 +3365,7 @@ internal static class RebornClient
                     float tgx = ctg != null ? ctg.X : px;
                     float tgy = ctg != null ? ctg.Y : py;
                     float tgz = ctg != null ? ctg.Z : pz;
-                    skillCast.Begin(now, selAbility, selAnimPath, selFxPath,
+                    skillCast.Begin(now, selAbility, selAnimPath, selFxPath, selPrepareAnim,
                         px, pz, tgx, tgy, tgz, lyAnimMs, lyFxAt, selPrepareMs,
                         selChannelMs, lyStop, effDash);
                     curYaw = skillCast.FaceYaw();
@@ -3366,11 +3376,11 @@ internal static class RebornClient
                     cdTotalBySkill[selAbility] = (long)cdMs;
                     mana -= costMana;
                     curClip = null;
-                    setClip(selAnimPath);
+                    setClip((selPrepareMs > 0 && selPrepareAnim.Length > 0) ? selPrepareAnim : selAnimPath);
                     camShake.Start(2.0, 0.5, 0.8, 3);
                     chained = true;
                     Log("cast chain " + selAbility + ": target=" + (ctg != null ? ctg.ToString() : "self")
-                        + " anim=" + selAnimPath + " fx=" + selFxPath
+                        + " anim=" + selAnimPath + " prepareAnim=" + selPrepareAnim + " fx=" + selFxPath
                         + " animMs=" + lyAnimMs + " prepareMs=" + selPrepareMs
                         + " channelMs=" + selChannelMs + " gcdMs=" + gcdMs + " cdMs=" + cdMs + " mana=" + mana
                         + " commitMs=" + skillCast.CommitMs() + " totalMs=" + skillCast.TotalMs()
@@ -3382,6 +3392,7 @@ internal static class RebornClient
                 {
                     if (ctg == null) Log("cast: no target - nothing cast (ability system needs a target)");
                     else if (skipIds.Contains(selAbility)) Log("cast blocked: " + selAbility + " AV-blacklisted");
+                    else if (!inRange) Log("cast blocked: out of range " + tdist.ToString("F0") + "u > " + castRangeU.ToString("F0") + "u");
                     else if (skillCast.Active) Log("cast blocked: cast in progress");
                     else if (now < gcdUntil) Log("cast blocked: GCD " + (gcdUntil - now) + "ms");
                     else if (now < cdForSkill) Log("cast blocked: cooldown " + (cdForSkill - now) + "ms");
@@ -3885,6 +3896,7 @@ internal static class RebornClient
                 if (skillCast.Tick(now, out cpx, out cpz)) { px = cpx; pz = cpz; rpx = cpx; rpz = cpz; }
                 if (skillCast.TakeEffect(now))
                 {
+                    setClip(skillCast.AnimPath);   // switch to the release/cast anim at commit
                     float ex, ey, ez;
                     skillCast.EffectPoint(out ex, out ey, out ez);
                     if (skillCast.EffectPath.Length > 0)

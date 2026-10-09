@@ -8481,6 +8481,20 @@ if the cache/host frames appear.
   `proof/netcode/skillv6_panel2.png 320×640 sha256=a556cebbd7b19904`. Gates: jx3_model 10 PASS,
   gravity PASS, loot selftest PASS.
 
+### 2026-10-08 — v6 — 65076 two-phase prepared cast + uniform 20-尺 cast range
+
+- **Finding:** 65076 绝境_云飞玉皇 is a **prepared (吟唱)** skill with a prepare anim (`11a`) and a
+  release anim (`11b`); the client played the release anim immediately (no 蓄力 phase).
+- **Did:** `build_roster.py` now reads `cast_chain_f1.json` to carry `prepareAnim` (roster col 13);
+  `SkillCast` gained `PrepareAnimPath` and `totalMs = prepareMs + animMs` for prepared skills; the
+  client plays the prepare anim during prepare and switches to the release anim at commit.
+  Also: a uniform **20 尺 cast range** (1280 u, `RC_CAST_RANGE`) applied to all abilities and
+  **enforced** (blocks + logs "out of range").
+- **Verified:** 65076 → `prepareAnim=…11a… anim=…11b… prepareMs=1500 commitMs=1500 totalMs=3000`;
+  `apply child 65077` at commit; cooldown row 7146 → `cdMs=12000`. Proof
+  `proof/netcode/skillv6_prepare_cast_range_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+
 ### 2026-10-08 — v6 — abilities verified (batch 7, partial)
 
 - **Verified (run interrupted):** 65108 (dispel buff-=8), 65109 (child 65110;65111;65112), 65118

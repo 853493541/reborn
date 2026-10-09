@@ -24,7 +24,8 @@ internal sealed class SkillCast
 
     public bool Active;
     public string Name = "";
-    public string AnimPath = "";
+    public string AnimPath = "";       // release/cast animation (played at commit)
+    public string PrepareAnimPath = "";// prepare/吟唱 animation (played during the prepare window)
     public string EffectPath = "";
 
     long startMs;
@@ -41,7 +42,7 @@ internal sealed class SkillCast
 
     // dashSpeedPerFrame = engine units per frame (the child skill's DASH value).
     // prepareMs = the skill's cast time (nPrepareFrames / GAME_FPS); 0 = instant.
-    public void Begin(long now, string name, string anim, string effect,
+    public void Begin(long now, string name, string anim, string effect, string prepareAnim,
                       float selfX, float selfZ,
                       float tgtX, float tgtY, float tgtZ,
                       long animMs, long effectAtMs, long prepareMs, long channelMs,
@@ -50,6 +51,7 @@ internal sealed class SkillCast
         Active = true;
         Name = name;
         AnimPath = anim;
+        PrepareAnimPath = prepareAnim;
         EffectPath = effect;
         startMs = now;
         this.animMs = animMs > 1 ? animMs : 1;
@@ -57,7 +59,10 @@ internal sealed class SkillCast
         // commit = the cast completes: instant skills commit at the effect frame,
         // prepared skills at the end of the prepare (nPrepareFrames) phase.
         commitMs = prepareMs > eff ? prepareMs : eff;
-        totalMs = (this.animMs > commitMs ? this.animMs : commitMs) + (channelMs > 0 ? channelMs : 0);
+        // prepared skills: prepare anim for prepareMs, then release anim for animMs.
+        long baseMs = this.animMs > commitMs ? this.animMs : commitMs;
+        if (prepareMs > 0) baseMs = prepareMs + this.animMs;
+        totalMs = baseMs + (channelMs > 0 ? channelMs : 0);
         commitPending = true;   // commit fires once at commitMs (effect optional)
 
         fromX = selfX;

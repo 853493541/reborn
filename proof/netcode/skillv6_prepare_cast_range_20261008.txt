@@ -1,0 +1,17 @@
+# skill v6 — 65076 two-phase cast + uniform 20-尺 cast range (2026-10-08)
+# Build: reborn_client_skillv6.exe
+# 1) cast range: all abilities get a uniform 20 尺 range (LENGTH_BASE=64 u -> 1280 u);
+#    RC_CAST_RANGE overrides. The client now ENFORCES it (blocks + logs "out of range").
+# 2) 65076 绝境_云飞玉皇 is a PREPARED (吟唱) skill: prepare anim (11a) for nPrepareFrames=24
+#    (1.5 s), then release anim (11b) + effect at commit.
+#    - build_roster.py now reads cast_chain_f1.json to carry prepareAnim (roster col 13).
+#    - SkillCast: PrepareAnimPath + two-phase totalMs = prepareMs + animMs.
+#    - client: setClip(prepareAnim) at start; setClip(AnimPath) at commit (TakeEffect).
+
+## Verified: RC_ABILITY=65076 RC_CAST_AT=38000:1
+slot 1 -> 65076 绝境_云飞玉皇 anim=...11b... prepareMs=1500 prepareAnim=...11a...
+cast chain 65076: anim=...11b... prepareAnim=...11a... animMs=1500 prepareMs=1500
+  commitMs=1500 totalMs=3000 cdMs=12000 (row 7146)     <- prepare 1.5s, then release
+apply 65076 -> child=[65077]                            <- effect at commit (1.5s in)
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
