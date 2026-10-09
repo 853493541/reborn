@@ -12,6 +12,7 @@ system for reborn, with a PvP focus. Branch: `research/jx3-pvp-battle`.
 | `ABILITY_FX_AND_HIT_REACTION_PLAN.md` | **plan**: ability FX beyond the cast — landing-zone SFX (`AOESelectionSFXFile`), hit effect (`HitEffectResultID`→.pss), be-hit animation (`BeHittedBy*`) + hit sound (`HitSoundID`); phases FX1–FX6, grounded in `skill_caster_f1.txt` (五方行尽 65149 worked example) |
 | `ABILITY_CORRECTNESS_PLAN.md` | **umbrella forward plan**: make every roster ability behave as authored; phases FWD1 (un-blacklist 39 AV abilities) → FWD8 (per-ability review loop); coverage table + verification protocol |
 | `ENGINE_RE_BREAKTHROUGH_PLAN.md` | **plan**: break the binary-RE / packed-data walls (W1 per-tani AV, W2 default be-hit anim, W3 Wwise name→id, W4 engine `.Sfx`, W5 Lua VM) using `tools/pvp/dump_fn_disasm.py`, `minidump_exc.py`, `PakV4SfxExtract.exe` |
+| `ABILITY_FOLLOWUP_PLAN.md` | **inventory**: everything still imprecise (engine RE, mechanics, scripts, tooling) with confidence + the exact next probe per item |
 
 Per-workstream evidence reports (raw values + citations + confidence):
 
