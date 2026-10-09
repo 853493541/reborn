@@ -1,0 +1,8 @@
+# skill v6 — show selected ability name+catalog on the combat overlay (2026-10-08)
+# Build: reborn_client_skillv6.exe
+# Change: the combat-overlay status line now prefixes "[<name> / <catalog>]" for the active
+#   (selected) ability, so the icons-only panel's selection is identifiable.
+
+## Verified: RC_ABILITY=65036 -> status "[绝境_龙吟 / 测试中]  HP …";
+#   buffer proof/netcode/skillv6_selstatus.png 506x30 sha256=c7d54de39a5e91ef
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

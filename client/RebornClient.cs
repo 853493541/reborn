@@ -5355,7 +5355,9 @@ internal static class RebornClient
                 if (abilityPanel != null) abilityPanel.Toggle();
             }
             // P5 combat feedback (status + recent events)
-            combatText.SetStatus("HP " + (targetSelector.Current != null
+            string activeName = selAbility, activeCat = "";
+            { string[] srr; if (roster.TryGetValue(selAbility, out srr)) activeName = srr[1]; abilityStatus.TryGetValue(selAbility, out activeCat); if (activeCat == null) activeCat = ""; }
+            combatText.SetStatus("[" + activeName + " / " + activeCat + "]  HP " + (targetSelector.Current != null
                     ? (targetSelector.Current.Hp + "/" + targetSelector.Current.MaxHp) : "-")
                 + "  mana " + mana.ToString("F0")
                 + "  gcd " + (gcdUntil > now ? (gcdUntil - now) + "ms" : "ready")
