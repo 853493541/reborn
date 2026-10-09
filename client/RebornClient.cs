@@ -2366,6 +2366,10 @@ internal static class RebornClient
             {
                 if (selAbility.Length > 0) { abilityStatus[selAbility] = "测试中"; saveStatus(); if (abilityPanel != null) abilityPanel.Refresh(abilityStatus); Log("ability " + selAbility + " -> 测试中 (F2)"); }
             }
+            else if (e.KeyCode == Keys.F3)
+            {
+                if (selAbility.Length > 0) { abilityStatus[selAbility] = "需要修复"; saveStatus(); if (abilityPanel != null) abilityPanel.Refresh(abilityStatus); Log("ability " + selAbility + " -> 需要修复 (F3)"); }
+            }
             else if (e.KeyCode == Keys.F5)
             {
                 // host test key (P3): cycle the camera rows. No gameplay trigger

@@ -1,0 +1,10 @@
+# skill v6 — F3 = 需要修复 key (2026-10-08)
+# Build: reborn_client_skillv6.exe
+# Added F3 as a companion to F1/F2: with an ability selected (active in the panel),
+#   F1 -> 已完成,  F2 -> 测试中,  F3 -> 需要修复. Persisted like F1/F2.
+
+## Verified: PostMessage VK_F1/VK_F2/VK_F3 to the form (isolated RC_MEM_NS probe)
+ability 65036 -> 已完成 (F1)
+ability 65036 -> 测试中 (F2)
+ability 65036 -> 需要修复 (F3)
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
