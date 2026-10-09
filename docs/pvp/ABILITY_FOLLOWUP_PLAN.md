@@ -19,10 +19,10 @@ Confidence: **HIGH** = verified from data/code; **MED** = partial evidence; **LO
 
 ## B. Ability mechanics still imprecise
 
-- **Multi-hit / channel hit schedule (MED→LOW).** We apply damage/buffs once at commit. Channel
-  skills (`nChannelFrame`/`nChannelInterval`) and multi-hit skills may apply N times on an
-  authored schedule. Unknown: the hit count + per-hit timing. Next: parse the skill script
-  (`nChannelInterval`, hit count) + `skill_chain.txt`.
+- **Multi-hit / channel hit schedule. CHANNEL DONE (2026-10-09).** Channel skills now apply the
+  mechanic every `channelInterval` during the channel (27906 -> 10 applies over 4 s, was 1).
+  Still open: non-channel multi-hit skills' authored hit count/timing. Next: parse the skill
+  script hit count + `skill_chain.txt`.
 - **Missiles / projectiles (LOW).** `skill_missile.txt`, `missile.txt`, `skill_bullet.krl.txt`
   exist; PointArea/projectile skills likely spawn a missile that travels and triggers on landing.
   We resolve instantly at the point. Unknown: flight + on-hit trigger + the missile model. Next:

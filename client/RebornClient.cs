@@ -223,6 +223,10 @@ internal static class RebornClient
         long.TryParse(Env("RC_LY_FX_LIFE", "2500"), out lyFxLife);
         SkillCast skillCast = new SkillCast();
         long castFxUntil = 0;
+        // channel tick schedule (channel skills apply their mechanic every interval)
+        bool chanActive = false;
+        long chanIntervalMs = 0;
+        long chanNextTick = 0;
         // FX3 hit effects: spawn each as a UNIQUE instance and remove it after a short life,
         // so a looping/lingering .pss does not replay and repeated casts do not stack.
         long hitFxSeq = 0;
@@ -487,6 +491,7 @@ internal static class RebornClient
         float selDash = lyDash;
         long selPrepareMs = 0;   // cast time (nPrepareFrames / GAME_FPS); 0 = instant
         long selChannelMs = 0;   // channel duration (nChannelFrame / GAME_FPS); 0 = none
+        long selChannelIntervalMs = 0;   // channel tick interval (nChannelInterval / GAME_FPS); 0 = none
         string selPrepareAnim = "";   // prepare-phase anim (roster col 13); played during prepare
         Action<int> selectSlot = null;
         selectSlot = delegate(int i)
@@ -494,7 +499,7 @@ internal static class RebornClient
             if (i < 0 || i >= slotIds.Length) return;
             activeSlot = i;
             selAbility = slotIds[i].Trim();
-            selAnimPath = lyAnim; selFxPath = lyFx; selDash = lyDash; selPrepareMs = 0; selChannelMs = 0; selPrepareAnim = "";
+            selAnimPath = lyAnim; selFxPath = lyFx; selDash = lyDash; selPrepareMs = 0; selChannelMs = 0; selChannelIntervalMs = 0; selPrepareAnim = "";
             string[] ab;
             bool found = roster.TryGetValue(selAbility, out ab);   // roster carries prepareFrames
             if (!found) found = castChain.TryGetValue(selAbility, out ab);
@@ -518,11 +523,22 @@ internal static class RebornClient
                     if (int.TryParse(ab[10], out cf) && cf > 0)
                         selChannelMs = (long)cf * 1000L / SkillCast.GameFps;
                 }
+                // channel tick interval (mechanics col 10 nChannelInterval, in frames)
+                {
+                    string[] mc;
+                    if (mechanics.TryGetValue(selAbility, out mc) && mc.Length > 10)
+                    {
+                        float ci;
+                        if (float.TryParse(mc[10], out ci) && ci > 0f)
+                            selChannelIntervalMs = (long)(ci * 1000f / SkillCast.GameFps);
+                    }
+                }
                 // prepare-phase animation (roster col 13): played during the prepare window
                 if (ab.Length >= 14) selPrepareAnim = ab[13];
                 Log("slot " + (i + 1) + " -> " + selAbility + " " + ab[1]
                     + " anim=" + ab[2] + " fx=" + ab[3] + " dash=" + selDash
                     + " prepareMs=" + selPrepareMs + " channelMs=" + selChannelMs
+                    + " chanIntervalMs=" + selChannelIntervalMs
                     + " prepareAnim=" + selPrepareAnim);
             }
             else Log("slot " + (i + 1) + " -> " + selAbility + " (not in dataset)");
@@ -4010,7 +4026,10 @@ internal static class RebornClient
             {
                 float cpx, cpz;
                 if (skillCast.Tick(now, out cpx, out cpz)) { px = cpx; pz = cpz; rpx = cpx; rpz = cpz; }
-                if (skillCast.TakeEffect(now))
+                bool commitNow = skillCast.TakeEffect(now);
+                bool chanTick = chanActive && now >= chanNextTick;
+                if (chanTick) chanNextTick = now + chanIntervalMs;
+                if (commitNow)
                 {
                     setClip(skillCast.AnimPath);   // switch to the release/cast anim at commit
                     float ex, ey, ez;
@@ -4026,6 +4045,12 @@ internal static class RebornClient
                         }
                         catch (Exception e) { Log("cast chain fx ex: " + e.Message); }
                     }
+                    // channel: schedule per-interval applies for the channel duration.
+                    if (selChannelMs > 0 && selChannelIntervalMs > 0)
+                    { chanActive = true; chanIntervalMs = selChannelIntervalMs; chanNextTick = now + chanIntervalMs; }
+                }
+                if (commitNow || chanTick)
+                {
                     // P3 v2 + P2: resolve the mechanic program and apply it to the
                     // affected target set (castMode AoE around the caster/target/point).
                     try
@@ -4259,6 +4284,7 @@ internal static class RebornClient
                     catch (Exception e) { Log("mechanic ex: " + e.Message); }
                 }
             }
+            else chanActive = false;
             if (castFxUntil != 0 && now >= castFxUntil)
             {
                 castFxUntil = 0;

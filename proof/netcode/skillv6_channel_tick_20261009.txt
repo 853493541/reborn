@@ -1,0 +1,12 @@
+# skill v6 — channel tick schedule (multi-hit channels) (2026-10-09)
+# Build: reborn_client_skillv6.exe
+
+## Change
+# Channel skills now apply their mechanic every channelInterval during the channel (was: once).
+# selChannelIntervalMs = mechanics channelInterval (frames) / GAME_FPS; set at commit, then the
+# mechanic apply repeats each interval until the cast ends. setClip/effect still fire once (commit).
+
+## Verified (RC_SLOTS=27906 斩无常; channelMs=4000, chanIntervalMs=500)
+# slot line: channelMs=4000 chanIntervalMs=500
+# mechanic 27906 applies = 10 (commit + 9 ticks @ ~500 ms)   (was 1)
+# no AV; gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
