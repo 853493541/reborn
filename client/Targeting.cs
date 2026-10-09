@@ -32,6 +32,8 @@ internal sealed class TargetEntity
     public bool IsPlayer;      // relation class: player vs npc
     public bool IsEnemy;
     public System.Collections.Generic.List<string> Buffs = new System.Collections.Generic.List<string>();
+    public System.Collections.Generic.Dictionary<string, long> BuffUntil =
+        new System.Collections.Generic.Dictionary<string, long>();   // buffId -> expiry ms
     public long CcUntil;       // CC (stun/silence/...) active until this ms
     public string CcType = "";
     public string ModelName = "";   // engine dummy name (to move the model)

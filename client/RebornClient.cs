@@ -438,6 +438,31 @@ internal static class RebornClient
             else Log("hit_fx: missing " + hfPath);
         }
         catch (Exception e) { Log("hit_fx load ex: " + e.Message); }
+        // buff durations (ability_picker/tools/build_buff_times.py): the client's own buff
+        // timer is Count (col 13) x Interval (col 14) frames (KScriptFuncList::LuaGetBuffTime
+        // @0x1401c0730 returns Count*Interval); the frame base is 16 fps. 0 = no expiry.
+        var buffTimes = new System.Collections.Generic.Dictionary<string, long>();   // buffId -> lifetime ms
+        string btPath = Env("RC_BUFFTIMES",
+            Path.Combine(Application.StartupPath, "ability_picker", "buff_times_f1.tsv"));
+        try
+        {
+            if (File.Exists(btPath))
+            {
+                int bl = 0;
+                foreach (string line in File.ReadAllLines(btPath))
+                {
+                    if (bl++ == 0) continue;
+                    string[] p = line.Split('\t');
+                    if (p.Length < 6 || p[0].Length == 0) continue;
+                    long cnt, ivl;
+                    if (!long.TryParse(p[3], out cnt) || !long.TryParse(p[4], out ivl)) continue;
+                    if (!buffTimes.ContainsKey(p[0])) buffTimes[p[0]] = cnt * ivl * 1000L / 16L;
+                }
+                Log("buff_times: " + buffTimes.Count + " buffs from " + btPath);
+            }
+            else Log("buff_times: missing " + btPath);
+        }
+        catch (Exception e) { Log("buff_times load ex: " + e.Message); }
         // cooldown table (ability_picker/tools/build_cooldowns.py): row -> Duration(s),
         // MaxCount. GCD = row 16 (1.5 s).
         var cooldowns = new System.Collections.Generic.Dictionary<string, string[]>();
@@ -581,6 +606,7 @@ internal static class RebornClient
         float cdOverrideMs = 3000f;
         { float v; if (float.TryParse(Env("RC_CD_MS", "3000"), out v) && v >= 0f) cdOverrideMs = v; }
         var selfBuffs = new System.Collections.Generic.List<string>();   // passive self-buffs
+        var selfBuffUntil = new System.Collections.Generic.Dictionary<string, long>();  // id -> expiry ms
         float playerMaxHp = 500000f;
         float.TryParse(Env("RC_PLAYER_HP", "500000"), out playerMaxHp);
         float playerHp = playerMaxHp;
@@ -4078,9 +4104,9 @@ internal static class RebornClient
                                 Log("apply " + skillCast.Name + " -> child=[" + children + "] +buff=[" + addBuffs + "] -buff=[" + delBuffs + "] n=" + pv.Length);
                                 string[] bids = addBuffs.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                                 for (int bi = 0; bi < bids.Length; bi++)
-                                    if (!selfBuffs.Contains(bids[bi])) selfBuffs.Add(bids[bi]);
+                                            if (!selfBuffs.Contains(bids[bi])) { selfBuffs.Add(bids[bi]); selfBuffUntil[bids[bi]] = BuffExpiry(buffTimes, bids[bi], now); }
                                 string[] dids = delBuffs.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                                for (int di = 0; di < dids.Length; di++) selfBuffs.Remove(dids[di]);
+                                        for (int di = 0; di < dids.Length; di++) { selfBuffs.Remove(dids[di]); selfBuffUntil.Remove(dids[di]); }
                                 float hpct;
                                 if (pv.Length > 5 && float.TryParse(pv[5], out hpct) && hpct > 0f)
                                 {
@@ -4158,8 +4184,8 @@ internal static class RebornClient
                                         {
                                             if (cp.Damage > 0f) { ct.Hp -= (long)cp.Damage; if (ct.Hp < 0) ct.Hp = 0; }
                                             for (int cbi = 0; cbi < cp.BuffsAdd.Count; cbi++)
-                                                if (!ct.Buffs.Contains(cp.BuffsAdd[cbi])) ct.Buffs.Add(cp.BuffsAdd[cbi]);
-                                            if (cp.BuffsRemove > 0) ct.Buffs.Clear();
+                                                if (!ct.Buffs.Contains(cp.BuffsAdd[cbi])) { ct.Buffs.Add(cp.BuffsAdd[cbi]); ct.BuffUntil[cp.BuffsAdd[cbi]] = BuffExpiry(buffTimes, cp.BuffsAdd[cbi], now); }
+                                            if (cp.BuffsRemove > 0) { ct.Buffs.Clear(); ct.BuffUntil.Clear(); }
                                             if (cp.CcType.Length > 0) { ct.CcType = cp.CcType; ct.CcUntil = now + 2000; }
                                             if (cp.Knockdown) { ct.CcType = "Knockdown"; ct.CcUntil = now + 1500; }
                                         }
@@ -4241,8 +4267,8 @@ internal static class RebornClient
                                     }
                                 }
                                 for (int bi = 0; bi < plan.BuffsAdd.Count; bi++)
-                                    if (!tgt.Buffs.Contains(plan.BuffsAdd[bi])) tgt.Buffs.Add(plan.BuffsAdd[bi]);
-                                if (plan.BuffsRemove > 0) tgt.Buffs.Clear();
+                                    if (!tgt.Buffs.Contains(plan.BuffsAdd[bi])) { tgt.Buffs.Add(plan.BuffsAdd[bi]); tgt.BuffUntil[plan.BuffsAdd[bi]] = BuffExpiry(buffTimes, plan.BuffsAdd[bi], now); }
+                                    if (plan.BuffsRemove > 0) { tgt.Buffs.Clear(); tgt.BuffUntil.Clear(); }
                                 if (plan.CcType.Length > 0) { tgt.CcType = plan.CcType; tgt.CcUntil = now + 2000; }
                                 if (plan.Knockdown) { tgt.CcType = "Knockdown"; tgt.CcUntil = now + 1500; }
                                 if (plan.TargetPullPerFrame > 0f)
@@ -4335,6 +4361,32 @@ internal static class RebornClient
                     Log("behit anim restore " + bt.Name);
                     behitActive.RemoveAt(bhi);
                 }
+            // buff expiry: a buff's timer is Count x Interval frames (@16 fps, from
+            // ability_picker/buff_times_f1.tsv); ids with no/zero time never expire.
+            for (int sbi = selfBuffs.Count - 1; sbi >= 0; sbi--)
+            {
+                long su;
+                if (selfBuffUntil.TryGetValue(selfBuffs[sbi], out su) && su != 0 && now >= su)
+                {
+                    Log("buff expired self " + selfBuffs[sbi]);
+                    selfBuffUntil.Remove(selfBuffs[sbi]);
+                    selfBuffs.RemoveAt(sbi);
+                }
+            }
+            for (int bei = 0; bei < targetSelector.Entities.Count; bei++)
+            {
+                TargetEntity en = targetSelector.Entities[bei];
+                for (int bfi = en.Buffs.Count - 1; bfi >= 0; bfi--)
+                {
+                    long eu;
+                    if (en.BuffUntil.TryGetValue(en.Buffs[bfi], out eu) && eu != 0 && now >= eu)
+                    {
+                        Log("buff expired " + en.Name + " " + en.Buffs[bfi]);
+                        en.BuffUntil.Remove(en.Buffs[bfi]);
+                        en.Buffs.RemoveAt(bfi);
+                    }
+                }
+            }
 
             // model update (only when changed; keeps animation alive).
             // Y must be part of the gate: a standing jump changes py only, and
@@ -5816,6 +5868,14 @@ internal static class RebornClient
             System.Text.RegularExpressions.Regex.Match(stem, "_[sS][tT]\\d+.*$");
         if (!m.Success) return "";
         return dir + stem.Substring(0, m.Index) + "_bat01" + ext;
+    }
+
+    // Buff expiry from the client's own timer (Count x Interval frames @16 fps); 0 = permanent.
+    static long BuffExpiry(System.Collections.Generic.Dictionary<string, long> times, string id, long now)
+    {
+        long ms;
+        if (times != null && times.TryGetValue(id, out ms) && ms > 0) return now + ms;
+        return 0;
     }
 
     // Recon helper: log the public managed methods whose name matters for the
