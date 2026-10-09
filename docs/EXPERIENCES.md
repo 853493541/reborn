@@ -8773,3 +8773,15 @@ if the cache/host frames appear.
   (0/1/2), selector unknown → FX6 stays optional; `nMinRadius>0` only 65120 and it is
   **TargetSingle** (min = min cast range 384, not an AoE annulus) → AoE complete.
 - Gates: jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+
+### 2026-10-09 — v6 — session handoff 2 (state consolidate after feature work)
+
+- **Did:** wrote `docs/pvp/SESSION_HANDOFF_20261009b.md` (registered in `docs/pvp/README.md`)
+  consolidating this session: FX4 be-hit animation, buff durations, AoE fix, full sweep green;
+  closed items (CC server-side, chain/tag/shake/missiles/nMinRadius characterized); remaining
+  blockers W4 (.Sfx factory owner), W3 (bank/name->id), W1 (debugger), damage scaling, Lua VM —
+  each with its exact next probe.
+- **Also** noted: only 2 roster skills carry a `MissileID` (low value); `nMinRadius>0` only 65120
+  (TargetSingle min cast range).
+- **Artifacts:** `docs/pvp/SESSION_HANDOFF_20261009b.md`, `docs/pvp/README.md`.
+- Verified: docs-only; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.

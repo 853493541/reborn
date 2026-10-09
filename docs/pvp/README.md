@@ -14,6 +14,7 @@ system for reborn, with a PvP focus. Branch: `research/jx3-pvp-battle`.
 | `ENGINE_RE_BREAKTHROUGH_PLAN.md` | **plan**: break the binary-RE / packed-data walls (W1 per-tani AV, W2 default be-hit anim, W3 Wwise name→id, W4 engine `.Sfx`, W5 Lua VM) using `tools/pvp/dump_fn_disasm.py`, `minidump_exc.py`, `PakV4SfxExtract.exe` |
 | `ABILITY_FOLLOWUP_PLAN.md` | **inventory**: everything still imprecise (engine RE, mechanics, scripts, tooling) with confidence + the exact next probe per item |
 | `SESSION_HANDOFF_20261009.md` | **handoff**: branch/state, build/run/verify, what's done, what's missing (+ next probe each), key files, RC knobs, gotchas — for the next session |
+| `SESSION_HANDOFF_20261009b.md` | **handoff 2** (same day feature work): FX4 be-hit anim, buff durations, AoE fix, sweep regression green; W4/W3/W1 blockers + next probes; closed items (CC, chain/tag/shake, missiles, nMinRadius) |
 
 Per-workstream evidence reports (raw values + citations + confidence):
 
