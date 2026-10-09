@@ -8572,3 +8572,17 @@ if the cache/host frames appear.
 - **Lesson:** PostMessage-to-form and AppActivate are unreliable proxies for real input here;
   verify with real mouse_event/keybd_event and check GetForegroundWindow (AppActivate silently
   fails when another process holds the foreground).
+
+### 2026-10-08 — v6 — F-keys via WH_KEYBOARD_LL (definitive input fix)
+
+- **Did:** added `LowLevelKeyHook` (WH_KEYBOARD_LL) for F1/F2/F3, installed at startup next to
+  the in-process IMessageFilter. A low-level hook fires for every key system-wide before any
+  window, so it works even when the engine's native window (possibly another thread) holds
+  focus and swallows a key (F2 in particular).
+- **Verified:** real keybd_event with NO foreground -> `hook installed=True` and
+  `65036 -> 测试中 (F2)`, `-> 已完成 (F1)`, `-> 需要修复 (F3)`
+  (proof/netcode/skillv6_fkey_hook_20261008.txt). Gates: jx3_model 10 PASS, gravity PASS,
+  loot selftest PASS.
+- **Lesson:** in-process IMessageFilter is not enough for host hotkeys; the engine can consume
+  a key before it reaches our queue. WH_KEYBOARD_LL is the robust path (and is testable with
+  keybd_event without stealing foreground).
