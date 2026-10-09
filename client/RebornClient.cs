@@ -3392,7 +3392,7 @@ internal static class RebornClient
                 {
                     if (ctg == null) Log("cast: no target - nothing cast (ability system needs a target)");
                     else if (skipIds.Contains(selAbility)) Log("cast blocked: " + selAbility + " AV-blacklisted");
-                    else if (!inRange) Log("cast blocked: out of range " + tdist.ToString("F0") + "u > " + castRangeU.ToString("F0") + "u");
+                    else if (!inRange) { Log("cast blocked: out of range " + tdist.ToString("F0") + "u > " + castRangeU.ToString("F0") + "u"); combatText.Push("out of range", System.Drawing.Color.FromArgb(255, 140, 140)); }
                     else if (skillCast.Active) Log("cast blocked: cast in progress");
                     else if (now < gcdUntil) Log("cast blocked: GCD " + (gcdUntil - now) + "ms");
                     else if (now < cdForSkill) Log("cast blocked: cooldown " + (cdForSkill - now) + "ms");

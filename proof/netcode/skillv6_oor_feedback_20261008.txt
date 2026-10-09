@@ -1,0 +1,11 @@
+# skill v6 — out-of-range feedback on the combat overlay (2026-10-08)
+# Build: reborn_client_skillv6.exe
+# Change: when a cast is blocked for being out of the 20-尺 range, the client also pushes an
+#   "out of range" line to the combat overlay (was log-only).
+
+## Driven run: RC_ABILITY=65116 RC_CAST_AT=38000:1,50000:1 RC_CT_DUMP_ALL=1
+knockback 65116 -> 初级试炼木桩 to (18991,35533)   (dummy to ~1680 u)
+cast blocked: out of range 1680u > 1280u
+# overlay buffer: proof/netcode/skillv6_oor.png 588x52 sha256=d8d2747fe293e2a2 (event row, red)
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
