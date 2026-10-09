@@ -1,0 +1,40 @@
+# skill v6 — W4 .Sfx: exact CreateSFXFromFile arg mapping (why the shim faults) (2026-10-09)
+# Read-only disasm: C:\SeasunGame\MovieEditor\bin64\KG3DEngineDX11EX64.dll (ImageBase 0x180000000)
+
+## The engine's own caller (KG3D_SFXModel::BindData @0x180e33e40, call @0x180e3412a)
+Right before `call 0x180be4000` (KG3D_CreateSFXFromFile):
+  0x180e340fc  mov  r8,  [rdi+0x38]      ; a3  <- a tag-context object field
+  0x180e34100  lea  r9,  [rbp-0x80]      ; a4  <- a local string buffer (".jsoninspack" appended at 0x180e340d2)
+  0x180e3410c  mov  rcx, r12             ; a1  <- owner
+  0x180e3411c  mov  rdx, [rdi+0x28]      ; a2  <- path
+  0x180e34125  mov  [rsp+0x20], r13(=0)  ; a5  <- 0
+  0x180e34120  mov  [rsp+0x28], rax      ; a6  <- tagdata+0x288 (tag world matrix)
+  0x180e34118  mov  [rsp+0x30], edx      ; a7  <- [tagdata+0x58] (flag dword)
+  0x180e34104  mov  [rsp+0x38], rcx      ; a8  <- &local (OUT slot)
+  0x180e3412a  call 0x180be4000
+  0x180e3412f  mov  rcx, rax; call 0x181a3bc39; mov [rbx+0x90], rax   ; rax = the SFX object
+
+## KG3D_CreateSFXFromFile @0x180be4000 prologue
+  rcx=r14 (owner, REQUIRED non-null: test r14,r14 / je fail), rdx=rsi (path, REQUIRED),
+  r8=r13 (a3), r9=[rsp+0x48] (a4), a5=[rbp+0x630], a6=rdi=[rbp+0x638], a7=[rbp+0x640] (dword),
+  a8=[rbp+0x648]. It copies the path (0x104) then dereferences the later args.
+
+## vs native/sfx_shim.cpp RC_Shim_SfxPlay
+The shim calls `create(owner, path, NULL, &outParam, NULL, mtx, 0, owner)`:
+  a1 owner OK, a2 path OK, a3=NULL (engine: tag object), a4=&outParam (engine: a string),
+  a5=0 OK, a6=mtx OK-ish, a7=0 (engine: flag), a8=owner (engine: the OUT slot).
+So a3/a4/a7/a8 are all wrong: notably a8 must be the out pointer (not owner), a3 is a tag-context
+object and a4 a secondary path — both supplied by the engine's animation-tag context (`rdi`/`tagdata`)
+which the host does NOT have (it plays a raw dummy model's tani via PlayAnimation, not a KG3D_SFXModel
+tag). A direct factory call therefore cannot be made correct from the host.
+
+## Conclusion / next probe (W4)
+Do NOT keep guessing factory args. The real route is the engine's own **tag-spawn path**: spawn the
+landing-zone `.Sfx` through the animation/SFX tag system (KG3D_AnimationTag / KG3D_SFXModel) so the
+tag-context args exist, or find a scene-level "play standalone effect" API that builds them. The
+`/loc`-style `__RTDynamicCast` play steps in the shim are only valid AFTER a correct create.
+
+Reproduce (read-only):
+  .venv\Scripts\python.exe tools\pvp\dump_fn_disasm.py ^
+    "C:\SeasunGame\MovieEditor\bin64\KG3DEngineDX11EX64.dll" --names sfx_addrs.txt --out-dir <out>
+  (sfx_addrs.txt: @0x180e3412a, @0x180be4000, @0x18076e51a)

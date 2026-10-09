@@ -91,9 +91,15 @@ Proven: `dump_fn_disasm.py JX3RepresentX64.dll --names behit_names.txt` returned
     parser did not surface them); then post by name into the loaded bank; OR (b) expose
     `RC_SoundProbe_PostEventName(const char*)` and try the names against the loaded bank set and
     read Wwise's return (invalid id vs played). Do not guess a numeric id.
-- **W4 — FWD4 engine `.Sfx` spawn.** `dump_fn_disasm.py` on the engine DLL for the SFX factory /
-  the tag-spawn caller; recover the correct owner chain so `RC_Shim_SfxPlay` stops faulting, then
-  play `AOESelectionSFXFile` at the AoE centre.
+- **W4 — FWD4 engine `.Sfx` spawn. INVESTIGATED (2026-10-09) — the direct factory call cannot be
+  made correct from the host.** `KG3D_CreateSFXFromFile` @`0xBE4000` (ME build) is called by
+  `KG3D_SFXModel::BindData` @`0x180e3412a` with tag-context args: a1 owner, a2 path, a3=`[tagobj+0x38]`,
+  a4=a built string, a5=0, a6=`tagdata+0x288` (matrix), a7=`[tagdata+0x58]` flag, **a8=&out slot**.
+  `native/sfx_shim.cpp RC_Shim_SfxPlay` passes a3=NULL, a4=&outParam, a7=0, a8=owner — all wrong —
+  and the tag-context object/path simply don't exist in the host (it plays a raw dummy model's tani
+  via `PlayAnimation`, not a `KG3D_SFXModel` tag), so no arg fix can supply them. **Route:** spawn
+  the landing `.Sfx` through the engine's own animation/SFX **tag** path (so the tag args exist), or
+  a scene-level standalone-effect API. Evidence: `proof/netcode/skillv6_sfx_argmapping_20261009.txt`.
 - **W5 — FWD6 scripts.** Build the Lua 5.1 VM (`lua51_disasm.py` already parses bytecode) + an
   engine-API shim; run the residual scripts.
 

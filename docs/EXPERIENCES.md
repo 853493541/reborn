@@ -8785,3 +8785,17 @@ if the cache/host frames appear.
   (TargetSingle min cast range).
 - **Artifacts:** `docs/pvp/SESSION_HANDOFF_20261009b.md`, `docs/pvp/README.md`.
 - Verified: docs-only; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+
+### 2026-10-09 — v6 — W4 .Sfx: exact arg mapping proves the direct factory call can't work
+
+- **Did:** disassembled the engine's own `.Sfx` creation to find why `RC_Shim_SfxPlay` faults.
+- **Finding:** `KG3D_CreateSFXFromFile` @`0xBE4000` (ME build, ImageBase 0x180000000) is called by
+  `KG3D_SFXModel::BindData` @`0x180e3412a` with a tag context: a1 owner (r12), a2 path `[rdi+0x28]`,
+  a3 `[rdi+0x38]`, a4 a built local string (".jsoninspack"), a5 0, a6 `tagdata+0x288` (matrix), a7
+  `[tagdata+0x58]` flag, **a8 `&out`**. The shim passes a3=NULL, a4=&outParam, a7=0, **a8=owner** —
+  all wrong — and `rdi`/`tagdata` (the tag object) do not exist in the host (it plays a raw dummy
+  model tani, not a `KG3D_SFXModel` tag). So no arg tweak can fix the direct call.
+- **Route (next):** spawn the landing `.Sfx` via the engine's own animation/SFX **tag** path (builds
+  the tag context), or a scene-level standalone-effect API. Evidence
+  `proof/netcode/skillv6_sfx_argmapping_20261009.txt`; `ENGINE_RE_BREAKTHROUGH_PLAN.md` W4 updated.
+- Verified: read-only disasm; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
