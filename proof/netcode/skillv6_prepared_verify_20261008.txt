@@ -1,0 +1,16 @@
+# skill v6 — prepared-skill (吟唱) handling verified across abilities (2026-10-08)
+# Build: reborn_client_skillv6.exe (git 378f9b3)
+# 23 roster abilities have a prepareAnim; the two-phase cast (prepare anim -> release anim +
+# effect at commit) applies to all of them.
+
+## Verified
+#  65076 (24 frames = 1.5 s): prepareAnim 11a -> anim 11b + apply child 65077
+#  27874 (48 frames = 3 s):   prepareAnim 02a -> anim 02b + apply child 27996 + buffs
+#  65108 (24 frames = 1.5 s): prepareAnim 21a -> anim 21b
+
+## NOTE: a plain run (no cast) floods stdout with engine log noise
+#  "KGLOG_ASSERT_EXIT(pRetMinDistanceRet) at line 1701 in KG3D_Scene::RayIntersection".
+#  It is on STDOUT (not stderr), present without any cast -> pre-existing engine log noise
+#  (camera ray probe), not caused by the ability/cast-range changes; the client runs clean.
+
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS

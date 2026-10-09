@@ -8495,6 +8495,17 @@ if the cache/host frames appear.
   `proof/netcode/skillv6_prepare_cast_range_20261008.txt`. Gates: jx3_model 10 PASS, gravity PASS,
   loot selftest PASS.
 
+### 2026-10-08 — v6 — prepared-skill handling verified (all 23 prepare-anim abilities)
+
+- **Verified:** the two-phase cast applies to all 23 abilities with a `prepareAnim`:
+  65076 (24f=1.5 s) 11a→11b + child 65077; 27874 (48f=3 s) 02a→02b + child 27996 + buffs;
+  65108 (24f) 21a→21b. Proof `proof/netcode/skillv6_prepared_verify_20261008.txt`.
+- **Note:** a plain run floods **stdout** with engine log noise
+  (`KGLOG_ASSERT_EXIT(pRetMinDistanceRet) at line 1701 in KG3D_Scene::RayIntersection`), present
+  without any cast → pre-existing engine log noise (camera ray probe), not from the ability/
+  cast-range changes; the client runs clean. Gates: jx3_model 10 PASS, gravity PASS, loot
+  selftest PASS.
+
 ### 2026-10-08 — v6 — abilities verified (batch 7, partial)
 
 - **Verified (run interrupted):** 65108 (dispel buff-=8), 65109 (child 65110;65111;65112), 65118
