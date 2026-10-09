@@ -34,7 +34,8 @@ Continues `SESSION_HANDOFF_20261009.md` (same day). Origin untouched (no push).
   self-lock (empty), no client table has the target CC time → keep the 2 s stand-in.
 - **skill_chain.txt** = 链状特效 visual beam (`.Sfx`, W4-blocked) — not a combo; **skill_tag.txt** =
   SkillID→AnimationID (handled); **behit_shake.txt** = 3 trivial rows (0/1/2), selector unknown.
-- **Missiles**: only 2 roster skills carry a `MissileID` (28046→231, 65059→25) → low value.
+- **Missiles**: only 2 roster skills carry a `skill_caster` `MissileID` (28046→231, 65059→25), but
+  the bullet visual `nSkillBulletType` is set in 16% of scripts → the mechanic is broader (see §4).
 - **nMinRadius**: only 65120, which is TargetSingle (min cast range, not an AoE annulus).
 
 ## 4. Remaining (with the exact blocker / next probe)
@@ -50,8 +51,10 @@ Continues `SESSION_HANDOFF_20261009.md` (same day). Origin untouched (no push).
   jemalloc from the engine anim code. Blocked.
 - **Damage scaling (weapon%/AP)** — no player attack-power base; blocked/server-side.
 - **Lua VM (46 `EXECUTE_SCRIPT`-only)** — most are no-op/template passives; large.
-- **Missiles / non-channel multi-hit** — low value / unclear (boss `nSubsection`/`SetDelaySubSkill`
-  paths); revisit only if the roster grows.
+- **Missiles / projectiles** — scoped feature: `skill_caster` MissileID is only 2 roster skills but
+  the bullet visual `nSkillBulletType` is in 189/1173 scripts (16%); roster scoping needs a
+  `skills.tab` col-57 `ScriptFile` join. Non-channel multi-hit is unclear (boss
+  `nSubsection`/`SetDelaySubSkill` paths).
 
 ## 5. Key files
 - Client: `client/RebornClient.cs` (host; FX3/FX4 hit loop ~4200, buff expiry ~4350, AoE ~4196),

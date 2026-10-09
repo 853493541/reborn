@@ -8841,3 +8841,18 @@ if the cache/host frames appear.
   or a runtime `PostEvent(const char*)` hook on the real client (not allowed per root AGENTS §8).
   Marked blocked (re-open only if such a bank surfaces). `ABILITY_FOLLOWUP_PLAN.md` W3 row updated.
 - Verified: read-only scans (no writes); gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+
+### 2026-10-09 — v6 — projectile scoping: 17 roster skills use a bullet (not 2)
+
+- **Did:** scoped the missile/bullet feature for the roster (corrected the earlier "2 skills" claim).
+- **Findings:** `skills.tab` is keyed by col 1 (`SkillID`; col 0 is `SkillName`), col 57 = `ScriptFile`.
+  Joining roster→ScriptFile→script shows `skill.nSkillBulletType = 1` in **17** roster skills
+  (27844/27874/27902/27903/27904/27905/27906/28045/28046/30226/30261/34594/…), all the same type.
+  `skill_bullet.krl.txt` defines named groups (CYShield/PureShadow/SelfShadow) `{ CommonFlyAni,
+  CommonModel, SingleTargetAni, OutTime }`; the `SKILL_BULLET_TYPE` enum that maps type→group is not
+  in `scripts/Include/Skill.lh` (the include wasn't the right one). `skill_caster` `MissileID` is
+  only 2 skills (28046/65059) and `ImmediatelyMissileID` 0.
+- **Next:** find the `SKILL_BULLET_TYPE` enum (right include or the client binding) → group → model,
+  then spawn the bullet at the caster + travel + trigger on arrival. `ABILITY_FOLLOWUP_PLAN.md`
+  missiles bullet + handoff updated.
+- Verified: read-only joins/scans; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.

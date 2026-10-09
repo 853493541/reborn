@@ -23,10 +23,16 @@ Confidence: **HIGH** = verified from data/code; **MED** = partial evidence; **LO
   mechanic every `channelInterval` during the channel (27906 -> 10 applies over 4 s, was 1).
   Still open: non-channel multi-hit skills' authored hit count/timing. Next: parse the skill
   script hit count + `skill_chain.txt`.
-- **Missiles / projectiles (LOW).** `skill_missile.txt`, `missile.txt`, `skill_bullet.krl.txt`
-  exist; PointArea/projectile skills likely spawn a missile that travels and triggers on landing.
-  We resolve instantly at the point. Unknown: flight + on-hit trigger + the missile model. Next:
-  model missiles from `missile.txt`/`skill_missile.txt`.
+- **Missiles / projectiles (scoped feature).** `skill_missile.txt`, `missile.txt`,
+  `skill_bullet.krl.txt` exist. Per-skill projectile assignment `skill_caster_<body>` `MissileID`
+  (col 3) = 2 roster skills (28046→231, 65059→25), `ImmediatelyMissileID` = 0. But the bullet
+  **visual** is broader: joining roster→`skills.tab` col-57 `ScriptFile` (keyed by col-1 SkillID) →
+  script shows **17 roster skills** set `skill.nSkillBulletType = 1` (all the same type). The type→
+  model map is `skill_bullet.krl.txt` (groups like `CYShield`/`PureShadow`, each `{ CommonFlyAni,
+  CommonModel, SingleTargetAni, OutTime }`), but the `SKILL_BULLET_TYPE` enum that names the type is
+  **not in `scripts/Include/Skill.lh`** (needs the right include). We resolve projectiles instantly
+  at the point. Next: find the `SKILL_BULLET_TYPE` enum → group → `CommonModel`/`CommonFlyAni`, then
+  spawn the bullet at the caster, travel to the target, and trigger on arrival.
 - **Buff durations. DONE (2026-10-09).** Client truth: `KScriptFuncList::LuaGetBuffTime`
   @`0x1401c0730` (`JX3ClientX64.exe`) returns a buff's `(Count×Interval, Count, Interval)`; `Count`
   = Buff.tab col 13, `Interval` col 14; frame base 16 fps (cast frames confirm it). New
