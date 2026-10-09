@@ -56,8 +56,9 @@ Confidence: **HIGH** = verified from data/code; **MED** = partial evidence; **LO
   `skill_chain.txt` = chain-shaped **visual** effect (链状特效 beam between two chars, `.Sfx`) — not a
   combo chain, and blocked by the engine `.Sfx` path (W4); `skill_shadow.txt` is represent/shadow
   config. No combat wiring needed.
-- **Hit-stiff (LOW).** `skills.tab` cols 112–116 (`HitStiffDelayFrame`, `HitStiffSkillMoveID`,
-  `HitStiffVelocityXY`, `HitStiffAccelerateXY`) unmodeled. Next: apply the target's hit-stiff move.
+- **Hit-stiff — nothing to apply (2026-10-09).** `skills.tab` cols 112–116 (`HitStiffDelayFrame`,
+  `HitStiffSkillMoveID`, `HitStiffVelocityXY`, `HitStiffAccelerateXY`) are **empty/0 for every one
+  of the 154 roster skills**, so no target hit-stiff move is authored to apply.
 - **Damage scaling (blocked).** `nWeaponDamagePercent` + adaptive coefficient not applied — no
   player weapon/attack-power stats. Unknown: whether a base-attribute table exists locally. Next:
   search the client settings for a character base-attribute / attack-power table.

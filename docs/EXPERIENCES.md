@@ -8799,3 +8799,15 @@ if the cache/host frames appear.
   the tag context), or a scene-level standalone-effect API. Evidence
   `proof/netcode/skillv6_sfx_argmapping_20261009.txt`; `ENGINE_RE_BREAKTHROUGH_PLAN.md` W4 updated.
 - Verified: read-only disasm; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+
+### 2026-10-09 — v6 — hit-stiff: roster has none (backlog truly characterized)
+
+- **Did:** checked `skills.tab` hit-stiff cols 112–116 for the roster.
+- **Finding:** `HitStiffDelayFrame/HitStiffSkillMoveID/HitStiffVelocityXY/HitStiffAccelerateXY` are
+  empty/0 for **all 154 roster skills** → no target hit-stiff move is authored; nothing to apply.
+- **State:** every remaining ability-system item is now either implemented (cast chain, mechanics,
+  FX1/FX3/FX4, cooldowns/GCD, channel ticks, buff durations, AoE), closed/characterized (CC,
+  chain/tag, shake, missiles, nMinRadius, hit-stiff), or blocked with a named next probe
+  (W4 tag-path, W3 bank, W1 debugger, damage scaling stats, Lua VM).
+- **Artifacts:** `docs/pvp/ABILITY_FOLLOWUP_PLAN.md` hit-stiff bullet updated.
+- Verified: read-only table read; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
