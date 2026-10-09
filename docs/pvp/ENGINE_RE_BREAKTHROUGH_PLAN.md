@@ -40,16 +40,16 @@ Proven: `dump_fn_disasm.py JX3RepresentX64.dll --names behit_names.txt` returned
   3. `disasm_fn.py <module> --rva <RVA>` -> read the faulting access; compare the bad pointer
      chain to what we pass (the tani/model/bone we set).
   4. Fix the host wiring (likely a missing weapon/skeleton/shadow binding for those tanis).
-- **W2 — FWD2 default be-hit animation. IN PROGRESS (good progress).** Dumped `KRLCharacter::
-  PlayBeHittedAnimation` (virtual; caller passes `pcszAni`) and located `BeHittedByPlayer`
-  (`0x1804d0220`) / `BeHittedByNpc` (`0x1804cfdxx`) / `BeHitted` (`0x1804cfbxx`). `BeHittedByPlayer`
-  resolves the be-hit anim by **string lookups on the target model path**: it tests
-  `strstr(path,"npc_source/a")` / `strstr(path,"NPC_source\\A")` and builds the anim ending
-  `...bat01.ani` (default speed at `[rip+0x7b1f30]`), else falls back to a global table
-  (`[rip+0xa0dcae]+0x1a0`). So the default be-hit anim is **derived from the target's model path**
-  (NPC sibling `...bat01.ani`), not a fixed id. Next: read the branch past `0x1804d032b` (the
-  player/default table) and the builder `0x1804d8700` to get the exact filename rule; then
-  reproduce it in the host for our target's model path.
+- **W2 — FWD2 default be-hit animation. ROOT RULE RECOVERED.** The NPC be-hit animation path is
+  built by `KRLCharacter::BeHittedByNpc` via the **format template**
+  `data/source/npc_source/%s/动作/%s_%s` (verified string @ VA `0x180cac990`, GBK `动作`), i.e.
+  the be-hit anim is a **sibling of the target's model** under `npc_source/<folder>/动作/<model>_<suffix>`.
+  `BeHittedByPlayer` @ `0x1804d0220` tests the target model path for `npc_source/a` / `NPC_source\A`
+  and, on a match, extracts the model filename (builder `0x1804d8700`, skip 11 chars to the first
+  separator) and formats that template; otherwise it uses the player/global table branch
+  (`0x1804d032b`, `[rip+0xa0dcae]+0x1a0`). Next: resolve the `<suffix>` (the be-hit anim name,
+  the `...bat01.ani` fragment) + the player-target template, then reproduce for our target's model
+  path and play it via `KGModelCLR.AttachModel(tgt.Handle).PlayAnimation(...)`.
 - **W3 — FWD3 Wwise name→id.** Either (a) write a small `.bnk` HIRC reader (parse event ids) and
   match against the game's name table, or (b) disassemble the client's PostEvent wrapper to see
   the name→id hash it uses. Then `PostEvent(id)` the hit sound.
