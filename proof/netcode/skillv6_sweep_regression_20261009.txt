@@ -1,0 +1,24 @@
+# skill v6 — full ability sweep regression after FX4/buff/AoE changes (2026-10-09)
+# Build: reborn_client_skillv6.exe (post commits 5a6c1d31 / 3f8112cf / 51bd877b)
+
+## Run
+RC_SWEEP=2600 RC_SWEEP_N=154 RC_SWEEP_START=0 RC_SWEEP_RANGE=99999 RC_DUMMY_N=1
+RC_NOLOADING=1 RC_AUTORUN=540000  (namespace reborn_skillv6_probe.memory)
+
+## Result — CLEAN (no regression from the new be-hit anim, buff expiry, or AoE fallback)
+- 154/154 traversed: **115 casts + 39 AV-skips** (same split as before this session).
+- 0 exceptions / 0 AccessViolation; clean DONE.
+- Exercised the new paths: 4 `behit anim` (FX4) and 54 `buff expired` events during the sweep.
+- Proof log: bin64\reborn_out\reborn_20261009_162106.log
+
+## Characterization added this session (remaining backlog)
+- `skill_chain.txt` = chain-shaped **visual** effect (链状特效 beam between two chars, `.Sfx`),
+  not a combat combo — blocked by the same engine `.Sfx` path as FX2/W4.
+- `skill_tag.txt` = SkillID -> AnimationID anim binding (already handled via skill_caster).
+- `behit_shake.txt` = only 3 rows (RepresentID 0/1/2 = none / 2osc-10u-100ms / 5osc-50u-100ms);
+  the skill->shake-type selector is unknown and the data is trivial (FX6 stays optional).
+- `nMinRadius>0` only in 65120 and it is **TargetSingle** (min = min cast range 384, not an AoE
+  annulus), so there is no annulus to implement; AoE is complete (radius-only).
+
+## Gates
+jx3_model 10 PASS / gravity PASS / loot selftest PASS

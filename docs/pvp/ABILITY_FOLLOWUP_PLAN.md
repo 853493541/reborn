@@ -15,7 +15,7 @@ Confidence: **HIGH** = verified from data/code; **MED** = partial evidence; **LO
 | W2 be-hit animation **DONE (2026-10-09)** | kind map (`BeHittedByNpc` @ `0x1804cfb50`: kind 1→`[rsi+0xa4]`, 2→`[rsi+0x94]`, 6→`[rsi+0x8c]`) + default NPC rule (`BeHittedByPlayer` @ `0x1804d0220`: literal `bat01.ani`; sibling `0x1804d8700` = `data/source/npc_source/%s/动作/%s_%s`) | — | implemented: target's `_bat01` sibling of its idle anim, played + restored; `npc_animation.txt` is runtime-generated (not shipped) |
 | W3 hit sound | ids are **authored, not hashed** (adjacent index events get consecutive ids; FLWS name→FNV ≠ id); client `ProcessSkillEffectSound` @`0x18059fdc0` hands `pcHitTargetSoundModel->szEvent` (name) to the Wwise manager; `sound_probe` already hooks the `PostEvent(const char*)` overload | the authored hit-target names (`TianCe_Body_L01`, `l_LongYaBeiJi`, `f2sgb11BangFaGongJi07`) are absent from all 230 indexed banks + `resource_sfx`/`custom_sfx`/`WwiseSound`; which bank carries them is unknown | find/load the bank with those exact strings, then by-name `PostEvent` (see `ENGINE_RE_BREAKTHROUGH_PLAN.md` W3 for detail); do NOT guess an id |
 | W4 landing `.Sfx` | engine `.Sfx` spawn faults (`rc=7`, `0xC0000005`); `.pss` works | the correct engine SFX-factory owner chain | disasm the engine tag-spawn caller (shim comment cites `0x76E51A`) |
-| W5 be-hit shake | `behit_shake.txt` (RepresentID→count/offset/duration/type) exists | which column/global selects a skill's RepresentID | grep `skill_caster_f1`/`skills.tab` for a shake column; disasm the shake trigger |
+| W5 be-hit shake (optional) | `behit_shake.txt` has only 3 rows: RepresentID 0/1/2 = none / 2osc-10u-100ms / 5osc-50u-100ms | the skill→shake-type (0/1/2) selector (no shake column in `skill_caster_*`/`skills.tab`) | low value given the trivial data; keep optional |
 
 ## B. Ability mechanics still imprecise
 
@@ -51,8 +51,11 @@ Confidence: **HIGH** = verified from data/code; **MED** = partial evidence; **LO
   authored per-skill cooldown (`cooldowns_f1` via the mechanics `normalCd` row) + authored GCD
   (`gcdRow`); default stays the locked uniform 3 s / 1.19 s. Verified: 65029 -> gcdMs=1500,
   cdMs=10000 (authored) vs 1190/3000 (default).
-- **Skill marks/tags/chain/shadow (LOW).** `skill_tag.txt`, `skill_chain.txt`, `skill_shadow.txt`
-  are unmodeled. Next: read each + wire the ones that affect combat (chain, tag).
+- **Skill marks/tags/chain/shadow — characterized (2026-10-09): not combat mechanics.**
+  `skill_tag.txt` = SkillID→AnimationID anim binding (already handled via `skill_caster_*`);
+  `skill_chain.txt` = chain-shaped **visual** effect (链状特效 beam between two chars, `.Sfx`) — not a
+  combo chain, and blocked by the engine `.Sfx` path (W4); `skill_shadow.txt` is represent/shadow
+  config. No combat wiring needed.
 - **Hit-stiff (LOW).** `skills.tab` cols 112–116 (`HitStiffDelayFrame`, `HitStiffSkillMoveID`,
   `HitStiffVelocityXY`, `HitStiffAccelerateXY`) unmodeled. Next: apply the target's hit-stiff move.
 - **Damage scaling (blocked).** `nWeaponDamagePercent` + adaptive coefficient not applied — no

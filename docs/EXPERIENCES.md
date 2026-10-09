@@ -8759,3 +8759,17 @@ if the cache/host frames appear.
   `proof/netcode/skillv6_aoe_shape_20261009.txt`.
 - **Open:** `nMinRadius` inner cut (1 skill) and actor cone/facing not modelled.
 - Gates: jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+
+### 2026-10-09 — v6 — full sweep regression green + residual items characterized
+
+- **Did:** ran the full 154-ability sweep (RC_SWEEP_N=154, RC_SWEEP_RANGE=99999, RC_DUMMY_N=1) as an
+  end-to-end regression of this session's FX4/buff-expiry/AoE changes, and characterized the
+  residual backlog items (chain/tag/shake/minRadius).
+- **Sweep result:** 154/154 traversed — **115 casts + 39 AV-skips**, 0 exceptions/AV, clean DONE;
+  the new paths fired (4 `behit anim`, 54 `buff expired`). Proof
+  `proof/netcode/skillv6_sweep_regression_20261009.txt`.
+- **Characterizations:** `skill_tag.txt` = SkillID→AnimationID (handled); `skill_chain.txt` =
+  链状特效 visual beam (`.Sfx`, W4-blocked), not a combo; `behit_shake.txt` = 3 trivial rows
+  (0/1/2), selector unknown → FX6 stays optional; `nMinRadius>0` only 65120 and it is
+  **TargetSingle** (min = min cast range 384, not an AoE annulus) → AoE complete.
+- Gates: jx3_model 10 PASS, gravity PASS, loot selftest PASS.
