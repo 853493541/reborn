@@ -141,6 +141,7 @@ internal sealed class AbilityPanel : Form
 
     public void Attach(Form owner)
     {
+        if (owner == null || owner.IsDisposed || !owner.IsHandleCreated) return;
         Point o = owner.PointToScreen(Point.Empty);
         int w = 320;
         int h = owner.ClientSize.Height - 80;

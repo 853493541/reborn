@@ -264,6 +264,7 @@ internal sealed class TargetFrameControl : Form
     public void PlaceOver(Form owner)
     {
         if (renderer == null) return;
+        if (owner == null || owner.IsDisposed || !owner.IsHandleCreated) return;
         Point origin = owner.PointToScreen(Point.Empty);
         Location = new Point(origin.X + renderer.OriginX, origin.Y + renderer.OriginY);
         if (!Visible) { Owner = owner; Show(); }

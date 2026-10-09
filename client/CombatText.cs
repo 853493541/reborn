@@ -65,6 +65,7 @@ internal sealed class CombatText : Form
 
     public void PlaceTop(Form owner)
     {
+        if (owner == null || owner.IsDisposed || !owner.IsHandleCreated) return;
         Point o = owner.PointToScreen(Point.Empty);
         int w = ClientSize.Width > 1 ? ClientSize.Width : 260;
         Point want = new Point(o.X + (owner.ClientSize.Width - w) / 2, o.Y + 12);

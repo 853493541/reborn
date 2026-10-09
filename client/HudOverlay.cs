@@ -79,6 +79,7 @@ internal sealed class HudOverlay : Form
     // Visibility is owned by UpdateLayered (only shown while the panel is open).
     public void PlaceOver(Form owner)
     {
+        if (owner == null || owner.IsDisposed || !owner.IsHandleCreated) return;
         Point origin = owner.PointToScreen(Point.Empty);
         Point want = new Point(origin.X + 10, origin.Y + 10);
         if (Location != want) Location = want;

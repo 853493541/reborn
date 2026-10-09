@@ -1,0 +1,24 @@
+# skill v6 — fix unhandled ObjectDisposedException crash on form dispose (2026-10-08)
+# Build: reborn_client_skillv6.exe
+
+## Crash (Windows event log, pid 24736, 2026-10-08 22:09)
+#   Application: reborn_client_skillv6.exe
+#   Exception Info: System.ObjectDisposedException
+#      at System.Windows.Forms.Control.CreateHandle()
+#      at System.Windows.Forms.Control.get_Handle()
+#      at System.Windows.Forms.Control.PointToScreen(System.Drawing.Point)
+#      at CombatText.PlaceTop(System.Windows.Forms.Form)
+#      at RebornClient.Main(...)
+# Root cause: the main loop (while !form.IsDisposed) can dispose the form MID-iteration; the
+# remaining overlay calls then hit PointToScreen on a disposed handle -> unhandled -> process
+# death (CLR20r3 / KERNELBASE fault).
+
+## Fix
+# Guard every overlay PointToScreen against a disposed/handle-less owner:
+#   CombatText.PlaceTop, AbilityPanel.Attach, Targeting.PlaceOver, HudOverlay.PlaceOver
+#   if (owner == null || owner.IsDisposed || !owner.IsHandleCreated) return;
+
+## Verified
+# - Build green; app runs normally (35 s, no exception).
+# - No new CLR20r3 (Application log Id 1026) event during the guarded run.
+# gates: jx3_model 10 PASS / gravity PASS / loot selftest PASS
