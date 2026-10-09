@@ -42,6 +42,13 @@ Confidence: **HIGH** = verified from data/code; **MED** = partial evidence; **LO
   base. **Next probe:** identify `[+0x3c]`/`[+0x40]` (which AddBuff arg feeds each) and the
   `+0xe80` global value (FPS/time-base) to fix the unit, then emit `buffDur` in `apply_f1.tsv` and
   expire buffs. Do not apply a guessed unit.
+  Buff.tab data (read-only): `Count` col 13 = 1 for the sampled buffs; `Interval` col 14 carries
+  8/16/24/50/80/128/160/240/320/9600 → `Count×Interval` at **16 fps** (cast frames confirm 16 fps:
+  `nChannelFrame=64`→4 s, `nPrepareFrames=24`→1.5 s) gives 0.5/1/1.5/3.1/5/8/10/15/20/600 s, all
+  plausible. But CC buffs carry their duration in `Intensity` (col 10, e.g. 51402 Silence 96→6 s)
+  which disagrees with `Count×Interval` (80→5 s), so the CC-vs-non-CC rule must be fixed from the
+  client before applying. Authored script comments (`60 --1s??`, `5 --??1s`, `2 --??10s`,
+  `610 --10s`) are mutually contradictory and not authoritative.
 - **Per-skill cooldown / GCD values. DONE (opt-in, 2026-10-09).** `RC_AUTHORED_CD=1` applies the
   authored per-skill cooldown (`cooldowns_f1` via the mechanics `normalCd` row) + authored GCD
   (`gcdRow`); default stays the locked uniform 3 s / 1.19 s. Verified: 65029 -> gcdMs=1500,

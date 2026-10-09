@@ -8687,3 +8687,21 @@ if the cache/host frames appear.
   16/s** for both, but this is not asserted without the constant.
 - **Artifacts:** `docs/pvp/ABILITY_FOLLOWUP_PLAN.md` buff-duration bullet updated. No code change.
 - Verified: read-only disasm; gates unaffected.
+
+### 2026-10-09 — v6 — buff duration: Buff.tab Count×Interval data; CC rule still needs grounding
+
+- **Did:** read `Buff.tab` (`...\cache-extraction\pakv4-probe\logic-skill-prefixed-out\
+  settings\skill\Buff.tab`, 61,555 rows × 115 cols) for the roster buffs and cross-checked the
+  authored script comments.
+- **Finding:** `Count` (col 13)=1 for all sampled; `Interval` (col 14) ∈ {8,16,24,50,80,128,160,
+  240,320,9600}. `Count×Interval` at **16 fps** (cast frames confirm 16 fps: `nChannelFrame=64`→4 s,
+  `nPrepareFrames=24`→1.5 s) gives 0.5/1/1.5/3.1/5/8/10/15/20/600 s — all plausible buff durations
+  (e.g. 28998 五方行尽 buff = 1×160 → 10 s; 51391 重伤 = 9600 → 600 s). CC buffs instead carry the
+  duration in `Intensity` (col 10): 51402 Silence 96 → 6 s, which disagrees with its `Count×Interval`
+  (1×80 → 5 s). Authored comments next to `AddBuff` are contradictory (`60 --1s??`, `5 --??1s`,
+  `2 --??10s`, `610 --10s`) and unusable as a unit source.
+- **Open:** the CC-vs-non-CC duration rule (Intensity vs Count×Interval) must be fixed from the
+  client (`KBuffList`/`LuaGetBuffTime` consumption) before emitting `apply_f1.tsv` `buffDur` and
+  expiring buffs. No guessed rule applied.
+- **Artifacts:** `docs/pvp/ABILITY_FOLLOWUP_PLAN.md` buff-duration bullet updated.
+- Verified: read-only table read; gates unaffected.
