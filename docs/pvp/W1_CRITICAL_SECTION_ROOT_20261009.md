@@ -13,6 +13,22 @@ register-decode errors).
 39 roster abilities AV when their SFX is played. The crash is a **first-chance AV** at
 `ntdll.dll+0xFA7D`; the same thread had just entered `KG3D_TimeLine<float>::CreateCache`.
 
+## FINAL mechanism (supersedes the "template not applied" framing below)
+
+- The `.tls` **template WAS applied** to the crash thread (only 16 of 0x8A00 bytes differ from the
+  template); engine code overwrote `+0x89b0` `0x80000000` -> `0` (plus a few neighbors).
+- The init detour's helper pair (`0x1818C7CA8`+`0x1818C7C48`) is a **generic engine-wide global-lock /
+  generation wrapper**, called from **hundreds** of sites; it writes the **shared** per-thread
+  `[TLS+0x89b0]` generation.
+- Therefore `CreateCache`'s cs-init detour fires only when the `CreateCache` call is the **first wrapper
+  use on the engine thread** (fresh thread: `[TLS+0x89b0]=0x80000000 < guard 0`). Any earlier wrapper use
+  on that thread (camera/material/etc.) syncs `[TLS+0x89b0]=0` -> `0 > 0` false -> the cs is **never
+  initialized** -> AV. So the fault is a **first-use-ordering / engine-startup** issue: the engine's own
+  startup must initialize this cs (the wrapper detour is not a reliable initializer for a cs not touched
+  first). Fix target: run the engine startup that creates the cs (possibly a table-driven
+  `RtlInitializeCriticalSection` pass that a RIP-only xref scan would miss), or make `CreateCache` the
+  engine thread's first wrapper use.
+
 ## Corrected fault chain
 
 - `ntdll+0xFA7D` is `inc dword ptr [rax+0x24]` with `rax = [rdi] = 0` and
