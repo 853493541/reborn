@@ -3,6 +3,32 @@
 Hand this to another agent (or a fresh session). Everything needed to resume is here;
 the authoritative mechanism write-up is `docs/pvp/W1_CRITICAL_SECTION_ROOT_20261009.md`.
 
+## ⚠️ ALREADY-SETTLED — DO NOT RE-DERIVE (added 2026-10-09 for the V6.1.1 follow-up agent)
+
+If you are the follow-up agent: the data-BP / `[TLS+0x89b0]` questions below have been **answered already**.
+Read these commits before spending budget (`git log --oneline -8`): `12c98634`, `e665a17a`, `0cc07bf4`,
+`2b6ad624`, `f5a0ccb7`.
+
+- **Dr7 data-write encoding is CORRECT and is NOT the blocker.** `rw=01<<16`, `LEN=11<<18` -> `Dr7=0xD0001`
+  (plus `|0x400`); `mini_debugger.CONTEXT` Dr0-7 offsets + `CONTEXT_DEBUG_REGISTERS=0x100010` verified.
+- **The data BP fires 0 `#DB`s even on a known-hot target.** Armed on the wrapper global
+  `G` (`KG3DEngineDX11EX64.dll+0x257F2D0`) AND on `tls:29:0x89b0`, in the active W1 repro, with and
+  without bit 10 -> 0 hits while the AV fired. Exec BPs work. So the **attach-debugger HW data-BP
+  delivery path is the problem** — do NOT keep re-deriving the encoding.
+- **Do NOT keep hunting the static writer of `[TLS+0x89b0]=0` by disasm** — whole-.text scans find only the
+  two wrapper helpers (`0x1818C7C94`, `0x1818C7CF8`), both writing `G=0x8000025A`, never 0; the writer
+  uses a stored pointer (invisible to immediate/disp scans). This was already tried.
+
+**Pivot instead to one of:**
+1. Validate the data BP against a **guaranteed-hot stack** target (armed thread's `[rsp]`, deduped) to
+   prove/falsify the delivery path — if it also fails, abandon data BPs.
+2. **Off-BP framing:** our host may force `CreateCache`'s rebuild lock path where retail does not. Compare
+   the 39 abilities' sfx/timeline inputs vs non-crashing ones (why they hit the lock branch).
+3. **Engine-init framing:** find whether the engine's startup is expected to run `CreateCache` once (so
+   the gated cs-init fires on a fresh thread) — the host may skip that.
+Also: operate from the **worktree** `C:\Users\Zhibin Ren\Desktop\reborn-iso-skillv6-sandbox` (this session
+was launched from the main checkout; the main checkout must stay clean).
+
 ## Location / git
 
 - **Worktree**: `C:\Users\Zhibin Ren\Desktop\reborn-iso-skillv6-sandbox`
