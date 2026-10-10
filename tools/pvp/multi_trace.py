@@ -195,6 +195,31 @@ def exec_ranges(pid, mods):
     return out
 
 
+TH32CS_SNAPTHREAD = 0x4
+
+
+class TE32(ctypes.Structure):
+    _fields_ = [("dwSize", w.DWORD), ("cntUsage", w.DWORD), ("th32ThreadID", w.DWORD),
+                ("th32OwnerProcessID", w.DWORD), ("tpBasePri", w.LONG), ("tpDeltaPri", w.LONG),
+                ("dwFlags", w.DWORD)]
+
+
+def arm_all(pid, vas):
+    """Arm the HW BP on every existing thread of the process (used to arm late)."""
+    snap = k32.CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0)
+    te = TE32()
+    te.dwSize = ctypes.sizeof(TE32)
+    n = 0
+    ok = k32.Thread32First(snap, ctypes.byref(te))
+    while ok:
+        if te.th32OwnerProcessID == pid:
+            arm(te.th32ThreadID, vas)
+            n += 1
+        ok = k32.Thread32Next(snap, ctypes.byref(te))
+    k32.CloseHandle(snap)
+    return n
+
+
 def arm(tid, vas):
     ht = k32.OpenThread(0x0008 | 0x0010 | 0x0002 | 0x0040, False, tid)
     if not ht:
@@ -293,6 +318,10 @@ def main():
     if "--dump" in sys.argv:
         dump = sys.argv[sys.argv.index("--dump") + 1]
     do_walk = "--stackwalk" in sys.argv
+    arm_after = 0.0
+    if "--arm-after" in sys.argv:
+        arm_after = float(sys.argv[sys.argv.index("--arm-after") + 1])
+    bp_log = "--bp-log" in sys.argv
 
     targets = []
     for s in specs:
@@ -318,13 +347,19 @@ def main():
     dumped = {"done": False}
     vas = [va for _, _, va in targets]
     end = time.time() + seconds
+    t0 = time.time()
+    armed_once = False
     while time.time() < end:
+        if not armed_once and arm_after > 0 and (time.time() - t0) >= arm_after:
+            print("arming after %.0fs: %d threads" % (arm_after, arm_all(pid, vas)), flush=True)
+            armed_once = True
         if not k32.WaitForDebugEvent(ctypes.byref(ev), 300):
             continue
         code = ev.dwDebugEventCode
         cont = M.DBG_CONTINUE
         if code in (M.CREATE_THREAD_DEBUG_EVENT, M.CREATE_PROCESS_DEBUG_EVENT):
-            arm(ev.dwThreadId, vas)
+            if arm_after <= 0 or (time.time() - t0) >= arm_after:
+                arm(ev.dwThreadId, vas)
         elif code == M.EXCEPTION_DEBUG_EVENT:
             ex_code = struct.unpack_from("<I", ev.u.pad, 0)[0]
             f = struct.unpack_from("<I", ev.u.pad, 4)[0]
@@ -336,6 +371,10 @@ def main():
                     for m, o, va in targets:
                         if ctx.Rip == va:
                             counts[va] += 1
+                            if bp_log:
+                                print("BPHIT tid=%d %s rcx=%s rdx=%s rsi=%s" %
+                                      (ev.dwThreadId, "%s+0x%X" % (m, o), hex(ctx.Rcx),
+                                       hex(ctx.Rdx), hex(ctx.Rsi)), flush=True)
                             if filt is not None and filt not in (ctx.Rax, ctx.Rcx, ctx.Rdx,
                                                                  ctx.Rsi, ctx.Rdi, ctx.R8, ctx.R9):
                                 continue   # only log hits carrying the bad size
@@ -409,7 +448,8 @@ def main():
                         stackwalk(pid, ev.dwThreadId, ctx, res)
                 cont = M.DBG_EXCEPTION_NOT_HANDLED
         else:
-            arm(ev.dwThreadId, vas)
+            if arm_after <= 0 or (time.time() - t0) >= arm_after:
+                arm(ev.dwThreadId, vas)
         k32.ContinueDebugEvent(ev.dwProcessId, ev.dwThreadId, cont)
     k32.DebugActiveProcessStop(pid)
     for m, o, va in targets:

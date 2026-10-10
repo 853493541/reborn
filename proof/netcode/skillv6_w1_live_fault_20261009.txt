@@ -164,10 +164,21 @@ keys** — i.e. the `KG3D_TimeLine` object's keyframe map/tree (at `[timeline+8]
 uninitialized** (bad node pointers -> garbage keys). So the 39 AV tanis drive `CreateCache` on a
 **corrupt/uninitialised timeline** — the actual defect (the animation timeline wasn't loaded/valid).
 
+## Live cold-BP follow-up (2026-10-09) — CORRECTS the "corrupt tree" hypothesis
+Added `--arm-after`/`--bp-log` to `multi_trace.py` and set a **late-armed** (cold) HW BP at
+CreateCache entry `KG3DEngineDX11EX64.dll+0xE2E690` (arms ~62 s in, just before the cast) — no
+flashing. It hit 53x (CreateCache is called in a loop; `this` strides by 0x28). Reading the
+`KG3D_TimeLine` objects from the captured full dump:
+- the **last** BP-hit (the presumed faulting call, `this=0x11104e9a8`) has a **valid** keyframe tree
+  (`std::map` root keys {0, 1, 19}) -> `COUNT = 20`, not negative.
+So the `-6` does **not** come from an inverted/corrupt min/max of that timeline. The "corrupt
+keyframe tree" inference is likely WRONG; the `-6` is produced elsewhere in CreateCache
+(the allocate `call 0x18013bba0(rcx=0, rdx=COUNT)`, the `memset(COUNT*4)`, or the per-frame
+curve-eval `call 0x180E2DA70`) — or a different `KG3D_TimeLine<T>::CreateCache` instantiation.
+
 ## Next probe
-1. Find why `ebx` (the timeline count) is negative: disasm the callers (#04..#11,
-   `KG3D_AnimationTagX64`) to see where the count/frame range is computed and why it goes negative
-   for the 39 AV tanis (missing clip / bad frame range).
-2. Fix direction: ensure the timeline source (animation clip / frame range) is valid, or supply the
-   missing clip so the count >= 0.
-Evidence: this file; `w1_av.dmp` (temp); tool `tools/pvp/minidump_full.py`.
+1. Capture the exact `this`/args of the CreateCache call that AVs (the last BP hit) and inspect the
+   allocate/memset args + the curve-eval feed at the fault frame (not just the tree).
+2. Check the other `KG3D_TimeLine<T>::CreateCache` overloads (int/XMFLOAT*/unsigned) — the crash may
+   be a different instantiation.
+Evidence: this file; `w1_av2.dmp` (temp); tool `tools/pvp/multi_trace.py`.

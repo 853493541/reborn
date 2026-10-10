@@ -9310,3 +9310,20 @@ if the cache/host frames appear.
   `KG3D_AnimationTagX64.dll`. Reinforces that W1's trigger is the anim/tag → timeline path, not the
   cast-effect data.
 - Verified: read-only data join; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 live cold BP: faulting timeline tree is VALID (corrupt-tree hypothesis wrong)
+
+- **Did:** added `--arm-after`/`--bp-log` to `multi_trace.py` and ran a **late-armed** (cold) HW BP at
+  CreateCache entry `KG3DEngineDX11EX64.dll+0xE2E690` on the W1 repro (arms ~62 s in). No flashing;
+  53 hits (CreateCache is called in a loop, `this` strides by 0x28). Captured a full dump at the AV.
+- **Finding:** the last BP-hit timeline (`this=0x11104e9a8`) has a **valid** keyframe tree
+  (`std::map` keys {0,1,19}) → `COUNT = 20`, not negative. So the `-6` does **NOT** come from an
+  inverted/corrupt min/max — the earlier "corrupt keyframe tree" inference is likely **WRONG**. The
+  `-6` is produced elsewhere in CreateCache (the allocate `0x18013bba0` arg, the `memset(COUNT*4)`, or
+  the per-frame curve eval) or by a different `KG3D_TimeLine<T>::CreateCache` instantiation.
+- **Lesson:** the min<=0<=max reasoning was right that a plain tree can't give a negative count — the
+  bug is not the tree. Need to inspect the alloc/memset/curve args at the faulting frame.
+- Tool: `--arm-after` (defer BP until just before the target action -> keeps it cold, no flashing),
+  `--bp-log` (log every hit's regs). Proof `proof/netcode/skillv6_w1_live_fault_20261009.txt` corrected.
+- Verified: cold BP run (53 hits, no flashing); dump read; gates jx3_model 10 PASS / gravity PASS /
+  loot selftest PASS.
