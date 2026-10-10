@@ -47,8 +47,16 @@ Continues `SESSION_HANDOFF_20261009.md` (same day). Origin untouched (no push).
 - **W3 hit sound (FX5)** — names (`TianCe_Body_L01`, `l_LongYaBeiJi`, `f2sgb11BangFaGongJi07`) are
   absent from all 230 indexed banks; Wwise ids are authored (not hashed). Next: find/load the bank
   with those strings, then by-name `PostEvent` (sound_probe already hooks `PostEvent(const char*)`).
-- **W1 39 AV abilities** — needs a debugger (not installed); fault is a bad-size memcpy via
-  jemalloc from the engine anim code. Blocked.
+- **W1 39 AV abilities — ROOT CAUSE IDENTIFIED (2026-10-09, read-only debugger/dump unwinder).**
+  Fault = `KG3D_TimeLine<float>::CreateCache` @`0xE2E79D` called with a **negative element count**:
+  `COUNT = maxKey - minKey + 1` from the timeline's red-black keyframe tree; `-6` ⇒ the keyframe range
+  is **inverted/corrupt** (`max < min`). Allocate/memset (and down-chain `memmove`) get size `-6`.
+  Full fault chain (validated `.pdata` unwind): `ntdll memmove(-6) ← … ← KG3DEngine+0xE2E842
+  (CreateCache) ← curve interp fn 0xE2DA70 ← … ← KG3D_CreateSFXFromFile (0xBE4000) ←
+  KG3D_AnimationTagX64.dll ×3 ← KG_EngineEditorX64.dll`. **Next:** trace where the corrupt keyframe
+  range originates (the anim/tag load populating `[timeline+8]`) and repair/supply it. Note W1 shares
+  the `KG3D_CreateSFXFromFile` path with W4. Tooling: `tools/pvp/{multi_trace,minidump_full}.py`;
+  proof `proof/netcode/skillv6_w1_live_fault_20261009.txt`.
 - **Damage scaling (weapon%/AP)** — no player attack-power base; blocked/server-side.
 - **Lua VM (46 `EXECUTE_SCRIPT`-only)** — most are no-op/template passives; large.
 - **Missiles / projectiles** — scoped feature: `skill_caster` MissileID is only 2 roster skills but
