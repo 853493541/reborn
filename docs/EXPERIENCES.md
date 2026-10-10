@@ -9557,3 +9557,16 @@ if the cache/host frames appear.
   intended startup values (guard/thread-state) still need to be established.
 - Verified: read-only whole-.text immediate scan (1496 sites); gates jx3_model 10 PASS / gravity PASS /
   loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: raw field at TLS+0x89b0 (crash=0x00000000, worker=0x80000000)
+
+- **Did:** read 0x30 bytes around `+0x89b0` in each thread's engine TLS block from the dump.
+- **Finding:** the DWORD at exactly `+0x89b0` is `0x00000000` on the crash/engine thread and
+  `0x80000000` (bit 31 set) on a worker. (At `+0x89c8` the crash thread has a pointer `0x3507E950`, the
+  worker 0.) So `0x89b0` is a per-thread state/flags DWORD where bit 31 distinguishes "not yet
+  engine-initialized" (workers) from "engine-initialized" (the crash thread). The gate
+  `guard(0) > state` therefore only routes to the cs-init for threads with bit 31 set; the
+  engine-initialized thread does not, so the cs stays uninitialized for it.
+- **Open:** the engine expects the cs to already exist once a thread is engine-initialized; the host's
+  engine-init for that thread did not create it. This is the remaining thread/global init gap.
+- Verified: read-only dump memory read; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
