@@ -9484,3 +9484,19 @@ if the cache/host frames appear.
   now captured in `docs/pvp/W1_CRITICAL_SECTION_ROOT_20261009.md`.
 - Verified: cold-BP run (`27847` -> 0 lock hits, no AV); gates jx3_model 10 PASS / gravity PASS / loot
   selftest PASS.
+
+### 2026-10-09 — v6 — W1: the gate fails ONLY on the main thread (TLS+0x89b0 = 0 vs -0x80000000)
+
+- **Did:** walked every thread's TEB/TLS in `w1_av2.dmp` (TEB at `threadlist+4+i*48+16` ->
+  `[TEB+0x58]` -> `[+29*8]` -> `+0x89b0`).
+- **Finding:** the crashing/main thread (tid `48056`, priority 15) has `[TLS+0x89b0] = 0`; **110 other
+  threads** have `0x80000000` (`-2147483648`), the rest other large negatives. Gate
+  `cmp [0x2D3EF10]=0, eax; jg` -> `0 > 0` false only on the main thread -> its cs-init is skipped ->
+  AV. On every worker thread `0 > negative` is true -> init would run.
+- **Conclusion:** the engine seeds a per-thread "needs (re)init" sentinel (large-negative) via a
+  per-thread init; our **main thread never gets it** (stays 0), so the cs is never initialized for the
+  thread that calls `CreateCache`. Concrete host-integration gap (a missing per-thread engine init for
+  the main thread), NOT malformed sfx data alone. Next: find what seeds `[TLS+0x89b0]` to `0x80000000`
+  (an engine thread-start/TLS callback) and why the main thread misses it in our host.
+- Verified: read-only TEB/TLS walk of our own dump; gates jx3_model 10 PASS / gravity PASS / loot
+  selftest PASS.

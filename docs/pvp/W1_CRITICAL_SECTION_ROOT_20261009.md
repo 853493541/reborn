@@ -60,6 +60,21 @@ Since the guard is still `0`, the `jg` at `0xE2E6D0` was **not taken** -> init s
 `0x1818C7CA8(&guard)` is a once-helper that locks another cs and writes the sentinel `-1` into the
 guard when it is `0` — i.e. it marks "initialized". It only runs inside the (skipped) init block.
 
+## The per-thread gate value (from the dump)
+
+Walked each thread's TEB (`tl+4+i*48+16`) -> `[TEB+0x58]` (TLS array) -> `[+29*8]` -> `[+0x89b0]`:
+
+- the **main thread** (tid `48056`, priority 15 — the one that calls `CreateCache`) has
+  `[TLS+0x89b0] = 0`;
+- **110 other threads** have `[TLS+0x89b0] = 0x80000000` (`-2147483648`), and the rest are other
+  large-negative values.
+
+Gate: `cmp [KG3DEngine+0x2D3EF10]=0, eax; jg init`. `0 > 0` is **false** (main thread) -> init skipped
+-> cs zero -> AV; on every other thread `0 > negative` would be **true** -> init would run. So the
+engine's per-thread "(re)init needed" sentinel is a **large-negative value seeded by the engine's
+per-thread init**, and our **main thread reaches `CreateCache` with it still `0`** (the init that sets
+it did not run for that thread). This is the concrete host-integration gap.
+
 ## Next probes
 
 1. Resolve the TLS index at RVA `0x2B46C4` and read the faulting thread's `[TLS+0x89b0]` from the dump
