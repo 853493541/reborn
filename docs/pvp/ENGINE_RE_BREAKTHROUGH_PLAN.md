@@ -57,6 +57,16 @@ Proven: `dump_fn_disasm.py JX3RepresentX64.dll --names behit_names.txt` returned
   `0xE2E86F`), NOT the memcpy — `0x2D3EEE8` is a lock global. Next: BP `jemalloc+0x11001` and grab the
   engine return address (filter size = 0xFFFFFFFA), or `.pdata`-unwind the captured context. Proof
   `proof/netcode/skillv6_w1_live_fault_20261009.txt`.
+  **ROOT CAUSE (2026-10-09):** the faulting function is `KG3D_TimeLine<float>::CreateCache`
+  (`0xE2E79D`), which computes `COUNT = maxKey - minKey + 1` from the timeline's keyframe tree, then
+  allocates/memsets `COUNT` (and the down-chain `memmove` gets size `-6`). Since `min<=0<=max` holds
+  by construction for a valid tree, a negative COUNT means the timeline's keyframe map (`[timeline+8]`)
+  is **corrupt/uninitialised** (garbage node keys). Full validated `.pdata` chain:
+  `ntdll memmove(-6) <- KG3DEngine+0xE2E842 (CreateCache) <- curve interp fn 0xE2DA70 <- ... <-
+  KG3D_CreateSFXFromFile (0xBE4000) <- KG3D_AnimationTagX64.dll x3 <- KG_EngineEditorX64.dll`.
+  **Next:** find why the timeline is corrupt/uninitialised for the 39 AV tanis (failed anim/model/SFX
+  resource load) — it shares the `KG3D_CreateSFXFromFile` path with **W4**, so a single fix may unblock
+  both. Tooling: `tools/pvp/{multi_trace,minidump_full}.py`.
 - **W2 — FWD2 default be-hit animation. DONE (2026-10-09; implemented + verified A/B).**
   - **Default NPC rule:** `KRLCharacter::BeHittedByPlayer` @ `0x1804d0220` uses the literal
     `bat01.ani` (string @0x180caf980) for npc_source targets via the sibling builder
