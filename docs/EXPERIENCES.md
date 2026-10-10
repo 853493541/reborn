@@ -9300,3 +9300,13 @@ if the cache/host frames appear.
 - **Disposition:** projectiles de-prioritised (server-side), consistent with the P7 deviation.
   `ABILITY_FOLLOWUP_PLAN.md` missiles bullet updated.
 - Verified: read-only binary scan; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: AV skills mostly lack a cast effectSfx (crash SFX is from tani tags)
+
+- **Did:** compared the AV skills' cast-chain effect column vs the rest.
+- **Finding:** only **2/39** AV skills have an authored cast `effectSfx` (vs ~11% overall). Since the
+  W1 crash chain includes `KG3D_CreateSFXFromFile`, the SFX being created there is **not** the cast
+  effect — it comes from the **tani's own effect tags** (the anim's authored tag pipeline), driven via
+  `KG3D_AnimationTagX64.dll`. Reinforces that W1's trigger is the anim/tag → timeline path, not the
+  cast-effect data.
+- Verified: read-only data join; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
