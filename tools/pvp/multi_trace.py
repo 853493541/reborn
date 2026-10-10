@@ -50,6 +50,30 @@ def mod_base(pid, name):
     return base
 
 
+def list_modules(pid):
+    snap = k32.CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, pid)
+    me = ME32()
+    me.dwSize = ctypes.sizeof(ME32)
+    mods = []
+    ok = k32.Module32First(snap, ctypes.byref(me))
+    while ok:
+        mods.append((me.modBaseAddr or 0, me.modBaseSize or 0, me.szModule.decode("latin1")))
+        ok = k32.Module32Next(snap, ctypes.byref(me))
+    k32.CloseHandle(snap)
+    return mods
+
+
+def make_resolver(pid):
+    mods = list_modules(pid)
+
+    def res(addr):
+        for base, size, name in mods:
+            if base and base <= addr < base + size:
+                return "%s+0x%X" % (name, addr - base)
+        return hex(addr)
+    return res
+
+
 def arm(tid, vas):
     ht = k32.OpenThread(0x0008 | 0x0010 | 0x0002 | 0x0040, False, tid)
     if not ht:
@@ -148,8 +172,8 @@ def main():
         va = mod_base(pid, mod) + int(off, 0)
         targets.append((mod, int(off, 0), va))
         print("target %s+0x%X = 0x%X" % (mod, int(off, 0), va))
-    if not targets or len(targets) > 4:
-        print("need 1..4 targets")
+    if len(targets) > 4:
+        print("need 0..4 targets (0 = AV-catch only)")
         return 1
 
     if "--inject-w" in sys.argv:
@@ -158,6 +182,8 @@ def main():
     if not k32.DebugActiveProcess(pid):
         print("attach failed err=%d" % ctypes.get_last_error())
         return 1
+    print("attached pid=%d (watching for AV / BPs)" % pid, flush=True)
+    res = make_resolver(pid)
     ev = M.DEBUG_EVENT()
     counts = {va: 0 for _, _, va in targets}
     first = {}
@@ -182,13 +208,53 @@ def main():
                         if ctx.Rip == va:
                             counts[va] += 1
                             if va not in first:
-                                first[va] = "%s+0x%X rax=0x%X rcx=0x%X rdx=0x%X" % (
-                                    m, o, ctx.Rax, ctx.Rcx, ctx.Rdx)
+                                stack = ""
+                                hp = k32.OpenProcess(0x410, False, pid)
+                                if hp:
+                                    sb = ctypes.create_string_buffer(8 * 16)
+                                    got = ctypes.c_size_t(0)
+                                    if k32.ReadProcessMemory(hp, ctypes.c_void_p(ctx.Rsp), sb,
+                                                             8 * 16, ctypes.byref(got)):
+                                        fr = [res(struct.unpack_from("<Q", sb.raw, k)[0])
+                                              for k in range(0, min(got.value, 8 * 16), 8)]
+                                        stack = " stack=[" + " ".join(fr) + "]"
+                                    k32.CloseHandle(hp)
+                                first[va] = ("tid=%d rax=%s rcx=%s rdx=%s rsi=%s rdi=%s rbp=%s "
+                                             "rsp=%s r8=%s r9=%s%s" % (
+                                                 ev.dwThreadId, res(ctx.Rax), res(ctx.Rcx),
+                                                 res(ctx.Rdx), res(ctx.Rsi), res(ctx.Rdi),
+                                                 res(ctx.Rbp), res(ctx.Rsp), res(ctx.R8),
+                                                 res(ctx.R9), stack))
                     ctx.EFlags |= 0x10000
                     k32.SetThreadContext(ht, ctypes.byref(ctx))
                 if ht:
                     k32.CloseHandle(ht)
             else:
+                ex_addr = struct.unpack_from("<Q", ev.u.pad, 16)[0]
+                if ex_code == 0xC0000005 and f == 0:   # first-chance AV: dump the fault context
+                    ht = k32.OpenThread(0x0008 | 0x0010, False, ev.dwThreadId)
+                    ctx = M.CONTEXT()
+                    ctx.ContextFlags = M.CONTEXT_FULL
+                    if ht and k32.GetThreadContext(ht, ctypes.byref(ctx)):
+                        stack = ""
+                        hp = k32.OpenProcess(0x410, False, pid)
+                        if hp:
+                            sb = ctypes.create_string_buffer(8 * 24)
+                            got = ctypes.c_size_t(0)
+                            if k32.ReadProcessMemory(hp, ctypes.c_void_p(ctx.Rsp), sb, 8 * 24,
+                                                     ctypes.byref(got)):
+                                fr = [res(struct.unpack_from("<Q", sb.raw, k)[0])
+                                      for k in range(0, min(got.value, 8 * 24), 8)]
+                                stack = " stack=[" + " ".join(fr) + "]"
+                            k32.CloseHandle(hp)
+                        print("AV tid=%d av=%s rip=%s rax=%s rcx=%s rdx=%s rsi=%s rdi=%s rbp=%s "
+                              "rsp=%s r8=%s r9=%s%s" % (
+                                  ev.dwThreadId, res(ex_addr), res(ctx.Rip), res(ctx.Rax),
+                                  res(ctx.Rcx), res(ctx.Rdx), res(ctx.Rsi), res(ctx.Rdi),
+                                  res(ctx.Rbp), res(ctx.Rsp), res(ctx.R8), res(ctx.R9), stack),
+                              flush=True)
+                    if ht:
+                        k32.CloseHandle(ht)
                 cont = M.DBG_EXCEPTION_NOT_HANDLED
         else:
             arm(ev.dwThreadId, vas)

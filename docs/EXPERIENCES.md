@@ -8945,3 +8945,20 @@ if the cache/host frames appear.
   a BP at `KG3DEngineDX11EX64.dll+0xE2E842` (W1) / the jemalloc frame (W4). No findings yet.
 - Verified: `git push` → `81203f0b..d9377e2a`; tools copied + parse; gates jx3_model 10 PASS /
   gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 LIVE-CAUGHT: first-chance AV in-process (debugger unblocks W1/W4)
+
+- **Did:** extended `tools/pvp/multi_trace.py` (extra regs + resolved stack on hit; AV-context dump;
+  AV-only mode) and ran the W1 repro (65068, blacklist emptied) under it, attached before the cast.
+- **Result — the fault captured LIVE** (the WER dump never could): first-chance AV
+  `ntdll+0xFA7D` (`memcpy`/`movs` via `jemallocX64.dll+0x11001`) with **size `0xFFFFFFFA` (-6)**,
+  dst `KG3DEngineDX11EX64.dll+0x2D3EEE8`; registers rax=0 rcx=rdi=dst rdx=rsi=0xFFFFFFFA r8=0
+  r9=dst+8; broken `rbp` (0xdf4659).
+- **Correction:** the prior handoff's "engine caller @`0xE2E842` (std::map/memcpy)" is WRONG —
+  `0xE2E835 lea rcx,[engine+0x2D3EEE8]` then `0xE2E83C GetCurrentThreadId` / `0xE2E842`
+  **`EnterCriticalSection`** (Leave @`0xE2E86F`): `0x2D3EEE8` is a **lock global**, not the memcpy
+  caller. Function @`0xE2E690` loops `0xE2DA70` over `ebx` entries under that lock.
+- **Next:** BP `jemallocX64.dll+0x11001`, grab the engine return address (filter size=0xFFFFFFFA),
+  or `.pdata`-unwind the captured context. Proof `proof/netcode/skillv6_w1_live_fault_20261009.txt`.
+- Verified: live run (`cast chain started` → AV caught); gates jx3_model 10 PASS / gravity PASS /
+  loot selftest PASS. (Blacklist restored after the run.)

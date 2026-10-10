@@ -49,6 +49,14 @@ Proven: `dump_fn_disasm.py JX3RepresentX64.dll --names behit_names.txt` returned
   recovered from these dumps. Unblock = capture with a debugger (x64dbg/`cdb`), or force full
   memory capture, then unwind via `.pdata`. Faulting site + module + bad value (0xFFFFFFFA) are
   known; the fix (supply the anim/bone binding) is a large engine-RE sub-task.
+  **W1 LIVE-CAUGHT (2026-10-09)** via the ported `tools/pvp/multi_trace.py` (v2 read-only
+  debugger): first-chance AV captured in-process — `ntdll+0xFA7D` (`memcpy`/`movs` via
+  `jemallocX64.dll+0x11001`), **size=0xFFFFFFFA (-6)**, dst=`KG3DEngineDX11EX64.dll+0x2D3EEE8`;
+  `rbp` chain broken (engine caller not on the stack — same limitation as the WER dump). Correction:
+  the old "caller @`0xE2E842`" is **`EnterCriticalSection(&global+0x2D3EEE8)`** (paired Leave @
+  `0xE2E86F`), NOT the memcpy — `0x2D3EEE8` is a lock global. Next: BP `jemalloc+0x11001` and grab the
+  engine return address (filter size = 0xFFFFFFFA), or `.pdata`-unwind the captured context. Proof
+  `proof/netcode/skillv6_w1_live_fault_20261009.txt`.
 - **W2 — FWD2 default be-hit animation. DONE (2026-10-09; implemented + verified A/B).**
   - **Default NPC rule:** `KRLCharacter::BeHittedByPlayer` @ `0x1804d0220` uses the literal
     `bat01.ani` (string @0x180caf980) for npc_source targets via the sibling builder

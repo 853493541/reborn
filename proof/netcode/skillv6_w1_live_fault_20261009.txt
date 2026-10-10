@@ -1,0 +1,46 @@
+# skill v6 — W1 live fault capture (mini-debugger HW/AV catch) (2026-10-09)
+# Tool: tools/pvp/multi_trace.py (ported from agent/v2) -- AV-only mode, read-only.
+
+## Repro
+- Empty `bin64\ability_picker\av_blacklist_f1.txt` of 65068 (backup/restore around the run).
+- Launch reborn_client_skillv6.exe: RC_MEM_NS=reborn_skillv6_probe.memory, RC_ABILITY=65068,
+  RC_CAST_AT=38000:1, RC_TAB_AT=10000, RC_DUMMY_N=1, RC_NOLOADING=1, RC_AUTORUN=70000.
+- Attach `multi_trace.py <pid> --seconds 115` (0 BP targets = AV-catch only) BEFORE the cast.
+- Result: `cast chain started` -> first-chance AV caught LIVE (the WER dump could not).
+
+## Captured AV (live, read-only)
+  AV tid=46536 av=ntdll.dll+0xFA7D rip=ntdll.dll+0xFA7D
+    rax=0x0
+    rcx=KG3DEngineDX11EX64.dll+0x2D3EEE8      <-- (dst / CRITICAL_SECTION global)
+    rdx=0xfffffffa                            <-- BAD SIZE (= -6 as int32)
+    rsi=0xfffffffa                            <-- same bad size
+    rdi=KG3DEngineDX11EX64.dll+0x2D3EEE8
+    rbp=0xdf4659  rsp=0xdf45c0  r8=0x0  r9=KG3DEngineDX11EX64.dll+0x2D3EEF0
+    stack=[0xffffffffffffffff 0x8c6000 0x20 0xf20000 0x2 0x4 0x18 ntdll.dll+0x26844 0xe00000
+           0x6568746f00000000 0x18 jemallocX64.dll+0x11001 0xc5b7cdca5cedcecc 0x0 0x11291e201 ...]
+So: a `memcpy`/`movs` in **ntdll** (via **jemallocX64.dll+0x11001**) with size **0xFFFFFFFA (-6)**
+into `KG3DEngineDX11EX64.dll+0x2D3EEE8`. The `rbp` chain is broken (0xdf4659 is not a frame
+pointer), so the engine caller is not directly on the stack (matches the WER-dump limitation).
+
+## Engine region — the old "0xE2E842 memcpy caller" attribution is WRONG
+`KG3DEngineDX11EX64.dll+0xE2E690` (fn) contains, right before +0xE2E842:
+  0xE2E835  lea  rcx, [rip+0x1f106ac]   ; = KG3DEngineDX11EX64.dll+0x2D3EEE8  (matches the fault dst!)
+  0xE2E83C  call [rip+0xde6116]         ; = GetCurrentThreadId
+  0xE2E842  call [rip+0xde6108]         ; = **EnterCriticalSection**  (NOT memcpy)
+  0xE2E86F  call [rip+0xde60eb]         ; = LeaveCriticalSection (paired)
+So `engine+0x2D3EEE8` is a **CRITICAL_SECTION / lock global**, and +0xE2E842 is lock acquire — the
+prior handoff's "memcpy caller at 0xE2E842" was a misread. The real fault is elsewhere (jemalloc).
+The fn loops calling `0xE2DA70` over `ebx` entries (a per-frame vector update) under that lock.
+
+## Also confirmed (W1 numbers, live)
+- The crash is exactly the documented one: size 0xFFFFFFFA (=-6) through jemalloc -> ntdll memcpy.
+- `EngineMath` note: 0xFFFFFFFA = -6; a size/index derived as negative (a count minus something),
+  i.e. a bad bone/anim/vertex id the host model lacks (root still to pin).
+
+## Next probe
+1. Set a HW **execution** BP at `jemallocX64.dll+0x11001` and capture the **return address** on the
+   stack at that BP (the engine caller) — jemalloc is called a lot, so log only hits whose size
+   reg is 0xFFFFFFFA / negative.
+2. Or parse the engine `.pdata` (RUNTIME_FUNCTION) and unwind the faulting thread from the captured
+   context (regs + stack) offline.
+Evidence: this file; live run log in `bin64\reborn_out\`. Tool: `tools/pvp/multi_trace.py`.
