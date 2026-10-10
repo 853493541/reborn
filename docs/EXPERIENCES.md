@@ -8976,3 +8976,15 @@ if the cache/host frames appear.
   count/bone/anim id) and supply the binding; or BP `jemalloc+0x11001` filtered on size 0xFFFFFFFA.
 - Verified: live run (2nd) caught AV + chain; blacklist restored; gates jx3_model 10 PASS /
   gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 chain decoded: fn 0xE2DA70 = keyframe-curve interpolation
+
+- **Did:** disassembled the top engine chain functions.
+- **Finding:** `KG3DEngineDX11EX64.dll fn 0xE2DA70` is a **keyframe-curve evaluator** — `edi =
+  (int)time; if time<0 edi--`, then a red-black keyframe-tree search + lerp. So the W1 crash is an
+  **animation-curve evaluation with a negative time/frame index** (`edi--` -> negative, e.g. -6)
+  flowing into the downstream allocation (size `0xFFFFFFFA`), consistent with "bad/missing anim id".
+  Chain: `0xE2768F -> 0x10D0A6 -> fn 0xE2D6A0 -> fn 0xE2DA70 -> fn 0xE2E690 -> jemalloc -> ntdll (AV)`.
+- **Next:** trace the negative `xmm6` (time) source up the chain (0xE2D6A0 / 0x10D0A6 / 0xE2768F) —
+  why the host model yields a negative frame; then supply/fix the anim binding.
+- Verified: read-only disasm; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.

@@ -57,9 +57,18 @@ So the engine nesting is `0xE2768F -> 0x10D0A6 -> 0xE2D6A0 -> 0xE2DA70 -> 0xE2E6
 fn 0xE2E690 is a per-frame vector update under the lock @+0x2D3EEE8 (loop `call 0xE2DA70` over `ebx`);
 fn 0xE2DA70 calls 0xE2E690 @0xE2DAD5. The bad size (-6) is produced along this chain.
 
+## Chain function decoded — `fn 0xE2DA70` = keyframe-curve interpolation
+`0x180E2DA70` disasm: `mov rsi,rdx; cvttss2si edi, xmm6(=time); comiss xmm6,0; lea eax,[rdi-1];
+cmovb edi,eax` (if time<0 -> edi--), then a **red-black keyframe-tree search** (`cmp byte [node+0x19],0`
+colour walk by `[node+0x1c]` key), ending in a lerp (`subss/divss/mulss/addss`). So this is the engine's
+**animation-curve evaluator** (time -> interpolated value). A **negative time/frame** makes the index
+go negative (`edi--`, e.g. -6); that negative flows into the downstream allocation whose size becomes
+`0xFFFFFFFA`. This matches "bad anim/bone id the host model lacks" (a negative time/frame index).
+
 ## Next probe
-1. Find the allocation/memcpy in fn `0xE2E690`/`0xE2DA70` (`0xE2DA70` is the common helper) whose size
-   becomes -6 — i.e. the count/bone/anim id that is negative; then supply the host binding for it.
-2. Or set a HW BP at `jemallocX64.dll+0x11001` and log only hits with a size reg = 0xFFFFFFFA to grab
-   the exact engine return address of the bad alloc.
+1. Find which caller feeds a negative `xmm6` (time) / the resulting negative index, and why (missing
+   animation/clip -> negative or uninitialised time). Trace `fn 0xE2DA70`'s `xmm6` source up the chain
+   (`0xE2D6A0` -> `0x10D0A6` -> `0xE2768F`).
+2. Or BP `jemallocX64.dll+0x11001` and log only hits with size reg = 0xFFFFFFFA to grab the exact
+   bad-alloc call site.
 Evidence: this file; live runs (`bin64\reborn_out\`). Tool: `tools/pvp/multi_trace.py`.
