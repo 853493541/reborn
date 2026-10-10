@@ -206,8 +206,8 @@ class Unwinder(object):
             if opcode == 0:                       # PUSH_NONVOL
                 regs[REG[opinfo]] = qword(self.d.read(rsp, 8), 0)
                 rsp += 8
-            elif opcode == 1:                     # ALLOC_LARGE
-                rsp += extra
+            elif opcode == 1:                     # ALLOC_LARGE: OpInfo 0 = u16*8, 1 = u32 unscaled
+                rsp += extra * 8 if opinfo == 0 else extra
             elif opcode == 2:                     # ALLOC_SMALL
                 rsp += (opinfo + 1) * 8
             elif opcode == 3:                     # SET_FPREG

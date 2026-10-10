@@ -9084,3 +9084,15 @@ if the cache/host frames appear.
 - **State:** reader solid; unwinder WIP. W1 exact-instruction still open. Live runs paused. The
   5.6 GB dump (`%LOCALAPPDATA%\Temp\opencode\behit_re\w1_av.dmp`) is the input for the next attempt.
 - Verified: gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 unwinder: ALLOC_LARGE scaling fix (frame 0 now unwinds)
+
+- **Did:** fixed a second unwinder bug: `UWOP_ALLOC_LARGE` OpInfo 0 is the frame slot value **×8**
+  (`rsp += extra*8`), not unscaled.
+- **Result:** the unwinder now walks frame 0 correctly (`ntdll+0xFA7D` -> a real ntdll caller);
+  frame 1 onward not yet validated against the live chain (frame 2 still garbage). Getting closer to
+  the exact engine `jemalloc(size=-6)` caller.
+- **Next:** validate the walk on a known stack (compare against the live capture) and fix the
+  remaining frames (frame-pointer/leaf handling), to reach the engine frames.
+- Verified: unwinder runs on the 5.6 GB dump; gates jx3_model 10 PASS / gravity PASS /
+  loot selftest PASS.
