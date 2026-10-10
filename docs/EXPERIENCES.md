@@ -9044,3 +9044,18 @@ if the cache/host frames appear.
   executable-range stack tagging. Blacklist restored; no probe processes left.
 - Verified: AV-only run caught the fault + wrote the dump (no flashing); gates jx3_model 10 PASS /
   gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: StackWalk64 attempt flaky; live-run hygiene lesson
+
+- **Did:** added a `--stackwalk` mode (dbghelp `SymInitialize`+`StackWalk64`) to unwind the live fault
+  using module `.pdata` (avoids the 5.6 GB dump parse).
+- **Result:** with `SymInitialize(...,FALSE)` StackWalk64 returned garbage (module tables not loaded);
+  with `TRUE` the run produced no output and the client exited (flaky). Not yet reliable.
+- **Lesson (hygiene):** the W1 harness must restore the runtime `av_blacklist_f1.txt` even if the run
+  aborts — one run removed 65068 and the restore didn't execute; **caught and restored** (65068 back,
+  44 lines). Future W1 runs should restore in a `finally`-equivalent and verify.
+- **State:** live W1 runs paused (flaky + intrusive risk). Captured so far (read-only):
+  live fault (size -6, dst engine+0x2D3EEE8), engine call chain, curve-eval root direction, and a
+  5.6 GB full-memory dump. The exact bad-alloc instruction still needs a reliable unwind.
+- Verified: blacklist restored (65068 present); no reborn/multi_trace processes left; gates jx3_model
+  10 PASS / gravity PASS / loot selftest PASS.

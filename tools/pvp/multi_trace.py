@@ -86,6 +86,59 @@ def make_resolver(pid):
     return res
 
 
+class ADDR64(ctypes.Structure):
+    _fields_ = [("Offset", ctypes.c_uint64), ("Segment", ctypes.c_uint16),
+                ("Mode", ctypes.c_uint32), ("_pad", ctypes.c_uint16)]
+
+
+class STACKFRAME64(ctypes.Structure):
+    _fields_ = [("AddrPC", ADDR64), ("AddrReturn", ADDR64), ("AddrFrame", ADDR64),
+                ("AddrStack", ADDR64), ("AddrBStore", ADDR64), ("FuncTableEntry", ctypes.c_uint64),
+                ("Params", ctypes.c_uint64 * 4), ("Far", w.BOOL), ("Virtual", w.BOOL),
+                ("Reserved", ctypes.c_uint64 * 3)]
+
+
+def stackwalk(pid, tid, ctx, res):
+    """Walk the faulting thread's stack via dbghelp StackWalk64 (uses each module's .pdata)."""
+    try:
+        dbghelp = ctypes.windll.dbghelp
+        k32.OpenProcess.restype = w.HANDLE
+        k32.OpenThread.restype = w.HANDLE
+        h = k32.OpenProcess(0x1F0FFF, False, pid)
+        ht = k32.OpenThread(0x1F0FFF, False, tid)
+        if not h or not ht:
+            print("stackwalk: open failed", flush=True)
+            return
+        dbghelp.SymInitialize.restype = w.BOOL
+        dbghelp.SymInitialize(h, None, True)   # TRUE: enumerate the target's modules (loads .pdata)
+        dbghelp.SymFunctionTableAccess64.restype = ctypes.c_void_p
+        dbghelp.SymFunctionTableAccess64.argtypes = [w.HANDLE, ctypes.c_uint64]
+        dbghelp.SymGetModuleBase64.restype = ctypes.c_uint64
+        dbghelp.SymGetModuleBase64.argtypes = [w.HANDLE, ctypes.c_uint64]
+        dbghelp.StackWalk64.restype = w.BOOL
+        sf = STACKFRAME64()
+        ctx.ContextFlags = M.CONTEXT_FULL
+        for a, v in (("AddrPC", ctx.Rip), ("AddrFrame", ctx.Rbp), ("AddrStack", ctx.Rsp)):
+            f = getattr(sf, a)
+            f.Offset = v
+            f.Mode = 3  # AddrModeFlat
+        print("STACKWALK:", flush=True)
+        for i in range(48):
+            ok = dbghelp.StackWalk64(0x8664, h, ht, ctypes.byref(sf), ctypes.byref(ctx), None,
+                                     dbghelp.SymFunctionTableAccess64, dbghelp.SymGetModuleBase64, None)
+            if not ok:
+                break
+            print("  #%02d pc=%s ret=%s" % (i, res(sf.AddrPC.Offset), res(sf.AddrReturn.Offset)),
+                  flush=True)
+            if sf.AddrPC.Offset == 0:
+                break
+        dbghelp.SymCleanup(h)
+        k32.CloseHandle(ht)
+        k32.CloseHandle(h)
+    except Exception as e:
+        print("stackwalk ex: %s" % e, flush=True)
+
+
 def write_dump(pid, path):
     """Full-memory minidump of the (paused) target via dbghelp MiniDumpWriteDump."""
     try:
@@ -239,6 +292,7 @@ def main():
     dump = ""
     if "--dump" in sys.argv:
         dump = sys.argv[sys.argv.index("--dump") + 1]
+    do_walk = "--stackwalk" in sys.argv
 
     targets = []
     for s in specs:
@@ -350,6 +404,9 @@ def main():
                     if dump and not dumped["done"]:
                         dumped["done"] = True
                         write_dump(pid, dump)
+                    if do_walk and not dumped["done"]:
+                        dumped["done"] = True
+                        stackwalk(pid, ev.dwThreadId, ctx, res)
                 cont = M.DBG_EXCEPTION_NOT_HANDLED
         else:
             arm(ev.dwThreadId, vas)
