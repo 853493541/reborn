@@ -9096,3 +9096,18 @@ if the cache/host frames appear.
   remaining frames (frame-pointer/leaf handling), to reach the engine frames.
 - Verified: unwinder runs on the 5.6 GB dump; gates jx3_model 10 PASS / gravity PASS /
   loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 unwinder VALIDATED on a clean thread; fault thread breaks at frame 2
+
+- **Did:** validated the `.pdata` unwinder against a non-fault thread (tid 31468).
+- **Result:** it walks cleanly — `ntdll+0x161914 → KERNELBASE+0x22773 → clr+0x168F76 →
+  clr+0x168E5C → clr+0x168CF6 → kernel32+0x2CD87 → ntdll+0xACAEC` (7 real code frames). So the
+  algorithm (RUNTIME_FUNCTION lookup + UNWIND_INFO + virtual unwind, `ALLOC_LARGE*8`, slot-count)
+  is correct.
+- **Fault thread:** `#00 ntdll+0xFA7D → #01 ntdll+0x1166F → #02 0x0`. Frame 0 unwinds to a real
+  ntdll caller; frame 1 (`ntdll+0x1166F`) then fails (rbp garbage, ret 0). So the break is localized
+  to that one function — fix it to continue up to the engine frames.
+- **Next:** debug the unwind of `ntdll+0x1166F` (its RF/codes) to continue the fault walk to the
+  engine `jemalloc(size=-6)` caller.
+- Verified: clean-thread walk produces 7 valid frames; gates jx3_model 10 PASS / gravity PASS /
+  loot selftest PASS.
