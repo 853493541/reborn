@@ -30,7 +30,9 @@ Catalogs: `../proof/pvp/attr_catalog.tsv`, `../proof/pvp/combat_opcodes.tsv`,
 `../proof/pvp/cooldown_usage_catalog.tsv`, `../proof/pvp/decay_and_controls.tsv`.
 
 Tools: `tools/pvp/` (`tab.py` table reader, `field_semantics.py`, `verify_pvp_evidence.py`,
-`dump_fn_disasm.py`, …), `tools/netcode/mode/extract_target_dummies.py` (dummy
+`dump_fn_disasm.py`, `disasm_fn.py`, `mini_debugger.py` / `multi_trace.py` — read-only **hardware-BP
+live debugger** for our own host process, ported from `agent/v2`; the W1/W4 unblock),
+`tools/netcode/mode/extract_target_dummies.py` (dummy
 NPC-template extraction; in-client spawn: `client/RebornClient.cs` `RC_DUMMY`)
 and the reused `tools/netcode/` Lua/binary helpers.
 

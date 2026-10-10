@@ -8927,3 +8927,21 @@ if the cache/host frames appear.
   are W1/W4 (need an approved debugger), W3 (no local bank), damage scaling (server), Lua VM and
   projectiles (large). No code change.
 - Verified: read-only disasm; gates jx3_model 10 PASS, gravity PASS, loot selftest PASS.
+
+### 2026-10-09 — v6 — W1/W4 unblock: ported the v2 mini-debugger (read-only HW BP)
+
+- **Did:** pushed `agent/skillv6-sandbox` to origin (`81203f0b..d9377e2a`). Investigated the v2
+  branch's "no debugger" answer and ported the tooling into `tools/pvp/`.
+- **v2 notes (research only):** they built `tools/netcode/mini_debugger.py` (read-only
+  `DebugActiveProcess` + hardware DR0 exec BP, logs register context + C-string args) and
+  `multi_trace.py` (up to 4 HW BPs by `Module+0xRVA`). The initial "attach KILLS the client
+  (anti-debug)" was a **tool bug** (ctypes `DEBUG_EVENT` union alignment off-by-4; fixed → client
+  survives, ≥250 threads armed, `GetTickCount` BP fired 44,694×/8 s). v2 carries a scoped anti-cheat
+  deviation for its *test* client; irrelevant here (we attach to our own host process).
+- **Ported:** `tools/pvp/mini_debugger.py` + `tools/pvp/multi_trace.py` (stdlib-only, generic
+  `<pid> Module+0xRVA`), verified they load; registered in `docs/pvp/README.md`. A **live** BP gives
+  the caller registers/stack from process memory — the exact thing W1's WER dump lacked.
+- **Next:** extend the hit dump (rsi/rdi/rbp + stack) and attach to `reborn_client_skillv6.exe` with
+  a BP at `KG3DEngineDX11EX64.dll+0xE2E842` (W1) / the jemalloc frame (W4). No findings yet.
+- Verified: `git push` → `81203f0b..d9377e2a`; tools copied + parse; gates jx3_model 10 PASS /
+  gravity PASS / loot selftest PASS.
