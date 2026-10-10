@@ -9072,3 +9072,15 @@ if the cache/host frames appear.
   engine instruction that calls `jemalloc(size=-6)`; or fix the live `--stackwalk`.
 - Verified: reader runs on the 5.6 GB dump and prints the fault context; gates jx3_model 10 PASS /
   gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 unwinder v1 (WIP): RF found, still mis-unwinds frame 0
+
+- **Did:** added a `.pdata` x64 unwinder (`--unwind`) to `minidump_full.py` and fixed the first bug
+  (`CountOfCodes` counts 2-byte SLOTS, not ops — ops with inline data consume extra slots).
+- **Result:** it finds the right `RUNTIME_FUNCTION` for the fault (`ntdll` fn `[0xF9C0,0x1007F)`,
+  UNWIND_INFO @`0x1A4B7C`, prolog 50) but still mis-unwinds frame 0 (frame 1 comes out garbage).
+  Likely the unwind-code semantics (ALLOC_LARGE scaling, PUSH_MACHFRAME, code order) aren't exactly
+  right — needs more work against a known-good case.
+- **State:** reader solid; unwinder WIP. W1 exact-instruction still open. Live runs paused. The
+  5.6 GB dump (`%LOCALAPPDATA%\Temp\opencode\behit_re\w1_av.dmp`) is the input for the next attempt.
+- Verified: gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
