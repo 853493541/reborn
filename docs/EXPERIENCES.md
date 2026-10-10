@@ -9176,3 +9176,17 @@ if the cache/host frames appear.
   `0xE2E842` of the ntdll/jemalloc chain; unwinding the engine's own chaininfo frames is the
   remaining step to reach the exact `jemalloc(size=-6)` instruction. All read-only; live paused.
 - Verified: read-only analysis; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 unwinder COMPLETE: full chain to the animation-tag pipeline
+
+- **Did:** made chained-info handling recursive (follow chains to the end, finalize once).
+- **Result — the faulting thread walks fully** (streaming dump `.pdata` unwinder):
+  `ntdll+0xFA7D -> ntdll+0x1166F -> ntdll+0x128E2 -> KG3DEngineDX11EX64+0xE2E842 -> +0xE2DADA ->
+  +0xE2D706 -> +0xE2768F -> +0xBE4938 -> +0x8393F1 -> +0x8281AF -> +0x87E11E -> +0x8B432C ->
+  KG3D_AnimationTagX64.dll+0x12487 -> +0x11B16 -> +0x10CA2 -> KG_EngineEditorX64.dll+0x291F1`.
+  Clean-thread regression still 7 frames. So the W1 crash is a bad-size `memcpy` driven from the
+  **animation-tag pipeline** (`KG3D_AnimationTagX64.dll`) through the engine anim/module-update code.
+- **Next:** map engine frames #03..#11 to functions and find the negative-size computation
+  (start: `KG3DEngineDX11EX64.dll+0xE2E79D` / `+0x8B432C`, up to `KG3D_AnimationTagX64.dll+0x12487`).
+- Verified: full fault walk + clean-thread regression; gates jx3_model 10 PASS / gravity PASS /
+  loot selftest PASS.

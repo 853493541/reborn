@@ -92,11 +92,34 @@ Caveat: `tools/camera/minidump_exc.py` `Dump.__init__` reads the whole file into
 5.6 GB. A **streaming/mmap** minidump reader is needed, then `.pdata`-unwind the faulting thread
 (tid 47284, rip `ntdll+0xFA7D`) using the now-present code pages.
 
+## FULL UNWIND (2026-10-09) — `.pdata` unwinder works
+`tools/pvp/minidump_full.py --unwind` (streaming dump reader + `.pdata` unwinder; fixed:
+CountOfCodes=2-byte slots, ALLOC_LARGE*8, chained-info recursion with single finalize) walks the
+faulting thread (tid 47284) to the top:
+  #00 ntdll.dll+0xFA7D            (the AV memmove)
+  #01 ntdll.dll+0x1166F
+  #02 ntdll.dll+0x128E2
+  #03 KG3DEngineDX11EX64.dll+0xE2E842
+  #04 KG3DEngineDX11EX64.dll+0xE2DADA
+  #05 KG3DEngineDX11EX64.dll+0xE2D706
+  #06 KG3DEngineDX11EX64.dll+0xE2768F
+  #07 KG3DEngineDX11EX64.dll+0xBE4938
+  #08 KG3DEngineDX11EX64.dll+0x8393F1
+  #09 KG3DEngineDX11EX64.dll+0x8281AF
+  #10 KG3DEngineDX11EX64.dll+0x87E11E
+  #11 KG3DEngineDX11EX64.dll+0x8B432C
+  #12 KG3D_AnimationTagX64.dll+0x12487
+  #13 KG3D_AnimationTagX64.dll+0x11B16
+  #14 KG3D_AnimationTagX64.dll+0x10CA2
+  #15 KG_EngineEditorX64.dll+0x291F1
+Clean-thread regression (tid 31468) still 7 correct frames. The W1 crash is a bad-size memcpy driven
+from the **animation-tag** pipeline (`KG3D_AnimationTagX64.dll`) through engine anim/module-update
+code. Frames #03.. are the engine callers; the memmove (size -6) is reached without a separate
+jemalloc frame (jemalloc+0x11001 was a stack value, not a frame).
+
 ## Next probe
-1. Write a small streaming reader for the full dump (module list + the faulting thread's CONTEXT +
-   the thread's stack memory + each module's `.pdata`), then `RtlVirtualUnwind`-walk from the fault
-   to get the exact engine instruction that calls `jemalloc(size=-6)`.
-2. Or single-BP a COLD engine address from the chain (e.g. fn `0xE2E690` entry) and step to the
-   jemalloc call (NOT a hot site).
-3. Or find which caller feeds a negative `xmm6` (time) to the curve eval `fn 0xE2DA70` and why.
-Evidence: this file; `w1_av.dmp` (temp); live runs (`bin64\reborn_out\`). Tool: `tools/pvp/multi_trace.py`.
+1. Map the engine frames (#03..#11) to functions (`.pdata`/disasm) and find which one computes the
+   negative size/bad frame — starting at `KG3DEngineDX11EX64.dll+0xE2E79D` (fn containing #03) and
+   `KG3DEngineDX11EX64.dll+0x8B432C` (fn above), up to `KG3D_AnimationTagX64.dll+0x12487`.
+2. Or single-BP a COLD engine address from the chain and step (NOT a hot site).
+Evidence: this file; `w1_av.dmp` (temp); tool `tools/pvp/minidump_full.py`.

@@ -250,14 +250,16 @@ class Unwinder(object):
                 continue
             b, en, ui, = rf
             flags, prolog, framereg, frameoff, codes, chained, i = self.unwind_info(base, ui)
-            if flags & 4 and chained:
-                # chained: apply this fn's codes (no finalize), then the chained fn's, then finalize once
-                ctx = self.virtual_unwind(base, b, ctx, codes, framereg, frameoff, finalize=False)
+            fstart = b
+            while True:
+                last = chained is None
+                ctx = self.virtual_unwind(base, fstart, ctx, codes, framereg, frameoff,
+                                          applyall=(fstart != b), finalize=last)
+                if last:
+                    break
                 cb, ce, cui = chained[1], chained[2], chained[3]
-                _f, _p, _fr, _fo, codes2, _c, _i = self.unwind_info(base, cui)
-                ctx = self.virtual_unwind(base, cb, ctx, codes2, _fr, _fo, applyall=True, finalize=True)
-            else:
-                ctx = self.virtual_unwind(base, b, ctx, codes, framereg, frameoff)
+                _f, _p, framereg, frameoff, codes, chained, _i = self.unwind_info(base, cui)
+                fstart = cb
             frames.append((ctx["Rip"], ctx["Rsp"], ctx["Rbp"]))
             if ctx["Rip"] == 0:
                 break
