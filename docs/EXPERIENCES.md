@@ -9137,3 +9137,16 @@ if the cache/host frames appear.
   the exact engine `jemalloc(size=-6)` caller.
 - Verified: clean-thread walk unchanged; fault walk reaches the engine module; gates jx3_model 10 PASS
   / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 unwinder: chained-frame remainder diagnosed (rsp ~0x38 short)
+
+- **Did:** inspected the chained unwind info of `ntdll+0x1166F`.
+- **Finding:** local fn `[0x115CA,0x1169A)` = 4 SAVE_NONVOL (no rsp change); chained fn
+  `[0x11480,0x114AC)` (ui `0x1A4DA4`, flags 0, prolog 20) = `ALLOC_SMALL(88) + PUSH R14/R12/RDI/RBX`
+  → Δrsp 120 (0x78). Combined application gave Δ136 (0x88); the real chain needs ~0x38 more (the
+  engine return `+0xE2E842` sits at `rsp+0x1B8`). So chained CodeOffset basis / ordering across the
+  local+chained pair is still not exactly right.
+- **Assessment:** the `.pdata` unwinder is validated and reaches the engine module; the last hop is a
+  chained-frame nuance. Given the depth, W1 exact-instruction is deferred (the diagnosis is already
+  solid, read-only, and documented). Live runs remain paused; 5.6 GB dump retained.
+- Verified: diagnostic only; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
