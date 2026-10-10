@@ -9327,3 +9327,17 @@ if the cache/host frames appear.
   `--bp-log` (log every hit's regs). Proof `proof/netcode/skillv6_w1_live_fault_20261009.txt` corrected.
 - Verified: cold BP run (53 hits, no flashing); dump read; gates jx3_model 10 PASS / gravity PASS /
   loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: CreateCache's allocate is count*4 (count was 20) -> -6 not from it either
+
+- **Did:** disassembled the allocation `0x18013bba0` called by CreateCache.
+- **Finding:** `0x18013bba0(rcx, rdx)` allocates `rdx*4` bytes via an allocator vtable (rcx=0 -> global
+  allocator, else `rcx+0x90`); on failure it logs and returns null. CreateCache calls it with
+  `rdx = count` (`movsxd rdi,ebx`), so the allocation is `count*4`. The faulting timeline's count was
+  **20** -> 80 bytes, so the `-6` `memmove` is **not** from this allocate (nor from the min/max tree).
+- **Conclusion:** within CreateCache's straight-line code, neither the tree count nor the allocate
+  produces `-6`. Candidate remaining: the `0xE2E83C` call (IAT-resolved as EnterCriticalSection, which
+  is suspicious given the fault) or the frame #03 attribution; OR the `-6` is from a different engine
+  caller (frame #06/#07, CreateSFXFromFile). Needs a **data-write/step** watch at the faulting frame.
+- **Status:** W1 root still open (corrected twice). All read-only. Session at context limit.
+- Verified: read-only disasm; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
