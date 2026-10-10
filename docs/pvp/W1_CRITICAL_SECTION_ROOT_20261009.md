@@ -127,6 +127,31 @@ branch is taken and the first `CreateCache` commit AVs.
    rebuild/lock branch (vs the prebuilt fast path), and (b) seed the cs (the gate `0x2D3EF10`/TLS).
    Repro of this test: `RC_ABILITY=27847 RC_CAST_AT=38000:1` + the same `0xE2E83C` BP.
 
+## Next-session handoff (open question + pitfalls)
+
+**Exact open question:** why is the engine thread's shared generation `[TLSblock + 0x89b0]` already `0`
+when `CreateCache` first runs, so that the gate `cmp [KG3DEngine+0x2D3EF10](=0), [TLSblock+0x89b0]; jg`
+does not route to the init detour? (A fresh thread holds the `.tls` template `0x80000000`, which *would*
+route to init.) Determine which earlier engine call (wrapper `0x1818C7C48`) syncs it, or which startup
+step should have set the guard/thread-state so the detour runs.
+
+**Pitfalls:**
+- **rip-relative displacement arithmetic** repeatedly caused wrong reads: a target is
+  `next_instruction_VA + disp32` (NOT `ImageBase + disp`). The CreateCache read of `0x89b0` is
+  `mov ecx,0x89b0; mov eax,[rdx+rcx]` — the offset is an **immediate**, so it never appears as a memory
+  displacement; find it via the immediate, not a disp scan.
+- The wrapper helper pair is `0x1818C7CA8` (once) + `0x1818C7C48` (bump+cache); `0x1818C7C48` sets
+  `[guard]=ctr+1` and `[TLS+0x89b0]=<global>`.
+- `multi_trace.py` may print a BP target **without a base** (module-resolve race ~2s after launch) — retry
+  and confirm the `target ... = 0x7FFE...` line before trusting a 0-hit result.
+- Restore the runtime blacklist as a **separate** command (a trailing `finally` did not run when the
+  debugger command errored).
+
+**Candidate fixes (verify against the engine's design before applying — no band-aids):**
+1. Find/run the engine startup that initializes this cs (it is NOT the no-op `_InitSFXModuleEx`).
+2. Or ensure `CreateCache` is the engine thread's first wrapper use (ordering).
+Do NOT poke the cs in memory (forbidden workaround).
+
 ## Reproduce
 
 - Repro: remove `65068` from the runtime `...\bin64\ability_picker\av_blacklist_f1.txt`, run the client
