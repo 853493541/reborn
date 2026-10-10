@@ -9664,3 +9664,30 @@ if the cache/host frames appear.
   trusting any fix. (Also confirms `KG3D_Engine::_InitSFXModuleEx` = `xor eax,eax; ret`, a no-op stub.)
 - Verified: read-only recomputed targets + dump reads; gates jx3_model 10 PASS / gravity PASS / loot
   selftest PASS.
+
+### 2026-10-09 — v6 — W1: BOTH wrapper helpers write G (not 0) to [TLS+0x89b0]
+
+- **Did:** disassembled the full once-helper `0x1818C7CA8` and resolved its RIP targets with capstone.
+- **Finding:** the once-helper writes `[TLSblock+0x89b0] = [global @RVA 0x257F2D0]` too — and that global
+  IS `G` (`0x8000025A`), the same value `0x1818C7C48` writes. So **both** helpers set `[TLS+0x89b0] = G`,
+  never `0`. Yet the crash/engine thread holds `0` (template `0x80000000`, top byte cleared) while
+  workers hold `0x80000000`. So NEITHER helper wrote the engine thread's field.
+- **Consequence:** the `0` is written by a mechanism my 3-site write scan missed (a region zeroing /
+  a different addressing form), or the engine thread's block was partially re-initialized. This is the
+  exact thing the next session must pin — it is the last unknown before the W1 fix.
+- Verified: read-only disasm + capstone-resolved dump reads (`0x26546C4`=29; `0x257F2D0`=`0x8000025A`);
+  gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 next probe pinned: hardware WRITE breakpoint on [TLSblock+0x89b0]
+
+- **Did:** widened the write-site scan (longer window; all write forms; immediate **and** disp forms).
+- **Finding:** only `0x1818C7C94` and `0x1818C7CF8` (the two wrapper helpers) write `[TLS+0x89b0]`, both
+  to `G` (`0x8000025A`). No other site writes it via an immediate/disp. The TLS block is otherwise
+  template-identical to the worker's (only 16 bytes differ), so the block WAS template-copied and
+  engine code specifically zeroed `[0x89b0]`. Therefore the `0` writer uses a **stored field pointer**
+  (`[ptr]=0`), invisible to a static immediate/disp scan.
+- **Next probe (definitive):** set a **hardware data WRITE breakpoint** on
+  `engine_TLSblock(index=29) + 0x89B0` for the engine thread during the W1 repro and log the writer's
+  RIP. (Check whether `tools/pvp/multi_trace.py` supports DR data BPs; if not, add it — exec BPs alone
+  cannot catch this.) The writer's RIP + the surrounding logic is the last unknown before the fix.
+- Verified: read-only whole-.text write scan; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
