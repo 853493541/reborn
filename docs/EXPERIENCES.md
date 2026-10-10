@@ -9584,3 +9584,20 @@ if the cache/host frames appear.
   process. The init-site BP result is still outstanding.
 - Verified: blacklist restored (39 ids, 65068 present); no reborn_client_skillv6 process; gates
   jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 DECISIVE: lazy init site (0xE2E8D7) is never called -> cs never initialized
+
+- **Did:** cold BP on the lazy-init call `KG3DEngineDX11EX64.dll+0xE2E8D7` (target resolved:
+  `= 0x7FFE4D55E8D7`) during the W1 repro (`65068`, `--arm-after 60 --bp-log`).
+- **Result:** **0 BPHIT** at the init site while the AV fired on the same run. So the gated
+  `RtlInitializeCriticalSection(&cs)` is **never reached** -> the cs at `0x2D3EEE8` is never
+  initialized -> the commit's `RtlEnterCriticalSection` null-derefs. "Init skipped" is now PROVEN.
+  AV chain reconfirms: `ntdll+0x128E2 (RtlEnterCriticalSection)` called from `engine+0xE2E842`
+  (CreateCache) <- `+0xE2DADA` <- `+0xE2D706` <- `+0x10D0A6` <- `+0xE2768F`.
+- **Lesson (tooling):** run the runtime-blacklist restore as a SEPARATE shell command — when the
+  debugger command errors/times out, a trailing `finally { Copy-Item ... }` did not execute and left
+  `65068` un-blacklisted. Restored separately (39 ids, 65068 present) and asserted.
+- **Next:** find why the gate `[0x2D3EF10](0) > [TLS+0x89b0](0)` is false on the engine thread where
+  the retail engine would (re)init — i.e. the host engine-thread/global-generation startup.
+- Verified: init-site BP target resolved and 0 hits vs AV fired (same run); blacklist restored (39);
+  no stray process; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
