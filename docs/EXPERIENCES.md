@@ -9705,3 +9705,17 @@ if the cache/host frames appear.
   each run (39 ids, 65068 present); no stray client.
 - Verified: `py_compile` clean; run + AV reproduced; blacklist restored; gates jx3_model 10 PASS /
   gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: data-BP arms but fires 0x — needs verification before trusting
+
+- **Did:** added an `ARM tid=.. tls[29]+0x89B0 -> 0x..` diagnostic; ran the repro with `--arm-after 1`.
+- **Result:** 165 ARM lines printed, many with sensible per-thread addresses (e.g. `0x205B7A40`,
+  `0x205B8780`), but **0 DATAWRITE hits** while the AV still fired. So either (a) the engine thread's
+  block resolved to `0` (several ARM lines were `0x0`) so its BP was armed at address 0, or (b) the field
+  is simply not written during the run after arming, or (c) the Dr7 data-BP encoding/handling is off.
+- **Caution:** do NOT trust a 0-hit data-BP result yet. Next session must first **validate the data BP
+  against a known-frequently-written address** (e.g. a wrapper global G or a stack slot) to prove the
+  mechanism fires; then confirm the engine/crash thread's resolved block is non-zero (arm that thread
+  by name/tid after the DLL is loaded); only then interpret 0 hits.
+- Verified: read-only tooling run; AV reproduced; blacklist restored (39, 65068 present); no stray
+  process; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.

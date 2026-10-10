@@ -201,6 +201,7 @@ TH32CS_SNAPTHREAD = 0x4
 BP_WRITE = False
 # Set in main(); used by arm() to resolve 'tls:<index>:<off>' targets per-thread.
 PID = 0
+FIRST_ARM = {}   # tid -> already printed the resolved TLS arm address
 
 _ntdll = ctypes.WinDLL("ntdll")
 
@@ -293,7 +294,11 @@ def arm(tid, vas):
         ln = 0x3 if BP_WRITE else 0x0   # 11 = 4 bytes,   00 = 1 byte
         for idx, va in enumerate(vas[:4]):
             if isinstance(va, tuple) and va and va[0] == "tls":
-                va = resolve_tls_field(PID, tid, va[1], va[2])
+                tidx, toff = va[1], va[2]
+                va = resolve_tls_field(PID, tid, tidx, toff)
+                if tid not in FIRST_ARM:
+                    FIRST_ARM[tid] = True
+                    print("  ARM tid=%d tls[%d]+0x%X -> 0x%X" % (tid, tidx, toff, va), flush=True)
             regs[idx] = va
             dr7 |= (0x1 << (idx * 2))        # Ln local-enable
             dr7 |= (rw << (16 + idx * 4))    # RWn
@@ -421,6 +426,7 @@ def main():
     res = make_resolver(pid)
     ev = M.DEBUG_EVENT()
     counts = {va: 0 for _, _, va in targets}
+    seen_writers = set()   # (tid, rip) already reported for data-write BPs
     first = {}
     dumped = {"done": False}
     vas = [va for _, _, va in targets]
@@ -453,11 +459,14 @@ def main():
                         for bidx, (m, o, va) in enumerate(targets):
                             if dr6 & (1 << bidx):
                                 counts[va] += 1
-                                print("DATAWRITE tid=%d addr=0x%X writer_rip=%s dr6=%s dr7=%s "
-                                      "rcx=%s rdx=%s rsi=%s rax=%s" % (
-                                          ev.dwThreadId, va, res(ctx.Rip), hex(ctx.Dr6), hex(dr7),
-                                          hex(ctx.Rcx), hex(ctx.Rdx), hex(ctx.Rsi), hex(ctx.Rax)),
-                                      flush=True)
+                                keyv = (ev.dwThreadId, ctx.Rip)
+                                if keyv not in seen_writers:
+                                    seen_writers.add(keyv)
+                                    print("DATAWRITE tid=%d addr=0x%X writer_rip=%s dr6=%s dr7=%s "
+                                          "rcx=%s rdx=%s rsi=%s rax=%s" % (
+                                              ev.dwThreadId, va, res(ctx.Rip), hex(ctx.Dr6), hex(dr7),
+                                              hex(ctx.Rcx), hex(ctx.Rdx), hex(ctx.Rsi), hex(ctx.Rax)),
+                                          flush=True)
                         ctx.Dr6 = 0
                     for m, o, va in targets:
                         if ctx.Rip == va:
