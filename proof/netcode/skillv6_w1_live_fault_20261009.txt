@@ -136,8 +136,25 @@ factory the W4 `.Sfx` shim targets. So the W1 per-tani AV runs THROUGH the engin
 path (an animation tag spawns an SFX, which loads a model, whose anim/curve eval feeds a negative
 size into `memcpy`). W1 and W4 share this engine path.
 
+## ROOT FUNCTION — `KG3D_TimeLine<float>::CreateCache` (frame #03)
+Frame #03's function is `KG3D_TimeLine<float>::CreateCache` (assert string @0x18225BD68). Body:
+```
+0xE2E79D movsxd rdi, ebx        ; rdi = COUNT (signed)
+0xE2E7AF call  0x18013bba0      ; allocate COUNT elements (rdx=rdi)
+0xE2E7EA lea r8, [rdi*4]        ; size = COUNT*4
+0xE2E7F7 call  0x181a3bc15      ; memset(dst, 0, COUNT*4)
+loop: call 0x180E2DA70 per frame (curve eval)
+```
+So the crash is `CreateCache` with a **negative COUNT** (`ebx = 0xFFFFFFFA = -6`): the allocate/memset
+(and the down-chain `memmove`) get size `-6`. This matches the earlier curve-eval "negative
+frame/time" finding — a **missing/invalid animation timeline** makes the computed frame count
+negative. The caller chain goes up through the animation-tag pipeline
+(`KG3D_AnimationTagX64.dll`) and `KG3D_CreateSFXFromFile` (0xBE4000).
+
 ## Next probe
-1. Disasm `KG3D_CreateSFXFromFile` (0xBE4000) and the frames above it (#08..#11, `KG3D_AnimationTagX64`)
-   to find the tag that carries the bad anim/bone id and where the negative size is computed.
-2. Or single-BP a COLD SFX/tag address and step (NOT a hot site).
+1. Find why `ebx` (the timeline count) is negative: disasm the callers (#04..#11,
+   `KG3D_AnimationTagX64`) to see where the count/frame range is computed and why it goes negative
+   for the 39 AV tanis (missing clip / bad frame range).
+2. Fix direction: ensure the timeline source (animation clip / frame range) is valid, or supply the
+   missing clip so the count >= 0.
 Evidence: this file; `w1_av.dmp` (temp); tool `tools/pvp/minidump_full.py`.

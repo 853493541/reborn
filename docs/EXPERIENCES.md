@@ -9215,3 +9215,16 @@ if the cache/host frames appear.
   remaining work (disasm `KG3D_CreateSFXFromFile`/`KG3D_AnimationTagX64` + the bad-key source) is a
   fresh-session task. All changes committed + pushed; gates green.
 - Verified: read-only disasm; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 ROOT FUNCTION found: `KG3D_TimeLine<float>::CreateCache` (negative count)
+
+- **Did:** disassembled the engine frame #03 body.
+- **Finding:** frame #03 = **`KG3D_TimeLine<float>::CreateCache`** (assert string @`0x18225BD68`).
+  Body: `movsxd rdi, ebx` (COUNT) → allocate COUNT elements (`call 0x18013bba0`) → `memset(dst,0,
+  COUNT*4)` → per-frame curve eval loop. The crash is CreateCache with a **negative COUNT**
+  (`ebx = 0xFFFFFFFA = -6`), so the allocate/memset (and down-chain `memmove`) get size `-6`. This is
+  the exact W1 root: a **missing/invalid animation timeline** makes the frame count negative. Callers
+  go up through `KG3D_CreateSFXFromFile` (0xBE4000) and `KG3D_AnimationTagX64.dll`.
+- **Next:** disasm the callers (#04..#11, `KG3D_AnimationTagX64`) to see where the timeline
+  count/frame-range is computed and why it goes negative for the 39 AV tanis; fix = valid clip/range.
+- Verified: read-only disasm; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
