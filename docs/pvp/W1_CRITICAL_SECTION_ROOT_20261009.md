@@ -49,9 +49,12 @@ entered via:
 ```
 
 `eax` is a per-thread value: `mov rax, gs:[0x58]` (TLS array) -> `[rax + idx*8]` where `idx` is read
-from the engine's data at RVA `0x2B46C4` (disp `0x1826014` from `0x180E2E6B0`) -> `[TLSblock + 0x89b0]`.
+from the engine's data at RVA `0x26546C4` (disp `0x1826014` from `0x180E2E6B0`) and is **29** ->
+`eax = [TLSblock(29) + 0x89b0]`.
 
-Live dump values (our host run): `[0x2D3EF10] = 0`, `[0x2D3EEE8] = 0` (cs uninitialized).
+Live dump values (our host run): `[0x2D3EF10] = 0`, `[0x2D3EEE8] = 0` (cs uninitialized),
+`[0x2D3EEF0] = 0xFFFFFFFA` (**-6**) — which is where the earlier "memmove size -6" register value came
+from (`r9 = KG3DEngine+0x2D3EEF0`; `rdx/rsi` held its value). Confirms that "-6" was never a size.
 Since the guard is still `0`, the `jg` at `0xE2E6D0` was **not taken** -> init skipped -> AV.
 
 `0x1818C7CA8(&guard)` is a once-helper that locks another cs and writes the sentinel `-1` into the
