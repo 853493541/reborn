@@ -9252,3 +9252,15 @@ if the cache/host frames appear.
 - **Next:** find why the timeline is corrupt/uninitialised for the 39 AV tanis (failed resource load /
   missing clip / bad model binding) — ties to the `KG3D_CreateSFXFromFile`/anim-tag path (shared W4).
 - Verified: read-only disasm; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 data check: AV tanis span many F1 skills (no single asset family)
+
+- **Did:** joined the 39 `av_blacklist_f1.txt` ids with `cast_chain_f1.tsv` and inspected their anims.
+- **Finding:** the AV tanis are all `data\source\player\F1\动作\...` clips across many skills
+  (`F1swd*` swords ×10, `F1stm*` ×9, `F1smj*` ×7, `F1swh/F1stc/F1ssl/... `) — **no single naming
+  pattern / asset family**; 3 AV ids have **no** cast_chain tani (child/no-anim). So it isn't one bad
+  asset group; it correlates with the anim/tag pipeline behaviour at runtime, consistent with the
+  `KG3D_TimeLine<float>::CreateCache` corrupt-timeline root (not an authored naming issue).
+- **Next:** recover the corrupt `KG3D_TimeLine` object at the crash (from the dump) or trace the tag
+  that builds it, to see why the timeline tree is uninitialised for these anims.
+- Verified: read-only data join; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
