@@ -9500,3 +9500,19 @@ if the cache/host frames appear.
   (an engine thread-start/TLS callback) and why the main thread misses it in our host.
 - Verified: read-only TEB/TLS walk of our own dump; gates jx3_model 10 PASS / gravity PASS / loot
   selftest PASS.
+
+### 2026-10-09 — v6 — W1 CONFIRMED: engine `.tls` template not applied to the main thread
+
+- **Did:** read the engine DLL's IMAGE_TLS_DIRECTORY template at offset `0x89b0`.
+- **Finding:** the `.tls` template bytes at `0x89b0` are `00 00 00 80` (`0x80000000`, i.e.
+  `-2147483648`) — the static initializer of the `__declspec(thread)` sentinel. So every
+  TLS-initialized thread gets `-2147483648`; our main thread has `0`, meaning **its TLS block for the
+  engine DLL (index 29) was allocated zeroed, not copied from the `.tls` template** — the engine DLL's
+  thread-local template was not applied to the engine thread.
+- **Implication:** the gate `[0x2D3EF10] > [TLS+0x89b0]` therefore never routes to the cs-init on the
+  engine thread -> the cs is never initialized -> AV on the 39 abilities' rebuild/lock path. This is a
+  **host integration issue** (engine thread-local init), not malformed game data. Fix angle: run the
+  engine on a thread whose TLS is properly initialized for the engine DLL (load order / thread
+  creation / the loader's template copy), or call the engine's own thread-init.
+- Verified: read-only PE IMAGE_TLS_DIRECTORY read of the engine DLL; gates jx3_model 10 PASS / gravity
+  PASS / loot selftest PASS.

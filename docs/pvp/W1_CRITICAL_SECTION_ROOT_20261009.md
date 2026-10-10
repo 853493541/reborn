@@ -70,10 +70,14 @@ Walked each thread's TEB (`tl+4+i*48+16`) -> `[TEB+0x58]` (TLS array) -> `[+29*8
   large-negative values.
 
 Gate: `cmp [KG3DEngine+0x2D3EF10]=0, eax; jg init`. `0 > 0` is **false** (main thread) -> init skipped
--> cs zero -> AV; on every other thread `0 > negative` would be **true** -> init would run. So the
-engine's per-thread "(re)init needed" sentinel is a **large-negative value seeded by the engine's
-per-thread init**, and our **main thread reaches `CreateCache` with it still `0`** (the init that sets
-it did not run for that thread). This is the concrete host-integration gap.
+-> cs zero -> AV; on every other thread `0 > negative` would be **true** -> init would run.
+The sentinel is a **`__declspec(thread)` variable whose static initializer is `0x80000000`**: the DLL
+`.tls` template at offset `0x89b0` is `00 00 00 80` (`= -2147483648`; TLS dir RVA `0x22BB8A8`,
+ImageBase `0x180000000`). So on every correctly TLS-initialized thread the value is `-2147483648`, and
+our **main thread reaching `CreateCache` with `0`** means its **TLS block for the engine DLL (index 29)
+was allocated zeroed instead of copied from the `.tls` template** — the engine DLL's TLS template was
+not applied to that thread. Concrete host-integration gap (engine TLS template not applied to the
+engine thread).
 
 ## Next probes
 
