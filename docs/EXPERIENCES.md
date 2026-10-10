@@ -9744,3 +9744,11 @@ if the cache/host frames appear.
   validation target `G` is simply **not written during our minimal runs** (the wrapper may only run on
   resource lock/ability paths, not idle frames). Next: validate on a definitely-hot address (a per-frame
   counter or a stack slot of the armed thread), then re-aim at `[TLS+0x89b0]`.
+- **Decisive test (2026-10-09):** armed BOTH the hot global `G` (`0x257F2D0`) and `tls:29:0x89b0` as
+  data-write BPs (`--arm-after 60`, during the W1 repro, before the ~73 s AV) -> **0 DATAWRITE hits** on
+  either, while the AV fired. Since the engine is clearly active around the SFX path (the wrapper writes
+  `G` every call), this indicates the **data-write BP mechanism is not delivering #DBs** in this
+  attach-debugger setup — not a cold-target artifact. Exec BPs still work. STOP using data BPs until the
+  delivery path is fixed (verify mini_debugger/multi_trace: maybe the debug loop must not set EFlags RF
+  for data traps, or the `arm` path must set DR7 differently, or use a kernel-mode/alternate technique).
+  Then re-run the tls probe.
