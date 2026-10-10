@@ -86,6 +86,28 @@ def make_resolver(pid):
     return res
 
 
+def write_dump(pid, path):
+    """Full-memory minidump of the (paused) target via dbghelp MiniDumpWriteDump."""
+    try:
+        k32.OpenProcess.restype = w.HANDLE
+        k32.CreateFileW.restype = w.HANDLE
+        h = k32.OpenProcess(0x1F0FFF, False, pid)
+        fh = k32.CreateFileW(path, 0x40000000, 0, None, 2, 0x80, None)  # GENERIC_WRITE, CREATE_ALWAYS
+        if not h or not fh:
+            print("dump: open failed h=%s fh=%s" % (h, fh), flush=True)
+            return False
+        dbghelp = ctypes.windll.dbghelp
+        # MiniDumpWithFullMemory(2) | WithFullMemoryInfo(0x800) | WithThreadInfo(0x1000)
+        ok = dbghelp.MiniDumpWriteDump(h, pid, fh, 0x2802, None, None, None)
+        k32.CloseHandle(fh)
+        k32.CloseHandle(h)
+        print("dump: MiniDumpWriteDump ok=%d -> %s" % (ok, path), flush=True)
+        return bool(ok)
+    except Exception as e:
+        print("dump ex: %s" % e, flush=True)
+        return False
+
+
 def exec_ranges(pid, mods):
     """[(lo,hi,name)] of each module's executable sections (read PE headers from target)."""
     hp = k32.OpenProcess(0x410, False, pid)
@@ -214,6 +236,9 @@ def main():
     filt = None
     if "--filter" in sys.argv:
         filt = int(sys.argv[sys.argv.index("--filter") + 1], 0)
+    dump = ""
+    if "--dump" in sys.argv:
+        dump = sys.argv[sys.argv.index("--dump") + 1]
 
     targets = []
     for s in specs:
@@ -236,6 +261,7 @@ def main():
     ev = M.DEBUG_EVENT()
     counts = {va: 0 for _, _, va in targets}
     first = {}
+    dumped = {"done": False}
     vas = [va for _, _, va in targets]
     end = time.time() + seconds
     while time.time() < end:
@@ -321,6 +347,9 @@ def main():
                         print("AVCHAIN %s" % chain, flush=True)
                     if ht:
                         k32.CloseHandle(ht)
+                    if dump and not dumped["done"]:
+                        dumped["done"] = True
+                        write_dump(pid, dump)
                 cont = M.DBG_EXCEPTION_NOT_HANDLED
         else:
             arm(ev.dwThreadId, vas)

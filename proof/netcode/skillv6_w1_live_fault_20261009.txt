@@ -83,11 +83,20 @@ An exec BP on a HOT function (`jemalloc+0x11001`) fires every allocation -> per-
 the target **flashes/stalls** (user aborted). Never exec-BP a hot function; use the AV catch (above)
 or a cold site. `multi_trace.py` now warns about this and has `--filter` (log only matching hits).
 
-## Next probe (needs a real unwind)
-1. Capture a **full-memory minidump** at the AV (`MiniDumpWriteDump` with `MiniDumpWithFullMemory`
-   from the AV handler), then `.pdata`-unwind offline (all code pages present, unlike the WER dump).
+## Full-memory dump captured (breaks the "no code pages" wall)
+The tool now calls `MiniDumpWriteDump(hProcess,pid,hFile, 0x2802 /*FullMemory|FullMemoryInfo|
+ThreadInfo*/, NULL,NULL,NULL)` on the first-chance AV. Result: `w1_av.dmp` = **5,588,275,786 bytes
+(5.6 GB)** — the whole process incl. **all module code pages** (what the WER dump lacked). The run
+was AV-only (no BP) -> no flashing; blacklist restored after.
+Caveat: `tools/camera/minidump_exc.py` `Dump.__init__` reads the whole file into RAM -> cannot load
+5.6 GB. A **streaming/mmap** minidump reader is needed, then `.pdata`-unwind the faulting thread
+(tid 47284, rip `ntdll+0xFA7D`) using the now-present code pages.
+
+## Next probe
+1. Write a small streaming reader for the full dump (module list + the faulting thread's CONTEXT +
+   the thread's stack memory + each module's `.pdata`), then `RtlVirtualUnwind`-walk from the fault
+   to get the exact engine instruction that calls `jemalloc(size=-6)`.
 2. Or single-BP a COLD engine address from the chain (e.g. fn `0xE2E690` entry) and step to the
-   jemalloc call.
-3. Or find which caller feeds a negative `xmm6` (time) to the curve eval `fn 0xE2DA70` and why
-   (missing/invalid animation clip -> negative or uninitialised frame time).
-Evidence: this file; live runs (`bin64\reborn_out\`). Tool: `tools/pvp/multi_trace.py`.
+   jemalloc call (NOT a hot site).
+3. Or find which caller feeds a negative `xmm6` (time) to the curve eval `fn 0xE2DA70` and why.
+Evidence: this file; `w1_av.dmp` (temp); live runs (`bin64\reborn_out\`). Tool: `tools/pvp/multi_trace.py`.

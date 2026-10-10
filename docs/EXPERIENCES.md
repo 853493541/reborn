@@ -9029,3 +9029,18 @@ if the cache/host frames appear.
   flashing (AV-only). Blacklist restored.
 - Verified: AV-only run caught the fault (no flashing); gates jx3_model 10 PASS / gravity PASS /
   loot selftest PASS. Tool `tools/pvp/multi_trace.py` gains executable-range stack tagging.
+
+### 2026-10-09 — v6 — W1 full-memory dump captured at the AV (breaks the code-pages wall)
+
+- **Did:** added `--dump <path>` to `multi_trace.py` (on first-chance AV, `MiniDumpWriteDump` with
+  `<FullMemory|FullMemoryInfo|ThreadInfo>` = 0x2802) and re-ran the W1 repro **AV-only** (no BP → no
+  flashing).
+- **Result:** `w1_av.dmp` = **5.6 GB** (whole process incl. all module code pages — exactly what the
+  WER minidump lacked). Faulting thread tid 47284, rip `ntdll+0xFA7D`, size 0xFFFFFFFA (as before).
+- **Caveat / next:** `tools/camera/minidump_exc.py` reads the whole dump into RAM → can't load 5.6 GB.
+  Need a **streaming/mmap** reader (module list + faulting CONTEXT + stack + each module `.pdata`),
+  then `RtlVirtualUnwind` from the fault to the exact engine caller of `jemalloc(size=-6)`.
+- Also added: `--filter <hex>` (log only matching hits) + a WARNING against hot-function BPs, and
+  executable-range stack tagging. Blacklist restored; no probe processes left.
+- Verified: AV-only run caught the fault + wrote the dump (no flashing); gates jx3_model 10 PASS /
+  gravity PASS / loot selftest PASS.
