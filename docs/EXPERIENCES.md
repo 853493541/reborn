@@ -9651,3 +9651,16 @@ if the cache/host frames appear.
   first-run on the engine thread. This explains the "already initialized" skip precisely.
 - Verified: read-only xref (hundreds of wrapper call sites) + byte-diff of the TLS block vs `.tls`
   template; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: wrapper globals read correctly (G=0x8000025A) — engine-thread TLS not from it
+
+- **Did:** recomputed the wrapper `0x1818C7C48` RIP targets with capstone (avoiding the rip-disp trap)
+  and read them from the dump (loaded_base + fileRVA).
+- **Values:** shared global `G` @ RVA `0x257F2D0` = `0x8000025A`; the helper does `G += 1` (read/write
+  same G), `*guard = G`, and `[TLS+0x89b0] = G`. TLS index @ `0x26546C4` = 29. CreateCache guard
+  `0x2D3EF10` = 0; sibling guard `0x2D3EEA0` = 0; sibling cs `0x2D3EEB0` = 0.
+- **Consequence:** the crash thread's `[0x89b0] = 0` was NOT written by this helper (which would set it
+  to `G = 0x8000025A`); a *different* writer zeroed it, OR `G` differed at the time. Reconcile before
+  trusting any fix. (Also confirms `KG3D_Engine::_InitSFXModuleEx` = `xor eax,eax; ret`, a no-op stub.)
+- Verified: read-only recomputed targets + dump reads; gates jx3_model 10 PASS / gravity PASS / loot
+  selftest PASS.
