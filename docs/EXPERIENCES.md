@@ -9287,3 +9287,16 @@ if the cache/host frames appear.
   guards the session's data work. Registered in `docs/pvp/README.md`.
 - Verified: `python tools/pvp/verify_skillv6_data.py` -> 0 failed; gates jx3_model 10 PASS /
   gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — projectiles are server-notified (OnNotifySkillBullet), not cast-driven
+
+- **Did:** searched the engine/represent for the bullet pipeline.
+- **Finding:** the client's projectile is driven by **`KGameWorldHandler::OnNotifySkillBullet` →
+  `krlSkillBulletMgr::{AddCommonSkillBullet,NotifyFly,...}`** (tables `KTableList::GetSkillBulletTab`/
+  `tabSubSkillBullet`, visuals `skill_bullet.krl.txt`) — the **server notifies the client to add the
+  bullet**. So projectile flight is largely server-authoritative; without a server it can only be
+  approximated (like CC/damage). The caster-side `nSkillBulletType` is a client visual hint, not the
+  projectile spawn.
+- **Disposition:** projectiles de-prioritised (server-side), consistent with the P7 deviation.
+  `ABILITY_FOLLOWUP_PLAN.md` missiles bullet updated.
+- Verified: read-only binary scan; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.

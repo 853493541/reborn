@@ -35,7 +35,11 @@ Confidence: **HIGH** = verified from data/code; **MED** = partial evidence; **LO
   enum (assert `!"KSKILL_BULLET_TYPE INVALID"` @`0xCA8340`). We resolve projectiles instantly at the
   point. Next: decode the `SKILL_BULLET_TYPE` member→value table (all 17 roster skills use value 1,
   so one group) → its `CommonModel`/`CommonFlyAni`, then spawn at the caster, travel, trigger on
-  arrival.
+  arrival. **Server-authoritative caveat (2026-10-09):** the client's projectile is driven by
+  `KGameWorldHandler::OnNotifySkillBullet` → `krlSkillBulletMgr::AddCommonSkillBullet`
+  (`KTableList::GetSkillBulletTab`/`tabSubSkillBullet` + `skill_bullet.krl.txt` visuals) — the
+  **server** notifies the client to add the bullet. Without a server, projectile flight can only be
+  approximated; treat as low priority / partially server-side (like CC/damage).
 - **Buff durations. DONE (2026-10-09).** Client truth: `KScriptFuncList::LuaGetBuffTime`
   @`0x1401c0730` (`JX3ClientX64.exe`) returns a buff's `(Count×Interval, Count, Interval)`; `Count`
   = Buff.tab col 13, `Interval` col 14; frame base 16 fps (cast frames confirm it). New
