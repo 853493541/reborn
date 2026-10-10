@@ -9373,3 +9373,17 @@ if the cache/host frames appear.
   timeline, or the min/max scan is fed an inconsistent tree). Next: log `r12/r15/nCount` at `0xE2E764`
   for the faulting call, and confirm min>max.
 - Verified: read-only disasm; IAT read from dump; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: nCount-negativity hypothesis REFUTED (live BP at 0xE2E764)
+
+- **Did:** cold BP at `KG3DEngineDX11EX64.dll+0xE2E764` (right after the min/max scan, before the
+  `!=0` check) on the W1 repro, `--arm-after 62 --bp-log`.
+- **Finding:** the single hit (same thread as the AV) shows `r12=0x13` (max key 19), `r15=0x0`
+  (min key 0) -> **nCount = 19-0+1 = 20 (VALID, positive)**. So the faulting CreateCache is NOT a
+  negative-count case; the `!=0`-only check is a real robustness gap but not this crash.
+- **Conclusion:** the `-6` is produced **downstream** of the count check: inside the per-frame curve
+  evaluation loop or the second heap call (`0xE2E835/0xE2E83C`). Next probe: cold BP at `0xE2E7F7`
+  (the `memset` of the `count*4` buffer) and at `0xE2E835`, logging args, to find where the size
+  becomes `0xFFFFFFFA`.
+- Verified: read-only BPs; nCount hypothesis refuted by live registers; gates jx3_model 10 PASS /
+  gravity PASS / loot selftest PASS.
