@@ -9111,3 +9111,14 @@ if the cache/host frames appear.
   engine `jemalloc(size=-6)` caller.
 - Verified: clean-thread walk produces 7 valid frames; gates jx3_model 10 PASS / gravity PASS /
   loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 unwinder: break located = UNW_FLAG_CHAININFO frame handling
+
+- **Did:** inspected the RF/unwind info of the frame where the fault walk breaks.
+- **Finding:** `ntdll+0x1166F` is in fn `[0x115CA,0x1169A)` with **`flags=4` = UNW_FLAG_CHAININFO**
+  (prolog 0, 4 SAVE_NONVOL codes). Chained-unwind functions need the local codes applied **then** the
+  chained entry's codes; my chain parsing/ordering is incomplete → frame 2 comes out 0. (The next
+  frame `ntdll+0x26844` is also chaininfo flags=4; `ntdll+0x128E2` is normal flags=0.)
+- **Next:** fix chained-info handling (correct chained RUNTIME_FUNCTION location/address form + apply
+  local then chained codes) to walk past these ntdll frames up to the engine.
+- Verified: read-only analysis; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
