@@ -372,9 +372,10 @@ def main():
                         if ctx.Rip == va:
                             counts[va] += 1
                             if bp_log:
-                                print("BPHIT tid=%d %s rcx=%s rdx=%s rsi=%s" %
+                                print("BPHIT tid=%d %s rcx=%s rdx=%s r8=%s r9=%s rsi=%s" %
                                       (ev.dwThreadId, "%s+0x%X" % (m, o), hex(ctx.Rcx),
-                                       hex(ctx.Rdx), hex(ctx.Rsi)), flush=True)
+                                       hex(ctx.Rdx), hex(ctx.R8), hex(ctx.R9), hex(ctx.Rsi)),
+                                      flush=True)
                             if filt is not None and filt not in (ctx.Rax, ctx.Rcx, ctx.Rdx,
                                                                  ctx.Rsi, ctx.Rdi, ctx.R8, ctx.R9):
                                 continue   # only log hits carrying the bad size

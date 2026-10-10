@@ -9356,3 +9356,20 @@ if the cache/host frames appear.
   (candidate: `r8` carried across the curve-eval loop / a negative length from the curve eval) — a
   step/data-watch at the faulting frame.
 - Verified: read-only dump IAT read; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 root candidate (HIGH): CreateCache validates nCount only against 0, not <0
+
+- **Did:** clean disasm of the whole `KG3D_TimeLine<float>::CreateCache` fragment
+  (`0xE2E690`, `.pdata` fragment ends `0xE2E7EA`; the rest is a chained fragment).
+- **Finding:** the function scans its keyframe tree for `minKey`/`maxKey` (`r15`/`r12`, updated with
+  `cmovl`/`cmovg`), then `nCount = maxKey - minKey + 1` (`mov ebx,r12d; sub ebx,r15d; add ebx,1`) and
+  validates it with `jne 0xE2E79D` — i.e. **it rejects only `nCount == 0`, NOT negative values**. The
+  error branch logs `KGLOG_PROCESS_ERROR(nCount)`. So if the scan yields `maxKey < minKey`, `nCount` is
+  negative but non-zero and execution proceeds: `movsxd rdi, ebx` -> `lea r8,[rdi*4]` produces a huge
+  (wraparound) buffer size, which flows into the downstream alloc/memset/`memmove` and AVs
+  (`0xFFFFFFFA` = `-6` observed at the faulting `memmove`).
+- **Confidence:** HIGH that the check is `!=0`-only (disasm); MED that this is the exact W1 trigger
+  (the faulting timeline's keys read {0,1,19} -> nCount 20, so either the faulting call is another
+  timeline, or the min/max scan is fed an inconsistent tree). Next: log `r12/r15/nCount` at `0xE2E764`
+  for the faulting call, and confirm min>max.
+- Verified: read-only disasm; IAT read from dump; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
