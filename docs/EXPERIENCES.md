@@ -9122,3 +9122,18 @@ if the cache/host frames appear.
 - **Next:** fix chained-info handling (correct chained RUNTIME_FUNCTION location/address form + apply
   local then chained codes) to walk past these ntdll frames up to the engine.
 - Verified: read-only analysis; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 unwinder: chained-info applied; frame 2 reaches engine but rsp off ~0x30
+
+- **Did:** fixed chained-info: 4-align the chained RUNTIME_FUNCTION (`(i+3)&~3`) and apply the chained
+  codes fully (`applyall=True`). Confirmed the chained addresses are RVAs (e.g. chained fn
+  `[0x11480,0x114AC)`, ui `0x1A4DA4`).
+- **Result:** the fault walk now goes `#00 ntdll+0xFA7D -> #01 ntdll+0x1166F -> #02
+  KG3DEngineDX11EX64.dll+0x2D3EEE8` — it **reaches the engine's address range**, but #02 lands on the
+  lock **data** address (a spilled pointer) not a code return, i.e. the chained frame's rsp is off by
+  ~0x30 (the real return `engine+0xE2E842` sits at `rsp+0x1B8` = start+0x1B8; we read start+0x188).
+  Clean-thread regression still 7 clean frames.
+- **Next:** refine the chained-frame rsp (chained CodeOffset basis / nested chain) — very close to
+  the exact engine `jemalloc(size=-6)` caller.
+- Verified: clean-thread walk unchanged; fault walk reaches the engine module; gates jx3_model 10 PASS
+  / gravity PASS / loot selftest PASS.

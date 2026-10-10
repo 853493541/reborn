@@ -190,18 +190,19 @@ class Unwinder(object):
                 consumed += 4
             codes.append((co, opcode, opinfo, extra))
         chained = None
-        if flags & 4:  # UNW_FLAG_CHAININFO
-            cb, ce, cui = struct.unpack_from("<III", u, (i + 1) & ~1)
+        if flags & 4:  # UNW_FLAG_CHAININFO: a RUNTIME_FUNCTION follows the (4-aligned) codes
+            off = (i + 3) & ~3
+            cb, ce, cui = struct.unpack_from("<III", u, off)
             chained = (base, cb, ce, cui)
         return flags, prolog, framereg, frameoff, codes, chained, i
 
-    def virtual_unwind(self, base, funcstart, ctx, codes, framereg, frameoff):
+    def virtual_unwind(self, base, funcstart, ctx, codes, framereg, frameoff, applyall=False):
         rsp = ctx["Rsp"]
         regs = dict(ctx)
         off = ctx["Rip"] - (base + funcstart)
         # UNWIND_CODE is stored in descending CodeOffset = reverse prolog order.
         for co, opcode, opinfo, extra in codes:
-            if co > off:      # not yet executed in the prolog
+            if not applyall and co > off:   # not yet executed in the prolog
                 continue
             if opcode == 0:                       # PUSH_NONVOL
                 regs[REG[opinfo]] = qword(self.d.read(rsp, 8), 0)
@@ -250,7 +251,7 @@ class Unwinder(object):
             if flags & 4 and chained:
                 cb, ce, cui = chained[1], chained[2], chained[3]
                 _f, _p, _fr, _fo, codes2, _c, _i = self.unwind_info(base, cui)
-                ctx = self.virtual_unwind(base, cb, ctx, codes2, _fr, _fo)
+                ctx = self.virtual_unwind(base, cb, ctx, codes2, _fr, _fo, applyall=True)
             frames.append((ctx["Rip"], ctx["Rsp"], ctx["Rbp"]))
             if ctx["Rip"] == 0:
                 break
