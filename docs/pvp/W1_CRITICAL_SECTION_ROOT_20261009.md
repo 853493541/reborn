@@ -79,6 +79,20 @@ was allocated zeroed instead of copied from the `.tls` template** — the engine
 not applied to that thread. Concrete host-integration gap (engine TLS template not applied to the
 engine thread).
 
+## Interpretation (TLS callbacks)
+
+The engine DLL's TLS directory (`0x181C19870`) lists two callbacks: `0x1818C7DB8` (runs only on
+`edx==2`, `DLL_THREAD_ATTACH`) and `0x1818C84B4` (runs on `edx==3`/`0`, `DLL_THREAD_DETACH`/`DLL_PROCESS_DETACH`)
+— i.e. the MSVC `__dyn_tls_init`/`__dyn_tls_dtor` pair: the engine uses **dynamically-initialized
+`thread_local`** objects. The `0x80000000` at `.tls+0x89b0` is the static template held by threads
+that never ran engine code; the crash/engine thread's `0` is the value after engine code ran on it.
+
+So the gate (`cmp [0x2D3EF10]=0, eax; jg`) says: on the engine thread (`eax=0`) `0 > 0` is false ->
+"already initialized, skip" -> the cs is assumed initialized; on non-engine threads (`eax<0`) it would
+run the init. The engine therefore believes the cs was initialized earlier by an **engine-startup
+step**; our host appears to have skipped that step (cs still 0), so the "skip because initialized"
+branch is taken and the first `CreateCache` commit AVs.
+
 ## Next probes
 
 1. Resolve the TLS index at RVA `0x2B46C4` and read the faulting thread's `[TLS+0x89b0]` from the dump

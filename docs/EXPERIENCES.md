@@ -9516,3 +9516,16 @@ if the cache/host frames appear.
   creation / the loader's template copy), or call the engine's own thread-init.
 - Verified: read-only PE IMAGE_TLS_DIRECTORY read of the engine DLL; gates jx3_model 10 PASS / gravity
   PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: refine the TLS read (dynamic thread_local; skip-because-initialized)
+
+- **Correction/refinement of the entry above:** the engine DLL's TLS callbacks are `0x1818C7DB8`
+  (only `DLL_THREAD_ATTACH`) and `0x1818C84B4` (`DLL_THREAD_DETACH`/`DLL_PROCESS_DETACH`) — the MSVC
+  `__dyn_tls_init`/`_dtor` pair, i.e. the engine uses **dynamically-initialized `thread_local`**. So
+  `0x80000000` (`.tls+0x89b0` template) is the value on threads that never ran engine code; the crash
+  thread's `0` is the post-init value. The gate thus means "engine thread = already-initialized -> skip
+  the cs init", i.e. the engine believes an earlier startup step initialized the cs; our host skipped
+  that step (cs still 0) -> the skip branch runs -> AV. This supersedes the "template not applied"
+  framing.
+- Verified: read-only TLS-callback disasm + `.tls` template read; gates jx3_model 10 PASS / gravity
+  PASS / loot selftest PASS.
