@@ -9426,3 +9426,21 @@ if the cache/host frames appear.
   writing DebugInfo=-1), and why is it 0 in our host run?
 - Verified: read-only xref (`xref_va.py` -> 4 refs, all in CreateCache); gates jx3_model 10 PASS /
   gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: the lazy init EXISTS but is gated (guard global = 0 -> init skipped)
+
+- **Did:** scanned all RIP refs into `[0x2D3EE00,0x2D3EF00)`; resolved the IAT of the init-block calls
+  from the dump; read the guard/cs values from the live dump.
+- **Finding:** `CreateCache` has a lazy-init block (`0xE2E8B7..0xE2E8F5`) that calls
+  `RtlInitializeCriticalSection(&cs)` — `call@0xE2E8D7` -> `ntdll+0xD65C0` =
+  **`RtlInitializeCriticalSection`** (export-table confirmed). But the block is entered only when
+  `cmp [KG3DEngine+0x2D3EF10], eax; jg 0xE2E8B7` (eax = a TLS-derived value), and inside it
+  `cmp [0x2D3EF10], -1; jne 0xE2E6D6` skips the init when `[0x2D3EF10] != -1`. In our live dump
+  **`[0x2D3EF10] = 0`** and **`[cs 0x2D3EEE8] = 0`** -> the init is skipped, the cs stays zero, and
+  `RtlEnterCriticalSection` AVs.
+- **So the root is the guard:** `KG3DEngine+0x2D3EF10` must be `-1` (or the TLS compare must route to
+  the init) for the cs to be initialized. It is `0` in our host run -> init skipped. Next: find what
+  writes `0x2D3EF10` (the `RtlInitializeCriticalSection` block sets it after init; a startup/cctor is
+  expected to seed the `-1`/sentinel) and why it's `0` here (a skipped engine startup step).
+- Verified: read-only xref scan + dump IAT (`RtlInitializeCriticalSection=0xD65C0`) + live guard/cs
+  read; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
