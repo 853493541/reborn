@@ -9150,3 +9150,17 @@ if the cache/host frames appear.
   chained-frame nuance. Given the depth, W1 exact-instruction is deferred (the diagnosis is already
   solid, read-only, and documented). Live runs remain paused; 5.6 GB dump retained.
 - Verified: diagnostic only; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 unwinder FIXED: reaches the engine frame `0xE2E842`
+
+- **Did:** found the bug — applying `virtual_unwind` twice for a chained frame **double-finalized**
+  (each call read the return address and did `rsp+=8`). Split apply vs finalize; for chained frames
+  apply local (`finalize=False`) then chained (`finalize=True`) once.
+- **Result — the fault walk now reaches the engine:**
+  `#00 ntdll+0xFA7D -> #01 ntdll+0x1166F -> #02 ntdll+0x128E2 -> #03 KG3DEngineDX11EX64.dll+0xE2E842`
+  (matches the live stack). Frame #04 (walking fn `0xE2E690` itself) still fails, but the immediate
+  engine caller of the ntdll/jemalloc chain is confirmed = `0xE2E842` (fn `0xE2E690`, the critsec
+  region). Clean-thread regression: still 7 clean frames.
+- **Next:** unwind fn `0xE2E690` (frame #04) to identify the exact `jemalloc(size=-6)` call inside it.
+- Verified: fault walk reaches the engine frame; clean-thread walk unchanged; gates jx3_model 10 PASS /
+  gravity PASS / loot selftest PASS.

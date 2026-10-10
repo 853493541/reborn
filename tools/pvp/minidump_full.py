@@ -196,7 +196,8 @@ class Unwinder(object):
             chained = (base, cb, ce, cui)
         return flags, prolog, framereg, frameoff, codes, chained, i
 
-    def virtual_unwind(self, base, funcstart, ctx, codes, framereg, frameoff, applyall=False):
+    def virtual_unwind(self, base, funcstart, ctx, codes, framereg, frameoff,
+                       applyall=False, finalize=True):
         rsp = ctx["Rsp"]
         regs = dict(ctx)
         off = ctx["Rip"] - (base + funcstart)
@@ -219,9 +220,11 @@ class Unwinder(object):
                 pass
             elif opcode == 10:                    # PUSH_MACHFRAME
                 rsp += 0x30 if opinfo else 0x28
-        regs["Rsp"] = rsp
-        regs["Rip"] = qword(self.d.read(rsp, 8), 0)
-        regs["Rsp"] = rsp + 8
+        if finalize:
+            regs["Rip"] = qword(self.d.read(rsp, 8), 0)
+            regs["Rsp"] = rsp + 8
+        else:
+            regs["Rsp"] = rsp
         return regs
 
     def walk(self, ctx, maxdepth=40):
@@ -247,11 +250,14 @@ class Unwinder(object):
                 continue
             b, en, ui, = rf
             flags, prolog, framereg, frameoff, codes, chained, i = self.unwind_info(base, ui)
-            ctx = self.virtual_unwind(base, b, ctx, codes, framereg, frameoff)
             if flags & 4 and chained:
+                # chained: apply this fn's codes (no finalize), then the chained fn's, then finalize once
+                ctx = self.virtual_unwind(base, b, ctx, codes, framereg, frameoff, finalize=False)
                 cb, ce, cui = chained[1], chained[2], chained[3]
                 _f, _p, _fr, _fo, codes2, _c, _i = self.unwind_info(base, cui)
-                ctx = self.virtual_unwind(base, cb, ctx, codes2, _fr, _fo, applyall=True)
+                ctx = self.virtual_unwind(base, cb, ctx, codes2, _fr, _fo, applyall=True, finalize=True)
+            else:
+                ctx = self.virtual_unwind(base, b, ctx, codes, framereg, frameoff)
             frames.append((ctx["Rip"], ctx["Rsp"], ctx["Rbp"]))
             if ctx["Rip"] == 0:
                 break
