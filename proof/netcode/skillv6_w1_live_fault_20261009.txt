@@ -65,10 +65,17 @@ colour walk by `[node+0x1c]` key), ending in a lerp (`subss/divss/mulss/addss`).
 go negative (`edi--`, e.g. -6); that negative flows into the downstream allocation whose size becomes
 `0xFFFFFFFA`. This matches "bad anim/bone id the host model lacks" (a negative time/frame index).
 
+## fn 0xE2E690 indirect calls resolved (no direct jemalloc)
+All `call qword [rip+..]` in fn `0xE2E690` resolve to: `EnterCriticalSection` (@0xE2E83C),
+`GetCurrentThreadId` (@0xE2E842), `LeaveCriticalSection` (@0xE2E86F), plus one repeated slot
+(`0x1C14D50`, a helper). **No direct jemalloc/memcpy call** — so the -6 alloc is invoked from a
+deeper frame (not captured as a clean engine return address in the 128-qword scan).
+
 ## Next probe
-1. Find which caller feeds a negative `xmm6` (time) / the resulting negative index, and why (missing
-   animation/clip -> negative or uninitialised time). Trace `fn 0xE2DA70`'s `xmm6` source up the chain
-   (`0xE2D6A0` -> `0x10D0A6` -> `0xE2768F`).
-2. Or BP `jemallocX64.dll+0x11001` and log only hits with size reg = 0xFFFFFFFA to grab the exact
-   bad-alloc call site.
+1. BP `ntdll.dll+0xFA7D` (the faulting memmove) and, on each hit, log the return address at `[rsp]`
+   and the next 2 frames — **filtered to hits whose size arg is 0xFFFFFFFA** — to get the exact
+   engine/jemalloc caller of the bad memcpy (a mini-unwind at the fault, which the WER dump could not).
+2. Or BP `jemallocX64.dll+0x11001` with the same size filter.
+3. Or find which caller feeds a negative `xmm6` (time) to the curve eval `fn 0xE2DA70` and why
+   (missing/invalid animation clip -> negative or uninitialised frame time).
 Evidence: this file; live runs (`bin64\reborn_out\`). Tool: `tools/pvp/multi_trace.py`.

@@ -8988,3 +8988,13 @@ if the cache/host frames appear.
 - **Next:** trace the negative `xmm6` (time) source up the chain (0xE2D6A0 / 0x10D0A6 / 0xE2768F) —
   why the host model yields a negative frame; then supply/fix the anim binding.
 - Verified: read-only disasm; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: fn 0xE2E690 has no direct jemalloc call (alloc caller deeper)
+
+- **Did:** resolved every indirect call in the top engine frame `fn 0xE2E690`.
+- **Finding:** all its `call [rip+..]` are `EnterCriticalSection`/`GetCurrentThreadId`/
+  `LeaveCriticalSection` (+ one helper slot) — **no direct jemalloc/memcpy call**, so the -6 alloc
+  comes from a deeper frame not captured as a clean return address. Next probe: BP `ntdll+0xFA7D`
+  (the faulting memmove), log `[rsp]`+2 frames **filtered on size=0xFFFFFFFA** (mini-unwind at the
+  fault), or BP `jemalloc+0x11001` likewise. Proof updated.
+- Verified: read-only disasm; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
