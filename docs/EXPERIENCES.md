@@ -9203,3 +9203,15 @@ if the cache/host frames appear.
 - **Next:** disasm `KG3D_CreateSFXFromFile` + the `KG3D_AnimationTagX64` frames to find the tag
   carrying the bad anim/bone id and where the negative size is computed.
 - Verified: read-only offline mapping; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 frame #03 = keyframe-tree traversal (closing session)
+
+- **Did:** disassembled the engine frame #03 (`[0xE2E79D,0xE2E8A2)` inside the `0xE2E690` chunk).
+- **Finding:** it is a **red-black keyframe-tree min/max traversal** (`[node+0x1c]` keys, `[node+0x19]`
+  colour) — i.e. animation keyframe lookup, consistent with a bad/negative keyframe index feeding the
+  down-chain `memcpy(size=-6)`. Combined with the frame map (curve interp `fn 0xE2DA70` ->
+  `KG3D_CreateSFXFromFile` -> `KG3D_AnimationTagX64`), W1's root is the keyframe/anim-tag lookup.
+- **Session close:** W1 diagnosis is deep and read-only; live runs paused; 5.6 GB dump retained. The
+  remaining work (disasm `KG3D_CreateSFXFromFile`/`KG3D_AnimationTagX64` + the bad-key source) is a
+  fresh-session task. All changes committed + pushed; gates green.
+- Verified: read-only disasm; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
