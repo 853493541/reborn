@@ -9164,3 +9164,15 @@ if the cache/host frames appear.
 - **Next:** unwind fn `0xE2E690` (frame #04) to identify the exact `jemalloc(size=-6)` call inside it.
 - Verified: fault walk reaches the engine frame; clean-thread walk unchanged; gates jx3_model 10 PASS /
   gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 unwinder: engine frame is also chaininfo (frame 4 still fails)
+
+- **Did:** inspected the engine function that contains the confirmed caller `0xE2E842`.
+- **Finding:** `.pdata` says the function is `[0xE2E79D,0xE2E8A2)` (not the 0xE2E690 chunk boundary
+  `dump_fn_disasm` walked back to), **`flags=4` chaininfo**, prolog 12, codes = SAVE_NONVOL Rdi/Rbp;
+  it chains to fn `0xE2E465` (ui `0x241FD3C`). Unwinding it still yields garbage (frame #04 = 0x14) —
+  another chaininfo nuance (likely a nested chain / SET_FPREG in the chained fn).
+- **State:** the `.pdata` unwinder is validated and reaches the immediate engine caller
+  `0xE2E842` of the ntdll/jemalloc chain; unwinding the engine's own chaininfo frames is the
+  remaining step to reach the exact `jemalloc(size=-6)` instruction. All read-only; live paused.
+- Verified: read-only analysis; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
