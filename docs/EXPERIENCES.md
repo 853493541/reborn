@@ -9529,3 +9529,16 @@ if the cache/host frames appear.
   framing.
 - Verified: read-only TLS-callback disasm + `.tls` template read; gates jx3_model 10 PASS / gravity
   PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: 0x89b0 is a STATIC thread_local (dynamic init touches 0x8b00/0x40 only)
+
+- **Did:** read the engine DLL's `_dyn_tls_init` initializer table (`0x181C19828`: `0x1800B9740`,
+  `0x1800B9790`, `0x1800BBA10`) and disassembled them.
+- **Finding:** the three dynamic thread_local initializers only zero the regions at TLS offsets
+  **`0x8b00`** (40 bytes) and **`0x40`** (57 bytes); nothing touches `0x89b0`. So the `0x80000000` at
+  `0x89b0` is a **statically-initialized** `thread_local` (from the `.tls` template), not dynamic.
+  Therefore the engine thread's `0` at `0x89b0` means its **static TLS block for the engine module was
+  not template-copied** (not a dynamic-init miss) — back to the "template not applied to the engine
+  thread" mechanism.
+- Verified: read-only .tls template + `_dyn_tls_init` table disasm; gates jx3_model 10 PASS / gravity
+  PASS / loot selftest PASS.
