@@ -9719,3 +9719,22 @@ if the cache/host frames appear.
   by name/tid after the DLL is loaded); only then interpret 0 hits.
 - Verified: read-only tooling run; AV reproduced; blacklist restored (39, 65068 present); no stray
   process; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: data-BP VALIDATION FAILED — data BPs don't fire (exec BPs do)
+
+- **Did:** validation run: arm a data-write BP on the wrapper global `G`
+  (`KG3DEngineDX11EX64.dll+0x257F2D0` = `0x7FFE4FDFF2D0`, written on every engine-lock call) in a plain
+  client run; `--data-write --arm-after 25 --bp-log`.
+- **Result:** target resolved, but **0 DATAWRITE hits**. Combined with the tls run (arms real addresses,
+  0 hits) -> the **data-write BP is not being delivered at all** (exec BPs work fine, so the debug loop
+  + SetThreadContext path is good). Suspects: the Dr7 RW/LEN encoding (my value `0xD0001` =
+  L0|RW=01<<16|LEN=11<<18), the reserved DR7 bit 10 (0x400, often required set), or an EF/GE/LE nuance.
+- **Caution:** do NOT use data-BP results until a data BP is proven to fire on a known hot address.
+  Next session: fix `arm()` (try `Dr7 |= 0x400`, verify RW/LEN per Intel SDM Table: RW0 bits16-17,
+  LEN0 bits18-19), retest on `G`; only then run the tls probe. (Exec-BP tooling remains fully usable.)
+- Verified: read-only tooling runs; blacklist untouched for this validation (no ability cast); gates
+  jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+- **Follow-up:** set Dr7 reserved bit 10 (`dr7 |= 0x400`) for data BPs and re-ran the `G` validation ->
+  still **0 hits**. So the Dr7 bit-10 tweak is not the cause. Data-BP delivery remains unverified/broken
+  in this setup; diagnose with a truly-hot target (e.g. a per-frame counter on the armed thread's own
+  stack) before reusing. (Exec BPs unaffected.)

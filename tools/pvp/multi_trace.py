@@ -303,6 +303,8 @@ def arm(tid, vas):
             dr7 |= (0x1 << (idx * 2))        # Ln local-enable
             dr7 |= (rw << (16 + idx * 4))    # RWn
             dr7 |= (ln << (18 + idx * 4))    # LENn
+        if BP_WRITE:
+            dr7 |= 0x400                     # reserved bit 10 (often must be 1 for data BPs)
         ctx.Dr0, ctx.Dr1, ctx.Dr2, ctx.Dr3 = regs
         ctx.Dr7 = dr7
         ctx.ContextFlags = M.CONTEXT_DEBUG_REGISTERS
