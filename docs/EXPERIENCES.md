@@ -9240,3 +9240,15 @@ if the cache/host frames appear.
 - **Fix direction:** supply/repair the animation timeline (keyframe range) the host plays so
   max >= min; the mechanism is fully identified.
 - Verified: read-only disasm; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 refinement: negative count ⇒ corrupt/uninitialised timeline tree
+
+- **Did:** re-read the keyframe min/max traversal.
+- **Finding:** `r15d`/`r12d` start at 0 and only take node keys, so `min<=0<=max` and `COUNT>=1` by
+  construction for any well-formed tree. Therefore a negative COUNT is only possible if the traversal
+  reads **garbage keys** — i.e. the `KG3D_TimeLine` object's keyframe map/tree (at `[timeline+8]`) is
+  **corrupt/uninitialised** (bad node pointers). So W1's root = `CreateCache` on a corrupt/uninitialised
+  animation timeline (the timeline wasn't loaded/valid), not merely an inverted authored range.
+- **Next:** find why the timeline is corrupt/uninitialised for the 39 AV tanis (failed resource load /
+  missing clip / bad model binding) — ties to the `KG3D_CreateSFXFromFile`/anim-tag path (shared W4).
+- Verified: read-only disasm; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
