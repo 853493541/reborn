@@ -9570,3 +9570,17 @@ if the cache/host frames appear.
 - **Open:** the engine expects the cs to already exist once a thread is engine-initialized; the host's
   engine-init for that thread did not create it. This is the remaining thread/global init gap.
 - Verified: read-only dump memory read; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: try BP on the lazy-init call site (0xE2E8D7) — inconclusive; gotcha + state restored
+
+- **Did:** attempted the decisive BP on the lazy-init call `KG3DEngineDX11EX64.dll+0xE2E8D7` (expect:
+  0 hits while `0xE2E83C` hits -> proves init skipped).
+- **Gotcha:** `multi_trace.py` intermittently fails to resolve `Module.dll+0xRVA` (printed the bare
+  `0xE2E8D7`, no base) when the engine module isn't yet enumerable ~2 s after launch -> the BP is set
+  at a bogus absolute address -> 0 hits and a false negative. Earlier runs of `0xE2E83C` resolved fine.
+  **Retry/confirm resolution before trusting a 0-hit result.**
+- **State:** the interrupted run left `65068` out of the runtime blacklist; **restored from
+  `%TEMP%\opencode\behit_re\av_blacklist_backup.txt`** -> 39 ids, `65068` present. No stray client
+  process. The init-site BP result is still outstanding.
+- Verified: blacklist restored (39 ids, 65068 present); no reborn_client_skillv6 process; gates
+  jx3_model 10 PASS / gravity PASS / loot selftest PASS.
