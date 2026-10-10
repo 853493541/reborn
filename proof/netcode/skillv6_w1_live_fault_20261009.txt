@@ -37,10 +37,29 @@ The fn loops calling `0xE2DA70` over `ebx` entries (a per-frame vector update) u
 - `EngineMath` note: 0xFFFFFFFA = -6; a size/index derived as negative (a count minus something),
   i.e. a bad bone/anim/vertex id the host model lacks (root still to pin).
 
+## Engine call chain (live, module-resolved; from a 128-qword stack scan)
+Resolved entries (rsp-relative):
+  [rsp+0x38]=ntdll.dll+0x26844
+  [rsp+0x58]=jemallocX64.dll+0x11001
+  [rsp+0xD8]=KG3DEngineDX11EX64.dll+0x2D3EEE8   (spilled lock-global pointer, data)
+  [rsp+0xF8]=ntdll.dll+0x1166F
+  [rsp+0x168]=KG3DEngineDX11EX64.dll+0x2D3EEE8
+  [rsp+0x178]=ntdll.dll+0x128E2
+  [rsp+0x180]=KG3DEngineDX11EX64.dll+0x2D3EEE8
+  [rsp+0x1B8]=KG3DEngineDX11EX64.dll+0xE2E842   <-- return addr (into fn @0xE2E690, after its critsec call)
+  [rsp+0x218]=KG3DEngineDX11EX64.dll+0xE2DADA   <-- return (fn @0xE2DA70 -> calls 0xE2E690 @0xE2DAD5)
+  [rsp+0x258]=KG3DEngineDX11EX64.dll+0xE2D706   <-- return (fn @0xE2D6A0 -> calls 0xE2DA70)
+  [rsp+0x288]=KG3DEngineDX11EX64.dll+0x10D0A6
+  [rsp+0x2B8]=KG3DEngineDX11EX64.dll+0xE2768F
+So the engine nesting is `0xE2768F -> 0x10D0A6 -> 0xE2D6A0 -> 0xE2DA70 -> 0xE2E690 -> jemalloc+0x11001
+-> ntdll memmove (AV)`, i.e. functions:
+  0xE2768F (caller), 0x10D0A6 (caller), fn 0xE2D6A0, fn 0xE2DA70, fn 0xE2E690.
+fn 0xE2E690 is a per-frame vector update under the lock @+0x2D3EEE8 (loop `call 0xE2DA70` over `ebx`);
+fn 0xE2DA70 calls 0xE2E690 @0xE2DAD5. The bad size (-6) is produced along this chain.
+
 ## Next probe
-1. Set a HW **execution** BP at `jemallocX64.dll+0x11001` and capture the **return address** on the
-   stack at that BP (the engine caller) — jemalloc is called a lot, so log only hits whose size
-   reg is 0xFFFFFFFA / negative.
-2. Or parse the engine `.pdata` (RUNTIME_FUNCTION) and unwind the faulting thread from the captured
-   context (regs + stack) offline.
-Evidence: this file; live run log in `bin64\reborn_out\`. Tool: `tools/pvp/multi_trace.py`.
+1. Find the allocation/memcpy in fn `0xE2E690`/`0xE2DA70` (`0xE2DA70` is the common helper) whose size
+   becomes -6 — i.e. the count/bone/anim id that is negative; then supply the host binding for it.
+2. Or set a HW BP at `jemallocX64.dll+0x11001` and log only hits with a size reg = 0xFFFFFFFA to grab
+   the exact engine return address of the bad alloc.
+Evidence: this file; live runs (`bin64\reborn_out\`). Tool: `tools/pvp/multi_trace.py`.

@@ -8962,3 +8962,17 @@ if the cache/host frames appear.
   or `.pdata`-unwind the captured context. Proof `proof/netcode/skillv6_w1_live_fault_20261009.txt`.
 - Verified: live run (`cast chain started` → AV caught); gates jx3_model 10 PASS / gravity PASS /
   loot selftest PASS. (Blacklist restored after the run.)
+
+### 2026-10-09 — v6 — W1 engine call chain live-confirmed (module-resolved)
+
+- **Did:** fixed the resolver (modules load after attach → refresh on miss) and re-ran; widened the
+  AV stack scan to 128 qwords, printing only module-resolved entries.
+- **Chain (live, module-resolved):** `KG3DEngineDX11EX64.dll 0xE2768F -> 0x10D0A6 -> 0xE2D6A0 ->
+  0xE2DA70 -> 0xE2E690 -> jemallocX64.dll+0x11001 -> ntdll.dll+0xFA7D (AV, size 0xFFFFFFFA)` — i.e.
+  the old handoff's stack walk was actually **correct** (0xE2E842/0xE2DADA/0xE2D706/0x10D0A6/
+  0xE2768F), now re-confirmed with real module resolution. `fn 0xE2E690` = per-frame vector update
+  under the lock `+0x2D3EEE8`; `fn 0xE2DA70` calls it @`0xE2DAD5`.
+- **Next:** locate the allocation in `0xE2DA70`/`0xE2E690` whose size becomes -6 (the negative
+  count/bone/anim id) and supply the binding; or BP `jemalloc+0x11001` filtered on size 0xFFFFFFFA.
+- Verified: live run (2nd) caught AV + chain; blacklist restored; gates jx3_model 10 PASS /
+  gravity PASS / loot selftest PASS.

@@ -64,10 +64,14 @@ def list_modules(pid):
 
 
 def make_resolver(pid):
-    mods = list_modules(pid)
+    state = {"mods": list_modules(pid)}
 
     def res(addr):
-        for base, size, name in mods:
+        for base, size, name in state["mods"]:
+            if base and base <= addr < base + size:
+                return "%s+0x%X" % (name, addr - base)
+        state["mods"] = list_modules(pid)   # engines load after attach; refresh on miss
+        for base, size, name in state["mods"]:
             if base and base <= addr < base + size:
                 return "%s+0x%X" % (name, addr - base)
         return hex(addr)
@@ -237,15 +241,21 @@ def main():
                     ctx.ContextFlags = M.CONTEXT_FULL
                     if ht and k32.GetThreadContext(ht, ctypes.byref(ctx)):
                         stack = ""
+                        chain = ""
                         hp = k32.OpenProcess(0x410, False, pid)
                         if hp:
-                            sb = ctypes.create_string_buffer(8 * 24)
+                            sz = 8 * 128
+                            sb = ctypes.create_string_buffer(sz)
                             got = ctypes.c_size_t(0)
-                            if k32.ReadProcessMemory(hp, ctypes.c_void_p(ctx.Rsp), sb, 8 * 24,
+                            if k32.ReadProcessMemory(hp, ctypes.c_void_p(ctx.Rsp), sb, sz,
                                                      ctypes.byref(got)):
-                                fr = [res(struct.unpack_from("<Q", sb.raw, k)[0])
-                                      for k in range(0, min(got.value, 8 * 24), 8)]
-                                stack = " stack=[" + " ".join(fr) + "]"
+                                resolved = []
+                                for k in range(0, min(got.value, sz), 8):
+                                    v = struct.unpack_from("<Q", sb.raw, k)[0]
+                                    r = res(v)
+                                    if r != hex(v):   # points into a loaded module -> a code/data ref
+                                        resolved.append("[rsp+0x%X]=%s" % (k, r))
+                                chain = " chain=[" + " ".join(resolved) + "]"
                             k32.CloseHandle(hp)
                         print("AV tid=%d av=%s rip=%s rax=%s rcx=%s rdx=%s rsi=%s rdi=%s rbp=%s "
                               "rsp=%s r8=%s r9=%s%s" % (
@@ -253,6 +263,7 @@ def main():
                                   res(ctx.Rcx), res(ctx.Rdx), res(ctx.Rsi), res(ctx.Rdi),
                                   res(ctx.Rbp), res(ctx.Rsp), res(ctx.R8), res(ctx.R9), stack),
                               flush=True)
+                        print("AVCHAIN %s" % chain, flush=True)
                     if ht:
                         k32.CloseHandle(ht)
                 cont = M.DBG_EXCEPTION_NOT_HANDLED
