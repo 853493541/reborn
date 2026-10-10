@@ -9738,3 +9738,9 @@ if the cache/host frames appear.
   still **0 hits**. So the Dr7 bit-10 tweak is not the cause. Data-BP delivery remains unverified/broken
   in this setup; diagnose with a truly-hot target (e.g. a per-frame counter on the armed thread's own
   stack) before reusing. (Exec BPs unaffected.)
+- **Encoding check:** `mini_debugger.CONTEXT` (Dr0-7 at correct x64 offsets, padded to 0x4D0) and
+  `CONTEXT_DEBUG_REGISTERS=0x100010` are correct; the data Dr7 value `0xD0001` (L0|RW=01<<16|LEN=11<<18)
+  follows the Intel encoding. So the encoding is likely right and the more probable cause is that the
+  validation target `G` is simply **not written during our minimal runs** (the wrapper may only run on
+  resource lock/ability paths, not idle frames). Next: validate on a definitely-hot address (a per-frame
+  counter or a stack slot of the armed thread), then re-aim at `[TLS+0x89b0]`.
