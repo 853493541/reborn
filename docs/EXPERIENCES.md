@@ -9708,6 +9708,23 @@ if the cache/host frames appear.
 - Verified: poller run on `reborn_client_skillv6.exe` (engine base `0x7FFE31C80000`, live `_tls_index=33`);
   gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
 
+### 2026-10-09 — v6 — W1: poller pinpoints the 0-write (t~28.2s, tid 7880); data-BP still 0 with valid arms
+
+- **Did:** fixed `multi_trace`'s live-index resolver (its `mod_base` needs the exact name -> pass
+  `KG3DEngineDX11EX64.dll`, not `KG3DEngineDX11EX64`), added `tools/pvp/poll_tls_field.py` (reads the
+  live `_tls_index` and polls `[TLSblock+0x89b0]` over time), and re-ran the data BP with `tls:-1:0x89b0`.
+- **Findings:**
+  1. The poller shows the field is `0x80000000` (template) / `G`-like on most threads, and **tid 7880
+     transitions to `0x00000000` at t≈28.2 s** in a plain run — i.e. the `0`-write is a real, timed event
+     (during engine load/init), reachable if we arm early.
+  2. The data BP now arms **valid** addresses on ~92/164 threads (rest 0x0 = null TLS block) but STILL
+     logs **0 DATAWRITE** hits, even though the poller proves the field changes. So the write either
+     happens on a thread that wasn't armed (0x0 block) or the data-BP delivery still fails.
+- **Next:** arm the specific writing thread (re-resolve its block after the module is loaded / on
+  CREATE_THREAD) and/or verify data-BP delivery on that thread; then read the writer RIP.
+- Verified: compile clean; verify_skillv6_data exit 0; gates jx3_model 10 PASS / gravity PASS / loot
+  selftest PASS.
+
 ### 2026-10-09 — v6 — W1: data-BP tooling implemented; run at 60s caught 0 (field zeroed earlier)
 
 - **Did:** extended `tools/pvp/multi_trace.py` with `--data-write` (HW data WRITE Dr7 rw=01/len=11),
