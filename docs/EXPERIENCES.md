@@ -9542,3 +9542,18 @@ if the cache/host frames appear.
   thread" mechanism.
 - Verified: read-only .tls template + `_dyn_tls_init` table disasm; gates jx3_model 10 PASS / gravity
   PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: TLS+0x89b0 is the engine's core per-thread context (1496 use sites)
+
+- **Did:** scanned the whole engine `.text` for the immediate `0x89b0` (the CreateCache read uses
+  `mov ecx,0x89b0; mov eax,[TLSblock+rcx]`, so the offset is a register value, not a disp).
+- **Finding:** **1496** instructions reference offset `0x89b0` — it is a heavily-used **per-thread
+  engine field** (thread context/state), not a rare sentinel. The gate
+  `cmp [KG3DEngine+0x2D3EF10], [TLS+0x89b0]; jg` is therefore "global generation vs this thread's state":
+  the engine thread (state 0) equals the guard (0) -> "no (re)init" -> naive cs-init skipped; workers
+  that never ran the engine keep `0x80000000`.
+- **Conclusion:** W1 reduces to the engine's global init/generation state (`0x2D3EF10`) vs the per-thread
+  state (`TLS+0x89b0`) such that the engine thread decides the cs is already initialized. The exact
+  intended startup values (guard/thread-state) still need to be established.
+- Verified: read-only whole-.text immediate scan (1496 sites); gates jx3_model 10 PASS / gravity PASS /
+  loot selftest PASS.
