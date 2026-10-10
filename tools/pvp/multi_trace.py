@@ -11,6 +11,14 @@ Usage:
 
   ModA is a loaded module name (JX3ClientX64.exe, JX3RepresentX64.dll, ...). --inject-w spawns a
   helper thread that focuses the KGWin32App window and SendInput's W repeatedly during the trace.
+
+  --filter <hex>: only LOG a hit whose rax/rcx/rdx/rsi/rdi/r8/r9 equals that value (hit counting is
+  unchanged). Use it to catch one call out of many.
+
+  WARNING: do NOT set an exec BP on a HOT function (e.g. jemalloc/malloc/memcpy/GetTickCount). Every
+  hit single-steps the target thread, so a hot BP stalls the target (visible UI flashing / near-hang).
+  Prefer: (a) an AV/fault catch (cheap, no BP), or (b) a COLD call site, or (c) --filter with a cold-ish
+  site. If it flashes, you hit a hot function - detach (Ctrl-C) and re-arm elsewhere.
 """
 from __future__ import annotations
 
@@ -169,6 +177,9 @@ def main():
     seconds = 15
     if "--seconds" in sys.argv:
         seconds = int(sys.argv[sys.argv.index("--seconds") + 1])
+    filt = None
+    if "--filter" in sys.argv:
+        filt = int(sys.argv[sys.argv.index("--filter") + 1], 0)
 
     targets = []
     for s in specs:
@@ -211,6 +222,9 @@ def main():
                     for m, o, va in targets:
                         if ctx.Rip == va:
                             counts[va] += 1
+                            if filt is not None and filt not in (ctx.Rax, ctx.Rcx, ctx.Rdx,
+                                                                 ctx.Rsi, ctx.Rdi, ctx.R8, ctx.R9):
+                                continue   # only log hits carrying the bad size
                             if va not in first:
                                 stack = ""
                                 hp = k32.OpenProcess(0x410, False, pid)

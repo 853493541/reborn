@@ -8998,3 +8998,19 @@ if the cache/host frames appear.
   (the faulting memmove), log `[rsp]`+2 frames **filtered on size=0xFFFFFFFA** (mini-unwind at the
   fault), or BP `jemalloc+0x11001` likewise. Proof updated.
 - Verified: read-only disasm; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 debugger LESSON: never exec-BP a hot function (client flashed)
+
+- **What happened:** set a HW exec BP at `jemallocX64.dll+0x11001` (with `--filter 0xFFFFFFFA`) to
+  grab the bad-alloc caller. jemalloc is called thousands of times/s, so **every** hit single-steps
+  the target thread -> the client **flashed/stalled**; the user aborted the run.
+- **Cleanup (verified):** probe client stopped (no `reborn_client_skillv6` running); runtime
+  `av_blacklist_f1.txt` restored (65068 back); no orphaned debugger (the remaining `python.exe` are
+  the user's v2 test services — not touched).
+- **Lesson:** a HW exec BP is a per-thread single-step; on a HOT function it stalls the target.
+  Use it only on a COLD call site. For hot paths use the **AV/fault catch** (no BP, cheap) or
+  `--filter` on a cold-ish site. Added a WARNING to `tools/pvp/multi_trace.py`.
+- **W1 standing:** live fault + engine call chain + curve-eval root direction are captured
+  (`proof/netcode/skillv6_w1_live_fault_20261009.txt`); the immediate jemalloc caller still needs a
+  non-intrusive method (or a cold BP site).
+- Verified: no processes left by the aborted run; blacklist restored.
