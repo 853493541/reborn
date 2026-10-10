@@ -9341,3 +9341,18 @@ if the cache/host frames appear.
   caller (frame #06/#07, CreateSFXFromFile). Needs a **data-write/step** watch at the faulting frame.
 - **Status:** W1 root still open (corrected twice). All read-only. Session at context limit.
 - Verified: read-only disasm; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 IAT correction: 0xE2E83C is RtlAllocateHeap (heap handle global), not a critsec
+
+- **Did:** resolved the LOADED IAT slots from the dump (authoritative, unlike the earlier static ILT
+  name lookup).
+- **Finding:** `call @0xE2E83C` -> **`ntdll.dll+0x127F0`** = an **allocator** (`RtlAllocateHeap`), not
+  `EnterCriticalSection`; `@0xE2E842` -> `kernel32+0x18620` (HeapAlloc-class); `@0xE2E826` ->
+  `kernel32+0x22E70` (HeapFree-class). So `global+0x2D3EEE8` is a **heap handle**, and the `-6` is the
+  **size** passed to the `RtlAllocateHeap` at `0xE2E83C`. This **corrects two earlier errors** (the
+  "critsec" reading and the derived "corrupt timeline tree" story — the heap handle was mistaken for
+  a lock).
+- **Next:** determine the size register at `0xE2E835/0xE2E83C` and how it becomes `0xFFFFFFFA`
+  (candidate: `r8` carried across the curve-eval loop / a negative length from the curve eval) — a
+  step/data-watch at the faulting frame.
+- Verified: read-only dump IAT read; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.

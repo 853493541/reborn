@@ -176,9 +176,17 @@ keyframe tree" inference is likely WRONG; the `-6` is produced elsewhere in Crea
 (the allocate `call 0x18013bba0(rcx=0, rdx=COUNT)`, the `memset(COUNT*4)`, or the per-frame
 curve-eval `call 0x180E2DA70`) — or a different `KG3D_TimeLine<T>::CreateCache` instantiation.
 
+## IAT correction (resolved from the dump) — 0xE2E83C is an ALLOCATOR, not EnterCriticalSection
+Reading the loaded IAT slots from the dump:
+- `call @0xE2E83C` -> `ntdll.dll+0x127F0`  = an **allocator** (`RtlAllocateHeap`), NOT
+  `EnterCriticalSection` (my earlier static-ILT name lookup was WRONG).
+- `call @0xE2E842` -> `kernel32.dll+0x18620` (`HeapAlloc`-class)
+- `call @0xE2E826` -> `kernel32.dll+0x22E70` (`HeapFree`-class)
+So `global+0x2D3EEE8` is a **heap handle**, and the `-6` is the **size** passed to the
+`RtlAllocateHeap` at `0xE2E83C` (size likely in `r8`, carried/clobbered across the curve-eval loop).
+
 ## Next probe
-1. Capture the exact `this`/args of the CreateCache call that AVs (the last BP hit) and inspect the
-   allocate/memset args + the curve-eval feed at the fault frame (not just the tree).
-2. Check the other `KG3D_TimeLine<T>::CreateCache` overloads (int/XMFLOAT*/unsigned) — the crash may
-   be a different instantiation.
+1. Determine the size register at `0xE2E835/0xE2E83C` and whether the curve-eval loop clobbers it
+   (`r8` is caller-saved) -> if `r8` becomes `-6`, that is the bug (bad length from the curve eval).
+2. Or a data-write/step watch at the faulting frame to catch the `-6` being formed.
 Evidence: this file; `w1_av2.dmp` (temp); tool `tools/pvp/multi_trace.py`.
