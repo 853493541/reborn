@@ -9407,3 +9407,22 @@ if the cache/host frames appear.
   sfx path; and whether the lock is per-ability data passed wrongly.
 - Verified: read-only ntdll disasm + export table (`RtlEnterCriticalSection=0x127F0`); gates jx3_model
   10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: the store path in CreateCache (cache commit under a global lock)
+
+- **Did:** xref'd `KG3DEngine+0x2D3EEE8` (full VA `0x182D3EEE8`) with `tools/netcode/xref_va.py` --
+  the **only** RIP-relative references to it are inside `KG3D_TimeLine<float>::CreateCache` itself.
+- **Code (0xE2E826..0xE2E868):** curve-eval loop fills the buffer; then `lea rcx,[cs]` (`0xE2E835`);
+  `call RtlEnterCriticalSection` (`0xE2E83C`, **the AV**); `call [kernel32+0x18620]` (`0xE2E842`, the
+  matching leave/lock helper); then it commits the cache into the timeline object `r14`:
+  `xchg [global],eax` / `[r14+0x18]=rbp` (buffer) / `[r14+0x20]=r15d` (minKey) / `[r14+0x24]=r12d`
+  (maxKey) / `xchg [global2],r13d`. So the AV is at the **cache-commit lock**, right after the buffer
+  is filled.
+- **Conclusion:** `KG3DEngine+0x2D3EEE8` is a static **CRITICAL_SECTION** used only on this commit
+  path; its first qword (DebugInfo) is `0` -> `RtlEnterCriticalSection` writes `[0x24]` -> AV. The
+  crash is therefore a **lock-object problem**, not malformed sfx data per se (though malformed data
+  may be what routes these abilities onto this rarely-taken commit path). Next probe: does the engine
+  initialize this cs at startup (search for `InitializeCriticalSection` with a non-RIP lea, or a cctor
+  writing DebugInfo=-1), and why is it 0 in our host run?
+- Verified: read-only xref (`xref_va.py` -> 4 refs, all in CreateCache); gates jx3_model 10 PASS /
+  gravity PASS / loot selftest PASS.
