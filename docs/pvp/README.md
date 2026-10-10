@@ -15,6 +15,7 @@ system for reborn, with a PvP focus. Branch: `research/jx3-pvp-battle`.
 | `ABILITY_FOLLOWUP_PLAN.md` | **inventory**: everything still imprecise (engine RE, mechanics, scripts, tooling) with confidence + the exact next probe per item |
 | `SESSION_HANDOFF_20261009.md` | **handoff**: branch/state, build/run/verify, what's done, what's missing (+ next probe each), key files, RC knobs, gotchas — for the next session |
 | `SESSION_HANDOFF_20261009b.md` | **handoff 2** (same day feature work): FX4 be-hit anim, buff durations, AoE fix, sweep regression green; W4/W3/W1 blockers + next probes; closed items (CC, chain/tag/shake, missiles, nMinRadius) |
+| `HANDOFF_W1_SKILLV6_20261009.md` | **handoff**: worktree/branch/tip, what's done, the W1 open question, repro/gates, gotchas — for another agent to pick up this worktree |
 | `W1_CRITICAL_SECTION_ROOT_20261009.md` | **W1 root**: the 39-ability AV is a null-deref in `RtlEnterCriticalSection` on the uninitialized static cs `KG3DEngine+0x2D3EEE8` (from `KG3D_TimeLine<float>::CreateCache`); the engine's lazy `RtlInitializeCriticalSection` is gated by a global-vs-TLS once-check that our run fails. Corrected chain + next probes |
 
 Per-workstream evidence reports (raw values + citations + confidence):
