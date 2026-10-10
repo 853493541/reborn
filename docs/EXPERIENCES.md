@@ -9692,6 +9692,22 @@ if the cache/host frames appear.
   cannot catch this.) The writer's RIP + the surrounding logic is the last unknown before the fix.
 - Verified: read-only whole-.text write scan; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
 
+### 2026-10-09 — v6 — W1 CRITICAL: `_tls_index` is PER-PROCESS — index 29 was WRONG live (it's 33)
+
+- **Did:** wrote a standalone TLS poller (`ReadProcessMemory` TEB walk) that reads the engine's **live**
+  `_tls_index` from `[engine_base + 0x26546C4]` instead of hardcoding the dump's value.
+- **Finding:** the engine's live `_tls_index` is **33 (0x21)** in a fresh process — **not 29**. `_tls_index`
+  is assigned by the loader per process (load order), so the dump's `29` does not carry over to new runs.
+- **Consequence (IMPORTANT):** every `tls:29:0x89b0` probe (the data BP, and the earlier "field=0x80000000
+  on workers" reads) used the **wrong module's** TLS in live runs -> the data BP's **0 hits were a FALSE
+  NEGATIVE** ("data-BP broken" is WRONG). With the correct live index, a poll shows the expected template
+  `0x80000000` on fresh threads. **Correction:** resolve the engine's `_tls_index` LIVE (read it from the
+  target process) before any TLS-relative probe/BP; never reuse a dump's index across processes.
+- **Next:** fix `multi_trace` to resolve the live index at arm time and re-run the `+0x89b0` data BP ->
+  it should now fire and reveal the writer of 0.
+- Verified: poller run on `reborn_client_skillv6.exe` (engine base `0x7FFE31C80000`, live `_tls_index=33`);
+  gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
 ### 2026-10-09 — v6 — W1: data-BP tooling implemented; run at 60s caught 0 (field zeroed earlier)
 
 - **Did:** extended `tools/pvp/multi_trace.py` with `--data-write` (HW data WRITE Dr7 rw=01/len=11),
