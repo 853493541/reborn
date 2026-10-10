@@ -1,6 +1,9 @@
 # W1 root — uninitialized critical section in `KG3D_TimeLine<float>::CreateCache`
 
-Status: **root localized (MED-HIGH)**; fix not yet applied. Read-only analysis of
+Status: **mechanism PROVEN** (the gated lazy `RtlInitializeCriticalSection` is never called on the
+repro -> the cs at `0x2D3EEE8` stays 0 -> `RtlEnterCriticalSection` null-derefs); **fix not yet
+applied** — the remaining work is a host engine-thread/global-generation startup alignment.
+Read-only analysis of
 `C:\SeasunGame\MovieEditor\bin64\KG3DEngineDX11EX64.dll` (ImageBase `0x180000000`) + live dump of
 our own host process. Supersedes the earlier "memmove size -6" and "RtlAllocateHeap" notes (both were
 register-decode errors).
