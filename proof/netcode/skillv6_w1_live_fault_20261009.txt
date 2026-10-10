@@ -71,11 +71,23 @@ All `call qword [rip+..]` in fn `0xE2E690` resolve to: `EnterCriticalSection` (@
 (`0x1C14D50`, a helper). **No direct jemalloc/memcpy call** — so the -6 alloc is invoked from a
 deeper frame (not captured as a clean engine return address in the 128-qword scan).
 
-## Next probe
-1. BP `ntdll.dll+0xFA7D` (the faulting memmove) and, on each hit, log the return address at `[rsp]`
-   and the next 2 frames — **filtered to hits whose size arg is 0xFFFFFFFA** — to get the exact
-   engine/jemalloc caller of the bad memcpy (a mini-unwind at the fault, which the WER dump could not).
-2. Or BP `jemallocX64.dll+0x11001` with the same size filter.
+## Code-only stack (executable entries) confirms: no extra frame
+Filtering the 128-qword stack to **executable** addresses (per-module PE `.text` ranges) yields the
+SAME chain (`ntdll+.. -> jemalloc+.. -> engine 0xE2E842 -> 0xE2DADA -> 0xE2D706 -> 0x10D0A6 ->
+0xE2768F`) — i.e. the immediate jemalloc caller is **not** a separate frame on this stack (the fault
+thread's `rsp` is a jemalloc/ntdll scratch stack; `rbp` is not a frame pointer). So the exact engine
+instruction that calls the bad `jemalloc(size=-6)` cannot be read from this stack alone.
+
+## Lesson (recorded)
+An exec BP on a HOT function (`jemalloc+0x11001`) fires every allocation -> per-hit single-step ->
+the target **flashes/stalls** (user aborted). Never exec-BP a hot function; use the AV catch (above)
+or a cold site. `multi_trace.py` now warns about this and has `--filter` (log only matching hits).
+
+## Next probe (needs a real unwind)
+1. Capture a **full-memory minidump** at the AV (`MiniDumpWriteDump` with `MiniDumpWithFullMemory`
+   from the AV handler), then `.pdata`-unwind offline (all code pages present, unlike the WER dump).
+2. Or single-BP a COLD engine address from the chain (e.g. fn `0xE2E690` entry) and step to the
+   jemalloc call.
 3. Or find which caller feeds a negative `xmm6` (time) to the curve eval `fn 0xE2DA70` and why
    (missing/invalid animation clip -> negative or uninitialised frame time).
 Evidence: this file; live runs (`bin64\reborn_out\`). Tool: `tools/pvp/multi_trace.py`.

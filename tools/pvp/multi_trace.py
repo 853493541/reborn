@@ -86,6 +86,40 @@ def make_resolver(pid):
     return res
 
 
+def exec_ranges(pid, mods):
+    """[(lo,hi,name)] of each module's executable sections (read PE headers from target)."""
+    hp = k32.OpenProcess(0x410, False, pid)
+    out = []
+    if not hp:
+        return out
+    for base, size, name in mods:
+        try:
+            buf = ctypes.create_string_buffer(0x1000)
+            got = ctypes.c_size_t(0)
+            if not k32.ReadProcessMemory(hp, ctypes.c_void_p(base), buf, 0x1000, ctypes.byref(got)):
+                continue
+            raw = buf.raw
+            if raw[0:2] != b"MZ":
+                continue
+            e = struct.unpack_from("<I", raw, 0x3C)[0]
+            nsec = struct.unpack_from("<H", raw, e + 6)[0]
+            optsz = struct.unpack_from("<H", raw, e + 0x14)[0]
+            so = e + 0x18 + optsz
+            for i in range(nsec):
+                off = so + i * 40
+                if off + 40 > got.value:
+                    break
+                vsz = struct.unpack_from("<I", raw, off + 8)[0]
+                va = struct.unpack_from("<I", raw, off + 0x0C)[0]
+                ch = struct.unpack_from("<I", raw, off + 0x24)[0]
+                if (ch & 0x20000000) and vsz:
+                    out.append((base + va, base + va + max(vsz, 1), base, name))
+        except Exception:
+            pass
+    k32.CloseHandle(hp)
+    return out
+
+
 def arm(tid, vas):
     ht = k32.OpenThread(0x0008 | 0x0010 | 0x0002 | 0x0040, False, tid)
     if not ht:
@@ -263,13 +297,20 @@ def main():
                             got = ctypes.c_size_t(0)
                             if k32.ReadProcessMemory(hp, ctypes.c_void_p(ctx.Rsp), sb, sz,
                                                      ctypes.byref(got)):
+                                er = exec_ranges(pid, list_modules(pid))
                                 resolved = []
+                                code = []
                                 for k in range(0, min(got.value, sz), 8):
                                     v = struct.unpack_from("<Q", sb.raw, k)[0]
                                     r = res(v)
                                     if r != hex(v):   # points into a loaded module -> a code/data ref
                                         resolved.append("[rsp+0x%X]=%s" % (k, r))
+                                    for lo, hi, mb, nm in er:
+                                        if lo <= v < hi:
+                                            code.append("[rsp+0x%X]=%s+0x%X" % (k, nm, v - mb))
+                                            break
                                 chain = " chain=[" + " ".join(resolved) + "]"
+                                chain += "\nCODECHAIN codechain=[" + " ".join(code) + "]"
                             k32.CloseHandle(hp)
                         print("AV tid=%d av=%s rip=%s rax=%s rcx=%s rdx=%s rsi=%s rdi=%s rbp=%s "
                               "rsp=%s r8=%s r9=%s%s" % (

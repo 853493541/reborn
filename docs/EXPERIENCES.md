@@ -9014,3 +9014,18 @@ if the cache/host frames appear.
   (`proof/netcode/skillv6_w1_live_fault_20261009.txt`); the immediate jemalloc caller still needs a
   non-intrusive method (or a cold BP site).
 - Verified: no processes left by the aborted run; blacklist restored.
+
+### 2026-10-09 — v6 — W1: code-only stack confirms no extra frame (needs full-dump unwind)
+
+- **Did:** ran the W1 repro **AV-only** (no BP → no flashing) and filtered the 128-qword stack to
+  executable addresses (per-module PE `.text` ranges, read from the target).
+- **Finding:** the code-only chain is the SAME as the resolved chain
+  (`ntdll -> jemalloc -> engine 0xE2E842 -> 0xE2DADA -> 0xE2D706 -> 0x10D0A6 -> 0xE2768F`) — the
+  immediate jemalloc caller is **not** a separate frame on this stack (fault `rsp` is a jemalloc/ntdll
+  scratch stack; `rbp` not a frame pointer). So the exact bad-alloc instruction isn't recoverable from
+  the stack alone.
+- **Next:** capture a **full-memory minidump** at the AV (`MiniDumpWithFullMemory`) and `.pdata`-unwind
+  offline (all code pages present, unlike the WER dump); or BP a COLD chain address and step. No
+  flashing (AV-only). Blacklist restored.
+- Verified: AV-only run caught the fault (no flashing); gates jx3_model 10 PASS / gravity PASS /
+  loot selftest PASS. Tool `tools/pvp/multi_trace.py` gains executable-range stack tagging.
