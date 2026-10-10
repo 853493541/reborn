@@ -117,9 +117,27 @@ from the **animation-tag** pipeline (`KG3D_AnimationTagX64.dll`) through engine 
 code. Frames #03.. are the engine callers; the memmove (size -6) is reached without a separate
 jemalloc frame (jemalloc+0x11001 was a stack value, not a frame).
 
+## Frame -> function map (via the dumped `.pdata`)
+  #03 KG3DEngine+0xE2E842  fn 0xE2E79D..0xE2E8A2
+  #04 KG3DEngine+0xE2DADA  fn 0xE2DA70..0xE2DC57   (curve-interp / keyframe lerp)
+  #05 KG3DEngine+0xE2D706  fn 0xE2D6A0..0xE2D863
+  #06 KG3DEngine+0xE2768F  fn 0xE26B20..0xE286C0
+  #07 KG3DEngine+0xBE4938  fn 0xBE4000..0xBE5208   <-- KG3D_CreateSFXFromFile (the W4 factory!)
+  #08 KG3DEngine+0x8393F1  fn 0x8391E0..0x83965B
+  #09 KG3DEngine+0x8281AF  fn 0x826960..0x8283BE
+  #10 KG3DEngine+0x87E11E  fn 0x87E0A0..0x87E198
+  #11 KG3DEngine+0x8B432C  fn 0x8B4280..0x8B437F
+  #12 KG3D_AnimationTagX64+0x12487  fn 0x1235F..0x12500
+  #13 KG3D_AnimationTagX64+0x11B16  fn 0x11990..0x11C64
+  #14 KG3D_AnimationTagX64+0x10CA2  fn 0x10AE0..0x1122C
+  #15 KG_EngineEditorX64+0x291F1    fn 0x29150..0x293DB
+**KEY:** frame #07 is `KG3DEngineDX11EX64.dll+0xBE4000` = **`KG3D_CreateSFXFromFile`** — the exact
+factory the W4 `.Sfx` shim targets. So the W1 per-tani AV runs THROUGH the engine SFX/model-creation
+path (an animation tag spawns an SFX, which loads a model, whose anim/curve eval feeds a negative
+size into `memcpy`). W1 and W4 share this engine path.
+
 ## Next probe
-1. Map the engine frames (#03..#11) to functions (`.pdata`/disasm) and find which one computes the
-   negative size/bad frame — starting at `KG3DEngineDX11EX64.dll+0xE2E79D` (fn containing #03) and
-   `KG3DEngineDX11EX64.dll+0x8B432C` (fn above), up to `KG3D_AnimationTagX64.dll+0x12487`.
-2. Or single-BP a COLD engine address from the chain and step (NOT a hot site).
+1. Disasm `KG3D_CreateSFXFromFile` (0xBE4000) and the frames above it (#08..#11, `KG3D_AnimationTagX64`)
+   to find the tag that carries the bad anim/bone id and where the negative size is computed.
+2. Or single-BP a COLD SFX/tag address and step (NOT a hot site).
 Evidence: this file; `w1_av.dmp` (temp); tool `tools/pvp/minidump_full.py`.

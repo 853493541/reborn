@@ -9190,3 +9190,16 @@ if the cache/host frames appear.
   (start: `KG3DEngineDX11EX64.dll+0xE2E79D` / `+0x8B432C`, up to `KG3D_AnimationTagX64.dll+0x12487`).
 - Verified: full fault walk + clean-thread regression; gates jx3_model 10 PASS / gravity PASS /
   loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 frame map: crash runs through `KG3D_CreateSFXFromFile` (shared with W4)
+
+- **Did:** mapped each unwound frame to its `.pdata` function via the dump.
+- **Finding:** frame #07 = `KG3DEngineDX11EX64.dll+0xBE4000` = **`KG3D_CreateSFXFromFile`** — the exact
+  factory the W4 `.Sfx` shim targets. So the W1 per-tani AV travels the **engine SFX/model-creation
+  path**: an animation tag (`KG3D_AnimationTagX64.dll`) → engine tag/module update → curve interp
+  (`fn 0xE2DA70`) → `KG3D_CreateSFXFromFile` → model load → bad-size `memcpy(-6)`. **W1 and W4 share
+  this engine path.**
+- Full function map recorded in `proof/netcode/skillv6_w1_live_fault_20261009.txt`.
+- **Next:** disasm `KG3D_CreateSFXFromFile` + the `KG3D_AnimationTagX64` frames to find the tag
+  carrying the bad anim/bone id and where the negative size is computed.
+- Verified: read-only offline mapping; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
