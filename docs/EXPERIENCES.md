@@ -9601,3 +9601,16 @@ if the cache/host frames appear.
   the retail engine would (re)init — i.e. the host engine-thread/global-generation startup.
 - Verified: init-site BP target resolved and 0 hits vs AV fired (same run); blacklist restored (39);
   no stray process; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: only 3 write sites for TLS+0x89b0 (two in the once/init helpers)
+
+- **Did:** scanned for sites that load the immediate `0x89b0` and then use that register as a memory
+  write index/base (reg-width-normalized; the earlier miss was `ecx` vs `rcx`).
+- **Finding:** only **3 write sites** — `0x180809C1F` (a nop/padding artifact) and, meaningfully,
+  `0x1818C7C84` -> `mov [r9+r8],eax` and `0x1818C7CE8` -> `mov [r8+rdx],eax`, both in the engine's
+  once/init helper region (`0x1818C7C48`/`0x1818C7CA8`, the latter called from the skipped init block
+  at `0xE2E8BE`/`0xE2E8F0`). So `TLS+0x89b0` is written **only by the engine's once-init path** — the
+  rest of the 1496 sites are reads. That the engine thread holds `0` while the once-init is never
+  called still needs explanation (loader copy vs a different writer); it is the last open point.
+- Verified: read-only whole-.text scan (3 write sites); gates jx3_model 10 PASS / gravity PASS / loot
+  selftest PASS.
