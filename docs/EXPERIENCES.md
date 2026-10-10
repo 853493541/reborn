@@ -9471,3 +9471,16 @@ if the cache/host frames appear.
   init skipped. Confidence MED-HIGH.
 - Verified: doc registered in the area index; gates jx3_model 10 PASS / gravity PASS / loot selftest
   PASS (verify_skillv6_data exit 0).
+
+### 2026-10-09 — v6 — W1: the lock path is data-driven (non-crashing ability never locks)
+
+- **Did:** cast the non-blacklisted ability `27847` (has an `.Sfx`) with a cold BP on the `0xE2E83C`
+  lock (`--arm-after 62 --bp-log`).
+- **Finding:** **0 BPHIT**, no AV. So `CreateCache`'s `RtlEnterCriticalSection` commit branch is taken
+  only for the 39 AV abilities — the routing is **data-driven** (their sfx/timeline data drives the
+  rebuild/lock branch), NOT a process-wide cs-init gap that everyone trips.
+- **Conclusion:** the fix has two angles — (a) why the 39 sfx take the rebuild/lock branch vs the
+  prebuilt fast path, and (b) the cs-init gate (`0x2D3EF10`/TLS) that leaves the cs zero. Both are
+  now captured in `docs/pvp/W1_CRITICAL_SECTION_ROOT_20261009.md`.
+- Verified: cold-BP run (`27847` -> 0 lock hits, no AV); gates jx3_model 10 PASS / gravity PASS / loot
+  selftest PASS.

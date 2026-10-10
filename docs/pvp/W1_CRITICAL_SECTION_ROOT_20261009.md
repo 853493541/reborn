@@ -64,8 +64,13 @@ guard when it is `0` — i.e. it marks "initialized". It only runs inside the (s
 2. Find the engine startup step that seeds the guard/TLS (who sets `0x2D3EF10` or the TLS slot) and
    whether our host omits it (likely a host init call), vs the path being a latent engine bug only
    these 39 abilities reach.
-3. Compare a non-crashing ability: does it enter the `0xE2E83C` lock at all? If not, the lock path is
-   unique to the 39 (data-driven routing), not a global init gap.
+3. ~~Compare a non-crashing ability.~~ **DONE (2026-10-09):** casting non-blacklisted ability `27847`
+   (which has an `.Sfx` effect) hits the `0xE2E83C` lock **0 times** (and no AV). So the Enter-cs path
+   in `CreateCache` is **unique to the 39 abilities** — the routing is **data-driven**, not a global
+   init gap. The 39 abilities' sfx/timeline data drives `CreateCache` into its rebuild/lock branch,
+   whose cs is uninitialized. So the fix direction is: (a) find why these 39 sfx trigger the
+   rebuild/lock branch (vs the prebuilt fast path), and (b) seed the cs (the gate `0x2D3EF10`/TLS).
+   Repro of this test: `RC_ABILITY=27847 RC_CAST_AT=38000:1` + the same `0xE2E83C` BP.
 
 ## Reproduce
 
