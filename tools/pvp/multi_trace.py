@@ -199,6 +199,62 @@ TH32CS_SNAPTHREAD = 0x4
 
 # Set by --data-write: arm the Dr slots as data WRITE breakpoints (len=4) instead of exec.
 BP_WRITE = False
+# Set in main(); used by arm() to resolve 'tls:<index>:<off>' targets per-thread.
+PID = 0
+
+_ntdll = ctypes.WinDLL("ntdll")
+
+
+class _TBI(ctypes.Structure):
+    _fields_ = [("ExitStatus", ctypes.c_long), ("TebBaseAddress", ctypes.c_void_p),
+                ("UniqueProcess", ctypes.c_void_p), ("UniqueThread", ctypes.c_void_p),
+                ("AffinityMask", ctypes.c_void_p), ("Priority", ctypes.c_long),
+                ("BasePriority", ctypes.c_long)]
+
+
+def resolve_tls_field(pid, tid, index, off):
+    """Absolute VA of [ TLS block[index] + off ] for a thread (0 if unresolved).
+
+    For the engine DLL's `__declspec(thread)` field: TEB+0x58 = TLS array -> [+index*8] = the
+    module's TLS block -> [+off]. Used to arm a HW data BP on a per-thread field.
+    """
+    try:
+        ht = k32.OpenThread(0x0040, False, tid)
+        if not ht:
+            return 0
+        _ntdll.NtQueryInformationThread.argtypes = [ctypes.c_void_p, ctypes.c_int,
+                                                    ctypes.c_void_p, ctypes.c_ulong, ctypes.c_void_p]
+        _ntdll.NtQueryInformationThread.restype = ctypes.c_long
+        tbi = _TBI()
+        ret = _ntdll.NtQueryInformationThread(ht, 0, ctypes.byref(tbi), ctypes.sizeof(tbi), None)
+        k32.CloseHandle(ht)
+        if ret != 0 or not tbi.TebBaseAddress:
+            return 0
+        hp = k32.OpenProcess(0x410, False, pid)
+        if not hp:
+            return 0
+
+        def rd(a, n):
+            b = ctypes.create_string_buffer(n)
+            got = ctypes.c_size_t(0)
+            k32.ReadProcessMemory(hp, ctypes.c_void_p(a), b, n, ctypes.byref(got))
+            return b.raw[:got.value]
+
+        try:
+            b1 = rd(int(tbi.TebBaseAddress) + 0x58, 8)
+            if len(b1) < 8:
+                return 0
+            tlsarr = struct.unpack("<Q", b1)[0]
+            b2 = rd(tlsarr + index * 8, 8)
+            if len(b2) < 8:
+                return 0
+            block = struct.unpack("<Q", b2)[0]
+        finally:
+            k32.CloseHandle(hp)
+        return (block + off) if block else 0
+    except Exception as e:
+        print("  resolve_tls_field tid=%d err=%r" % (tid, e), flush=True)
+        return 0
 
 
 class TE32(ctypes.Structure):
@@ -236,6 +292,8 @@ def arm(tid, vas):
         rw = 0x1 if BP_WRITE else 0x0   # 01 = data write, 00 = exec
         ln = 0x3 if BP_WRITE else 0x0   # 11 = 4 bytes,   00 = 1 byte
         for idx, va in enumerate(vas[:4]):
+            if isinstance(va, tuple) and va and va[0] == "tls":
+                va = resolve_tls_field(PID, tid, va[1], va[2])
             regs[idx] = va
             dr7 |= (0x1 << (idx * 2))        # Ln local-enable
             dr7 |= (rw << (16 + idx * 4))    # RWn
@@ -310,6 +368,8 @@ def start_injector():
 
 def main():
     pid = int(sys.argv[1])
+    global PID
+    PID = pid
     specs = []
     i = 2
     while i < len(sys.argv) and not sys.argv[i].startswith("--"):
@@ -334,7 +394,11 @@ def main():
 
     targets = []
     for s in specs:
-        if "+" in s:
+        if s.startswith("tls:"):
+            _, idx, off = s.split(":")
+            print("target %s = per-thread [TLSblock(%d)+0x%X]" % (s, int(idx), int(off, 0)))
+            targets.append((s, None, ("tls", int(idx), int(off, 0))))
+        elif "+" in s:
             mod, off = s.split("+")
             va = mod_base(pid, mod) + int(off, 0)
             print("target %s+0x%X = 0x%X" % (mod, int(off, 0), va))
@@ -481,7 +545,8 @@ def main():
         k32.ContinueDebugEvent(ev.dwProcessId, ev.dwThreadId, cont)
     k32.DebugActiveProcessStop(pid)
     for m, o, va in targets:
-        print("HITS %s+0x%X: %d   %s" % (m, o, counts[va], first.get(va, "")))
+        label = ("%s+0x%X" % (m, o)) if o is not None else str(m)
+        print("HITS %s: %d   %s" % (label, counts[va], first.get(va, "")))
     return 0
 
 

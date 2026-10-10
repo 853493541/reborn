@@ -65,6 +65,19 @@ target per thread) or set it just-in-time. Example once the VA is known:
 The writer RIP it reports is the answer (likely a `mov dword ptr [reg], 0` or a region memset on the
 engine thread).
 
+**STATUS (latest, 2026-10-09):** the tooling is implemented and smoke-tested —
+`multi_trace.py <pid> "tls:29:0x89b0" --data-write --arm-after <s> --bp-log` resolves the per-thread
+engine TLS field, arms a HW data WRITE BP (Dr7 rw=01,len=11), and prints
+`DATAWRITE tid=.. addr=.. writer_rip=.. dr6/dr7/rcx/rdx/rsi/rax` on each write.
+Runs done: `--arm-after 60` -> **0 DATAWRITE hits** (so the field was already zeroed before t=60s) while
+the AV still fired; an `--arm-after 1` run was **aborted by the user** mid-flight (unverified). Next:
+re-run with a small `--arm-after` (e.g. 1-5s, so `arm_all` catches existing threads early) and grep the
+`DATAWRITE` lines for the one that writes `0` (its `writer_rip` is the answer). NOTE: the engine thread's
+field is written on every engine-lock (wrapper) call, so expect many hits/some slowdown; the `0`-writer
+stands out by `rax/rdx/rcx = 0`. If 0 hits even with an early arm, the resolved address may be wrong —
+compare the printed `addr` for the engine thread against the dump's `[TLSblock(29)+0x89B0]`, or print a
+one-shot read of the field at arm time to confirm.
+
 
 
 **Why is the engine thread's `[TLS+0x89b0]` already `0` when `CreateCache` first runs** — instead of

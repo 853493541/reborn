@@ -9691,3 +9691,17 @@ if the cache/host frames appear.
   RIP. (Check whether `tools/pvp/multi_trace.py` supports DR data BPs; if not, add it — exec BPs alone
   cannot catch this.) The writer's RIP + the surrounding logic is the last unknown before the fix.
 - Verified: read-only whole-.text write scan; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: data-BP tooling implemented; run at 60s caught 0 (field zeroed earlier)
+
+- **Did:** extended `tools/pvp/multi_trace.py` with `--data-write` (HW data WRITE Dr7 rw=01/len=11),
+  bare-absolute targets, and a per-thread `tls:<index>:<off>` resolver (`resolve_tls_field` via
+  `NtQueryInformationThread` -> TEB+0x58 -> `[+index*8]` -> `+off`). Smoke-tested (`py_compile` + parse).
+- **Runs:** `multi_trace.py <pid> "tls:29:0x89b0" --data-write --arm-after 60 --bp-log` -> 0 DATAWRITE
+  hits (field already `0` before 60 s) while the AV fired on the same run; an `--arm-after 1` run was
+  aborted by the user (unverified). So the zeroing write happens earlier than 60 s (during init).
+- **Next:** re-run with `--arm-after 1` (arms existing threads early) and take the `DATAWRITE` line whose
+  regs are `0` -> its `writer_rip` is the answer; then fix. Safely restored the runtime blacklist after
+  each run (39 ids, 65068 present); no stray client.
+- Verified: `py_compile` clean; run + AV reproduced; blacklist restored; gates jx3_model 10 PASS /
+  gravity PASS / loot selftest PASS.
