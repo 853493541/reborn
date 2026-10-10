@@ -241,6 +241,13 @@ def resolve_tls_field(pid, tid, index, off):
             k32.ReadProcessMemory(hp, ctypes.c_void_p(a), b, n, ctypes.byref(got))
             return b.raw[:got.value]
 
+        if index < 0:
+            # resolve the engine's LIVE _tls_index (per-process; never reuse a dump's value)
+            eb = mod_base(pid, "KG3DEngineDX11EX64.dll")
+            bi = rd(eb + 0x26546C4, 4) if eb else b""
+            if len(bi) < 4:
+                return 0
+            index = struct.unpack("<I", bi)[0]
         try:
             b1 = rd(int(tbi.TebBaseAddress) + 0x58, 8)
             if len(b1) < 8:
