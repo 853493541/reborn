@@ -9460,3 +9460,14 @@ if the cache/host frames appear.
   the "already inited" (0 == 0) state.
 - Verified: read-only disasm (helper + branch); gates jx3_model 10 PASS / gravity PASS / loot
   selftest PASS.
+
+### 2026-10-09 — v6 — W1 consolidated into a root doc
+
+- **Did:** wrote `docs/pvp/W1_CRITICAL_SECTION_ROOT_20261009.md` (corrected full chain + gate +
+  next probes + reproduce) and registered it in `docs/pvp/README.md`.
+- **Finding summary:** 39-ability AV = null-deref in `RtlEnterCriticalSection` on the uninitialized
+  static cs `KG3DEngine+0x2D3EEE8`; the engine's lazy `RtlInitializeCriticalSection` (`0xE2E8D7`) is
+  gated by a global-vs-TLS once-check (`cmp [0x2D3EF10],[TLS+0x89b0]; jg`), guard `0` in our run ->
+  init skipped. Confidence MED-HIGH.
+- Verified: doc registered in the area index; gates jx3_model 10 PASS / gravity PASS / loot selftest
+  PASS (verify_skillv6_data exit 0).
