@@ -9387,3 +9387,23 @@ if the cache/host frames appear.
   becomes `0xFFFFFFFA`.
 - Verified: read-only BPs; nCount hypothesis refuted by live registers; gates jx3_model 10 PASS /
   gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 MAJOR correction: the AV is `inc [rax+0x24]` in RtlEnterCriticalSection (null deref), NOT a memmove
+
+- **Did:** disassembled the faulting ntdll site and matched ntdll's export table.
+- **Finding:** the AV rip `ntdll+0xFA7D` is `inc dword ptr [rax+0x24]` (`rax=[rdi]`), and `rdi =
+  KG3DEngine+0x2D3EEE8`, `rax=0` -> it writes to address `0x24` -> AV. `ntdll+0x127F0` (the IAT target
+  at `0xE2E83C`) is **`RtlEnterCriticalSection`** per ntdll's own export table. So the crash IS a
+  **null/invalid critical section**: CreateCache calls `RtlEnterCriticalSection(&engine->cs)`
+  (`0xE2E83C`), and `[cs]` (DebugInfo) is `0` -> `inc [0x24]` faults.
+- **Corrections:** (a) the earlier "memmove with size `-6`" was a **register misread** — `rdx/rsi =
+  0xFFFFFFFA` is a leftover value, not a size; (b) my prior "0xE2E83C is RtlAllocateHeap" note was
+  **wrong**: ntdll+0x127F0 = `RtlEnterCriticalSection` (export-table confirmed). `0x2D3EEE8` is a
+  **critical section**, and the engine locks it in CreateCache.
+- **New direction (HIGH):** the failure is an **uninitialized/invalid lock object** at
+  `KG3DEngine+0x2D3EEE8` (DebugInfo=0) entered from the SFX/AnimationTag CreateCache path — i.e. the
+  engine's sfx cache lock is not (or is wrongly) initialized for these 39 abilities. Next probe: find
+  who initializes `engine+0x2D3EEE8` (xref the address) and whether that init runs before the ability's
+  sfx path; and whether the lock is per-ability data passed wrongly.
+- Verified: read-only ntdll disasm + export table (`RtlEnterCriticalSection=0x127F0`); gates jx3_model
+  10 PASS / gravity PASS / loot selftest PASS.

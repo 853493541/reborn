@@ -185,6 +185,15 @@ Reading the loaded IAT slots from the dump:
 So `global+0x2D3EEE8` is a **heap handle**, and the `-6` is the **size** passed to the
 `RtlAllocateHeap` at `0xE2E83C` (size likely in `r8`, carried/clobbered across the curve-eval loop).
 
+## CORRECTION (supersedes the "allocator" note below)
+`ntdll.dll+0x127F0` is **`RtlEnterCriticalSection`** (confirmed via ntdll's export table), NOT
+RtlAllocateHeap. The AV rip `ntdll+0xFA7D` is `inc dword ptr [rax+0x24]`, `rax = [rdi] = 0`,
+`rdi = KG3DEngine+0x2D3EEE8` -> writes address `0x24` -> **null-deref inside RtlEnterCriticalSection**.
+`KG3DEngine+0x2D3EEE8` is therefore a **critical section**, and `CreateCache` calls
+`RtlEnterCriticalSection(&cs)` at `0xE2E83C`. The "-6 memmove size" was a **register misread**
+(rdx/rsi=0xFFFFFFFA is a leftover). Root direction: uninitialized/invalid lock at
+`KG3DEngine+0x2D3EEE8` (DebugInfo == 0). The "RtlAllocateHeap" note below is RETRACTED.
+
 ## Next probe
 1. Determine the size register at `0xE2E835/0xE2E83C` and whether the curve-eval loop clobbers it
    (`r8` is caller-saved) -> if `r8` becomes `-6`, that is the bug (bad length from the curve eval).
