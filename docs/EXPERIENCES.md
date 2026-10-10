@@ -9228,3 +9228,15 @@ if the cache/host frames appear.
 - **Next:** disasm the callers (#04..#11, `KG3D_AnimationTagX64`) to see where the timeline
   count/frame-range is computed and why it goes negative for the 39 AV tanis; fix = valid clip/range.
 - Verified: read-only disasm; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 count formula: COUNT = maxKey - minKey + 1 (corrupt = inverted range)
+
+- **Did:** found where CreateCache's count comes from.
+- **Finding:** `mov ebx,r12d; sub ebx,r15d; add ebx,1` → **COUNT = maxKey - minKey + 1** from the
+  red-black keyframe tree. `ebx = -6` ⇒ `maxKey - minKey = -7` → the timeline's keyframe range is
+  **inverted/corrupt** for the AV tanis. That is the concrete W1 defect: the animation timeline the
+  host drives has a corrupt keyframe range (max < min), so `CreateCache` under-allocates/over-memsets
+  and the engine `memmove` AVs. (Valid clips give COUNT >= 1.)
+- **Fix direction:** supply/repair the animation timeline (keyframe range) the host plays so
+  max >= min; the mechanism is fully identified.
+- Verified: read-only disasm; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.

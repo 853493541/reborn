@@ -151,6 +151,17 @@ frame/time" finding — a **missing/invalid animation timeline** makes the compu
 negative. The caller chain goes up through the animation-tag pipeline
 (`KG3D_AnimationTagX64.dll`) and `KG3D_CreateSFXFromFile` (0xBE4000).
 
+**COUNT formula (decisive):** right before the alloc,
+```
+mov ebx, r12d      ; r12d = MAX keyframe key (from the red-black keyframe tree)
+sub ebx, r15d      ; r15d = MIN keyframe key
+add ebx, 1         ; COUNT = maxKey - minKey + 1
+```
+`ebx = -6` ⇒ `maxKey - minKey = -7`, i.e. the timeline's keyframe range is **inverted/corrupt**
+(`max < min`). For a valid clip this is >= 1. So the 39 AV tanis drive `CreateCache` with a corrupt
+keyframe tree (min > max) — the actual defect to fix (supply/repair the animation timeline so
+max >= min).
+
 ## Next probe
 1. Find why `ebx` (the timeline count) is negative: disasm the callers (#04..#11,
    `KG3D_AnimationTagX64`) to see where the count/frame range is computed and why it goes negative
