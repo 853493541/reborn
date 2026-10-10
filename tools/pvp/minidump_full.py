@@ -228,7 +228,7 @@ class Unwinder(object):
         return regs
 
     def walk(self, ctx, maxdepth=40):
-        frames = [(ctx["Rip"], ctx["Rsp"], ctx["Rbp"])]
+        frames = [(ctx["Rip"], ctx["Rsp"], ctx["Rbp"], ctx.get("Rbx", 0), ctx.get("Rcx", 0))]
         for _ in range(maxdepth):
             rip = ctx["Rip"]
             mod = None
@@ -246,7 +246,7 @@ class Unwinder(object):
                 ctx = dict(ctx)
                 ctx["Rip"] = ret
                 ctx["Rsp"] += 8
-                frames.append((ret, ctx["Rsp"], ctx["Rbp"]))
+                frames.append((ret, ctx["Rsp"], ctx["Rbp"], ctx.get("Rbx", 0), ctx.get("Rcx", 0)))
                 continue
             b, en, ui, = rf
             flags, prolog, framereg, frameoff, codes, chained, i = self.unwind_info(base, ui)
@@ -260,7 +260,7 @@ class Unwinder(object):
                 cb, ce, cui = chained[1], chained[2], chained[3]
                 _f, _p, framereg, frameoff, codes, chained, _i = self.unwind_info(base, cui)
                 fstart = cb
-            frames.append((ctx["Rip"], ctx["Rsp"], ctx["Rbp"]))
+            frames.append((ctx["Rip"], ctx["Rsp"], ctx["Rbp"], ctx.get("Rbx", 0), ctx.get("Rcx", 0)))
             if ctx["Rip"] == 0:
                 break
         return frames
@@ -315,8 +315,12 @@ def main():
                 print("unwind: no target thread found (--tid?)")
             else:
                 print("UNWIND tid=%d:" % tgt[0])
-                for i, (rip, rsp, rbp) in enumerate(w.walk(tgt[1])):
-                    print("  #%02d rip=%s rsp=%s rbp=%s" % (i, d.resolve(rip), hex(rsp), hex(rbp)))
+                for i, (rip, rsp, rbp, rbx, rcx) in enumerate(w.walk(tgt[1])):
+                    r = d.resolve(rip)
+                    extra = ""
+                    if i in (3, 4, 5) and "KG3D" in r:
+                        extra = " rbx=%s rcx=%s" % (hex(rbx), hex(rcx))
+                    print("  #%02d rip=%s rsp=%s rbp=%s%s" % (i, r, hex(rsp), hex(rbp), extra))
         mm.close()
     return 0
 

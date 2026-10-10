@@ -9264,3 +9264,15 @@ if the cache/host frames appear.
 - **Next:** recover the corrupt `KG3D_TimeLine` object at the crash (from the dump) or trace the tag
   that builds it, to see why the timeline tree is uninitialised for these anims.
 - Verified: read-only data join; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: TimeLine pointer not recoverable from the unwinder (regs unreliable)
+
+- **Did:** added per-frame rbx/rcx output to the unwinder to try to recover the `KG3D_TimeLine` `this`.
+- **Finding:** the recovered rbx/rcx are unreliable (the `.pdata` unwind reconstructs only the frames'
+  **callee-saved** registers; caller-saved rcx/rbx aren't carried back). The rcx shown is CreateCache's
+  own critsec pointer, not the caller's `this`. So the corrupt `KG3D_TimeLine` object can't be
+  recovered this way — it needs a live COLD BP at CreateCache entry (capturing rcx) or tracing where
+  the tag builds the timeline.
+- **State:** W1 root cause complete; this last data-recovery step is a fresh-session task. Tool tweak
+  (rbx/rcx in frame output) kept as harmless.
+- Verified: read-only dump analysis; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
