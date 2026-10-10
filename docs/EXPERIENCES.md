@@ -9629,3 +9629,25 @@ if the cache/host frames appear.
   template `0x80000000` — i.e. the engine DLL's static TLS template was not applied to that thread
   (load ordering / thread creation). This is the exact fix target.
 - Verified: read-only disasm of `0x1818C7C48`; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1 ROOT MECHANISM: the init is a per-first-use generation check (hundreds of sites)
+
+- **Did:** xref'd the helper pair `0x1818C7CA8` / `0x1818C7C48`; compared the crash thread's TLS block to
+  the `.tls` template byte-for-byte.
+- **Findings:**
+  1. **The template WAS applied** to the crash thread (only 16 of 0x8A00 bytes differ from the template);
+     engine code overwrote exactly `+0x89b0` (`0x80000000` -> `0`) and a few neighbors
+     (`+0x38`, `+0x89C0`=ptr `0x3507E950`, ...). So it is NOT a "template not applied" issue.
+  2. The helper pair is a **generic engine-wide global-lock/generation wrapper**, called from **hundreds**
+     of sites across the engine, and it writes the **shared** per-thread `[TLS+0x89b0]` (plus a
+     caller-specific guard). `CreateCache`'s detour just calls the same wrapper.
+- **Mechanism:** `CreateCache`'s cs-init detour runs only when `[guard] > [TLS+0x89b0]`, i.e. only if the
+  `CreateCache` call is the **first** wrapper use on that thread (fresh thread: `0x80000000 < 0`). If any
+  earlier wrapper call ran on the engine thread first (camera/material/etc. at startup), `[TLS+0x89b0]`
+  is already synced (`=0`) -> `0 > 0` false -> **the cs is never initialized** -> AV. This is why it is
+  data/order-driven (only the 39 abilities' sfx reach `CreateCache`, and by then the generation is stale).
+- **Fix direction:** ensure the engine's own startup initializes this cs (the wrapper's detour is not a
+  reliable initializer); i.e. the host must run the engine init that creates it, or `CreateCache` must
+  first-run on the engine thread. This explains the "already initialized" skip precisely.
+- Verified: read-only xref (hundreds of wrapper call sites) + byte-diff of the TLS block vs `.tls`
+  template; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
