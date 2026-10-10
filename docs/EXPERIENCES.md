@@ -9444,3 +9444,19 @@ if the cache/host frames appear.
   expected to seed the `-1`/sentinel) and why it's `0` here (a skipped engine startup step).
 - Verified: read-only xref scan + dump IAT (`RtlInitializeCriticalSection=0xD65C0`) + live guard/cs
   read; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: the gate is a global-vs-TLS "once" check (branch not taken in our run)
+
+- **Did:** disassembled the guard helper `0x1818c7ca8` and the branch at `0xE2E6CA`.
+- **Finding:** `0x1818c7ca8(&guard)` is a once-helper: `if([guard]==0) [guard]=-1; ...` (writes the
+  sentinel `-1` when it is `0`). The init block is entered only via `0xE2E6CA: cmp [0x2D3EF10],eax;
+  jg 0xE2E8B7`, where `eax = [TLSblock + 0x89b0]` (per-thread: `gs:[0x58]` -> TLS array ->
+  `[idx from 0x1826014]`). Since the live guard is still `0`, the `jg` was **not taken** ->
+  `guard(0) > tls` false -> init skipped -> cs zero -> AV. So the engine's once(-per-thread) cs init
+  depends on the thread's TLS value at `+0x89b0` and the guard: our host reaches this path with a
+  TLS/guard state that makes the engine believe it need not (re)init.
+- **Next:** identify TLS index `[0x1826014]` / offset `0x89b0` and the startup step that seeds it (and
+  the guard `0x2D3EF10`); confirm whether an engine init call our host omits leaves the TLS/guard at
+  the "already inited" (0 == 0) state.
+- Verified: read-only disasm (helper + branch); gates jx3_model 10 PASS / gravity PASS / loot
+  selftest PASS.
