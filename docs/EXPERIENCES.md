@@ -9276,3 +9276,14 @@ if the cache/host frames appear.
 - **State:** W1 root cause complete; this last data-recovery step is a fresh-session task. Tool tweak
   (rbx/rcx in frame output) kept as harmless.
 - Verified: read-only dump analysis; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — dataset regression verifier (offline gate for FX4/buff/AoE data)
+
+- **Did:** added `tools/pvp/verify_skillv6_data.py` — offline checks with no engine/client:
+  roster 154 rows; `mechanics_f1` area skills have a radius source (or are AV-blacklisted, the
+  only such case being 30235); `buff_times_f1` >=100 rows with integer count/interval; `hit_fx_f1`
+  154 rows with some `isPlayBehit=1`. Exit 0 on pass.
+- **Result:** all checks PASS (caught+corrected two over-strict invariants during authoring). This
+  guards the session's data work. Registered in `docs/pvp/README.md`.
+- Verified: `python tools/pvp/verify_skillv6_data.py` -> 0 failed; gates jx3_model 10 PASS /
+  gravity PASS / loot selftest PASS.

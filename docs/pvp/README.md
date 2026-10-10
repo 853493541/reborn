@@ -33,7 +33,8 @@ Tools: `tools/pvp/` (`tab.py` table reader, `field_semantics.py`, `verify_pvp_ev
 `dump_fn_disasm.py`, `disasm_fn.py`, `mini_debugger.py` / `multi_trace.py` — read-only **hardware-BP
 live debugger** (AV/fault catch, stack tagging, full-memory dump) for our own host process, ported
 from `agent/v2`; `minidump_full.py` — streaming (mmap) reader for a multi-GB minidump (modules/
-threads/contexts/memory); the W1/W4 unblock),
+threads/contexts/memory); `verify_skillv6_data.py` — offline invariant checks for the v6 datasets
+(FX4/buff/AoE); the W1/W4 unblock),
 `tools/netcode/mode/extract_target_dummies.py` (dummy
 NPC-template extraction; in-client spawn: `client/RebornClient.cs` `RC_DUMMY`)
 and the reused `tools/netcode/` Lua/binary helpers.
