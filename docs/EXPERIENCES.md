@@ -9059,3 +9059,16 @@ if the cache/host frames appear.
   5.6 GB full-memory dump. The exact bad-alloc instruction still needs a reliable unwind.
 - Verified: blacklist restored (65068 present); no reborn/multi_trace processes left; gates jx3_model
   10 PASS / gravity PASS / loot selftest PASS.
+
+### 2026-10-09 — v6 — W1: streaming minidump reader (unblocks the offline unwind)
+
+- **Did:** wrote `tools/pvp/minidump_full.py` — a **mmap** (streaming) reader for a multi-GB Windows
+  minidump (the existing `minidump_exc.py` loads the whole file into RAM). Parses streams, modules,
+  threads (with CONTEXT), and Memory64List, and can read any VA from the dump.
+- **Verified on the 5.6 GB W1 dump:** 189 modules, 164 threads; the faulting thread **tid 47284,
+  `rsp=0x13f44a0`, `rip=ntdll.dll+0xFA7D`, `rbp=0x13f4539`** is present with its full context and the
+  module code pages. Registered in `docs/pvp/README.md`.
+- **Next:** `.pdata`-unwind tid 47284 from the dump (all code pages now available) to get the exact
+  engine instruction that calls `jemalloc(size=-6)`; or fix the live `--stackwalk`.
+- Verified: reader runs on the 5.6 GB dump and prints the fault context; gates jx3_model 10 PASS /
+  gravity PASS / loot selftest PASS.
