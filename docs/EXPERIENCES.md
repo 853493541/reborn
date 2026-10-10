@@ -9614,3 +9614,18 @@ if the cache/host frames appear.
   called still needs explanation (loader copy vs a different writer); it is the last open point.
 - Verified: read-only whole-.text scan (3 write sites); gates jx3_model 10 PASS / gravity PASS / loot
   selftest PASS.
+
+### 2026-10-09 — v6 — W1: the gate is a per-thread generation-cache; engine thread's cache is wrong
+
+- **Did:** disassembled the helper `0x1818C7C48` (called by the init detour at `0xE2E8F0`).
+- **Finding:** the helper (under an internal cs) does `n = ++[global counter]; [guard 0x2D3EF10] = n;
+  [TLS+0x89b0] = [another global]`. So the *(re)init detour* both bumps the global and writes the
+  thread's cache. The gate `cmp [0x2D3EF10], [TLS+0x89b0]; jg <detour>` is therefore
+  "global generation > this thread's cached generation" -> re-init needed. Intended first-run state: a
+  fresh thread's `[TLS+0x89b0]` is the `.tls` template `0x80000000` (negative) < guard(0) -> detour runs
+  -> cs initialized -> thread cache updated. **Our engine thread's cache is `0` (not negative)** ->
+  `0 > 0` false -> detour skipped -> cs never initialized -> AV.
+- **Final open point (precise):** why the engine thread's initial `[TLS+0x89b0]` is `0` instead of the
+  template `0x80000000` — i.e. the engine DLL's static TLS template was not applied to that thread
+  (load ordering / thread creation). This is the exact fix target.
+- Verified: read-only disasm of `0x1818C7C48`; gates jx3_model 10 PASS / gravity PASS / loot selftest PASS.
