@@ -52,6 +52,19 @@ exists, so the zeroing writer uses a **stored field pointer** — only a data BP
 TEB-walk snippet used in `minidump_full.py`), and confirm the resolved address equals `worker? <no>` /
 the crash thread's block before arming.
 
+**Tooling now supports it (this session):** `tools/pvp/multi_trace.py` gained `--data-write` (arms the
+Dr slots as data WRITE breakpoints, len=4: Dr7 `rw=01,len=11`) and accepts a **bare absolute address**
+target (no `Module+off`). On a data hit it prints
+`DATAWRITE tid=.. addr=0x.. writer_rip=<resolved> dr6=.. dr7=.. rcx/rdx/rsi/rax=..`.
+Remaining wiring for the run: the target must be the runtime `engine_TLSblock(29)+0x89B0` absolute VA,
+which is ASLR-dependent — either add a tiny self-resolver (compute `[gs:0x58]`->`[..+29*8]`+0x89B0 in the
+target per thread) or set it just-in-time. Example once the VA is known:
+```
+.venv\Scripts\python.exe tools\pvp\multi_trace.py <pid> 0x<TLSblock+0x89b0> --data-write --arm-after 62 --bp-log
+```
+The writer RIP it reports is the answer (likely a `mov dword ptr [reg], 0` or a region memset on the
+engine thread).
+
 
 
 **Why is the engine thread's `[TLS+0x89b0]` already `0` when `CreateCache` first runs** — instead of

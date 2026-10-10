@@ -197,6 +197,9 @@ def exec_ranges(pid, mods):
 
 TH32CS_SNAPTHREAD = 0x4
 
+# Set by --data-write: arm the Dr slots as data WRITE breakpoints (len=4) instead of exec.
+BP_WRITE = False
+
 
 class TE32(ctypes.Structure):
     _fields_ = [("dwSize", w.DWORD), ("cntUsage", w.DWORD), ("th32ThreadID", w.DWORD),
@@ -230,9 +233,13 @@ def arm(tid, vas):
     if k32.GetThreadContext(ht, ctypes.byref(ctx)):
         regs = [0, 0, 0, 0]
         dr7 = 0
+        rw = 0x1 if BP_WRITE else 0x0   # 01 = data write, 00 = exec
+        ln = 0x3 if BP_WRITE else 0x0   # 11 = 4 bytes,   00 = 1 byte
         for idx, va in enumerate(vas[:4]):
             regs[idx] = va
-            dr7 |= (0x1 << (idx * 2))  # Ln local-enable; rw/len = 0 (exec, 1 byte)
+            dr7 |= (0x1 << (idx * 2))        # Ln local-enable
+            dr7 |= (rw << (16 + idx * 4))    # RWn
+            dr7 |= (ln << (18 + idx * 4))    # LENn
         ctx.Dr0, ctx.Dr1, ctx.Dr2, ctx.Dr3 = regs
         ctx.Dr7 = dr7
         ctx.ContextFlags = M.CONTEXT_DEBUG_REGISTERS
@@ -322,13 +329,20 @@ def main():
     if "--arm-after" in sys.argv:
         arm_after = float(sys.argv[sys.argv.index("--arm-after") + 1])
     bp_log = "--bp-log" in sys.argv
+    global BP_WRITE
+    BP_WRITE = "--data-write" in sys.argv
 
     targets = []
     for s in specs:
-        mod, off = s.split("+")
-        va = mod_base(pid, mod) + int(off, 0)
-        targets.append((mod, int(off, 0), va))
-        print("target %s+0x%X = 0x%X" % (mod, int(off, 0), va))
+        if "+" in s:
+            mod, off = s.split("+")
+            va = mod_base(pid, mod) + int(off, 0)
+            print("target %s+0x%X = 0x%X" % (mod, int(off, 0), va))
+            targets.append((mod, int(off, 0), va))
+        else:
+            va = int(s, 0)
+            print("target %s = 0x%X" % (s, va))
+            targets.append((s, 0, va))
     if len(targets) > 4:
         print("need 0..4 targets (0 = AV-catch only)")
         return 1
@@ -368,6 +382,19 @@ def main():
                 ctx = M.CONTEXT()
                 ctx.ContextFlags = M.CONTEXT_FULL
                 if ht and k32.GetThreadContext(ht, ctypes.byref(ctx)):
+                    if BP_WRITE:
+                        # data write BP: RIP is the instruction AFTER the writer; which slot fired is in Dr6/Dr7
+                        dr6 = ctx.Dr6 & 0xF
+                        dr7 = ctx.Dr7
+                        for bidx, (m, o, va) in enumerate(targets):
+                            if dr6 & (1 << bidx):
+                                counts[va] += 1
+                                print("DATAWRITE tid=%d addr=0x%X writer_rip=%s dr6=%s dr7=%s "
+                                      "rcx=%s rdx=%s rsi=%s rax=%s" % (
+                                          ev.dwThreadId, va, res(ctx.Rip), hex(ctx.Dr6), hex(dr7),
+                                          hex(ctx.Rcx), hex(ctx.Rdx), hex(ctx.Rsi), hex(ctx.Rax)),
+                                      flush=True)
+                        ctx.Dr6 = 0
                     for m, o, va in targets:
                         if ctx.Rip == va:
                             counts[va] += 1
