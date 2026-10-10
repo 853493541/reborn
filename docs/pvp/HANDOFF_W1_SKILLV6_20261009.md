@@ -41,7 +41,18 @@ the authoritative mechanism write-up is `docs/pvp/W1_CRITICAL_SECTION_ROOT_20261
   `G += 1` (G @ RVA `0x257F2D0`, currently `0x8000025A`), `*guard = G`, `[TLS+0x89b0] = G`. So the
   engine thread's `[0x89b0] = 0` was NOT written by this wrapper.
 
-### The exact open question
+### The exact open question + the definitive next probe
+
+**Definitive next probe (ready to run):** set a **hardware data WRITE breakpoint** on
+`engine_TLSblock(index=29) + 0x89B0` for the engine thread during the W1 repro, log the writer's RIP.
+The two wrapper helpers both write `G=0x8000025A` here, never `0`; no immediate/disp write of `0`
+exists, so the zeroing writer uses a **stored field pointer** — only a data BP can catch it.
+`tools/pvp/mini_debugger.py` already supports HW data BPs (`set_hw_bp`, `Dr0/Dr1/Dr7`, `len=`); check
+`multi_trace.py` wiring. Resolve `engine_TLSblock(29)` at runtime via `TEB+0x58 -> [..+29*8]` (see the
+TEB-walk snippet used in `minidump_full.py`), and confirm the resolved address equals `worker? <no>` /
+the crash thread's block before arming.
+
+
 
 **Why is the engine thread's `[TLS+0x89b0]` already `0` when `CreateCache` first runs** — instead of
 the fresh-thread template `0x80000000` (which would make `0 > 0x80000000` true and run the init
